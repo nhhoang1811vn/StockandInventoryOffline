@@ -1,0 +1,6 @@
+package com.ssteam.good_manager
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
