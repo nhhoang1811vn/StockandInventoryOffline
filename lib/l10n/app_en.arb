@@ -1,0 +1,11 @@
+{
+  "stores_title" : "Stores",
+  "save_store_title" : "Save Store",
+
+  "field_name" : "Name",
+  "field_desc" : "Description",
+
+  "home_menu_item_goods" : "Goods",
+  "home_menu_item_documents" : "Documents",
+  "home_menu_item_more" : "More"
+}

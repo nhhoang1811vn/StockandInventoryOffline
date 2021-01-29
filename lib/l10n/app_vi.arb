@@ -1,0 +1,11 @@
+{
+  "stores_title" : "Cửa hàng",
+  "save_store_title" : "Lưu cửa hàng",
+
+  "field_name" : "Tên",
+  "field_desc" : "Mô tả",
+
+  "home_menu_item_goods" : "Hàng hoá",
+  "home_menu_item_documents" : "Bản ghi",
+  "home_menu_item_more" : "Khác"
+}
