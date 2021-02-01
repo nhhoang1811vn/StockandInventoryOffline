@@ -4,6 +4,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/goods/goods_page.dart';
 import 'package:good_manager/stores/save_store_page.dart';
 import 'package:good_manager/stores/stores_page.dart';
+import 'package:good_manager/suppliers/save_supplier_page.dart';
+import 'package:good_manager/suppliers/suppliers_page.dart';
 
 
 
@@ -33,6 +35,8 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         StoresPageWidget.routeName : (BuildContext context) => StoresPageWidget(),
         SaveStorePageWidget.routeName: (BuildContext context) => SaveStorePageWidget(),
+        SuppliersPageWidget.routeName : (BuildContext context) => SuppliersPageWidget(),
+        SaveSupplierPageWidget.routeName : (BuildContext context) => SaveSupplierPageWidget(),
         SaveGoodPageWidget.routeName : (BuildContext context) => SaveGoodPageWidget()
       },
 

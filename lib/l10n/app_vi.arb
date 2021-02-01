@@ -1,9 +1,20 @@
 {
   "stores_title" : "Cửa hàng",
   "save_store_title" : "Lưu cửa hàng",
+  "empty_stores" : "Chưa có cửa hàng",
+
+  "suppliers_title" : "Nhà cung cấp",
+  "save_supplier_title" : "Lưu nhà cung cấp",
+  "empty_suppliers" : "Chưa có nhà cung cấp",
 
   "field_name" : "Tên",
   "field_desc" : "Mô tả",
+  "field_address" : "Địa chỉ",
+  "field_email" : "E-mail",
+  "field_phone" : "SDT",
+  "field_tax_ID" : "Mã số thuế",
+  "field_bank_details" : "Thông tin ngân hàng",
+
 
   "home_menu_item_goods" : "Hàng hoá",
   "home_menu_item_documents" : "Bản ghi",

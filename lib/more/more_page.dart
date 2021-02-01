@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/stores/stores_page.dart';
+import 'package:good_manager/suppliers/suppliers_page.dart';
 
 class MorePage extends StatefulWidget {
   @override
@@ -17,6 +18,9 @@ class MorePageState extends State<MorePage> {
           leading: Icon(Icons.perm_contact_calendar),
           title: Text('Suppliers'),
           subtitle: Text('Suppliers information'),
+          onTap: () => {
+            Navigator.of(context).pushNamed(SuppliersPageWidget.routeName)
+          },
         ),
         ListTile(
           leading: Icon(Icons.perm_contact_calendar),
@@ -27,8 +31,9 @@ class MorePageState extends State<MorePage> {
           leading: Icon(Icons.store),
           title: Text('Stores'),
           subtitle: Text('Stores information'),
-          onTap: () =>
-              {Navigator.of(context).pushNamed(StoresPageWidget.routeName)},
+          onTap: () => {
+            Navigator.of(context).pushNamed(StoresPageWidget.routeName)
+          },
         ),
         ListTile(
           dense: true,

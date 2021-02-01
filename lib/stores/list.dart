@@ -4,6 +4,8 @@ import 'package:good_manager/model/Store.dart';
 import 'package:good_manager/stores/save_store_page.dart';
 import 'package:good_manager/stores/stores_presenter.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class StoreList extends StatelessWidget{
   List<Store> stores;
   StoresPresenter presenter;
@@ -17,7 +19,7 @@ class StoreList extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     if (stores == null || stores.isEmpty){
-      return Center(child: Text("No store"),);
+      return Center(child: Text(AppLocalizations.of(context).empty_stores),);
     }else{
       return new ListView.separated(
         itemCount: stores.length,
