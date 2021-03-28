@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ssteam.good_manager">
    <application
-        android:label="good_manager"
+        android:label="Quản Lý Kho"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

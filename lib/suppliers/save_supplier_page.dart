@@ -53,6 +53,11 @@ class _SaveSupplierPageWidgetState extends State<SaveSupplierPageWidget>
     item = args.item;
     teName.text = item.name;
     teDescription.text = item.description;
+    teAddress.text=  item.address;
+    teEmail.text = item.email;
+    tePhone.text = item.phone;
+    teTaxID.text = item.taxID;
+    teBankDetails.text = item.bankDetail;
     super.didChangeDependencies();
   }
 
@@ -69,6 +74,11 @@ class _SaveSupplierPageWidgetState extends State<SaveSupplierPageWidget>
       //Store store = new Store(teName.text, teDescription.text);
       item.name = teName.text;
       item.description = teDescription.text;
+      item.address = teAddress.text;
+      item.email = teEmail.text;
+      item.phone = tePhone.text;
+      item.taxID = teTaxID.text;
+      item.bankDetail = teBankDetails.text;
       if (args.isAdd) {
         presenter.insert(item);
       } else {

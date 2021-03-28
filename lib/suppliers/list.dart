@@ -10,11 +10,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SupplierList extends StatelessWidget{
   List<Supplier> items;
-  SuppliersPresenter presenter;
 
+  final void Function(Supplier item) onItemTapped;
   SupplierList(
       List<Supplier> this.items,
-      SuppliersPresenter this.presenter, {
+      this.onItemTapped, {
         Key key,
       }) : super(key: key);
 
@@ -30,8 +30,8 @@ class SupplierList extends StatelessWidget{
           return ListTile(
             title: Text(items[index].name),
             subtitle: Text(items[index].description),
-            onTap: () => onItemTapped(context,items[index]),
-            onLongPress: () => onItemLongPressed(context,items[index]),
+            onTap: () => onItemTapped(items[index]),
+            //onLongPress: () => onItemLongPressed(context,items[index]),
           );
         },
         separatorBuilder: (context, index) {
@@ -41,20 +41,5 @@ class SupplierList extends StatelessWidget{
 
       );
     }
-  }
-  void onItemTapped(BuildContext context,Supplier item) async{
-    final result = await Navigator.of(context).pushNamed(
-        SaveSupplierPageWidget.routeName,
-        arguments: SaveSupplierPageArguments(false, item));
-    if (result){
-      presenter.refresh();
-    }
-  }
-  void onItemLongPressed(BuildContext context,Supplier item){
-    /*showDialog(context: context,
-        builder: (context) => AlertDialog(
-        title: Text(""),
-
-    ));*/
   }
 }

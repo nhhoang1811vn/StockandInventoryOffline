@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter/services.dart';
-//import 'package:fluttertoast/fluttertoast.dart';
-//import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter_calculator/flutter_calculator.dart';
+import 'package:good_manager/goods/save_good_presenter.dart';
+import 'package:good_manager/model/Document.dart';
+import 'package:good_manager/model/DocumentTransaction.dart';
+import 'package:good_manager/model/Good.dart';
+import 'package:good_manager/utils/AppUtils.dart';
+
+import '../ReceiveGoodDialogWidget.dart';
 
 class SaveGoodPageWidget extends StatefulWidget {
   SaveGoodPageWidget({Key key}) : super(key: key);
@@ -13,33 +20,100 @@ class SaveGoodPageWidget extends StatefulWidget {
     return _SaveGoodPageWidgetState();
   }
 }
+class SaveGoodPageArguments{
+  bool isSelection = false;
+  Good good;
+  int documentId;
+  SaveGoodPageArguments();
+}
 
-class _SaveGoodPageWidgetState extends State<SaveGoodPageWidget> {
-  void _onSaveGood(){
-    //Fluttertoast.showToast(msg: "save good");
+class _SaveGoodPageWidgetState extends State<SaveGoodPageWidget> implements SaveGoodContract {
+  SaveGoodPageArguments args;
+  SaveGoodPresenter presenter;
+  Good good;
+  int goodId;
+  int documentId;
+  bool _validate = true;
+  final teName = TextEditingController();
+  final teDescription  = TextEditingController();
+  final teBarCode = TextEditingController();
+  final teQuantity = TextEditingController();
+
+  @override
+  void initState() {
+    presenter = SaveGoodPresenter(this);
+    super.initState();
+  }
+  void _onSaveGood() async{
+    setState(() {
+      if (teName.text.isEmpty){
+        _validate = false;
+      }else{
+        _validate = true;
+      }
+    });
+
+    if (_validate){
+      good.name = teName.text;
+      good.description = teDescription.text;
+      good.barCode = teBarCode.text;
+      if (good.id == null){
+        goodId = await presenter.insertGood(good);
+      }else{
+        await presenter.updateGood(good);
+        goodId = good.id;
+      }
+
+      if (args.isSelection){
+        DocumentTransaction transaction = DocumentTransaction();
+        transaction.goodId = goodId;
+        transaction.documentId = documentId;
+        transaction.quantity = int.parse(teQuantity.text);
+        presenter.insertDocumentTransaction(transaction);
+      }else{
+
+      }
+      Navigator.of(context).pop(true);
+    }
   }
   Future<void> _onAddBarCode() async {
-    /*String barcodeScanRes;
+    String barcodeScanRes;
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           "#ff6666", "Cancel", true, ScanMode.BARCODE);
-      print(barcodeScanRes);
+      teBarCode.text = barcodeScanRes;
+
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
-    }*/
-
+    }
   }
-  void _onAddQuantity(){
-    //Fluttertoast.showToast(msg: "add quality");
+  void _onAddQuantity() async{
+    await showDialog(context: context, builder: (_) => ReceiveGoodDialogWidget(onRetrieveADocument), barrierDismissible: false);
   }
   void _onRemoveQuantity(){
-    //Fluttertoast.showToast(msg: "remove quality");
+
   }
+  void onRetrieveADocument(Document document){
+
+  }
+  @override
+  void didChangeDependencies() {
+    args = ModalRoute.of(context).settings.arguments;
+    good = args.good;
+    documentId = args.documentId;
+
+    teName.text = good.name;
+    teDescription.text = good.description;
+    teBarCode.text = good.barCode;
+
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Add Good 1'),
+          title: Text('Thêm sản phẩm'),
           actions: <Widget>[
             Padding(
                 padding: EdgeInsets.only(right: 20.0),
@@ -55,42 +129,68 @@ class _SaveGoodPageWidgetState extends State<SaveGoodPageWidget> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
+              Row(children: [
+                Expanded(child: TextFormField(
+                  decoration: InputDecoration(labelText: 'Tên',errorText: _validate ? null : 'Tên không thể bỏ trống'),
+                  controller: teName,
+                ),),
+                Visibility(child: Align(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(icon: Icon(Icons.search, size: 32, color: Colors.grey,), onPressed: _onAddBarCode)
+                ),
+                visible: args.isSelection,)
+              ],),
+
               TextFormField(
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: InputDecoration(labelText: 'Mô tả'),
+                controller: teDescription,
               ),
               Row(
                 children: [
                   Expanded(
                       child: TextFormField(
-                    decoration: InputDecoration(labelText: 'Barcode'),
+                    decoration: InputDecoration(labelText: 'Mã vạch'),
+                        controller: teBarCode,
                   )),
                   Align(
                       alignment: Alignment.centerRight,
-                      child: IconButton(icon: Icon(Icons.qr_code_scanner_sharp, size: 40), onPressed: _onAddBarCode)
+                      child: IconButton(icon: Icon(Icons.qr_code_scanner_sharp, size: 36,color: Colors.grey,), onPressed: _onAddBarCode)
                   )
                 ],
               ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Description'),
-              ),
+
               Row(
                 children: [
                   Expanded(
                       child: TextFormField(
-                    decoration: InputDecoration(labelText: 'Quanlity'),
+                      decoration: InputDecoration(labelText: 'Số lương'),
+                        controller: teQuantity,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                   )),
-                  Align(
+                  Visibility(visible: !args.isSelection,child: Align(
                       alignment: Alignment.centerRight,
                       child: Row(
                         children: [
-                          IconButton(icon: Icon(Icons.add_circle, size: 40), onPressed: _onAddQuantity),
-                          IconButton(icon: Icon(Icons.remove_circle, size: 40), onPressed: _onRemoveQuantity),
+                          IconButton(icon: Icon(Icons.add_circle, size: 36,color: Colors.blue,), onPressed: _onAddQuantity),
+                          IconButton(icon: Icon(Icons.remove_circle, size: 36,color: Colors.blue,), onPressed: _onRemoveQuantity),
                         ],
-                      ))
+                      )),),
+                  Visibility(visible: args.isSelection,child: Align(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(icon: Icon(Icons.calculate), onPressed:() => _showCalculatorDialog(context),),
+                  ))
+
                 ],
               )
             ],
           ),
         ));
+  }
+  void _showCalculatorDialog(BuildContext context) async {
+    final result = await showCalculator(context: this.context) ?? 0;
+    teQuantity.text = result.toInt().toString();
   }
 }

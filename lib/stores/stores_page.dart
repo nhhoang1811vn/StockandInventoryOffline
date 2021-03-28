@@ -1,12 +1,19 @@
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
+import 'package:good_manager/help/help_page_dart.dart';
 import 'package:good_manager/model/Store.dart';
 import 'package:good_manager/stores/save_store_page.dart';
+import 'package:good_manager/stores/sort_by_store_dialog.dart';
 import 'package:good_manager/stores/stores_presenter.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:good_manager/assets/constants.dart' as Constants;
 import 'list.dart';
+
+
 
 class StoresPageWidget extends StatefulWidget {
   StoresPageWidget({Key key}) : super(key: key);
@@ -22,6 +29,7 @@ class _StoresPageWidgetState extends State<StoresPageWidget> implements StoresCo
   StoresPresenter presenter;
   SearchBar searchBar;
   var textSearch = "";
+  SharedPreferences sharedPrefs;
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
@@ -68,8 +76,11 @@ class _StoresPageWidgetState extends State<StoresPageWidget> implements StoresCo
 
   @override
   void initState() {
-    presenter = new StoresPresenter(this);
     super.initState();
+    presenter = new StoresPresenter(this);
+    SharedPreferences.getInstance().then((prefs) {
+      setState(() => sharedPrefs = prefs);
+    });
   }
   void _onAddStore() async{
     final result = await Navigator.of(context).pushNamed(
@@ -83,10 +94,12 @@ class _StoresPageWidgetState extends State<StoresPageWidget> implements StoresCo
     }
   }
   void _onSortMenuItemTapped(){
-
+    showDialog(context: context, builder: (_) => SortByStoreDialogWidget(()=>{
+      screenUpdated()
+    }), barrierDismissible: false);
   }
   void _onHelpMenuItemTapped(){
-
+    Navigator.of(context).pushNamed(HelpPageWidget.routeName, arguments: HelpPageArguments("content man hinh store"));
   }
   @override
   Widget build(BuildContext context) {
@@ -103,11 +116,24 @@ class _StoresPageWidgetState extends State<StoresPageWidget> implements StoresCo
                 filteredStores.add(element);
               }
             });
+            //sort
+            SortBy an = EnumToString.fromString(SortBy.values,sharedPrefs.getString(Constants.KEY_SORT_BY_STORE));
+            switch(an){
+              case SortBy.sort_a_z:
+                filteredStores.sort((a,b){
+                  return a.name.compareTo(b.name);
+                });
+                break;
+              case SortBy.sort_z_a:
+                filteredStores.sort((a,b){
+                  return b.name.compareTo(a.name);
+                });
+                break;
+              default:
+            }
             return snapshot.hasData
                 ? new StoreList(filteredStores, presenter)
                 : new Center(child: new CircularProgressIndicator(),);
-
-
           },
         )
         ,

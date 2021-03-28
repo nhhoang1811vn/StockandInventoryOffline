@@ -18,9 +18,15 @@ class SuppliersPageWidget extends StatefulWidget {
   }
 }
 
+class SuppliersPageArgument {
+  final bool selection;
+  SuppliersPageArgument(this.selection);
+}
+
 class _SuppliersPageWidgetState extends State<SuppliersPageWidget>
     implements SuppliersContract {
   SuppliersPresenter presenter;
+  SuppliersPageArgument args;
   SearchBar searchBar;
   var textSearch = "";
 
@@ -40,6 +46,12 @@ class _SuppliersPageWidgetState extends State<SuppliersPageWidget>
   }
 
   @override
+  void didChangeDependencies() {
+    args = ModalRoute.of(context).settings.arguments;
+    super.didChangeDependencies();
+  }
+
+  @override
   void initState() {
     presenter = new SuppliersPresenter(this);
     super.initState();
@@ -48,36 +60,49 @@ class _SuppliersPageWidgetState extends State<SuppliersPageWidget>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: searchBar.build(context),
-      body: new FutureBuilder<List<Supplier>>(
-          future: presenter.getSuppliers(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) print(snapshot.error);
-            var data = snapshot.data;
-            List<Supplier> filterResults = [];
-            data.forEach((element) {
-              if (element.name.startsWith(textSearch)) {
-                filterResults.add(element);
-              }
-            });
-            return snapshot.hasData
-                ? new SupplierList(filterResults, presenter)
-                : new Center(
-                    child: new CircularProgressIndicator(),
-                  );
-          }),
+        appBar: searchBar.build(context),
+        body: new FutureBuilder<List<Supplier>>(
+            future: presenter.getSuppliers(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) print(snapshot.error);
+              var data = snapshot.data;
+              List<Supplier> filterResults = [];
+              data.forEach((element) {
+                if (element.name.startsWith(textSearch)) {
+                  filterResults.add(element);
+                }
+              });
+              return snapshot.hasData
+                  ? new SupplierList(filterResults, onItemTapped)
+                  : new Center(
+                      child: new CircularProgressIndicator(),
+                    );
+            }),
         floatingActionButton: FloatingActionButton(
           tooltip: 'Add',
           onPressed: _onAddItem,
           child: Icon(Icons.add),
-        )
-    );
+        ));
+  }
+
+  void onItemTapped(Supplier item) async {
+    if (args.selection) {
+      Map<String, dynamic> returnedData = new Map();
+      returnedData["id"] = item.id;
+      returnedData["name"] = item.name;
+      Navigator.pop(context, returnedData);
+    } else {
+      final result = await Navigator.of(context).pushNamed(
+          SaveSupplierPageWidget.routeName,
+          arguments: SaveSupplierPageArguments(false, item));
+      if (result) {
+        presenter.refresh();
+      }
+    }
   }
 
   void onSearchBarChanged(String value) {
-    setState(() => {
-      textSearch = value
-    });
+    setState(() => {textSearch = value});
   }
 
   AppBar buildAppBar(BuildContext context) {
@@ -111,12 +136,10 @@ class _SuppliersPageWidgetState extends State<SuppliersPageWidget>
   void _onAddItem() async {
     final result = await Navigator.of(context).pushNamed(
         SaveSupplierPageWidget.routeName,
-        arguments: SaveSupplierPageArguments(true, Supplier("", "")));
+        arguments: SaveSupplierPageArguments(true, Supplier.origin()));
     if (result) {
       //save success, update list
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
 
@@ -125,5 +148,7 @@ class _SuppliersPageWidgetState extends State<SuppliersPageWidget>
   void _onHelpMenuItemTapped() {}
 
   @override
-  void screenUpdated() {}
+  void screenUpdated() {
+    setState(() {});
+  }
 }

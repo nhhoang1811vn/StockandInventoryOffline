@@ -11,8 +11,8 @@ class SaveStorePresenter{
 
   SaveStorePresenter(this._view);
 
-  insert(Store store){
-    db.insertStore(store);
+  Future<int> insert(Store store){
+    return db.insertStore(store);
   }
   update(Store store){
     db.updateStore(store);

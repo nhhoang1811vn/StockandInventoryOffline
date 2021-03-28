@@ -1,18 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/documents/save_document.dart';
 import 'package:good_manager/goods/goods_page.dart';
+import 'package:good_manager/help/help_page_dart.dart';
 import 'package:good_manager/stores/save_store_page.dart';
+import 'package:good_manager/stores/save_store_presenter.dart';
 import 'package:good_manager/stores/stores_page.dart';
+import 'package:good_manager/stores/stores_presenter.dart';
 import 'package:good_manager/suppliers/save_supplier_page.dart';
 import 'package:good_manager/suppliers/suppliers_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:good_manager/assets/constants.dart' as Constants;
 
 
 
+import 'documents/documentns_page.dart';
 import 'goods/save_good.dart';
+import 'goods/save_group.dart';
+import 'model/Store.dart';
 import 'more/more_page.dart';
+import 'onboarding/OnBoardingPage.dart';
+import 'package:good_manager/assets/constants.dart' as Constants;
 
-void main() {
+bool firstTime;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  firstTime = await prefs.getBool(Constants.KEY_FIRST_TIME);
   runApp(MyApp());
 }
 
@@ -32,15 +49,20 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
+      //initialRoute: firstTime?"first":"/",
       routes: <String, WidgetBuilder>{
         StoresPageWidget.routeName : (BuildContext context) => StoresPageWidget(),
         SaveStorePageWidget.routeName: (BuildContext context) => SaveStorePageWidget(),
         SuppliersPageWidget.routeName : (BuildContext context) => SuppliersPageWidget(),
         SaveSupplierPageWidget.routeName : (BuildContext context) => SaveSupplierPageWidget(),
-        SaveGoodPageWidget.routeName : (BuildContext context) => SaveGoodPageWidget()
+        SaveGoodPageWidget.routeName : (BuildContext context) => SaveGoodPageWidget(),
+        SaveGroupPageWidget.routeName : (BuildContext context) => SaveGroupPageWidget(),
+        HelpPageWidget.routeName : (BuildContext context) => HelpPageWidget(),
+        SaveDocumentPageWidget.routeName : (BuildContext context) => SaveDocumentPageWidget(),
+
       },
 
-      home: MainPageWidget(),
+      home: (firstTime == null)?OnBoardingPage():MainPageWidget(),
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate
@@ -62,10 +84,9 @@ class _MainPageWidgetState extends State<MainPageWidget>{
   int _selectedIndex = 0;
   static List<Widget> _widgetOptions = <Widget>[
     GoodsPageWidget(),
-    GoodsPageWidget(),
+    DocumentPageWidget(),
     MorePage(),
   ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -75,9 +96,6 @@ class _MainPageWidgetState extends State<MainPageWidget>{
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context).home_menu_item_documents),
-        ),
         body: Container(
           child: _widgetOptions.elementAt(_selectedIndex),
         ),
@@ -85,19 +103,19 @@ class _MainPageWidgetState extends State<MainPageWidget>{
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.storefront_outlined),
-              label: AppLocalizations.of(context).home_menu_item_goods,
+              label: 'Sản phẩm',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.file_copy_outlined),
-              label: AppLocalizations.of(context).home_menu_item_documents,
+              label: 'Giao dịch'
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.more_horiz),
-              label: AppLocalizations.of(context).home_menu_item_more
+              label: 'Khác'
             ),
           ],
           currentIndex: _selectedIndex,
-          selectedItemColor: Colors.amber[800],
+          selectedItemColor: Colors.blue[800],
           onTap: _onItemTapped,
         ),
       );
