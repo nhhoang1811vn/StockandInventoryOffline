@@ -19,7 +19,8 @@ class MorePageState extends State<MorePage> {
           title: Text('Suppliers'),
           subtitle: Text('Suppliers information'),
           onTap: () => {
-            Navigator.of(context).pushNamed(SuppliersPageWidget.routeName)
+            Navigator.of(context).pushNamed(SuppliersPageWidget.routeName,
+                arguments: SuppliersPageArgument(false))
           },
         ),
         ListTile(

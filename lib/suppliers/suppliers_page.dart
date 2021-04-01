@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:good_manager/model/Supplier.dart';
 import 'package:good_manager/suppliers/save_supplier_page.dart';
 import 'package:good_manager/suppliers/suppliers_presenter.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'list.dart';
 
@@ -68,7 +67,7 @@ class _SuppliersPageWidgetState extends State<SuppliersPageWidget>
               var data = snapshot.data;
               List<Supplier> filterResults = [];
               data.forEach((element) {
-                if (element.name.startsWith(textSearch)) {
+                if (element.supplierName.startsWith(textSearch)) {
                   filterResults.add(element);
                 }
               });
@@ -87,10 +86,7 @@ class _SuppliersPageWidgetState extends State<SuppliersPageWidget>
 
   void onItemTapped(Supplier item) async {
     if (args.selection) {
-      Map<String, dynamic> returnedData = new Map();
-      returnedData["id"] = item.id;
-      returnedData["name"] = item.name;
-      Navigator.pop(context, returnedData);
+      Navigator.pop(context, item.toMap());
     } else {
       final result = await Navigator.of(context).pushNamed(
           SaveSupplierPageWidget.routeName,

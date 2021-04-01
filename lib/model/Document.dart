@@ -10,28 +10,29 @@ class Document{
   DateTime date = DateTime.now();
   DocumentType type;
   int supplierId;
+  String supplierName;
   int customerId;
   int storeId;
   int quantity;
+
   Document();
 
-
-  Document.map(dynamic obj){
+  Document.map(dynamic obj) {
     this.id = obj["id"];
     this.name = obj["name"];
     this.description = obj["description"];
     this.date = DateTime.fromMillisecondsSinceEpoch(obj["date"]);
     //this.type = obj["type"];
     DocumentType.values.forEach((element) {
-      if (obj["type"] == element.index){
+      if (obj["type"] == element.index) {
         this.type = element;
         return;
       }
     });
     this.supplierId = obj["supplierId"];
+    this.supplierName = obj["supplierName"];
     this.customerId = obj["customerId"];
     this.storeId = obj["storeId"];
-
   }
 
   Map<String, dynamic> toMap() {

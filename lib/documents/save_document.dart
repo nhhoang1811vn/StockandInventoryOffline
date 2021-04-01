@@ -1,14 +1,17 @@
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/documents/documents_presenter.dart';
+import 'package:good_manager/documents/save_document_presenter.dart';
 import 'package:good_manager/goods/list.dart';
 import 'package:good_manager/goods/save_good.dart';
 import 'package:good_manager/model/Document.dart';
+import 'package:good_manager/model/DocumentTransaction.dart';
 import 'package:good_manager/model/Good.dart';
+import 'package:good_manager/model/Supplier.dart';
 import 'package:good_manager/suppliers/suppliers_page.dart';
 import 'package:good_manager/utils/AppUtils.dart';
-import 'package:intl/intl.dart';
+
+import '../custom_action_row.dart';
 
 class SaveDocumentPageWidget extends StatefulWidget {
   static const routeName = '/saveDocument';
@@ -21,49 +24,57 @@ class SaveDocumentPageWidget extends StatefulWidget {
 
 class SaveDocumentPageArguments {
   Document document;
+
   SaveDocumentPageArguments();
 }
 
 class SaveDocumentPageWidgetState extends State<SaveDocumentPageWidget> {
   bool _validate = true;
-  DocumentsPresenter presenter;
+  SaveDocumentsPresenter presenter;
   SaveDocumentPageArguments args;
   final teName = TextEditingController();
   final teDescription = TextEditingController();
   final teSupplier = TextEditingController();
   final teDate = TextEditingController();
-  int supplierId = -1;
-  String supplierName = "";
   String date;
 
   Document document;
-  int documentId;
+  Supplier supplier;
+  List<Good> goods = [];
+
+  bool initData = true;
 
   @override
   void initState() {
-    presenter = DocumentsPresenter();
+    presenter = SaveDocumentsPresenter();
     super.initState();
   }
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     args = ModalRoute.of(context).settings.arguments;
 
     document = args.document;
-    documentId = document.id;
     teDate.text = document.date.toString();
     teName.text = document.name;
     teDescription.text = document.description;
+
+    if (initData) {
+      if (document.supplierId != null) {
+        supplier = await presenter.getSupplier(document.supplierId);
+        teSupplier.text = supplier.supplierName;
+      }
+      if (document.id != null) {
+        goods = await presenter.getGoodByDocumentId(document.id);
+      }
+      initData = false;
+      setState(() {});
+    }
     super.didChangeDependencies();
   }
 
   Future<bool> _onBackPressed() async {
-    saveDocument();
-    if (_validate){
-      Navigator.of(context).pop(true);
-    }else{
-      Navigator.of(context).pop(false);
-    }
+    Navigator.of(context).pop();
   }
 
   String getTitle() {
@@ -81,9 +92,35 @@ class SaveDocumentPageWidgetState extends State<SaveDocumentPageWidget> {
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Scaffold(
-          appBar: AppBar(
-            title: Text(getTitle()),
-          ),
+          appBar: AppBar(title: Text(getTitle()), actions: <Widget>[
+            CustomActionsRow(
+                availableWidth: MediaQuery.of(context).size.width /
+                    2, // half the screen width
+                actionWidth: 48, // default for IconButtons
+                actions: [
+                  CustomAction(
+                    visibleWidget: IconButton(
+                      onPressed: onSaveDocument,
+                      icon: Icon(Icons.check),
+                    ),
+                    showAsAction: ShowAsAction.ALWAYS,
+                  ),
+                  CustomAction(
+                    overflowWidget: GestureDetector(
+                      onTap: () {},
+                      child: const Text("Sắp xếp"),
+                    ),
+                    showAsAction: ShowAsAction.NEVER,
+                  ),
+                  CustomAction(
+                    overflowWidget: GestureDetector(
+                      onTap: () {},
+                      child: const Text("Trợ giúp"),
+                    ),
+                    showAsAction: ShowAsAction.NEVER,
+                  ),
+                ])
+          ]),
           body: Container(
             child: Column(
               children: [
@@ -95,7 +132,11 @@ class SaveDocumentPageWidgetState extends State<SaveDocumentPageWidget> {
                           Expanded(
                             child: TextFormField(
                               controller: teName,
-                              decoration: InputDecoration(labelText: 'Tên'),
+                              decoration: InputDecoration(
+                                  labelText: 'Tên',
+                                  errorText: _validate
+                                      ? null
+                                      : 'Tên không thể bỏ trống'),
                             ),
                           ),
                           Expanded(
@@ -111,6 +152,7 @@ class SaveDocumentPageWidgetState extends State<SaveDocumentPageWidget> {
                         ],
                       ),
                       TextFormField(
+                        onTap: onSupplierTapped,
                         controller: teSupplier,
                         decoration: InputDecoration(labelText: 'Nhà Cung Cấp'),
                       ),
@@ -131,22 +173,13 @@ class SaveDocumentPageWidgetState extends State<SaveDocumentPageWidget> {
                         child: Text('Danh Sách Sản Phẩm',
                             style: TextStyle(color: Colors.white)))),
                 Expanded(
-                    child: new FutureBuilder<List<Good>>(
-                        future: presenter.getGoodByDocumentId(documentId),
-                        builder: (context, snapshot) {
-                          return snapshot.hasData
-                              ? new GoodList(
-                                  snapshot.data,
-                                  (it) => onGoodTapped(it),
-                                  (it) => onGoodLongPressed(it))
-                              : new Center(
-                                  child: new CircularProgressIndicator());
-                        }))
+                    child: GoodList(goods, (it) => onGoodTapped(it),
+                        (it) => onGoodLongPressed(it)))
               ],
             ),
           ),
           floatingActionButton: FloatingActionButton.extended(
-            onPressed: onSelectGood,
+            onPressed: onAddGood,
             label: const Text('Thêm sản phẩm'),
             icon: const Icon(Icons.add_photo_alternate),
             backgroundColor: Colors.blue,
@@ -159,57 +192,60 @@ class SaveDocumentPageWidgetState extends State<SaveDocumentPageWidget> {
     document.name = teName.text;
     document.date = DateTime.parse(teDate.text);
     document.description = teDescription.text;
-
-    ///TODO NCC mapping
+    document.supplierId = supplier.id;
   }
-  Future<void> saveDocument() async{
+
+  Future<void> onSaveDocument() async {
     setState(() {
-      if (teName.text.isEmpty){
-        _validate = false;
-      }else{
-        _validate = true;
-      }
+      _validate = teName.text.isNotEmpty;
     });
     if (_validate) {
       updateDocument();
-      if (documentId == null) {
-        documentId = await presenter.insert(document);
+      if (document.id == null) {
+        document.id = await presenter.insertDocument(document);
+        insertDocumentTransaction(document.id, goods);
       } else {
-        await presenter.update(document);
+        await presenter.updateDocument(document);
+        await presenter.deleteDocumentTransaction(document.id);
+        insertDocumentTransaction(document.id, goods);
       }
+      Navigator.of(context).pop(true);
     }
   }
-  void onSelectGood() async {
-    await saveDocument();
-    if (_validate){
-      SaveGoodPageArguments arguments = SaveGoodPageArguments();
-      arguments.isSelection = true;
-      arguments.documentId = documentId;
-      Good good = Good();
-      good.storeId = await AppUtils.getSelectedStoreId();
-      arguments.good = good;
-      var result = await Navigator.of(context)
-          .pushNamed(SaveGoodPageWidget.routeName, arguments: arguments);
-      if (result){
-        setState(() {
 
-        });
-      }
+  void insertDocumentTransaction(int documentId, List<Good> goods) {
+    goods.forEach((good) {
+      DocumentTransaction transaction = DocumentTransaction();
+      transaction.goodId = good.id;
+      transaction.documentId = document.id;
+      transaction.quantity = good.quantity;
+      presenter.insertDocumentTransaction(transaction);
+    });
+  }
+
+  void onAddGood() async {
+    SaveGoodPageArguments arguments = SaveGoodPageArguments();
+    Good good = Good();
+    good.storeId = await AppUtils.getSelectedStoreId();
+    good.quantity = 1;
+
+    arguments.isSelection = true;
+    arguments.good = good;
+    var result = await Navigator.of(context)
+        .pushNamed(SaveGoodPageWidget.routeName, arguments: arguments);
+    var resultGood = Good.map(result);
+    if (resultGood != null) {
+      goods.add(resultGood);
+      setState(() {});
     }
-
-
   }
 
   void onSupplierTapped() async {
-    final supplier = await Navigator.of(context).pushNamed(
+    final data = await Navigator.of(context).pushNamed(
         SuppliersPageWidget.routeName,
         arguments: SuppliersPageArgument(true));
-    Map data = (supplier as Map<String, dynamic>);
-    print(data);
-    if (supplier != null) {
-      teSupplier.text = data["name"];
-      supplierId = data["id"];
-    }
+    supplier = Supplier.map(data);
+    teSupplier.text = supplier.supplierName;
   }
 
   void onGoodTapped(Good good) async {}

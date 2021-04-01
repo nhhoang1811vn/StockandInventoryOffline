@@ -49,14 +49,15 @@ class DBHelper {
     await db.execute(
         "CREATE TABLE $STORES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT)");
     await db.execute(
-        "CREATE TABLE $SUPPLIERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT)");
+        "CREATE TABLE $SUPPLIERS_TABLE_NAME(id INTEGER PRIMARY KEY, supplierName TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT)");
     await db.execute(
         "CREATE TABLE $CUSTOMERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT)");
 
-    await db.execute("CREATE TABLE $DOCUMENT_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, date INTEGER, type INTEGER, storeId INTEGER ,supplierId INTEGER, customerId INTEGER, "
-        + "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id),"
-        + "FOREIGN KEY(supplierId) REFERENCES $SUPPLIERS_TABLE_NAME(id),"
-        + "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id))");
+    await db.execute(
+        "CREATE TABLE $DOCUMENT_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, date INTEGER, type INTEGER, storeId INTEGER ,supplierId INTEGER, customerId INTEGER, " +
+            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id)," +
+            "FOREIGN KEY(supplierId) REFERENCES $SUPPLIERS_TABLE_NAME(id)," +
+            "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id))");
 
     await db.execute(
         "CREATE TABLE $GROUP_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, groupId INTEGER, " +
@@ -128,6 +129,16 @@ class DBHelper {
     int res = await dbClient.update(SUPPLIERS_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id]);
     return res > 0 ? true : false;
+  }
+
+  Future<Supplier> getSupplier(int id) async {
+    var dbClient = await db;
+    var list = await dbClient
+        .rawQuery('SELECT * FROM $SUPPLIERS_TABLE_NAME where id = ?', [id]);
+    if (list.isNotEmpty) {
+      return Supplier.map(list.first);
+    }
+    return null;
   }
 
   //GROUP
@@ -223,7 +234,8 @@ class DBHelper {
     int storeId = await AppUtils.getSelectedStoreId();
 
     List<Map> list = await dbClient.rawQuery(
-        'SELECT * FROM $DOCUMENT_TABLE_NAME where storeId = ?', [storeId]);
+        'SELECT *, $SUPPLIERS_TABLE_NAME.supplierName FROM $DOCUMENT_TABLE_NAME INNER JOIN $SUPPLIERS_TABLE_NAME ON $DOCUMENT_TABLE_NAME.supplierId = $SUPPLIERS_TABLE_NAME.id where storeId = ?',
+        [storeId]);
     List<Document> documents = new List();
     for (int i = 0; i < list.length; i++) {
       var document = Document.map(list[i]);
@@ -242,7 +254,8 @@ class DBHelper {
     var dbClient = await db;
     int storeId = await AppUtils.getSelectedStoreId();
     List<Map> list = await dbClient.rawQuery(
-        'SELECT * FROM $DOCUMENT_TABLE_NAME where storeId = ? AND type = ?', [storeId, type.index]);
+        'SELECT *, $SUPPLIERS_TABLE_NAME.supplierName FROM $DOCUMENT_TABLE_NAME INNER JOIN $SUPPLIERS_TABLE_NAME ON $DOCUMENT_TABLE_NAME.supplierId = $SUPPLIERS_TABLE_NAME.id where storeId = ? AND type = ?',
+        [storeId, type.index]);
     List<Document> documents = new List();
     for (int i = 0; i < list.length; i++) {
       var document = Document.map(list[i]);
@@ -268,9 +281,19 @@ class DBHelper {
     return goods;
   }
 
-  Future<int> insertDocumentTransaction(DocumentTransaction item) async{
+  Future<int> insertDocumentTransaction(DocumentTransaction item) async {
     var dbClient = await db;
-    int res = await dbClient.insert(DOCUMENT_TRANSACTION_TABLE_NAME, item.toMap());
+    int res =
+        await dbClient.insert(DOCUMENT_TRANSACTION_TABLE_NAME, item.toMap());
+    return res;
+  }
+
+  Future<int> deleteDocumentTransaction(int documentId) async {
+    var dbClient = await db;
+
+    int res = await dbClient.rawDelete(
+        'DELETE FROM $DOCUMENT_TRANSACTION_TABLE_NAME WHERE documentId = ?',
+        [documentId]);
     return res;
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:good_manager/documents/add_document_dialog.dart';
 import 'package:good_manager/documents/documents_presenter.dart';
 import 'package:good_manager/documents/save_document.dart';
 import 'package:good_manager/model/Document.dart';
@@ -28,58 +28,35 @@ class _DocumentPageWidgetState extends State<DocumentPageWidget> {
   Widget build(BuildContext context) {
     return DefaultTabController(
         length: 4,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('Giao dịch'),
-            bottom: TabBar(
-              indicatorColor: Colors.white,
-              tabs: [
-                Tab(text: 'TẤT CẢ'),
-                Tab(text: 'NHẬP'),
-                Tab(text: 'XUẤT'),
-                Tab(text: 'KIỂM KÊ'),
+        child: Builder(builder: (BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Giao dịch'),
+              bottom: TabBar(
+                indicatorColor: Colors.white,
+                tabs: [
+                  Tab(text: 'TẤT CẢ'),
+                  Tab(text: 'NHẬP'),
+                  Tab(text: 'XUẤT'),
+                  Tab(text: 'KIỂM KÊ'),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              children: [
+                getDocumentFutureBuilder(presenter.getAllDocuments()),
+                getDocumentFutureBuilder(presenter.getIncomingDocuments()),
+                getDocumentFutureBuilder(presenter.getOutgoingDocuments()),
+                getDocumentFutureBuilder(presenter.getStockTakingDocuments())
               ],
             ),
-          ),
-          body: TabBarView(
-            children: [
-              getDocumentFutureBuilder(presenter.getAllDocuments()),
-              getDocumentFutureBuilder(presenter.getIncomingDocuments()),
-              getDocumentFutureBuilder(presenter.getOutgoingDocuments()),
-              getDocumentFutureBuilder(presenter.getStockTakingDocuments())
-            ],
-          ),
-          floatingActionButton: SpeedDial(
-            icon: Icons.add,
-            activeIcon: Icons.close,
-            buttonSize: 56.0,
-            visible: true,
-            closeManually: false,
-            renderOverlay: false,
-            curve: Curves.bounceIn,
-            overlayColor: Colors.black,
-            overlayOpacity: 0.5,
-            backgroundColor: Colors.blue,
-            foregroundColor: Colors.white,
-            elevation: 8.0,
-            shape: CircleBorder(),
-            children: [
-              SpeedDialChild(
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.grey,
-                  ),
-                  backgroundColor: Colors.white,
-                  label: 'Tạo GD Nhập',
-                  onTap: () => _onAddIncomingDocument()),
-              SpeedDialChild(
-                  child: Icon(Icons.remove, color: Colors.grey),
-                  backgroundColor: Colors.white,
-                  label: 'Tạo GD Xuất',
-                  onTap: () => _onAddOutgoingDocument())
-            ],
-          ),
-        ));
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => _onAddDocument(context),
+              child: Icon(Icons.add),
+              backgroundColor: Colors.blue,
+            ),
+          );
+        }));
   }
 
   FutureBuilder getDocumentFutureBuilder(Future<List<Document>> source) {
@@ -94,12 +71,11 @@ class _DocumentPageWidgetState extends State<DocumentPageWidget> {
   }
 
   void onDocumentTapped(Document document) async {
-    SaveDocumentPageArguments arguments =
-    SaveDocumentPageArguments();
+    SaveDocumentPageArguments arguments = SaveDocumentPageArguments();
     arguments.document = document;
-    var result = await Navigator.of(context).pushNamed(SaveDocumentPageWidget.routeName,
-        arguments: arguments);
-    if (result){
+    var result = await Navigator.of(context)
+        .pushNamed(SaveDocumentPageWidget.routeName, arguments: arguments);
+    if (result) {
       screenUpdated();
     }
   }
@@ -111,30 +87,36 @@ class _DocumentPageWidgetState extends State<DocumentPageWidget> {
     setState(() {});
   }
 
-  void _onAddIncomingDocument() async {
-    SaveDocumentPageArguments arguments =
-        SaveDocumentPageArguments();
-    Document document = Document();
-    document.storeId = await AppUtils.getSelectedStoreId();
-    document.type = DocumentType.incoming;
-    arguments.document = document;
-    var result = await Navigator.of(context).pushNamed(SaveDocumentPageWidget.routeName,
-        arguments: arguments);
-    if (result){
-      screenUpdated();
+  void _onAddDocument(BuildContext context) {
+    switch (DefaultTabController.of(context).index) {
+      case 0:
+        showDialog(
+            context: context,
+            builder: (_) =>
+                AddDocumentDialogWidget((it) => {_onAddDocumentWithType(it)}),
+            barrierDismissible: true);
+        break;
+      case 1:
+        _onAddDocumentWithType(DocumentType.incoming);
+        break;
+      case 2:
+        _onAddDocumentWithType(DocumentType.outgoing);
+        break;
+      case 3:
+        _onAddDocumentWithType(DocumentType.stock_taking);
+        break;
     }
   }
 
-  void _onAddOutgoingDocument() async {
-    SaveDocumentPageArguments arguments =
-    SaveDocumentPageArguments();
+  void _onAddDocumentWithType(DocumentType type) async {
+    SaveDocumentPageArguments arguments = SaveDocumentPageArguments();
     Document document = Document();
     document.storeId = await AppUtils.getSelectedStoreId();
-    document.type = DocumentType.outgoing;
+    document.type = type;
     arguments.document = document;
-    var result = await Navigator.of(context).pushNamed(SaveDocumentPageWidget.routeName,
-        arguments: arguments);
-    if (result){
+    var result = await Navigator.of(context)
+        .pushNamed(SaveDocumentPageWidget.routeName, arguments: arguments);
+    if (result) {
       screenUpdated();
     }
   }

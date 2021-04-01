@@ -1,11 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/model/Document.dart';
-import 'package:good_manager/model/Store.dart';
-import 'package:good_manager/stores/save_store_page.dart';
-import 'package:good_manager/stores/stores_presenter.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 class DocumentList extends StatelessWidget{
@@ -33,7 +28,6 @@ class DocumentList extends StatelessWidget{
       return new ListView.separated(
         itemCount: items.length,
         itemBuilder: (BuildContext context, int index){
-          //return new Text(stores[index].name);
           return ListTile(
             leading: Container(width: 8,height: 200,color: getIndicatorColor(items[index].type),),
             title: Transform.translate(
@@ -45,8 +39,10 @@ class DocumentList extends StatelessWidget{
               child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Ngày ' + format.format(items[index].date)),
-                  Text(items[index].description)
-                ]
+                  Text(items[index].supplierName +
+                        " | " +
+                        items[index].description)
+                  ]
               ),
             ),
             trailing: Text(items[index].quantity.toString()),

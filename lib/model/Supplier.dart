@@ -1,6 +1,6 @@
 class Supplier{
   int id;
-  String name = "";
+  String supplierName = "";
   String description = "";
   String address = "";
   String email = "";
@@ -9,17 +9,13 @@ class Supplier{
   String bankDetail = "";
 
   Supplier.origin();
-  Supplier(this.name,
-      this.description,
-      this.address,
-      this.email,
-      this.phone,
-      this.taxID,
-      this.bankDetail);
 
+  Supplier(this.supplierName, this.description, this.address, this.email,
+      this.phone, this.taxID, this.bankDetail);
 
   Supplier.map(dynamic obj) {
-    this.name = obj["name"];
+    this.id = obj["id"];
+    this.supplierName = obj["supplierName"];
     this.description = obj["description"];
     this.address = obj["address"];
     this.email = obj["email"];
@@ -30,8 +26,8 @@ class Supplier{
 
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();
-
-    map["name"] = name;
+    map["id"] = id;
+    map["supplierName"] = supplierName;
     map["description"] = description;
     map["address"] = address;
     map["email"] = email;
@@ -40,8 +36,5 @@ class Supplier{
     map["bankDetail"] = bankDetail;
 
     return map;
-  }
-  void setId(int id){
-    this.id = id;
   }
 }

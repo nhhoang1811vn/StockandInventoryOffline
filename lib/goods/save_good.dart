@@ -4,9 +4,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_calculator/flutter_calculator.dart';
 import 'package:good_manager/goods/save_good_presenter.dart';
 import 'package:good_manager/model/Document.dart';
-import 'package:good_manager/model/DocumentTransaction.dart';
 import 'package:good_manager/model/Good.dart';
-import 'package:good_manager/utils/AppUtils.dart';
 
 import '../ReceiveGoodDialogWidget.dart';
 
@@ -23,7 +21,6 @@ class SaveGoodPageWidget extends StatefulWidget {
 class SaveGoodPageArguments{
   bool isSelection = false;
   Good good;
-  int documentId;
   SaveGoodPageArguments();
 }
 
@@ -32,10 +29,10 @@ class _SaveGoodPageWidgetState extends State<SaveGoodPageWidget> implements Save
   SaveGoodPresenter presenter;
   Good good;
   int goodId;
-  int documentId;
-  bool _validate = true;
+  bool _validateName = true;
+  bool _validateQuantity = true;
   final teName = TextEditingController();
-  final teDescription  = TextEditingController();
+  final teDescription = TextEditingController();
   final teBarCode = TextEditingController();
   final teQuantity = TextEditingController();
 
@@ -44,36 +41,34 @@ class _SaveGoodPageWidgetState extends State<SaveGoodPageWidget> implements Save
     presenter = SaveGoodPresenter(this);
     super.initState();
   }
-  void _onSaveGood() async{
+
+  bool getValidateName(String text) {
+    return text.isNotEmpty;
+  }
+
+  bool getValidateQuantity(String text) {
+    return (text.isNotEmpty && int.parse(text) > 0);
+  }
+
+  void _onSaveGood() async {
     setState(() {
-      if (teName.text.isEmpty){
-        _validate = false;
-      }else{
-        _validate = true;
-      }
+      _validateName = getValidateName(teName.text);
+      _validateQuantity = getValidateQuantity(teQuantity.text);
     });
 
-    if (_validate){
+    if (_validateName && _validateQuantity) {
       good.name = teName.text;
       good.description = teDescription.text;
       good.barCode = teBarCode.text;
-      if (good.id == null){
-        goodId = await presenter.insertGood(good);
-      }else{
+      good.quantity = int.parse(teQuantity.text);
+      if (good.id == null) {
+        good.id = await presenter.insertGood(good);
+      } else {
         await presenter.updateGood(good);
-        goodId = good.id;
       }
-
-      if (args.isSelection){
-        DocumentTransaction transaction = DocumentTransaction();
-        transaction.goodId = goodId;
-        transaction.documentId = documentId;
-        transaction.quantity = int.parse(teQuantity.text);
-        presenter.insertDocumentTransaction(transaction);
-      }else{
-
-      }
-      Navigator.of(context).pop(true);
+      Map<String, dynamic> map = good.toMap();
+      map["quantity"] = good.quantity;
+      Navigator.pop(context, map);
     }
   }
   Future<void> _onAddBarCode() async {
@@ -100,11 +95,11 @@ class _SaveGoodPageWidgetState extends State<SaveGoodPageWidget> implements Save
   void didChangeDependencies() {
     args = ModalRoute.of(context).settings.arguments;
     good = args.good;
-    documentId = args.documentId;
 
     teName.text = good.name;
     teDescription.text = good.description;
     teBarCode.text = good.barCode;
+    teQuantity.text = good.quantity.toString();
 
     super.didChangeDependencies();
   }
@@ -131,9 +126,17 @@ class _SaveGoodPageWidgetState extends State<SaveGoodPageWidget> implements Save
             children: [
               Row(children: [
                 Expanded(child: TextFormField(
-                  decoration: InputDecoration(labelText: 'Tên',errorText: _validate ? null : 'Tên không thể bỏ trống'),
-                  controller: teName,
-                ),),
+                      onChanged: (text) {
+                        setState(() {
+                          _validateName = getValidateName(text);
+                        });
+                      },
+                      decoration: InputDecoration(
+                          labelText: 'Tên',
+                          errorText:
+                              _validateName ? null : 'Tên không thể bỏ trống'),
+                      controller: teName,
+                    ),),
                 Visibility(child: Align(
                     alignment: Alignment.centerRight,
                     child: IconButton(icon: Icon(Icons.search, size: 32, color: Colors.grey,), onPressed: _onAddBarCode)
@@ -163,12 +166,20 @@ class _SaveGoodPageWidgetState extends State<SaveGoodPageWidget> implements Save
                 children: [
                   Expanded(
                       child: TextFormField(
-                      decoration: InputDecoration(labelText: 'Số lương'),
-                        controller: teQuantity,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
+                    onChanged: (text) {
+                      setState(() {
+                        _validateQuantity = getValidateQuantity(text);
+                      });
+                    },
+                    decoration: InputDecoration(
+                        labelText: 'Số lương',
+                        errorText:
+                            _validateQuantity ? null : 'Số lượng không hợp lệ'),
+                    controller: teQuantity,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
                   )),
                   Visibility(visible: !args.isSelection,child: Align(
                       alignment: Alignment.centerRight,

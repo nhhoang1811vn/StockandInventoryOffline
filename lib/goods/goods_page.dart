@@ -176,57 +176,32 @@ class _GoodPageWidgetState extends State<GoodsPageWidget>
         )),
       ]),
       floatingActionButton: SpeedDial(
-        // animatedIcon: AnimatedIcons.menu_close,
-        // animatedIconTheme: IconThemeData(size: 22.0),
-        /// This is ignored if animatedIcon is non null
         icon: Icons.add,
-        activeIcon: Icons.remove,
-        // iconTheme: IconThemeData(color: Colors.grey[50], size: 30),
-        /// The label of the main button.
-        // label: Text("Open Speed Dial"),
-        /// The active label of the main button, Defaults to label if not specified.
-        // activeLabel: Text("Close Speed Dial"),
-        /// Transition Builder between label and activeLabel, defaults to FadeTransition.
-        // labelTransitionBuilder: (widget, animation) => ScaleTransition(scale: animation,child: widget),
-        /// The below button size defaults to 56 itself, its the FAB size + It also affects relative padding and other elements
+        activeIcon: Icons.close,
         buttonSize: 56.0,
         visible: true,
-
-        /// If true user is forced to close dial manually
-        /// by tapping main button and overlay is not rendered.
         closeManually: false,
-
-        /// If true overlay will render no matter what.
         renderOverlay: false,
         curve: Curves.bounceIn,
         overlayColor: Colors.black,
         overlayOpacity: 0.5,
-        onOpen: () => print('OPENING DIAL'),
-        onClose: () => print('DIAL CLOSED'),
-        tooltip: 'Speed Dial',
-        heroTag: 'speed-dial-hero-tag',
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
         elevation: 8.0,
         shape: CircleBorder(),
-        // orientation: SpeedDialOrientation.Up,
-        // childMarginBottom: 2,
-        // childMarginTop: 2,
         children: [
           SpeedDialChild(
               child: Icon(
-                Icons.create_new_folder,
-                color: Colors.white,
+                Icons.folder,
+                color: Colors.grey,
               ),
-              backgroundColor: Colors.yellowAccent,
-              label: 'Tạo nhóm',
-              labelStyle: TextStyle(fontSize: 18.0),
+              backgroundColor: Colors.white,
+              label: 'Nhóm',
               onTap: () => _onAddGroup()),
           SpeedDialChild(
-              child: Icon(Icons.note_add, color: Colors.white),
-              backgroundColor: Colors.redAccent,
-              label: 'Tạo hàng hoá',
-              labelStyle: TextStyle(fontSize: 18.0),
+              child: Icon(Icons.image, color: Colors.grey),
+              backgroundColor: Colors.white,
+              label: 'Sản phẩm',
               onTap: () => _onAddGood())
         ],
       ),

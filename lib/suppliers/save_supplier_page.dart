@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/model/Store.dart';
-import 'package:good_manager/model/Supplier.dart';
-import 'package:good_manager/stores/save_store_presenter.dart';
-
 //import 'package:fluttertoast/fluttertoast.dart';
 //import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/model/Supplier.dart';
 import 'package:good_manager/suppliers/save_supplier_presenter.dart';
 
 class SaveSupplierPageWidget extends StatefulWidget {
@@ -51,9 +48,9 @@ class _SaveSupplierPageWidgetState extends State<SaveSupplierPageWidget>
     args = ModalRoute.of(context).settings.arguments;
 
     item = args.item;
-    teName.text = item.name;
+    teName.text = item.supplierName;
     teDescription.text = item.description;
-    teAddress.text=  item.address;
+    teAddress.text = item.address;
     teEmail.text = item.email;
     tePhone.text = item.phone;
     teTaxID.text = item.taxID;
@@ -72,7 +69,7 @@ class _SaveSupplierPageWidgetState extends State<SaveSupplierPageWidget>
 
     if (_validate) {
       //Store store = new Store(teName.text, teDescription.text);
-      item.name = teName.text;
+      item.supplierName = teName.text;
       item.description = teDescription.text;
       item.address = teAddress.text;
       item.email = teEmail.text;
