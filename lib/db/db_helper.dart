@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io' as io;
 
-import 'package:good_manager/model/Document.dart';
-import 'package:good_manager/model/DocumentTransaction.dart';
-import 'package:good_manager/model/Good.dart';
-import 'package:good_manager/model/Group.dart';
-import 'package:good_manager/model/Store.dart';
-import 'package:good_manager/model/Supplier.dart';
+import 'package:good_manager/domain/entities/Document.dart';
+import 'package:good_manager/domain/entities/DocumentTransaction.dart';
+import 'package:good_manager/domain/entities/Good.dart';
+import 'package:good_manager/domain/entities/Group.dart';
+import 'package:good_manager/domain/entities/Store.dart';
+import 'package:good_manager/domain/entities/Supplier.dart';
 import 'package:good_manager/utils/AppUtils.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';

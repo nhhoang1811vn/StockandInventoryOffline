@@ -1,21 +1,101 @@
 {
   "stores_title" : "Stores",
+  "@stores_title": {
+          "placeholders": {},
+          "description": "Stores Description",
+          "type": "text"
+      },
   "save_store_title" : "Save Store",
+   "@save_store_title": {
+            "placeholders": {},
+            "description": "Stores Description",
+            "type": "text"
+        },
   "empty_stores" : "No Store",
+  "@empty_stores": {
+                "placeholders": {},
+                "description": "Stores Description",
+                "type": "text"
+            },
 
   "suppliers_title" : "Suppliers",
+  "@suppliers_title": {
+                "placeholders": {},
+                "description": "Stores Description",
+                "type": "text"
+            },
   "save_supplier_title" : "Save Supplier",
+  "@save_supplier_title": {
+                "placeholders": {},
+                "description": "Stores Description",
+                "type": "text"
+            },
   "empty_suppliers" : "No Supplier",
-
+"@empty_suppliers": {
+              "placeholders": {},
+              "description": "Stores Description",
+              "type": "text"
+          },
   "field_name" : "Name",
+  "@field_name": {
+                "placeholders": {},
+                "description": "Stores Description",
+                "type": "text"
+            },
   "field_desc" : "Description",
+  "@field_desc": {
+                "placeholders": {},
+                "description": "Stores Description",
+                "type": "text"
+            },
   "field_address" : "Address",
+  "@field_address": {
+                "placeholders": {},
+                "description": "Stores Description",
+                "type": "text"
+            },
   "field_email" : "E-mail",
+  "@field_email": {
+                "placeholders": {},
+                "description": "Stores Description",
+                "type": "text"
+            },
   "field_phone" : "Phone",
+  "@field_phone": {
+                "placeholders": {},
+                "description": "Stores Description",
+                "type": "text"
+            },
   "field_tax_ID" : "Tax ID",
+  "@field_tax_ID": {
+                "placeholders": {},
+                "description": "Stores Description",
+                "type": "text"
+            },
   "field_bank_details" : "Bank details",
+  "@field_bank_details": {
+                "placeholders": {},
+                "description": "Stores Description",
+                "type": "text"
+            },
+
 
   "home_menu_item_goods" : "Goods",
+  "@home_menu_item_goods": {
+              "placeholders": {},
+              "description": "Stores Description",
+              "type": "text"
+          },
   "home_menu_item_documents" : "Documents",
-  "home_menu_item_more" : "More"
+  "@home_menu_item_documents": {
+              "placeholders": {},
+              "description": "Stores Description",
+              "type": "text"
+          },
+  "home_menu_item_more" : "More",
+  "@home_menu_item_more": {
+              "placeholders": {},
+              "description": "Stores Description",
+              "type": "text"
+          }
 }
