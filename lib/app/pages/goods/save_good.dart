@@ -9,14 +9,12 @@ import 'package:good_manager/domain/entities/Good.dart';
 
 
 
-class SaveGoodPageWidget extends StatefulWidget {
-  SaveGoodPageWidget({Key key}) : super(key: key);
-
-  static const routeName  = '/saveGood';
+class SaveGoodPage extends StatefulWidget {
+  SaveGoodPage({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _SaveGoodPageWidgetState();
+    return _SaveGoodPageState();
   }
 }
 class SaveGoodPageArguments{
@@ -25,7 +23,7 @@ class SaveGoodPageArguments{
   SaveGoodPageArguments();
 }
 
-class _SaveGoodPageWidgetState extends State<SaveGoodPageWidget> implements SaveGoodContract {
+class _SaveGoodPageState extends State<SaveGoodPage> implements SaveGoodContract {
   SaveGoodPageArguments args;
   SaveGoodPresenter presenter;
   Good good;
@@ -84,7 +82,7 @@ class _SaveGoodPageWidgetState extends State<SaveGoodPageWidget> implements Save
     }
   }
   void _onAddQuantity() async{
-    await showDialog(context: context, builder: (_) => ReceiveGoodDialogWidget(onRetrieveADocument), barrierDismissible: false);
+    await showDialog(context: context, builder: (_) => ReceiveGoodDialog(onRetrieveADocument), barrierDismissible: false);
   }
   void _onRemoveQuantity(){
 

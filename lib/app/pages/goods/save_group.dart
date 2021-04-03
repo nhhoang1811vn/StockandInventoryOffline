@@ -6,14 +6,12 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:good_manager/app/pages/goods/save_group_presenter.dart';
 import 'package:good_manager/domain/entities/Group.dart';
 
-class SaveGroupPageWidget extends StatefulWidget {
-  SaveGroupPageWidget({Key key}) : super(key: key);
-
-  static const routeName  = '/saveGroup';
+class SaveGroupPage extends StatefulWidget {
+  SaveGroupPage({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _SaveGroupPageWidgetState();
+    return _SaveGroupPageState();
   }
 }
 class SaveGroupPageArguments{
@@ -22,7 +20,7 @@ class SaveGroupPageArguments{
   SaveGroupPageArguments(this.isAdd, this.group);
 }
 
-class _SaveGroupPageWidgetState extends State<SaveGroupPageWidget> implements SaveGroupContract {
+class _SaveGroupPageState extends State<SaveGroupPage> implements SaveGroupContract {
   SaveGroupPresenter presenter;
   SaveGroupPageArguments args;
   Group item;

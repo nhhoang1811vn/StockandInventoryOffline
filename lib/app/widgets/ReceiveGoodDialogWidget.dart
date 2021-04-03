@@ -2,22 +2,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_page.dart';
 import 'package:intl/intl.dart';
 
 import '../../domain/entities/Document.dart';
 
-class ReceiveGoodDialogWidget extends StatefulWidget {
+class ReceiveGoodDialog extends StatefulWidget {
   void Function(Document document) onRetrievedADocument;
-  ReceiveGoodDialogWidget(this.onRetrievedADocument);
+  ReceiveGoodDialog(this.onRetrievedADocument);
 
   @override
   State<StatefulWidget> createState() {
-    return ReceiveGoodDialogWidgetState();
+    return ReceiveGoodDialogState();
   }
 }
 
-class ReceiveGoodDialogWidgetState extends State<ReceiveGoodDialogWidget> {
+class ReceiveGoodDialogState extends State<ReceiveGoodDialog> {
   final teDate = TextEditingController();
   final teSupplier =  TextEditingController();
   final teDescription = TextEditingController();
@@ -86,7 +87,7 @@ class ReceiveGoodDialogWidgetState extends State<ReceiveGoodDialogWidget> {
     );
   }
   void onSupplierTapped() async{
-    final supplier = await Navigator.of(context).pushNamed(SuppliersPageWidget.routeName, arguments: SuppliersPageArgument(true));
+    final supplier = await Navigator.of(context).pushNamed(Pages.supplier_list, arguments: SuppliersPageArgument(true));
     Map data = (supplier as Map<String, dynamic>);
     print(data);
     if (supplier != null){

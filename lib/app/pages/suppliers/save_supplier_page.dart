@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-//import 'package:fluttertoast/fluttertoast.dart';
-//import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/suppliers/save_supplier_presenter.dart';
 import 'package:good_manager/domain/entities/Supplier.dart';
 
-class SaveSupplierPageWidget extends StatefulWidget {
-  SaveSupplierPageWidget({Key key}) : super(key: key);
-
-  static const routeName = '/saveSupplier';
+class SaveSupplierPage extends StatefulWidget {
+  SaveSupplierPage({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _SaveSupplierPageWidgetState();
+    return _SaveSupplierPageState();
   }
 }
 
@@ -23,7 +19,7 @@ class SaveSupplierPageArguments {
   SaveSupplierPageArguments(this.isAdd, this.item);
 }
 
-class _SaveSupplierPageWidgetState extends State<SaveSupplierPageWidget>
+class _SaveSupplierPageState extends State<SaveSupplierPage>
     implements SaveSupplierContract {
   SaveSupplierPresenter presenter;
   Supplier item;

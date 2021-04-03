@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/app/pages/documents/save_document.dart';
+import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/domain/entities/Document.dart';
 import 'add_document_dialog.dart';
 import 'documents_presenter.dart';
@@ -8,14 +9,14 @@ import 'package:good_manager/utils/AppUtils.dart';
 
 import 'document_list_item.dart';
 
-class DocumentPageWidget extends StatefulWidget {
+class DocumentsPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _DocumentPageWidgetState();
+    return _DocumentsPageState();
   }
 }
 
-class _DocumentPageWidgetState extends State<DocumentPageWidget> {
+class _DocumentsPageState extends State<DocumentsPage> {
   DocumentsPresenter presenter;
 
   @override
@@ -74,7 +75,7 @@ class _DocumentPageWidgetState extends State<DocumentPageWidget> {
     SaveDocumentPageArguments arguments = SaveDocumentPageArguments();
     arguments.document = document;
     var result = await Navigator.of(context)
-        .pushNamed(SaveDocumentPageWidget.routeName, arguments: arguments);
+        .pushNamed(Pages.save_document, arguments: arguments);
     if (result) {
       screenUpdated();
     }
@@ -116,7 +117,7 @@ class _DocumentPageWidgetState extends State<DocumentPageWidget> {
     document.type = type;
     arguments.document = document;
     var result = await Navigator.of(context)
-        .pushNamed(SaveDocumentPageWidget.routeName, arguments: arguments);
+        .pushNamed(Pages.save_document, arguments: arguments);
     if (result) {
       screenUpdated();
     }

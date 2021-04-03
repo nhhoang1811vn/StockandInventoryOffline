@@ -15,16 +15,16 @@ import 'list.dart';
 
 
 
-class StoresPageWidget extends StatefulWidget {
-  StoresPageWidget({Key key}) : super(key: key);
+class StoresPage extends StatefulWidget {
+  StoresPage({Key key}) : super(key: key);
 
   @override
-  State<StoresPageWidget> createState() {
+  State<StoresPage> createState() {
     return _StoresPageWidgetState();
   }
 }
 
-class _StoresPageWidgetState extends State<StoresPageWidget> implements StoresContract {
+class _StoresPageWidgetState extends State<StoresPage> implements StoresContract {
   StoresPresenter presenter;
   SearchBar searchBar;
   var textSearch = "";

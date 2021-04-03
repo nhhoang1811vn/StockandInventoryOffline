@@ -6,12 +6,12 @@ import 'package:good_manager/app/pages/stores/save_store_presenter.dart';
 import 'package:good_manager/domain/entities/Store.dart';
 
 
-class SaveStorePageWidget extends StatefulWidget {
-  SaveStorePageWidget({Key key}) : super(key: key);
+class SaveStorePage extends StatefulWidget {
+  SaveStorePage({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _SaveStorePageWidgetState();
+    return _SaveStorePageState();
   }
 
 
@@ -22,7 +22,7 @@ class SaveStorePageArguments{
   SaveStorePageArguments(this.isAdd, this.store);
 }
 
-class _SaveStorePageWidgetState extends State<SaveStorePageWidget> implements SaveStoreContract {
+class _SaveStorePageState extends State<SaveStorePage> implements SaveStoreContract {
   SaveStorePresenter presenter;
   Store store;
 

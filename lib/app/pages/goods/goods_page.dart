@@ -9,6 +9,7 @@ import 'package:good_manager/domain/entities/GoodItem.dart';
 import 'package:good_manager/domain/entities/Group.dart';
 import 'package:good_manager/utils/AppUtils.dart';
 
+import '../pages.dart';
 import 'list.dart';
 
 class GoodsPageWidget extends StatefulWidget {
@@ -52,7 +53,7 @@ class _GoodPageWidgetState extends State<GoodsPageWidget>
     SaveGoodPageArguments arguments = SaveGoodPageArguments();
     arguments.good = item;
     final result = await Navigator.of(context).pushNamed(
-        SaveGoodPageWidget.routeName,
+        Pages.save_good,
         arguments: arguments);
     if (result) {
       screenUpdated();
@@ -64,7 +65,7 @@ class _GoodPageWidgetState extends State<GoodsPageWidget>
     item.groupId = getSelectedGroupId();
     item.storeId = await AppUtils.getSelectedStoreId();
     final result = await Navigator.of(context).pushNamed(
-        SaveGroupPageWidget.routeName,
+        Pages.save_group,
         arguments: SaveGroupPageArguments(true, item));
     if (result) {
       screenUpdated();
@@ -231,7 +232,7 @@ class _GoodPageWidgetState extends State<GoodsPageWidget>
     SaveGoodPageArguments arguments = SaveGoodPageArguments();
     arguments.good = good;
     final result = await Navigator.of(context).pushNamed(
-        SaveGoodPageWidget.routeName,
+        Pages.save_good,
         arguments: arguments);
     if (result) {
       screenUpdated();

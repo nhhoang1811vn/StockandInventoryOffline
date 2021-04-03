@@ -6,14 +6,15 @@ import 'package:good_manager/app/pages/suppliers/save_supplier_page.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_presenter.dart';
 import 'package:good_manager/domain/entities/Supplier.dart';
 
+import '../pages.dart';
 import 'list.dart';
 
-class SuppliersPageWidget extends StatefulWidget {
+class SuppliersPage extends StatefulWidget {
   static const routeName = '/app.pages.suppliers';
 
   @override
   State<StatefulWidget> createState() {
-    return _SuppliersPageWidgetState();
+    return _SuppliersPageState();
   }
 }
 
@@ -22,14 +23,14 @@ class SuppliersPageArgument {
   SuppliersPageArgument(this.selection);
 }
 
-class _SuppliersPageWidgetState extends State<SuppliersPageWidget>
+class _SuppliersPageState extends State<SuppliersPage>
     implements SuppliersContract {
   SuppliersPresenter presenter;
   SuppliersPageArgument args;
   SearchBar searchBar;
   var textSearch = "";
 
-  _SuppliersPageWidgetState() {
+  _SuppliersPageState() {
     searchBar = new SearchBar(
         inBar: true,
         setState: setState,
@@ -89,7 +90,7 @@ class _SuppliersPageWidgetState extends State<SuppliersPageWidget>
       Navigator.pop(context, item.toMap());
     } else {
       final result = await Navigator.of(context).pushNamed(
-          SaveSupplierPageWidget.routeName,
+          Pages.save_supplier,
           arguments: SaveSupplierPageArguments(false, item));
       if (result) {
         presenter.refresh();
@@ -131,7 +132,7 @@ class _SuppliersPageWidgetState extends State<SuppliersPageWidget>
 
   void _onAddItem() async {
     final result = await Navigator.of(context).pushNamed(
-        SaveSupplierPageWidget.routeName,
+        Pages.save_supplier,
         arguments: SaveSupplierPageArguments(true, Supplier.origin()));
     if (result) {
       //save success, update list

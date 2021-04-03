@@ -14,23 +14,22 @@ import 'package:good_manager/domain/entities/Supplier.dart';
 
 import 'package:good_manager/utils/AppUtils.dart';
 
+import '../pages.dart';
 
-class SaveDocumentPageWidget extends StatefulWidget {
-  static const routeName = '/saveDocument';
 
+class SaveDocumentPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return SaveDocumentPageWidgetState();
+    return SaveDocumentPageState();
   }
 }
 
 class SaveDocumentPageArguments {
   Document document;
-
   SaveDocumentPageArguments();
 }
 
-class SaveDocumentPageWidgetState extends State<SaveDocumentPageWidget> {
+class SaveDocumentPageState extends State<SaveDocumentPage> {
   bool _validate = true;
   SaveDocumentsPresenter presenter;
   SaveDocumentPageArguments args;
@@ -76,7 +75,7 @@ class SaveDocumentPageWidgetState extends State<SaveDocumentPageWidget> {
   }
 
   Future<bool> _onBackPressed() async {
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(false);
   }
 
   String getTitle() {
@@ -194,7 +193,10 @@ class SaveDocumentPageWidgetState extends State<SaveDocumentPageWidget> {
     document.name = teName.text;
     document.date = DateTime.parse(teDate.text);
     document.description = teDescription.text;
-    document.supplierId = supplier.id;
+    if (supplier != null){
+      document.supplierId = supplier.id;
+    }
+
   }
 
   Future<void> onSaveDocument() async {
@@ -234,9 +236,9 @@ class SaveDocumentPageWidgetState extends State<SaveDocumentPageWidget> {
     arguments.isSelection = true;
     arguments.good = good;
     var result = await Navigator.of(context)
-        .pushNamed(SaveGoodPageWidget.routeName, arguments: arguments);
-    var resultGood = Good.map(result);
-    if (resultGood != null) {
+        .pushNamed(Pages.save_good, arguments: arguments);
+    if (result != null){
+      var resultGood = Good.map(result);
       goods.add(resultGood);
       setState(() {});
     }
@@ -244,7 +246,7 @@ class SaveDocumentPageWidgetState extends State<SaveDocumentPageWidget> {
 
   void onSupplierTapped() async {
     final data = await Navigator.of(context).pushNamed(
-        SuppliersPageWidget.routeName,
+        Pages.supplier_list,
         arguments: SuppliersPageArgument(true));
     supplier = Supplier.map(data);
     teSupplier.text = supplier.supplierName;

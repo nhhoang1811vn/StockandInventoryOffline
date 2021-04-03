@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'documents/documentns_page.dart';
+import 'documents/documents_page.dart';
 import 'goods/goods_page.dart';
 import 'more/more_page.dart';
 
@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage>{
   int _selectedIndex = 0;
   static List<Widget> _widgetOptions = <Widget>[
     GoodsPageWidget(),
-    DocumentPageWidget(),
+    DocumentsPage(),
     MorePage(),
   ];
   void _onItemTapped(int index) {
