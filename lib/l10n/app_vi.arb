@@ -6,16 +6,21 @@
   "suppliers_title" : "Nhà cung cấp",
   "save_supplier_title" : "Lưu nhà cung cấp",
   "empty_suppliers" : "Chưa có nhà cung cấp",
-
-  "field_name" : "Tên",
-  "field_desc" : "Mô tả",
-  "field_address" : "Địa chỉ",
-  "field_email" : "E-mail",
-  "field_phone" : "SDT",
-  "field_tax_ID" : "Mã số thuế",
-  "field_bank_details" : "Thông tin ngân hàng",
-
-  "home_menu_item_goods" : "Hàng hoá",
-  "home_menu_item_documents" : "Bản ghi",
-  "home_menu_item_more" : "Khác"
+  "field_name": "Tên",
+  "field_desc": "Mô tả",
+  "field_address": "Địa chỉ",
+  "field_email": "E-mail",
+  "field_phone": "SDT",
+  "field_tax_ID": "Mã số thuế",
+  "field_bank_details": "Thông tin ngân hàng",
+  "home_menu_item_goods": "Hàng hoá",
+  "home_menu_item_documents": "Bản ghi",
+  "home_menu_item_more": "Khác",
+  "document_list_tab_all": "TẤT CẢ",
+  "document_list_tab_incoming": "NHẬP",
+  "document_list_tab_outgoing": "XUẤT",
+  "document_list_tab_stock_taking": "KIỂM KÊ",
+  "document_list_incoming_name": "Nhập",
+  "document_list_outgoing_name": "Xuất",
+  "document_list_stock_taking_name": "Kiểm kê"
 }

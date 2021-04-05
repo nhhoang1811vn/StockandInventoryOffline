@@ -24,9 +24,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     int storeId = await presenter.insertStore(store);
     presenter.setFirstTime(false);
     presenter.setSelectedStoreId(storeId);
-    /*Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => MainPageWidget()),
-    );*/
     Navigator.of(context).pushReplacementNamed(Pages.home);
   }
   Widget _buildImage(String assetName) {

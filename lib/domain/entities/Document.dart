@@ -37,6 +37,7 @@ class Document{
 
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();
+    //map["id"] = id;
     map["name"] = name;
     map["description"] = description;
     map["date"] = date.millisecondsSinceEpoch;

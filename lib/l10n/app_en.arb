@@ -88,14 +88,21 @@
           },
   "home_menu_item_documents" : "Documents",
   "@home_menu_item_documents": {
-              "placeholders": {},
-              "description": "Stores Description",
-              "type": "text"
-          },
-  "home_menu_item_more" : "More",
+    "placeholders": {},
+    "description": "Stores Description",
+    "type": "text"
+  },
+  "home_menu_item_more": "More",
   "@home_menu_item_more": {
-              "placeholders": {},
-              "description": "Stores Description",
-              "type": "text"
-          }
+    "placeholders": {},
+    "description": "Stores Description",
+    "type": "text"
+  },
+  "document_list_tab_all": "All",
+  "document_list_tab_incoming": "INCOMING",
+  "document_list_tab_outgoing": "OUTGOING",
+  "document_list_tab_stock_taking": "STOCK-TAKING",
+  "document_list_incoming_name": "Incoming",
+  "document_list_outgoing_name": "Outgoing",
+  "document_list_stock_taking_name": "Stock-Taking"
 }

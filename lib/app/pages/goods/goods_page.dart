@@ -4,10 +4,10 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:good_manager/app/pages/goods/goods_presenter.dart';
 import 'package:good_manager/app/pages/goods/save_good.dart';
 import 'package:good_manager/app/pages/goods/save_group.dart';
+import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/domain/entities/Good.dart';
 import 'package:good_manager/domain/entities/GoodItem.dart';
 import 'package:good_manager/domain/entities/Group.dart';
-import 'package:good_manager/utils/AppUtils.dart';
 
 import '../pages.dart';
 import 'list.dart';
@@ -48,13 +48,12 @@ class _GoodPageWidgetState extends State<GoodsPageWidget>
   void _onAddGood() async {
     Good item = Good();
     item.groupId = getSelectedGroupId();
-    item.storeId = await AppUtils.getSelectedStoreId();
+    item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
 
     SaveGoodPageArguments arguments = SaveGoodPageArguments();
     arguments.good = item;
-    final result = await Navigator.of(context).pushNamed(
-        Pages.save_good,
-        arguments: arguments);
+    final result = await Navigator.of(context)
+        .pushNamed(Pages.save_good, arguments: arguments);
     if (result) {
       screenUpdated();
     }
@@ -63,9 +62,8 @@ class _GoodPageWidgetState extends State<GoodsPageWidget>
   void _onAddGroup() async {
     Group item = Group();
     item.groupId = getSelectedGroupId();
-    item.storeId = await AppUtils.getSelectedStoreId();
-    final result = await Navigator.of(context).pushNamed(
-        Pages.save_group,
+    item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    final result = await Navigator.of(context).pushNamed(Pages.save_group,
         arguments: SaveGroupPageArguments(true, item));
     if (result) {
       screenUpdated();

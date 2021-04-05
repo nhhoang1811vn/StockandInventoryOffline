@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/documents/save_document.dart';
 import 'package:good_manager/app/pages/pages.dart';
+import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/domain/entities/Document.dart';
-import 'add_document_dialog.dart';
-import 'documents_presenter.dart';
-import 'package:good_manager/utils/AppUtils.dart';
 
+import 'add_document_dialog.dart';
 import 'document_list_item.dart';
+import 'documents_presenter.dart';
 
 class DocumentsPage extends StatefulWidget {
   @override
@@ -36,19 +37,28 @@ class _DocumentsPageState extends State<DocumentsPage> {
               bottom: TabBar(
                 indicatorColor: Colors.white,
                 tabs: [
-                  Tab(text: 'TẤT CẢ'),
-                  Tab(text: 'NHẬP'),
-                  Tab(text: 'XUẤT'),
-                  Tab(text: 'KIỂM KÊ'),
+                  Tab(text: AppLocalizations.of(context).document_list_tab_all),
+                  Tab(
+                      text: AppLocalizations.of(context)
+                          .document_list_tab_incoming),
+                  Tab(
+                      text: AppLocalizations.of(context)
+                          .document_list_tab_outgoing),
+                  Tab(
+                      text: AppLocalizations.of(context)
+                          .document_list_tab_stock_taking),
                 ],
               ),
             ),
             body: TabBarView(
               children: [
-                getDocumentFutureBuilder(presenter.getAllDocuments()),
-                getDocumentFutureBuilder(presenter.getIncomingDocuments()),
-                getDocumentFutureBuilder(presenter.getOutgoingDocuments()),
-                getDocumentFutureBuilder(presenter.getStockTakingDocuments())
+                getDocumentFutureBuilder(presenter.getAllDocuments(), true),
+                getDocumentFutureBuilder(
+                    presenter.getIncomingDocuments(), false),
+                getDocumentFutureBuilder(
+                    presenter.getOutgoingDocuments(), false),
+                getDocumentFutureBuilder(
+                    presenter.getStockTakingDocuments(), false)
               ],
             ),
             floatingActionButton: FloatingActionButton(
@@ -60,13 +70,14 @@ class _DocumentsPageState extends State<DocumentsPage> {
         }));
   }
 
-  FutureBuilder getDocumentFutureBuilder(Future<List<Document>> source) {
+  FutureBuilder getDocumentFutureBuilder(
+      Future<List<Document>> source, bool showAll) {
     return new FutureBuilder<List<Document>>(
         future: source,
         builder: (context, snapshot) {
           return snapshot.hasData
               ? new DocumentList(snapshot.data, (it) => onDocumentTapped(it),
-                  (it) => onDocumentLongPressed(it))
+                  (it) => onDocumentLongPressed(it), showAll)
               : new Center(child: new CircularProgressIndicator());
         });
   }
@@ -113,7 +124,8 @@ class _DocumentsPageState extends State<DocumentsPage> {
     SaveDocumentPageArguments arguments = SaveDocumentPageArguments();
     Document document = Document();
     document.name = await presenter.getAutoDocumentName();
-    document.storeId = await AppUtils.getSelectedStoreId();
+    document.storeId =
+        await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     document.type = type;
     arguments.document = document;
     var result = await Navigator.of(context)

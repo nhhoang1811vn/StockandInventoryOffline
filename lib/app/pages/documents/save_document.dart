@@ -6,13 +6,11 @@ import 'package:good_manager/app/pages/goods/list.dart';
 import 'package:good_manager/app/pages/goods/save_good.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_page.dart';
 import 'package:good_manager/app/widgets/custom_action_row.dart';
+import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/domain/entities/Document.dart';
 import 'package:good_manager/domain/entities/DocumentTransaction.dart';
 import 'package:good_manager/domain/entities/Good.dart';
 import 'package:good_manager/domain/entities/Supplier.dart';
-
-
-import 'package:good_manager/utils/AppUtils.dart';
 
 import '../pages.dart';
 
@@ -210,8 +208,8 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
         insertDocumentTransaction(document.id, goods);
       } else {
         await presenter.updateDocument(document);
-        await presenter.deleteDocumentTransaction(document.id);
-        insertDocumentTransaction(document.id, goods);
+        //await presenter.deleteDocumentTransaction(document.id);
+        //insertDocumentTransaction(document.id, goods);
       }
       Navigator.of(context).pop(true);
     }
@@ -230,14 +228,14 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
   void onAddGood() async {
     SaveGoodPageArguments arguments = SaveGoodPageArguments();
     Good good = Good();
-    good.storeId = await AppUtils.getSelectedStoreId();
+    good.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     good.quantity = 1;
 
     arguments.isSelection = true;
     arguments.good = good;
     var result = await Navigator.of(context)
         .pushNamed(Pages.save_good, arguments: arguments);
-    if (result != null){
+    if (result != null) {
       var resultGood = Good.map(result);
       goods.add(resultGood);
       setState(() {});
@@ -245,11 +243,12 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
   }
 
   void onSupplierTapped() async {
-    final data = await Navigator.of(context).pushNamed(
-        Pages.supplier_list,
-        arguments: SuppliersPageArgument(true));
-    supplier = Supplier.map(data);
-    teSupplier.text = supplier.supplierName;
+    final data = await Navigator.of(context)
+        .pushNamed(Pages.supplier_list, arguments: SuppliersPageArgument(true));
+    if (data != null) {
+      supplier = Supplier.map(data);
+      teSupplier.text = supplier.supplierName;
+    }
   }
 
   void onGoodTapped(Good good) async {
