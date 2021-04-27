@@ -78,7 +78,7 @@ class DBHelper {
     return res;
   }
 
-  Future<List<Store>> getStore() async {
+  Future<List<Store>> getStores() async {
     var dbClient = await db;
     List<Map> list =
         await dbClient.rawQuery('SELECT * FROM $STORES_TABLE_NAME');

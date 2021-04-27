@@ -7,7 +7,7 @@ import 'package:good_manager/app/pages/goods/save_group.dart';
 import 'package:good_manager/app/pages/home_page.dart';
 import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/stores/save_store_page.dart';
-import 'package:good_manager/app/pages/stores/stores_page.dart';
+import 'package:good_manager/app/pages/stores/stores_view.dart';
 import 'package:good_manager/app/pages/suppliers/save_supplier_page.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_page.dart';
 

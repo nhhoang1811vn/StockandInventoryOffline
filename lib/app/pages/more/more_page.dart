@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/app/pages/stores/stores_page.dart';
-import 'package:good_manager/app/pages/suppliers/suppliers_page.dart';
 
 import '../pages.dart';
 

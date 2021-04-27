@@ -1,21 +1,40 @@
-import 'package:good_manager/db/db_helper.dart';
-
-import 'dart:async';
-
+import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/Store.dart';
-abstract class StoresContract{
-  void screenUpdated();
+import 'package:good_manager/domain/usecases/get_stores_usecase.dart';
+
+class StoresPresenter extends Presenter{
+  Function getStoresOnNext;
+  Function getStoresOnComplete;
+  Function getStoresOnError;
+
+  GetStoresUseCase _getStoresUseCase;
+  StoresPresenter(storeRepository){
+    _getStoresUseCase = GetStoresUseCase(storeRepository);
+  }
+  @override
+  void dispose() {
+    _getStoresUseCase.dispose();
+  }
+  void getStores(){
+    _getStoresUseCase.execute(_GetStoresUseCaseObserver(this));
+  }
 }
-class StoresPresenter{
-  StoresContract _view;
-  var db = DBHelper();
-
-  StoresPresenter(this._view);
-
-  Future<List<Store>> getStores(){
-    return db.getStore();
+class _GetStoresUseCaseObserver implements Observer<List<Store>>{
+  StoresPresenter _storesPresenter;
+  _GetStoresUseCaseObserver(this._storesPresenter);
+  @override
+  void onComplete() {
+    _storesPresenter.getStoresOnComplete();
   }
-  void refresh(){
-    _view.screenUpdated();
+
+  @override
+  void onError(e) {
+    _storesPresenter.getStoresOnError();
   }
+
+  @override
+  void onNext(response) {
+    _storesPresenter.getStoresOnNext();
+  }
+  
 }

@@ -1,12 +1,15 @@
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/help/help_page_dart.dart';
 import 'package:good_manager/app/pages/stores/save_store_page.dart';
 import 'package:good_manager/app/pages/stores/sort_by_store_dialog.dart';
+import 'package:good_manager/app/pages/stores/stores_controller.dart';
 import 'package:good_manager/app/pages/stores/stores_presenter.dart';
+import 'package:good_manager/data/repositories/data_store_repository.dart';
 import 'package:good_manager/domain/entities/Store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,17 +18,29 @@ import 'list.dart';
 
 
 
-class StoresPage extends StatefulWidget {
+class StoresPage extends View {
   StoresPage({Key key}) : super(key: key);
 
   @override
-  State<StoresPage> createState() {
-    return _StoresPageWidgetState();
-  }
+  State<StoresPage> createState() => _StoresPageView();
 }
 
-class _StoresPageWidgetState extends State<StoresPage> implements StoresContract {
-  StoresPresenter presenter;
+class _StoresPageView extends ViewState<StoresPage, StoresController> {
+  _StoresPageView() : super(StoresController(DataStoreRepository())){
+    searchBar = new SearchBar(
+        inBar: true,
+        setState: setState,
+        onSubmitted: onSubmitted,
+        onChanged: onChanged,
+        buildDefaultAppBar: buildAppBar,
+        onCleared: () {
+          print("cleared");
+        },
+        onClosed: () {
+          print("closed");
+        }
+    );
+  }
   SearchBar searchBar;
   var textSearch = "";
   SharedPreferences sharedPrefs;
@@ -57,30 +72,7 @@ class _StoresPageWidgetState extends State<StoresPage> implements StoresContract
     });
   }
 
-  _StoresPageWidgetState(){
-    searchBar = new SearchBar(
-        inBar: true,
-        setState: setState,
-        onSubmitted: onSubmitted,
-        onChanged: onChanged,
-        buildDefaultAppBar: buildAppBar,
-        onCleared: () {
-          print("cleared");
-        },
-        onClosed: () {
-          print("closed");
-        }
-    );
-  }
 
-  @override
-  void initState() {
-    super.initState();
-    presenter = new StoresPresenter(this);
-    SharedPreferences.getInstance().then((prefs) {
-      setState(() => sharedPrefs = prefs);
-    });
-  }
   void _onAddStore() async{
     /*final result = await Navigator.of(context).pushNamed(
         SaveStorePageWidget.routeName,
@@ -93,14 +85,14 @@ class _StoresPageWidgetState extends State<StoresPage> implements StoresContract
     }*/
   }
   void _onSortMenuItemTapped(){
-    showDialog(context: context, builder: (_) => SortByStoreDialogWidget(()=>{
+    /*showDialog(context: context, builder: (_) => SortByStoreDialogWidget(()=>{
       screenUpdated()
-    }), barrierDismissible: false);
+    }), barrierDismissible: false);*/
   }
   void _onHelpMenuItemTapped(){
     Navigator.of(context).pushNamed(HelpPageWidget.routeName, arguments: HelpPageArguments("content man hinh store"));
   }
-  @override
+ /* @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: searchBar.build(context),
@@ -110,7 +102,7 @@ class _StoresPageWidgetState extends State<StoresPage> implements StoresContract
             if (snapshot.hasError) print(snapshot.error);
             var data = snapshot.data;
             List<Store> filteredStores = [];
-            data.forEach((element) { 
+            data.forEach((element) {
               if (element.name.startsWith(textSearch)){
                 filteredStores.add(element);
               }
@@ -141,12 +133,17 @@ class _StoresPageWidgetState extends State<StoresPage> implements StoresContract
           onPressed: _onAddStore,
           child: Icon(Icons.add),
         ));
-  }
-
+  }*/
   @override
-  void screenUpdated() {
-    setState(() {
+  // TODO: implement view
+  Widget get view => Scaffold(
+      appBar: searchBar.build(context),
+      //body: ListView.separated(itemBuilder: itemBuilder, separatorBuilder: separatorBuilder, itemCount: _controller)
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Add',
+        onPressed: _onAddStore,
+        child: Icon(Icons.add),
+      )
+  );
 
-    });
-  }
 }
