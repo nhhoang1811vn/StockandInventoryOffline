@@ -11,6 +11,7 @@ import 'package:good_manager/app/pages/stores/stores_controller.dart';
 import 'package:good_manager/app/pages/stores/stores_presenter.dart';
 import 'package:good_manager/data/repositories/data_store_repository.dart';
 import 'package:good_manager/domain/entities/Store.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:good_manager/assets/constants.dart' as Constants;
@@ -22,11 +23,12 @@ class StoresPage extends View {
   StoresPage({Key key}) : super(key: key);
 
   @override
-  State<StoresPage> createState() => _StoresPageView();
+  State<StoresPage> createState() => _StoresPageView(StoresController(DataStoreRepository()));
 }
 
 class _StoresPageView extends ViewState<StoresPage, StoresController> {
-  _StoresPageView() : super(StoresController(DataStoreRepository())){
+  StoresController controller;
+  _StoresPageView(this.controller) : super(controller){
     searchBar = new SearchBar(
         inBar: true,
         setState: setState,
@@ -46,6 +48,7 @@ class _StoresPageView extends ViewState<StoresPage, StoresController> {
   SharedPreferences sharedPrefs;
 
   AppBar buildAppBar(BuildContext context) {
+
     return new AppBar(
         title: new Text(AppLocalizations.of(context).stores_title),
         actions: [
@@ -134,10 +137,16 @@ class _StoresPageView extends ViewState<StoresPage, StoresController> {
           child: Icon(Icons.add),
         ));
   }*/
+
   @override
-  // TODO: implement view
   Widget get view => Scaffold(
       appBar: searchBar.build(context),
+      body: ModalProgressHUD(
+        child : getBody(),
+        inAsyncCall: controller.isLoading,
+        //color: UIConstants.progressBarColor,
+        opacity: 0
+      ),
       //body: ListView.separated(itemBuilder: itemBuilder, separatorBuilder: separatorBuilder, itemCount: _controller)
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add',
@@ -145,5 +154,9 @@ class _StoresPageView extends ViewState<StoresPage, StoresController> {
         child: Icon(Icons.add),
       )
   );
+
+  Widget getBody(){
+    return Container();
+  }
 
 }

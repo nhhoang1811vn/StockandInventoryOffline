@@ -29,12 +29,12 @@ class _GetStoresUseCaseObserver implements Observer<List<Store>>{
 
   @override
   void onError(e) {
-    _storesPresenter.getStoresOnError();
+    _storesPresenter.getStoresOnError(e);
   }
 
   @override
   void onNext(response) {
-    _storesPresenter.getStoresOnNext();
+    _storesPresenter.getStoresOnNext(response);
   }
   
 }

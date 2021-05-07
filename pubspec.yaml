@@ -42,6 +42,9 @@ dependencies:
   introduction_screen: ^2.0.0
   flutter_clean_architecture: ^5.0.0
 
+  # UI
+  modal_progress_hud: ^0.1.2
+
 
   flutter_calculator:
     git:
