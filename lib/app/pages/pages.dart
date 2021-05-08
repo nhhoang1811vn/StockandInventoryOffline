@@ -14,4 +14,6 @@ class Pages {
   static const String document_list = '/document_list';
   static const String save_document = '/save_document';
 
+  static const String help = '/help';
+
 }

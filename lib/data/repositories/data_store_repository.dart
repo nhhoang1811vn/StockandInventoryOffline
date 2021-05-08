@@ -12,14 +12,20 @@ class DataStoreRepository implements StoreRepository{
   factory DataStoreRepository() => _instance;
 
   var db = new DBHelper();
-  @override
-  Future<int> insert(Store store) {
-    return db.insertStore(store);
-  }
+
 
   @override
   Future<List<Store>> getAll() {
     return db.getStores();
+  }
+  @override
+  Future<bool> insert(Store store) {
+    return db.insertStore(store);
+  }
+
+  @override
+  Future<bool> update(Store store) {
+    return db.updateStore(store);
   }
 
 }

@@ -1,7 +1,6 @@
-import 'package:good_manager/db/db_helper.dart';
-
 import 'dart:async';
 
+import 'package:good_manager/db/db_helper.dart';
 import 'package:good_manager/domain/entities/GoodItem.dart';
 abstract class GoodsContract{
   void screenUpdated();

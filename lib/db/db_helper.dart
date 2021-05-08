@@ -72,10 +72,10 @@ class DBHelper {
         + "FOREIGN KEY(goodId) REFERENCES $GOOD_TABLE_NAME(id))");
   }
 
-  Future<int> insertStore(Store store) async {
+  Future<bool> insertStore(Store store) async {
     var dbClient = await db;
     int res = await dbClient.insert(STORES_TABLE_NAME, store.toMap());
-    return res;
+    return res == 1;
   }
 
   Future<List<Store>> getStores() async {
@@ -102,7 +102,7 @@ class DBHelper {
     var dbClient = await db;
     int res = await dbClient.update(STORES_TABLE_NAME, store.toMap(),
         where: "id = ?", whereArgs: <int>[store.id]);
-    return res > 0 ? true : false;
+    return res == 1;
   }
 
   //SUPPLIER
@@ -118,17 +118,17 @@ class DBHelper {
     return suppliers;
   }
 
-  Future<int> insertSupplier(Supplier item) async {
+  Future<bool> insertSupplier(Supplier item) async {
     var dbClient = await db;
     int res = await dbClient.insert(SUPPLIERS_TABLE_NAME, item.toMap());
-    return res;
+    return res == 1;
   }
 
   Future<bool> updateSupplier(Supplier item) async {
     var dbClient = await db;
     int res = await dbClient.update(SUPPLIERS_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id]);
-    return res > 0 ? true : false;
+    return res == 1;
   }
 
   Future<Supplier> getSupplier(int id) async {

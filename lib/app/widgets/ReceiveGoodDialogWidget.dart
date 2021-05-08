@@ -1,9 +1,8 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:good_manager/app/pages/pages.dart';
-import 'package:good_manager/app/pages/suppliers/suppliers_page.dart';
 import 'package:intl/intl.dart';
 
 import '../../domain/entities/Document.dart';
@@ -87,12 +86,12 @@ class ReceiveGoodDialogState extends State<ReceiveGoodDialog> {
     );
   }
   void onSupplierTapped() async{
-    final supplier = await Navigator.of(context).pushNamed(Pages.supplier_list, arguments: SuppliersPageArgument(true));
+    /*final supplier = await Navigator.of(context).pushNamed(Pages.supplier_list, arguments: SuppliersPageArgument(true));
     Map data = (supplier as Map<String, dynamic>);
     print(data);
     if (supplier != null){
       teSupplier.text = data["name"];
       supplierId = data["id"];
-    }
+    }*/
   }
 }

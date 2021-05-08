@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'pages/onboarding/on_boarding_page.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:good_manager/app/pages/home_page.dart';
 import 'package:good_manager/app/utils/router.dart';
+
+import 'pages/onboarding/on_boarding_page.dart';
 
 void main(){
   runApp(MyApp());
@@ -28,8 +30,9 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.blue,
+
       ),
-      home: OnBoardingPage(),
+      home: HomePage(),
       onGenerateRoute: _router.getRoute,
       navigatorObservers: [_router.routeObserver],
       localizationsDelegates: [

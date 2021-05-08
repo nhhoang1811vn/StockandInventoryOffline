@@ -21,9 +21,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   }
   void _onIntroEnd(context) async{
     Store store = Store("Kho chính", "main store description");
-    int storeId = await presenter.insertStore(store);
+    bool successful = await presenter.insertStore(store);
     presenter.setFirstTime(false);
-    presenter.setSelectedStoreId(storeId);
+    presenter.setSelectedStoreId(store.id);
     Navigator.of(context).pushReplacementNamed(Pages.home);
   }
   Widget _buildImage(String assetName) {

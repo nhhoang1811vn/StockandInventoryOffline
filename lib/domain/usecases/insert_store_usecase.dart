@@ -5,17 +5,18 @@ import 'package:good_manager/domain/entities/Store.dart';
 import 'package:good_manager/domain/repositories/store_repositories.dart';
 
 class InsertStoreUseCase extends CompletableUseCase<InsertStoreUseCaseParams>{
-  StoreRepository _storeRepository;
-  InsertStoreUseCase(this._storeRepository) : super();
+  final StoreRepository _storeRepository;
+  InsertStoreUseCase(this._storeRepository);
   @override
   Future<Stream<void>> buildUseCaseStream(InsertStoreUseCaseParams params) async {
     final StreamController<void> controller = StreamController();
     try{
-      int result = await _storeRepository.insert(params.store);
-      if (result == 1){
+      bool successful = await _storeRepository.insert(params.store);
+      if (successful){
+        controller.close();
       }else{
+        throw Exception("insert failed");
       }
-      controller.close();
     }catch(e){
       controller.addError(e);
     }

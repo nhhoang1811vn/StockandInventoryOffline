@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:good_manager/app/pages/documents/save_document_presenter.dart';
 import 'package:good_manager/app/pages/goods/list.dart';
 import 'package:good_manager/app/pages/goods/save_good.dart';
-import 'package:good_manager/app/pages/suppliers/suppliers_page.dart';
 import 'package:good_manager/app/widgets/custom_action_row.dart';
 import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/domain/entities/Document.dart';
@@ -61,7 +60,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
     if (initData) {
       if (document.supplierId != null) {
         supplier = await presenter.getSupplier(document.supplierId);
-        teSupplier.text = supplier.supplierName;
+        teSupplier.text = supplier.name;
       }
       if (document.id != null) {
         goods = await presenter.getGoodByDocumentId(document.id);
@@ -243,12 +242,12 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
   }
 
   void onSupplierTapped() async {
-    final data = await Navigator.of(context)
+    /*final data = await Navigator.of(context)
         .pushNamed(Pages.supplier_list, arguments: SuppliersPageArgument(true));
     if (data != null) {
       supplier = Supplier.map(data);
       teSupplier.text = supplier.supplierName;
-    }
+    }*/
   }
 
   void onGoodTapped(Good good) async {

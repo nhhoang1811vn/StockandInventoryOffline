@@ -1,8 +1,8 @@
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:good_manager/assets/constants.dart' as Constants;
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 enum SortBy{ no_sort, sort_a_z, sort_z_a}

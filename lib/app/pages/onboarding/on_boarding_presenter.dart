@@ -5,7 +5,7 @@ import 'package:good_manager/domain/entities/Store.dart';
 
 class OnBoardingPresenter{
   var db = new DBHelper();
-  Future<int> insertStore(Store store){
+  Future<bool> insertStore(Store store){
     return db.insertStore(store);
   }
   void setFirstTime(bool value){

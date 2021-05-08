@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'documents/documents_page.dart';
 import 'goods/goods_page.dart';
-import 'more/more_page.dart';
+import 'more/more_view.dart';
 
 class HomePage extends StatefulWidget{
   HomePage({Key key}) : super(key: key);

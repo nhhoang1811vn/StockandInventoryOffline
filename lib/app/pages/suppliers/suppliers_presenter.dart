@@ -1,21 +1,40 @@
-import 'package:good_manager/db/db_helper.dart';
-
-import 'dart:async';
-
+import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/Supplier.dart';
-abstract class SuppliersContract{
-  void screenUpdated();
+import 'package:good_manager/domain/usecases/get_suppliers_usecase.dart';
+
+class SuppliersPresenter extends Presenter{
+  Function getSuppliersOnNext;
+  Function getSuppliersOnComplete;
+  Function getSuppliersOnError;
+
+  GetSuppliersUseCase _getSuppliersUseCase;
+  SuppliersPresenter(supplierRepository){
+    _getSuppliersUseCase = GetSuppliersUseCase(supplierRepository);
+  }
+  @override
+  void dispose() {
+    _getSuppliersUseCase.dispose();
+  }
+  void getSuppliers(){
+    _getSuppliersUseCase.execute(_GetSuppliersUseCaseObserver(this));
+  }
 }
-class SuppliersPresenter{
-  SuppliersContract _view;
-  var db = DBHelper();
-
-  SuppliersPresenter(this._view);
-
-  Future<List<Supplier>> getSuppliers(){
-    return db.getSuppliers();
+class _GetSuppliersUseCaseObserver implements Observer<List<Supplier>>{
+  SuppliersPresenter _presenter;
+  _GetSuppliersUseCaseObserver(this._presenter);
+  @override
+  void onComplete() {
+    _presenter.getSuppliersOnComplete();
   }
-  void refresh(){
-    _view.screenUpdated();
+
+  @override
+  void onError(e) {
+    _presenter.getSuppliersOnError(e);
   }
+
+  @override
+  void onNext(List<Supplier> response) {
+    _presenter.getSuppliersOnNext(response);
+  }
+  
 }

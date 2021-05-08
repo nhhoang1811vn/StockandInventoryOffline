@@ -4,12 +4,14 @@ import 'package:good_manager/app/pages/documents/save_document.dart';
 import 'package:good_manager/app/pages/goods/goods_page.dart';
 import 'package:good_manager/app/pages/goods/save_good.dart';
 import 'package:good_manager/app/pages/goods/save_group.dart';
+import 'package:good_manager/app/pages/help/help_page_dart.dart';
 import 'package:good_manager/app/pages/home_page.dart';
 import 'package:good_manager/app/pages/pages.dart';
-import 'package:good_manager/app/pages/stores/save_store_page.dart';
+import 'package:good_manager/app/pages/save_store/save_store_view.dart';
+import 'package:good_manager/app/pages/save_supplier/save_supplier_view.dart';
 import 'package:good_manager/app/pages/stores/stores_view.dart';
-import 'package:good_manager/app/pages/suppliers/save_supplier_page.dart';
-import 'package:good_manager/app/pages/suppliers/suppliers_page.dart';
+import 'package:good_manager/app/pages/suppliers/suppliers_view.dart';
+
 
 class AppRouter{
   final RouteObserver<PageRoute> routeObserver;
@@ -21,7 +23,8 @@ class AppRouter{
       case Pages.store_list:
         return _buildRoute(settings, StoresPage());
       case Pages.save_store:
-        return _buildRoute(settings, SaveStorePage());
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(settings, SaveStorePage(store: args['store'],isInsert: args['isInsert'],));
       case Pages.good_list:
         return _buildRoute(settings, GoodsPageWidget());
       case Pages.save_good:
@@ -30,13 +33,18 @@ class AppRouter{
         return _buildRoute(settings, SaveGroupPage());
 
       case Pages.supplier_list:
-        return _buildRoute(settings, SuppliersPage());
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(settings, SuppliersPage(isSelection: args['isSelection'],));
       case Pages.save_supplier:
-        return _buildRoute(settings, SaveSupplierPage());
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(settings, SaveSupplierPage(isInsert: args['isInsert'], item: args['item'],));
       case Pages.document_list:
         return _buildRoute(settings, DocumentsPage());
       case Pages.save_document:
         return _buildRoute(settings, SaveDocumentPage());
+      case Pages.help:
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(settings, HelpPage(content: args['content']));
       default:
         return null;
     }

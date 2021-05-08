@@ -1,27 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-class HelpPageWidget extends StatefulWidget{
-  HelpPageWidget({Key key}) : super(key: key);
-
-  static const routeName  = '/app.pages.help';
-
-  @override
-  State<HelpPageWidget> createState() {
-    return HelpPageWidgetState();
-  }
-}
-class HelpPageArguments{
+class HelpPage extends View {
   final String content;
-  HelpPageArguments(this.content);
-}
-class HelpPageWidgetState extends State<HelpPageWidget>{
+  HelpPage({Key key, @required this.content}) : super(key: key);
   @override
-  Widget build(BuildContext context) {
-    final HelpPageArguments args = ModalRoute.of(context).settings.arguments;
-    return Scaffold(appBar: AppBar(title: Text('Trợ giúp'),)
-      ,body: Padding(padding: EdgeInsets.all(16),child: Text(args.content,style: TextStyle(fontSize: 16),))
-    );
+  HelpPageView createState() => HelpPageView(content);
+}
+
+class HelpPageView extends ViewState<HelpPage, HelpController> {
+  final String content;
+  HelpPageView(this.content) : super(HelpController());
+  @override
+  Widget get view =>
+      Scaffold(appBar: AppBar(title: Text('Trợ giúp')),
+          key: globalKey
+          , body: Padding(padding: EdgeInsets.all(16),
+              child: Text(content, style: TextStyle(fontSize: 16),))
+      );
+}
+
+class HelpController extends Controller {
+  @override
+  void initListeners() {
   }
 
 }

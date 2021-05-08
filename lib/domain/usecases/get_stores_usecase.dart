@@ -9,8 +9,7 @@ class GetStoresUseCase extends UseCase<List<Store>,void>{
   GetStoresUseCase(this._storeRepository);
   @override
   Future<Stream<List<Store>>> buildUseCaseStream(void params) async{
-    ///TODO StreamController<List<Store>
-    final StreamController controller = StreamController();
+    final StreamController<List<Store>> controller = StreamController();
     try{
       List<Store> stores = await _storeRepository.getAll();
       controller.add(stores);
@@ -20,5 +19,4 @@ class GetStoresUseCase extends UseCase<List<Store>,void>{
     }
     return controller.stream;
   }
-  
 }
