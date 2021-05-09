@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:good_manager/domain/entities/Store.dart';
 import 'package:good_manager/domain/entities/Supplier.dart';
-import 'package:good_manager/domain/repositories/store_repositories.dart';
 import 'package:good_manager/domain/repositories/supplier_repositories.dart';
 
 class InsertSupplierUseCase extends CompletableUseCase<InsertSupplierUseCaseParams>{
@@ -13,7 +11,7 @@ class InsertSupplierUseCase extends CompletableUseCase<InsertSupplierUseCasePara
   Future<Stream<void>> buildUseCaseStream(InsertSupplierUseCaseParams params) async {
     final StreamController<void> controller = StreamController();
     try{
-      bool successful = await _repository.insert(params.supplier);
+      bool successful = await _repository.insert(params.item);
       if (successful){
         controller.close();
       }else{
@@ -26,6 +24,6 @@ class InsertSupplierUseCase extends CompletableUseCase<InsertSupplierUseCasePara
   }
 }
 class InsertSupplierUseCaseParams{
-  final Supplier supplier;
-  InsertSupplierUseCaseParams(this.supplier);
+  final Supplier item;
+  InsertSupplierUseCaseParams(this.item);
 }

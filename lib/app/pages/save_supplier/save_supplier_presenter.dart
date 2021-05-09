@@ -4,19 +4,40 @@ import 'package:good_manager/domain/usecases/insert_supplier_usecase.dart';
 import 'package:good_manager/domain/usecases/update_supplier_usecase.dart';
 
 class SaveSupplierPresenter extends Presenter{
-  InsertSupplierUseCase insertSupplierUseCase;
-  UpdateSupplierUseCase updateSupplierUseCase;
-  SaveSupplierPresenter(repository){
-    insertSupplierUseCase = InsertSupplierUseCase(repository);
-    updateSupplierUseCase = UpdateSupplierUseCase(repository);
+  Function insertSupplierOnComplete;
+  Function insertSupplierOnError;
+
+  InsertSupplierUseCase _insertSupplierUseCase;
+  UpdateSupplierUseCase _updateSupplierUseCase;
+  SaveSupplierPresenter(supplierRepository){
+    _insertSupplierUseCase = InsertSupplierUseCase(supplierRepository);
+    //_updateSupplierUseCase = UpdateSupplierUseCase(supplierRepository);
   }
 
-  insert(Supplier item) => insertSupplierUseCase.execute(observer)
-  update(Supplier item) => updateSupplierUseCase.execute(observer)
+  insert(Supplier item) => _insertSupplierUseCase.execute(_InsertSupplierUseCaseObserver(this), InsertSupplierUseCaseParams(item));
+  //update(Supplier item) => updateSupplierUseCase.execute(observer)
 
   @override
   void dispose() {
-    insertSupplierUseCase.dispose();
-    updateSupplierUseCase.dispose();
+    _insertSupplierUseCase.dispose();
+    //_updateSupplierUseCase.dispose();
+  }
+
+}
+class _InsertSupplierUseCaseObserver implements Observer<void>{
+  SaveSupplierPresenter _presenter;
+  _InsertSupplierUseCaseObserver(this._presenter);
+  @override
+  void onComplete() {
+    _presenter.insertSupplierOnComplete();
+  }
+
+  @override
+  void onError(e) {
+    _presenter.insertSupplierOnError(e);
+  }
+
+  @override
+  void onNext(void response) {
   }
 }

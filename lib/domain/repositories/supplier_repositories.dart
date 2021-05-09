@@ -1,4 +1,4 @@
-import 'package:good_manager/domain/entities/Store.dart';
+
 import 'package:good_manager/domain/entities/Supplier.dart';
 
 abstract class SupplierRepository{

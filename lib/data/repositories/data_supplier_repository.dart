@@ -1,7 +1,5 @@
 import 'package:good_manager/db/db_helper.dart';
-import 'package:good_manager/domain/entities/Store.dart';
 import 'package:good_manager/domain/entities/Supplier.dart';
-import 'package:good_manager/domain/repositories/store_repositories.dart';
 import 'package:good_manager/domain/repositories/supplier_repositories.dart';
 
 class DataSupplierRepository implements SupplierRepository{

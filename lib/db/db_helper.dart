@@ -121,7 +121,7 @@ class DBHelper {
   Future<bool> insertSupplier(Supplier item) async {
     var dbClient = await db;
     int res = await dbClient.insert(SUPPLIERS_TABLE_NAME, item.toMap());
-    return res == 1;
+    return res > 0;
   }
 
   Future<bool> updateSupplier(Supplier item) async {

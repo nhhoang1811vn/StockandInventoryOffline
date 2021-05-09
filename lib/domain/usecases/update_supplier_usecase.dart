@@ -5,14 +5,14 @@ import 'package:good_manager/domain/entities/Supplier.dart';
 import 'package:good_manager/domain/repositories/Supplier_repositories.dart';
 
 class UpdateSupplierUseCase extends CompletableUseCase<UpdateSupplierUseCaseParams>{
-  SupplierRepository _supplierRepository;
-  UpdateSupplierUseCase(this._supplierRepository);
+  final SupplierRepository _repository;
+  UpdateSupplierUseCase(this._repository);
 
   @override
   Future<Stream<void>> buildUseCaseStream(UpdateSupplierUseCaseParams params) async {
     final StreamController<void> controller = StreamController();
     try{
-      bool successful = await _supplierRepository.update(params.item);
+      bool successful = await _repository.update(params.item);
       if (successful){
         controller.close();
       }else{

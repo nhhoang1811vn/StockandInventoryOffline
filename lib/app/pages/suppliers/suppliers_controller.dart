@@ -41,7 +41,7 @@ class SuppliersController extends Controller{
 
   void onAddItem(){
     Navigator.of(getContext()).pushNamed(Pages.save_supplier,arguments: {
-      //'supplier': Supplier.init(),
+      'item': Supplier.origin(),
       'isInsert' : true
     });
   }

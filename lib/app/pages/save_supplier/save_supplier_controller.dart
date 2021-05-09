@@ -19,8 +19,7 @@ class SaveSupplierController extends Controller{
   final bool _isInsert;
   final SaveSupplierPresenter _presenter;
   bool isLoading = false;
-  bool _validate = true;
-  SaveSupplierController(repository, this._item,this._isInsert) : _presenter = SaveSupplierPresenter(repository),
+  SaveSupplierController(supplierRepository,this._isInsert, this._item) : _presenter = SaveSupplierPresenter(supplierRepository),
         super(){
     nameTextController = TextEditingController();
     descriptionTextController = TextEditingController();
@@ -41,21 +40,30 @@ class SaveSupplierController extends Controller{
   }
   @override
   void initListeners() {
-
+    _presenter.insertSupplierOnError = (e){
+      //showGenericSnackbar(getStateKey(), e.message, isError: true);
+      //showGenericSnackbar(getContext(),e.message, isError: true);
+      //dismissLoading();
+    };
+    _presenter.insertSupplierOnComplete = (){
+      //dismissLoading();
+      Navigator.of(getContext()).pop(true);
+    };
+  }
+  void dismissLoading() {
+    isLoading = false;
+    refreshUI();
   }
   @override
   void dispose() {
     _presenter.dispose();
     super.dispose();
   }
-  void verify(){
-    if (nameTextController.text.isEmpty){
-      _validate = false;
-      refreshUI();
-      //invalid
-    }else{
-      _validate = true;
-      //valid
+  void checkForm(Map<String, dynamic> params){
+    dynamic formKey = params['formKey'];
+    // Validate params
+    assert(formKey is GlobalKey<FormState>);
+    if (formKey.currentState.validate()) {
       _item.name = nameTextController.text;
       _item.description = descriptionTextController.text;
       _item.address = addressTextController.text;
@@ -66,8 +74,10 @@ class SaveSupplierController extends Controller{
       if (_isInsert){
         _presenter.insert(_item);
       }else{
-        _presenter.update(_item);
+        //_presenter.update(_item);
       }
+    } else {
+
     }
   }
 }
