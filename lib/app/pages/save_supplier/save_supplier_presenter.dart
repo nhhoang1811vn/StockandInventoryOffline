@@ -7,22 +7,28 @@ class SaveSupplierPresenter extends Presenter{
   Function insertSupplierOnComplete;
   Function insertSupplierOnError;
 
+  Function updateSupplierOnComplete;
+  Function updateSupplierOnError;
+
   InsertSupplierUseCase _insertSupplierUseCase;
   UpdateSupplierUseCase _updateSupplierUseCase;
-  SaveSupplierPresenter(supplierRepository){
+
+  SaveSupplierPresenter(supplierRepository) {
     _insertSupplierUseCase = InsertSupplierUseCase(supplierRepository);
-    //_updateSupplierUseCase = UpdateSupplierUseCase(supplierRepository);
+    _updateSupplierUseCase = UpdateSupplierUseCase(supplierRepository);
   }
 
-  insert(Supplier item) => _insertSupplierUseCase.execute(_InsertSupplierUseCaseObserver(this), InsertSupplierUseCaseParams(item));
-  //update(Supplier item) => updateSupplierUseCase.execute(observer)
+  insert(Supplier item) => _insertSupplierUseCase.execute(
+      _InsertSupplierUseCaseObserver(this), InsertSupplierUseCaseParams(item));
+
+  update(Supplier item) => _updateSupplierUseCase.execute(
+      _UpdateSupplierUseCaseObserver(this), UpdateSupplierUseCaseParams(item));
 
   @override
   void dispose() {
     _insertSupplierUseCase.dispose();
-    //_updateSupplierUseCase.dispose();
+    _updateSupplierUseCase.dispose();
   }
-
 }
 class _InsertSupplierUseCaseObserver implements Observer<void>{
   SaveSupplierPresenter _presenter;
@@ -38,6 +44,24 @@ class _InsertSupplierUseCaseObserver implements Observer<void>{
   }
 
   @override
-  void onNext(void response) {
+  void onNext(void response) {}
+}
+
+class _UpdateSupplierUseCaseObserver implements Observer<void> {
+  SaveSupplierPresenter _presenter;
+
+  _UpdateSupplierUseCaseObserver(this._presenter);
+
+  @override
+  void onComplete() {
+    _presenter.updateSupplierOnComplete();
   }
+
+  @override
+  void onError(e) {
+    _presenter.updateSupplierOnError(e);
+  }
+
+  @override
+  void onNext(void response) {}
 }

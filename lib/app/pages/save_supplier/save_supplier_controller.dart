@@ -40,13 +40,17 @@ class SaveSupplierController extends Controller{
   }
   @override
   void initListeners() {
-    _presenter.insertSupplierOnError = (e){
+    _presenter.insertSupplierOnError = (e) {
       //showGenericSnackbar(getStateKey(), e.message, isError: true);
-      //showGenericSnackbar(getContext(),e.message, isError: true);
-      //dismissLoading();
     };
-    _presenter.insertSupplierOnComplete = (){
-      //dismissLoading();
+    _presenter.insertSupplierOnComplete = () {
+      Navigator.of(getContext()).pop(true);
+    };
+
+    _presenter.updateSupplierOnError = (e) {
+      //showGenericSnackbar(getStateKey(), e.message, isError: true);
+    };
+    _presenter.updateSupplierOnComplete = () {
       Navigator.of(getContext()).pop(true);
     };
   }
@@ -74,7 +78,7 @@ class SaveSupplierController extends Controller{
       if (_isInsert){
         _presenter.insert(_item);
       }else{
-        //_presenter.update(_item);
+        _presenter.update(_item);
       }
     } else {
 

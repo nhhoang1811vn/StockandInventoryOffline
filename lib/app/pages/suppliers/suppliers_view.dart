@@ -8,79 +8,106 @@ import 'package:good_manager/data/repositories/data_supplier_repository.dart';
 
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-
 class SuppliersPage extends View {
   final bool isSelection;
-  SuppliersPage({Key key, @required this.isSelection});
-  @override
-  SuppliersPageView createState() => SuppliersPageView(isSelection);
 
+  SuppliersPage({Key key, @required this.isSelection});
+
+  @override
+  SuppliersPageView createState() =>
+      SuppliersPageView(
+          SuppliersController(DataSupplierRepository(), isSelection));
 }
 
 class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
   SearchBar searchBar;
-  var textSearch = "";
+  SuppliersController controller;
 
-  SuppliersPageView(isSelection) : super(SuppliersController(DataSupplierRepository(), isSelection)){
+  SuppliersPageView(this.controller) : super(controller) {
     searchBar = new SearchBar(
-        inBar: true,
-        setState: setState,
-        //onSubmitted: onSubmitted,
-        onChanged: onSearchBarChanged,
-        buildDefaultAppBar: buildAppBar,
-        onCleared: () {
-          print("cleared");
-        },
-        onClosed: () {
-          print("closed");
-        });
+      inBar: true,
+      setState: setState,
+      onCleared: onSearchBarCleared,
+      onChanged: onSearchBarChanged,
+      onClosed: onSearchBarClosed,
+      controller: controller.searchTextController,
+      buildDefaultAppBar: buildAppBar,
+    );
   }
 
   @override
-  Widget get view => Scaffold(
-      key: globalKey,
-      appBar: searchBar.build(context),
-      body: ControlledWidgetBuilder<SuppliersController>(
-          builder: (context, controller) {
-            return ModalProgressHUD(
-                child: getListView(),
-                inAsyncCall: controller.isLoading,
-                opacity: 0);
-          })
-      ,
-      floatingActionButton: ControlledWidgetBuilder<SuppliersController>(
-          builder: (context, controller) {
-            return FloatingActionButton(
-              onPressed: () => controller.onAddItem(),
-              child: Icon(Icons.add),
-            );
-          }));
+  Widget get view {
+    return Scaffold(
+        key: globalKey,
+        appBar: searchBar.build(context),
+        body: ControlledWidgetBuilder<SuppliersController>(
+            builder: (context, controller) {
+              return ModalProgressHUD(
+                  child: getContentView(),
+                  inAsyncCall: controller.isLoading,
+                  opacity: 0);
+            }),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => controller.onAddItem(),
+          child: Icon(Icons.add),
+        ));
+  }
 
-  Widget getListView() {
+  Widget getContentView() =>
+      Column(children: [
+        Visibility(
+          child: emptyView, visible: controller.filteredItems.isEmpty,),
+        Visibility(
+          child: listView, visible: controller.filteredItems.isNotEmpty,),
+      ])
+
+  Widget get emptyView =>
+      Column(children: [
+        Icon(Icons.),
+        Text('abc')
+      ],)
+
+  Widget get listView {
     return ControlledWidgetBuilder<SuppliersController>(
         builder: (context, controller) {
-          return  ListView.separated(
+          return ListView.separated(
               itemBuilder: (BuildContext context, index) {
                 return ListTile(
-                  title: Text(controller.suppliers[index].name),
-                  subtitle: Text(controller.suppliers[index].description),
-                  onTap: () => controller.onItemPressed(controller.suppliers[index]),
+                  leading: CircleAvatar(
+                    child: Text(
+                        '${controller.filteredItems[index].name[0]
+                            .toUpperCase()}'),
+                  ),
+                  title: Text(controller.filteredItems[index].name),
+                  subtitle: Text(controller.filteredItems[index].description),
+                  onTap: () =>
+                      controller.onItemPressed(controller.filteredItems[index]),
                 );
               },
               separatorBuilder: (context, index) {
                 return Divider();
               },
-              itemCount: controller.suppliers.length);
+              itemCount: controller.filteredItems.length);
         });
   }
 
   void onSearchBarChanged(String value) {
-    setState(() => {textSearch = value});
+    controller.setTextSearch(value);
+  }
+
+  void onSearchBarCleared() {
+    controller.setTextSearch("");
+  }
+
+  void onSearchBarClosed() {
+    controller.setTextSearch("");
   }
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
-        title: new Text(AppLocalizations.of(context).suppliers_title),
+        title: new Text(AppLocalizations
+            .of(context)
+            .suppliers_title),
         actions: [
           searchBar.getSearchAction(context),
           Padding(
@@ -90,6 +117,7 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
                 Icons.sort_by_alpha,
                 size: 26,
               ),
+              onTap: () => controller.openSortByDialog(),
             ),
           ),
           Padding(
@@ -99,6 +127,7 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
                 Icons.help,
                 size: 26,
               ),
+              onTap: () => controller.openHelpPage(),
             ),
           )
         ]);
