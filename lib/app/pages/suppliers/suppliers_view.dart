@@ -54,18 +54,21 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
   }
 
   Widget getContentView() =>
-      Column(children: [
-        Visibility(
-          child: emptyView, visible: controller.filteredItems.isEmpty,),
-        Visibility(
-          child: listView, visible: controller.filteredItems.isNotEmpty,),
-      ])
+      Stack(fit: StackFit.expand,children: [
+        emptyView,
+        //Visibility(
+        //  child: emptyView, visible: controller.filteredItems.isEmpty,),
+       // Visibility(
+       //   child: listView, visible: controller.filteredItems.isNotEmpty,),
+      ]);
 
   Widget get emptyView =>
-      Column(children: [
-        Icon(Icons.),
-        Text('abc')
-      ],)
+
+      Column(mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,children: [
+        Icon(Icons.person),
+        Text('Khong co NCC nao ca', textAlign: TextAlign.center,)
+      ]);
 
   Widget get listView {
     return ControlledWidgetBuilder<SuppliersController>(
