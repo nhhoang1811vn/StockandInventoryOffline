@@ -71,7 +71,7 @@ class DBHelper {
         + "FOREIGN KEY(documentId) REFERENCES $DOCUMENT_TABLE_NAME(id),"
         + "FOREIGN KEY(goodId) REFERENCES $GOOD_TABLE_NAME(id))");
   }
-
+  ///STORE
   Future<bool> insertStore(Store store) async {
     var dbClient = await db;
     int res = await dbClient.insert(STORES_TABLE_NAME, store.toMap());
@@ -141,18 +141,26 @@ class DBHelper {
     return null;
   }
 
+  Future<bool> deleteSupplier(int id) async {
+    var dbClient = await db;
+
+    int res = await dbClient
+        .rawDelete('DELETE FROM $SUPPLIERS_TABLE_NAME WHERE id = ?', [id]);
+    return res == 1;
+  }
+
   //GROUP
-  Future<int> insertGroup(Group item) async {
+  Future<bool> insertGroup(Group item) async {
     var dbClient = await db;
     int res = await dbClient.insert(GROUP_TABLE_NAME, item.toMap());
-    return res;
+    return res > 0;
   }
 
   Future<bool> updateGroup(Group item) async {
     var dbClient = await db;
     int res = await dbClient.update(GROUP_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id]);
-    return res > 0 ? true : false;
+    return res > 0;
   }
 
   Future<List<Group>> getGroups(int groupId) async {
@@ -232,7 +240,15 @@ class DBHelper {
     return res > 0 ? true : false;
   }
 
-  Future<List<Document>> getAllDocuments() async{
+  Future<List<Document>> findDocumentBySupplierId(int supplierId) async {
+    var dbClient = await db;
+
+    final sql = "SELECT * FROM $DOCUMENT_TABLE_NAME WHERE id = ?";
+    List<Map> list = await dbClient.rawQuery(sql, [supplierId]);
+    return list.map((e) => Document.map(e)).toList();
+  }
+
+  Future<List<Document>> getAllDocuments() async {
     var dbClient = await db;
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
 

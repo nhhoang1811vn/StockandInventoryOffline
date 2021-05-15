@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/app/pages/documents/documents_page.dart';
 import 'package:good_manager/app/pages/documents/save_document.dart';
-import 'package:good_manager/app/pages/goods/goods_page.dart';
-import 'package:good_manager/app/pages/goods/save_good.dart';
-import 'package:good_manager/app/pages/goods/save_group.dart';
+import 'package:good_manager/app/pages/goods/goods_view.dart';
 import 'package:good_manager/app/pages/help/help_page_dart.dart';
 import 'package:good_manager/app/pages/home_page.dart';
 import 'package:good_manager/app/pages/pages.dart';
+import 'package:good_manager/app/pages/save_good/save_good.dart';
+import 'package:good_manager/app/pages/save_group/save_group_view.dart';
 import 'package:good_manager/app/pages/save_store/save_store_view.dart';
 import 'package:good_manager/app/pages/save_supplier/save_supplier_view.dart';
 import 'package:good_manager/app/pages/stores/stores_view.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_view.dart';
 
-
-class AppRouter{
+class AppRouter {
   final RouteObserver<PageRoute> routeObserver;
+
   AppRouter() : routeObserver = RouteObserver<PageRoute>();
-  Route<dynamic> getRoute(RouteSettings settings){
+
+  Route<dynamic> getRoute(RouteSettings settings) {
     switch(settings.name){
       case Pages.home:
         return _buildRoute(settings, HomePage());
@@ -26,11 +27,13 @@ class AppRouter{
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(settings, SaveStorePage(store: args['store'],isInsert: args['isInsert'],));
       case Pages.good_list:
-        return _buildRoute(settings, GoodsPageWidget());
+        return _buildRoute(settings, GoodsPage());
       case Pages.save_good:
         return _buildRoute(settings, SaveGoodPage());
       case Pages.save_group:
-        return _buildRoute(settings, SaveGroupPage());
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(
+            settings, SaveGroupPage(args['isInsert'], args['item']));
 
       case Pages.supplier_list:
         Map<String, dynamic> args = settings.arguments as Map;
@@ -44,7 +47,8 @@ class AppRouter{
         return _buildRoute(settings, SaveDocumentPage());
       case Pages.help:
         Map<String, dynamic> args = settings.arguments as Map;
-        return _buildRoute(settings, HelpPage(content: args['content']));
+        return _buildRoute(
+            settings, HelpPage(title: args['title'], content: args['content']));
       default:
         return null;
     }

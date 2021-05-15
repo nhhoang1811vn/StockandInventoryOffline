@@ -1,35 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:good_manager/app/pages/goods/goods_presenter.dart';
-import 'package:good_manager/app/pages/goods/save_good.dart';
-import 'package:good_manager/app/pages/goods/save_group.dart';
+import 'package:good_manager/app/pages/save_good/save_good.dart';
+import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/domain/entities/Good.dart';
 import 'package:good_manager/domain/entities/GoodItem.dart';
 import 'package:good_manager/domain/entities/Group.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../pages.dart';
+import 'goods_controller.dart';
 import 'list.dart';
 
-class GoodsPageWidget extends StatefulWidget {
-  GoodsPageWidget({Key key}) : super(key: key);
+class GoodsPage extends View {
+  GoodsPage() : super();
 
   @override
-  State<GoodsPageWidget> createState() {
-    return _GoodPageWidgetState();
-  }
+  GoodsPageView createState() => GoodsPageView();
 }
 
-class _GoodPageWidgetState extends State<GoodsPageWidget>
-    implements GoodsContract {
-  GoodsPresenter presenter;
+class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
   SearchBar searchBar;
   List<Group> selectedGroups = [];
 
-  @override
-  void initState() {
-    presenter = GoodsPresenter(this);
+  GoodsPageView() : super(GoodsController()) {
     searchBar = new SearchBar(
         inBar: true,
         setState: setState,
@@ -42,32 +39,6 @@ class _GoodPageWidgetState extends State<GoodsPageWidget>
         onClosed: () {
           print("closed");
         });
-    super.initState();
-  }
-
-  void _onAddGood() async {
-    Good item = Good();
-    item.groupId = getSelectedGroupId();
-    item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
-
-    SaveGoodPageArguments arguments = SaveGoodPageArguments();
-    arguments.good = item;
-    final result = await Navigator.of(context)
-        .pushNamed(Pages.save_good, arguments: arguments);
-    if (result) {
-      screenUpdated();
-    }
-  }
-
-  void _onAddGroup() async {
-    Group item = Group();
-    item.groupId = getSelectedGroupId();
-    item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
-    final result = await Navigator.of(context).pushNamed(Pages.save_group,
-        arguments: SaveGroupPageArguments(true, item));
-    if (result) {
-      screenUpdated();
-    }
   }
 
   int getSelectedGroupId() {
@@ -77,7 +48,6 @@ class _GoodPageWidgetState extends State<GoodsPageWidget>
       return selectedGroups.last.id;
     }
   }
-
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(title: new Text('Sản phẩm'), actions: [
@@ -115,7 +85,7 @@ class _GoodPageWidgetState extends State<GoodsPageWidget>
     //Navigator.of(context).pushNamed(HelpPageWidget.routeName, arguments: HelpPageArguments("content man hinh store"));
   }
 
-  @override
+/*  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: searchBar.build(context),
@@ -205,14 +175,9 @@ class _GoodPageWidgetState extends State<GoodsPageWidget>
         ],
       ),
     );
-  }
+  }*/
 
-  @override
-  void screenUpdated() {
-    setState(() {});
-  }
-
-  void onSelectedGroupTapped(int index) {
+  /*void onSelectedGroupTapped(int index) {
     if (index == -1) {
       selectedGroups.clear();
     } else {
@@ -235,5 +200,109 @@ class _GoodPageWidgetState extends State<GoodsPageWidget>
     if (result) {
       screenUpdated();
     }
+  }*/
+  Widget get body =>
+      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
+        return ModalProgressHUD(
+            child: stackView,
+            inAsyncCall: false, //controller.isLoading,
+            opacity: 0);
+      });
+
+  Widget get content => Column(
+        children: [storeView, stackView],
+      );
+
+  Widget get storeView => Container(
+      color: UIConstants.primaryDarkColor,
+      width: double.infinity,
+      alignment: Alignment.center,
+      child: Padding(
+          padding: EdgeInsets.only(top: 4, bottom: 4),
+          child: Text('main store', style: TextStyle(color: Colors.white))));
+
+  Widget get emptyView => Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Icon(
+              UIConstants.goodsIconData,
+              size: 60,
+            ),
+            Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: Text('Khong co NCC nao ca', textAlign: TextAlign.center))
+          ]);
+
+  Widget get listView {
+    return ControlledWidgetBuilder<GoodsController>(
+        builder: (context, controller) {
+      return ListView.separated(
+          itemBuilder: (BuildContext context, index) {
+            return ListTile(
+              title: Text('abc'),
+            );
+          },
+          separatorBuilder: (context, index) {
+            return Divider();
+          },
+          itemCount: 5);
+    });
   }
+
+  Widget get stackView {
+    return ControlledWidgetBuilder<GoodsController>(
+        builder: (context, controller) {
+      return Stack(fit: StackFit.expand, children: [
+        //emptyView,
+        Visibility(
+          child: emptyView,
+          visible: true,
+        ),
+        Visibility(
+          child: listView,
+          visible: true,
+        ),
+      ]);
+    });
+  }
+
+  @override
+  Widget get view => Scaffold(
+      key: globalKey,
+      appBar: searchBar.build(context),
+      body: body,
+      floatingActionButton: ControlledWidgetBuilder<GoodsController>(
+          builder: (context, controller) {
+        return SpeedDial(
+          icon: Icons.add,
+          activeIcon: Icons.close,
+          buttonSize: 56.0,
+          visible: true,
+          closeManually: false,
+          renderOverlay: false,
+          curve: Curves.bounceIn,
+          overlayColor: Colors.black,
+          overlayOpacity: 0.5,
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
+          elevation: 8.0,
+          shape: CircleBorder(),
+          children: [
+            SpeedDialChild(
+                child: Icon(
+                  Icons.folder,
+                  color: Colors.grey,
+                ),
+                backgroundColor: Colors.white,
+                label: 'Nhóm',
+                onTap: controller.onAddGroup),
+            SpeedDialChild(
+                child: Icon(Icons.image, color: Colors.grey),
+                backgroundColor: Colors.white,
+                label: 'Sản phẩm',
+                onTap: () => controller.onAddGood)
+          ],
+        );
+      }));
 }

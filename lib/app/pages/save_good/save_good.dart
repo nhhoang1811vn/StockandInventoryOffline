@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_calculator/flutter_calculator.dart';
-import 'package:good_manager/app/pages/goods/save_good_presenter.dart';
+import 'package:good_manager/app/pages/save_good/save_good_presenter.dart';
 import 'package:good_manager/app/widgets/ReceiveGoodDialogWidget.dart';
 import 'package:good_manager/domain/entities/Document.dart';
 import 'package:good_manager/domain/entities/Good.dart';

@@ -1,17 +1,14 @@
-import 'dart:async';
+import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import 'package:good_manager/db/db_helper.dart';
-import 'package:good_manager/domain/entities/GoodItem.dart';
-abstract class GoodsContract{
-  void screenUpdated();
-}
-class GoodsPresenter{
-  GoodsContract _view;
-  var db = DBHelper();
+class GoodsPresenter extends Presenter {
+  GoodsPresenter();
 
-  GoodsPresenter(this._view);
+  @override
+  void dispose() {
+    // TODO: implement dispose
+  }
 
-  Future<List<GoodItem>> getItems(int groupId){
+/*Future<List<GoodItem>> getItems(int groupId){
     var completer = new Completer<List<GoodItem>>();
     db.getGroups(groupId).then((value) {
       List<GoodItem> data = [];
@@ -34,8 +31,5 @@ class GoodsPresenter{
       });
     });
     return completer.future;
-  }
-  void refresh(){
-    _view.screenUpdated();
-  }
+  }*/
 }

@@ -22,5 +22,10 @@
   "document_list_tab_stock_taking": "KIỂM KÊ",
   "document_list_incoming_name": "Nhập",
   "document_list_outgoing_name": "Xuất",
-  "document_list_stock_taking_name": "Kiểm kê"
+  "document_list_stock_taking_name": "Kiểm kê",
+  "action_send_email": "Gửi E-mail",
+  "action_send_sms": "Gửi Tin Nhắn",
+  "action_phone_call": "Gọi Điện Thoại",
+  "action_view_transaction": "Xem giao dịch",
+  "action_delete": "Xoá"
 }

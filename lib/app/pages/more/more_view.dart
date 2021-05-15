@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../pages.dart';
 import 'more_controller.dart';
 
 class MorePage extends View {
@@ -15,7 +14,9 @@ class MorePageView extends ViewState<MorePage, MoreController> {
   MorePageView() : super(MoreController());
 
   @override
-  Widget get view => ListView(
+  Widget get view => Scaffold(
+      appBar: new AppBar(title: new Text('Sản phẩm')),
+      body: ListView(
         key: globalKey,
         children: [
           ControlledWidgetBuilder<MoreController>(
@@ -84,5 +85,5 @@ class MorePageView extends ViewState<MorePage, MoreController> {
             subtitle: Text('About'),
           ),
         ],
-      );
+      ));
 }

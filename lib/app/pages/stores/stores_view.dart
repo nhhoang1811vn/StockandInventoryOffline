@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
-import 'package:good_manager/app/pages/help/help_page_dart.dart';
 import 'package:good_manager/app/pages/stores/stores_controller.dart';
 import 'package:good_manager/data/repositories/data_store_repository.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -85,49 +84,6 @@ class _StoresPageView extends ViewState<StoresPage, StoresController> {
       screenUpdated()
     }), barrierDismissible: false);*/
   }
-
-  /* @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: searchBar.build(context),
-        body: new FutureBuilder<List<Store>>(
-          future: presenter.getStores(),
-          builder: (context, snapshot){
-            if (snapshot.hasError) print(snapshot.error);
-            var data = snapshot.data;
-            List<Store> filteredStores = [];
-            data.forEach((element) {
-              if (element.name.startsWith(textSearch)){
-                filteredStores.add(element);
-              }
-            });
-            //sort
-            SortBy an = EnumToString.fromString(SortBy.values,sharedPrefs.getString(Constants.keySortByStore));
-            switch(an){
-              case SortBy.sort_a_z:
-                filteredStores.sort((a,b){
-                  return a.name.compareTo(b.name);
-                });
-                break;
-              case SortBy.sort_z_a:
-                filteredStores.sort((a,b){
-                  return b.name.compareTo(a.name);
-                });
-                break;
-              default:
-            }
-            return snapshot.hasData
-                ? new StoreList(filteredStores, presenter)
-                : new Center(child: new CircularProgressIndicator(),);
-          },
-        )
-        ,
-        floatingActionButton: FloatingActionButton(
-          tooltip: 'Add',
-          onPressed: _onAddStore,
-          child: Icon(Icons.add),
-        ));
-  }*/
 
   @override
   Widget get view =>

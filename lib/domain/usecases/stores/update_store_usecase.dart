@@ -4,27 +4,31 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/Store.dart';
 import 'package:good_manager/domain/repositories/store_repositories.dart';
 
-class UpdateStoreUseCase extends CompletableUseCase<UpdateStoreUseCaseParams>{
+class UpdateStoreUseCase extends CompletableUseCase<UpdateStoreUseCaseParams> {
   StoreRepository _storeRepository;
+
   UpdateStoreUseCase(this._storeRepository);
 
   @override
-  Future<Stream<void>> buildUseCaseStream(UpdateStoreUseCaseParams params) async {
+  Future<Stream<void>> buildUseCaseStream(
+      UpdateStoreUseCaseParams params) async {
     final StreamController<void> controller = StreamController();
-    try{
+    try {
       bool successful = await _storeRepository.update(params.store);
-      if (successful){
+      if (successful) {
         controller.close();
-      }else{
+      } else {
         throw Exception("update failed");
       }
-    }catch(e){
+    } catch (e) {
       controller.addError(e);
     }
     return controller.stream;
   }
 }
-class UpdateStoreUseCaseParams{
+
+class UpdateStoreUseCaseParams {
   final Store store;
+
   UpdateStoreUseCaseParams(this.store);
 }

@@ -1,16 +1,14 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/Store.dart';
-import 'package:good_manager/domain/usecases/insert_store_usecase.dart';
-import 'package:good_manager/domain/usecases/update_store_usecase.dart';
+import 'package:good_manager/domain/usecases/stores/insert_store_usecase.dart';
+import 'package:good_manager/domain/usecases/stores/update_store_usecase.dart';
 
-class SaveStorePresenter extends Presenter{
+class SaveStorePresenter extends Presenter {
   Function insertStoreOnComplete;
   Function insertStoreOnError;
 
   Function updateStoreOnComplete;
   Function updateStoreOnError;
-
-
 
   InsertStoreUseCase _insertStoreUseCase;
   UpdateStoreUseCase _updateStoreUseCase;

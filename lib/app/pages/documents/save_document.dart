@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/app/pages/documents/save_document_presenter.dart';
 import 'package:good_manager/app/pages/goods/list.dart';
-import 'package:good_manager/app/pages/goods/save_good.dart';
+import 'package:good_manager/app/pages/save_good/save_good.dart';
 import 'package:good_manager/app/widgets/custom_action_row.dart';
 import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/domain/entities/Document.dart';
