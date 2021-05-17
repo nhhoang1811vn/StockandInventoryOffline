@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:good_manager/domain/entities/Supplier.dart';
+import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/repositories/supplier_repositories.dart';
 
 class InsertSupplierUseCase

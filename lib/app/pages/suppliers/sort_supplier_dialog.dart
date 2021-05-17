@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/domain/entities/SupplierSettings.dart';
 import 'package:good_manager/domain/entities/sort_by.dart';
+import 'package:good_manager/domain/entities/supplier_settings.dart';
 
 class SortSupplierDialog extends StatefulWidget {
   final void Function() onValueChange;

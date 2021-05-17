@@ -1,6 +1,6 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:good_manager/domain/entities/Supplier.dart';
-import 'package:good_manager/domain/entities/SupplierSettings.dart';
+import 'package:good_manager/domain/entities/supplier.dart';
+import 'package:good_manager/domain/entities/supplier_settings.dart';
 import 'package:good_manager/domain/usecases/suppliers/delete_supplier_usecase.dart';
 import 'package:good_manager/domain/usecases/suppliers/get_supplier_settings_usecase.dart';
 import 'package:good_manager/domain/usecases/suppliers/get_suppliers_usecase.dart';

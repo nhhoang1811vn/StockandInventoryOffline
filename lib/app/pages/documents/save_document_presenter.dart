@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:good_manager/db/db_helper.dart';
-import 'package:good_manager/domain/entities/Document.dart';
-import 'package:good_manager/domain/entities/DocumentTransaction.dart';
-import 'package:good_manager/domain/entities/Good.dart';
-import 'package:good_manager/domain/entities/Supplier.dart';
+import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/good.dart';
+import 'package:good_manager/domain/entities/supplier.dart';
+import 'package:good_manager/domain/entities/transaction.dart';
 
 abstract class DocumentsContract {
   void screenUpdated();

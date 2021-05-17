@@ -1,5 +1,5 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:good_manager/domain/entities/Store.dart';
+import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/domain/usecases/stores/insert_store_usecase.dart';
 import 'package:good_manager/domain/usecases/stores/update_store_usecase.dart';
 

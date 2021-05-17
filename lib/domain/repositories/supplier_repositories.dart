@@ -1,12 +1,10 @@
 
-import 'package:good_manager/domain/entities/Supplier.dart';
-import 'package:good_manager/domain/entities/SupplierSettings.dart';
+import 'package:good_manager/domain/entities/supplier.dart';
+import 'package:good_manager/domain/entities/supplier_settings.dart';
 
-abstract class SupplierRepository{
-  Future<bool> insert(Supplier supplier);
+import 'base_repository.dart';
 
-  Future<bool> update(Supplier supplier);
-
+abstract class SupplierRepository extends BaseRepository<Supplier>{
   Future<bool> delete(int id);
 
   Future<List<Supplier>> getAll();

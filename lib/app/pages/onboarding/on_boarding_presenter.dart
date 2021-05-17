@@ -1,7 +1,7 @@
 
 import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/db/db_helper.dart';
-import 'package:good_manager/domain/entities/Store.dart';
+import 'package:good_manager/domain/entities/store.dart';
 
 class OnBoardingPresenter{
   var db = new DBHelper();

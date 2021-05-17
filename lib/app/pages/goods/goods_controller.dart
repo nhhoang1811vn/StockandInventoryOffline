@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/app/pages/goods/goods_presenter.dart';
-import 'package:good_manager/domain/entities/Group.dart';
+import 'package:good_manager/domain/entities/group.dart';
 
 import '../pages.dart';
 

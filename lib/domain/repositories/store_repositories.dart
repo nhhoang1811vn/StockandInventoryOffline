@@ -1,7 +1,6 @@
-import 'package:good_manager/domain/entities/Store.dart';
+import 'package:good_manager/domain/entities/store.dart';
+import 'package:good_manager/domain/repositories/base_repository.dart';
 
-abstract class StoreRepository{
-  Future<bool> insert(Store store);
-  Future<bool> update(Store store);
+abstract class StoreRepository extends BaseRepository<Store>{
   Future<List<Store>> getAll();
 }

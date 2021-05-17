@@ -6,10 +6,10 @@ import 'package:good_manager/app/pages/goods/list.dart';
 import 'package:good_manager/app/pages/save_good/save_good.dart';
 import 'package:good_manager/app/widgets/custom_action_row.dart';
 import 'package:good_manager/data/app_data_manager.dart';
-import 'package:good_manager/domain/entities/Document.dart';
-import 'package:good_manager/domain/entities/DocumentTransaction.dart';
-import 'package:good_manager/domain/entities/Good.dart';
-import 'package:good_manager/domain/entities/Supplier.dart';
+import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/good.dart';
+import 'package:good_manager/domain/entities/supplier.dart';
+import 'package:good_manager/domain/entities/transaction.dart';
 
 import '../pages.dart';
 

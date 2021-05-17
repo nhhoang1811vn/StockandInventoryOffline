@@ -1,5 +1,5 @@
 import 'package:good_manager/db/db_helper.dart';
-import 'package:good_manager/domain/entities/Group.dart';
+import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/repositories/group_repositories.dart';
 
 class DataGroupRepository implements GroupRepository {

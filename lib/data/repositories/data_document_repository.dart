@@ -1,5 +1,5 @@
 import 'package:good_manager/db/db_helper.dart';
-import 'package:good_manager/domain/entities/Document.dart';
+import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/repositories/document_repositories.dart';
 
 class DataDocumentRepository implements DocumentRepository {

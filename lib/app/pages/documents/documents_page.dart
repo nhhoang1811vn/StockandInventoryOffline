@@ -4,7 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/documents/save_document.dart';
 import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/data/app_data_manager.dart';
-import 'package:good_manager/domain/entities/Document.dart';
+import 'package:good_manager/domain/entities/document.dart';
 
 import 'add_document_dialog.dart';
 import 'document_list_item.dart';

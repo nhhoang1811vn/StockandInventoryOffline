@@ -5,8 +5,8 @@ import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/suppliers/sort_supplier_dialog.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_presenter.dart';
 import 'package:good_manager/domain/entities/Supplier.dart';
-import 'package:good_manager/domain/entities/SupplierSettings.dart';
 import 'package:good_manager/domain/entities/sort_by.dart';
+import 'package:good_manager/domain/entities/supplier_settings.dart';
 import 'package:good_manager/domain/usecases/suppliers/delete_supplier_usecase.dart';
 
 class SuppliersController extends Controller {
@@ -98,7 +98,7 @@ class SuppliersController extends Controller {
   void onAddItem() async {
     final result = await Navigator.of(getContext()).pushNamed(
         Pages.save_supplier,
-        arguments: {'item': Supplier.origin(), 'isInsert': true});
+        arguments: {'isInsert': true});
     if (result) {
       isLoading = true;
       retrieveData();

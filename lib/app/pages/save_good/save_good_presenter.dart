@@ -1,5 +1,5 @@
 import 'package:good_manager/db/db_helper.dart';
-import 'package:good_manager/domain/entities/Good.dart';
+import 'package:good_manager/domain/entities/good.dart';
 
 abstract class SaveGoodContract{
 

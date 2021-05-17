@@ -1,6 +1,6 @@
 
-import 'Good.dart';
-import 'Group.dart';
+import 'good.dart';
+import 'group.dart';
 
 class GoodItem{
   int id;

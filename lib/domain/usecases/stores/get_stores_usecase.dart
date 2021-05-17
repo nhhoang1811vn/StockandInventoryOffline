@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:good_manager/domain/entities/Store.dart';
+import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/domain/repositories/store_repositories.dart';
 
 class GetStoresUseCase extends UseCase<List<Store>,void>{

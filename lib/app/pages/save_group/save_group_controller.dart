@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/app/pages/save_group/save_group_presenter.dart';
-import 'package:good_manager/domain/entities/Group.dart';
+import 'package:good_manager/domain/entities/group.dart';
 
 class SaveGroupController extends Controller {
   // Text field controller

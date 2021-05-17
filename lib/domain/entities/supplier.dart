@@ -8,8 +8,7 @@ class Supplier{
   String taxID = "";
   String bankDetail = "";
 
-  Supplier.origin();
-
+  Supplier();
   Supplier.map(dynamic obj) {
     this.id = obj["id"];
     this.name = obj["supplierName"];

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/app/pages/save_supplier/save_supplier_presenter.dart';
-import 'package:good_manager/domain/entities/Supplier.dart';
+import 'package:good_manager/domain/entities/supplier.dart';
 
 class SaveSupplierController extends Controller{
   // Text field controller
@@ -15,7 +15,7 @@ class SaveSupplierController extends Controller{
   TextEditingController bankDetailsTextController;
   //
 
-  final Supplier _item;
+  Supplier _item;
   final bool _isInsert;
   final SaveSupplierPresenter _presenter;
   bool isLoading = false;
@@ -29,13 +29,15 @@ class SaveSupplierController extends Controller{
     taxIDTextController = TextEditingController();
     bankDetailsTextController = TextEditingController();
 
-    nameTextController.text = _item.name;
-    descriptionTextController.text = _item.description;
-    addressTextController.text = _item.address;
-    emailTextController.text = _item.email;
-    phoneTextController.text = _item.phone;
-    taxIDTextController.text =_item.taxID;
-    bankDetailsTextController.text = _item.bankDetail;
+    if (_item != null){
+      nameTextController.text = _item.name;
+      descriptionTextController.text = _item.description;
+      addressTextController.text = _item.address;
+      emailTextController.text = _item.email;
+      phoneTextController.text = _item.phone;
+      taxIDTextController.text =_item.taxID;
+      bankDetailsTextController.text = _item.bankDetail;
+    }
     isLoading = false;
   }
   @override
@@ -68,6 +70,9 @@ class SaveSupplierController extends Controller{
     // Validate params
     assert(formKey is GlobalKey<FormState>);
     if (formKey.currentState.validate()) {
+      if (_item == null){
+        _item = Supplier();
+      }
       _item.name = nameTextController.text;
       _item.description = descriptionTextController.text;
       _item.address = addressTextController.text;

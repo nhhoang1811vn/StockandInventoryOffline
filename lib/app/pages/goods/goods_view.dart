@@ -2,13 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:good_manager/app/pages/goods/goods_presenter.dart';
-import 'package:good_manager/app/pages/save_good/save_good.dart';
 import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/data/app_data_manager.dart';
-import 'package:good_manager/domain/entities/Good.dart';
-import 'package:good_manager/domain/entities/GoodItem.dart';
-import 'package:good_manager/domain/entities/Group.dart';
+
+import 'package:good_manager/domain/entities/group.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../pages.dart';
