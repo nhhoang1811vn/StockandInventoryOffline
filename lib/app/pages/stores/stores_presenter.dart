@@ -36,5 +36,4 @@ class _GetStoresUseCaseObserver implements Observer<List<Store>>{
   void onNext(response) {
     _storesPresenter.getStoresOnNext(response);
   }
-  
 }

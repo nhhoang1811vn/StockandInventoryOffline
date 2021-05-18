@@ -163,10 +163,10 @@ class DBHelper {
     return res > 0;
   }
 
-  Future<List<Group>> getGroups(int groupId) async {
+  Future<List<Group>> getGroups(int storeId,int groupId) async {
     var dbClient = await db;
 
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     List<Map> list = [];
     if (groupId == null) {
       list = await dbClient.rawQuery(

@@ -20,10 +20,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     super.initState();
   }
   void _onIntroEnd(context) async{
-    Store store = Store("Kho chính", "main store description");
-    bool successful = await presenter.insertStore(store);
-    presenter.setFirstTime(false);
-    presenter.setSelectedStoreId(store.id);
+    //Store store = Store("Kho chính", "main store description");
+    //bool successful = await presenter.insertStore(store);
+    //presenter.setFirstTime(false);
+    //presenter.setSelectedStoreId(store.id);
     Navigator.of(context).pushReplacementNamed(Pages.home);
   }
   Widget _buildImage(String assetName) {

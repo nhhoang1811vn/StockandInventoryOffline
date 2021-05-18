@@ -77,6 +77,7 @@ class SuppliersController extends Controller {
           _presenter.getSuppliers();
           break;
         case DeleteSupplierUseCaseResult.un_success_have_document:
+          //TODO
           break;
         case DeleteSupplierUseCaseResult.un_success_row_effect:
           break;

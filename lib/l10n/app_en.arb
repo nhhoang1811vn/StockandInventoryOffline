@@ -5,8 +5,12 @@
   "suppliers_title" : "Suppliers",
   "save_supplier_title" : "Save Supplier",
   "empty_suppliers" : "No Supplier",
+
+  "save_group_title" : "Save Group",
   "field_name" : "Name",
   "field_desc" : "Description",
+  "field_bar_code" : "Barcode",
+
   "field_address" : "Address",
   "field_email" : "E-mail",
   "field_phone" : "Phone",
@@ -26,5 +30,6 @@
   "action_send_sms": "Send SMS",
   "action_phone_call": "Phone Call",
   "action_view_transaction": "View Transactions",
-  "action_delete": "Delete"
+  "action_delete": "Delete",
+  "message_name_blank" : "Name can not be blank"
 }

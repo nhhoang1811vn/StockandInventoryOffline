@@ -2,12 +2,7 @@ class Store{
   int id;
   String name;
   String description;
-
-  Store(this.name, this.description);
-  Store.init(){
-    this.name = "";
-    this.description = "";
-  }
+  Store();
 
   Store.map(dynamic obj) {
     this.id = obj["id"];

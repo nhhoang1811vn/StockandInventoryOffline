@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/data/repositories/data_group_repository.dart';
 
 import 'package:good_manager/domain/entities/group.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -20,9 +22,8 @@ class GoodsPage extends View {
 
 class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
   SearchBar searchBar;
-  List<Group> selectedGroups = [];
 
-  GoodsPageView() : super(GoodsController()) {
+  GoodsPageView() : super(GoodsController(DataGroupRepository())) {
     searchBar = new SearchBar(
         inBar: true,
         setState: setState,
@@ -37,48 +38,31 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
         });
   }
 
-  int getSelectedGroupId() {
-    if (selectedGroups.isEmpty) {
-      return null;
-    } else {
-      return selectedGroups.last.id;
-    }
-  }
-
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(title: new Text('Sản phẩm'), actions: [
       searchBar.getSearchAction(context),
       Padding(
         padding: EdgeInsets.only(right: 20.0),
         child: GestureDetector(
-          onTap: _onSortMenuItemTapped,
           child: Icon(
             Icons.sort_by_alpha,
             size: 26,
           ),
         ),
       ),
-      Padding(
-        padding: EdgeInsets.only(right: 20.0),
-        child: GestureDetector(
-          onTap: _onHelpMenuItemTapped,
-          child: Icon(
-            Icons.help,
-            size: 26,
+      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
+        return Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            onTap: controller.openHelpPage,
+            child: Icon(
+              Icons.help,
+              size: 26,
+            ),
           ),
-        ),
-      )
+        );
+      })
     ]);
-  }
-
-  void _onSortMenuItemTapped() {
-    /*showDialog(context: context, builder: (_) => SortByStoreDialogWidget(()=>{
-      screenUpdated()
-    }), barrierDismissible: false);*/
-  }
-
-  void _onHelpMenuItemTapped() {
-    //Navigator.of(context).pushNamed(HelpPageWidget.routeName, arguments: HelpPageArguments("content man hinh store"));
   }
 
 /*  @override
@@ -197,77 +181,121 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
       screenUpdated();
     }
   }*/
-  Widget get body =>
-      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
-        return ModalProgressHUD(
-            child: stackView,
-            inAsyncCall: false, //controller.isLoading,
-            opacity: 0);
-      });
 
-  Widget get content => Column(
-        children: [storeView, stackView],
-      );
+  Widget getBody() {
+    //List<Widget> children = [storeView, groupView, stackView];
+    //return ListView(children: children);
+    //return Column(children: [storeView, groupView],);
+    //return SizedBox.expand(child: Column(mainAxisSize: MainAxisSize.max,children: [storeView, groupView],),);
+    return SizedBox.expand(child: Container(color: Colors.green,child: Column(mainAxisSize: MainAxisSize.max,children: [storeView, groupView, stackView])));
+  }
 
   Widget get storeView => Container(
       color: UIConstants.primaryDarkColor,
+      height: 40,
       width: double.infinity,
       alignment: Alignment.center,
       child: Padding(
           padding: EdgeInsets.only(top: 4, bottom: 4),
           child: Text('main store', style: TextStyle(color: Colors.white))));
 
+  Widget get groupView =>
+      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
+        return Visibility(
+          visible: true,
+          child: Container(
+            height: 40,
+            color: Colors.blue,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: controller.selectedGroups.length,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return Row(children: [
+                    GestureDetector(
+                        child: Icon(Icons.home, color: Colors.white),
+                        onTap: () => controller.onSelectedGroupTapped(-1)),
+                    GestureDetector(
+                        child: Row(children: [
+                          Icon(Icons.navigate_next, color: Colors.white),
+                          Text(controller.selectedGroups[index].name,
+                              style: TextStyle(color: Colors.white))
+                        ]),
+                        onTap: () => controller.onSelectedGroupTapped(0))
+                  ]);
+                } else {
+                  return GestureDetector(
+                      child: Row(children: [
+                        Icon(Icons.navigate_next, color: Colors.white),
+                        Text(controller.selectedGroups[index].name,
+                            style: TextStyle(color: Colors.white))
+                      ]),
+                      onTap: () => controller.onSelectedGroupTapped(index));
+                }
+              },
+            ),
+          ),
+        );
+      });
+
   Widget get emptyView => Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
             Icon(
               UIConstants.goodsIconData,
               size: 60,
             ),
             Padding(
                 padding: EdgeInsets.only(top: 16),
-                child: Text('Khong co NCC nao ca', textAlign: TextAlign.center))
-          ]);
+                child: Text('Khong co SP nao ca', textAlign: TextAlign.center))
+          ],
 
-  Widget get listView {
-    return ControlledWidgetBuilder<GoodsController>(
-        builder: (context, controller) {
-      return ListView.separated(
-          itemBuilder: (BuildContext context, index) {
-            return ListTile(
-              title: Text('abc'),
-            );
-          },
-          separatorBuilder: (context, index) {
-            return Divider();
-          },
-          itemCount: 5);
-    });
+      );
+
+  Widget get groupListView {
+    return  ListView.separated(
+            itemBuilder: (BuildContext context, index) {
+              return ListTile(
+                leading: Icon(Icons.folder),
+                title: Text("a"),
+                //onTap: () => controller.onGroupTapped(controller.groups[index]),
+              );
+            },
+            separatorBuilder: (context, index) {
+              return Divider();
+            },
+            itemCount: 10);
   }
 
   Widget get stackView {
-    return ControlledWidgetBuilder<GoodsController>(
-        builder: (context, controller) {
-      return Stack(fit: StackFit.expand, children: [
-        //emptyView,
-        Visibility(
-          child: emptyView,
-          visible: true,
-        ),
-        Visibility(
-          child: listView,
-          visible: true,
-        ),
-      ]);
-    });
+    //return CoemptyView;
+    //return SizedBox.expand(child: emptyView);
+      return Stack(fit: StackFit.expand,children: [
+      //emptyView,
+      Visibility(
+        child: emptyView,
+        visible: true,
+      ),
+     /* Visibility(
+        child: groupListView,
+        visible: true,
+      ),*/
+    ]);
+    // return Expanded(child: Text("abc"));
   }
 
   @override
   Widget get view => Scaffold(
       key: globalKey,
       appBar: searchBar.build(context),
-      body: body,
+      body: ControlledWidgetBuilder<GoodsController>(
+          builder: (context, controller) {
+        return ModalProgressHUD(
+            child: getBody(),
+            inAsyncCall: controller.isLoading, //controller.isLoading,
+            opacity: 0);
+      }),
       floatingActionButton: ControlledWidgetBuilder<GoodsController>(
           builder: (context, controller) {
         return SpeedDial(

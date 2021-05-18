@@ -22,4 +22,9 @@ class DataGroupRepository implements GroupRepository {
   Future<bool> update(Group item) {
     return db.updateGroup(item);
   }
+
+  @override
+  Future<List<Group>> getGroups(int storeId, int groupId) {
+    return db.getGroups(storeId,groupId);
+  }
 }

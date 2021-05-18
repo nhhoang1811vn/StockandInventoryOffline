@@ -3,7 +3,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/save_group/save_group_controller.dart';
 import 'package:good_manager/data/repositories/data_group_repository.dart';
-import 'package:good_manager/domain/entities/Group.dart';
+import 'package:good_manager/domain/entities/group.dart';
 
 class SaveGroupPage extends View {
   final bool isInsert;
@@ -23,6 +23,7 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
 
   @override
   Widget get view => Scaffold(
+      key: globalKey,
       appBar: appBar,
       body: ListView(
         children: <Widget>[
@@ -38,20 +39,22 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
         ],
       ));
 
-  Widget get appBar => AppBar(title: Text('Thêm nhóm'), actions: <Widget>[
-        ControlledWidgetBuilder<SaveGroupController>(
-            builder: (context, controller) {
-          return Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                  onTap: () => controller.checkForm({
-                        'context': context,
-                        'formKey': _formKey,
-                        'globalKey': globalKey
-                      }),
-                  child: Icon(Icons.check, size: 26)));
-        })
-      ]);
+  Widget get appBar => AppBar(
+          title: Text(AppLocalizations.of(context).save_group_title),
+          actions: <Widget>[
+            ControlledWidgetBuilder<SaveGroupController>(
+                builder: (context, controller) {
+              return Padding(
+                  padding: EdgeInsets.only(right: 20.0),
+                  child: GestureDetector(
+                      onTap: () => controller.checkForm({
+                            'context': context,
+                            'formKey': _formKey,
+                            'globalKey': globalKey
+                          }),
+                      child: Icon(Icons.check, size: 26)));
+            })
+          ]);
 
   Widget get name => ControlledWidgetBuilder<SaveGroupController>(
           builder: (context, controller) {
@@ -61,7 +64,7 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
                 labelText: AppLocalizations.of(context).field_name),
             validator: (String value) {
               if (value.trim().isEmpty) {
-                return "error";
+                return AppLocalizations.of(context).message_name_blank;
               } else {
                 return null;
               }
@@ -83,7 +86,8 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
           children: [
             Expanded(
                 child: TextFormField(
-              decoration: InputDecoration(labelText: 'Mã vạch'),
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context).field_bar_code),
               controller: controller.barCodeTextController,
             )),
             Align(
