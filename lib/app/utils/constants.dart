@@ -3,7 +3,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class UIConstants {
-  static IconData goodsIconData = FontAwesomeIcons.box;
+  static IconData goodsIconData = FontAwesomeIcons.bookOpen;
+  static IconData documentsIconData = FontAwesomeIcons.book;
 
   static const TextStyle fieldHintStyle =
       TextStyle(fontWeight: FontWeight.w300, color: Colors.black);

@@ -3,6 +3,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/app/pages/goods/goods_presenter.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/app_data_manager.dart';
+import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/group.dart';
 
 import '../pages.dart';
@@ -11,16 +12,26 @@ class GoodsController extends Controller {
   GoodsPresenter presenter;
   List<Group> selectedGroups = [];
   bool isLoading = false;
+
+  bool groupsRetrieved;
+  bool goodsRetrieved;
+
+
   List<Group> _groups = [];
+  List<Good> _goods = [];
 
   List<Group> get groups => _groups;
-  GoodsController(storeRepository)
-      : presenter = GoodsPresenter(storeRepository),
+  List<Good> get goods => _goods;
+  GoodsController(storeRepository, goodRepository)
+      : presenter = GoodsPresenter(storeRepository, goodRepository),
         super() {
     loadData();
   }
   void loadData(){
     isLoading = true;
+    groupsRetrieved = goodsRetrieved = false;
+    _groups = [];
+    _goods = [];
     retrieveGroups();
     retrieveGoods();
   }
@@ -29,8 +40,10 @@ class GoodsController extends Controller {
     int groupId = getSelectedGroupId();
     presenter.getGroups(storeId, groupId);
   }
-  void retrieveGoods(){
-
+  void retrieveGoods() async{
+    int storeId =  await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    int groupId = getSelectedGroupId();
+    presenter.getGoods(storeId, groupId);
   }
 
   @override
@@ -39,9 +52,25 @@ class GoodsController extends Controller {
       this._groups = groups;
     };
     presenter.getGroupsOnComplete = (){
-      dismissLoading();
+      groupsRetrieved = true;
+      if (goodsRetrieved){
+        dismissLoading();
+      }
     };
     presenter.getGroupsOnError = (e){
+      showErrorToast(e.message);
+    };
+
+    presenter.getGoodsOnNext = (goods){
+      this._goods = goods;
+    };
+    presenter.getGoodsOnComplete = (){
+      goodsRetrieved = true;
+      if (groupsRetrieved){
+        dismissLoading();
+      }
+    };
+    presenter.getGoodsOnError = (e){
       showErrorToast(e.message);
     };
   }
@@ -56,36 +85,27 @@ class GoodsController extends Controller {
     super.dispose();
   }
 
-  void onAddGood() {
-    //Good item = Good();
-    //item.groupId = getSelectedGroupId();
-    //item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+  void onAddGood() async{
+    Good item = Good();
+    item.groupId = getSelectedGroupId();
+    item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
 
-    //SaveGoodPageArguments arguments = SaveGoodPageArguments();
-    //arguments.good = item;
-    //final result = await Navigator.of(context)
-    //    .pushNamed(Pages.save_good, arguments: arguments);
-    //if (result) {
-    //  screenUpdated();
-    //}
-    //Navigator.of(getContext()).pushNamed(Pages.save_group);
+    final result = await Navigator.of(getContext()).pushNamed(Pages.save_good,
+        arguments: {"isInsert": true, "item": item});
+    if (result){
+      loadData();
+    }
   }
 
   void onAddGroup() async {
     Group item = Group();
     item.groupId = getSelectedGroupId();
     item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
-    //final result = await Navigator.of(context).pushNamed(Pages.save_group,
-    //    arguments: SaveGroupPageArguments(true, item));
-    //if (result) {
-    //  screenUpdated();
-    //}
+
     final result = await Navigator.of(getContext()).pushNamed(Pages.save_group,
         arguments: {"isInsert": true, "item": item});
     if (result){
-      isLoading = true;
-      retrieveGroups();
-      retrieveGoods();
+      loadData();
     }
   }
   void openHelpPage(){
@@ -107,11 +127,16 @@ class GoodsController extends Controller {
     } else {
       selectedGroups = selectedGroups.sublist(0, index + 1);
     }
+    loadData();
     refreshUI();
+
   }
   void onGroupTapped(Group group) {
     selectedGroups.add(group);
-    refreshUI();
     loadData();
+    refreshUI();
+  }
+  void onGoodTapped(Good good){
+
   }
 }

@@ -194,21 +194,21 @@ class DBHelper {
     }
     return null;
   }
-  Future<int> insertGood(Good item) async {
+  Future<bool> insertGood(Good item) async {
     var dbClient = await db;
     int res = await dbClient.insert(GOOD_TABLE_NAME, item.toMap());
-    return res;
+    return res > 0;
   }
 
   Future<bool> updateGood(Good item) async {
     var dbClient = await db;
     int res = await dbClient.update(GOOD_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id]);
-    return res > 0 ? true : false;
+    return res > 0;
   }
-  Future<List<Good>> getGoods(int groupId) async {
+  Future<List<Good>> getGoods(int storeId, int groupId) async {
     var dbClient = await db;
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+   // int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     List<Map> list = [];
     if (groupId == null) {
       list = await dbClient.rawQuery(

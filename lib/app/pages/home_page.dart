@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/utils/constants.dart';
 
 import 'documents/documents_page.dart';
@@ -35,15 +36,21 @@ class _HomePageState extends State<HomePage>{
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(UIConstants.goodsIconData),
-            label: 'Sản phẩm',
+            label: AppLocalizations
+                .of(context)
+                .title_goods,
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.file_copy_outlined),
-              label: 'Giao dịch'
+              icon: Icon(UIConstants.documentsIconData),
+              label: AppLocalizations
+                  .of(context)
+                  .title_document
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.more_horiz),
-              label: 'Khác'
+              label: AppLocalizations
+                  .of(context)
+                  .title_more
           ),
         ],
         currentIndex: _selectedIndex,

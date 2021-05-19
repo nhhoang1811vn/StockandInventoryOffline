@@ -5,7 +5,7 @@ import 'package:good_manager/app/pages/goods/goods_view.dart';
 import 'package:good_manager/app/pages/help/help_page_dart.dart';
 import 'package:good_manager/app/pages/home_page.dart';
 import 'package:good_manager/app/pages/pages.dart';
-import 'package:good_manager/app/pages/save_good/save_good.dart';
+import 'package:good_manager/app/pages/save_good/save_good_view.dart';
 import 'package:good_manager/app/pages/save_group/save_group_view.dart';
 import 'package:good_manager/app/pages/save_store/save_store_view.dart';
 import 'package:good_manager/app/pages/save_supplier/save_supplier_view.dart';
@@ -29,7 +29,8 @@ class AppRouter {
       case Pages.good_list:
         return _buildRoute(settings, GoodsPage());
       case Pages.save_good:
-        return _buildRoute(settings, SaveGoodPage());
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(settings, SaveGoodPage(args['isInsert'], args['item']));
       case Pages.save_group:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(

@@ -1,4 +1,10 @@
 {
+  "title_goods" : "Goods",
+  "empty_goods" : "No goods",
+  "title_save_goods" : "Save Good",
+  "title_document" : "Document",
+  "empty_document" : "No documents",
+  "title_more" : "More",
   "stores_title" : "Stores",
   "save_store_title" : "Save Store",
   "empty_stores" : "No Store",

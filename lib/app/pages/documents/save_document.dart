@@ -3,15 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/app/pages/documents/save_document_presenter.dart';
 import 'package:good_manager/app/pages/goods/list.dart';
-import 'package:good_manager/app/pages/save_good/save_good.dart';
 import 'package:good_manager/app/widgets/custom_action_row.dart';
-import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
-
-import '../pages.dart';
 
 
 class SaveDocumentPage extends StatefulWidget {
@@ -225,7 +221,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
   }
 
   void onAddGood() async {
-    SaveGoodPageArguments arguments = SaveGoodPageArguments();
+    /*SaveGoodPageArguments arguments = SaveGoodPageArguments();
     Good good = Good();
     good.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     good.quantity = 1;
@@ -238,7 +234,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       var resultGood = Good.map(result);
       goods.add(resultGood);
       setState(() {});
-    }
+    }*/
   }
 
   void onSupplierTapped() async {

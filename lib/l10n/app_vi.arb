@@ -1,4 +1,10 @@
 {
+  "title_goods" : "Sản phẩm",
+  "empty_goods" : "Chưa có sản phẩm",
+  "title_save_goods" : "Lưu sản phẩm",
+  "title_document" : "Giao dịch",
+  "empty_document" : "Chưa có giao dịch",
+    "title_more" : "Khác",
   "stores_title" : "Cửa hàng",
   "save_store_title" : "Lưu cửa hàng",
   "empty_stores" : "Chưa có cửa hàng",

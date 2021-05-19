@@ -1,7 +1,7 @@
 import 'package:good_manager/data/utils/constants.dart';
 import 'package:good_manager/db/db_helper.dart';
-import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/sort_by.dart';
+import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/supplier_settings.dart';
 import 'package:good_manager/domain/repositories/supplier_repositories.dart';
 import 'package:shared_preferences/shared_preferences.dart';

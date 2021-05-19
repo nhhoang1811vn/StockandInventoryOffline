@@ -4,8 +4,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:good_manager/app/pages/home_page.dart';
 import 'package:good_manager/app/utils/router.dart';
 
-import 'pages/onboarding/on_boarding_page.dart';
-
 void main(){
   runApp(MyApp());
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/good.dart';
-import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/entities/good_item.dart';
+import 'package:good_manager/domain/entities/group.dart';
 class GoodList extends StatelessWidget {
   List<Good> items;
   final void Function(Good good) onGoodTapped;
