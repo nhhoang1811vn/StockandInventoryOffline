@@ -2,7 +2,6 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/app/pages/documents/save_document_presenter.dart';
-import 'package:good_manager/app/pages/goods/list.dart';
 import 'package:good_manager/app/widgets/custom_action_row.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
@@ -166,9 +165,8 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                         padding: EdgeInsets.only(top: 8, bottom: 8),
                         child: Text('Danh Sách Sản Phẩm',
                             style: TextStyle(color: Colors.white)))),
-                Expanded(
-                    child: GoodList(goods, (it) => onGoodTapped(it),
-                        (it) => onGoodLongPressed(it)))
+                //TODO
+                // Expanded(child: GoodList(goods, (it) => onGoodTapped(it), (it) => onGoodLongPressed(it)))
               ],
             ),
           ),

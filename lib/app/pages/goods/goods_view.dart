@@ -9,7 +9,9 @@ import 'package:good_manager/data/repositories/data_good_repository.dart';
 import 'package:good_manager/data/repositories/data_group_repository.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
+import 'good_item_row.dart';
 import 'goods_controller.dart';
+import 'group_item_row.dart';
 
 class GoodsPage extends View {
   GoodsPage() : super();
@@ -21,7 +23,8 @@ class GoodsPage extends View {
 class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
   SearchBar searchBar;
 
-  GoodsPageView() : super(GoodsController(DataGroupRepository(), DataGoodRepository())) {
+  GoodsPageView()
+      : super(GoodsController(DataGroupRepository(), DataGoodRepository())) {
     searchBar = new SearchBar(
         inBar: true,
         setState: setState,
@@ -37,32 +40,33 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
   }
 
   AppBar buildAppBar(BuildContext context) {
-    return new AppBar(title: new Text(AppLocalizations
-        .of(context)
-        .title_goods), actions: [
-      searchBar.getSearchAction(context),
-      Padding(
-        padding: EdgeInsets.only(right: 20.0),
-        child: GestureDetector(
-          child: Icon(
-            Icons.sort_by_alpha,
-            size: 26,
-          ),
-        ),
-      ),
-      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
-        return Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          child: GestureDetector(
-            onTap: controller.openHelpPage,
-            child: Icon(
-              Icons.help,
-              size: 26,
+    return new AppBar(
+        title: new Text(AppLocalizations.of(context).title_goods),
+        actions: [
+          searchBar.getSearchAction(context),
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              child: Icon(
+                Icons.sort_by_alpha,
+                size: 26,
+              ),
             ),
           ),
-        );
-      })
-    ]);
+          ControlledWidgetBuilder<GoodsController>(
+              builder: (context, controller) {
+            return Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: controller.openHelpPage,
+                child: Icon(
+                  Icons.help,
+                  size: 26,
+                ),
+              ),
+            );
+          })
+        ]);
   }
 
 /*  @override
@@ -182,20 +186,25 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
     }
   }*/
 
-  Widget getBody(){
-    List<Widget> children = [storeView,groupView,Expanded(child: groupsListView,),Expanded(child: goodsListView)];
+  Widget getBody() {
+    List<Widget> children = [
+      storeView,
+      groupView,
+      Expanded(
+        child: groupsListView,
+      ),
+      Expanded(child: goodsListView)
+    ];
     return ListView(children: children);
   }
 
-  Widget get storeView =>
-      Container(
-          color: UIConstants.primaryDarkColor,
-          width: double.infinity,
-          alignment: Alignment.center,
-          child: Padding(
-              padding: EdgeInsets.only(top: 4, bottom: 4),
-              child: Text(
-                  'main store', style: TextStyle(color: Colors.white))));
+  Widget get storeView => Container(
+      color: UIConstants.primaryDarkColor,
+      width: double.infinity,
+      alignment: Alignment.center,
+      child: Padding(
+          padding: EdgeInsets.only(top: 4, bottom: 4),
+          child: Text('main store', style: TextStyle(color: Colors.white))));
 
   Widget get groupView =>
       ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
@@ -237,9 +246,10 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
       });
 
   Widget get emptyView =>
-      ControlledWidgetBuilder<GoodsController>(
-          builder: (context, controller) {
-            return Visibility(visible:controller.groups.isEmpty, child: Column(
+      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
+        return Visibility(
+            visible: controller.groups.isEmpty,
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -249,95 +259,88 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
                 ),
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text('Khong co SP nao ca', textAlign: TextAlign.center))
+                    child:
+                        Text('Khong co SP nao ca', textAlign: TextAlign.center))
               ],
-
             ));
-          });
+      });
 
   Widget get groupsListView {
     return ControlledWidgetBuilder<GoodsController>(
         builder: (context, controller) {
-          return ListView.separated(
-              shrinkWrap: true,
-              itemBuilder: (BuildContext context, index) {
-                var group = controller.groups[index];
-                return ListTile(
-                  leading: Icon(Icons.folder),
-                  title: Text(group.name),
-                  onTap: () => controller.onGroupTapped(group),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return Divider();
-              },
-              itemCount: controller.groups.length);
-        });
+      return ListView.separated(
+          shrinkWrap: true,
+          itemBuilder: (BuildContext context, index) {
+            var group = controller.groups[index];
+            return GroupItemRow(group, (item) => controller.onGroupTapped(item),
+                (item) => controller.onGroupLongPressed(item));
+          },
+          separatorBuilder: (context, index) {
+            return Divider();
+          },
+          itemCount: controller.groups.length);
+    });
   }
+
   Widget get goodsListView {
     return ControlledWidgetBuilder<GoodsController>(
         builder: (context, controller) {
-          return ListView.separated(
-            shrinkWrap: true,
-              itemBuilder: (BuildContext context, index) {
-                var good = controller.goods[index];
-                return ListTile(
-                  leading: Icon(Icons.ac_unit),
-                  title: Text(good.name),
-                  subtitle: Text(good.description),
-                  onTap: () => controller.onGoodTapped(good),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return Divider();
-              },
-              itemCount: controller.goods.length);
-        });
+      return ListView.separated(
+          shrinkWrap: true,
+          itemBuilder: (BuildContext context, index) {
+            var good = controller.goods[index];
+            return GoodItemRow(good, (item) => controller.onGoodTapped(good),
+                (item) => controller.onGoodLongPressed(good));
+          },
+          separatorBuilder: (context, index) {
+            return Divider();
+          },
+          itemCount: controller.goods.length);
+    });
   }
 
   @override
-  Widget get view =>
-      Scaffold(
-          key: globalKey,
-          appBar: searchBar.build(context),
-          body: ControlledWidgetBuilder<GoodsController>(
-              builder: (context, controller) {
-                return ModalProgressHUD(
-                    child: getBody(),
-                    inAsyncCall: controller.isLoading, //controller.isLoading,
-                    opacity: 0);
-              }),
-          floatingActionButton: ControlledWidgetBuilder<GoodsController>(
-              builder: (context, controller) {
-                return SpeedDial(
-                  icon: Icons.add,
-                  activeIcon: Icons.close,
-                  buttonSize: 56.0,
-                  visible: true,
-                  closeManually: false,
-                  renderOverlay: false,
-                  curve: Curves.bounceIn,
-                  overlayColor: Colors.black,
-                  overlayOpacity: 0.5,
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                  elevation: 8.0,
-                  shape: CircleBorder(),
-                  children: [
-                    SpeedDialChild(
-                        child: Icon(
-                          Icons.folder,
-                          color: Colors.grey,
-                        ),
-                        backgroundColor: Colors.white,
-                        label: 'Nhóm',
-                        onTap: controller.onAddGroup),
-                    SpeedDialChild(
-                        child: Icon(Icons.image, color: Colors.grey),
-                        backgroundColor: Colors.white,
-                        label: 'Sản phẩm',
-                        onTap: controller.onAddGood)
-                  ],
-                );
-              }));
+  Widget get view => Scaffold(
+      key: globalKey,
+      appBar: searchBar.build(context),
+      body: ControlledWidgetBuilder<GoodsController>(
+          builder: (context, controller) {
+        return ModalProgressHUD(
+            child: getBody(),
+            inAsyncCall: controller.isLoading, //controller.isLoading,
+            opacity: 0);
+      }),
+      floatingActionButton: ControlledWidgetBuilder<GoodsController>(
+          builder: (context, controller) {
+        return SpeedDial(
+          icon: Icons.add,
+          activeIcon: Icons.close,
+          buttonSize: 56.0,
+          visible: true,
+          closeManually: false,
+          renderOverlay: false,
+          curve: Curves.bounceIn,
+          overlayColor: Colors.black,
+          overlayOpacity: 0.5,
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
+          elevation: 8.0,
+          shape: CircleBorder(),
+          children: [
+            SpeedDialChild(
+                child: Icon(
+                  Icons.folder,
+                  color: Colors.grey,
+                ),
+                backgroundColor: Colors.white,
+                label: 'Nhóm',
+                onTap: controller.onAddGroup),
+            SpeedDialChild(
+                child: Icon(Icons.image, color: Colors.grey),
+                backgroundColor: Colors.white,
+                label: 'Sản phẩm',
+                onTap: controller.onAddGood)
+          ],
+        );
+      }));
 }

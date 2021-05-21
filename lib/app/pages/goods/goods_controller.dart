@@ -136,7 +136,13 @@ class GoodsController extends Controller {
     loadData();
     refreshUI();
   }
+  void onGroupLongPressed(Group group){
+
+  }
   void onGoodTapped(Good good){
+
+  }
+  void onGoodLongPressed(Good good){
 
   }
 }
