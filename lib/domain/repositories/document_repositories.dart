@@ -1,5 +1,9 @@
 import 'package:good_manager/domain/entities/document.dart';
 
-abstract class DocumentRepository {
+import 'base_repository.dart';
+
+abstract class DocumentRepository extends BaseRepository<Document> {
   Future<List<Document>> findBySupplierId(int id);
+
+  Future<List<Document>> getDocumentsByType(DocumentType type);
 }

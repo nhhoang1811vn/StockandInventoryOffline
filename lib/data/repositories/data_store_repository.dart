@@ -18,6 +18,7 @@ class DataStoreRepository implements StoreRepository{
   Future<List<Store>> getAll() {
     return db.getStores();
   }
+
   @override
   Future<bool> insert(Store store) {
     return db.insertStore(store);
@@ -28,4 +29,8 @@ class DataStoreRepository implements StoreRepository{
     return db.updateStore(store);
   }
 
+  @override
+  Future<bool> delete(int id) {
+    return db.deleteStore(id);
+  }
 }

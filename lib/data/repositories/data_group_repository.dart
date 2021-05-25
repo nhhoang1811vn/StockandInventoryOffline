@@ -25,6 +25,18 @@ class DataGroupRepository implements GroupRepository {
 
   @override
   Future<List<Group>> getGroups(int storeId, int groupId) {
-    return db.getGroups(storeId,groupId);
+    return db.getGroups(storeId, groupId);
+  }
+
+  @override
+  Future<bool> delete(int id) {
+    // TODO: implement delete
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Group>> getAll() {
+    // TODO: implement getAll
+    throw UnimplementedError();
   }
 }

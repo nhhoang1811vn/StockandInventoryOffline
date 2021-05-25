@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/app/pages/documents/documents_page.dart';
-import 'package:good_manager/app/pages/documents/save_document.dart';
+import 'package:good_manager/app/pages/documents/documents_view.dart';
 import 'package:good_manager/app/pages/goods/goods_view.dart';
 import 'package:good_manager/app/pages/help/help_page_dart.dart';
 import 'package:good_manager/app/pages/home_page.dart';
 import 'package:good_manager/app/pages/pages.dart';
+import 'package:good_manager/app/pages/save_document/save_document_view.dart';
 import 'package:good_manager/app/pages/save_good/save_good_view.dart';
 import 'package:good_manager/app/pages/save_group/save_group_view.dart';
 import 'package:good_manager/app/pages/save_store/save_store_view.dart';
@@ -45,7 +45,9 @@ class AppRouter {
       case Pages.document_list:
         return _buildRoute(settings, DocumentsPage());
       case Pages.save_document:
-        return _buildRoute(settings, SaveDocumentPage());
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(
+            settings, SaveDocumentPage(args['isInsert'], args['item']));
       case Pages.help:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(

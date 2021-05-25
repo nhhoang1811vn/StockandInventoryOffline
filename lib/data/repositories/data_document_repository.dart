@@ -17,4 +17,29 @@ class DataDocumentRepository implements DocumentRepository {
   Future<List<Document>> findBySupplierId(int id) {
     return db.findDocumentBySupplierId(id);
   }
+
+  @override
+  Future<bool> delete(int id) {
+    return db.deleteDocument(id);
+  }
+
+  @override
+  Future<List<Document>> getAll() {
+    return db.getAllDocuments();
+  }
+
+  @override
+  Future<bool> insert(Document item) {
+    return db.insertDocument(item);
+  }
+
+  @override
+  Future<bool> update(Document item) {
+    return db.updateDocument(item);
+  }
+
+  @override
+  Future<List<Document>> getDocumentsByType(DocumentType type) {
+    return db.getDocumentsByType(type);
+  }
 }

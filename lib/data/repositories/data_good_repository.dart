@@ -25,6 +25,16 @@ class DataGoodRepository implements GoodRepository {
 
   @override
   Future<List<Good>> getGoods(int storeId, int groupId) {
-    return db.getGoods(storeId,groupId);
+    return db.getGoods(storeId, groupId);
+  }
+
+  @override
+  Future<bool> delete(int id) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Good>> getAll() {
+    throw UnimplementedError();
   }
 }

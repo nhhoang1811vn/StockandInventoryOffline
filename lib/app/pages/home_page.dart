@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/utils/constants.dart';
 
-import 'documents/documents_page.dart';
+import 'documents/documents_view.dart';
 import 'goods/goods_view.dart';
 import 'more/more_view.dart';
 

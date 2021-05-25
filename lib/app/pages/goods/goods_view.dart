@@ -248,7 +248,7 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
   Widget get emptyView =>
       ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
         return Visibility(
-            visible: controller.groups.isEmpty,
+            visible: controller.groups.isEmpty && controller.goods.isEmpty,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -259,8 +259,8 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
                 ),
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child:
-                        Text('Khong co SP nao ca', textAlign: TextAlign.center))
+                    child: Text(AppLocalizations.of(context).empty_goods,
+                        textAlign: TextAlign.center))
               ],
             ));
       });

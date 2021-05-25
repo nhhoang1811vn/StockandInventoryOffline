@@ -23,11 +23,11 @@ class DBHelper {
   final String SUPPLIERS_TABLE_NAME = "Suppliers";
   final String CUSTOMERS_TABLE_NAME = "Customers";
 
-  final String GROUP_TABLE_NAME = "Groups";
-  final String GOOD_TABLE_NAME = "Goods";
+  final String GROUPS_TABLE_NAME = "Groups";
+  final String GOODS_TABLE_NAME = "Goods";
 
-  final String DOCUMENT_TABLE_NAME = "Documents";
-  final String DOCUMENT_TRANSACTION_TABLE_NAME = "DocumentTransactions";
+  final String DOCUMENTS_TABLE_NAME = "Documents";
+  final String DOCUMENT_TRANSACTIONS_TABLE_NAME = "Transactions";
 
   Future<Database> get db async {
     if (_db != null) return _db;
@@ -54,22 +54,23 @@ class DBHelper {
         "CREATE TABLE $CUSTOMERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT)");
 
     await db.execute(
-        "CREATE TABLE $DOCUMENT_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, date INTEGER, type INTEGER, storeId INTEGER ,supplierId INTEGER, customerId INTEGER, " +
+        "CREATE TABLE $DOCUMENTS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, date INTEGER, type INTEGER, storeId INTEGER ,supplierId INTEGER, customerId INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id)," +
             "FOREIGN KEY(supplierId) REFERENCES $SUPPLIERS_TABLE_NAME(id)," +
             "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id))");
 
     await db.execute(
-        "CREATE TABLE $GROUP_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, groupId INTEGER, " +
+        "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, groupId INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
     await db.execute(
-        "CREATE TABLE $GOOD_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, groupId INTEGER, " +
+        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, groupId INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
-    
-    await db.execute("CREATE TABLE $DOCUMENT_TRANSACTION_TABLE_NAME(documentId INTEGER NOT NULL, goodId INTEGER NOT NULL, quantity INTEGER, " +
-    "CONSTRAINT PK_Document_Transaction PRIMARY KEY (documentId,goodId), "
-        + "FOREIGN KEY(documentId) REFERENCES $DOCUMENT_TABLE_NAME(id),"
-        + "FOREIGN KEY(goodId) REFERENCES $GOOD_TABLE_NAME(id))");
+
+    await db.execute(
+        "CREATE TABLE $DOCUMENT_TRANSACTIONS_TABLE_NAME(documentId INTEGER NOT NULL, goodId INTEGER NOT NULL, quantity INTEGER, " +
+            "CONSTRAINT PK_Document_Transaction PRIMARY KEY (documentId,goodId), " +
+            "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id)," +
+            "FOREIGN KEY(goodId) REFERENCES $GOODS_TABLE_NAME(id))");
   }
   ///STORE
   Future<bool> insertStore(Store store) async {
@@ -90,12 +91,12 @@ class DBHelper {
     return stores;
   }
 
-  Future<int> deleteStore(Store store) async {
+  Future<bool> deleteStore(int id) async {
     var dbClient = await db;
 
     int res = await dbClient
-        .rawDelete('DELETE FROM $STORES_TABLE_NAME WHERE id = ?', [store.id]);
-    return res;
+        .rawDelete('DELETE FROM $STORES_TABLE_NAME WHERE id = ?', [id]);
+    return res > 0;
   }
 
   Future<bool> updateStore(Store store) async {
@@ -152,13 +153,13 @@ class DBHelper {
   //GROUP
   Future<bool> insertGroup(Group item) async {
     var dbClient = await db;
-    int res = await dbClient.insert(GROUP_TABLE_NAME, item.toMap());
+    int res = await dbClient.insert(GROUPS_TABLE_NAME, item.toMap());
     return res > 0;
   }
 
   Future<bool> updateGroup(Group item) async {
     var dbClient = await db;
-    int res = await dbClient.update(GROUP_TABLE_NAME, item.toMap(),
+    int res = await dbClient.update(GROUPS_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id]);
     return res > 0;
   }
@@ -170,11 +171,11 @@ class DBHelper {
     List<Map> list = [];
     if (groupId == null) {
       list = await dbClient.rawQuery(
-          'SELECT * FROM $GROUP_TABLE_NAME where storeId = ? AND groupId IS NULL',
+          'SELECT * FROM $GROUPS_TABLE_NAME where storeId = ? AND groupId IS NULL',
           [storeId]);
     } else {
       list = await dbClient.rawQuery(
-          'SELECT * FROM $GROUP_TABLE_NAME WHERE storeId = ? AND groupId = ?',
+          'SELECT * FROM $GROUPS_TABLE_NAME WHERE storeId = ? AND groupId = ?',
           [storeId, groupId]);
     }
     List<Group> groups = new List();
@@ -187,8 +188,9 @@ class DBHelper {
   //GOOD
   Future<Good> findGood(int id) async{
     var dbClient = await db;
-    var list = await dbClient.rawQuery('SELECT * FROM $GOOD_TABLE_NAME where id = ?', [id]);
-    if (list.isNotEmpty){
+    var list = await dbClient
+        .rawQuery('SELECT * FROM $GOODS_TABLE_NAME where id = ?', [id]);
+    if (list.isNotEmpty) {
       Map item = list.first;
       return Good.map(item);
     }
@@ -196,13 +198,13 @@ class DBHelper {
   }
   Future<bool> insertGood(Good item) async {
     var dbClient = await db;
-    int res = await dbClient.insert(GOOD_TABLE_NAME, item.toMap());
+    int res = await dbClient.insert(GOODS_TABLE_NAME, item.toMap());
     return res > 0;
   }
 
   Future<bool> updateGood(Good item) async {
     var dbClient = await db;
-    int res = await dbClient.update(GOOD_TABLE_NAME, item.toMap(),
+    int res = await dbClient.update(GOODS_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id]);
     return res > 0;
   }
@@ -212,11 +214,11 @@ class DBHelper {
     List<Map> list = [];
     if (groupId == null) {
       list = await dbClient.rawQuery(
-          'SELECT * FROM $GOOD_TABLE_NAME where storeId = ? AND groupId IS NULL',
+          'SELECT * FROM $GOODS_TABLE_NAME where storeId = ? AND groupId IS NULL',
           [storeId]);
     } else {
       list = await dbClient.rawQuery(
-          'SELECT * FROM $GOOD_TABLE_NAME WHERE storeId = ? AND groupId = ?',
+          'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ? AND groupId = ?',
           [storeId, groupId]);
     }
     List<Good> goods = new List();
@@ -227,23 +229,31 @@ class DBHelper {
     return goods;
   }
   //DOCUMENT
-  Future<int> insertDocument(Document item) async {
+  Future<bool> insertDocument(Document item) async {
     var dbClient = await db;
-    int res = await dbClient.insert(DOCUMENT_TABLE_NAME, item.toMap());
-    return res;
+    int res = await dbClient.insert(DOCUMENTS_TABLE_NAME, item.toMap());
+    return res > 0;
   }
 
   Future<bool> updateDocument(Document item) async {
     var dbClient = await db;
-    int res = await dbClient.update(DOCUMENT_TABLE_NAME, item.toMap(),
+    int res = await dbClient.update(DOCUMENTS_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id]);
-    return res > 0 ? true : false;
+    return res > 0;
+  }
+
+  Future<bool> deleteDocument(int id) async {
+    var dbClient = await db;
+
+    int res = await dbClient
+        .rawDelete('DELETE FROM $DOCUMENTS_TABLE_NAME WHERE id = ?', [id]);
+    return res > 0;
   }
 
   Future<List<Document>> findDocumentBySupplierId(int supplierId) async {
     var dbClient = await db;
 
-    final sql = "SELECT * FROM $DOCUMENT_TABLE_NAME WHERE id = ?";
+    final sql = "SELECT * FROM $DOCUMENTS_TABLE_NAME WHERE id = ?";
     List<Map> list = await dbClient.rawQuery(sql, [supplierId]);
     return list.map((e) => Document.map(e)).toList();
   }
@@ -253,7 +263,7 @@ class DBHelper {
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
 
     List<Map> list = await dbClient.rawQuery(
-        'SELECT $DOCUMENT_TABLE_NAME.id, $DOCUMENT_TABLE_NAME.name, $DOCUMENT_TABLE_NAME.description, $DOCUMENT_TABLE_NAME.date, $DOCUMENT_TABLE_NAME.type, $DOCUMENT_TABLE_NAME.storeId, $DOCUMENT_TABLE_NAME.supplierId, $SUPPLIERS_TABLE_NAME.supplierName FROM $DOCUMENT_TABLE_NAME LEFT JOIN $SUPPLIERS_TABLE_NAME ON $DOCUMENT_TABLE_NAME.supplierId = $SUPPLIERS_TABLE_NAME.id where storeId = ?',
+        'SELECT $DOCUMENTS_TABLE_NAME.id, $DOCUMENTS_TABLE_NAME.name, $DOCUMENTS_TABLE_NAME.description, $DOCUMENTS_TABLE_NAME.date, $DOCUMENTS_TABLE_NAME.type, $DOCUMENTS_TABLE_NAME.storeId, $DOCUMENTS_TABLE_NAME.supplierId, $SUPPLIERS_TABLE_NAME.supplierName FROM $DOCUMENTS_TABLE_NAME LEFT JOIN $SUPPLIERS_TABLE_NAME ON $DOCUMENTS_TABLE_NAME.supplierId = $SUPPLIERS_TABLE_NAME.id where storeId = ?',
         [storeId]);
     List<Document> documents = new List();
     for (int i = 0; i < list.length; i++) {
@@ -268,7 +278,7 @@ class DBHelper {
     var dbClient = await db;
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     List<Map> list = await dbClient.rawQuery(
-        'SELECT $DOCUMENT_TABLE_NAME.id, $DOCUMENT_TABLE_NAME.name, $DOCUMENT_TABLE_NAME.description, $DOCUMENT_TABLE_NAME.date, $DOCUMENT_TABLE_NAME.type, $DOCUMENT_TABLE_NAME.storeId, $DOCUMENT_TABLE_NAME.supplierId, $SUPPLIERS_TABLE_NAME.supplierName FROM $DOCUMENT_TABLE_NAME LEFT JOIN $SUPPLIERS_TABLE_NAME ON $DOCUMENT_TABLE_NAME.supplierId = $SUPPLIERS_TABLE_NAME.id where storeId = ? AND type = ?',
+        'SELECT $DOCUMENTS_TABLE_NAME.id, $DOCUMENTS_TABLE_NAME.name, $DOCUMENTS_TABLE_NAME.description, $DOCUMENTS_TABLE_NAME.date, $DOCUMENTS_TABLE_NAME.type, $DOCUMENTS_TABLE_NAME.storeId, $DOCUMENTS_TABLE_NAME.supplierId, $SUPPLIERS_TABLE_NAME.supplierName FROM $DOCUMENTS_TABLE_NAME LEFT JOIN $SUPPLIERS_TABLE_NAME ON $DOCUMENTS_TABLE_NAME.supplierId = $SUPPLIERS_TABLE_NAME.id where storeId = ? AND type = ?',
         [storeId, type.index]);
     List<Document> documents = new List();
     for (int i = 0; i < list.length; i++) {
@@ -282,7 +292,7 @@ class DBHelper {
   Future<int> getQuantityByDocumentId(int documentId) async {
     var dbClient = await db;
     var result = await dbClient.rawQuery(
-        'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTION_TABLE_NAME WHERE documentId = ?',
+        'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE documentId = ?',
         [documentId]);
     int value = result[0]["SUM(quantity)"];
     return value == null ? 0 : value;
@@ -294,7 +304,7 @@ class DBHelper {
     }
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
-        'SELECT * FROM $DOCUMENT_TRANSACTION_TABLE_NAME where documentId = ?',
+        'SELECT * FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME where documentId = ?',
         [documentId]);
 
     List<Good> goods = new List();
@@ -307,19 +317,10 @@ class DBHelper {
     return goods;
   }
 
-  Future<int> insertDocumentTransaction(DocumentTransaction item) async {
+  Future<bool> insertDocumentTransaction(DocumentTransaction item) async {
     var dbClient = await db;
     int res =
-        await dbClient.insert(DOCUMENT_TRANSACTION_TABLE_NAME, item.toMap());
-    return res;
-  }
-
-  Future<int> deleteDocumentTransaction(int documentId) async {
-    var dbClient = await db;
-
-    int res = await dbClient.rawDelete(
-        'DELETE FROM $DOCUMENT_TRANSACTION_TABLE_NAME WHERE documentId = ?',
-        [documentId]);
-    return res;
+        await dbClient.insert(DOCUMENT_TRANSACTIONS_TABLE_NAME, item.toMap());
+    return res > 0;
   }
 }
