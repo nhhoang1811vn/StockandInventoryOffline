@@ -24,12 +24,7 @@ class DataDocumentRepository implements DocumentRepository {
   }
 
   @override
-  Future<List<Document>> getAll() {
-    return db.getAllDocuments();
-  }
-
-  @override
-  Future<bool> insert(Document item) {
+  Future<int> insert(Document item) {
     return db.insertDocument(item);
   }
 
@@ -38,8 +33,19 @@ class DataDocumentRepository implements DocumentRepository {
     return db.updateDocument(item);
   }
 
-  @override
+  /*@override
   Future<List<Document>> getDocumentsByType(DocumentType type) {
     return db.getDocumentsByType(type);
+  }*/
+
+  @override
+  Future<List<Document>> getDocuments(int storeId) {
+    return db.getDocuments(storeId);
+  }
+
+  @override
+  Future<List<Document>> getAll() {
+    // TODO: implement getAll
+    throw UnimplementedError();
   }
 }

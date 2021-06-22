@@ -13,20 +13,20 @@ class SaveStoreController extends Controller {
   SaveStorePresenter _presenter;
   bool isLoading = false;
   Store _item;
-  bool _isInsert;
 
   Store get item => _item;
 
-  SaveStoreController(storeRepository, this._item, this._isInsert)
+  SaveStoreController(storeRepository, this._item)
       : _presenter = SaveStorePresenter(storeRepository),
         super() {
     nameTextController = TextEditingController();
     descriptionTextController = TextEditingController();
 
-    if (_item != null) {
-      nameTextController.text = _item.name;
-      descriptionTextController.text = _item.description;
+    if (_item == null) {
+      _item = Store();
     }
+    nameTextController.text = _item.name;
+    descriptionTextController.text = _item.description;
     isLoading = false;
   }
 
@@ -36,9 +36,10 @@ class SaveStoreController extends Controller {
       dismissLoading();
       showErrorToast(e.message);
     };
-    _presenter.insertStoreOnComplete = () {
+    _presenter.insertStoreOnNext = (storeId) {
       dismissLoading();
-      Navigator.of(getContext()).pop(true);
+      _item.id = storeId;
+      Navigator.of(getContext()).pop(_item);
     };
 
     _presenter.updateStoreOnError = (e) {
@@ -47,7 +48,7 @@ class SaveStoreController extends Controller {
     };
     _presenter.updateStoreOnComplete = () {
       dismissLoading();
-      Navigator.of(getContext()).pop(true);
+      Navigator.of(getContext()).pop(_item);
     };
   }
 
@@ -67,16 +68,17 @@ class SaveStoreController extends Controller {
     // Validate params
     assert(formKey is GlobalKey<FormState>);
     if (formKey.currentState.validate()) {
-      if (_item == null) {
-        _item = Store();
-      }
-      _item.name = nameTextController.text;
-      _item.description = descriptionTextController.text;
-      if (_isInsert) {
+      updateItem();
+      if (_item.id == null) {
         _presenter.insert(_item);
       } else {
         _presenter.update(_item);
       }
     }
+  }
+
+  void updateItem() {
+    _item.name = nameTextController.text;
+    _item.description = descriptionTextController.text;
   }
 }

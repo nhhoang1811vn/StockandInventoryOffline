@@ -8,18 +8,15 @@ import 'package:good_manager/domain/usecases/suppliers/set_supplier_settings_use
 
 class SuppliersPresenter extends Presenter {
   Function getSuppliersOnNext;
-  Function getSuppliersOnComplete;
   Function getSuppliersOnError;
 
   Function getSupplierSettingsOnNext;
-  Function getSupplierSettingsOnComplete;
   Function getSupplierSettingsOnError;
 
   Function setSupplierSettingsOnComplete;
   Function setSupplierSettingsOnError;
 
   //Delete Supplier
-  Function deleteSupplierOnNext;
   Function deleteSupplierOnComplete;
   Function deleteSupplierOnError;
 
@@ -28,15 +25,16 @@ class SuppliersPresenter extends Presenter {
   SetSupplierSettingsUseCase _setSupplierSettingsUseCase;
   DeleteSupplierUseCase _deleteSupplierUseCase;
 
-  SuppliersPresenter(_supplierRepository, _documentRepository) {
+  int deletedId;
+
+  SuppliersPresenter(_supplierRepository) {
     _getSuppliersUseCase = GetSuppliersUseCase(_supplierRepository);
     _getSupplierSettingsUseCase =
         GetSupplierSettingsUseCase(_supplierRepository);
     _setSupplierSettingsUseCase =
         SetSupplierSettingsUseCase(_supplierRepository);
 
-    _deleteSupplierUseCase =
-        DeleteSupplierUseCase(_supplierRepository, _documentRepository);
+    _deleteSupplierUseCase = DeleteSupplierUseCase(_supplierRepository);
   }
 
   @override
@@ -58,8 +56,11 @@ class SuppliersPresenter extends Presenter {
           _SetSupplierSettingsUseCaseObserver(this),
           SetSupplierSettingsUseCaseParams(settings));
 
-  void delete(int id) => _deleteSupplierUseCase.execute(
-      _DeleteSupplierUseCaseObserver(this), DeleteSupplierUseCaseParams((id)));
+  void delete(int id) {
+    deletedId = id;
+    _deleteSupplierUseCase.execute(_DeleteSupplierUseCaseObserver(this),
+        DeleteSupplierUseCaseParams((id)));
+  }
 }
 
 class _GetSuppliersUseCaseObserver implements Observer<List<Supplier>>{
@@ -67,7 +68,6 @@ class _GetSuppliersUseCaseObserver implements Observer<List<Supplier>>{
   _GetSuppliersUseCaseObserver(this._presenter);
   @override
   void onComplete() {
-    _presenter.getSuppliersOnComplete();
   }
 
   @override
@@ -89,7 +89,6 @@ class _GetSupplierSettingsUseCaseObserver
 
   @override
   void onComplete() {
-    _presenter.getSupplierSettingsOnComplete();
   }
 
   @override
@@ -122,8 +121,7 @@ class _SetSupplierSettingsUseCaseObserver implements Observer<void> {
   void onNext(void response) {}
 }
 
-class _DeleteSupplierUseCaseObserver
-    implements Observer<DeleteSupplierUseCaseResult> {
+class _DeleteSupplierUseCaseObserver implements Observer<void> {
   SuppliersPresenter _presenter;
 
   _DeleteSupplierUseCaseObserver(this._presenter);
@@ -139,7 +137,5 @@ class _DeleteSupplierUseCaseObserver
   }
 
   @override
-  void onNext(DeleteSupplierUseCaseResult response) {
-    _presenter.deleteSupplierOnNext(response);
-  }
+  void onNext(void response) {}
 }

@@ -14,7 +14,7 @@ class DataGroupRepository implements GroupRepository {
   var db = new DBHelper();
 
   @override
-  Future<bool> insert(Group item) {
+  Future<int> insert(Group item) {
     return db.insertGroup(item);
   }
 

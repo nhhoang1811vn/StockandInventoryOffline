@@ -20,7 +20,7 @@ class DataStoreRepository implements StoreRepository{
   }
 
   @override
-  Future<bool> insert(Store store) {
+  Future<int> insert(Store store) {
     return db.insertStore(store);
   }
 

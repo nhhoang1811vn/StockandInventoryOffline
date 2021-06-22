@@ -23,7 +23,7 @@ class DataSupplierRepository implements SupplierRepository {
   }
 
   @override
-  Future<bool> insert(Supplier supplier) {
+  Future<int> insert(Supplier supplier) {
     return db.insertSupplier(supplier);
   }
 

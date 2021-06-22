@@ -6,20 +6,19 @@ import 'package:good_manager/data/repositories/data_group_repository.dart';
 import 'package:good_manager/domain/entities/group.dart';
 
 class SaveGroupPage extends View {
-  final bool isInsert;
   final Group item;
 
-  SaveGroupPage(this.isInsert, this.item) : super();
+  SaveGroupPage(this.item) : super();
 
   @override
-  SaveGroupPageView createState() => SaveGroupPageView(isInsert, item);
+  SaveGroupPageView createState() => SaveGroupPageView(item);
 }
 
 class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  SaveGroupPageView(isInsert, item)
-      : super(SaveGroupController(DataGroupRepository(), isInsert, item));
+  SaveGroupPageView(item)
+      : super(SaveGroupController(DataGroupRepository(), item));
 
   @override
   Widget get view => Scaffold(

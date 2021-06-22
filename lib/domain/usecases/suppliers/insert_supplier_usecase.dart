@@ -4,23 +4,19 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/repositories/supplier_repositories.dart';
 
-class InsertSupplierUseCase
-    extends CompletableUseCase<InsertSupplierUseCaseParams> {
+class InsertSupplierUseCase extends UseCase<int, InsertSupplierUseCaseParams> {
   final SupplierRepository _repository;
 
   InsertSupplierUseCase(this._repository);
 
   @override
-  Future<Stream<void>> buildUseCaseStream(
+  Future<Stream<int>> buildUseCaseStream(
       InsertSupplierUseCaseParams params) async {
-    final StreamController<void> controller = StreamController();
+    final StreamController<int> controller = StreamController();
     try {
-      bool successful = await _repository.insert(params.item);
-      if (successful) {
-        controller.close();
-      } else {
-        throw Exception("insert failed");
-      }
+      int supplierId = await _repository.insert(params.item);
+      controller.add(supplierId);
+      controller.close();
     } catch (e) {
       controller.addError(e);
     }

@@ -7,11 +7,11 @@ class Good{
   int groupId;
 
   int quantity;
+  int pendingQuantity = 0;
 
   Good();
 
-
-  Good.map(dynamic obj){
+  Good.map(dynamic obj) {
     this.id = obj["id"];
     this.name = obj["name"];
     this.description = obj["description"];
@@ -19,7 +19,7 @@ class Good{
     this.storeId = obj["storeId"];
     this.groupId = obj["groupId"];
 
-    this.quantity = obj["quantity"];
+    //this.quantity = obj["quantity"];
   }
 
   Map<String, dynamic> toMap() {

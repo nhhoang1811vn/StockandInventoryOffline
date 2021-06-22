@@ -25,29 +25,37 @@ class AppRouter {
         return _buildRoute(settings, StoresPage());
       case Pages.save_store:
         Map<String, dynamic> args = settings.arguments as Map;
-        return _buildRoute(settings, SaveStorePage(store: args['store'],isInsert: args['isInsert'],));
+        return _buildRoute(settings, SaveStorePage(store: args['store']));
       case Pages.good_list:
-        return _buildRoute(settings, GoodsPage());
-      case Pages.save_good:
-        Map<String, dynamic> args = settings.arguments as Map;
-        return _buildRoute(settings, SaveGoodPage(args['isInsert'], args['item']));
-      case Pages.save_group:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(
-            settings, SaveGroupPage(args['isInsert'], args['item']));
+            settings,
+            GoodsPage(
+                isSelection: args['isSelection'],
+                documentType: args['documentType']));
+      case Pages.save_good:
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(
+            settings, SaveGoodPage(args['item'], args['quantity']));
+      case Pages.save_group:
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(settings, SaveGroupPage(args['item']));
 
       case Pages.supplier_list:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(settings, SuppliersPage(isSelection: args['isSelection'],));
       case Pages.save_supplier:
         Map<String, dynamic> args = settings.arguments as Map;
-        return _buildRoute(settings, SaveSupplierPage(isInsert: args['isInsert'], item: args['item'],));
+        return _buildRoute(
+            settings,
+            SaveSupplierPage(
+              item: args['item'],
+            ));
       case Pages.document_list:
         return _buildRoute(settings, DocumentsPage());
       case Pages.save_document:
         Map<String, dynamic> args = settings.arguments as Map;
-        return _buildRoute(
-            settings, SaveDocumentPage(args['isInsert'], args['item']));
+        return _buildRoute(settings, SaveDocumentPage(args['item']));
       case Pages.help:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(

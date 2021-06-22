@@ -9,21 +9,26 @@ import 'package:good_manager/domain/entities/store.dart';
 class StoresController extends Controller{
   bool isLoading = false;
   StoresPresenter _storesPresenter;
-  List<Store> _stores;
+  List<Store> _items;
 
-  List<Store> get stores => _stores;
-  StoresController(storeRepository) : _storesPresenter = StoresPresenter(storeRepository), super(){
-    _stores = [];
+  List<Store> get items => _items;
+
+  StoresController(storeRepository)
+      : _storesPresenter = StoresPresenter(storeRepository),
+        super() {
+    _items = [];
     retrieveData();
   }
+
   void retrieveData() {
     isLoading = true;
     _storesPresenter.getStores();
   }
+
   @override
   void initListeners() {
     _storesPresenter.getStoresOnNext = (List<Store> stores) {
-      _stores = stores;
+      _items = stores;
     };
     _storesPresenter.getStoresOnError = (e) {
       handleError(e);
@@ -41,25 +46,26 @@ class StoresController extends Controller{
     showErrorToast(e.message);
   }
 
-  void onAddStore() async{
-    final result = await Navigator.of(getContext()).pushNamed(Pages.save_store, arguments: {
-      'isInsert' : true
-    });
-    if (result){
-      retrieveData();
+  void onAddStore() async {
+    final result = await Navigator.of(getContext())
+        .pushNamed(Pages.save_store, arguments: {"store": Store()});
+    if (result != null) {
+      _items.add(result);
+      refreshUI();
     }
   }
-  void onEditStore(Store store) async{
+
+  void onEditStore(int index) async {
     //TODO
-    appDataManager.sharedPrefsHelper.setSelectedStoreId(store.id);
-    final result = await Navigator.of(getContext()).pushNamed(Pages.save_store, arguments: {
-      'store': store,
-      'isInsert' : false
-    });
-    if (result){
-      retrieveData();
+    appDataManager.sharedPrefsHelper.setSelectedStoreId(_items[index].id);
+    final result = await Navigator.of(getContext())
+        .pushNamed(Pages.save_store, arguments: {'store': _items[index]});
+    if (result != null) {
+      _items[index] = result;
+      refreshUI();
     }
   }
+
   void openHelpPage(){
     Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
       "title" : "Stores",

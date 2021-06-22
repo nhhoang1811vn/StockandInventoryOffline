@@ -12,27 +12,26 @@ class SaveGroupController extends Controller {
   TextEditingController barCodeTextController;
 
   SaveGroupPresenter presenter;
-
-  final bool _isInsert;
   Group _item;
 
-  SaveGroupController(groupRepository, this._isInsert, this._item)
+  SaveGroupController(groupRepository, this._item)
       : presenter = SaveGroupPresenter(groupRepository),
         super() {
     nameTextController = TextEditingController();
     descriptionTextController = TextEditingController();
     barCodeTextController = TextEditingController();
 
-    if (_item != null) {
-      nameTextController.text = _item.name;
-      descriptionTextController.text = _item.description;
-      barCodeTextController.text = _item.barCode;
+    if (_item == null) {
+      _item = Group();
     }
+    nameTextController.text = _item.name;
+    descriptionTextController.text = _item.description;
+    barCodeTextController.text = _item.barCode;
   }
 
   @override
   void initListeners() {
-    presenter.insertGroupOnComplete = () {
+    presenter.insertGroupOnNext = (groupId) {
       Navigator.of(getContext()).pop(true);
     };
     presenter.insertGroupOnError = (e) {};
@@ -51,21 +50,20 @@ class SaveGroupController extends Controller {
 
   void checkForm(Map<String, dynamic> params) {
     dynamic formKey = params['formKey'];
-    // Validate params
-    //assert(formKey is GlobalKey<FormState>);
     if (formKey.currentState.validate()) {
-      if (_item == null) {
-        _item = Group();
-      }
-      _item.name = nameTextController.text;
-      _item.description = descriptionTextController.text;
-      _item.barCode = barCodeTextController.text;
-      if (_isInsert) {
+      updateItem();
+      if (_item.id == null) {
         presenter.insert(_item);
       } else {
         presenter.update(_item);
       }
     }
+  }
+
+  void updateItem() {
+    _item.name = nameTextController.text;
+    _item.description = descriptionTextController.text;
+    _item.barCode = barCodeTextController.text;
   }
 
   void onInputBarCodePressed() async {

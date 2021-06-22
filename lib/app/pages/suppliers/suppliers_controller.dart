@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/suppliers/sort_supplier_dialog.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_presenter.dart';
-import 'package:good_manager/domain/entities/Supplier.dart';
+import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/sort_by.dart';
+import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/supplier_settings.dart';
-import 'package:good_manager/domain/usecases/suppliers/delete_supplier_usecase.dart';
 
 class SuppliersController extends Controller {
-  TextEditingController searchTextController;
   bool isLoading = false;
   SuppliersPresenter _presenter;
-  List<Supplier> _filteredItems;
+  List<Supplier> _allItems;
   List<Supplier> _items;
   bool _isSelection;
   String _textSearch;
@@ -22,20 +22,13 @@ class SuppliersController extends Controller {
 
   List<Supplier> get items => _items;
 
-  List<Supplier> get filteredItems => _filteredItems;
-
-  SuppliersController(supplierRepository, documentRepository, this._isSelection)
-      : _presenter = SuppliersPresenter(supplierRepository, documentRepository),
+  SuppliersController(supplierRepository, this._isSelection)
+      : _presenter = SuppliersPresenter(supplierRepository),
         super() {
+    _allItems = [];
     _items = [];
-    _filteredItems = [];
     _textSearch = "";
     isLoading = true;
-    searchTextController = TextEditingController();
-    retrieveData();
-  }
-
-  void retrieveData() {
     _presenter.getSettings();
     _presenter.getSuppliers();
   }
@@ -54,55 +47,45 @@ class SuppliersController extends Controller {
       _settings = settings;
       refreshUI();
     };
-    _presenter.getSupplierSettingsOnComplete = () {};
-    _presenter.getSupplierSettingsOnError = (e) {};
+    _presenter.getSupplierSettingsOnError = (e) {
+      showErrorToast(e.toString());
+    };
 
-    _presenter.setSupplierSettingsOnError = (e) {};
-    _presenter.setSupplierSettingsOnComplete = () {};
+    _presenter.setSupplierSettingsOnError = (e) {
+      showErrorToast(e.toString());
+    };
+    _presenter.setSupplierSettingsOnComplete = () {
+      refreshItems();
+    };
 
     _presenter.getSuppliersOnNext = (List<Supplier> suppliers) {
-      _items = suppliers;
+      isLoading = false;
+      _allItems = suppliers;
       refreshItems();
     };
     _presenter.getSuppliersOnError = (e) {
-      handleError(e);
-    };
-    _presenter.getSuppliersOnComplete = () {
-      dismissLoading();
+      isLoading = false;
+      showErrorToast(e.toString());
+      refreshUI();
     };
     //delete
-    _presenter.deleteSupplierOnNext = (DeleteSupplierUseCaseResult result) {
-      switch (result) {
-        case DeleteSupplierUseCaseResult.success:
-          _presenter.getSuppliers();
-          break;
-        case DeleteSupplierUseCaseResult.un_success_have_document:
-          //TODO
-          break;
-        case DeleteSupplierUseCaseResult.un_success_row_effect:
-          break;
-      }
+    _presenter.deleteSupplierOnComplete = () {
+      int index =
+          _allItems.indexWhere((element) => element.id == _presenter.deletedId);
+      _allItems.removeAt(index);
+      refreshItems();
     };
-    _presenter.deleteSupplierOnComplete = () {};
-    _presenter.deleteSupplierOnError = (e) {};
-  }
-
-  void dismissLoading() {
-    isLoading = false;
-    refreshUI();
-  }
-
-  void handleError(e) {
-    dismissLoading();
+    _presenter.deleteSupplierOnError = (e) {
+      showErrorToast(e.toString());
+    };
   }
 
   void onAddItem() async {
-    final result = await Navigator.of(getContext()).pushNamed(
-        Pages.save_supplier,
-        arguments: {'isInsert': true});
-    if (result) {
-      isLoading = true;
-      retrieveData();
+    final result = await Navigator.of(getContext())
+        .pushNamed(Pages.save_supplier, arguments: {"item": Supplier()});
+    if (result != null) {
+      _allItems.add(result);
+      refreshItems();
     }
   }
 
@@ -110,14 +93,89 @@ class SuppliersController extends Controller {
     if (_isSelection) {
       Navigator.of(getContext()).pop(supplier);
     } else {
-      final result = await Navigator.of(getContext()).pushNamed(
-          Pages.save_supplier,
-          arguments: {'item': supplier, 'isInsert': false});
-      if (result) {
-        isLoading = true;
-        retrieveData();
+      final result = await Navigator.of(getContext())
+          .pushNamed(Pages.save_supplier, arguments: {'item': supplier});
+      if (result != null) {
+        int index =
+            _allItems.indexWhere((element) => element.id == supplier.id);
+        _allItems[index] = result;
+        refreshItems();
       }
     }
+  }
+
+  void onItemLongPressed(Supplier supplier) async {
+    showDialog(
+        context: getContext(),
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            children: <Widget>[
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  Navigator.pop(getContext());
+                  if (supplier.numberDocument > 0) {
+                    showCanNotDeleteDialog();
+                  } else {
+                    showDeleteConfirmDialog(supplier.id);
+                  }
+                },
+                child: Text(AppLocalizations.of(getContext()).action_delete),
+              ),
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  //TODO
+                },
+                child: Text(
+                    AppLocalizations.of(getContext()).action_view_transaction),
+              )
+            ],
+          );
+        },
+        barrierDismissible: true);
+  }
+
+  void showCanNotDeleteDialog() {
+    showDialog(
+        context: getContext(),
+        builder: (BuildContext builder) => AlertDialog(
+              title: Text(
+                  AppLocalizations.of(getContext()).notification_dialog_title),
+              content: Text(AppLocalizations.of(getContext())
+                  .message_delete_supplier_error_having_document),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(getContext()),
+                  child: const Text('OK'),
+                )
+              ],
+            ));
+  }
+
+  void showDeleteConfirmDialog(int id) {
+    showDialog(
+        context: getContext(),
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+                AppLocalizations.of(getContext()).notification_dialog_title),
+            content: Text(AppLocalizations.of(getContext())
+                .message_confirm_delete_supplier),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(getContext()),
+                  child: Text(AppLocalizations.of(getContext()).action_cancel)),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(getContext());
+                  _presenter.delete(id);
+                },
+                child: Text(AppLocalizations.of(getContext()).action_ok),
+              )
+            ],
+          );
+        });
   }
 
   @override
@@ -127,7 +185,6 @@ class SuppliersController extends Controller {
   }
 
   void setTextSearch(String textSearch) {
-    searchTextController.text = textSearch;
     _textSearch = textSearch;
     refreshItems();
   }
@@ -139,13 +196,13 @@ class SuppliersController extends Controller {
   }
 
   void filter() {
-    _filteredItems.clear();
+    _items.clear();
     if (_textSearch.isEmpty) {
-      _filteredItems = _items.toList();
+      _items = _allItems.toList();
     } else {
-      _items.forEach((element) {
+      _allItems.forEach((element) {
         if (element.name.startsWith(_textSearch)) {
-          _filteredItems.add(element);
+          _items.add(element);
         }
       });
     }
@@ -155,21 +212,21 @@ class SuppliersController extends Controller {
     switch (_settings.sortByName) {
       case SortBy.no_sort:
         {
-          _filteredItems.sort((item1, item2) {
+          _items.sort((item1, item2) {
             return item1.name.compareTo(item2.name);
           });
           break;
         }
       case SortBy.a_to_z:
         {
-          _filteredItems.sort((item1, item2) {
+          _items.sort((item1, item2) {
             return item1.name.compareTo(item2.name);
           });
           break;
         }
       case SortBy.z_to_a:
         {
-          _filteredItems.sort((item1, item2) {
+          _items.sort((item1, item2) {
             return item2.name.compareTo(item1.name);
           });
           break;
@@ -191,14 +248,8 @@ class SuppliersController extends Controller {
     showDialog(
         context: getContext(),
         builder: (_) => SortSupplierDialog(_settings, () {
-              refreshItems();
               _presenter.setSettings(_settings);
-              refreshUI();
             }),
         barrierDismissible: true);
-  }
-
-  void delete(int id) {
-    _presenter.delete(id);
   }
 }

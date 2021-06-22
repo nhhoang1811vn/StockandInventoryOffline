@@ -11,9 +11,11 @@ class Pages {
   static const String supplier_list = '/supplier_list';
   static const String save_supplier = '/save_supplier';
 
+  static const String customer_list = '/customer_list';
+  static const String save_customer = '/save_customer';
+
   static const String document_list = '/document_list';
   static const String save_document = '/save_document';
 
   static const String help = '/help';
-
 }

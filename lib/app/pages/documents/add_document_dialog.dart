@@ -26,7 +26,7 @@ class AddDocumentDialogWidgetState extends State<AddDocumentDialogWidget> {
               children: [
                 getRadioListTile("Nhập Kho", DocumentType.incoming),
                 getRadioListTile("Xuất Kho", DocumentType.outgoing),
-                getRadioListTile("Kiểm kê", DocumentType.stock_taking)
+                //getRadioListTile("Kiểm kê", DocumentType.stock_taking)
               ],
             )
           ],

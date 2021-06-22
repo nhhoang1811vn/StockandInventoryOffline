@@ -4,22 +4,19 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/domain/repositories/store_repositories.dart';
 
-class InsertStoreUseCase extends CompletableUseCase<InsertStoreUseCaseParams> {
+class InsertStoreUseCase extends UseCase<int, InsertStoreUseCaseParams> {
   final StoreRepository _storeRepository;
 
   InsertStoreUseCase(this._storeRepository);
 
   @override
-  Future<Stream<void>> buildUseCaseStream(
+  Future<Stream<int>> buildUseCaseStream(
       InsertStoreUseCaseParams params) async {
-    final StreamController<void> controller = StreamController();
+    final StreamController<int> controller = StreamController();
     try {
-      bool successful = await _storeRepository.insert(params.store);
-      if (successful) {
-        controller.close();
-      } else {
-        throw Exception("insert failed");
-      }
+      int storeId = await _storeRepository.insert(params.store);
+      controller.add(storeId);
+      controller.close();
     } catch (e) {
       controller.addError(e);
     }

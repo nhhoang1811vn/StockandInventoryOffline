@@ -14,7 +14,7 @@ class DataGoodRepository implements GoodRepository {
   var db = new DBHelper();
 
   @override
-  Future<bool> insert(Good item) {
+  Future<int> insert(Good item) {
     return db.insertGood(item);
   }
 

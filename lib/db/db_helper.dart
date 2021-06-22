@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io' as io;
 
-import 'package:good_manager/data/app_data_manager.dart';
+import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/group.dart';
@@ -67,16 +67,15 @@ class DBHelper {
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
 
     await db.execute(
-        "CREATE TABLE $DOCUMENT_TRANSACTIONS_TABLE_NAME(documentId INTEGER NOT NULL, goodId INTEGER NOT NULL, quantity INTEGER, " +
-            "CONSTRAINT PK_Document_Transaction PRIMARY KEY (documentId,goodId), " +
-            "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id)," +
-            "FOREIGN KEY(goodId) REFERENCES $GOODS_TABLE_NAME(id))");
+        "CREATE TABLE $DOCUMENT_TRANSACTIONS_TABLE_NAME(id INTEGER PRIMARY KEY,documentId INTEGER NOT NULL, goodId INTEGER NOT NULL, quantity INTEGER, documentType INTEGER, " +
+            "CONSTRAINT fk_transaction_document_id FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE ON UPDATE CASCADE," +
+            "CONSTRAINT fk_transaction_good_id FOREIGN KEY(goodId) REFERENCES $GOODS_TABLE_NAME(id) ON DELETE CASCADE ON UPDATE CASCADE)");
   }
   ///STORE
-  Future<bool> insertStore(Store store) async {
+  Future<int> insertStore(Store store) async {
     var dbClient = await db;
     int res = await dbClient.insert(STORES_TABLE_NAME, store.toMap());
-    return res == 1;
+    return res;
   }
 
   Future<List<Store>> getStores() async {
@@ -114,15 +113,27 @@ class DBHelper {
         await dbClient.rawQuery('SELECT * FROM $SUPPLIERS_TABLE_NAME');
     List<Supplier> suppliers = new List();
     for (int i = 0; i < list.length; i++) {
-      suppliers.add(Supplier.map(list[i]));
+      Supplier supplier = Supplier.map(list[i]);
+      supplier.numberDocument = await getCountDocumentBySupplierId(supplier.id);
+      suppliers.add(supplier);
     }
     return suppliers;
   }
 
-  Future<bool> insertSupplier(Supplier item) async {
+  Future<int> getCountDocumentBySupplierId(int supplierId) async {
+    var dbClient = await db;
+    var result = await dbClient.rawQuery(
+        "SELECT COUNT(*) FROM $DOCUMENTS_TABLE_NAME WHERE supplierId = ?",
+        [supplierId]);
+
+    int value = result[0]["COUNT(*)"];
+    return value == null ? 0 : value;
+  }
+
+  Future<int> insertSupplier(Supplier item) async {
     var dbClient = await db;
     int res = await dbClient.insert(SUPPLIERS_TABLE_NAME, item.toMap());
-    return res > 0;
+    return res;
   }
 
   Future<bool> updateSupplier(Supplier item) async {
@@ -150,11 +161,22 @@ class DBHelper {
     return res == 1;
   }
 
+  //CUSTOMER
+  Future<Customer> getCustomer(int id) async {
+    var dbClient = await db;
+    var list = await dbClient
+        .rawQuery('SELECT * FROM $CUSTOMERS_TABLE_NAME where id = ?', [id]);
+    if (list.isNotEmpty) {
+      return Customer.map(list.first);
+    }
+    return null;
+  }
+
   //GROUP
-  Future<bool> insertGroup(Group item) async {
+  Future<int> insertGroup(Group item) async {
     var dbClient = await db;
     int res = await dbClient.insert(GROUPS_TABLE_NAME, item.toMap());
-    return res > 0;
+    return res;
   }
 
   Future<bool> updateGroup(Group item) async {
@@ -186,7 +208,7 @@ class DBHelper {
     return groups;
   }
   //GOOD
-  Future<Good> findGood(int id) async{
+  Future<Good> findGood(int id) async {
     var dbClient = await db;
     var list = await dbClient
         .rawQuery('SELECT * FROM $GOODS_TABLE_NAME where id = ?', [id]);
@@ -196,10 +218,11 @@ class DBHelper {
     }
     return null;
   }
-  Future<bool> insertGood(Good item) async {
+
+  Future<int> insertGood(Good item) async {
     var dbClient = await db;
     int res = await dbClient.insert(GOODS_TABLE_NAME, item.toMap());
-    return res > 0;
+    return res;
   }
 
   Future<bool> updateGood(Good item) async {
@@ -224,15 +247,18 @@ class DBHelper {
     List<Good> goods = new List();
     for (int i = 0; i < list.length; i++) {
       var good = Good.map(list[i]);
+      int incomingQuantity = await getQuantity(good.id, DocumentType.incoming);
+      int outgoingQuantity = await getQuantity(good.id, DocumentType.outgoing);
+      good.quantity = incomingQuantity - outgoingQuantity;
       goods.add(good);
     }
     return goods;
   }
   //DOCUMENT
-  Future<bool> insertDocument(Document item) async {
+  Future<int> insertDocument(Document item) async {
     var dbClient = await db;
     int res = await dbClient.insert(DOCUMENTS_TABLE_NAME, item.toMap());
-    return res > 0;
+    return res;
   }
 
   Future<bool> updateDocument(Document item) async {
@@ -244,10 +270,16 @@ class DBHelper {
 
   Future<bool> deleteDocument(int id) async {
     var dbClient = await db;
-
     int res = await dbClient
         .rawDelete('DELETE FROM $DOCUMENTS_TABLE_NAME WHERE id = ?', [id]);
     return res > 0;
+  }
+
+  Future<void> deleteTransactionByDocumentId(int documentId) async {
+    var dbClient = await db;
+    await dbClient.rawDelete(
+        'DELETE FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE documentId =?',
+        [documentId]);
   }
 
   Future<List<Document>> findDocumentBySupplierId(int supplierId) async {
@@ -258,36 +290,47 @@ class DBHelper {
     return list.map((e) => Document.map(e)).toList();
   }
 
-  Future<List<Document>> getAllDocuments() async {
+  Future<List<Document>> getDocuments(int storeId) async {
     var dbClient = await db;
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
-
     List<Map> list = await dbClient.rawQuery(
-        'SELECT $DOCUMENTS_TABLE_NAME.id, $DOCUMENTS_TABLE_NAME.name, $DOCUMENTS_TABLE_NAME.description, $DOCUMENTS_TABLE_NAME.date, $DOCUMENTS_TABLE_NAME.type, $DOCUMENTS_TABLE_NAME.storeId, $DOCUMENTS_TABLE_NAME.supplierId, $SUPPLIERS_TABLE_NAME.supplierName FROM $DOCUMENTS_TABLE_NAME LEFT JOIN $SUPPLIERS_TABLE_NAME ON $DOCUMENTS_TABLE_NAME.supplierId = $SUPPLIERS_TABLE_NAME.id where storeId = ?',
-        [storeId]);
+        'SELECT * FROM $DOCUMENTS_TABLE_NAME where storeId = ?', [storeId]);
     List<Document> documents = new List();
     for (int i = 0; i < list.length; i++) {
       var document = Document.map(list[i]);
       document.quantity = await getQuantityByDocumentId(document.id);
+      if (document.type == DocumentType.incoming) {
+        if (document.supplierId != null) {
+          document.supplierName = (await getSupplier(document.supplierId)).name;
+        }
+      } else if (document.type == DocumentType.outgoing) {
+        if (document.customerId != null) {
+          document.customerName = (await getCustomer(document.customerId)).name;
+        }
+      }
       documents.add(document);
     }
     return documents;
   }
 
-  Future<List<Document>> getDocumentsByType(DocumentType type) async{
+  /*Future<List<Document>> getDocumentsByType(DocumentType type) async{
     var dbClient = await db;
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     List<Map> list = await dbClient.rawQuery(
-        'SELECT $DOCUMENTS_TABLE_NAME.id, $DOCUMENTS_TABLE_NAME.name, $DOCUMENTS_TABLE_NAME.description, $DOCUMENTS_TABLE_NAME.date, $DOCUMENTS_TABLE_NAME.type, $DOCUMENTS_TABLE_NAME.storeId, $DOCUMENTS_TABLE_NAME.supplierId, $SUPPLIERS_TABLE_NAME.supplierName FROM $DOCUMENTS_TABLE_NAME LEFT JOIN $SUPPLIERS_TABLE_NAME ON $DOCUMENTS_TABLE_NAME.supplierId = $SUPPLIERS_TABLE_NAME.id where storeId = ? AND type = ?',
+        'SELECT * FROM $DOCUMENTS_TABLE_NAME where storeId = ? AND type = ?',
         [storeId, type.index]);
     List<Document> documents = new List();
     for (int i = 0; i < list.length; i++) {
       var document = Document.map(list[i]);
       document.quantity = await getQuantityByDocumentId(document.id);
+      if (document.type == DocumentType.incoming){
+        document.supplierName = (await getSupplier(document.supplierId)).name;
+      }else if (document.type == DocumentType.outgoing){
+        document.customerName = (await getCustomer(document.customerId)).name;
+      }
       documents.add(document);
     }
     return documents;
-  }
+  }*/
 
   Future<int> getQuantityByDocumentId(int documentId) async {
     var dbClient = await db;
@@ -298,29 +341,53 @@ class DBHelper {
     return value == null ? 0 : value;
   }
 
-  Future<List<Good>> getGoodByDocumentId(int documentId) async {
-    if (documentId == null) {
-      return List();
-    }
+  Future<List<DocumentTransaction>> getTransactionsByDocumentId(
+      int documentId) async {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME where documentId = ?',
         [documentId]);
 
-    List<Good> goods = new List();
+    List<DocumentTransaction> transactions = new List();
     for (int i = 0; i < list.length; i++) {
       var transaction = DocumentTransaction.map(list[i]);
       var good = await findGood(transaction.goodId);
       good.quantity = transaction.quantity;
-      goods.add(good);
+      transaction.good = good;
+      transactions.add(transaction);
     }
-    return goods;
+    return transactions;
   }
 
-  Future<bool> insertDocumentTransaction(DocumentTransaction item) async {
+  //TRANSACTION
+  Future<int> insertTransaction(DocumentTransaction item) async {
     var dbClient = await db;
     int res =
         await dbClient.insert(DOCUMENT_TRANSACTIONS_TABLE_NAME, item.toMap());
-    return res > 0;
+    return res;
+  }
+
+  Future<bool> updateTransaction(DocumentTransaction item) async {
+    var dbClient = await db;
+    int res = await dbClient.update(
+        DOCUMENT_TRANSACTIONS_TABLE_NAME, item.toMap(),
+        where: "id = ?", whereArgs: <int>[item.id]);
+    return res == 1;
+  }
+
+  Future<bool> deleteTransaction(int id) async {
+    var dbClient = await db;
+    int res = await dbClient.rawDelete(
+        'DELETE FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE id =?', [id]);
+    return res == 1;
+  }
+
+  Future<int> getQuantity(int goodId, DocumentType type) async {
+    var dbClient = await db;
+    var result = await dbClient.rawQuery(
+        'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE goodId = ? AND documentType = ?',
+        [goodId, type.index]);
+    int value = result[0]["SUM(quantity)"];
+    return value == null ? 0 : value;
   }
 }

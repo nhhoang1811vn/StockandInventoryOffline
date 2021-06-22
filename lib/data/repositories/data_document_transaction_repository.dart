@@ -4,7 +4,6 @@ import 'package:good_manager/domain/repositories/transaction_repositories.dart';
 
 class DataDocumentTransactionRepository
     implements DocumentTransactionRepository {
-  //Singleton object of 'DataStoreRepository'
   static DataDocumentTransactionRepository _instance =
       DataDocumentTransactionRepository._internal();
 
@@ -17,8 +16,7 @@ class DataDocumentTransactionRepository
 
   @override
   Future<bool> delete(int id) {
-    // TODO: implement delete
-    throw UnimplementedError();
+    return db.deleteTransaction(id);
   }
 
   @override
@@ -28,13 +26,22 @@ class DataDocumentTransactionRepository
   }
 
   @override
-  Future<bool> insert(DocumentTransaction item) {
-    return db.insertDocumentTransaction(item);
+  Future<int> insert(DocumentTransaction item) {
+    return db.insertTransaction(item);
   }
 
   @override
   Future<bool> update(DocumentTransaction item) {
-    // TODO: implement update
-    throw UnimplementedError();
+    return db.updateTransaction(item);
+  }
+
+  @override
+  Future<bool> deleteByDocumentId(int documentId) {
+    return db.deleteTransactionByDocumentId(documentId);
+  }
+
+  @override
+  Future<List<DocumentTransaction>> getTransactions(int documentId) {
+    return db.getTransactionsByDocumentId(documentId);
   }
 }

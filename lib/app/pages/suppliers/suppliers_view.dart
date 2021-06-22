@@ -5,12 +5,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_controller.dart';
 import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/data/repositories/data_document_repository.dart';
 import 'package:good_manager/data/repositories/data_supplier_repository.dart';
+import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-enum SupplierItemMenu { sendEmail, sendSMS, phoneCall, viewTransaction, delete }
+enum SupplierItemMenu { sendEmail, sendSMS, phoneCall }
 
 class SuppliersPage extends View {
   final bool isSelection;
@@ -18,8 +18,8 @@ class SuppliersPage extends View {
   SuppliersPage({Key key, @required this.isSelection});
 
   @override
-  SuppliersPageView createState() => SuppliersPageView(SuppliersController(
-      DataSupplierRepository(), DataDocumentRepository(), isSelection));
+  SuppliersPageView createState() => SuppliersPageView(
+      SuppliersController(DataSupplierRepository(), isSelection));
 }
 
 class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
@@ -33,7 +33,6 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
       onCleared: onSearchBarCleared,
       onChanged: onSearchBarChanged,
       onClosed: onSearchBarClosed,
-      controller: controller.searchTextController,
       buildDefaultAppBar: buildAppBar,
     );
   }
@@ -58,11 +57,11 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
         //emptyView,
         Visibility(
           child: emptyView,
-          visible: controller.filteredItems.isEmpty,
+          visible: controller.items.isEmpty,
         ),
         Visibility(
           child: listView,
-          visible: controller.filteredItems.isNotEmpty,
+          visible: controller.items.isNotEmpty,
         ),
       ]);
 
@@ -84,61 +83,54 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
         builder: (context, controller) {
       return ListView.separated(
           itemBuilder: (BuildContext context, index) {
+            Supplier item = controller.items[index];
             return ListTile(
               leading: CircleAvatar(
-                child: Text(
-                    '${controller.filteredItems[index].name[0].toUpperCase()}'),
+                child: Text('${item.name[0].toUpperCase()}'),
               ),
-              title: Text(controller.filteredItems[index].name),
-              subtitle: Text(controller.filteredItems[index].description),
-              onTap: () =>
-                  controller.onItemPressed(controller.filteredItems[index]),
+              title: Text(item.name),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  item.description.isNotEmpty
+                      ? Text(item.description)
+                      : Container(),
+                  item.numberDocument > 0
+                      ? Text(item.numberDocument.toString() + "GD")
+                      : Container()
+                ],
+              ),
+              onTap: () => controller.onItemPressed(item),
+              onLongPress: () => controller.onItemLongPressed(item),
               trailing: PopupMenuButton<SupplierItemMenu>(
                 onSelected: (SupplierItemMenu result) {
                   switch (result) {
                     case SupplierItemMenu.sendEmail:
-                      _launchURL(
-                          "mailto:${controller.filteredItems[index].email}");
+                      _launchURL("mailto:${item.email}");
                       break;
                     case SupplierItemMenu.sendSMS:
-                      _launchURL(
-                          "sms:${controller.filteredItems[index].phone}");
+                      _launchURL("sms:${item.phone}");
                       break;
                     case SupplierItemMenu.phoneCall:
-                      _launchURL(
-                          "tel:${controller.filteredItems[index].phone}");
-                      break;
-                    case SupplierItemMenu.viewTransaction:
-
-                      ///TODO
-                      break;
-                    case SupplierItemMenu.delete:
-                      controller.delete(controller.filteredItems[index].id);
+                      _launchURL("tel:${item.phone}");
                       break;
                     default:
                   }
                 },
                 itemBuilder: (BuildContext a) =>
-                    <PopupMenuEntry<SupplierItemMenu>>[
+                <PopupMenuEntry<SupplierItemMenu>>[
                   PopupMenuItem<SupplierItemMenu>(
                       value: SupplierItemMenu.sendEmail,
                       child:
-                          Text(AppLocalizations.of(context).action_send_email)),
+                      Text(AppLocalizations.of(context).action_send_email)),
                   PopupMenuItem<SupplierItemMenu>(
                       value: SupplierItemMenu.sendSMS,
                       child:
-                          Text(AppLocalizations.of(context).action_send_sms)),
+                      Text(AppLocalizations.of(context).action_send_sms)),
                   PopupMenuItem<SupplierItemMenu>(
                       value: SupplierItemMenu.phoneCall,
                       child:
                           Text(AppLocalizations.of(context).action_phone_call)),
-                  PopupMenuItem<SupplierItemMenu>(
-                      value: SupplierItemMenu.viewTransaction,
-                      child: Text(AppLocalizations.of(context)
-                          .action_view_transaction)),
-                  PopupMenuItem<SupplierItemMenu>(
-                      value: SupplierItemMenu.delete,
-                      child: Text(AppLocalizations.of(context).action_delete))
                 ],
               ),
             );
@@ -146,7 +138,7 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
           separatorBuilder: (context, index) {
             return Divider();
           },
-          itemCount: controller.filteredItems.length);
+          itemCount: controller.items.length);
     });
   }
 
@@ -177,9 +169,9 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(
                 child: controller.isNoSort()
-                    ? Icon(Icons.sort_by_alpha, size: 26)
+                    ? Icon(Icons.sort_by_alpha)
                     : Icon(Icons.sort_by_alpha,
-                        size: 26, color: UIConstants.primaryDarkColor),
+                        size: 26, color: UIConstants.highlightColor),
                 onTap: () => controller.openSortByDialog(),
               ),
             );

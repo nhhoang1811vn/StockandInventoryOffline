@@ -5,6 +5,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class UIConstants {
   static IconData goodsIconData = FontAwesomeIcons.bookOpen;
   static IconData documentsIconData = FontAwesomeIcons.book;
+  static IconData calculatorIconData = FontAwesomeIcons.calculator;
+
+  static const double screenSpace = 16.0;
 
   static const TextStyle fieldHintStyle =
       TextStyle(fontWeight: FontWeight.w300, color: Colors.black);
@@ -13,6 +16,8 @@ class UIConstants {
   static const Color progressBarColor = Colors.black;
   static Color primaryColor = Colors.blue[600];
   static Color primaryDarkColor = Colors.blue[800];
+
+  static Color highlightColor = Colors.orange[600];
 }
 void showInfoToast(msg){
   Fluttertoast.showToast(

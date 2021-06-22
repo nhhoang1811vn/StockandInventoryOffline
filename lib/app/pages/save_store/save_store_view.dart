@@ -10,20 +10,18 @@ import 'save_store_controller.dart';
 
 class SaveStorePage extends View {
   final Store store;
-  final bool isInsert;
 
-  SaveStorePage({Key key, this.store, @required this.isInsert})
-      : super(key: key);
+  SaveStorePage({Key key, this.store}) : super(key: key);
 
   @override
-  _SaveStorePageView createState() => _SaveStorePageView(store, isInsert);
+  _SaveStorePageView createState() => _SaveStorePageView(store);
 }
 
 class _SaveStorePageView extends ViewState<SaveStorePage, SaveStoreController> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  _SaveStorePageView(store, isInsert)
-      : super(SaveStoreController(DataStoreRepository(), store, isInsert));
+  _SaveStorePageView(store)
+      : super(SaveStoreController(DataStoreRepository(), store));
 
   @override
   Widget get view => Scaffold(

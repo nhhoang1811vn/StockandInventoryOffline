@@ -4,7 +4,7 @@ import 'package:good_manager/domain/usecases/groups/insert_group_usecase.dart';
 import 'package:good_manager/domain/usecases/groups/update_group_usecase.dart';
 
 class SaveGroupPresenter extends Presenter {
-  Function insertGroupOnComplete;
+  Function insertGroupOnNext;
   Function insertGroupOnError;
 
   Function updateGroupOnComplete;
@@ -31,15 +31,13 @@ class SaveGroupPresenter extends Presenter {
   }
 }
 
-class _InsertGroupUseCaseObserver implements Observer<void> {
+class _InsertGroupUseCaseObserver implements Observer<int> {
   SaveGroupPresenter _presenter;
 
   _InsertGroupUseCaseObserver(this._presenter);
 
   @override
-  void onComplete() {
-    _presenter.insertGroupOnComplete();
-  }
+  void onComplete() {}
 
   @override
   void onError(e) {
@@ -47,7 +45,9 @@ class _InsertGroupUseCaseObserver implements Observer<void> {
   }
 
   @override
-  void onNext(void response) {}
+  void onNext(int groupId) {
+    _presenter.insertGroupOnNext(groupId);
+  }
 }
 
 class _UpdateGroupUseCaseObserver implements Observer<void> {

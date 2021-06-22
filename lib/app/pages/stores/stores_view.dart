@@ -70,8 +70,6 @@ class _StoresPageView extends ViewState<StoresPage, StoresController> {
   }
 
   void onSubmitted(String value) {
-    //setState(() => _scaffoldKey.currentState
-    //     .showSnackBar(new SnackBar(content: new Text('You wrote $value!'))));
   }
 
   void onChanged(String value) {
@@ -93,34 +91,57 @@ class _StoresPageView extends ViewState<StoresPage, StoresController> {
           body: ControlledWidgetBuilder<StoresController>(
               builder: (context, controller) {
                 return ModalProgressHUD(
-                    child: getListView(),
-                    inAsyncCall: controller.isLoading,
-                    opacity: 0);
-              })
-          ,
-          floatingActionButton: ControlledWidgetBuilder<StoresController>(
-              builder: (context, controller) {
-                return FloatingActionButton(
-                  onPressed: () => controller.onAddStore(),
-                  child: Icon(Icons.add),
-                );
-              }));
+                    child: stackView, inAsyncCall: controller.isLoading, opacity: 0);
+      }),
+      floatingActionButton: ControlledWidgetBuilder<StoresController>(
+          builder: (context, controller) {
+        return FloatingActionButton(
+          onPressed: () => controller.onAddStore(),
+          child: Icon(Icons.add),
+        );
+      }));
 
-  Widget getListView() {
-    return ControlledWidgetBuilder<StoresController>(
-        builder: (context, controller) {
-          return ListView.separated(
-              itemBuilder: (BuildContext context, index) {
-                return ListTile(
-                  title: Text(controller.stores[index].name),
-                  subtitle: Text(controller.stores[index].description),
-                  onTap: () => controller.onEditStore(controller.stores[index]),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return Divider();
-              },
-              itemCount: controller.stores.length);
-        });
-  }
+  Widget get stackView =>
+      ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
+        return Stack(fit: StackFit.expand, children: [
+          //emptyView,
+          Visibility(
+            child: emptyView,
+            visible: controller.items.isEmpty,
+          ),
+          Visibility(
+            child: listView,
+            visible: controller.items.isNotEmpty,
+          ),
+        ]);
+      });
+
+  Widget get emptyView => Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Icon(
+              Icons.person,
+              size: 60,
+            ),
+            Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: Text('Khong co NCC nao ca', textAlign: TextAlign.center))
+          ]);
+
+  Widget get listView =>
+      ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
+        return ListView.separated(
+            itemBuilder: (BuildContext context, index) {
+              return ListTile(
+                title: Text(controller.items[index].name),
+                subtitle: Text(controller.items[index].description),
+                onTap: () => controller.onEditStore(index),
+              );
+            },
+            separatorBuilder: (context, index) {
+              return Divider();
+            },
+            itemCount: controller.items.length);
+      });
 }

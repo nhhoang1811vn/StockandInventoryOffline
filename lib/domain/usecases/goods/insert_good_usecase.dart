@@ -4,22 +4,18 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/repositories/good_repositories.dart';
 
-class InsertGoodUseCase extends CompletableUseCase<InsertGoodUseCaseParams> {
+class InsertGoodUseCase extends UseCase<int, InsertGoodUseCaseParams> {
   final GoodRepository _repository;
 
   InsertGoodUseCase(this._repository);
 
   @override
-  Future<Stream<void>> buildUseCaseStream(
-      InsertGoodUseCaseParams params) async {
-    final StreamController<void> controller = StreamController();
+  Future<Stream<int>> buildUseCaseStream(InsertGoodUseCaseParams params) async {
+    final StreamController<int> controller = StreamController();
     try {
-      bool successful = await _repository.insert(params.item);
-      if (successful) {
-        controller.close();
-      } else {
-        throw Exception("insert failed");
-      }
+      int goodId = await _repository.insert(params.item);
+      controller.add(goodId);
+      controller.close();
     } catch (e) {
       controller.addError(e);
     }

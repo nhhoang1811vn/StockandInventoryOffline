@@ -1,5 +1,5 @@
 abstract class BaseRepository<T> {
-  Future<bool> insert(T item);
+  Future<int> insert(T item);
 
   Future<bool> update(T item);
 

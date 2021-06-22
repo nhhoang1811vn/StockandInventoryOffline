@@ -4,7 +4,7 @@ import 'package:good_manager/domain/usecases/suppliers/insert_supplier_usecase.d
 import 'package:good_manager/domain/usecases/suppliers/update_supplier_usecase.dart';
 
 class SaveSupplierPresenter extends Presenter {
-  Function insertSupplierOnComplete;
+  Function insertSupplierOnNext;
   Function insertSupplierOnError;
 
   Function updateSupplierOnComplete;
@@ -30,13 +30,14 @@ class SaveSupplierPresenter extends Presenter {
     _updateSupplierUseCase.dispose();
   }
 }
-class _InsertSupplierUseCaseObserver implements Observer<void>{
+
+class _InsertSupplierUseCaseObserver implements Observer<int> {
   SaveSupplierPresenter _presenter;
+
   _InsertSupplierUseCaseObserver(this._presenter);
+
   @override
-  void onComplete() {
-    _presenter.insertSupplierOnComplete();
-  }
+  void onComplete() {}
 
   @override
   void onError(e) {
@@ -44,7 +45,9 @@ class _InsertSupplierUseCaseObserver implements Observer<void>{
   }
 
   @override
-  void onNext(void response) {}
+  void onNext(int supplierId) {
+    _presenter.insertSupplierOnNext(supplierId);
+  }
 }
 
 class _UpdateSupplierUseCaseObserver implements Observer<void> {

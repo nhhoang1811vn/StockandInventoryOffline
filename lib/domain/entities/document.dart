@@ -1,7 +1,7 @@
 enum DocumentType{
   incoming,
   outgoing,
-  stock_taking
+  //stock_taking
 }
 class Document{
   int id;
@@ -11,18 +11,28 @@ class Document{
   DocumentType type;
   int supplierId;
   String supplierName;
+  String customerName;
   int customerId;
   int storeId;
   int quantity;
 
   Document();
 
+  Document clone() {
+    Document newDocument = Document();
+    newDocument.name = this.name;
+    newDocument.description = this.description;
+    newDocument.supplierId = this.supplierId;
+    newDocument.customerId = this.customerId;
+    newDocument.date = this.date;
+    return newDocument;
+  }
+
   Document.map(dynamic obj) {
     this.id = obj["id"];
     this.name = obj["name"];
     this.description = obj["description"];
     this.date = DateTime.fromMillisecondsSinceEpoch(obj["date"]);
-    //this.type = obj["type"];
     DocumentType.values.forEach((element) {
       if (obj["type"] == element.index) {
         this.type = element;
@@ -30,14 +40,12 @@ class Document{
       }
     });
     this.supplierId = obj["supplierId"];
-    this.supplierName = obj["supplierName"];
     this.customerId = obj["customerId"];
     this.storeId = obj["storeId"];
   }
 
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();
-    //map["id"] = id;
     map["name"] = name;
     map["description"] = description;
     map["date"] = date.millisecondsSinceEpoch;
