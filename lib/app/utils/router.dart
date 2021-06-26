@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_manager/app/main.dart';
 import 'package:good_manager/app/pages/documents/documents_view.dart';
 import 'package:good_manager/app/pages/goods/goods_view.dart';
 import 'package:good_manager/app/pages/help/help_page_dart.dart';
@@ -11,6 +12,7 @@ import 'package:good_manager/app/pages/save_store/save_store_view.dart';
 import 'package:good_manager/app/pages/save_supplier/save_supplier_view.dart';
 import 'package:good_manager/app/pages/stores/stores_view.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_view.dart';
+import 'package:good_manager/app/pages/take_picture_screen.dart';
 
 class AppRouter {
   final RouteObserver<PageRoute> routeObserver;
@@ -60,6 +62,8 @@ class AppRouter {
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(
             settings, HelpPage(title: args['title'], content: args['content']));
+      case Pages.take_picture:
+        return _buildRoute(settings, TakePictureScreen(camera: cameras.first));
       default:
         return null;
     }

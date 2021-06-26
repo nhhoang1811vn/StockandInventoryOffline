@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/domain/entities/sort_by.dart';
+import 'package:good_manager/domain/entities/sort_by_text.dart';
 import 'package:good_manager/domain/entities/supplier_settings.dart';
 
 class SortSupplierDialog extends StatefulWidget {
@@ -14,7 +14,7 @@ class SortSupplierDialog extends StatefulWidget {
 }
 
 class SortSupplierDialogState extends State<SortSupplierDialog> {
-  SortBy _sortByName;
+  SortByText _sortByName;
 
   @override
   void initState() {
@@ -33,9 +33,9 @@ class SortSupplierDialogState extends State<SortSupplierDialog> {
               children: [
                 Text('Theo Tên'),
                 Divider(color: Colors.grey),
-                getRadioListTile("Không sắp xếp", SortBy.no_sort),
-                getRadioListTile("Sắp xếp A-Z", SortBy.a_to_z),
-                getRadioListTile("Sắp xếp Z-A", SortBy.z_to_a)
+                getRadioListTile("Không sắp xếp", SortByText.no_sort),
+                getRadioListTile("Sắp xếp A-Z", SortByText.a_to_z),
+                getRadioListTile("Sắp xếp Z-A", SortByText.z_to_a)
               ],
             )
           ],
@@ -53,17 +53,17 @@ class SortSupplierDialogState extends State<SortSupplierDialog> {
       ],
     );
   }
-  RadioListTile<SortBy> getRadioListTile(String text, SortBy value){
-    return RadioListTile<SortBy>(
+
+  RadioListTile<SortByText> getRadioListTile(String text, SortByText value) {
+    return RadioListTile<SortByText>(
       title: Text(text),
       value: value,
       groupValue: _sortByName,
-      onChanged: (SortBy value){
-        setState((){
+      onChanged: (SortByText value) {
+        setState(() {
           _sortByName = value;
         });
       },
     );
   }
-  
 }

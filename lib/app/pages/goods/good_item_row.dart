@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 
@@ -23,9 +24,26 @@ class GoodItemRow extends StatelessWidget {
           style: TextStyle(
               color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 16),
         ),
-        subtitle: Text(
-          item.description,
-          style: TextStyle(fontSize: 14),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Visibility(
+              visible: item.description.isNotEmpty,
+              child: Text(
+                item.description,
+                style: TextStyle(fontSize: 14),
+              ),
+            ),
+            Visibility(
+                visible: item.barCode.isNotEmpty,
+                child: Row(children: [
+                  Icon(FontAwesomeIcons.barcode),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text(item.barCode, style: TextStyle(fontSize: 14))
+                ]))
+          ],
         ),
         trailing: Row(mainAxisSize: MainAxisSize.min, children: [
           Text(quantity.toString(), style: TextStyle(fontSize: 16)),

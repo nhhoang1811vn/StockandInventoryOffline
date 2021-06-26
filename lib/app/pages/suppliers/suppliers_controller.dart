@@ -6,7 +6,7 @@ import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/suppliers/sort_supplier_dialog.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_presenter.dart';
 import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/domain/entities/sort_by.dart';
+import 'package:good_manager/domain/entities/sort_by_text.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/supplier_settings.dart';
 
@@ -35,7 +35,7 @@ class SuppliersController extends Controller {
 
   bool isNoSort() {
     if (_settings != null) {
-      return (_settings.sortByName == SortBy.no_sort);
+      return (_settings.sortByName == SortByText.no_sort);
     } else {
       return true;
     }
@@ -210,21 +210,21 @@ class SuppliersController extends Controller {
 
   void sort() {
     switch (_settings.sortByName) {
-      case SortBy.no_sort:
+      case SortByText.no_sort:
         {
           _items.sort((item1, item2) {
             return item1.name.compareTo(item2.name);
           });
           break;
         }
-      case SortBy.a_to_z:
+      case SortByText.a_to_z:
         {
           _items.sort((item1, item2) {
             return item1.name.compareTo(item2.name);
           });
           break;
         }
-      case SortBy.z_to_a:
+      case SortByText.z_to_a:
         {
           _items.sort((item1, item2) {
             return item2.name.compareTo(item1.name);

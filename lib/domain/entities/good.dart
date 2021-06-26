@@ -1,10 +1,13 @@
-class Good{
+import 'dart:convert';
+
+class Good {
   int id;
   String name;
   String description;
   String barCode;
   int storeId;
   int groupId;
+  List<String> files = [];
 
   int quantity;
   int pendingQuantity = 0;
@@ -18,8 +21,8 @@ class Good{
     this.barCode = obj["barCode"];
     this.storeId = obj["storeId"];
     this.groupId = obj["groupId"];
-
-    //this.quantity = obj["quantity"];
+    this.files = (jsonDecode(obj["files"]) as List<dynamic>).cast<String>();
+    var a = 1;
   }
 
   Map<String, dynamic> toMap() {
@@ -30,8 +33,7 @@ class Good{
     map["barCode"] = barCode;
     map["storeId"] = storeId;
     map["groupId"] = groupId;
-
-    //map["quantity"] = quantity;
+    map["files"] = jsonEncode(files);
     return map;
   }
 }

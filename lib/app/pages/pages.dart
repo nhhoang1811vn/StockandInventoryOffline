@@ -18,4 +18,6 @@ class Pages {
   static const String save_document = '/save_document';
 
   static const String help = '/help';
+
+  static const String take_picture = '/take_picture';
 }

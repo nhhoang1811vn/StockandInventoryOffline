@@ -1,7 +1,10 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/good.dart';
+import 'package:good_manager/domain/entities/goods_settings.dart';
 import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/usecases/goods/get_good_usecase.dart';
+import 'package:good_manager/domain/usecases/goods/get_goods_settings_usecase.dart';
+import 'package:good_manager/domain/usecases/goods/set_goods_settings_usecase.dart';
 import 'package:good_manager/domain/usecases/groups/get_group_usecase.dart';
 
 class GoodsPresenter extends Presenter {
@@ -13,23 +16,42 @@ class GoodsPresenter extends Presenter {
   Function getGoodsOnComplete;
   Function getGoodsOnError;
 
+  Function getGoodsSettingsOnNext;
+  Function getGoodsSettingsOnError;
+
   GetGroupUseCase getGroupUseCase;
   GetGoodsUseCase getGoodsUseCase;
+  GetGoodsSettingsUseCase getGoodsSettingsUseCase;
+  SetGoodsSettingsUseCase setGoodsSettingsUseCase;
 
   GoodsPresenter(groupRepository, goodRepository, transactionRepository) {
     getGroupUseCase = GetGroupUseCase(groupRepository);
     getGoodsUseCase = GetGoodsUseCase(goodRepository);
+
+    getGoodsSettingsUseCase = GetGoodsSettingsUseCase(goodRepository);
+    setGoodsSettingsUseCase = SetGoodsSettingsUseCase(goodRepository);
   }
 
   @override
   void dispose() {
     getGroupUseCase.dispose();
     getGoodsUseCase.dispose();
+    getGoodsSettingsUseCase.dispose();
+    setGoodsSettingsUseCase.dispose();
   }
 
   void getGroups(storeId, groupId) => getGroupUseCase.execute(
       _GetGroupsUseCaseObserver(this), GetGroupUseCaseParams(storeId, groupId));
-  void getGoods(storeId, groupId) => getGoodsUseCase.execute(_GetGoodsUseCaseObserver(this), GetGoodsUseCaseParams(storeId, groupId));
+
+  void getGoods(storeId, groupId) => getGoodsUseCase.execute(
+      _GetGoodsUseCaseObserver(this), GetGoodsUseCaseParams(storeId, groupId));
+
+  void getSettings() =>
+      getGoodsSettingsUseCase.execute(_GetGoodsSettingsUseCaseObserver(this));
+
+  void setSettings(settings) => setGoodsSettingsUseCase.execute(
+      _SetGoodsSettingsUseCaseObserver(this),
+      SetGoodsSettingsUseCaseParams(settings));
 }
 class _GetGroupsUseCaseObserver implements Observer<List<Group>>{
   GoodsPresenter _presenter;
@@ -66,4 +88,38 @@ class _GetGoodsUseCaseObserver implements Observer<List<Good>>{
   void onNext(response) {
     _presenter.getGoodsOnNext(response);
   }
+}
+
+class _GetGoodsSettingsUseCaseObserver implements Observer<GoodsSettings> {
+  GoodsPresenter _presenter;
+
+  _GetGoodsSettingsUseCaseObserver(this._presenter);
+
+  @override
+  void onComplete() {}
+
+  @override
+  void onError(e) {
+    _presenter.getGoodsSettingsOnError(e);
+  }
+
+  @override
+  void onNext(settings) {
+    _presenter.getGoodsSettingsOnNext(settings);
+  }
+}
+
+class _SetGoodsSettingsUseCaseObserver implements Observer<void> {
+  GoodsPresenter _presenter;
+
+  _SetGoodsSettingsUseCaseObserver(this._presenter);
+
+  @override
+  void onComplete() {}
+
+  @override
+  void onError(e) {}
+
+  @override
+  void onNext(settings) {}
 }

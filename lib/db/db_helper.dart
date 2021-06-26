@@ -63,7 +63,7 @@ class DBHelper {
         "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, groupId INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
     await db.execute(
-        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, groupId INTEGER, " +
+        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
 
     await db.execute(

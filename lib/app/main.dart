@@ -1,10 +1,16 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:good_manager/app/pages/home_page.dart';
 import 'package:good_manager/app/utils/router.dart';
 
-void main(){
+List<CameraDescription> cameras;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  cameras = await availableCameras();
   runApp(MyApp());
 }
 
@@ -14,6 +20,7 @@ class MyApp extends StatelessWidget {
   MyApp() : _router = AppRouter() {
     //initLogger();
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

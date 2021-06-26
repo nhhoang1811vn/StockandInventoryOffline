@@ -171,7 +171,7 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
                 child: controller.isNoSort()
                     ? Icon(Icons.sort_by_alpha)
                     : Icon(Icons.sort_by_alpha,
-                        size: 26, color: UIConstants.highlightColor),
+                        size: 26, color: UIConstants.highlightMenuColor),
                 onTap: () => controller.openSortByDialog(),
               ),
             );

@@ -2,13 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
 import 'package:good_manager/data/repositories/data_good_repository.dart';
 import 'package:good_manager/data/repositories/data_group_repository.dart';
 import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/search_goods_type.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'good_item_row.dart';
@@ -22,185 +22,35 @@ class GoodsPage extends View {
   GoodsPage({Key key, @required this.isSelection, this.documentType});
 
   @override
-  GoodsPageView createState() => GoodsPageView(GoodsController(
-      DataGroupRepository(),
-      DataGoodRepository(),
-      DataDocumentTransactionRepository(),
-      this.isSelection,
-      this.documentType));
+  GoodsPageView createState() =>
+      GoodsPageView(this.isSelection, this.documentType);
 }
 
 class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
-  SearchBar searchBar;
-  GoodsController controller;
-
-  GoodsPageView(this.controller) : super(controller) {
-    searchBar = new SearchBar(
-        inBar: true,
-        setState: setState,
-        //onSubmitted: onSubmitted,
-        //onChanged: onChanged,
-        buildDefaultAppBar: buildAppBar,
-        onCleared: () {
-          print("cleared");
-        },
-        onClosed: () {
-          print("closed");
-        });
-  }
-
-  AppBar buildAppBar(BuildContext context) {
-    return new AppBar(
-        title: new Text(AppLocalizations.of(context).title_goods),
-        actions: [
-          searchBar.getSearchAction(context),
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              child: Icon(
-                Icons.sort_by_alpha,
-                size: 26,
-              ),
-            ),
-          ),
-          ControlledWidgetBuilder<GoodsController>(
-              builder: (context, controller) {
-            return Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: controller.openHelpPage,
-                child: Icon(
-                  Icons.help,
-                  size: 26,
-                ),
-              ),
-            );
-          })
-        ]);
-  }
-
-/*  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: searchBar.build(context),
-      body: Column(children: [
-        Container(
-            color: Colors.blue[800],
-            width: double.infinity,
-            alignment: Alignment.center,
-            child: Padding(
-                padding: EdgeInsets.only(top: 4, bottom: 4),
-                child:
-                    Text('main store', style: TextStyle(color: Colors.white)))),
-        Visibility(
-          visible: selectedGroups.isNotEmpty,
-          child: Container(
-            height: 40,
-            color: Colors.blue,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: selectedGroups.length,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return Row(children: [
-                    GestureDetector(
-                        child: Icon(Icons.home, color: Colors.white),
-                        onTap: () => onSelectedGroupTapped(-1)),
-                    GestureDetector(
-                        child: Row(children: [
-                          Icon(Icons.navigate_next, color: Colors.white),
-                          Text(selectedGroups[index].name,
-                              style: TextStyle(color: Colors.white))
-                        ]),
-                        onTap: () => onSelectedGroupTapped(0))
-                  ]);
-                } else {
-                  return GestureDetector(
-                      child: Row(children: [
-                        Icon(Icons.navigate_next, color: Colors.white),
-                        Text(selectedGroups[index].name,
-                            style: TextStyle(color: Colors.white))
-                      ]),
-                      onTap: () => onSelectedGroupTapped(index));
-                }
-              },
-            ),
-          ),
-        ),
-        Expanded(
-            child: new FutureBuilder<List<GoodItem>>(
-          future: presenter.getItems(getSelectedGroupId()),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) print(snapshot.error);
-            return snapshot.hasData
-                ? new GoodItemList(snapshot.data, onGroupTapped, onGoodTapped)
-                : new Center(child: new CircularProgressIndicator());
-          },
-        )),
-      ]),
-      floatingActionButton: SpeedDial(
-        icon: Icons.add,
-        activeIcon: Icons.close,
-        buttonSize: 56.0,
-        visible: true,
-        closeManually: false,
-        renderOverlay: false,
-        curve: Curves.bounceIn,
-        overlayColor: Colors.black,
-        overlayOpacity: 0.5,
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        elevation: 8.0,
-        shape: CircleBorder(),
-        children: [
-          SpeedDialChild(
-              child: Icon(
-                Icons.folder,
-                color: Colors.grey,
-              ),
-              backgroundColor: Colors.white,
-              label: 'Nhóm',
-              onTap: () => _onAddGroup()),
-          SpeedDialChild(
-              child: Icon(Icons.image, color: Colors.grey),
-              backgroundColor: Colors.white,
-              label: 'Sản phẩm',
-              onTap: () => _onAddGood())
-        ],
-      ),
-    );
-  }*/
-
-  /*void onSelectedGroupTapped(int index) {
-    if (index == -1) {
-      selectedGroups.clear();
-    } else {
-      selectedGroups = selectedGroups.sublist(0, index + 1);
-    }
-    screenUpdated();
-  }
-
-  void onGroupTapped(Group group) {
-    selectedGroups.add(group);
-    screenUpdated();
-  }
-
-  void onGoodTapped(Good good) async {
-    SaveGoodPageArguments arguments = SaveGoodPageArguments();
-    arguments.good = good;
-    final result = await Navigator.of(context).pushNamed(
-        Pages.save_good,
-        arguments: arguments);
-    if (result) {
-      screenUpdated();
-    }
-  }*/
+  GoodsPageView(isSelection, documentType)
+      : super(GoodsController(DataGroupRepository(), DataGoodRepository(),
+            DataDocumentTransactionRepository(), isSelection, documentType));
 
   Widget getBody() {
     List<Widget> children = [
       storeView,
       selectedGroupView,
-      Expanded(child: Stack(children: [emptyView, listView]))
+      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
+        return Visibility(child: searchBar, visible: controller.showSearchBar);
+      }),
+      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
+        return Expanded(
+            child: Stack(children: [
+          Visibility(
+            child: emptyView,
+            visible: controller.isEmpty(),
+          ),
+          Visibility(
+            child: listView,
+            visible: !controller.isEmpty(),
+          )
+        ]));
+      })
     ];
     return Column(children: children);
   }
@@ -218,7 +68,7 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
         return Visibility(
           visible: controller.selectedGroups.isNotEmpty,
           child: Container(
-            height: 30,
+            height: 40,
             color: Colors.blue,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -252,34 +102,34 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
         );
       });
 
-  Widget get emptyView =>
-      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
-        return Visibility(
-            visible: controller.goodItems.isEmpty,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Icon(
-                  UIConstants.goodsIconData,
-                  size: 60,
-                ),
-                Padding(
-                    padding: EdgeInsets.only(top: 16),
-                    child: Text(AppLocalizations.of(context).empty_goods,
-                        textAlign: TextAlign.center))
-              ],
-            ));
-      });
+  Widget get emptyView => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Icon(
+            UIConstants.goodsIconData,
+            size: 60,
+          ),
+          Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: Text(AppLocalizations.of(context).empty_goods,
+                  textAlign: TextAlign.center))
+        ],
+      );
 
   Widget get listView {
     return ControlledWidgetBuilder<GoodsController>(
         builder: (context, controller) {
       return ListView.separated(
           itemBuilder: (BuildContext context, index) {
-            var item = controller.goodItems[index];
-            if (item.good != null) {
-              var good = item.good;
+            if (index < controller.groups.length) {
+              var group = controller.groups[index];
+              return GroupItemRow(
+                  group,
+                  (item) => controller.onGroupTapped(group),
+                  (item) => controller.onGroupLongPressed(group));
+            } else {
+              var good = controller.goods[index - controller.groups.length];
               return GoodItemRow(
                   good,
                   good.quantity,
@@ -287,23 +137,17 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
                   (item) => controller.onGoodLongPressed(good),
                   controller.isSelection,
                   controller.documentType);
-            } else {
-              var group = item.group;
-              return GroupItemRow(
-                  group,
-                  (item) => controller.onGroupTapped(item),
-                  (item) => controller.onGroupLongPressed(item));
             }
           },
           separatorBuilder: (context, index) {
             return Divider();
           },
-          itemCount: controller.goodItems.length);
+          itemCount: controller.groups.length + controller.goods.length);
     });
   }
 
   Future<bool> _onBackPressed() async {
-    Navigator.of(context).pop(controller.transactions);
+    //Navigator.of(context).pop(controller.transactions);
   }
 
   @override
@@ -311,36 +155,39 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
       onWillPop: _onBackPressed,
       child: Scaffold(
           key: globalKey,
-          appBar: searchBar.build(context),
+          appBar: new AppBar(
+              title: new Text(AppLocalizations.of(context).title_goods),
+              actions: [searchMenu, sortMenu, helpMenu]),
           body: ControlledWidgetBuilder<GoodsController>(
               builder: (context, controller) {
             return ModalProgressHUD(
                 child: getBody(),
-                inAsyncCall: controller.isLoading, //controller.isLoading,
+                inAsyncCall: controller.isLoading,
+                //controller.isLoading,
                 opacity: 0);
           }),
           floatingActionButton: ControlledWidgetBuilder<GoodsController>(
               builder: (context, controller) {
-        return SpeedDial(
-          icon: Icons.add,
-          activeIcon: Icons.close,
-          buttonSize: 56.0,
-          visible: true,
-          closeManually: false,
-          renderOverlay: false,
-          curve: Curves.bounceIn,
-          overlayColor: Colors.black,
-          overlayOpacity: 0.5,
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-          elevation: 8.0,
-          shape: CircleBorder(),
-          children: [
-            SpeedDialChild(
-                child: Icon(
-                  Icons.folder,
-                  color: Colors.grey,
-                ),
+            return SpeedDial(
+              icon: Icons.add,
+              activeIcon: Icons.close,
+              buttonSize: 56.0,
+              visible: true,
+              closeManually: false,
+              renderOverlay: false,
+              curve: Curves.bounceIn,
+              overlayColor: Colors.black,
+              overlayOpacity: 0.5,
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              elevation: 8.0,
+              shape: CircleBorder(),
+              children: [
+                SpeedDialChild(
+                    child: Icon(
+                      Icons.folder,
+                      color: Colors.grey,
+                    ),
                     backgroundColor: Colors.white,
                     label: 'Nhóm',
                     onTap: controller.onAddGroup),
@@ -352,4 +199,94 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
               ],
             );
           })));
+
+  Widget get searchMenu =>
+      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
+        return Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            child: Icon(
+              UIConstants.searchMenuIconData,
+              size: 26,
+              color: controller.showSearchBar
+                  ? UIConstants.highlightMenuColor
+                  : UIConstants.normalMenuColor,
+            ),
+            onTap: controller.toggleSearchBar,
+          ),
+        );
+      });
+
+  Widget get sortMenu =>
+      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
+        return Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            child: Icon(
+              UIConstants.sortMenuIconData,
+              size: 26,
+              color: controller.hasSortOptions()
+                  ? UIConstants.highlightMenuColor
+                  : UIConstants.normalMenuColor,
+            ),
+            onTap: controller.onShowSortDialog,
+          ),
+        );
+      });
+
+  Widget get helpMenu => Padding(
+        padding: EdgeInsets.only(right: 20.0),
+        child: GestureDetector(
+          child: Icon(
+            UIConstants.helpMenuIconData,
+            size: 26,
+          ),
+        ),
+      );
+
+  Widget get searchBar =>
+      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
+        return Row(children: [
+          Expanded(
+              child: Card(
+            child: ListTile(
+              title: TextField(
+                decoration: InputDecoration(
+                    hintText: controller.getSearchTextHint(),
+                    border: InputBorder.none),
+                onChanged: controller.onSearchChanged,
+                controller: controller.searchTextController,
+              ),
+              trailing: Visibility(
+                child: IconButton(
+                  icon: Icon(UIConstants.cancelIconData),
+                  onPressed: controller.resetSearchText,
+                ),
+                visible: controller.textSearch.isNotEmpty,
+              ),
+            ),
+          )),
+          PopupMenuButton<SearchGoodsType>(
+            itemBuilder: (BuildContext a) => <PopupMenuEntry<SearchGoodsType>>[
+              PopupMenuItem<SearchGoodsType>(
+                  value: SearchGoodsType.byName,
+                  child:
+                      Text(AppLocalizations.of(context).search_type_by_name)),
+              PopupMenuItem<SearchGoodsType>(
+                  value: SearchGoodsType.byDescription,
+                  child: Text(
+                      AppLocalizations.of(context).search_type_by_description)),
+              PopupMenuItem<SearchGoodsType>(
+                  value: SearchGoodsType.byBarcode,
+                  child: Text(
+                      AppLocalizations.of(context).search_type_by_barcode)),
+              PopupMenuItem<SearchGoodsType>(
+                  value: SearchGoodsType.everywhere,
+                  child: Text(
+                      AppLocalizations.of(context).search_type_everywhere)),
+            ],
+            onSelected: controller.setSearchGoodsType,
+          )
+        ]);
+      });
 }

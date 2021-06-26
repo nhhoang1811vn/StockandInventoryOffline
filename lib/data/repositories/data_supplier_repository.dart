@@ -1,6 +1,6 @@
 import 'package:good_manager/data/utils/constants.dart';
 import 'package:good_manager/db/db_helper.dart';
-import 'package:good_manager/domain/entities/sort_by.dart';
+import 'package:good_manager/domain/entities/sort_by_text.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/supplier_settings.dart';
 import 'package:good_manager/domain/repositories/supplier_repositories.dart';
@@ -36,20 +36,16 @@ class DataSupplierRepository implements SupplierRepository {
   Future<SupplierSettings> getSettings() async {
     var settings = SupplierSettings();
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    var value = preferences.getInt(Constants.sortByNameSupplierKey);
-    if (value == null) {
-      settings.sortByName = SortBy.no_sort;
-    } else {
-      settings.sortByName = SortByHelper.get(value);
-    }
+    settings.sortByName = SortByTextHelper.get(
+        preferences.getInt(Constants.sortByNameSupplierKey));
     return settings;
   }
 
   @override
   Future<bool> setSettings(SupplierSettings settings) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setInt(
-        Constants.sortByNameSupplierKey, settings.sortByName.value);
+    preferences.setInt(Constants.sortByNameSupplierKey,
+        SortByTextHelper.getValue(settings.sortByName));
   }
 
   @override

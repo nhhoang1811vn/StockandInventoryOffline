@@ -7,6 +7,12 @@ class UIConstants {
   static IconData documentsIconData = FontAwesomeIcons.book;
   static IconData calculatorIconData = FontAwesomeIcons.calculator;
 
+  static IconData searchMenuIconData = Icons.search;
+  static IconData sortMenuIconData = Icons.sort_by_alpha;
+  static IconData helpMenuIconData = Icons.help;
+
+  static IconData cancelIconData = Icons.close;
+
   static const double screenSpace = 16.0;
 
   static const TextStyle fieldHintStyle =
@@ -17,7 +23,8 @@ class UIConstants {
   static Color primaryColor = Colors.blue[600];
   static Color primaryDarkColor = Colors.blue[800];
 
-  static Color highlightColor = Colors.orange[600];
+  static Color normalMenuColor = Colors.white;
+  static Color highlightMenuColor = Colors.orange[600];
 }
 void showInfoToast(msg){
   Fluttertoast.showToast(
