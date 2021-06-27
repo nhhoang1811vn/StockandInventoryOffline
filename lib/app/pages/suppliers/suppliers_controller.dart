@@ -1,106 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/pages/base_list_controller.dart';
 import 'package:good_manager/app/pages/pages.dart';
-import 'package:good_manager/app/pages/suppliers/sort_supplier_dialog.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_presenter.dart';
-import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/domain/entities/sort_by_text.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/supplier_settings.dart';
 
-class SuppliersController extends Controller {
-  bool isLoading = false;
-  SuppliersPresenter _presenter;
-  List<Supplier> _allItems;
-  List<Supplier> _items;
+class SuppliersController
+    extends BaseListController<Supplier, SupplierSettings, SuppliersPresenter> {
   bool _isSelection;
-  String _textSearch;
 
-  SupplierSettings _settings;
-
-  List<Supplier> get items => _items;
-
-  SuppliersController(supplierRepository, this._isSelection)
-      : _presenter = SuppliersPresenter(supplierRepository),
-        super() {
-    _allItems = [];
-    _items = [];
-    _textSearch = "";
-    isLoading = true;
-    _presenter.getSettings();
-    _presenter.getSuppliers();
-  }
-
-  bool isNoSort() {
-    if (_settings != null) {
-      return (_settings.sortByName == SortByText.no_sort);
-    } else {
-      return true;
-    }
-  }
+  SuppliersController(repository, this._isSelection)
+      : super(SuppliersPresenter(repository));
 
   @override
-  void initListeners() {
-    _presenter.getSupplierSettingsOnNext = (SupplierSettings settings) {
-      _settings = settings;
-      refreshUI();
-    };
-    _presenter.getSupplierSettingsOnError = (e) {
-      showErrorToast(e.toString());
-    };
-
-    _presenter.setSupplierSettingsOnError = (e) {
-      showErrorToast(e.toString());
-    };
-    _presenter.setSupplierSettingsOnComplete = () {
-      refreshItems();
-    };
-
-    _presenter.getSuppliersOnNext = (List<Supplier> suppliers) {
-      isLoading = false;
-      _allItems = suppliers;
-      refreshItems();
-    };
-    _presenter.getSuppliersOnError = (e) {
-      isLoading = false;
-      showErrorToast(e.toString());
-      refreshUI();
-    };
-    //delete
-    _presenter.deleteSupplierOnComplete = () {
-      int index =
-          _allItems.indexWhere((element) => element.id == _presenter.deletedId);
-      _allItems.removeAt(index);
-      refreshItems();
-    };
-    _presenter.deleteSupplierOnError = (e) {
-      showErrorToast(e.toString());
-    };
-  }
-
-  void onAddItem() async {
-    final result = await Navigator.of(getContext())
-        .pushNamed(Pages.save_supplier, arguments: {"item": Supplier()});
-    if (result != null) {
-      _allItems.add(result);
-      refreshItems();
-    }
-  }
-
-  void onItemPressed(Supplier supplier) async {
+  void onItemPressed(Supplier item) {
     if (_isSelection) {
-      Navigator.of(getContext()).pop(supplier);
+      Navigator.of(getContext()).pop(item);
     } else {
-      final result = await Navigator.of(getContext())
-          .pushNamed(Pages.save_supplier, arguments: {'item': supplier});
-      if (result != null) {
-        int index =
-            _allItems.indexWhere((element) => element.id == supplier.id);
-        _allItems[index] = result;
-        refreshItems();
-      }
+      super.onItemPressed(item);
     }
   }
 
@@ -169,7 +88,7 @@ class SuppliersController extends Controller {
               TextButton(
                 onPressed: () {
                   Navigator.pop(getContext());
-                  _presenter.delete(id);
+                  presenter.delete(id);
                 },
                 child: Text(AppLocalizations.of(getContext()).action_ok),
               )
@@ -178,65 +97,7 @@ class SuppliersController extends Controller {
         });
   }
 
-  @override
-  void dispose() {
-    _presenter.dispose();
-    super.dispose();
-  }
-
-  void setTextSearch(String textSearch) {
-    _textSearch = textSearch;
-    refreshItems();
-  }
-
-  void refreshItems() {
-    filter();
-    sort();
-    refreshUI();
-  }
-
-  void filter() {
-    _items.clear();
-    if (_textSearch.isEmpty) {
-      _items = _allItems.toList();
-    } else {
-      _allItems.forEach((element) {
-        if (element.name.startsWith(_textSearch)) {
-          _items.add(element);
-        }
-      });
-    }
-  }
-
-  void sort() {
-    switch (_settings.sortByName) {
-      case SortByText.no_sort:
-        {
-          _items.sort((item1, item2) {
-            return item1.name.compareTo(item2.name);
-          });
-          break;
-        }
-      case SortByText.a_to_z:
-        {
-          _items.sort((item1, item2) {
-            return item1.name.compareTo(item2.name);
-          });
-          break;
-        }
-      case SortByText.z_to_a:
-        {
-          _items.sort((item1, item2) {
-            return item2.name.compareTo(item1.name);
-          });
-          break;
-        }
-      default:
-        {}
-    }
-  }
-
-  void openHelpPage() {
+  void onOpenHelpPage() {
     Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
       "title": "Nhà cung cấp",
       "content":
@@ -244,12 +105,18 @@ class SuppliersController extends Controller {
     });
   }
 
-  void openSortByDialog() {
-    showDialog(
-        context: getContext(),
-        builder: (_) => SortSupplierDialog(_settings, () {
-              _presenter.setSettings(_settings);
-            }),
-        barrierDismissible: true);
+  @override
+  bool filterItem(Supplier item, String textSearch) {
+    return item.name.contains(textSearch);
+  }
+
+  @override
+  Supplier getEmptyItem() {
+    return Supplier();
+  }
+
+  @override
+  String getSaveItemRouteName() {
+    return Pages.save_supplier;
   }
 }

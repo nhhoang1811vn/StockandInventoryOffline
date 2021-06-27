@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_controller.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_supplier_repository.dart';
@@ -18,52 +17,80 @@ class SuppliersPage extends View {
   SuppliersPage({Key key, @required this.isSelection});
 
   @override
-  SuppliersPageView createState() => SuppliersPageView(
-      SuppliersController(DataSupplierRepository(), isSelection));
+  SuppliersPageView createState() => SuppliersPageView(isSelection);
 }
 
 class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
-  SearchBar searchBar;
-  SuppliersController controller;
-
-  SuppliersPageView(this.controller) : super(controller) {
-    searchBar = new SearchBar(
-      inBar: true,
-      setState: setState,
-      onCleared: onSearchBarCleared,
-      onChanged: onSearchBarChanged,
-      onClosed: onSearchBarClosed,
-      buildDefaultAppBar: buildAppBar,
-    );
-  }
+  SuppliersPageView(isSelection)
+      : super(SuppliersController(DataSupplierRepository(), isSelection));
 
   @override
   Widget get view {
     return Scaffold(
         key: globalKey,
-        appBar: searchBar.build(context),
+        appBar: appBar,
         body: ControlledWidgetBuilder<SuppliersController>(
             builder: (context, controller) {
           return ModalProgressHUD(
-              child: stackView, inAsyncCall: controller.isLoading, opacity: 0);
+              child: getBody(), inAsyncCall: controller.isLoading, opacity: 0);
         }),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => controller.onAddItem(),
-          child: Icon(Icons.add),
-        ));
+        floatingActionButton: ControlledWidgetBuilder<SuppliersController>(
+            builder: (context, controller) {
+          return FloatingActionButton(
+            onPressed: () => controller.onAddItem(),
+            child: Icon(Icons.add),
+          );
+        }));
   }
 
-  Widget get stackView => Stack(fit: StackFit.expand, children: [
-        //emptyView,
-        Visibility(
-          child: emptyView,
-          visible: controller.items.isEmpty,
-        ),
-        Visibility(
-          child: listView,
-          visible: controller.items.isNotEmpty,
-        ),
-      ]);
+  Widget get appBar => AppBar(
+      title: new Text(AppLocalizations.of(context).suppliers_title),
+      actions: [searchMenu, sortMenu, helpMenu]);
+
+  Widget getBody() {
+    List<Widget> children = [
+      ControlledWidgetBuilder<SuppliersController>(
+          builder: (context, controller) {
+        return Visibility(child: searchBar, visible: controller.showSearchBar);
+      }),
+      ControlledWidgetBuilder<SuppliersController>(
+          builder: (context, controller) {
+        return Expanded(
+            child: Stack(children: [
+          Visibility(
+            child: emptyView,
+            visible: controller.items.isEmpty && !controller.isLoading,
+          ),
+          Visibility(
+            child: listView,
+            visible: controller.items.isNotEmpty,
+          )
+        ]));
+      })
+    ];
+    return Column(children: children);
+  }
+
+  Widget get searchBar => ControlledWidgetBuilder<SuppliersController>(
+          builder: (context, controller) {
+        return Card(
+          child: ListTile(
+            title: TextField(
+              decoration: InputDecoration(
+                  hintText: "by name", border: InputBorder.none),
+              onChanged: controller.onSearchChanged,
+              controller: controller.searchTextController,
+            ),
+            trailing: Visibility(
+              child: IconButton(
+                icon: Icon(UIConstants.cancelIconData),
+                onPressed: controller.resetSearchText,
+              ),
+              visible: controller.textSearch.isNotEmpty,
+            ),
+          ),
+        );
+      });
 
   Widget get emptyView => Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -146,46 +173,51 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
       ? await launch(_url)
       : throw 'Could not launch $_url';
 
-  void onSearchBarChanged(String value) {
-    controller.setTextSearch(value);
-  }
-
-  void onSearchBarCleared() {
-    controller.setTextSearch("");
-  }
-
-  void onSearchBarClosed() {
-    controller.setTextSearch("");
-  }
-
-  AppBar buildAppBar(BuildContext context) {
-    return new AppBar(
-        title: new Text(AppLocalizations.of(context).suppliers_title),
-        actions: [
-          searchBar.getSearchAction(context),
-          ControlledWidgetBuilder<SuppliersController>(
-              builder: (context, controller) {
-            return Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                child: controller.isNoSort()
-                    ? Icon(Icons.sort_by_alpha)
-                    : Icon(Icons.sort_by_alpha,
-                        size: 26, color: UIConstants.highlightMenuColor),
-                onTap: () => controller.openSortByDialog(),
-              ),
-            );
-          }),
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              child: Icon(
-                Icons.help,
-                size: 26,
-              ),
-              onTap: () => controller.openHelpPage(),
+  Widget get searchMenu => ControlledWidgetBuilder<SuppliersController>(
+          builder: (context, controller) {
+        return Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            child: Icon(
+              UIConstants.searchMenuIconData,
+              size: 26,
+              color: controller.showSearchBar
+                  ? UIConstants.highlightMenuColor
+                  : UIConstants.normalMenuColor,
             ),
-          )
-        ]);
-  }
+            onTap: controller.toggleSearchBar,
+          ),
+        );
+      });
+
+  Widget get sortMenu => ControlledWidgetBuilder<SuppliersController>(
+          builder: (context, controller) {
+        return Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            child: Icon(
+              UIConstants.sortMenuIconData,
+              size: 26,
+              color: controller.hasSortOptions()
+                  ? UIConstants.highlightMenuColor
+                  : UIConstants.normalMenuColor,
+            ),
+            onTap: controller.onShowSortDialog,
+          ),
+        );
+      });
+
+  Widget get helpMenu => ControlledWidgetBuilder<SuppliersController>(
+          builder: (context, controller) {
+        return Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            child: Icon(
+              UIConstants.helpMenuIconData,
+              size: 26,
+            ),
+            onTap: controller.onOpenHelpPage,
+          ),
+        );
+      });
 }

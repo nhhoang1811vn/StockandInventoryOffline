@@ -1,7 +1,8 @@
+import 'package:good_manager/domain/entities/base_model.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 
-class DocumentTransaction {
+class DocumentTransaction extends BaseModel {
   int id;
   int documentId;
   int goodId;

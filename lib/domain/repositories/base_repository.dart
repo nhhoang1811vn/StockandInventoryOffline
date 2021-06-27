@@ -1,9 +1,11 @@
-abstract class BaseRepository<T> {
-  Future<int> insert(T item);
+import 'package:good_manager/domain/entities/base_model.dart';
 
-  Future<bool> update(T item);
+abstract class BaseRepository<M extends BaseModel> {
+  Future<int> insert(M item);
 
-  Future<List<T>> getAll();
+  Future<bool> update(M item);
+
+  Future<List<M>> getAll();
 
   Future<bool> delete(int id);
 }

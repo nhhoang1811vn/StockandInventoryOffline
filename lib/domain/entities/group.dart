@@ -1,4 +1,6 @@
-class Group{
+import 'package:good_manager/domain/entities/base_model.dart';
+
+class Group extends BaseModel {
   int id;
   String name = "";
   String description = "";
@@ -8,7 +10,7 @@ class Group{
 
   Group();
 
-  Group.map(dynamic obj){
+  Group.map(dynamic obj) {
     this.id = obj["id"];
     this.name = obj["name"];
     this.description = obj["description"];

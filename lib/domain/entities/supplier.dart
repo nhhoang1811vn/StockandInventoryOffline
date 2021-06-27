@@ -1,6 +1,6 @@
-class Supplier{
-  int id;
-  String name = "";
+import 'package:good_manager/domain/entities/base_model.dart';
+
+class Supplier extends BaseModel {
   String description = "";
   String address = "";
   String email = "";
@@ -13,7 +13,7 @@ class Supplier{
 
   Supplier.map(dynamic obj) {
     this.id = obj["id"];
-    this.name = obj["supplierName"];
+    this.name = obj["name"];
     this.description = obj["description"];
     this.address = obj["address"];
     this.email = obj["email"];
@@ -24,8 +24,7 @@ class Supplier{
 
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();
-    //map["id"] = id;
-    map["supplierName"] = name;
+    map["name"] = name;
     map["description"] = description;
     map["address"] = address;
     map["email"] = email;

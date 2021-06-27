@@ -1,7 +1,8 @@
-class Store{
-  int id;
-  String name;
+import 'package:good_manager/domain/entities/base_model.dart';
+
+class Store extends BaseModel {
   String description;
+
   Store();
 
   Store.map(dynamic obj) {

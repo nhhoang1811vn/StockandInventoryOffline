@@ -1,6 +1,8 @@
 import 'dart:convert';
 
-class Good {
+import 'package:good_manager/domain/entities/base_model.dart';
+
+class Good extends BaseModel {
   int id;
   String name;
   String description;
@@ -22,7 +24,6 @@ class Good {
     this.storeId = obj["storeId"];
     this.groupId = obj["groupId"];
     this.files = (jsonDecode(obj["files"]) as List<dynamic>).cast<String>();
-    var a = 1;
   }
 
   Map<String, dynamic> toMap() {

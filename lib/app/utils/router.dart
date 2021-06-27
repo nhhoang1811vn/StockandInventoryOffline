@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/app/main.dart';
+import 'package:good_manager/app/pages/customers/customers_view.dart';
 import 'package:good_manager/app/pages/documents/documents_view.dart';
 import 'package:good_manager/app/pages/goods/goods_view.dart';
 import 'package:good_manager/app/pages/help/help_page_dart.dart';
 import 'package:good_manager/app/pages/home_page.dart';
 import 'package:good_manager/app/pages/pages.dart';
+import 'package:good_manager/app/pages/save_customer/save_customer_view.dart';
 import 'package:good_manager/app/pages/save_document/save_document_view.dart';
 import 'package:good_manager/app/pages/save_good/save_good_view.dart';
 import 'package:good_manager/app/pages/save_group/save_group_view.dart';
@@ -27,7 +29,7 @@ class AppRouter {
         return _buildRoute(settings, StoresPage());
       case Pages.save_store:
         Map<String, dynamic> args = settings.arguments as Map;
-        return _buildRoute(settings, SaveStorePage(store: args['store']));
+        return _buildRoute(settings, SaveStorePage(store: args['item']));
       case Pages.good_list:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(
@@ -45,12 +47,30 @@ class AppRouter {
 
       case Pages.supplier_list:
         Map<String, dynamic> args = settings.arguments as Map;
-        return _buildRoute(settings, SuppliersPage(isSelection: args['isSelection'],));
+        return _buildRoute(
+            settings,
+            SuppliersPage(
+              isSelection: args['isSelection'],
+            ));
       case Pages.save_supplier:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(
             settings,
             SaveSupplierPage(
+              item: args['item'],
+            ));
+      case Pages.customer_list:
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(
+            settings,
+            CustomersPage(
+              isSelection: args['isSelection'],
+            ));
+      case Pages.save_customer:
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(
+            settings,
+            SaveCustomerPage(
               item: args['item'],
             ));
       case Pages.document_list:

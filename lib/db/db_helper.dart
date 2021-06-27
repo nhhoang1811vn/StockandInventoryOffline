@@ -49,7 +49,7 @@ class DBHelper {
     await db.execute(
         "CREATE TABLE $STORES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT)");
     await db.execute(
-        "CREATE TABLE $SUPPLIERS_TABLE_NAME(id INTEGER PRIMARY KEY, supplierName TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT)");
+        "CREATE TABLE $SUPPLIERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT)");
     await db.execute(
         "CREATE TABLE $CUSTOMERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT)");
 
@@ -162,6 +162,50 @@ class DBHelper {
   }
 
   //CUSTOMER
+  Future<List<Customer>> getCustomers() async {
+    var dbClient = await db;
+    List<Map> list =
+        await dbClient.rawQuery('SELECT * FROM $CUSTOMERS_TABLE_NAME');
+    List<Customer> customers = new List();
+    for (int i = 0; i < list.length; i++) {
+      Customer customer = Customer.map(list[i]);
+      customer.numberDocument = await getCountDocumentByCustomerId(customer.id);
+      customers.add(customer);
+    }
+    return customers;
+  }
+
+  Future<int> getCountDocumentByCustomerId(int customerId) async {
+    var dbClient = await db;
+    var result = await dbClient.rawQuery(
+        "SELECT COUNT(*) FROM $DOCUMENTS_TABLE_NAME WHERE customerId = ?",
+        [customerId]);
+
+    int value = result[0]["COUNT(*)"];
+    return value == null ? 0 : value;
+  }
+
+  Future<int> insertCustomer(Customer item) async {
+    var dbClient = await db;
+    int res = await dbClient.insert(CUSTOMERS_TABLE_NAME, item.toMap());
+    return res;
+  }
+
+  Future<bool> updateCustomer(Customer item) async {
+    var dbClient = await db;
+    int res = await dbClient.update(CUSTOMERS_TABLE_NAME, item.toMap(),
+        where: "id = ?", whereArgs: <int>[item.id]);
+    return res == 1;
+  }
+
+  Future<bool> deleteCustomer(int id) async {
+    var dbClient = await db;
+
+    int res = await dbClient
+        .rawDelete('DELETE FROM $CUSTOMERS_TABLE_NAME WHERE id = ?', [id]);
+    return res == 1;
+  }
+
   Future<Customer> getCustomer(int id) async {
     var dbClient = await db;
     var list = await dbClient

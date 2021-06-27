@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:good_manager/app/pages/stores/stores_controller.dart';
+import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_store_repository.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 
 class StoresPage extends View {
@@ -16,104 +15,71 @@ class StoresPage extends View {
 }
 
 class _StoresPageView extends ViewState<StoresPage, StoresController> {
-  _StoresPageView() : super(StoresController(DataStoreRepository())) {
-    searchBar = new SearchBar(
-        inBar: true,
-        setState: setState,
-        onSubmitted: onSubmitted,
-        onChanged: onChanged,
-        buildDefaultAppBar: buildAppBar,
-        onCleared: () {
-          print("cleared");
-        },
-        onClosed: () {
-          print("closed");
-        });
-  }
-
-  SearchBar searchBar;
-  var textSearch = "";
-  SharedPreferences sharedPrefs;
-
-  AppBar buildAppBar(BuildContext context) {
-    return new AppBar(
-        title: new Text(AppLocalizations
-            .of(context)
-            .stores_title),
-        actions: [
-          searchBar.getSearchAction(context),
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: _onSortMenuItemTapped,
-              child: Icon(
-                Icons.sort_by_alpha,
-                size: 26,
-              ),
-            ),
-          ),
-          ControlledWidgetBuilder<StoresController>(
-              builder: (context, controller) {
-                return Padding(
-                  padding: EdgeInsets.only(right: 20.0),
-                  child: GestureDetector(
-                    onTap: () => controller.openHelpPage(),
-                    child: Icon(
-                      Icons.help,
-                      size: 26,
-                    ),
-                  ),
-                );
-              })
-
-        ]);
-  }
-
-  void onSubmitted(String value) {
-  }
-
-  void onChanged(String value) {
-    setState(() => {textSearch = value});
-  }
-
-
-  void _onSortMenuItemTapped() {
-    /*showDialog(context: context, builder: (_) => SortByStoreDialogWidget(()=>{
-      screenUpdated()
-    }), barrierDismissible: false);*/
-  }
+  _StoresPageView() : super(StoresController(DataStoreRepository()));
 
   @override
   Widget get view =>
       Scaffold(
           key: globalKey,
-          appBar: searchBar.build(context),
-          body: ControlledWidgetBuilder<StoresController>(
-              builder: (context, controller) {
-                return ModalProgressHUD(
-                    child: stackView, inAsyncCall: controller.isLoading, opacity: 0);
+      appBar: appBar,
+      body: ControlledWidgetBuilder<StoresController>(
+          builder: (context, controller) {
+        return ModalProgressHUD(
+            child: getBody(), inAsyncCall: controller.isLoading, opacity: 0);
       }),
       floatingActionButton: ControlledWidgetBuilder<StoresController>(
           builder: (context, controller) {
         return FloatingActionButton(
-          onPressed: () => controller.onAddStore(),
+          onPressed: () => controller.onAddItem(),
           child: Icon(Icons.add),
         );
       }));
 
-  Widget get stackView =>
+  Widget get appBar => AppBar(
+      title: new Text(AppLocalizations.of(context).stores_title),
+      actions: [searchMenu, sortMenu, helpMenu]);
+
+  Widget getBody() {
+    List<Widget> children = [
       ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
-        return Stack(fit: StackFit.expand, children: [
-          //emptyView,
+        return Visibility(child: searchBar, visible: controller.showSearchBar);
+      }),
+      ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
+        return Expanded(
+            child: Stack(children: [
           Visibility(
             child: emptyView,
-            visible: controller.items.isEmpty,
+            visible: controller.items.isEmpty && !controller.isLoading,
           ),
           Visibility(
             child: listView,
             visible: controller.items.isNotEmpty,
+          )
+        ]));
+      })
+    ];
+    return Column(children: children);
+  }
+
+  Widget get searchBar =>
+      ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
+        return Card(
+          child: ListTile(
+            title: TextField(
+              decoration: InputDecoration(
+                  hintText: "by name", border: InputBorder.none),
+              onChanged: controller.onSearchChanged,
+              controller: controller.searchTextController,
+            ),
+            trailing: Visibility(
+              child: IconButton(
+                icon: Icon(UIConstants.cancelIconData),
+                onPressed: controller.resetSearchText,
+              ),
+              visible: controller.textSearch.isNotEmpty,
+            ),
           ),
-        ]);
+        );
       });
 
   Widget get emptyView => Column(
@@ -136,12 +102,60 @@ class _StoresPageView extends ViewState<StoresPage, StoresController> {
               return ListTile(
                 title: Text(controller.items[index].name),
                 subtitle: Text(controller.items[index].description),
-                onTap: () => controller.onEditStore(index),
+                onTap: () => controller.onItemPressed(controller.items[index]),
               );
             },
             separatorBuilder: (context, index) {
               return Divider();
             },
             itemCount: controller.items.length);
+      });
+
+  Widget get searchMenu =>
+      ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
+        return Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            child: Icon(
+              UIConstants.searchMenuIconData,
+              size: 26,
+              color: controller.showSearchBar
+                  ? UIConstants.highlightMenuColor
+                  : UIConstants.normalMenuColor,
+            ),
+            onTap: controller.toggleSearchBar,
+          ),
+        );
+      });
+
+  Widget get sortMenu =>
+      ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
+        return Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            child: Icon(
+              UIConstants.sortMenuIconData,
+              size: 26,
+              color: controller.hasSortOptions()
+                  ? UIConstants.highlightMenuColor
+                  : UIConstants.normalMenuColor,
+            ),
+            onTap: controller.onShowSortDialog,
+          ),
+        );
+      });
+
+  Widget get helpMenu =>
+      ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
+        return Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            child: Icon(
+              UIConstants.helpMenuIconData,
+              size: 26,
+            ),
+            onTap: controller.onOpenHelpPage,
+          ),
+        );
       });
 }

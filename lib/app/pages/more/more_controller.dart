@@ -13,9 +13,8 @@ class MoreController extends Controller{
     });
   }
   void openCustomersPage(){
-    /*Navigator.of(getContext()).pushNamed(Pages.customer_list,arguments: {
-      'isSelection' : false
-    });*/
+    Navigator.of(getContext())
+        .pushNamed(Pages.customer_list, arguments: {'isSelection': false});
   }
   void openStoresPage(){
     Navigator.of(getContext()).pushNamed(Pages.store_list);

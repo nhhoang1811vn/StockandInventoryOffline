@@ -1,9 +1,12 @@
-enum DocumentType{
+import 'package:good_manager/domain/entities/base_model.dart';
+
+enum DocumentType {
   incoming,
   outgoing,
   //stock_taking
 }
-class Document{
+
+class Document extends BaseModel {
   int id;
   String name = "";
   String description = "";

@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:good_manager/domain/entities/base_settings.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
-import 'package:good_manager/domain/entities/supplier_settings.dart';
 
-class SortSupplierDialog extends StatefulWidget {
+class SortItemDialog extends StatefulWidget {
   final void Function() onValueChange;
-  final SupplierSettings settings;
+  final BaseSettings settings;
 
-  SortSupplierDialog(this.settings, this.onValueChange);
+  SortItemDialog(this.settings, this.onValueChange);
 
   @override
-  SortSupplierDialogState createState() => SortSupplierDialogState();
+  SortItemDialogState createState() => SortItemDialogState();
 }
 
-class SortSupplierDialogState extends State<SortSupplierDialog> {
+class SortItemDialogState extends State<SortItemDialog> {
   SortByText _sortByName;
 
   @override
