@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/stores/stores_presenter.dart';
-import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/domain/entities/stores_settings.dart';
 
@@ -11,12 +10,6 @@ import '../base_list_controller.dart';
 class StoresController
     extends BaseListController<Store, StoresSettings, StoresPresenter> {
   StoresController(repository) : super(StoresPresenter(repository));
-
-  @override
-  void onItemPressed(Store item) {
-    appDataManager.sharedPrefsHelper.setSelectedStoreId(item.id);
-    super.onItemPressed(item);
-  }
 
   void onOpenHelpPage() {
     Navigator.of(getContext()).pushNamed(Pages.help,

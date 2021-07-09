@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_calculator/flutter_calculator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/utils/constants.dart';
 
 class AddQuantityGoodDialog extends StatefulWidget {
+  final String title;
   final void Function(int quantity) onQuantityAdded;
 
-  AddQuantityGoodDialog(this.onQuantityAdded);
+  AddQuantityGoodDialog(this.title, this.onQuantityAdded);
 
   @override
   State<StatefulWidget> createState() => AddQuantityGoodDialogState();
@@ -28,7 +30,7 @@ class AddQuantityGoodDialogState extends State<AddQuantityGoodDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Add quantity'),
+      title: Text(widget.title),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
@@ -39,7 +41,7 @@ class AddQuantityGoodDialogState extends State<AddQuantityGoodDialog> {
                     Expanded(
                         child: TextFormField(
                       decoration: InputDecoration(
-                        labelText: 'Số lương',
+                        labelText: AppLocalizations.of(context).field_quantity,
                       ),
                       controller: quantityTextController,
                       keyboardType: TextInputType.number,

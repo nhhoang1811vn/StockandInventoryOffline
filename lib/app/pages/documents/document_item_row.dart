@@ -15,7 +15,7 @@ class DocumentItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateFormat format = DateFormat("dd/MM/yyyy", "vi");
+    DateFormat format = DateFormat("dd/MM/yyyy");
     return ListTile(
       leading: Container(
         width: 8,
@@ -32,6 +32,7 @@ class DocumentItemRow extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('Ngày ' + format.format(item.date)),
           item.supplierName != null ? Text(item.supplierName) : Container(),
+          item.customerName != null ? Text(item.customerName) : Container(),
           item.description.isNotEmpty ? Text(item.description) : Container()
         ]),
       ),

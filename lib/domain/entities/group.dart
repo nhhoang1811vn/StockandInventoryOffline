@@ -1,29 +1,20 @@
 import 'package:good_manager/domain/entities/base_model.dart';
 
 class Group extends BaseModel {
-  int id;
-  String name = "";
-  String description = "";
   String barCode = "";
   int storeId;
   int groupId;
 
   Group();
-
   Group.map(dynamic obj) {
-    this.id = obj["id"];
-    this.name = obj["name"];
-    this.description = obj["description"];
+    super.map(obj);
     this.barCode = obj["barCode"];
     this.storeId = obj["storeId"];
     this.groupId = obj["groupId"];
   }
 
   Map<String, dynamic> toMap() {
-    var map = new Map<String, dynamic>();
-
-    map["name"] = name;
-    map["description"] = description;
+    var map = super.toMap();
     map["barCode"] = barCode;
     map["storeId"] = storeId;
     map["groupId"] = groupId;

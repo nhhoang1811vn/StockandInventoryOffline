@@ -10,11 +10,11 @@ class GoodItemRow extends StatelessWidget {
   final void Function(Good good) onGoodTapped;
   final void Function(Good good) onGoodLongPressed;
   final bool isSelection;
-  final DocumentType documentType;
+  final DocumentType _documentType;
 
   GoodItemRow(
       this.item, this.quantity, this.onGoodTapped, this.onGoodLongPressed,
-      [this.isSelection = false, this.documentType = DocumentType.incoming]);
+      [this.isSelection = false, this._documentType]);
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class GoodItemRow extends StatelessWidget {
         trailing: Row(mainAxisSize: MainAxisSize.min, children: [
           Text(quantity.toString(), style: TextStyle(fontSize: 16)),
           (isSelection && item.pendingQuantity != 0)
-              ? pendingQuantity
+              ? getPendingView()
               : Container()
         ]),
         leading: Icon(Icons.image, size: 36, color: Colors.blue),
@@ -56,13 +56,29 @@ class GoodItemRow extends StatelessWidget {
         onLongPress: () => onGoodLongPressed(item));
   }
 
-  Widget get pendingQuantity => (documentType == DocumentType.incoming
-      ? incomingQuantity
-      : outgoingQuantity);
+  Widget getPendingView() {
+    if (_documentType == DocumentType.incoming) {
+      if (item.pendingQuantity > 0) {
+        return getGreenTextView(item.pendingQuantity);
+      } else {
+        return getRedTextView(-item.pendingQuantity);
+      }
+    } else {
+      if (item.pendingQuantity > 0) {
+        return getRedTextView(item.pendingQuantity);
+      } else {
+        return getGreenTextView(-item.pendingQuantity);
+      }
+    }
+  }
 
-  Widget get incomingQuantity => Text(" + " + item.pendingQuantity.toString(),
-      style: TextStyle(fontSize: 16, color: Colors.green));
+  Widget getGreenTextView(int quantity) {
+    return Text(" + " + quantity.toString(),
+        style: TextStyle(fontSize: 16, color: Colors.green));
+  }
 
-  Widget get outgoingQuantity => Text(" - " + item.pendingQuantity.toString(),
-      style: TextStyle(fontSize: 16, color: Colors.red));
+  Widget getRedTextView(int quantity) {
+    return Text(" - " + quantity.toString(),
+        style: TextStyle(fontSize: 16, color: Colors.red));
+  }
 }

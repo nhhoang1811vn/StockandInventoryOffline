@@ -1,7 +1,8 @@
 import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/documents_settings.dart';
+import 'package:good_manager/domain/repositories/base_common_repository.dart';
 
-import 'base_repository.dart';
-
-abstract class DocumentRepository extends BaseRepository<Document> {
+abstract class DocumentRepository
+    extends BaseCommonRepository<Document, DocumentSettings> {
   Future<List<Document>> getDocuments(int storeId);
 }

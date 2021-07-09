@@ -4,7 +4,9 @@ import 'base_repository.dart';
 
 abstract class DocumentTransactionRepository
     extends BaseRepository<DocumentTransaction> {
-  Future<bool> deleteByDocumentId(int documentId);
+  Future<void> deleteByDocumentId(int documentId);
+
+  Future<void> deleteByGoodId(int goodId);
 
   Future<List<DocumentTransaction>> getTransactions(int documentId);
 }

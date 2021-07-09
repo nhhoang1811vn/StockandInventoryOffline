@@ -4,9 +4,12 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_document_repository.dart';
+import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
 import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/search_documents_type.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
+import '../store_view.dart';
 import 'document_item_row.dart';
 import 'documents_controller.dart';
 
@@ -16,13 +19,36 @@ class DocumentsPage extends View {
 }
 
 class DocumentPageView extends ViewState<DocumentsPage, DocumentsController> {
-  DocumentPageView() : super(DocumentsController(DataDocumentRepository()));
+  DocumentPageView()
+      : super(DocumentsController(
+            DataDocumentRepository(), DataDocumentTransactionRepository()));
+  bool showSearchView = false;
 
   Widget get allDocumentView => ControlledWidgetBuilder<DocumentsController>(
           builder: (context, controller) {
         return ModalProgressHUD(
-            child: content, inAsyncCall: controller.isLoadingAll, opacity: 0);
+            child: getAllBody(), inAsyncCall: controller.isLoading, opacity: 0);
       });
+
+  Widget getAllBody() {
+    List<Widget> children = [
+      ControlledWidgetBuilder<DocumentsController>(
+          builder: (context, controller) {
+        return Expanded(
+            child: Stack(children: [
+          Visibility(
+            child: allEmptyView,
+            visible: controller.items.isEmpty && !controller.isLoading,
+          ),
+          Visibility(
+            child: allListView,
+            visible: controller.items.isNotEmpty,
+          )
+        ]));
+      })
+    ];
+    return Column(children: children);
+  }
 
   Widget get incomingDocumentView => Stack(
         children: [incomingEmptyView, incomingListView],
@@ -58,30 +84,46 @@ class DocumentPageView extends ViewState<DocumentsPage, DocumentsController> {
       }));
 
   Widget get appBar => AppBar(
-        title: Text(AppLocalizations.of(context).title_document),
-        bottom: TabBar(
-          indicatorColor: Colors.white,
-          tabs: [
-            Tab(text: AppLocalizations.of(context).document_list_tab_all),
-            Tab(text: AppLocalizations.of(context).document_list_tab_incoming),
-            Tab(text: AppLocalizations.of(context).document_list_tab_outgoing),
-          ],
-        ),
+    title: Text(AppLocalizations.of(context).title_document),
+        bottom: PreferredSize(
+            preferredSize: Size.fromHeight(showSearchView ? (74.0 + 65.0) : 74),
+            child: Column(
+              children: [
+                StoreView(),
+                Visibility(child: searchBar, visible: showSearchView),
+                TabBar(
+                  indicatorColor: Colors.white,
+                  tabs: [
+                    Tab(
+                        text:
+                            AppLocalizations.of(context).document_list_tab_all),
+                    Tab(
+                        text: AppLocalizations.of(context)
+                            .document_list_tab_incoming),
+                    Tab(
+                        text: AppLocalizations.of(context)
+                            .document_list_tab_outgoing),
+                  ],
+                )
+              ],
+            )),
+        actions: [searchMenu, sortMenu, helpMenu],
       );
 
   Widget get allEmptyView => ControlledWidgetBuilder<DocumentsController>(
           builder: (context, controller) {
         return Visibility(
-            visible:
-                controller.allDocuments.isEmpty && !controller.isLoadingAll,
+            visible: controller.items.isEmpty && !controller.isLoading,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Icon(
-                  UIConstants.documentsIconData,
-                  size: 60,
-                ),
+                SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: Image.asset(
+                      UIConstants.documentIconPath,
+                    )),
                 Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: Text(AppLocalizations.of(context).empty_document,
@@ -93,16 +135,17 @@ class DocumentPageView extends ViewState<DocumentsPage, DocumentsController> {
   Widget get incomingEmptyView => ControlledWidgetBuilder<DocumentsController>(
           builder: (context, controller) {
         return Visibility(
-            visible: controller.incomingDocuments.isEmpty &&
-                !controller.isLoadingAll,
+            visible: controller.incomingItems.isEmpty && !controller.isLoading,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Icon(
-                  UIConstants.documentsIconData,
-                  size: 60,
-                ),
+                SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: Image.asset(
+                      UIConstants.documentIconPath,
+                    )),
                 Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: Text(
@@ -115,16 +158,17 @@ class DocumentPageView extends ViewState<DocumentsPage, DocumentsController> {
   Widget get outgoingEmptyView => ControlledWidgetBuilder<DocumentsController>(
           builder: (context, controller) {
         return Visibility(
-            visible: controller.outgoingDocuments.isEmpty &&
-                !controller.isLoadingAll,
+            visible: controller.outgoingItems.isEmpty && !controller.isLoading,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Icon(
-                  UIConstants.documentsIconData,
-                  size: 60,
-                ),
+                SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: Image.asset(
+                      UIConstants.documentIconPath,
+                    )),
                 Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: Text(
@@ -137,10 +181,10 @@ class DocumentPageView extends ViewState<DocumentsPage, DocumentsController> {
   Widget get allListView => ControlledWidgetBuilder<DocumentsController>(
           builder: (context, controller) {
         return Visibility(
-            visible: controller.allDocuments.isNotEmpty,
+            visible: controller.items.isNotEmpty,
             child: ListView.separated(
                 itemBuilder: (BuildContext context, index) {
-                  Document item = controller.allDocuments[index];
+                  Document item = controller.items[index];
                   return DocumentItemRow(
                       true,
                       item,
@@ -150,18 +194,18 @@ class DocumentPageView extends ViewState<DocumentsPage, DocumentsController> {
                 separatorBuilder: (context, index) {
                   return Divider();
                 },
-                itemCount: controller.allDocuments.length));
+                itemCount: controller.items.length));
       });
 
   Widget get incomingListView => ControlledWidgetBuilder<DocumentsController>(
           builder: (context, controller) {
         return Visibility(
-            visible: controller.incomingDocuments.isNotEmpty,
+            visible: controller.incomingItems.isNotEmpty,
             child: ListView.separated(
                 itemBuilder: (BuildContext context, index) {
-                  Document item = controller.incomingDocuments[index];
+                  Document item = controller.incomingItems[index];
                   return DocumentItemRow(
-                      true,
+                      false,
                       item,
                       (item) => controller.onDocumentTapped(item),
                       (item) => controller.onDocumentLongPressed(item));
@@ -169,18 +213,18 @@ class DocumentPageView extends ViewState<DocumentsPage, DocumentsController> {
                 separatorBuilder: (context, index) {
                   return Divider();
                 },
-                itemCount: controller.incomingDocuments.length));
+                itemCount: controller.incomingItems.length));
       });
 
   Widget get outgoingListView => ControlledWidgetBuilder<DocumentsController>(
           builder: (context, controller) {
         return Visibility(
-            visible: controller.outgoingDocuments.isNotEmpty,
+            visible: controller.outgoingItems.isNotEmpty,
             child: ListView.separated(
                 itemBuilder: (BuildContext context, index) {
-                  Document item = controller.outgoingDocuments[index];
+                  Document item = controller.outgoingItems[index];
                   return DocumentItemRow(
-                      true,
+                      false,
                       item,
                       (item) => controller.onDocumentTapped(item),
                       (item) => controller.onDocumentLongPressed(item));
@@ -188,10 +232,102 @@ class DocumentPageView extends ViewState<DocumentsPage, DocumentsController> {
                 separatorBuilder: (context, index) {
                   return Divider();
                 },
-                itemCount: controller.outgoingDocuments.length));
+                itemCount: controller.outgoingItems.length));
       });
 
-  Widget get content => Stack(
-        children: [allEmptyView, allListView],
-      );
+  Widget get searchMenu => ControlledWidgetBuilder<DocumentsController>(
+          builder: (context, controller) {
+        return Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            child: Icon(
+              UIConstants.searchMenuIconData,
+              size: 26,
+              color: controller.showSearchBar
+                  ? UIConstants.highlightMenuColor
+                  : UIConstants.normalMenuColor,
+            ),
+            onTap: () {
+              controller.toggleSearchBar();
+              setState(() {
+                showSearchView = !showSearchView;
+              });
+            },
+          ),
+        );
+      });
+
+  Widget get sortMenu => ControlledWidgetBuilder<DocumentsController>(
+          builder: (context, controller) {
+        return Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            child: Icon(
+              UIConstants.sortMenuIconData,
+              size: 26,
+              color: controller.hasSortOptions()
+                  ? UIConstants.highlightMenuColor
+                  : UIConstants.normalMenuColor,
+            ),
+            onTap: controller.onShowSortDialog,
+          ),
+        );
+      });
+
+  Widget get helpMenu => ControlledWidgetBuilder<DocumentsController>(
+          builder: (context, controller) {
+        return Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            child: Icon(
+              UIConstants.helpMenuIconData,
+              size: 26,
+            ),
+            onTap: controller.onOpenHelpPage,
+          ),
+        );
+      });
+
+  Widget get searchBar => ControlledWidgetBuilder<DocumentsController>(
+          builder: (context, controller) {
+        return Row(children: [
+          Expanded(
+              child: Card(
+            child: ListTile(
+              title: TextField(
+                decoration: InputDecoration(
+                    hintText: controller.getSearchTextHint(),
+                    border: InputBorder.none),
+                onChanged: controller.onSearchChanged,
+                controller: controller.searchTextController,
+              ),
+              trailing: Visibility(
+                child: IconButton(
+                  icon: Icon(UIConstants.cancelIconData),
+                  onPressed: controller.resetSearchText,
+                ),
+                visible: controller.textSearch.isNotEmpty,
+              ),
+            ),
+          )),
+          PopupMenuButton<SearchDocumentsType>(
+            itemBuilder: (BuildContext a) =>
+                <PopupMenuEntry<SearchDocumentsType>>[
+              PopupMenuItem<SearchDocumentsType>(
+                  value: SearchDocumentsType.byName,
+                  child: Text(AppLocalizations.of(context)
+                      .search_documents_type_by_name)),
+              PopupMenuItem<SearchDocumentsType>(
+                  value: SearchDocumentsType.byDescription,
+                  child: Text(AppLocalizations.of(context)
+                      .search_documents_type_by_description)),
+              PopupMenuItem<SearchDocumentsType>(
+                  value: SearchDocumentsType.byCustomerSupplier,
+                  child: Text(AppLocalizations.of(context)
+                      .search_documents_type_by_customer_supplier)),
+            ],
+            onSelected: controller.setSearchDocumentsType,
+          )
+        ]);
+      });
 }

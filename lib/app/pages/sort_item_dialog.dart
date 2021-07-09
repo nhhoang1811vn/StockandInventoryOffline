@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/base_settings.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
 
@@ -25,17 +26,18 @@ class SortItemDialogState extends State<SortItemDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Sắp xếp'),
+      title: Text(AppLocalizations.of(context).dialog_title_sort_by),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Theo Tên'),
+                Text(AppLocalizations.of(context).field_name),
                 Divider(color: Colors.grey),
-                getRadioListTile("Không sắp xếp", SortByText.no_sort),
-                getRadioListTile("Sắp xếp A-Z", SortByText.a_to_z),
-                getRadioListTile("Sắp xếp Z-A", SortByText.z_to_a)
+                getRadioListTile(SortByText.no_sort),
+                getRadioListTile(SortByText.a_to_z),
+                getRadioListTile(SortByText.z_to_a)
               ],
             )
           ],
@@ -43,7 +45,7 @@ class SortItemDialogState extends State<SortItemDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text('OK'),
+          child: Text(AppLocalizations.of(context).action_ok),
           onPressed: () async {
             widget.settings.sortByName = _sortByName;
             widget.onValueChange();
@@ -54,9 +56,9 @@ class SortItemDialogState extends State<SortItemDialog> {
     );
   }
 
-  RadioListTile<SortByText> getRadioListTile(String text, SortByText value) {
+  RadioListTile<SortByText> getRadioListTile(SortByText value) {
     return RadioListTile<SortByText>(
-      title: Text(text),
+      title: Text(SortByTextHelper.getText(context, value)),
       value: value,
       groupValue: _sortByName,
       onChanged: (SortByText value) {
@@ -64,6 +66,7 @@ class SortItemDialogState extends State<SortItemDialog> {
           _sortByName = value;
         });
       },
+      dense: true,
     );
   }
 }

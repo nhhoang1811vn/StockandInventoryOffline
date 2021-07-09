@@ -1,7 +1,6 @@
 import 'package:good_manager/domain/entities/base_model.dart';
 
 class Customer extends BaseModel {
-  String description = "";
   String address = "";
   String email = "";
   String phone = "";
@@ -13,9 +12,7 @@ class Customer extends BaseModel {
   Customer();
 
   Customer.map(dynamic obj) {
-    this.id = obj["id"];
-    this.name = obj["name"];
-    this.description = obj["description"];
+    super.map(obj);
     this.address = obj["address"];
     this.email = obj["email"];
     this.phone = obj["phone"];
@@ -24,9 +21,7 @@ class Customer extends BaseModel {
   }
 
   Map<String, dynamic> toMap() {
-    var map = new Map<String, dynamic>();
-    map["name"] = name;
-    map["description"] = description;
+    var map = super.toMap();
     map["address"] = address;
     map["email"] = email;
     map["phone"] = phone;

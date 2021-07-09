@@ -36,6 +36,7 @@ dependencies:
   file_picker: ^3.0.3
   path_provider: ^2.0.0
   path: 1.8.0
+  open_file: ^3.2.1
   #flutter_search_bar: ^2.1.0
   flutter_speed_dial: ^3.0.5
   flutter_barcode_scanner: ^2.0.0
@@ -45,6 +46,8 @@ dependencies:
   flutter_clean_architecture: ^5.0.0
   url_launcher: ^6.0.3
   fluttertoast: ^8.0.7
+  sprintf: ^4.0.0
+  flutter_markdown: ^0.6.2
 
   # UI
   modal_progress_hud: ^0.1.2
@@ -89,7 +92,20 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-     - images/inventory.png
+    - images/inventory.png
+    - images/store.png
+    - images/supplier.png
+    - images/customer.png
+    - images/rating.png
+    - images/feedback.png
+    - images/community.png
+    - images/invitation.png
+    - images/add_incoming_document.png
+    - images/add_outgoing_document.png
+    - images/good.png
+    - images/document.png
+    - images/expense.png
+    - images/home.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or app.pages.more resolution-specific "variants", see

@@ -2,29 +2,51 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/pages/base/base_sort_items.dart';
 import 'package:good_manager/app/pages/documents/documents_presenter.dart';
+import 'package:good_manager/app/pages/documents/sort/sort_by_date_documents.dart';
+import 'package:good_manager/app/pages/documents/sort/sort_by_quantity_documents.dart';
+import 'package:good_manager/app/pages/documents/sort_documents_dialog.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/documents_settings.dart';
+import 'package:good_manager/domain/entities/search_documents_type.dart';
+import 'package:good_manager/domain/entities/sort_by_number.dart';
+import 'package:good_manager/domain/entities/sort_by_text.dart';
 
 import '../pages.dart';
 import 'add_document_dialog.dart';
 
 class DocumentsController extends Controller {
-  bool isLoadingAll = true;
+  TextEditingController searchTextController;
+  bool isLoading = true;
   List<Document> allDocuments = [];
-  List<Document> incomingDocuments = [];
-  List<Document> outgoingDocuments = [];
+  List<Document> items = [];
+  List<Document> incomingItems = [];
+  List<Document> outgoingItems = [];
   DocumentsPresenter presenter;
 
-  DocumentsController(documentRepository)
-      : presenter = DocumentsPresenter(documentRepository),
+  bool showSearchBar = false;
+  String _textSearch = "";
+  DocumentSettings _settings;
+
+  String get textSearch => _textSearch;
+
+  DocumentsController(documentRepository, transactionRepository)
+      : presenter =
+            DocumentsPresenter(documentRepository, transactionRepository),
         super() {
-    retrieveDocuments();
+    searchTextController = TextEditingController();
+    isLoading = true;
+    retrieveSettings();
+  }
+
+  void retrieveSettings() {
+    presenter.getSettings();
   }
 
   void retrieveDocuments() async {
-    isLoadingAll = true;
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     presenter.getDocuments(storeId);
   }
@@ -38,12 +60,14 @@ class DocumentsController extends Controller {
   @override
   void initListeners() {
     presenter.getDocumentsOnNext = (documents) {
-      isLoadingAll = false;
+      isLoading = false;
       this.allDocuments = documents;
       refreshItems();
     };
     presenter.getDocumentsOnError = (e) {
       showErrorToast(e.toString());
+      isLoading = false;
+      refreshUI();
     };
 
     presenter.deleteDocumentOnComplete = () {
@@ -55,18 +79,32 @@ class DocumentsController extends Controller {
     presenter.deleteDocumentOnError = (e) {
       showErrorToast(e.toString());
     };
+    presenter.getDocumentSettingsOnNext = (settings) {
+      _settings = settings;
+      retrieveDocuments();
+    };
+    presenter.getDocumentSettingsOnError = (e) {
+      showErrorToast(e.message.toString());
+    };
+    presenter.setDocumentSettingsOnComplete = () {};
+    presenter.setDocumentSettingsOnError = (e) {
+      showErrorToast(e.message.toString());
+    };
   }
 
   void refreshItems() {
-    this.incomingDocuments = this
-        .allDocuments
+    sort();
+    filter();
+    refreshUI();
+  }
+
+  void reloadIncomingOutgoingItems() {
+    incomingItems = items
         .where((element) => element.type == DocumentType.incoming)
         .toList();
-    this.outgoingDocuments = this
-        .allDocuments
+    outgoingItems = items
         .where((element) => element.type == DocumentType.outgoing)
         .toList();
-    refreshUI();
   }
 
   Future<void> onAddDocument(index) async {
@@ -84,9 +122,9 @@ class DocumentsController extends Controller {
       case 2:
         _onAddDocumentWithType(DocumentType.outgoing);
         break;
-      //case 3:
-      //  _onAddDocumentWithType(DocumentType.stock_taking);
-      //  break;
+    //case 3:
+    //  _onAddDocumentWithType(DocumentType.stock_taking);
+    //  break;
     }
   }
 
@@ -156,5 +194,216 @@ class DocumentsController extends Controller {
             ],
           );
         });
+  }
+
+  void toggleSearchBar() {
+    showSearchBar = !showSearchBar;
+    resetSearchText();
+  }
+
+  void resetSearchText() {
+    searchTextController.text = "";
+    onSearchChanged("");
+  }
+
+  void onSearchChanged(String val) {
+    _textSearch = val;
+    filter();
+    refreshUI();
+  }
+
+  void sort() {
+    List<SortItems<Document>> sortOptions = [];
+    switch (_settings.sortByName) {
+      case SortByText.a_to_z:
+        {
+          sortOptions.add(SortByNameAToZ<Document>());
+          break;
+        }
+      case SortByText.z_to_a:
+        {
+          sortOptions.add(SortByNameZToA<Document>());
+          break;
+        }
+      default:
+        {}
+    }
+    switch (_settings.sortByDate) {
+      case SortByNumber.ascending:
+        {
+          sortOptions.add(SortByDateAscendingDocument());
+          break;
+        }
+      case SortByNumber.descending:
+        {
+          sortOptions.add(SortByDateDescendingDocument());
+          break;
+        }
+      default:
+        {}
+    }
+    switch (_settings.sortByQuantity) {
+      case SortByNumber.ascending:
+        {
+          sortOptions.add(SortByQuantityAscendingDocument());
+          break;
+        }
+      case SortByNumber.descending:
+        {
+          sortOptions.add(SortByQuantityDescendingDocument());
+          break;
+        }
+      default:
+        {}
+    }
+    if (sortOptions.isEmpty) {
+      sortOptions.add(SortByCreatedDate());
+    }
+    allDocuments.sort((item1, item2) {
+      int compare = 0;
+      for (final option in sortOptions) {
+        compare = option.getResult(item1, item2);
+        if (compare != 0) break;
+      }
+      return compare;
+    });
+  }
+
+  int sortByName(Document item1, Document item2) {
+    int compare = 0;
+    switch (_settings.sortByName) {
+      case SortByText.a_to_z:
+        {
+          compare = item1.name.compareTo(item2.name);
+          break;
+        }
+      case SortByText.a_to_z:
+        {
+          compare = item2.name.compareTo(item1.name);
+          break;
+        }
+      default:
+        {}
+    }
+    if (compare == 0) {
+      return sortByDate(item1, item2);
+    } else {
+      return compare;
+    }
+  }
+
+  int sortByDate(Document item1, Document item2) {
+    int compare = 0;
+    switch (_settings.sortByDate) {
+      case SortByNumber.ascending:
+        {
+          compare = item1.date.compareTo(item2.date);
+          break;
+        }
+      case SortByNumber.descending:
+        {
+          compare = item2.date.compareTo(item1.date);
+          break;
+        }
+      default:
+        {}
+    }
+    if (compare == 0) {
+      return sortByQuantity(item1, item2);
+    } else {
+      return compare;
+    }
+  }
+
+  int sortByQuantity(Document item1, Document item2) {
+    int compare = 0;
+    switch (_settings.sortByQuantity) {
+      case SortByNumber.ascending:
+        {
+          compare = item1.quantity.compareTo(item2.quantity);
+          break;
+        }
+      case SortByNumber.descending:
+        {
+          compare = item2.quantity.compareTo(item1.quantity);
+          break;
+        }
+      default:
+        {}
+    }
+    return compare;
+  }
+
+  void filter() {
+    items = allDocuments.where((element) => filterDocument(element)).toList();
+    reloadIncomingOutgoingItems();
+  }
+
+  bool filterDocument(Document document) {
+    if (_textSearch.trim().isEmpty) {
+      return true;
+    }
+    switch (_settings.searchDocumentsType) {
+      case SearchDocumentsType.byName:
+        return document.name.contains(_textSearch);
+        break;
+      case SearchDocumentsType.byDescription:
+        return document.description.contains(_textSearch);
+        break;
+      default:
+        if (document.supplierName != null &&
+            document.supplierName.contains(_textSearch)) {
+          return true;
+        }
+        if (document.customerName != null &&
+            document.customerName.contains(_textSearch)) {
+          return true;
+        }
+        return false;
+    }
+  }
+
+  void onShowSortDialog() async {
+    showDialog(
+        context: getContext(),
+        builder: (_) => SortDocumentsDialog(_settings, () {
+              presenter.setSettings(_settings);
+              refreshItems();
+            }),
+        barrierDismissible: true);
+  }
+
+  bool hasSortOptions() {
+    if (_settings == null) {
+      return false;
+    }
+    if (_settings.sortByName != SortByText.no_sort ||
+        _settings.sortByDate != SortByNumber.no_sort ||
+        _settings.sortByQuantity != SortByNumber.no_sort) {
+      return true;
+    }
+    return false;
+  }
+
+  void onOpenHelpPage() {}
+
+  String getSearchTextHint() {
+    switch (_settings.searchDocumentsType) {
+      case SearchDocumentsType.byName:
+        return AppLocalizations.of(getContext()).search_documents_type_by_name;
+      case SearchDocumentsType.byDescription:
+        return AppLocalizations.of(getContext())
+            .search_documents_type_by_description;
+      default:
+        return AppLocalizations.of(getContext())
+            .search_documents_type_by_customer_supplier;
+    }
+  }
+
+  void setSearchDocumentsType(SearchDocumentsType type) {
+    _settings.searchDocumentsType = type;
+    presenter.setSettings(_settings);
+
+    resetSearchText();
   }
 }

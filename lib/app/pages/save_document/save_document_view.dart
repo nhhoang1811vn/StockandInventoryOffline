@@ -199,10 +199,12 @@ class SaveDocumentPageView
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Icon(
-                  UIConstants.goodsIconData,
-                  size: 60,
-                ),
+                SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: Image.asset(
+                      UIConstants.goodIconPath,
+                    )),
                 Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: Text('No transactions', textAlign: TextAlign.center))

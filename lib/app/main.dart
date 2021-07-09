@@ -2,8 +2,10 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:good_manager/app/pages/home_page.dart';
+import 'package:good_manager/app/pages/main_page.dart';
+import 'package:good_manager/app/pages/onboarding/on_boarding_view.dart';
 import 'package:good_manager/app/utils/router.dart';
+import 'package:good_manager/data/app_data_manager.dart';
 
 List<CameraDescription> cameras;
 
@@ -14,11 +16,23 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  final AppRouter _router;
+class MyApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return MyAppState();
+  }
+}
 
-  MyApp() : _router = AppRouter() {
-    //initLogger();
+class MyAppState extends State<MyApp> {
+  final AppRouter _router;
+  bool firstTime = false;
+
+  MyAppState() : _router = AppRouter() {
+    appDataManager.sharedPrefsHelper
+        .getFirstTime()
+        .then((value) => setState(() {
+              firstTime = value;
+            }));
   }
 
   @override
@@ -35,17 +49,15 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.blue,
-
       ),
-      home: HomePage(),
+      home: firstTime ? OnBoardingPage() : MainPage(),
       onGenerateRoute: _router.getRoute,
       navigatorObservers: [_router.routeObserver],
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate
       ],
-      supportedLocales: AppLocalizations.supportedLocales
-,
+      supportedLocales: AppLocalizations.supportedLocales,
       // ...,
     );
   }

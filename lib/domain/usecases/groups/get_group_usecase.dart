@@ -13,7 +13,7 @@ class GetGroupUseCase extends UseCase<List<Group>,GetGroupUseCaseParams>{
   Future<Stream<List<Group>>> buildUseCaseStream(GetGroupUseCaseParams params) async{
     final StreamController<List<Group>> controller = StreamController();
     try{
-      List<Group> items= await _repository.getGroups(params.storeId, params.groupId);
+      List<Group> items = await _repository.getGroups(params.groupId);
       controller.add(items);
       controller.close();
     }catch(e){
@@ -23,8 +23,7 @@ class GetGroupUseCase extends UseCase<List<Group>,GetGroupUseCaseParams>{
   }
 }
 class GetGroupUseCaseParams {
-  final int storeId;
   final int groupId;
 
-  GetGroupUseCaseParams(this.storeId, this.groupId);
+  GetGroupUseCaseParams(this.groupId);
 }

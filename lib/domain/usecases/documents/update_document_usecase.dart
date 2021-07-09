@@ -21,12 +21,12 @@ class UpdateDocumentUseCase
     try {
       bool successful = await _documentRepository.update(params.document);
       deleteTransaction(params.document.id);
-      params.transactions.forEach((good) async {
-        DocumentTransaction transaction = DocumentTransaction();
-        transaction.documentId = params.document.id;
-        transaction.goodId = good.id;
-        transaction.quantity = good.quantity;
-        transaction.type = params.document.type;
+      params.transactions.forEach((transaction) async {
+        DocumentTransaction model = DocumentTransaction();
+        model.documentId = params.document.id;
+        model.goodId = transaction.goodId;
+        model.quantity = transaction.quantity;
+        model.type = params.document.type;
         await _documentTransactionRepository.insert(transaction);
       });
       if (successful) {

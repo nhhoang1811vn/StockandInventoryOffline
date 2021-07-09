@@ -9,8 +9,10 @@ import 'package:good_manager/data/repositories/data_good_repository.dart';
 import 'package:good_manager/data/repositories/data_group_repository.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/search_goods_type.dart';
+import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
+import '../store_view.dart';
 import 'good_item_row.dart';
 import 'goods_controller.dart';
 import 'group_item_row.dart';
@@ -18,22 +20,32 @@ import 'group_item_row.dart';
 class GoodsPage extends View {
   final bool isSelection;
   final DocumentType documentType;
+  final List<DocumentTransaction> transactions;
 
-  GoodsPage({Key key, @required this.isSelection, this.documentType});
+  GoodsPage(
+      {Key key,
+      @required this.isSelection,
+      this.documentType,
+      this.transactions});
 
   @override
   GoodsPageView createState() =>
-      GoodsPageView(this.isSelection, this.documentType);
+      GoodsPageView(this.isSelection, this.documentType, this.transactions);
 }
 
 class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
-  GoodsPageView(isSelection, documentType)
-      : super(GoodsController(DataGroupRepository(), DataGoodRepository(),
-            DataDocumentTransactionRepository(), isSelection, documentType));
+  GoodsPageView(isSelection, documentType, transactions)
+      : super(GoodsController(
+            DataGroupRepository(),
+            DataGoodRepository(),
+            DataDocumentTransactionRepository(),
+            isSelection,
+            documentType,
+            transactions));
 
   Widget getBody() {
     List<Widget> children = [
-      storeView,
+      StoreView(),
       selectedGroupView,
       ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
         return Visibility(child: searchBar, visible: controller.showSearchBar);
@@ -54,14 +66,6 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
     ];
     return Column(children: children);
   }
-
-  Widget get storeView => Container(
-      color: UIConstants.primaryDarkColor,
-      width: double.infinity,
-      alignment: Alignment.center,
-      child: Padding(
-          padding: EdgeInsets.only(top: 4, bottom: 4),
-          child: Text('main store', style: TextStyle(color: Colors.white))));
 
   Widget get selectedGroupView =>
       ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
@@ -106,10 +110,12 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Icon(
-            UIConstants.goodsIconData,
-            size: 60,
-          ),
+          SizedBox(
+              height: 60,
+              width: 60,
+              child: Image.asset(
+                UIConstants.goodIconPath,
+              )),
           Padding(
               padding: EdgeInsets.only(top: 16),
               child: Text(AppLocalizations.of(context).empty_goods,
@@ -146,25 +152,22 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
     });
   }
 
-  Future<bool> _onBackPressed() async {
-    //Navigator.of(context).pop(controller.transactions);
-  }
-
   @override
-  Widget get view => WillPopScope(
-      onWillPop: _onBackPressed,
-      child: Scaffold(
-          key: globalKey,
-          appBar: new AppBar(
-              title: new Text(AppLocalizations.of(context).title_goods),
-              actions: [searchMenu, sortMenu, helpMenu]),
-          body: ControlledWidgetBuilder<GoodsController>(
-              builder: (context, controller) {
-            return ModalProgressHUD(
-                child: getBody(),
-                inAsyncCall: controller.isLoading,
-                //controller.isLoading,
-                opacity: 0);
+  Widget get view =>
+      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
+        return WillPopScope(
+            onWillPop: controller.onBackPressed,
+            child: Scaffold(
+                key: globalKey,
+                appBar: new AppBar(
+                    title: new Text(AppLocalizations.of(context).title_goods),
+                    actions: [searchMenu, sortMenu, helpMenu]),
+                body: ControlledWidgetBuilder<GoodsController>(
+                    builder: (context, controller) {
+                  return ModalProgressHUD(
+                      child: getBody(),
+                      inAsyncCall: controller.isLoading,
+                      opacity: 0);
           }),
           floatingActionButton: ControlledWidgetBuilder<GoodsController>(
               builder: (context, controller) {
@@ -189,16 +192,17 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
                       color: Colors.grey,
                     ),
                     backgroundColor: Colors.white,
-                    label: 'Nhóm',
-                    onTap: controller.onAddGroup),
-                SpeedDialChild(
-                    child: Icon(Icons.image, color: Colors.grey),
-                    backgroundColor: Colors.white,
-                    label: 'Sản phẩm',
-                    onTap: controller.onAddGood)
-              ],
-            );
-          })));
+                          label: 'Nhóm',
+                          onTap: controller.onAddGroup),
+                      SpeedDialChild(
+                          child: Icon(Icons.image, color: Colors.grey),
+                          backgroundColor: Colors.white,
+                          label: 'Sản phẩm',
+                          onTap: controller.onAddGood)
+                    ],
+                  );
+                })));
+      });
 
   Widget get searchMenu =>
       ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
@@ -267,23 +271,24 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
             ),
           )),
           PopupMenuButton<SearchGoodsType>(
-            itemBuilder: (BuildContext a) => <PopupMenuEntry<SearchGoodsType>>[
+            itemBuilder: (BuildContext a) =>
+            <PopupMenuEntry<SearchGoodsType>>[
               PopupMenuItem<SearchGoodsType>(
                   value: SearchGoodsType.byName,
-                  child:
-                      Text(AppLocalizations.of(context).search_type_by_name)),
+                  child: Text(
+                      AppLocalizations.of(context).search_goods_type_by_name)),
               PopupMenuItem<SearchGoodsType>(
                   value: SearchGoodsType.byDescription,
-                  child: Text(
-                      AppLocalizations.of(context).search_type_by_description)),
+                  child: Text(AppLocalizations.of(context)
+                      .search_goods_type_by_description)),
               PopupMenuItem<SearchGoodsType>(
                   value: SearchGoodsType.byBarcode,
-                  child: Text(
-                      AppLocalizations.of(context).search_type_by_barcode)),
+                  child: Text(AppLocalizations.of(context)
+                      .search_goods_type_by_barcode)),
               PopupMenuItem<SearchGoodsType>(
                   value: SearchGoodsType.everywhere,
-                  child: Text(
-                      AppLocalizations.of(context).search_type_everywhere)),
+                  child: Text(AppLocalizations.of(context)
+                      .search_goods_type_everywhere)),
             ],
             onSelected: controller.setSearchGoodsType,
           )

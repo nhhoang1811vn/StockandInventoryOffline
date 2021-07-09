@@ -6,6 +6,7 @@ import 'package:good_manager/domain/entities/base_model.dart';
 import 'package:good_manager/domain/entities/base_settings.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
 
+import 'base/base_sort_items.dart';
 import 'base_list_presenter.dart';
 
 abstract class BaseListController<M extends BaseModel, S extends BaseSettings,
@@ -63,7 +64,7 @@ abstract class BaseListController<M extends BaseModel, S extends BaseSettings,
     _presenter.getItemsOnError = (e) {
       isLoading = false;
 
-      showErrorToast(e.message.toString());
+      showErrorToast(e.toString());
       refreshUI();
     };
     //delete
@@ -107,24 +108,32 @@ abstract class BaseListController<M extends BaseModel, S extends BaseSettings,
   }
 
   void sort() {
+    List<SortItems<M>> sortOptions = [];
     switch (_settings.sortByName) {
       case SortByText.a_to_z:
         {
-          _allItems.sort((item1, item2) {
-            return item1.name.compareTo(item2.name);
-          });
+          sortOptions.add(SortByNameAToZ());
           break;
         }
       case SortByText.z_to_a:
         {
-          _allItems.sort((item1, item2) {
-            return item2.name.compareTo(item1.name);
-          });
+          sortOptions.add(SortByNameZToA());
           break;
         }
       default:
         {}
     }
+    if (sortOptions.isEmpty) {
+      sortOptions.add(SortByCreatedDate());
+    }
+    _allItems.sort((item1, item2) {
+      int compare = 0;
+      for (final option in sortOptions) {
+        compare = option.getResult(item1, item2);
+        if (compare != 0) break;
+      }
+      return compare;
+    });
   }
 
   void onShowSortDialog() {

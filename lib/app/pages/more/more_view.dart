@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/utils/constants.dart';
 
 import 'more_controller.dart';
 
@@ -16,40 +17,43 @@ class MorePageView extends ViewState<MorePage, MoreController> {
 
   @override
   Widget get view => Scaffold(
-      appBar: new AppBar(title: new Text(AppLocalizations.of(context).title_more)),
+      appBar:
+          new AppBar(title: new Text(AppLocalizations.of(context).title_more)),
       body: ListView(
         key: globalKey,
         children: [
           ControlledWidgetBuilder<MoreController>(
               builder: (context, controller) {
             return ListTile(
-              leading: Icon(Icons.perm_contact_calendar),
-              title: Text('Suppliers'),
-              subtitle: Text('Suppliers information'),
+              leading: Image.asset(UIConstants.storeIconPath, width: 24),
+              title: Text(AppLocalizations.of(context).stores_title),
+              subtitle: Text(AppLocalizations.of(context).stores_description),
+              onTap: () => controller.openStoresPage(),
+            );
+          }),
+          ControlledWidgetBuilder<MoreController>(
+              builder: (context, controller) {
+            return ListTile(
+              leading: Image.asset(UIConstants.supplierIconPath, width: 24),
+              title: Text(AppLocalizations.of(context).suppliers_title),
+              subtitle:
+                  Text(AppLocalizations.of(context).suppliers_description),
               onTap: () => controller.openSuppliersPage(),
             );
           }),
           ControlledWidgetBuilder<MoreController>(
               builder: (context, controller) {
-                return ListTile(
-                  leading: Icon(Icons.perm_contact_calendar),
-                  title: Text('Customers'),
-                  subtitle: Text('Customers information'),
-                  onTap: () => controller.openCustomersPage(),
-                );
-              }),
-          ControlledWidgetBuilder<MoreController>(
-              builder: (context, controller) {
-                return ListTile(
-                  leading: Icon(Icons.store),
-                  title: Text('Stores'),
-                  subtitle: Text('Stores information'),
-                  onTap: () => controller.openStoresPage(),
-                );
-              }),
+            return ListTile(
+              leading: Image.asset(UIConstants.customerIconPath, width: 24),
+              title: Text(AppLocalizations.of(context).customers_title),
+              subtitle:
+                  Text(AppLocalizations.of(context).customers_description),
+              onTap: () => controller.openCustomersPage(),
+            );
+          }),
           ListTile(
             dense: true,
-            title: Text('Other SS Team Experiences'),
+            title: Text('Other SSTeam Experiences'),
           ),
           ListTile(
             leading: Icon(Icons.mail_outline),
@@ -60,31 +64,42 @@ class MorePageView extends ViewState<MorePage, MoreController> {
             dense: true,
             title: Text('Good Manager'),
           ),
+          ControlledWidgetBuilder<MoreController>(
+              builder: (context, controller) {
+            return ListTile(
+              leading: Image.asset(UIConstants.invitationIconPath, width: 24),
+              title: Text(
+                  AppLocalizations.of(context).menu_item_invite_friend_header),
+              subtitle: Text(AppLocalizations.of(context)
+                  .menu_item_invite_friend_description),
+              onTap: () => controller.onInviteFriend(),
+            );
+          }),
           ListTile(
-            leading: Icon(Icons.mail_outline),
-            title: Text('Invite friends'),
-            subtitle: Text('Share the good app to your friends'),
+            leading: Image.asset(UIConstants.ratingIconPath, width: 24),
+            title: Text(
+                AppLocalizations.of(context).menu_item_write_review_header),
+            subtitle: Text(AppLocalizations.of(context)
+                .menu_item_write_review_description),
           ),
+          ControlledWidgetBuilder<MoreController>(
+              builder: (context, controller) {
+            return ListTile(
+              leading: Image.asset(UIConstants.feedbackIconPath, width: 24),
+              title:
+                  Text(AppLocalizations.of(context).menu_item_feedback_header),
+              subtitle: Text(
+                  AppLocalizations.of(context).menu_item_feedback_description),
+              onTap: () => controller.onFeedback(),
+            );
+          }),
           ListTile(
-            leading: Icon(Icons.star_rate),
-            title: Text('Write a review'),
-            subtitle: Text('Write a review'),
-          ),
-          ListTile(
-            leading: Icon(Icons.feedback),
-            title: Text('Feedback'),
-            subtitle: Text('Share your feedback to improve the app'),
-          ),
-          ListTile(
-            leading: Icon(Icons.supervised_user_circle_sharp),
-            title: Text('Community'),
-            subtitle: Text('Our app community'),
-          ),
-          ListTile(
-            leading: Icon(Icons.info),
-            title: Text('About'),
-            subtitle: Text('About'),
-          ),
+            leading: Image.asset(UIConstants.communityIconPath, width: 24),
+            title:
+                Text(AppLocalizations.of(context).menu_item_community_header),
+            subtitle: Text(
+                AppLocalizations.of(context).menu_item_community_description),
+          )
         ],
       ));
 }

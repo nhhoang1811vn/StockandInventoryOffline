@@ -7,14 +7,13 @@ class Supplier extends BaseModel {
   String phone = "";
   String taxID = "";
   String bankDetail = "";
+
   int numberDocument = 0;
 
   Supplier();
 
   Supplier.map(dynamic obj) {
-    this.id = obj["id"];
-    this.name = obj["name"];
-    this.description = obj["description"];
+    super.map(obj);
     this.address = obj["address"];
     this.email = obj["email"];
     this.phone = obj["phone"];
@@ -23,9 +22,7 @@ class Supplier extends BaseModel {
   }
 
   Map<String, dynamic> toMap() {
-    var map = new Map<String, dynamic>();
-    map["name"] = name;
-    map["description"] = description;
+    var map = super.toMap();
     map["address"] = address;
     map["email"] = email;
     map["phone"] = phone;

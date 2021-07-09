@@ -8,6 +8,8 @@ class DocumentTransaction extends BaseModel {
   int goodId;
   int quantity;
   DocumentType type;
+
+  int currentQuantity = 0;
   Good good;
 
   DocumentTransaction();
@@ -17,6 +19,7 @@ class DocumentTransaction extends BaseModel {
     this.documentId = obj["documentId"];
     this.goodId = obj["goodId"];
     this.quantity = obj["quantity"];
+    this.currentQuantity = obj["quantity"];
     DocumentType.values.forEach((element) {
       if (obj["documentType"] == element.index) {
         this.type = element;

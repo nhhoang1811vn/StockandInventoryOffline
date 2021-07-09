@@ -97,13 +97,16 @@ class CustomersPageView extends ViewState<CustomersPage, CustomersController> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Icon(
-              Icons.person,
-              size: 60,
-            ),
+            SizedBox(
+                height: 60,
+                width: 60,
+                child: Image.asset(
+                  UIConstants.customerIconPath,
+                )),
             Padding(
                 padding: EdgeInsets.only(top: 16),
-                child: Text('Khong co NCC nao ca', textAlign: TextAlign.center))
+                child: Text(AppLocalizations.of(context).empty_customers,
+                    textAlign: TextAlign.center))
           ]);
 
   Widget get listView {

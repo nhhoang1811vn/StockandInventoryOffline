@@ -53,7 +53,7 @@ class _StoresPageView extends ViewState<StoresPage, StoresController> {
           ),
           Visibility(
             child: listView,
-            visible: controller.items.isNotEmpty,
+            visible: controller.items.isNotEmpty && !controller.isLoading,
           )
         ]));
       })
@@ -86,13 +86,16 @@ class _StoresPageView extends ViewState<StoresPage, StoresController> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Icon(
-              Icons.person,
-              size: 60,
-            ),
+            SizedBox(
+                height: 60,
+                width: 60,
+                child: Image.asset(
+                  UIConstants.storeIconPath,
+                )),
             Padding(
                 padding: EdgeInsets.only(top: 16),
-                child: Text('Khong co NCC nao ca', textAlign: TextAlign.center))
+                child: Text(AppLocalizations.of(context).empty_stores,
+                    textAlign: TextAlign.center))
           ]);
 
   Widget get listView =>

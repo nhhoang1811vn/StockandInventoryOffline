@@ -7,9 +7,6 @@ enum DocumentType {
 }
 
 class Document extends BaseModel {
-  int id;
-  String name = "";
-  String description = "";
   DateTime date = DateTime.now();
   DocumentType type;
   int supplierId;
@@ -32,9 +29,7 @@ class Document extends BaseModel {
   }
 
   Document.map(dynamic obj) {
-    this.id = obj["id"];
-    this.name = obj["name"];
-    this.description = obj["description"];
+    super.map(obj);
     this.date = DateTime.fromMillisecondsSinceEpoch(obj["date"]);
     DocumentType.values.forEach((element) {
       if (obj["type"] == element.index) {
@@ -48,9 +43,7 @@ class Document extends BaseModel {
   }
 
   Map<String, dynamic> toMap() {
-    var map = new Map<String, dynamic>();
-    map["name"] = name;
-    map["description"] = description;
+    var map = super.toMap();
     map["date"] = date.millisecondsSinceEpoch;
     map["type"] = type.index;
     map["supplierId"] = supplierId;

@@ -1,3 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 enum SortByNumber { no_sort, ascending, descending }
 
 class SortByNumberHelper {
@@ -14,6 +17,23 @@ class SortByNumberHelper {
       default:
         {
           return SortByNumber.no_sort;
+        }
+    }
+  }
+
+  static String getText(BuildContext context, SortByNumber a) {
+    switch (a) {
+      case SortByNumber.ascending:
+        {
+          return AppLocalizations.of(context).sort_by_option_ascending_text;
+        }
+      case SortByNumber.descending:
+        {
+          return AppLocalizations.of(context).sort_by_option_descending_text;
+        }
+      default:
+        {
+          return AppLocalizations.of(context).sort_by_option_no_sort_text;
         }
     }
   }

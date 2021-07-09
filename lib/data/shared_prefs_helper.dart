@@ -13,7 +13,8 @@ class SharedPrefsHelper{
     }
     return "Giao dich $index";
   }
-  void increaseAutoDocumentName() async{
+
+  void increaseAutoDocumentName() async {
     prefs = await SharedPreferences.getInstance();
     int value = prefs.getInt(keyAutoDocumentName);
     prefs.setInt(keyAutoDocumentName, value + 1);
@@ -21,7 +22,12 @@ class SharedPrefsHelper{
 
   void setFirstTime(bool value) async {
     prefs = await SharedPreferences.getInstance();
-    prefs.setBool(keyFirstName, value);
+    prefs.setBool(keyFirstTime, value);
+  }
+
+  Future<bool> getFirstTime() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(keyFirstTime) ?? true;
   }
 
   void setSelectedStoreId(int storeId) async {
@@ -29,8 +35,18 @@ class SharedPrefsHelper{
     prefs.setInt(keySelectedStoreId, storeId);
   }
 
+  void setSelectedStoreName(String name) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString(keySelectedStoreName, name);
+  }
+
   Future<int> getSelectedStoreId() async {
     prefs = await SharedPreferences.getInstance();
     return prefs.getInt(keySelectedStoreId);
+  }
+
+  Future<String> getSelectedStoreName() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.getString(keySelectedStoreName);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class HelpPage extends View {
   final String title;
@@ -12,7 +13,6 @@ class HelpPage extends View {
   @override
   HelpPageView createState() => HelpPageView(title, content);
 }
-
 class HelpPageView extends ViewState<HelpPage, HelpController> {
   final String title;
   final String content;
@@ -24,10 +24,9 @@ class HelpPageView extends ViewState<HelpPage, HelpController> {
       appBar: AppBar(title: Text(title)),
       key: globalKey,
       body: Padding(
-          padding: EdgeInsets.all(16),
-          child: Text(
-            content,
-            style: TextStyle(fontSize: 16),
+          padding: EdgeInsets.all(0),
+          child: Markdown(
+            data: content,
           )));
 }
 

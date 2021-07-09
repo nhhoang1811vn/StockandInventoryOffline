@@ -126,14 +126,14 @@ class SaveDocumentController extends Controller {
 
   void onAddGood() async {
     final result = await Navigator.of(getContext()).pushNamed(Pages.good_list,
-        arguments: {"isSelection": true, "documentType": _item.type});
+        arguments: {
+          "isSelection": true,
+          "documentType": _item.type,
+          "transactions": _transactions
+        });
     if (result != null) {
-      List<DocumentTransaction> newTransactions =
-          result as List<DocumentTransaction>;
-      if (newTransactions.isNotEmpty) {
-        transactions.addAll(result);
-        refreshUI();
-      }
+      _transactions = result as List<DocumentTransaction>;
+      refreshUI();
     }
   }
 
@@ -233,6 +233,11 @@ class SaveDocumentController extends Controller {
         return true;
       }
     });
+    for (var i = 0; i < _transactions.length; i++) {
+      if (_transactions[i].quantity != _transactions[i].currentQuantity) {
+        return true;
+      }
+    }
     return false;
   }
 

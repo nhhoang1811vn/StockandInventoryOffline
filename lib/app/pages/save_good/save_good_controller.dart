@@ -10,6 +10,7 @@ import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/save_good/save_good_presenter.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/good.dart';
+import 'package:open_file/open_file.dart';
 
 class SaveGoodController extends Controller {
   // Text field controller
@@ -27,7 +28,7 @@ class SaveGoodController extends Controller {
 
   int get quantity => _quantity;
 
-  PageController imagesPageController;
+  String avatar = "";
   List<String> files = [];
 
   SaveGoodController(
@@ -38,11 +39,8 @@ class SaveGoodController extends Controller {
     descriptionTextController = TextEditingController();
     barCodeTextController = TextEditingController();
     quantityTextController = TextEditingController();
-    imagesPageController = PageController(initialPage: 0);
 
-    if (_item == null) {
-      _item = Good();
-    }
+    avatar = _item.avatar;
     nameTextController.text = _item.name;
     descriptionTextController.text = _item.description;
     barCodeTextController.text = _item.barCode;
@@ -97,6 +95,7 @@ class SaveGoodController extends Controller {
   }
 
   void updateItem() {
+    _item.avatar = avatar;
     _item.name = nameTextController.text;
     _item.description = descriptionTextController.text;
     _item.barCode = barCodeTextController.text;
@@ -119,7 +118,16 @@ class SaveGoodController extends Controller {
     quantityTextController.text = result.toInt().toString();
   }
 
-  void onTakeAPicture() async {
+  void onTakeAPictureForAvatar() async {
+    final result =
+        await Navigator.of(getContext()).pushNamed(Pages.take_picture);
+    if (result != null) {
+      avatar = result;
+      refreshUI();
+    }
+  }
+
+  void onTakeAPictureForFiles() async {
     final result =
         await Navigator.of(getContext()).pushNamed(Pages.take_picture);
     if (result != null) {
@@ -128,16 +136,24 @@ class SaveGoodController extends Controller {
     }
   }
 
-  void onLoadFromGallery() async {
+  void onLoadPictureFromGalleryForAvatar() async {
+    FilePickerResult result = await FilePicker.platform
+        .pickFiles(allowMultiple: false, type: FileType.image);
+
+    if (result != null) {
+      avatar = result.paths[0];
+      files.addAll(result.paths);
+      refreshUI();
+    }
+  }
+
+  void onLoadPictureFromGalleryForFiles() async {
     FilePickerResult result = await FilePicker.platform
         .pickFiles(allowMultiple: true, type: FileType.image);
 
     if (result != null) {
-      //List<File> outputFiles = result.paths.map((path) => File(path)).toList();
       files.addAll(result.paths);
       refreshUI();
-    } else {
-      // User canceled the picker
     }
   }
 
@@ -154,6 +170,36 @@ class SaveGoodController extends Controller {
     }
   }
 
+  void onChangeAvatar() async {
+    showDialog(
+        context: getContext(),
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            children: <Widget>[
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  Navigator.pop(getContext());
+                  onTakeAPictureForAvatar();
+                },
+                child:
+                    Text(AppLocalizations.of(getContext()).action_take_picture),
+              ),
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  Navigator.pop(getContext());
+                  onLoadPictureFromGalleryForAvatar();
+                },
+                child: Text(
+                    AppLocalizations.of(getContext()).action_load_from_gallery),
+              )
+            ],
+          );
+        },
+        barrierDismissible: true);
+  }
+
   void onAddFile() async {
     showDialog(
         context: getContext(),
@@ -164,7 +210,7 @@ class SaveGoodController extends Controller {
                 padding: EdgeInsets.all(16.0),
                 onPressed: () {
                   Navigator.pop(getContext());
-                  onTakeAPicture();
+                  onTakeAPictureForFiles();
                 },
                 child:
                     Text(AppLocalizations.of(getContext()).action_take_picture),
@@ -173,7 +219,7 @@ class SaveGoodController extends Controller {
                 padding: EdgeInsets.all(16.0),
                 onPressed: () {
                   Navigator.pop(getContext());
-                  onLoadFromGallery();
+                  onLoadPictureFromGalleryForFiles();
                 },
                 child: Text(
                     AppLocalizations.of(getContext()).action_load_from_gallery),
@@ -191,5 +237,9 @@ class SaveGoodController extends Controller {
           );
         },
         barrierDismissible: true);
+  }
+
+  void openFile(String path) {
+    OpenFile.open(path);
   }
 }

@@ -4,7 +4,7 @@ import 'package:good_manager/app/pages/customers/customers_view.dart';
 import 'package:good_manager/app/pages/documents/documents_view.dart';
 import 'package:good_manager/app/pages/goods/goods_view.dart';
 import 'package:good_manager/app/pages/help/help_page_dart.dart';
-import 'package:good_manager/app/pages/home_page.dart';
+import 'package:good_manager/app/pages/main_page.dart';
 import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/save_customer/save_customer_view.dart';
 import 'package:good_manager/app/pages/save_document/save_document_view.dart';
@@ -22,9 +22,9 @@ class AppRouter {
   AppRouter() : routeObserver = RouteObserver<PageRoute>();
 
   Route<dynamic> getRoute(RouteSettings settings) {
-    switch(settings.name){
-      case Pages.home:
-        return _buildRoute(settings, HomePage());
+    switch (settings.name) {
+      case Pages.main:
+        return _buildRoute(settings, MainPage());
       case Pages.store_list:
         return _buildRoute(settings, StoresPage());
       case Pages.save_store:
@@ -35,8 +35,10 @@ class AppRouter {
         return _buildRoute(
             settings,
             GoodsPage(
-                isSelection: args['isSelection'],
-                documentType: args['documentType']));
+              isSelection: args['isSelection'],
+              documentType: args['documentType'],
+              transactions: args['transactions'],
+            ));
       case Pages.save_good:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(

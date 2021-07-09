@@ -36,8 +36,13 @@ class DataDocumentTransactionRepository
   }
 
   @override
-  Future<bool> deleteByDocumentId(int documentId) {
+  Future<void> deleteByDocumentId(int documentId) {
     return db.deleteTransactionByDocumentId(documentId);
+  }
+
+  @override
+  Future<void> deleteByGoodId(int goodId) {
+    return db.deleteTransactionByGoodId(goodId);
   }
 
   @override

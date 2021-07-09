@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/pages/base/base_sort_items.dart';
 import 'package:good_manager/app/pages/goods/add_quantity_good_dialog.dart';
 import 'package:good_manager/app/pages/goods/goods_presenter.dart';
+import 'package:good_manager/app/pages/goods/sort/sort_by_barcode_goods.dart';
+import 'package:good_manager/app/pages/goods/sort/sort_by_barcode_groups.dart';
+import 'package:good_manager/app/pages/goods/sort/sort_by_quantity_goods.dart';
 import 'package:good_manager/app/pages/goods/sort_goods_dialog.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/app_data_manager.dart';
@@ -15,6 +19,7 @@ import 'package:good_manager/domain/entities/search_goods_type.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
+import 'package:sprintf/sprintf.dart';
 
 import '../pages.dart';
 
@@ -28,7 +33,6 @@ class GoodsController extends Controller {
   bool goodsRetrieved;
 
   bool _isSelection;
-  DocumentType _documentType;
   List<Group> _allGroups = [];
   List<Good> _allGoods = [];
 
@@ -40,9 +44,7 @@ class GoodsController extends Controller {
   List<Good> get goods => _goods;
 
   bool get isSelection => _isSelection;
-
-  DocumentType get documentType => _documentType;
-
+  DocumentType _documentType;
   List<DocumentTransaction> transactions = [];
 
   bool showSearchBar = false;
@@ -50,10 +52,12 @@ class GoodsController extends Controller {
 
   String get textSearch => _textSearch;
 
+  DocumentType get documentType => _documentType;
+
   GoodsSettings _settings;
 
   GoodsController(storeRepository, goodRepository, transactionRepository,
-      this._isSelection, this._documentType)
+      this._isSelection, this._documentType, this.transactions)
       : presenter = GoodsPresenter(
             storeRepository, goodRepository, transactionRepository),
         super() {
@@ -80,23 +84,25 @@ class GoodsController extends Controller {
   }
 
   void retrieveGroups() async {
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     int groupId = getSelectedGroupId();
-    presenter.getGroups(storeId, groupId);
+    presenter.getGroups(groupId);
   }
 
   void retrieveGoods() async {
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     int groupId = getSelectedGroupId();
-    presenter.getGoods(storeId, groupId);
+    presenter.getGoods(groupId);
   }
 
   void refreshItems() {
     sort();
     filter();
-    this._goods.forEach((element) {
-      element.pendingQuantity = getPendingQuantity(element.id);
-    });
+    if (transactions != null) {
+      this._goods.forEach((element) {
+        element.pendingQuantity = getPendingQuantity(element.id);
+      });
+    }
     refreshUI();
   }
 
@@ -136,6 +142,13 @@ class GoodsController extends Controller {
     };
     presenter.getGoodsSettingsOnError = (e) {
       showErrorToast(e.message.toString());
+    };
+
+    presenter.deleteGoodOnComplete = () {
+      loadData();
+    };
+    presenter.deleteGoodOnError = (e) {
+      showErrorToast(e.toString());
     };
   }
 
@@ -251,11 +264,16 @@ class GoodsController extends Controller {
   }
 
   void showAddQuantityDialog(Good good) {
+    String title = "";
+    if (_documentType == DocumentType.incoming) {
+      title = AppLocalizations.of(getContext()).add_quantity_dialog_title;
+    } else {
+      title = AppLocalizations.of(getContext()).subtract_quantity_dialog_title;
+    }
     showDialog(
         context: getContext(),
-        builder: (_) => AddQuantityGoodDialog(
-              (it) => {onQuantityAdded(good, it)},
-            ),
+        builder: (_) =>
+            AddQuantityGoodDialog(title, (it) => {onQuantityAdded(good, it)}),
         barrierDismissible: true);
   }
 
@@ -284,7 +302,9 @@ class GoodsController extends Controller {
   void onQuantityAdded(Good good, int quantity) {
     DocumentTransaction transaction = DocumentTransaction();
     transaction.goodId = good.id;
+    transaction.currentQuantity = 0;
     transaction.quantity = quantity;
+    transaction.type = _documentType;
 
     good.quantity = quantity;
     transaction.good = good;
@@ -313,7 +333,7 @@ class GoodsController extends Controller {
                 padding: EdgeInsets.all(16.0),
                 onPressed: () {
                   Navigator.pop(getContext());
-                  //showDeleteDocumentConfirm(item);
+                  showDeleteGoodConfirm(good);
                 },
                 child: Text(AppLocalizations.of(getContext()).action_delete),
               ),
@@ -323,11 +343,37 @@ class GoodsController extends Controller {
         barrierDismissible: true);
   }
 
+  void showDeleteGoodConfirm(Good good) {
+    showDialog(
+        context: getContext(),
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+                AppLocalizations.of(getContext()).notification_dialog_title),
+            content: Text(sprintf(
+                AppLocalizations.of(getContext()).message_confirm_delete_good,
+                [good.name])),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(getContext()),
+                  child: Text(AppLocalizations.of(getContext()).action_cancel)),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(getContext());
+                  presenter.deleteGood(good.id);
+                },
+                child: Text(AppLocalizations.of(getContext()).action_ok),
+              )
+            ],
+          );
+        });
+  }
+
   int getPendingQuantity(int goodId) {
     int quantity = 0;
     transactions.forEach((transaction) {
       if (transaction.goodId == goodId) {
-        quantity += transaction.quantity;
+        quantity += (transaction.quantity - transaction.currentQuantity);
       }
     });
     return quantity;
@@ -406,150 +452,76 @@ class GoodsController extends Controller {
   }
 
   void sort() {
-    sortGroups();
-    sortGoods();
-  }
-
-  void sortGroups() {
-    _allGroups.sort((item1, item2) {
-      return sortGroupByName(item1, item2);
-    });
-  }
-
-  int sortGroupByName(Group item1, Group item2) {
-    int compare = 0;
+    List<SortItems<Group>> groupSortOptions = [];
+    List<SortItems<Good>> goodSortOptions = [];
     switch (_settings.sortByName) {
       case SortByText.a_to_z:
         {
-          compare = item1.name.compareTo(item2.name);
+          groupSortOptions.add(SortByNameAToZ());
+          goodSortOptions.add(SortByNameAToZ());
           break;
         }
-      case SortByText.a_to_z:
+      case SortByText.z_to_a:
         {
-          compare = item2.name.compareTo(item1.name);
+          groupSortOptions.add(SortByNameZToA());
+          goodSortOptions.add(SortByNameZToA());
           break;
         }
       default:
         {}
     }
-    if (compare == 0) {
-      return sortGroupByBarCode(item1, item2);
-    } else {
-      return compare;
-    }
-  }
-
-  int sortGroupByBarCode(Group item1, Group item2) {
-    int compare = 0;
     switch (_settings.sortByBarcode) {
       case SortByNumber.ascending:
         {
-          compare = item1.barCode.compareTo(item2.barCode);
+          groupSortOptions.add(SortByBarCodeAscendingGroup());
+          goodSortOptions.add(SortByBarCodeAscendingGood());
           break;
         }
       case SortByNumber.descending:
         {
-          compare = item2.barCode.compareTo(item1.barCode);
+          groupSortOptions.add(SortByBarCodeDescendingGroup());
+          goodSortOptions.add(SortByBarCodeDescendingGood());
           break;
         }
       default:
         {}
     }
-    /*if (compare == 0){
-      return sortGroupByQuantity(item1, item2);
-    }else{
-      return compare;
-    }*/
-    return compare;
-  }
-
-  /*int sortGroupByQuantity(Group item1, Group item2){
-    int compare = 0;
-    switch(_settings.sortByQuantity){
-      case SortByNumber.ascending:{
-        compare =  item1.q.compareTo(item2.name);
-        break;
-      }
-      case SortByNumber.descending:{
-        compare =  item2.name.compareTo(item1.name);
-        break;
-      }
-      default: {
-
-      }
-    }
-    return compare;
-  }*/
-
-  void sortGoods() {
-    _allGoods.sort((item1, item2) {
-      return sortGoodByName(item1, item2);
-    });
-  }
-
-  int sortGoodByName(Good item1, Good item2) {
-    int compare = 0;
-    switch (_settings.sortByName) {
-      case SortByText.a_to_z:
-        {
-          compare = item1.name.compareTo(item2.name);
-          break;
-        }
-      case SortByText.a_to_z:
-        {
-          compare = item2.name.compareTo(item1.name);
-          break;
-        }
-      default:
-        {}
-    }
-    if (compare == 0) {
-      return sortGoodByBarCode(item1, item2);
-    } else {
-      return compare;
-    }
-  }
-
-  int sortGoodByBarCode(Good item1, Good item2) {
-    int compare = 0;
-    switch (_settings.sortByBarcode) {
-      case SortByNumber.ascending:
-        {
-          compare = item1.barCode.compareTo(item2.barCode);
-          break;
-        }
-      case SortByNumber.descending:
-        {
-          compare = item2.barCode.compareTo(item1.barCode);
-          break;
-        }
-      default:
-        {}
-    }
-    if (compare == 0) {
-      return sortGoodByQuantity(item1, item2);
-    } else {
-      return compare;
-    }
-  }
-
-  int sortGoodByQuantity(Good item1, Good item2) {
-    int compare = 0;
     switch (_settings.sortByQuantity) {
       case SortByNumber.ascending:
         {
-          compare = (item1.quantity - item2.quantity);
+          goodSortOptions.add(SortByQuantityAscendingGood());
           break;
         }
       case SortByNumber.descending:
         {
-          compare = (item2.quantity - item1.quantity);
+          goodSortOptions.add(SortByQuantityDescendingGood());
           break;
         }
       default:
         {}
     }
-    return compare;
+    if (groupSortOptions.isEmpty) {
+      groupSortOptions.add(SortByCreatedDate());
+    }
+    if (goodSortOptions.isEmpty) {
+      goodSortOptions.add(SortByCreatedDate());
+    }
+    _allGroups.sort((item1, item2) {
+      int compare = 0;
+      for (final option in groupSortOptions) {
+        compare = option.getResult(item1, item2);
+        if (compare != 0) break;
+      }
+      return compare;
+    });
+    _allGoods.sort((item1, item2) {
+      int compare = 0;
+      for (final option in goodSortOptions) {
+        compare = option.getResult(item1, item2);
+        if (compare != 0) break;
+      }
+      return compare;
+    });
   }
 
   void setSearchGoodsType(SearchGoodsType type) {
@@ -567,13 +539,14 @@ class GoodsController extends Controller {
   String getSearchTextHint() {
     switch (_settings.searchGoodsType) {
       case SearchGoodsType.byName:
-        return AppLocalizations.of(getContext()).search_type_by_name;
+        return AppLocalizations.of(getContext()).search_goods_type_by_name;
       case SearchGoodsType.byDescription:
-        return AppLocalizations.of(getContext()).search_type_by_description;
+        return AppLocalizations.of(getContext())
+            .search_goods_type_by_description;
       case SearchGoodsType.byBarcode:
-        return AppLocalizations.of(getContext()).search_type_by_barcode;
+        return AppLocalizations.of(getContext()).search_goods_type_by_barcode;
       default:
-        return AppLocalizations.of(getContext()).search_type_everywhere;
+        return AppLocalizations.of(getContext()).search_goods_type_everywhere;
     }
   }
 
@@ -587,5 +560,9 @@ class GoodsController extends Controller {
       return true;
     }
     return false;
+  }
+
+  Future<bool> onBackPressed() {
+    Navigator.of(getContext()).pop(transactions);
   }
 }

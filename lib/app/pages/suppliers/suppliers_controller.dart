@@ -7,6 +7,8 @@ import 'package:good_manager/app/pages/suppliers/suppliers_presenter.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/supplier_settings.dart';
 
+import '../help_content.dart';
+
 class SuppliersController
     extends BaseListController<Supplier, SupplierSettings, SuppliersPresenter> {
   bool _isSelection;
@@ -100,8 +102,7 @@ class SuppliersController
   void onOpenHelpPage() {
     Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
       "title": "Nhà cung cấp",
-      "content":
-          "Bạn có thể lưu trữ danh sách các nhà cung cấp. Điền dữ liệu của họ bằng tay hoăc import từ Danh Bạ"
+      "content": HelpUtils.getMarkdownDataSupplierCustomer()
     });
   }
 

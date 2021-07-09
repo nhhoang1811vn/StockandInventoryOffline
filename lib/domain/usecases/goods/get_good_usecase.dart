@@ -13,7 +13,7 @@ class GetGoodsUseCase extends UseCase<List<Good>,GetGoodsUseCaseParams>{
   Future<Stream<List<Good>>> buildUseCaseStream(GetGoodsUseCaseParams params) async{
     final StreamController<List<Good>> controller = StreamController();
     try{
-      List<Good> items= await _repository.getGoods(params.storeId, params.groupId);
+      List<Good> items = await _repository.getGoods(params.groupId);
       controller.add(items);
       controller.close();
     }catch(e){
@@ -23,8 +23,7 @@ class GetGoodsUseCase extends UseCase<List<Good>,GetGoodsUseCaseParams>{
   }
 }
 class GetGoodsUseCaseParams {
-  final int storeId;
   final int groupId;
 
-  GetGoodsUseCaseParams(this.storeId, this.groupId);
+  GetGoodsUseCaseParams(this.groupId);
 }

@@ -3,9 +3,7 @@ import 'dart:convert';
 import 'package:good_manager/domain/entities/base_model.dart';
 
 class Good extends BaseModel {
-  int id;
-  String name;
-  String description;
+  String avatar = "";
   String barCode;
   int storeId;
   int groupId;
@@ -17,9 +15,8 @@ class Good extends BaseModel {
   Good();
 
   Good.map(dynamic obj) {
-    this.id = obj["id"];
-    this.name = obj["name"];
-    this.description = obj["description"];
+    super.map(obj);
+    this.avatar = obj["avatar"];
     this.barCode = obj["barCode"];
     this.storeId = obj["storeId"];
     this.groupId = obj["groupId"];
@@ -27,10 +24,8 @@ class Good extends BaseModel {
   }
 
   Map<String, dynamic> toMap() {
-    var map = new Map<String, dynamic>();
-    map["id"] = id;
-    map["name"] = name;
-    map["description"] = description;
+    var map = super.toMap();
+    map["avatar"] = avatar;
     map["barCode"] = barCode;
     map["storeId"] = storeId;
     map["groupId"] = groupId;

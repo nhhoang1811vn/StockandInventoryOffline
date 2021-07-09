@@ -9,6 +9,7 @@ import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
 import 'package:good_manager/data/repositories/data_good_repository.dart';
 import 'package:good_manager/domain/entities/good.dart';
+import 'package:path/path.dart' as p;
 
 class SaveGoodPage extends View {
   final Good item;
@@ -25,7 +26,7 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
 
   SaveGroupPageView(item, quantity)
       : super(SaveGoodController(DataGoodRepository(),
-      DataDocumentTransactionRepository(), item, quantity));
+            DataDocumentTransactionRepository(), item, quantity));
 
   @override
   Widget get view => Scaffold(
@@ -41,6 +42,20 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
                 key: _formKey,
                 child: Column(
                   children: <Widget>[
+                    ControlledWidgetBuilder<SaveGoodController>(
+                        builder: (context, controller) {
+                      return Visibility(
+                        child: changeAvatarButton,
+                        visible: controller.avatar.isEmpty,
+                      );
+                    }),
+                    ControlledWidgetBuilder<SaveGoodController>(
+                        builder: (context, controller) {
+                      return Visibility(
+                        child: avatar,
+                        visible: controller.avatar.isNotEmpty,
+                      );
+                    }),
                     name,
                     description,
                     barCode,
@@ -55,32 +70,63 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
                 ),
               ),
               Container(
-                  child: Text(AppLocalizations.of(context).field_attachments),
-                  margin: const EdgeInsets.only(top: 8)),
-              addFileButton,
+                  child: Text(
+                    AppLocalizations.of(context).field_attachments,
+                    style: TextStyle(color: Colors.grey[700], fontSize: 16),
+                  ),
+                  margin: const EdgeInsets.only(top: 16)),
+              Container(
+                  child: addFileButton, margin: const EdgeInsets.only(top: 12)),
               filesView
             ],
           )));
 
   Widget get appBar => AppBar(
-      title: Text(AppLocalizations.of(context).title_save_goods),
-      actions: <Widget>[
-        ControlledWidgetBuilder<SaveGoodController>(
-            builder: (context, controller) {
+          title: Text(AppLocalizations.of(context).title_save_goods),
+          actions: <Widget>[
+            ControlledWidgetBuilder<SaveGoodController>(
+                builder: (context, controller) {
               return Padding(
                   padding: EdgeInsets.only(right: 20.0),
                   child: GestureDetector(
                       onTap: () => controller.checkForm({
-                        'context': context,
-                        'formKey': _formKey,
-                        'globalKey': globalKey
-                      }),
+                            'context': context,
+                            'formKey': _formKey,
+                            'globalKey': globalKey
+                          }),
                       child: Icon(Icons.check, size: 26)));
             })
-      ]);
+          ]);
+
+  Widget get changeAvatarButton => ControlledWidgetBuilder<SaveGoodController>(
+          builder: (context, controller) {
+        return RawMaterialButton(
+          onPressed: controller.onChangeAvatar,
+          elevation: 2.0,
+          fillColor: Colors.white,
+          child: Icon(
+            Icons.camera_alt,
+            size: 35.0,
+          ),
+          padding: EdgeInsets.all(20.0),
+          shape: CircleBorder(),
+        );
+      });
+
+  Widget get avatar => ControlledWidgetBuilder<SaveGoodController>(
+          builder: (context, controller) {
+        return Container(
+            width: 40,
+            height: 40,
+            alignment: Alignment.center,
+            decoration: new BoxDecoration(
+                image: DecorationImage(
+                    image: FileImage(File(controller.avatar)),
+                    fit: BoxFit.fill)));
+      });
 
   Widget get name => ControlledWidgetBuilder<SaveGoodController>(
-      builder: (context, controller) {
+          builder: (context, controller) {
         return TextFormField(
             controller: controller.nameTextController,
             decoration: InputDecoration(
@@ -109,10 +155,10 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
           children: [
             Expanded(
                 child: TextFormField(
-                  decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context).field_bar_code),
-                  controller: controller.barCodeTextController,
-                )),
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context).field_bar_code),
+              controller: controller.barCodeTextController,
+            )),
             Align(
                 alignment: Alignment.centerRight,
                 child: IconButton(
@@ -128,8 +174,8 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
           children: [
             Expanded(
                 child: TextFormField(
-                  decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context).field_quantity),
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context).field_quantity),
               controller: controller.quantityTextController,
             )),
             Align(
@@ -146,7 +192,13 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
         return OutlinedButton(
           //style: outlineButtonStyle,
           onPressed: controller.onAddFile,
-          child: Text(AppLocalizations.of(context).action_add_attachment),
+          child: Padding(
+            padding: EdgeInsets.only(top: 16, bottom: 16),
+            child: Text(
+              AppLocalizations.of(context).action_add_attachment,
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
         );
       });
 
@@ -158,25 +210,39 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
                 return ListTile(
                   leading: getLeadingFile(controller.files[position]),
                   title: getTitleFile(controller.files[position]),
+                  onTap: () => controller.openFile(controller.files[position]),
                 );
               },
               itemCount: controller.files.length,
               scrollDirection: Axis.vertical),
-          width: 400,
           height: 500,
         );
       });
 
   Widget getLeadingFile(String path) {
-    return Container(
+    if (isImage(path)) {
+      return Container(
+          width: 40,
+          height: 40,
+          alignment: Alignment.center,
+          decoration: new BoxDecoration(
+              image: DecorationImage(
+                  image: FileImage(File(path)), fit: BoxFit.fill))
+          //  child: Image.file(file),
+          );
+    } else {
+      return Container(
         width: 40,
         height: 40,
-        alignment: Alignment.center,
-        decoration: new BoxDecoration(
-            image:
-                DecorationImage(image: FileImage(File(path)), fit: BoxFit.fill))
+        child: Icon(Icons.attach_file),
         //  child: Image.file(file),
-        );
+      );
+    }
+  }
+
+  bool isImage(String path) {
+    final extension = p.extension(path);
+    return (extension == "jpg" || extension == "jpeg" || extension == "png");
   }
 
   Widget getTitleFile(String path) {

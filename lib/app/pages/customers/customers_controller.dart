@@ -6,6 +6,7 @@ import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/customers_settings.dart';
 
+import '../help_content.dart';
 import 'customers_presenter.dart';
 
 class CustomersController extends BaseListController<Customer,
@@ -111,8 +112,7 @@ class CustomersController extends BaseListController<Customer,
   void onOpenHelpPage() {
     Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
       "title": "Nhà cung cấp",
-      "content":
-          "Bạn có thể lưu trữ danh sách các nhà cung cấp. Điền dữ liệu của họ bằng tay hoăc import từ Danh Bạ"
+      "content": HelpUtils.getMarkdownDataSupplierCustomer()
     });
   }
 

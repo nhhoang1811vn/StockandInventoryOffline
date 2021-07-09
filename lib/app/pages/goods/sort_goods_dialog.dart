@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/goods_settings.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
@@ -30,33 +31,28 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Sắp xếp'),
+      title: Text(AppLocalizations.of(context).dialog_title_sort_by),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Theo Tên'),
+                Text(AppLocalizations.of(context).field_name),
                 Divider(color: Colors.grey),
-                getRadioListTileSortByName("Không sắp xếp", SortByText.no_sort),
-                getRadioListTileSortByName("Sắp xếp A-Z", SortByText.a_to_z),
-                getRadioListTileSortByName("Sắp xếp Z-A", SortByText.z_to_a),
-                Text('Theo Bar Code'),
+                getRadioListTileSortByName(SortByText.no_sort),
+                getRadioListTileSortByName(SortByText.a_to_z),
+                getRadioListTileSortByName(SortByText.z_to_a),
+                Text(AppLocalizations.of(context).field_bar_code),
                 Divider(color: Colors.grey),
-                getRadioListTileSortByBarCode(
-                    "Không sắp xếp", SortByNumber.no_sort),
-                getRadioListTileSortByBarCode(
-                    "Tăng dần", SortByNumber.ascending),
-                getRadioListTileSortByBarCode(
-                    "Giảm dần", SortByNumber.descending),
-                Text('Theo Quantity'),
+                getRadioListTileSortByBarCode(SortByNumber.no_sort),
+                getRadioListTileSortByBarCode(SortByNumber.ascending),
+                getRadioListTileSortByBarCode(SortByNumber.descending),
+                Text(AppLocalizations.of(context).field_quantity),
                 Divider(color: Colors.grey),
-                getRadioListTileSortByQuantity(
-                    "Không sắp xếp", SortByNumber.no_sort),
-                getRadioListTileSortByQuantity(
-                    "Tăng dần", SortByNumber.ascending),
-                getRadioListTileSortByQuantity(
-                    "Giảm dần", SortByNumber.descending),
+                getRadioListTileSortByQuantity(SortByNumber.no_sort),
+                getRadioListTileSortByQuantity(SortByNumber.ascending),
+                getRadioListTileSortByQuantity(SortByNumber.descending),
               ],
             )
           ],
@@ -64,7 +60,7 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text('OK'),
+          child: Text(AppLocalizations.of(context).action_ok),
           onPressed: () async {
             widget.settings.sortByName = _sortByName;
             widget.settings.sortByBarcode = _sortByBarCode;
@@ -77,10 +73,9 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
     );
   }
 
-  RadioListTile<SortByText> getRadioListTileSortByName(
-      String text, SortByText value) {
+  RadioListTile<SortByText> getRadioListTileSortByName(SortByText value) {
     return RadioListTile<SortByText>(
-      title: Text(text),
+      title: Text(SortByTextHelper.getText(context, value)),
       value: value,
       groupValue: _sortByName,
       onChanged: (SortByText value) {
@@ -88,13 +83,14 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
           _sortByName = value;
         });
       },
+      dense: true,
     );
   }
 
   RadioListTile<SortByNumber> getRadioListTileSortByBarCode(
-      String text, SortByNumber value) {
+      SortByNumber value) {
     return RadioListTile<SortByNumber>(
-      title: Text(text),
+      title: Text(SortByNumberHelper.getText(context, value)),
       value: value,
       groupValue: _sortByBarCode,
       onChanged: (SortByNumber value) {
@@ -102,13 +98,14 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
           _sortByBarCode = value;
         });
       },
+      dense: true,
     );
   }
 
   RadioListTile<SortByNumber> getRadioListTileSortByQuantity(
-      String text, SortByNumber value) {
+      SortByNumber value) {
     return RadioListTile<SortByNumber>(
-      title: Text(text),
+      title: Text(SortByNumberHelper.getText(context, value)),
       value: value,
       groupValue: _sortByQuantity,
       onChanged: (SortByNumber value) {
@@ -116,6 +113,7 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
           _sortByQuantity = value;
         });
       },
+      dense: true,
     );
   }
 }
