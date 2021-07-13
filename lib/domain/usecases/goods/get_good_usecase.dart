@@ -4,26 +4,29 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/repositories/good_repositories.dart';
 
-class GetGoodsUseCase extends UseCase<List<Good>,GetGoodsUseCaseParams>{
+class GetGoodsByGroupIdUseCase
+    extends UseCase<List<Good>, GetGoodsByGroupIdUseCaseParams> {
   final GoodRepository _repository;
 
-  GetGoodsUseCase(this._repository);
+  GetGoodsByGroupIdUseCase(this._repository);
 
   @override
-  Future<Stream<List<Good>>> buildUseCaseStream(GetGoodsUseCaseParams params) async{
+  Future<Stream<List<Good>>> buildUseCaseStream(
+      GetGoodsByGroupIdUseCaseParams params) async {
     final StreamController<List<Good>> controller = StreamController();
-    try{
-      List<Good> items = await _repository.getGoods(params.groupId);
+    try {
+      List<Good> items = await _repository.getGoodsByGroupId(params.groupId);
       controller.add(items);
       controller.close();
-    }catch(e){
+    } catch (e) {
       controller.addError(e);
     }
     return controller.stream;
   }
 }
-class GetGoodsUseCaseParams {
+
+class GetGoodsByGroupIdUseCaseParams {
   final int groupId;
 
-  GetGoodsUseCaseParams(this.groupId);
+  GetGoodsByGroupIdUseCaseParams(this.groupId);
 }

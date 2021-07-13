@@ -17,9 +17,14 @@ class Pages {
   static const String document_list = '/document_list';
   static const String save_document = '/save_document';
 
+  static const String expenses = "/expenses";
   static const String save_expense = "/save_expense";
 
   static const String help = '/help';
 
   static const String take_picture = '/take_picture';
+  static const String settings = "/settings";
+
+  static const String select_group = '/select_group';
+  static const String select_store = '/select_store';
 }

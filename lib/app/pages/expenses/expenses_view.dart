@@ -5,9 +5,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/expenses/expenses_controller.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_expense_repository.dart';
+import 'package:good_manager/domain/entities/expense.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-
-import '../store_view.dart';
 
 class ExpensesPage extends View {
   ExpensesPage({Key key}) : super(key: key);
@@ -37,7 +36,7 @@ class ExpensesPageView extends ViewState<ExpensesPage, ExpensesController> {
       }));
 
   Widget get appBar => AppBar(
-      title: new Text(AppLocalizations.of(context).stores_title),
+      title: new Text(AppLocalizations.of(context).expenses_title),
       actions: [searchMenu, sortMenu, helpMenu]);
 
   Widget get searchMenu => ControlledWidgetBuilder<ExpensesController>(
@@ -90,7 +89,7 @@ class ExpensesPageView extends ViewState<ExpensesPage, ExpensesController> {
 
   Widget getBody() {
     List<Widget> children = [
-      StoreView(),
+      //StoreView(),
       ControlledWidgetBuilder<ExpensesController>(
           builder: (context, controller) {
         return Visibility(child: searchBar, visible: controller.showSearchBar);
@@ -146,7 +145,7 @@ class ExpensesPageView extends ViewState<ExpensesPage, ExpensesController> {
                 )),
             Padding(
                 padding: EdgeInsets.only(top: 16),
-                child: Text(AppLocalizations.of(context).empty_stores,
+                child: Text(AppLocalizations.of(context).empty_expense,
                     textAlign: TextAlign.center))
           ]);
 
@@ -154,9 +153,13 @@ class ExpensesPageView extends ViewState<ExpensesPage, ExpensesController> {
           builder: (context, controller) {
         return ListView.separated(
             itemBuilder: (BuildContext context, index) {
+              Expense item = controller.items[index];
               return ListTile(
-                title: Text(controller.items[index].name),
-                subtitle: Text(controller.items[index].description),
+                title: Text(item.name),
+                subtitle: Text(item.description),
+                trailing: item.amount > 0
+                    ? getPositiveAmount(item.amount)
+                    : getNegativeAmount(item.amount),
                 onTap: () => controller.onItemPressed(controller.items[index]),
               );
             },
@@ -165,4 +168,18 @@ class ExpensesPageView extends ViewState<ExpensesPage, ExpensesController> {
             },
             itemCount: controller.items.length);
       });
+
+  Widget getPositiveAmount(amount) {
+    return Text(
+      "+ $amount",
+      style: TextStyle(color: Colors.green),
+    );
+  }
+
+  Widget getNegativeAmount(amount) {
+    return Text(
+      amount.toString(),
+      style: TextStyle(color: Colors.red),
+    );
+  }
 }

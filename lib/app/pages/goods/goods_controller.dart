@@ -84,15 +84,13 @@ class GoodsController extends Controller {
   }
 
   void retrieveGroups() async {
-    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     int groupId = getSelectedGroupId();
-    presenter.getGroups(groupId);
+    presenter.getGroupsByGroupId(groupId);
   }
 
   void retrieveGoods() async {
-    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     int groupId = getSelectedGroupId();
-    presenter.getGoods(groupId);
+    presenter.getGoodsByGroupId(groupId);
   }
 
   void refreshItems() {
@@ -150,6 +148,13 @@ class GoodsController extends Controller {
     presenter.deleteGoodOnError = (e) {
       showErrorToast(e.toString());
     };
+
+    presenter.updateGoodOnComplete = () {
+      loadData();
+    };
+    presenter.updateGoodOnError = (e) {
+      showErrorToast(e.toString());
+    };
   }
 
   @override
@@ -193,7 +198,7 @@ class GoodsController extends Controller {
 
   int getSelectedGroupId() {
     if (selectedGroups.isEmpty) {
-      return null;
+      return -1;
     } else {
       return selectedGroups.last.id;
     }
@@ -324,6 +329,7 @@ class GoodsController extends Controller {
                 padding: EdgeInsets.all(16.0),
                 onPressed: () {
                   Navigator.pop(getContext());
+                  openSelectGroup(good);
                   //showDeleteDocumentConfirm(item);
                 },
                 child: Text(
@@ -341,6 +347,19 @@ class GoodsController extends Controller {
           );
         },
         barrierDismissible: true);
+  }
+
+  void openSelectGroup(Good good) async {
+    int groupId = getSelectedGroupId();
+    final newGroupId = await Navigator.of(getContext())
+        .pushNamed(Pages.select_group, arguments: {"groupId": groupId});
+    if (newGroupId != null) {
+      //result is new group id
+      if (good.groupId != newGroupId) {
+        good.groupId = newGroupId;
+        presenter.update(good);
+      }
+    }
   }
 
   void showDeleteGoodConfirm(Good good) {

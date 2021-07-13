@@ -23,10 +23,6 @@ class OnBoardingPresenter extends Presenter {
     appDataManager.sharedPrefsHelper.setSelectedStoreId(storeId);
   }
 
-  void setSelectedStoreName(String name) {
-    appDataManager.sharedPrefsHelper.setSelectedStoreName(name);
-  }
-
   void insert(Store store) => insertItemUseCase.execute(
       InsertStoreUseCaseObserver(this), BaseInsertItemUseCaseParam(store));
 

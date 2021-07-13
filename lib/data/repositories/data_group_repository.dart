@@ -24,8 +24,8 @@ class DataGroupRepository implements GroupRepository {
   }
 
   @override
-  Future<List<Group>> getGroups(int groupId) {
-    return db.getGroups(groupId);
+  Future<List<Group>> getGroupsByGroupId(int groupId) {
+    return db.getGroupsByGroupId(groupId);
   }
 
   @override
@@ -36,7 +36,18 @@ class DataGroupRepository implements GroupRepository {
 
   @override
   Future<List<Group>> getAll() {
-    // TODO: implement getAll
+    return db.getGroups();
+  }
+
+  @override
+  Future<int> getCount() {
+    // TODO: implement getCount
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Group> get(int id) {
+    // TODO: implement get
     throw UnimplementedError();
   }
 }

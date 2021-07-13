@@ -1,6 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 
@@ -12,17 +14,18 @@ class GoodItemRow extends StatelessWidget {
   final bool isSelection;
   final DocumentType _documentType;
 
-  GoodItemRow(
-      this.item, this.quantity, this.onGoodTapped, this.onGoodLongPressed,
+  GoodItemRow(this.item, this.quantity, this.onGoodTapped, this.onGoodLongPressed,
       [this.isSelection = false, this._documentType]);
 
   @override
   Widget build(BuildContext context) {
+    const titleStyle = TextStyle(
+        color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 16);
+    const bodyStyle = TextStyle(fontSize: 14);
     return ListTile(
         title: Text(
           item.name,
-          style: TextStyle(
-              color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 16),
+          style: titleStyle,
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,17 +34,20 @@ class GoodItemRow extends StatelessWidget {
               visible: item.description.isNotEmpty,
               child: Text(
                 item.description,
-                style: TextStyle(fontSize: 14),
+                style: bodyStyle,
               ),
             ),
             Visibility(
                 visible: item.barCode.isNotEmpty,
                 child: Row(children: [
-                  Icon(FontAwesomeIcons.barcode),
+                  Image.asset(
+                    UIConstants.barcodeIconPath,
+                    width: 24,
+                  ),
                   SizedBox(
                     width: 8,
                   ),
-                  Text(item.barCode, style: TextStyle(fontSize: 14))
+                  Text(item.barCode, style: bodyStyle)
                 ]))
           ],
         ),
@@ -51,10 +57,28 @@ class GoodItemRow extends StatelessWidget {
               ? getPendingView()
               : Container()
         ]),
-        leading: Icon(Icons.image, size: 36, color: Colors.blue),
+        leading: item.avatar.isNotEmpty
+            ? getAvatarWidget(item.avatar)
+            : emptyAvatarWidget,
         onTap: () => onGoodTapped(item),
         onLongPress: () => onGoodLongPressed(item));
   }
+
+  Widget getAvatarWidget(String path) {
+    return Container(
+        width: 50,
+        height: 50,
+        alignment: Alignment.center,
+        decoration: new BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+                image: FileImage(File(path)), fit: BoxFit.fill)));
+  }
+
+  Widget get emptyAvatarWidget => Image.asset(
+        UIConstants.goodIconPath,
+        width: 36,
+      );
 
   Widget getPendingView() {
     if (_documentType == DocumentType.incoming) {

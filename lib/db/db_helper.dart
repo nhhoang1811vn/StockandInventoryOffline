@@ -52,11 +52,11 @@ class DBHelper {
     await db.execute(
         "CREATE TABLE $STORES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER)");
     await db.execute(
-        "CREATE TABLE $EXPENSES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, date INTEGER, storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
+        "CREATE TABLE $EXPENSES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, date INTEGER, amount REAL,storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
     await db.execute(
-        "CREATE TABLE $SUPPLIERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT, createdDate INTEGER, updatedDate INTEGER)");
+        "CREATE TABLE $SUPPLIERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT, storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
     await db.execute(
-        "CREATE TABLE $CUSTOMERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT, createdDate INTEGER, updatedDate INTEGER)");
+        "CREATE TABLE $CUSTOMERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT, storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
 
     await db.execute(
         "CREATE TABLE $DOCUMENTS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, date INTEGER, type INTEGER, storeId INTEGER ,supplierId INTEGER, customerId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
@@ -72,9 +72,10 @@ class DBHelper {
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
 
     await db.execute(
-        "CREATE TABLE $DOCUMENT_TRANSACTIONS_TABLE_NAME(id INTEGER PRIMARY KEY,documentId INTEGER NOT NULL, goodId INTEGER NOT NULL, quantity INTEGER, documentType INTEGER, " +
-            "CONSTRAINT fk_transaction_document_id FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE ON UPDATE CASCADE," +
-            "CONSTRAINT fk_transaction_good_id FOREIGN KEY(goodId) REFERENCES $GOODS_TABLE_NAME(id) ON DELETE CASCADE ON UPDATE CASCADE)");
+        "CREATE TABLE $DOCUMENT_TRANSACTIONS_TABLE_NAME(id INTEGER PRIMARY KEY,documentId INTEGER NOT NULL, goodId INTEGER NOT NULL,storeId INTEGER NOT NULL, quantity INTEGER, documentType INTEGER, " +
+            "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE, " +
+            "FOREIGN KEY(goodId) REFERENCES $GOODS_TABLE_NAME(id) ON DELETE CASCADE, " +
+            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)");
   }
 
   ///STORE
@@ -84,6 +85,16 @@ class DBHelper {
     item.updatedDate = DateTime.now();
     int res = await dbClient.insert(STORES_TABLE_NAME, item.toMap());
     return res;
+  }
+
+  Future<Store> getStore(int id) async {
+    var dbClient = await db;
+    var list = await dbClient
+        .rawQuery('SELECT * FROM $STORES_TABLE_NAME where id = ?', [id]);
+    if (list.isNotEmpty) {
+      return Store.map(list.first);
+    }
+    return null;
   }
 
   Future<List<Store>> getStores() async {
@@ -131,6 +142,17 @@ class DBHelper {
     return suppliers;
   }
 
+  Future<int> getCountSupplier() async {
+    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    var dbClient = await db;
+    var result = await dbClient.rawQuery(
+        "SELECT COUNT(*) FROM $SUPPLIERS_TABLE_NAME WHERE storeId = ?",
+        [storeId]);
+
+    int value = result[0]["COUNT(*)"];
+    return value == null ? 0 : value;
+  }
+
   Future<int> getCountDocumentBySupplierId(int supplierId) async {
     var dbClient = await db;
     var result = await dbClient.rawQuery(
@@ -142,9 +164,11 @@ class DBHelper {
   }
 
   Future<int> insertSupplier(Supplier item) async {
+    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     item.createdDate = DateTime.now();
     item.updatedDate = DateTime.now();
+    item.storeId = storeId;
     int res = await dbClient.insert(SUPPLIERS_TABLE_NAME, item.toMap());
     return res;
   }
@@ -189,6 +213,17 @@ class DBHelper {
     return customers;
   }
 
+  Future<int> getCountCustomer() async {
+    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    var dbClient = await db;
+    var result = await dbClient.rawQuery(
+        "SELECT COUNT(*) FROM $CUSTOMERS_TABLE_NAME WHERE storeId = ?",
+        [storeId]);
+
+    int value = result[0]["COUNT(*)"];
+    return value == null ? 0 : value;
+  }
+
   Future<int> getCountDocumentByCustomerId(int customerId) async {
     var dbClient = await db;
     var result = await dbClient.rawQuery(
@@ -200,9 +235,11 @@ class DBHelper {
   }
 
   Future<int> insertCustomer(Customer item) async {
+    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     item.createdDate = DateTime.now();
     item.updatedDate = DateTime.now();
+    item.storeId = storeId;
     int res = await dbClient.insert(CUSTOMERS_TABLE_NAME, item.toMap());
     return res;
   }
@@ -235,44 +272,40 @@ class DBHelper {
 
   //GROUP
   Future<int> insertGroup(Group item) async {
+    item.createdDate = DateTime.now();
+    item.updatedDate = DateTime.now();
     var dbClient = await db;
     int res = await dbClient.insert(GROUPS_TABLE_NAME, item.toMap());
     return res;
   }
 
   Future<bool> updateGroup(Group item) async {
+    item.updatedDate = DateTime.now();
     var dbClient = await db;
     int res = await dbClient.update(GROUPS_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id]);
     return res > 0;
   }
 
-  Future<List<Group>> getGroups(int groupId) async {
+  Future<List<Group>> getGroups() async {
     var dbClient = await db;
-
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
-    List<Map> list = [];
-    if (storeId == -1) {
-      //all store
-      if (groupId == null) {
-        list = await dbClient
-            .rawQuery('SELECT * FROM $GROUPS_TABLE_NAME where groupId IS NULL');
-      } else {
-        list = await dbClient.rawQuery(
-            'SELECT * FROM $GROUPS_TABLE_NAME WHERE groupId = ?', [groupId]);
-      }
-    } else {
-      if (groupId == null) {
-        list = await dbClient.rawQuery(
-            'SELECT * FROM $GROUPS_TABLE_NAME where storeId = ? AND groupId IS NULL',
-            [storeId]);
-      } else {
-        list = await dbClient.rawQuery(
-            'SELECT * FROM $GROUPS_TABLE_NAME WHERE storeId = ? AND groupId = ?',
-            [storeId, groupId]);
-      }
+    List<Map> list = await dbClient.rawQuery(
+        'SELECT * FROM $GROUPS_TABLE_NAME where storeId = ?', [storeId]);
+    List<Group> groups = new List();
+    for (int i = 0; i < list.length; i++) {
+      var group = Group.map(list[i]);
+      groups.add(group);
     }
+    return groups;
+  }
 
+  Future<List<Group>> getGroupsByGroupId(int groupId) async {
+    var dbClient = await db;
+    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    List<Map> list = await dbClient.rawQuery(
+        'SELECT * FROM $GROUPS_TABLE_NAME WHERE storeId = ? AND groupId = ?',
+        [storeId, groupId]);
     List<Group> groups = new List();
     for (int i = 0; i < list.length; i++) {
       var group = Group.map(list[i]);
@@ -282,6 +315,16 @@ class DBHelper {
   }
 
   //GOOD
+  Future<int> getCountGood() async {
+    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    var dbClient = await db;
+    var result = await dbClient.rawQuery(
+        "SELECT COUNT(*) FROM $GOODS_TABLE_NAME WHERE storeId = ?", [storeId]);
+
+    int value = result[0]["COUNT(*)"];
+    return value == null ? 0 : value;
+  }
+
   Future<Good> findGood(int id) async {
     var dbClient = await db;
     var list = await dbClient
@@ -308,30 +351,12 @@ class DBHelper {
     return res > 0;
   }
 
-  Future<List<Good>> getGoods(int groupId) async {
+  Future<List<Good>> getGoodsByGroupId(int groupId) async {
     var dbClient = await db;
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
-    List<Map> list = [];
-    if (storeId == -1) {
-      //all store
-      if (groupId == null) {
-        list = await dbClient
-            .rawQuery('SELECT * FROM $GOODS_TABLE_NAME where groupId IS NULL');
-      } else {
-        list = await dbClient.rawQuery(
-            'SELECT * FROM $GOODS_TABLE_NAME WHERE groupId = ?', [groupId]);
-      }
-    } else {
-      if (groupId == null) {
-        list = await dbClient.rawQuery(
-            'SELECT * FROM $GOODS_TABLE_NAME where storeId = ? AND groupId IS NULL',
-            [storeId]);
-      } else {
-        list = await dbClient.rawQuery(
-            'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ? AND groupId = ?',
-            [storeId, groupId]);
-      }
-    }
+    List<Map> list = await dbClient.rawQuery(
+        'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ? AND groupId = ?',
+        [storeId, groupId]);
     List<Good> goods = new List();
     for (int i = 0; i < list.length; i++) {
       var good = Good.map(list[i]);
@@ -395,7 +420,8 @@ class DBHelper {
     return list.map((e) => Document.map(e)).toList();
   }
 
-  Future<List<Document>> getDocuments(int storeId) async {
+  Future<List<Document>> getDocuments() async {
+    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $DOCUMENTS_TABLE_NAME where storeId = ?', [storeId]);
@@ -415,6 +441,17 @@ class DBHelper {
       documents.add(document);
     }
     return documents;
+  }
+
+  Future<int> getCountDocument() async {
+    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    var dbClient = await db;
+    var result = await dbClient.rawQuery(
+        "SELECT COUNT(*) FROM $DOCUMENTS_TABLE_NAME WHERE storeId = ?",
+        [storeId]);
+
+    int value = result[0]["COUNT(*)"];
+    return value == null ? 0 : value;
   }
 
   Future<int> getQuantityByDocumentId(int documentId) async {
@@ -446,6 +483,7 @@ class DBHelper {
 
   //TRANSACTION
   Future<int> insertTransaction(DocumentTransaction item) async {
+    item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     int res =
         await dbClient.insert(DOCUMENT_TRANSACTIONS_TABLE_NAME, item.toMap());
@@ -476,7 +514,27 @@ class DBHelper {
     return value == null ? 0 : value;
   }
 
+  Future<int> getSumQuantity(DocumentType type) async {
+    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    var dbClient = await db;
+    var result = await dbClient.rawQuery(
+        'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE storeId = ? AND documentType = ?',
+        [storeId, type.index]);
+    int value = result[0]["SUM(quantity)"];
+    return value == null ? 0 : value;
+  }
+
   //EXPENSES
+  Future<double> getSumExpense() async {
+    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    var dbClient = await db;
+    var result = await dbClient.rawQuery(
+        'SELECT SUM(amount) FROM $EXPENSES_TABLE_NAME WHERE storeId = ?',
+        [storeId]);
+    double value = result[0]["SUM(amount)"];
+    return value == null ? 0 : value;
+  }
+
   Future<List<Expense>> getExpenses() async {
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
@@ -494,13 +552,13 @@ class DBHelper {
     var dbClient = await db;
     item.createdDate = DateTime.now();
     item.updatedDate = DateTime.now();
+    item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     int res = await dbClient.insert(EXPENSES_TABLE_NAME, item.toMap());
     return res;
   }
 
   Future<bool> deleteExpense(int id) async {
     var dbClient = await db;
-
     int res = await dbClient
         .rawDelete('DELETE FROM $EXPENSES_TABLE_NAME WHERE id = ?', [id]);
     return res > 0;

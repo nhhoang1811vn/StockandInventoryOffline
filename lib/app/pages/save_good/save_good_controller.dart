@@ -11,6 +11,7 @@ import 'package:good_manager/app/pages/save_good/save_good_presenter.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:open_file/open_file.dart';
+import 'package:sprintf/sprintf.dart';
 
 class SaveGoodController extends Controller {
   // Text field controller
@@ -241,5 +242,37 @@ class SaveGoodController extends Controller {
 
   void openFile(String path) {
     OpenFile.open(path);
+  }
+
+  void deleteFile(int position) {
+    files.removeAt(position);
+    refreshUI();
+  }
+
+  void showConfirmDeleteFile(int position) {
+    String fileName = (files[position].split('/').last);
+    showDialog(
+        context: getContext(),
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+                AppLocalizations.of(getContext()).notification_dialog_title),
+            content: Text(sprintf(
+                AppLocalizations.of(getContext()).message_confirm_delete_file,
+                [fileName])),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(getContext()),
+                  child: Text(AppLocalizations.of(getContext()).action_cancel)),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(getContext());
+                  deleteFile(position);
+                },
+                child: Text(AppLocalizations.of(getContext()).action_ok),
+              )
+            ],
+          );
+        });
   }
 }

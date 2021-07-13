@@ -5,6 +5,7 @@ import 'package:good_manager/app/pages/base_list_controller.dart';
 import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/customers_settings.dart';
+import 'package:sprintf/sprintf.dart';
 
 import '../help_content.dart';
 import 'customers_presenter.dart';
@@ -48,7 +49,7 @@ class CustomersController extends BaseListController<Customer,
                   if (item.numberDocument > 0) {
                     showCanNotDeleteDialog();
                   } else {
-                    showDeleteConfirmDialog(item.id);
+                    showDeleteConfirmDialog(item);
                   }
                 },
                 child: Text(AppLocalizations.of(getContext()).action_delete),
@@ -84,15 +85,17 @@ class CustomersController extends BaseListController<Customer,
             ));
   }
 
-  void showDeleteConfirmDialog(int id) {
+  void showDeleteConfirmDialog(Customer customer) {
     showDialog(
         context: getContext(),
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
                 AppLocalizations.of(getContext()).notification_dialog_title),
-            content: Text(AppLocalizations.of(getContext())
-                .message_confirm_delete_customer),
+            content: Text(sprintf(
+                AppLocalizations.of(getContext())
+                    .message_confirm_delete_customer,
+                [customer.name])),
             actions: [
               TextButton(
                   onPressed: () => Navigator.pop(getContext()),
@@ -100,7 +103,7 @@ class CustomersController extends BaseListController<Customer,
               TextButton(
                 onPressed: () {
                   Navigator.pop(getContext());
-                  presenter.delete(id);
+                  presenter.delete(customer.id);
                 },
                 child: Text(AppLocalizations.of(getContext()).action_ok),
               )

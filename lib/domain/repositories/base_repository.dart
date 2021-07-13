@@ -7,5 +7,9 @@ abstract class BaseRepository<M extends BaseModel> {
 
   Future<List<M>> getAll();
 
+  Future<M> get(int id);
+
   Future<bool> delete(int id);
+
+  Future<int> getCount();
 }

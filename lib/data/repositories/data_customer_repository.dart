@@ -23,6 +23,11 @@ class DataCustomerRepository implements CustomerRepository {
   }
 
   @override
+  Future<int> getCount() {
+    return db.getCountCustomer();
+  }
+
+  @override
   Future<int> insert(Customer item) {
     return db.insertCustomer(item);
   }
@@ -51,5 +56,11 @@ class DataCustomerRepository implements CustomerRepository {
   @override
   Future<bool> delete(int id) {
     return db.deleteCustomer(id);
+  }
+
+  @override
+  Future<Customer> get(int id) {
+    // TODO: implement get
+    throw UnimplementedError();
   }
 }

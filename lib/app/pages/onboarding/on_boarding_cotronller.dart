@@ -23,7 +23,6 @@ class OnBoardingController extends Controller {
       SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
       sharedPreferences.setInt(keySelectedStoreId, id);
-      sharedPreferences.setString(keySelectedStoreName, name);
       Navigator.of(getContext()).pushReplacementNamed(Pages.main);
     };
     presenter.insertStoreOnError = (e) {

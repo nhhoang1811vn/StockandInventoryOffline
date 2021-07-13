@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/stores/stores_presenter.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/domain/entities/stores_settings.dart';
 
 import '../base_list_controller.dart';
+import '../help_content.dart';
 
 class StoresController
     extends BaseListController<Store, StoresSettings, StoresPresenter> {
   StoresController(repository) : super(StoresPresenter(repository));
 
   void onOpenHelpPage() {
-    Navigator.of(getContext()).pushNamed(Pages.help,
-        arguments: {"title": "Stores", "content": "Help of store content"});
+    Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
+      "title": AppLocalizations.of(getContext()).stores_title,
+      "content": HelpUtils.getMarkdownDataStore()
+    });
   }
 
   @override

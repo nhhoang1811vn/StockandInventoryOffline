@@ -9,4 +9,6 @@ abstract class DocumentTransactionRepository
   Future<void> deleteByGoodId(int goodId);
 
   Future<List<DocumentTransaction>> getTransactions(int documentId);
+
+  Future<int> getSumQuantity();
 }

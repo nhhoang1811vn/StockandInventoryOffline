@@ -52,7 +52,10 @@ class AddQuantityGoodDialogState extends State<AddQuantityGoodDialog> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: IconButton(
-                        icon: Icon(UIConstants.calculatorIconData),
+                        icon: Image.asset(
+                          UIConstants.calculatorIconPath,
+                          width: 24,
+                        ),
                         onPressed: () => _showCalculatorDialog(context),
                       ),
                     )

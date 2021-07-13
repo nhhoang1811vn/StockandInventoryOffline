@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/group.dart';
 
 class GroupItemRow extends StatelessWidget {
@@ -31,7 +31,10 @@ class GroupItemRow extends StatelessWidget {
             Visibility(
                 visible: item.barCode.isNotEmpty,
                 child: Row(children: [
-                  Icon(FontAwesomeIcons.barcode),
+                  Image.asset(
+                    UIConstants.barcodeIconPath,
+                    width: 24,
+                  ),
                   SizedBox(
                     width: 8,
                   ),
@@ -40,7 +43,10 @@ class GroupItemRow extends StatelessWidget {
           ],
         ),
         //trailing: Text(item.quality.toString()),
-        leading: Icon(Icons.folder, size: 36, color: Colors.blue),
+        leading: Image.asset(
+          UIConstants.folderIconPath,
+          width: 24,
+        ),
         onTap: () => onGroupTapped(item),
         onLongPress: () => onGroupLongPressed(item));
   }

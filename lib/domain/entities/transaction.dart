@@ -8,6 +8,7 @@ class DocumentTransaction extends BaseModel {
   int goodId;
   int quantity;
   DocumentType type;
+  int storeId;
 
   int currentQuantity = 0;
   Good good;
@@ -26,6 +27,7 @@ class DocumentTransaction extends BaseModel {
         return;
       }
     });
+    this.storeId = obj["storeId"];
   }
 
   Map<String, dynamic> toMap() {
@@ -34,6 +36,7 @@ class DocumentTransaction extends BaseModel {
     map["goodId"] = goodId;
     map["quantity"] = quantity;
     map["documentType"] = type.index;
+    map["storeId"] = storeId;
     return map;
   }
 }

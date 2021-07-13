@@ -1,4 +1,4 @@
-import 'dart:async';
+/*import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/document.dart';
@@ -23,10 +23,4 @@ class GetDocumentsUseCase
     }
     return controller.stream;
   }
-}
-
-class GetDocumentsUseCaseParams {
-  final int storeId;
-
-  GetDocumentsUseCaseParams(this.storeId);
-}
+}*/

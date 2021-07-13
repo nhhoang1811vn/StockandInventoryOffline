@@ -2,6 +2,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/goods_settings.dart';
 import 'package:good_manager/domain/entities/group.dart';
+import 'package:good_manager/domain/usecases/base_update_item_usecase.dart';
 import 'package:good_manager/domain/usecases/goods/delete_good_usecase.dart';
 import 'package:good_manager/domain/usecases/goods/get_good_usecase.dart';
 import 'package:good_manager/domain/usecases/goods/get_goods_settings_usecase.dart';
@@ -23,37 +24,45 @@ class GoodsPresenter extends Presenter {
   Function deleteGoodOnComplete;
   Function deleteGoodOnError;
 
-  GetGroupUseCase getGroupUseCase;
-  GetGoodsUseCase getGoodsUseCase;
+  Function updateGoodOnComplete;
+  Function updateGoodOnError;
+
+  GetGroupsByGroupIdUseCase getGroupsByGroupIdUseCase;
+  GetGoodsByGroupIdUseCase getGoodsByGroupIdUseCase;
   GetGoodsSettingsUseCase getGoodsSettingsUseCase;
   SetGoodsSettingsUseCase setGoodsSettingsUseCase;
 
   DeleteGoodUseCase deleteGoodUseCase;
 
+  BaseUpdateItemUseCase<Good> updateGoodUseCase;
+
   GoodsPresenter(groupRepository, goodRepository, transactionRepository) {
-    getGroupUseCase = GetGroupUseCase(groupRepository);
-    getGoodsUseCase = GetGoodsUseCase(goodRepository);
+    getGroupsByGroupIdUseCase = GetGroupsByGroupIdUseCase(groupRepository);
+    getGoodsByGroupIdUseCase = GetGoodsByGroupIdUseCase(goodRepository);
 
     getGoodsSettingsUseCase = GetGoodsSettingsUseCase(goodRepository);
     setGoodsSettingsUseCase = SetGoodsSettingsUseCase(goodRepository);
 
     deleteGoodUseCase =
         DeleteGoodUseCase(goodRepository, transactionRepository);
+
+    updateGoodUseCase = BaseUpdateItemUseCase(goodRepository);
   }
 
   @override
   void dispose() {
-    getGroupUseCase.dispose();
-    getGoodsUseCase.dispose();
+    getGroupsByGroupIdUseCase.dispose();
+    getGoodsByGroupIdUseCase.dispose();
     getGoodsSettingsUseCase.dispose();
     setGoodsSettingsUseCase.dispose();
   }
 
-  void getGroups(groupId) => getGroupUseCase.execute(
-      _GetGroupsUseCaseObserver(this), GetGroupUseCaseParams(groupId));
+  void getGroupsByGroupId(groupId) => getGroupsByGroupIdUseCase.execute(
+      _GetGroupsUseCaseObserver(this),
+      GetGroupsByGroupIdUseCaseParams(groupId));
 
-  void getGoods(groupId) => getGoodsUseCase.execute(
-      _GetGoodsUseCaseObserver(this), GetGoodsUseCaseParams(groupId));
+  void getGoodsByGroupId(groupId) => getGoodsByGroupIdUseCase.execute(
+      _GetGoodsUseCaseObserver(this), GetGoodsByGroupIdUseCaseParams(groupId));
 
   void getSettings() =>
       getGoodsSettingsUseCase.execute(_GetGoodsSettingsUseCaseObserver(this));
@@ -64,6 +73,9 @@ class GoodsPresenter extends Presenter {
 
   void deleteGood(int id) => deleteGoodUseCase.execute(
       DeleteGoodUseCaseObserver(this), DeleteGoodUseCaseParam(id));
+
+  void update(Good good) => updateGoodUseCase.execute(
+      UpdateGoodUseCaseObserver(this), BaseUpdateItemUseCaseParam(good));
 }
 
 class _GetGroupsUseCaseObserver implements Observer<List<Group>>{
@@ -154,4 +166,23 @@ class DeleteGoodUseCaseObserver implements Observer<void> {
 
   @override
   void onNext(response) {}
+}
+
+class UpdateGoodUseCaseObserver implements Observer<bool> {
+  GoodsPresenter _presenter;
+
+  UpdateGoodUseCaseObserver(this._presenter);
+
+  @override
+  void onComplete() {
+    _presenter.updateGoodOnComplete();
+  }
+
+  @override
+  void onError(e) {
+    _presenter.updateGoodOnError(e);
+  }
+
+  @override
+  void onNext(bool response) {}
 }

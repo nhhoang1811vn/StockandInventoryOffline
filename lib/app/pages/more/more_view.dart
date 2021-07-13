@@ -18,7 +18,7 @@ class MorePageView extends ViewState<MorePage, MoreController> {
   @override
   Widget get view => Scaffold(
       appBar:
-          new AppBar(title: new Text(AppLocalizations.of(context).title_more)),
+          new AppBar(title: new Text(AppLocalizations.of(context).more_title)),
       body: ListView(
         key: globalKey,
         children: [
@@ -51,15 +51,17 @@ class MorePageView extends ViewState<MorePage, MoreController> {
               onTap: () => controller.openCustomersPage(),
             );
           }),
-          ListTile(
-            dense: true,
-            title: Text('Other SSTeam Experiences'),
-          ),
-          ListTile(
-            leading: Icon(Icons.mail_outline),
-            title: Text('Todo'),
-            subtitle: Text('Great app for personally task manager'),
-          ),
+          ControlledWidgetBuilder<MoreController>(
+              builder: (context, controller) {
+            return ListTile(
+              leading: Image.asset(UIConstants.settingsIconPath, width: 24),
+              title:
+                  Text(AppLocalizations.of(context).menu_item_settings_title),
+              subtitle:
+                  Text(AppLocalizations.of(context).menu_item_settings_desc),
+              onTap: () => controller.openSettingsPage(),
+            );
+          }),
           ListTile(
             dense: true,
             title: Text('Good Manager'),
@@ -99,7 +101,18 @@ class MorePageView extends ViewState<MorePage, MoreController> {
                 Text(AppLocalizations.of(context).menu_item_community_header),
             subtitle: Text(
                 AppLocalizations.of(context).menu_item_community_description),
-          )
+          ),
+          ControlledWidgetBuilder<MoreController>(
+              builder: (context, controller) {
+            return ListTile(
+              leading: Image.asset(UIConstants.newIconPath, width: 24),
+              title:
+                  Text(AppLocalizations.of(context).menu_item_whats_new_header),
+              subtitle: Text(
+                  AppLocalizations.of(context).menu_item_whats_new_description),
+              onTap: () => controller.onWhatsNew(),
+            );
+          })
         ],
       ));
 }

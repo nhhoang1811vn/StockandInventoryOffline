@@ -6,6 +6,7 @@ import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_presenter.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/supplier_settings.dart';
+import 'package:sprintf/sprintf.dart';
 
 import '../help_content.dart';
 
@@ -38,7 +39,7 @@ class SuppliersController
                   if (supplier.numberDocument > 0) {
                     showCanNotDeleteDialog();
                   } else {
-                    showDeleteConfirmDialog(supplier.id);
+                    showDeleteConfirmDialog(supplier);
                   }
                 },
                 child: Text(AppLocalizations.of(getContext()).action_delete),
@@ -74,15 +75,17 @@ class SuppliersController
             ));
   }
 
-  void showDeleteConfirmDialog(int id) {
+  void showDeleteConfirmDialog(Supplier supplier) {
     showDialog(
         context: getContext(),
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
                 AppLocalizations.of(getContext()).notification_dialog_title),
-            content: Text(AppLocalizations.of(getContext())
-                .message_confirm_delete_supplier),
+            content: Text(sprintf(
+                AppLocalizations.of(getContext())
+                    .message_confirm_delete_supplier,
+                [supplier.name])),
             actions: [
               TextButton(
                   onPressed: () => Navigator.pop(getContext()),
@@ -90,7 +93,7 @@ class SuppliersController
               TextButton(
                 onPressed: () {
                   Navigator.pop(getContext());
-                  presenter.delete(id);
+                  presenter.delete(supplier.id);
                 },
                 child: Text(AppLocalizations.of(getContext()).action_ok),
               )

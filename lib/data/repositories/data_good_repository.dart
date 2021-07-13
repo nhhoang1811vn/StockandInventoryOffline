@@ -30,8 +30,8 @@ class DataGoodRepository implements GoodRepository {
   }
 
   @override
-  Future<List<Good>> getGoods(int groupId) {
-    return db.getGoods(groupId);
+  Future<List<Good>> getGoodsByGroupId(int groupId) {
+    return db.getGoodsByGroupId(groupId);
   }
 
   @override
@@ -42,6 +42,11 @@ class DataGoodRepository implements GoodRepository {
   @override
   Future<List<Good>> getAll() {
     throw UnimplementedError();
+  }
+
+  @override
+  Future<int> getCount() {
+    return db.getCountGood();
   }
 
   @override
@@ -70,5 +75,11 @@ class DataGoodRepository implements GoodRepository {
         SortByNumberHelper.getValue(settings.sortByQuantity));
     preferences.setInt(Constants.searchGoodsTypeKey,
         SearchGoodsTypeHelper.getValue(settings.searchGoodsType));
+  }
+
+  @override
+  Future<Good> get(int id) {
+    // TODO: implement get
+    throw UnimplementedError();
   }
 }

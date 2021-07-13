@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/app/pages/save_group/save_group_presenter.dart';
+import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/group.dart';
 
 class SaveGroupController extends Controller {
@@ -21,9 +22,6 @@ class SaveGroupController extends Controller {
     descriptionTextController = TextEditingController();
     barCodeTextController = TextEditingController();
 
-    if (_item == null) {
-      _item = Group();
-    }
     nameTextController.text = _item.name;
     descriptionTextController.text = _item.description;
     barCodeTextController.text = _item.barCode;
@@ -34,12 +32,16 @@ class SaveGroupController extends Controller {
     presenter.insertGroupOnNext = (groupId) {
       Navigator.of(getContext()).pop(true);
     };
-    presenter.insertGroupOnError = (e) {};
+    presenter.insertGroupOnError = (e) {
+      showErrorToast(e.toString());
+    };
 
     presenter.updateGroupOnComplete = () {
       Navigator.of(getContext()).pop(true);
     };
-    presenter.updateGroupOnError = (e) {};
+    presenter.updateGroupOnError = (e) {
+      showErrorToast(e.toString());
+    };
   }
 
   @override

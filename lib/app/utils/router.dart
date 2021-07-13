@@ -2,16 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:good_manager/app/main.dart';
 import 'package:good_manager/app/pages/customers/customers_view.dart';
 import 'package:good_manager/app/pages/documents/documents_view.dart';
+import 'package:good_manager/app/pages/expenses/expenses_view.dart';
 import 'package:good_manager/app/pages/goods/goods_view.dart';
 import 'package:good_manager/app/pages/help/help_page_dart.dart';
 import 'package:good_manager/app/pages/main_page.dart';
 import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/save_customer/save_customer_view.dart';
 import 'package:good_manager/app/pages/save_document/save_document_view.dart';
+import 'package:good_manager/app/pages/save_expense/save_expense_view.dart';
 import 'package:good_manager/app/pages/save_good/save_good_view.dart';
 import 'package:good_manager/app/pages/save_group/save_group_view.dart';
 import 'package:good_manager/app/pages/save_store/save_store_view.dart';
 import 'package:good_manager/app/pages/save_supplier/save_supplier_view.dart';
+import 'package:good_manager/app/pages/select_group/select_group_view.dart';
+import 'package:good_manager/app/pages/select_store/select_store_view.dart';
+import 'package:good_manager/app/pages/settings/settings_view.dart';
 import 'package:good_manager/app/pages/stores/stores_view.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_view.dart';
 import 'package:good_manager/app/pages/take_picture_screen.dart';
@@ -86,6 +91,23 @@ class AppRouter {
             settings, HelpPage(title: args['title'], content: args['content']));
       case Pages.take_picture:
         return _buildRoute(settings, TakePictureScreen(camera: cameras.first));
+      case Pages.expenses:
+        return _buildRoute(settings, ExpensesPage());
+      case Pages.save_expense:
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(
+            settings,
+            SaveExpensePage(
+              item: args['item'],
+            ));
+      case Pages.settings:
+        return _buildRoute(settings, SettingsPage());
+      case Pages.select_group:
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(settings, SelectGroupPage(args['groupId']));
+      case Pages.select_store:
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(settings, SelectStorePage(args['storeId']));
       default:
         return null;
     }

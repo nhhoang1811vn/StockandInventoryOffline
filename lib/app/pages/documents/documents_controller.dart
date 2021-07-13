@@ -14,6 +14,7 @@ import 'package:good_manager/domain/entities/documents_settings.dart';
 import 'package:good_manager/domain/entities/search_documents_type.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
+import 'package:sprintf/sprintf.dart';
 
 import '../pages.dart';
 import 'add_document_dialog.dart';
@@ -47,8 +48,7 @@ class DocumentsController extends Controller {
   }
 
   void retrieveDocuments() async {
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
-    presenter.getDocuments(storeId);
+    presenter.getDocuments();
   }
 
   @override
@@ -178,8 +178,10 @@ class DocumentsController extends Controller {
           return AlertDialog(
             title: Text(
                 AppLocalizations.of(getContext()).notification_dialog_title),
-            content: Text(AppLocalizations.of(getContext())
-                .message_confirm_delete_document),
+            content: Text(sprintf(
+                AppLocalizations.of(getContext())
+                    .message_confirm_delete_document,
+                [document.name])),
             actions: [
               TextButton(
                   onPressed: () => Navigator.pop(getContext()),
@@ -268,72 +270,6 @@ class DocumentsController extends Controller {
       return compare;
     });
   }
-
-  int sortByName(Document item1, Document item2) {
-    int compare = 0;
-    switch (_settings.sortByName) {
-      case SortByText.a_to_z:
-        {
-          compare = item1.name.compareTo(item2.name);
-          break;
-        }
-      case SortByText.a_to_z:
-        {
-          compare = item2.name.compareTo(item1.name);
-          break;
-        }
-      default:
-        {}
-    }
-    if (compare == 0) {
-      return sortByDate(item1, item2);
-    } else {
-      return compare;
-    }
-  }
-
-  int sortByDate(Document item1, Document item2) {
-    int compare = 0;
-    switch (_settings.sortByDate) {
-      case SortByNumber.ascending:
-        {
-          compare = item1.date.compareTo(item2.date);
-          break;
-        }
-      case SortByNumber.descending:
-        {
-          compare = item2.date.compareTo(item1.date);
-          break;
-        }
-      default:
-        {}
-    }
-    if (compare == 0) {
-      return sortByQuantity(item1, item2);
-    } else {
-      return compare;
-    }
-  }
-
-  int sortByQuantity(Document item1, Document item2) {
-    int compare = 0;
-    switch (_settings.sortByQuantity) {
-      case SortByNumber.ascending:
-        {
-          compare = item1.quantity.compareTo(item2.quantity);
-          break;
-        }
-      case SortByNumber.descending:
-        {
-          compare = item2.quantity.compareTo(item1.quantity);
-          break;
-        }
-      default:
-        {}
-    }
-    return compare;
-  }
-
   void filter() {
     items = allDocuments.where((element) => filterDocument(element)).toList();
     reloadIncomingOutgoingItems();

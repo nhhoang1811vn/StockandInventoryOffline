@@ -35,18 +35,8 @@ class SharedPrefsHelper{
     prefs.setInt(keySelectedStoreId, storeId);
   }
 
-  void setSelectedStoreName(String name) async {
-    prefs = await SharedPreferences.getInstance();
-    prefs.setString(keySelectedStoreName, name);
-  }
-
   Future<int> getSelectedStoreId() async {
     prefs = await SharedPreferences.getInstance();
     return prefs.getInt(keySelectedStoreId);
-  }
-
-  Future<String> getSelectedStoreName() async {
-    prefs = await SharedPreferences.getInstance();
-    return prefs.getString(keySelectedStoreName);
   }
 }

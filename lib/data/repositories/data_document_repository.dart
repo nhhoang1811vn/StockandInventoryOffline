@@ -39,20 +39,14 @@ class DataDocumentRepository implements DocumentRepository {
     return db.updateDocument(item);
   }
 
-  /*@override
-  Future<List<Document>> getDocumentsByType(DocumentType type) {
-    return db.getDocumentsByType(type);
-  }*/
-
   @override
-  Future<List<Document>> getDocuments(int storeId) {
-    return db.getDocuments(storeId);
+  Future<List<Document>> getAll() {
+    return db.getDocuments();
   }
 
   @override
-  Future<List<Document>> getAll() {
-    // TODO: implement getAll
-    throw UnimplementedError();
+  Future<int> getCount() {
+    return db.getCountDocument();
   }
 
   @override
@@ -83,5 +77,11 @@ class DataDocumentRepository implements DocumentRepository {
 
     preferences.setInt(Constants.searchDocumentsTypeKey,
         SearchDocumentsTypeHelper.getValue(settings.searchDocumentsType));
+  }
+
+  @override
+  Future<Document> get(int id) {
+    // TODO: implement get
+    throw UnimplementedError();
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../help_content.dart';
 import '../pages.dart';
 
 class MoreController extends Controller {
@@ -21,6 +22,10 @@ class MoreController extends Controller {
 
   void openStoresPage() {
     Navigator.of(getContext()).pushNamed(Pages.store_list);
+  }
+
+  void openSettingsPage() {
+    Navigator.of(getContext()).pushNamed(Pages.settings);
   }
 
   void onInviteFriend() {
@@ -63,5 +68,12 @@ class MoreController extends Controller {
     );
 
     launch(emailLaunchUri.toString());
+  }
+
+  void onWhatsNew() {
+    Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
+      "title": AppLocalizations.of(getContext()).menu_item_whats_new_header,
+      "content": HelpUtils.getMarkdownDataWhatsNew()
+    });
   }
 }

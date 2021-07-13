@@ -46,30 +46,30 @@ class _MainPageState extends State<MainPage> {
               UIConstants.homeIconPath,
               width: 24,
             ),
-            label: AppLocalizations.of(context).title_home,
+            label: AppLocalizations.of(context).home_title,
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               UIConstants.goodIconPath,
               width: 24,
             ),
-            label: AppLocalizations.of(context).title_goods,
+            label: AppLocalizations.of(context).goods_title,
           ),
           BottomNavigationBarItem(
               icon: Image.asset(
                 UIConstants.documentIconPath,
                 width: 24,
               ),
-              label: AppLocalizations.of(context).title_document),
+              label: AppLocalizations.of(context).documents_title),
           BottomNavigationBarItem(
               icon: Image.asset(
                 UIConstants.expenseIconPath,
                 width: 24,
               ),
-              label: AppLocalizations.of(context).title_expenses),
+              label: AppLocalizations.of(context).expenses_title),
           BottomNavigationBarItem(
               icon: Icon(UIConstants.moreIconData),
-              label: AppLocalizations.of(context).title_more),
+              label: AppLocalizations.of(context).more_title),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue[800],

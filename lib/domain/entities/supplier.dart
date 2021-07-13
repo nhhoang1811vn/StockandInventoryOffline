@@ -7,6 +7,7 @@ class Supplier extends BaseModel {
   String phone = "";
   String taxID = "";
   String bankDetail = "";
+  int storeId;
 
   int numberDocument = 0;
 
@@ -19,6 +20,7 @@ class Supplier extends BaseModel {
     this.phone = obj["phone"];
     this.taxID = obj["taxID"];
     this.bankDetail = obj["bankDetail"];
+    this.storeId = obj["storeId"];
   }
 
   Map<String, dynamic> toMap() {
@@ -28,6 +30,7 @@ class Supplier extends BaseModel {
     map["phone"] = phone;
     map["taxID"] = taxID;
     map["bankDetail"] = bankDetail;
+    map["storeId"] = storeId;
     return map;
   }
 }

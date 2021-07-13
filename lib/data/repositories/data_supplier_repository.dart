@@ -52,4 +52,15 @@ class DataSupplierRepository implements SupplierRepository {
   Future<bool> delete(int id) {
     return db.deleteSupplier(id);
   }
+
+  @override
+  Future<int> getCount() {
+    return db.getCountSupplier();
+  }
+
+  @override
+  Future<Supplier> get(int id) {
+    // TODO: implement get
+    throw UnimplementedError();
+  }
 }

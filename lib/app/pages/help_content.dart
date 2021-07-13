@@ -36,6 +36,17 @@ const String _markdownDataStoreEN = """
  
  """;
 
+const String _markdownDataWhatsNewVN = """
+ ## Phiên bản 1.0.0
+ 
+ Lần đầu tiên ra mắt chưa có gì để nói cả :), mọi người chọn nút trợ giúp ở từng màn hình để hiểu rõ nhé.
+ 
+ """;
+const String _markdownDataWhatsNewEN = """
+ #Version 1.0.0
+ First Release.
+ """;
+
 class HelpUtils {
   static String getMarkdownDataSupplierCustomer() {
     return _markdownDataSupplierCustomerVN;
@@ -43,5 +54,9 @@ class HelpUtils {
 
   static String getMarkdownDataStore() {
     return _markdownDataStoreVN;
+  }
+
+  static String getMarkdownDataWhatsNew() {
+    return _markdownDataWhatsNewVN;
   }
 }

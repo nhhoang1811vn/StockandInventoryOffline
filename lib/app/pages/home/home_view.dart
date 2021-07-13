@@ -4,9 +4,15 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/home/home_controller.dart';
 import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/data/repositories/data_customer_repository.dart';
+import 'package:good_manager/data/repositories/data_document_repository.dart';
+import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
+import 'package:good_manager/data/repositories/data_expense_repository.dart';
+import 'package:good_manager/data/repositories/data_good_repository.dart';
+import 'package:good_manager/data/repositories/data_store_repository.dart';
+import 'package:good_manager/data/repositories/data_supplier_repository.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-
-import '../store_view.dart';
+import 'package:sprintf/sprintf.dart';
 
 class HomePage extends View {
   HomePage({Key key}) : super(key: key);
@@ -16,13 +22,27 @@ class HomePage extends View {
 }
 
 class HomePageView extends ViewState<HomePage, HomeController> {
-  HomePageView() : super(HomeController());
+  static const titleStyle = TextStyle(color: Colors.blue, fontSize: 16);
+  static const bodyStyle = TextStyle(fontSize: 16);
+
+  HomePageView()
+      : super(HomeController(
+            DataStoreRepository(),
+            DataGoodRepository(),
+            DataDocumentRepository(),
+            DataDocumentTransactionRepository(),
+            DataSupplierRepository(),
+            DataCustomerRepository(),
+            DataExpenseRepository()));
+
+  double height = 150;
+  double iconSize = 30;
 
   @override
   Widget get view => Scaffold(
       key: globalKey,
       appBar: new AppBar(
-        title: new Text(AppLocalizations.of(context).title_home),
+        title: new Text(AppLocalizations.of(context).home_title),
       ),
       body: ControlledWidgetBuilder<HomeController>(
           builder: (context, controller) {
@@ -32,7 +52,7 @@ class HomePageView extends ViewState<HomePage, HomeController> {
 
   Widget getBody() {
     List<Widget> children = [
-      StoreView(),
+      storeView,
       Padding(
           padding: EdgeInsets.all(4),
           child: Column(
@@ -42,38 +62,16 @@ class HomePageView extends ViewState<HomePage, HomeController> {
                   Flexible(
                     fit: FlexFit.tight,
                     child: Container(
-                      height: 100,
-                      child: Card(
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            UIConstants.goodIconPath,
-                            width: 24,
-                          ),
-                          Text("Goods"),
-                          Text("0/0"),
-                        ],
-                      )),
+                      height: height,
+                      child: goods,
                     ),
                     flex: 1,
                   ),
                   Flexible(
                     fit: FlexFit.tight,
                     child: Container(
-                      height: 100,
-                      child: Card(
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            UIConstants.documentIconPath,
-                            width: 24,
-                          ),
-                          Text("Documents"),
-                          Text("0"),
-                        ],
-                      )),
+                      height: height,
+                      child: documents,
                     ),
                     flex: 1,
                   )
@@ -84,98 +82,19 @@ class HomePageView extends ViewState<HomePage, HomeController> {
                   Flexible(
                     fit: FlexFit.tight,
                     child: Container(
-                      height: 150,
+                      height: height,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Container(
-                            height: 75,
-                            child: Row(
-                              children: [
-                                Flexible(
-                                  fit: FlexFit.tight,
-                                  child: Card(
-                                    child: Padding(
-                                        padding: EdgeInsets.all(4),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              "images/add_incoming_document.png",
-                                              width: 24,
-                                            ),
-                                            Text("Nhập hàng")
-                                          ],
-                                        )),
-                                  ),
-                                  flex: 1,
-                                ),
-                                Flexible(
-                                  fit: FlexFit.tight,
-                                  child: Card(
-                                    child: Padding(
-                                        padding: EdgeInsets.all(4),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              "images/add_outgoing_document.png",
-                                              width: 24,
-                                            ),
-                                            Text("Xuất hàng")
-                                          ],
-                                        )),
-                                  ),
-                                  flex: 1,
-                                ),
-                              ],
-                            ),
+                          Flexible(
+                            fit: FlexFit.tight,
+                            child: incomingDocument,
+                            flex: 1,
                           ),
-                          Container(
-                            height: 75,
-                            child: Row(
-                              children: [
-                                Flexible(
-                                  fit: FlexFit.tight,
-                                  child: Card(
-                                    child: Padding(
-                                        padding: EdgeInsets.all(4),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              "images/supplier.png",
-                                              width: 24,
-                                            ),
-                                            Text("NCC")
-                                          ],
-                                        )),
-                                  ),
-                                  flex: 1,
-                                ),
-                                Flexible(
-                                  fit: FlexFit.tight,
-                                  child: Card(
-                                    child: Padding(
-                                        padding: EdgeInsets.all(4),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              "images/customer.png",
-                                              width: 24,
-                                            ),
-                                            Text("Khách hàng")
-                                          ],
-                                        )),
-                                  ),
-                                  flex: 1,
-                                ),
-                              ],
-                            ),
+                          Flexible(
+                            fit: FlexFit.tight,
+                            child: outgoingDocument,
+                            flex: 1,
                           ),
                         ],
                       ),
@@ -185,27 +104,271 @@ class HomePageView extends ViewState<HomePage, HomeController> {
                   Flexible(
                     fit: FlexFit.tight,
                     child: Container(
-                      height: 150,
-                      child: Card(
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      height: height,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Image.asset(
-                            UIConstants.expenseIconPath,
-                            width: 24,
+                          Flexible(
+                            fit: FlexFit.tight,
+                            child: suppliers,
+                            flex: 1,
                           ),
-                          Text("Expenses"),
-                          Text("50.000VND"),
+                          Flexible(
+                            fit: FlexFit.tight,
+                            child: customers,
+                            flex: 1,
+                          ),
                         ],
-                      )),
+                      ),
                     ),
                     flex: 1,
                   ),
                 ],
-              )
+              ),
+              Row(
+                children: [
+                  Flexible(
+                    fit: FlexFit.tight,
+                    child: Container(
+                      height: height,
+                      child: expenses,
+                    ),
+                    flex: 1,
+                  ),
+                  Flexible(
+                    fit: FlexFit.tight,
+                    child: Container(
+                      height: height,
+                      child: report,
+                    ),
+                    flex: 1,
+                  )
+                ],
+              ),
             ],
           ))
     ];
     return Column(children: children);
   }
+
+  Widget get storeView =>
+      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
+        return GestureDetector(
+            onTap: controller.openSelectStore,
+            child: Container(
+                height: 40,
+                color: UIConstants.primaryDarkColor,
+                width: double.infinity,
+                child: Stack(children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(controller.info.storeName,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                  Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                          icon: Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.white,
+                      )))
+                ])));
+      });
+
+  Widget get goods =>
+      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
+        return Card(
+            child: InkWell(
+          onTap: controller.openGoods,
+          child: Padding(
+              padding: EdgeInsets.all(4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    UIConstants.goodIconPath,
+                    width: iconSize,
+                  ),
+                  Text(AppLocalizations.of(context).goods_title,
+                      style: titleStyle),
+                  Text(
+                      sprintf("%d/%d", [
+                        controller.info.countGood,
+                        controller.info.quantityGood
+                      ]),
+                      style: bodyStyle),
+                ],
+              )),
+        ));
+      });
+
+  Widget get documents =>
+      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
+        return Card(
+            child: InkWell(
+          onTap: controller.openDocuments,
+          child: Padding(
+              padding: EdgeInsets.all(4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    UIConstants.documentIconPath,
+                    width: iconSize,
+                  ),
+                  Text(AppLocalizations.of(context).documents_title,
+                      style: titleStyle),
+                  Text(controller.info.countDocument.toString(),
+                      style: bodyStyle),
+                ],
+              )),
+        ));
+      });
+
+  Widget get incomingDocument =>
+      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
+        return Card(
+            child: InkWell(
+          onTap: controller.openSaveIncomingDocument,
+          child: Padding(
+              padding: EdgeInsets.all(4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "images/add_incoming_document.png",
+                    width: iconSize,
+                  ),
+                  Text(AppLocalizations.of(context).incoming_goods,
+                      style: titleStyle)
+                ],
+              )),
+        ));
+      });
+
+  Widget get outgoingDocument =>
+      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
+        return Card(
+            child: InkWell(
+          onTap: controller.openSaveOutgoingDocument,
+          child: Padding(
+              padding: EdgeInsets.all(4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "images/add_outgoing_document.png",
+                    width: iconSize,
+                  ),
+                  Text(AppLocalizations.of(context).outgoing_goods,
+                      style: titleStyle)
+                ],
+              )),
+        ));
+      });
+
+  Widget get customers =>
+      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
+        return Card(
+            child: InkWell(
+          onTap: controller.openCustomers,
+          child: Padding(
+              padding: EdgeInsets.all(4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "images/customer.png",
+                    width: iconSize,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(AppLocalizations.of(context).customers_title,
+                          style: titleStyle),
+                      Text(sprintf("(%d)", [controller.info.countCustomer]),
+                          style: bodyStyle)
+                    ],
+                  )
+                ],
+              )),
+        ));
+      });
+
+  Widget get suppliers =>
+      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
+        return Card(
+            child: InkWell(
+          onTap: controller.openSuppliers,
+          child: Padding(
+              padding: EdgeInsets.all(4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "images/supplier.png",
+                    width: iconSize,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(AppLocalizations.of(context).suppliers_title,
+                          style: titleStyle),
+                      Text(sprintf("(%d)", [controller.info.countSupplier]),
+                          style: bodyStyle),
+                    ],
+                  )
+                ],
+              )),
+        ));
+      });
+
+  Widget get expenses =>
+      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
+        return Card(
+            child: InkWell(
+          onTap: controller.openExpenses,
+          child: Padding(
+              padding: EdgeInsets.all(4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    UIConstants.expenseIconPath,
+                    width: iconSize,
+                  ),
+                  Text(AppLocalizations.of(context).expenses_title,
+                      style: titleStyle),
+                  Text(
+                    controller.info.sumExpense.toString(),
+                    style: bodyStyle,
+                  ),
+                ],
+              )),
+        ));
+      });
+
+  Widget get report =>
+      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
+        return Card(
+            child: InkWell(
+          onTap: controller.openReport,
+          child: Padding(
+              padding: EdgeInsets.all(4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    UIConstants.reportIconPath,
+                    width: iconSize,
+                  ),
+                  Text(AppLocalizations.of(context).report_title,
+                      style: titleStyle),
+                ],
+              )),
+        ));
+      });
 }

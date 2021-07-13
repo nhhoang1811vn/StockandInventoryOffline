@@ -52,4 +52,21 @@ class DataExpenseRepository implements ExpenseRepository {
     preferences.setInt(Constants.sortByNameExpensesKey,
         SortByTextHelper.getValue(settings.sortByName));
   }
+
+  @override
+  Future<int> getCount() {
+    // TODO: implement getCount
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<double> getSum() {
+    return db.getSumExpense();
+  }
+
+  @override
+  Future<Expense> get(int id) {
+    // TODO: implement get
+    throw UnimplementedError();
+  }
 }

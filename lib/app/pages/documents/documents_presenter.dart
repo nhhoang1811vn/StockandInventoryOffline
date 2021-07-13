@@ -4,10 +4,10 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/documents_settings.dart';
+import 'package:good_manager/domain/usecases/base_get_items_usecase.dart';
 import 'package:good_manager/domain/usecases/base_get_settings_usecase.dart';
 import 'package:good_manager/domain/usecases/base_set_settings_usecase.dart';
 import 'package:good_manager/domain/usecases/documents/delete_document_usecase.dart';
-import 'package:good_manager/domain/usecases/documents/get_documents_usecase.dart';
 
 class DocumentsPresenter extends Presenter {
   int deletedId;
@@ -25,14 +25,14 @@ class DocumentsPresenter extends Presenter {
   Function setDocumentSettingsOnComplete;
   Function setDocumentSettingsOnError;
 
-  GetDocumentsUseCase getItemsUseCase;
+  BaseGetItemsUseCase<Document> getItemsUseCase;
   DeleteDocumentUseCase deleteDocumentUseCase;
 
   BaseGetSettingsUseCase<DocumentSettings> getSettingsUseCase;
   BaseSetSettingsUseCase<DocumentSettings> setSettingsUseCase;
 
   DocumentsPresenter(documentRepository, transactionRepository) {
-    getItemsUseCase = GetDocumentsUseCase(documentRepository);
+    getItemsUseCase = BaseGetItemsUseCase(documentRepository);
     deleteDocumentUseCase =
         DeleteDocumentUseCase(documentRepository, transactionRepository);
 
@@ -44,8 +44,7 @@ class DocumentsPresenter extends Presenter {
     return appDataManager.sharedPrefsHelper.getAutoDocumentName();
   }
 
-  void getDocuments(int storeId) => getItemsUseCase.execute(
-      GetDocumentsObserver(this), GetDocumentsUseCaseParams(storeId));
+  void getDocuments() => getItemsUseCase.execute(GetDocumentsObserver(this));
 
   void delete(int documentId) {
     deletedId = documentId;

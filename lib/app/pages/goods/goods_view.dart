@@ -12,7 +12,6 @@ import 'package:good_manager/domain/entities/search_goods_type.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import '../store_view.dart';
 import 'good_item_row.dart';
 import 'goods_controller.dart';
 import 'group_item_row.dart';
@@ -45,7 +44,7 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
 
   Widget getBody() {
     List<Widget> children = [
-      StoreView(),
+      //StoreView(),
       selectedGroupView,
       ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
         return Visibility(child: searchBar, visible: controller.showSearchBar);
@@ -160,7 +159,7 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
             child: Scaffold(
                 key: globalKey,
                 appBar: new AppBar(
-                    title: new Text(AppLocalizations.of(context).title_goods),
+                    title: new Text(AppLocalizations.of(context).goods_title),
                     actions: [searchMenu, sortMenu, helpMenu]),
                 body: ControlledWidgetBuilder<GoodsController>(
                     builder: (context, controller) {

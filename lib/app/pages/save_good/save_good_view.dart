@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/app/pages/save_good/save_good_controller.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
@@ -82,7 +81,7 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
           )));
 
   Widget get appBar => AppBar(
-          title: Text(AppLocalizations.of(context).title_save_goods),
+          title: Text(AppLocalizations.of(context).save_goods_title),
           actions: <Widget>[
             ControlledWidgetBuilder<SaveGoodController>(
                 builder: (context, controller) {
@@ -116,10 +115,11 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
   Widget get avatar => ControlledWidgetBuilder<SaveGoodController>(
           builder: (context, controller) {
         return Container(
-            width: 40,
-            height: 40,
+            width: 75,
+            height: 75,
             alignment: Alignment.center,
             decoration: new BoxDecoration(
+                shape: BoxShape.circle,
                 image: DecorationImage(
                     image: FileImage(File(controller.avatar)),
                     fit: BoxFit.fill)));
@@ -162,7 +162,10 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
             Align(
                 alignment: Alignment.centerRight,
                 child: IconButton(
-                    icon: Icon(FontAwesomeIcons.barcode, size: 28),
+                    icon: Image.asset(
+                      UIConstants.barcodeIconPath,
+                      width: 24,
+                    ),
                     onPressed: controller.onInputBarCodePressed))
           ],
         );
@@ -181,7 +184,10 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
             Align(
                 alignment: Alignment.centerRight,
                 child: IconButton(
-                    icon: Icon(UIConstants.calculatorIconData, size: 28),
+                    icon: Image.asset(
+                      UIConstants.calculatorIconPath,
+                      width: 24,
+                    ),
                     onPressed: controller.onInputQuantityPressed))
           ],
         );
@@ -207,10 +213,15 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
         return Container(
           child: ListView.builder(
               itemBuilder: (context, position) {
+                String path = controller.files[position];
                 return ListTile(
-                  leading: getLeadingFile(controller.files[position]),
-                  title: getTitleFile(controller.files[position]),
-                  onTap: () => controller.openFile(controller.files[position]),
+                  leading: getLeadingFile(path),
+                  title: getTitleFile(path),
+                  trailing: IconButton(
+                    icon: Icon(Icons.cancel),
+                    onPressed: () => controller.showConfirmDeleteFile(position),
+                  ),
+                  onTap: () => controller.openFile(path),
                 );
               },
               itemCount: controller.files.length,
@@ -242,11 +253,10 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
 
   bool isImage(String path) {
     final extension = p.extension(path);
-    return (extension == "jpg" || extension == "jpeg" || extension == "png");
+    return (extension == ".jpg" || extension == ".jpeg" || extension == ".png");
   }
 
   Widget getTitleFile(String path) {
-    //var path = file.path;
     var fileName = (path.split('/').last);
     return Text(fileName);
   }

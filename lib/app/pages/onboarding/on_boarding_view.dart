@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_store_repository.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
@@ -18,21 +19,15 @@ class OnBoardingPageView
   final introKey = GlobalKey<IntroductionScreenState>();
   final OnBoardingController controller;
   final nameTextController = TextEditingController();
-  bool _validate = true;
+  bool _validate = false;
 
   OnBoardingPageView(this.controller) : super(controller);
 
   Widget _buildImage(String assetName) {
     return Align(
-      child: Image.asset('images/$assetName.png', width: 200.0),
+      child: Image.asset(assetName, width: 150.0),
       alignment: Alignment.bottomCenter,
     );
-  }
-
-  @override
-  void initState() {
-    //nameTextController.text = AppLocalizations.of(context).main_store;
-    super.initState();
   }
 
   @override
@@ -51,19 +46,19 @@ class OnBoardingPageView
         PageViewModel(
           title: AppLocalizations.of(context).on_boarding_title_1,
           body: AppLocalizations.of(context).on_boarding_content_1,
-          image: _buildImage('inventory'),
+          image: _buildImage(UIConstants.storeIconPath),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: AppLocalizations.of(context).on_boarding_title_2,
           body: AppLocalizations.of(context).on_boarding_content_2,
-          image: _buildImage('inventory'),
+          image: _buildImage(UIConstants.goodIconPath),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: AppLocalizations.of(context).on_boarding_title_3,
           body: AppLocalizations.of(context).on_boarding_content_3,
-          image: _buildImage('inventory'),
+          image: _buildImage(UIConstants.documentIconPath),
           decoration: pageDecoration,
         ),
         PageViewModel(
@@ -74,7 +69,6 @@ class OnBoardingPageView
               Text(AppLocalizations.of(context).on_boarding_header_4,
                   style: bodyStyle),
               TextField(
-                //initialValue: 'abc',
                 controller: nameTextController,
                 onChanged: (value) {
                   setState(() {
@@ -86,7 +80,7 @@ class OnBoardingPageView
               ),
             ],
           ),
-          image: _buildImage('inventory'),
+          image: _buildImage(UIConstants.storeIconPath),
           decoration: pageDecoration,
         ),
       ],

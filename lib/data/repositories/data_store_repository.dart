@@ -55,4 +55,15 @@ class DataStoreRepository implements StoreRepository{
     preferences.setInt(Constants.sortByNameStoresKey,
         SortByTextHelper.getValue(settings.sortByName));
   }
+
+  @override
+  Future<int> getCount() {
+    // TODO: implement getCount
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Store> get(int id) {
+    return db.getStore(id);
+  }
 }

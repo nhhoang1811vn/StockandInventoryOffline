@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/save_group/save_group_controller.dart';
+import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_group_repository.dart';
 import 'package:good_manager/domain/entities/group.dart';
 
@@ -92,7 +93,10 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
             Align(
                 alignment: Alignment.centerRight,
                 child: IconButton(
-                    icon: Icon(Icons.qr_code_rounded, size: 28),
+                    icon: Image.asset(
+                      UIConstants.barcodeIconPath,
+                      width: 24,
+                    ),
                     onPressed: controller.onInputBarCodePressed))
           ],
         );

@@ -9,7 +9,6 @@ import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/search_documents_type.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import '../store_view.dart';
 import 'document_item_row.dart';
 import 'documents_controller.dart';
 
@@ -84,12 +83,11 @@ class DocumentPageView extends ViewState<DocumentsPage, DocumentsController> {
       }));
 
   Widget get appBar => AppBar(
-    title: Text(AppLocalizations.of(context).title_document),
+    title: Text(AppLocalizations.of(context).documents_title),
         bottom: PreferredSize(
             preferredSize: Size.fromHeight(showSearchView ? (74.0 + 65.0) : 74),
             child: Column(
               children: [
-                StoreView(),
                 Visibility(child: searchBar, visible: showSearchView),
                 TabBar(
                   indicatorColor: Colors.white,

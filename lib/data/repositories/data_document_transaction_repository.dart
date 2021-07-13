@@ -1,4 +1,5 @@
 import 'package:good_manager/db/db_helper.dart';
+import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/domain/repositories/transaction_repositories.dart';
 
@@ -48,5 +49,24 @@ class DataDocumentTransactionRepository
   @override
   Future<List<DocumentTransaction>> getTransactions(int documentId) {
     return db.getTransactionsByDocumentId(documentId);
+  }
+
+  @override
+  Future<int> getCount() {
+    // TODO: implement getCount
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<int> getSumQuantity() async {
+    int incomingQuantity = await db.getSumQuantity(DocumentType.incoming);
+    int outgoingQuantity = await db.getSumQuantity(DocumentType.outgoing);
+    return (incomingQuantity - outgoingQuantity);
+  }
+
+  @override
+  Future<DocumentTransaction> get(int id) {
+    // TODO: implement get
+    throw UnimplementedError();
   }
 }
