@@ -15,7 +15,6 @@ import 'package:good_manager/app/pages/save_group/save_group_view.dart';
 import 'package:good_manager/app/pages/save_store/save_store_view.dart';
 import 'package:good_manager/app/pages/save_supplier/save_supplier_view.dart';
 import 'package:good_manager/app/pages/select_group/select_group_view.dart';
-import 'package:good_manager/app/pages/select_store/select_store_view.dart';
 import 'package:good_manager/app/pages/settings/settings_view.dart';
 import 'package:good_manager/app/pages/stores/stores_view.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_view.dart';
@@ -31,7 +30,8 @@ class AppRouter {
       case Pages.main:
         return _buildRoute(settings, MainPage());
       case Pages.store_list:
-        return _buildRoute(settings, StoresPage());
+        Map<String, dynamic> args = settings.arguments as Map;
+        return _buildRoute(settings, StoresPage(isSelection: args['isSelection']));
       case Pages.save_store:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(settings, SaveStorePage(store: args['item']));
@@ -105,9 +105,6 @@ class AppRouter {
       case Pages.select_group:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(settings, SelectGroupPage(args['groupId']));
-      case Pages.select_store:
-        Map<String, dynamic> args = settings.arguments as Map;
-        return _buildRoute(settings, SelectStorePage(args['storeId']));
       default:
         return null;
     }

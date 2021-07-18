@@ -34,26 +34,6 @@ class MorePageView extends ViewState<MorePage, MoreController> {
           ControlledWidgetBuilder<MoreController>(
               builder: (context, controller) {
             return ListTile(
-              leading: Image.asset(UIConstants.supplierIconPath, width: 24),
-              title: Text(AppLocalizations.of(context).suppliers_title),
-              subtitle:
-                  Text(AppLocalizations.of(context).suppliers_description),
-              onTap: () => controller.openSuppliersPage(),
-            );
-          }),
-          ControlledWidgetBuilder<MoreController>(
-              builder: (context, controller) {
-            return ListTile(
-              leading: Image.asset(UIConstants.customerIconPath, width: 24),
-              title: Text(AppLocalizations.of(context).customers_title),
-              subtitle:
-                  Text(AppLocalizations.of(context).customers_description),
-              onTap: () => controller.openCustomersPage(),
-            );
-          }),
-          ControlledWidgetBuilder<MoreController>(
-              builder: (context, controller) {
-            return ListTile(
               leading: Image.asset(UIConstants.settingsIconPath, width: 24),
               title:
                   Text(AppLocalizations.of(context).menu_item_settings_title),
@@ -74,7 +54,7 @@ class MorePageView extends ViewState<MorePage, MoreController> {
                   AppLocalizations.of(context).menu_item_invite_friend_header),
               subtitle: Text(AppLocalizations.of(context)
                   .menu_item_invite_friend_description),
-              onTap: () => controller.onInviteFriend(),
+              onTap: controller.onInviteFriend,
             );
           }),
           ListTile(
@@ -92,16 +72,20 @@ class MorePageView extends ViewState<MorePage, MoreController> {
                   Text(AppLocalizations.of(context).menu_item_feedback_header),
               subtitle: Text(
                   AppLocalizations.of(context).menu_item_feedback_description),
-              onTap: () => controller.onFeedback(),
+              onTap: controller.onSelectMessageType,
             );
           }),
-          ListTile(
-            leading: Image.asset(UIConstants.communityIconPath, width: 24),
-            title:
-                Text(AppLocalizations.of(context).menu_item_community_header),
-            subtitle: Text(
-                AppLocalizations.of(context).menu_item_community_description),
-          ),
+          ControlledWidgetBuilder<MoreController>(
+              builder: (context, controller) {
+            return ListTile(
+              leading: Image.asset(UIConstants.communityIconPath, width: 24),
+              title:
+                  Text(AppLocalizations.of(context).menu_item_community_header),
+              subtitle: Text(
+                  AppLocalizations.of(context).menu_item_community_description),
+              onTap: () => controller.launchSocial('fb://profile/112596241092855', 'https://www.facebook.com/AppViet-Qu%E1%BA%A3n-l%C3%BD-kho-112596241092855'),
+            );
+          }),
           ControlledWidgetBuilder<MoreController>(
               builder: (context, controller) {
             return ListTile(

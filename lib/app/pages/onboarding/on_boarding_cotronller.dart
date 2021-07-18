@@ -18,11 +18,9 @@ class OnBoardingController extends Controller {
 
   @override
   void initListeners() {
-    presenter.insertStoreOnNext = (id) async {
+    presenter.insertStoreOnNext = (storeId) async {
       presenter.setFirstTime(false);
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      sharedPreferences.setInt(keySelectedStoreId, id);
+      presenter.setSelectedStoreId(storeId);
       Navigator.of(getContext()).pushReplacementNamed(Pages.main);
     };
     presenter.insertStoreOnError = (e) {

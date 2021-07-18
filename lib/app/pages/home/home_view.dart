@@ -154,7 +154,7 @@ class HomePageView extends ViewState<HomePage, HomeController> {
   Widget get storeView =>
       ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
         return GestureDetector(
-            onTap: controller.openSelectStore,
+            onTap: controller.openStores,
             child: Container(
                 height: 40,
                 color: UIConstants.primaryDarkColor,

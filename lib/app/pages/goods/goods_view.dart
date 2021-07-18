@@ -167,30 +167,30 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
                       child: getBody(),
                       inAsyncCall: controller.isLoading,
                       opacity: 0);
-          }),
-          floatingActionButton: ControlledWidgetBuilder<GoodsController>(
-              builder: (context, controller) {
-            return SpeedDial(
-              icon: Icons.add,
-              activeIcon: Icons.close,
-              buttonSize: 56.0,
-              visible: true,
-              closeManually: false,
-              renderOverlay: false,
-              curve: Curves.bounceIn,
-              overlayColor: Colors.black,
-              overlayOpacity: 0.5,
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              elevation: 8.0,
-              shape: CircleBorder(),
-              children: [
-                SpeedDialChild(
-                    child: Icon(
-                      Icons.folder,
-                      color: Colors.grey,
-                    ),
-                    backgroundColor: Colors.white,
+                }),
+                floatingActionButton: ControlledWidgetBuilder<GoodsController>(
+                    builder: (context, controller) {
+                  return SpeedDial(
+                    icon: Icons.add,
+                    activeIcon: Icons.close,
+                    buttonSize: 56.0,
+                    visible: true,
+                    closeManually: false,
+                    renderOverlay: false,
+                    curve: Curves.bounceIn,
+                    overlayColor: Colors.black,
+                    overlayOpacity: 0.5,
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    elevation: 8.0,
+                    shape: CircleBorder(),
+                    children: [
+                      SpeedDialChild(
+                          child: Icon(
+                            Icons.folder,
+                            color: Colors.grey,
+                          ),
+                          backgroundColor: Colors.white,
                           label: 'Nhóm',
                           onTap: controller.onAddGroup),
                       SpeedDialChild(
@@ -237,15 +237,19 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
         );
       });
 
-  Widget get helpMenu => Padding(
-        padding: EdgeInsets.only(right: 20.0),
-        child: GestureDetector(
-          child: Icon(
-            UIConstants.helpMenuIconData,
-            size: 26,
+  Widget get helpMenu =>
+      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
+        return Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            onTap: controller.openHelpPage,
+            child: Icon(
+              UIConstants.helpMenuIconData,
+              size: 26,
+            ),
           ),
-        ),
-      );
+        );
+      });
 
   Widget get searchBar =>
       ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
@@ -270,8 +274,7 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
             ),
           )),
           PopupMenuButton<SearchGoodsType>(
-            itemBuilder: (BuildContext a) =>
-            <PopupMenuEntry<SearchGoodsType>>[
+            itemBuilder: (BuildContext a) => <PopupMenuEntry<SearchGoodsType>>[
               PopupMenuItem<SearchGoodsType>(
                   value: SearchGoodsType.byName,
                   child: Text(

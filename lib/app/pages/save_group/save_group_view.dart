@@ -60,6 +60,11 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
           builder: (context, controller) {
         return TextFormField(
             controller: controller.nameTextController,
+            onChanged: (a) => controller.validate({
+              'context': context,
+              'formKey': _formKey,
+              'globalKey': globalKey
+            }),
             decoration: InputDecoration(
                 labelText: AppLocalizations.of(context).field_name),
             validator: (String value) {
@@ -86,6 +91,7 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
           children: [
             Expanded(
                 child: TextFormField(
+        keyboardType: TextInputType.number,
               decoration: InputDecoration(
                   labelText: AppLocalizations.of(context).field_bar_code),
               controller: controller.barCodeTextController,

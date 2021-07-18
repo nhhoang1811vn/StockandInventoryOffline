@@ -21,6 +21,7 @@ import 'package:good_manager/domain/entities/sort_by_text.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:sprintf/sprintf.dart';
 
+import '../help_content.dart';
 import '../pages.dart';
 
 class GoodsController extends Controller {
@@ -155,6 +156,12 @@ class GoodsController extends Controller {
     presenter.updateGoodOnError = (e) {
       showErrorToast(e.toString());
     };
+    presenter.updateGroupOnComplete = () {
+      loadData();
+    };
+    presenter.updateGroupOnError = (e) {
+      showErrorToast(e.toString());
+    };
   }
 
   @override
@@ -191,9 +198,12 @@ class GoodsController extends Controller {
     }
   }
 
-  void openHelpPage() {
-    Navigator.of(getContext()).pushNamed(Pages.help,
-        arguments: {"title": "Stores", "content": "Help of store content"});
+  void openHelpPage() async {
+    String code = await appDataManager.sharedPrefsHelper.getLanguageCode();
+    Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
+      "title": AppLocalizations.of(getContext()).goods_title,
+      "content": HelpUtils.getMarkdownData(code, HelpType.GOODS)
+    });
   }
 
   int getSelectedGroupId() {
@@ -230,7 +240,7 @@ class GoodsController extends Controller {
                 padding: EdgeInsets.all(16.0),
                 onPressed: () {
                   Navigator.pop(getContext());
-                  //showDeleteDocumentConfirm(item);
+                  onMoveGroupToGroup(group);
                 },
                 child: Text(
                     AppLocalizations.of(getContext()).action_move_to_group),
@@ -240,7 +250,6 @@ class GoodsController extends Controller {
                 onPressed: () {
                   Navigator.pop(getContext());
                   onEditGroup(group);
-                  //showDeleteDocumentConfirm(item);
                 },
                 child:
                     Text(AppLocalizations.of(getContext()).action_edit_group),
@@ -249,7 +258,7 @@ class GoodsController extends Controller {
                 padding: EdgeInsets.all(16.0),
                 onPressed: () {
                   Navigator.pop(getContext());
-                  //showDeleteDocumentConfirm(item);
+                  showInfoToast("under development");
                 },
                 child:
                     Text(AppLocalizations.of(getContext()).action_delete_group),
@@ -329,7 +338,7 @@ class GoodsController extends Controller {
                 padding: EdgeInsets.all(16.0),
                 onPressed: () {
                   Navigator.pop(getContext());
-                  openSelectGroup(good);
+                  onMoveGoodToGroup(good);
                   //showDeleteDocumentConfirm(item);
                 },
                 child: Text(
@@ -349,7 +358,7 @@ class GoodsController extends Controller {
         barrierDismissible: true);
   }
 
-  void openSelectGroup(Good good) async {
+  void onMoveGoodToGroup(Good good) async {
     int groupId = getSelectedGroupId();
     final newGroupId = await Navigator.of(getContext())
         .pushNamed(Pages.select_group, arguments: {"groupId": groupId});
@@ -357,7 +366,19 @@ class GoodsController extends Controller {
       //result is new group id
       if (good.groupId != newGroupId) {
         good.groupId = newGroupId;
-        presenter.update(good);
+        presenter.updateGood(good);
+      }
+    }
+  }
+  void onMoveGroupToGroup(Group group) async {
+    int groupId = getSelectedGroupId();
+    final newGroupId = await Navigator.of(getContext())
+        .pushNamed(Pages.select_group, arguments: {"groupId": groupId});
+    if (newGroupId != null) {
+      //result is new group id
+      if (group.groupId != newGroupId) {
+        group.groupId = newGroupId;
+        presenter.updateGroup(group);
       }
     }
   }

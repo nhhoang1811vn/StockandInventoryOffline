@@ -11,14 +11,8 @@ import '../help_content.dart';
 
 class StoresController
     extends BaseListController<Store, StoresSettings, StoresPresenter> {
-  StoresController(repository) : super(StoresPresenter(repository));
-
-  void onOpenHelpPage() {
-    Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
-      "title": AppLocalizations.of(getContext()).stores_title,
-      "content": HelpUtils.getMarkdownDataStore()
-    });
-  }
+  final bool isSelection;
+  StoresController(repository, this.isSelection) : super(StoresPresenter(repository));
 
   @override
   bool filterItem(Store item, String textSearch) {
@@ -33,5 +27,23 @@ class StoresController
   @override
   String getSaveItemRouteName() {
     return Pages.save_store;
+  }
+
+  @override
+  HelpType getHelpType() {
+    return HelpType.STORE;
+  }
+
+  @override
+  String getTitle() {
+    return AppLocalizations.of(getContext()).stores_title;
+  }
+  @override
+  void onItemPressed(Store item) {
+    if (this.isSelection){
+      Navigator.of(getContext()).pop(item);
+    }else{
+      super.onItemPressed(item);
+    }
   }
 }

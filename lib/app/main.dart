@@ -1,7 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/localization/localization_constants.dart';
 import 'package:good_manager/app/pages/main_page.dart';
 import 'package:good_manager/app/pages/onboarding/on_boarding_view.dart';
 import 'package:good_manager/app/utils/router.dart';
@@ -17,9 +16,9 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  static void setLocale(BuildContext context, Locale locale) {
+  static void setLocale(BuildContext context, String code) {
     MyAppState state = context.findAncestorStateOfType<MyAppState>();
-    state.setLocale(locale);
+    state.setLanguageCode(code);
   }
 
   @override
@@ -29,7 +28,7 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  Locale _locale;
+  String _languageCode;
   final AppRouter _router;
   bool firstTime = false;
 
@@ -41,25 +40,36 @@ class MyAppState extends State<MyApp> {
             }));
   }
 
-  void setLocale(Locale locale) {
+  void setLanguageCode(String code) {
     setState(() {
-      _locale = locale;
+      _languageCode = code;
     });
   }
 
   @override
   void didChangeDependencies() {
-    getLocale().then((locale) {
+    appDataManager.sharedPrefsHelper.getLanguageCode().then((code) {
       setState(() {
-        _locale = locale;
+        _languageCode = code;
       });
     });
     super.didChangeDependencies();
   }
+  Locale locale(String languageCode) {
+    Locale _temp;
+    switch (languageCode) {
+      case "vi":
+        _temp = Locale("vi", "VN");
+        break;
+      default:
+        _temp = Locale("en", "US");
+    }
+    return _temp;
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (_locale == null || firstTime == null) {
+    if (_languageCode == null || firstTime == null) {
       return Container(
         child: Center(
           child: CircularProgressIndicator(),
@@ -73,7 +83,7 @@ class MyAppState extends State<MyApp> {
         home: firstTime ? OnBoardingPage() : MainPage(),
         onGenerateRoute: _router.getRoute,
         navigatorObservers: [_router.routeObserver],
-        locale: _locale,
+        locale: locale(_languageCode),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       );

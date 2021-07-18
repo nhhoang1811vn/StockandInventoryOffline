@@ -325,6 +325,7 @@ class DBHelper {
     return value == null ? 0 : value;
   }
 
+
   Future<Good> findGood(int id) async {
     var dbClient = await db;
     var list = await dbClient
@@ -350,7 +351,22 @@ class DBHelper {
         where: "id = ?", whereArgs: <int>[item.id]);
     return res > 0;
   }
-
+  Future<List<Good>> getGoods() async {
+    var dbClient = await db;
+    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    List<Map> list = await dbClient.rawQuery(
+        'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ?',
+        [storeId]);
+    List<Good> goods = new List();
+    for (int i = 0; i < list.length; i++) {
+      var good = Good.map(list[i]);
+      int incomingQuantity = await getSumQuantityByGoodId(DocumentType.incoming, good.id);
+      int outgoingQuantity = await getSumQuantityByGoodId(DocumentType.outgoing, good.id);
+      good.quantity = incomingQuantity - outgoingQuantity;
+      goods.add(good);
+    }
+    return goods;
+  }
   Future<List<Good>> getGoodsByGroupId(int groupId) async {
     var dbClient = await db;
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
@@ -360,8 +376,8 @@ class DBHelper {
     List<Good> goods = new List();
     for (int i = 0; i < list.length; i++) {
       var good = Good.map(list[i]);
-      int incomingQuantity = await getQuantity(good.id, DocumentType.incoming);
-      int outgoingQuantity = await getQuantity(good.id, DocumentType.outgoing);
+      int incomingQuantity = await getSumQuantityByGoodId(DocumentType.incoming, good.id);
+      int outgoingQuantity = await getSumQuantityByGoodId(DocumentType.outgoing, good.id);
       good.quantity = incomingQuantity - outgoingQuantity;
       goods.add(good);
     }
@@ -376,28 +392,6 @@ class DBHelper {
   }
 
   //DOCUMENT
-  Future<int> insertDocument(Document item) async {
-    var dbClient = await db;
-    item.createdDate = DateTime.now();
-    item.updatedDate = DateTime.now();
-    int res = await dbClient.insert(DOCUMENTS_TABLE_NAME, item.toMap());
-    return res;
-  }
-
-  Future<bool> updateDocument(Document item) async {
-    var dbClient = await db;
-    item.updatedDate = DateTime.now();
-    int res = await dbClient.update(DOCUMENTS_TABLE_NAME, item.toMap(),
-        where: "id = ?", whereArgs: <int>[item.id]);
-    return res > 0;
-  }
-
-  Future<bool> deleteDocument(int id) async {
-    var dbClient = await db;
-    int res = await dbClient
-        .rawDelete('DELETE FROM $DOCUMENTS_TABLE_NAME WHERE id = ?', [id]);
-    return res > 0;
-  }
 
   Future<void> deleteTransactionByDocumentId(int documentId) async {
     var dbClient = await db;
@@ -505,21 +499,21 @@ class DBHelper {
     return res == 1;
   }
 
-  Future<int> getQuantity(int goodId, DocumentType type) async {
-    var dbClient = await db;
-    var result = await dbClient.rawQuery(
-        'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE goodId = ? AND documentType = ?',
-        [goodId, type.index]);
-    int value = result[0]["SUM(quantity)"];
-    return value == null ? 0 : value;
-  }
-
   Future<int> getSumQuantity(DocumentType type) async {
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     var result = await dbClient.rawQuery(
         'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE storeId = ? AND documentType = ?',
         [storeId, type.index]);
+    int value = result[0]["SUM(quantity)"];
+    return value == null ? 0 : value;
+  }
+  Future<int> getSumQuantityByGoodId(DocumentType type, int goodId) async {
+    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    var dbClient = await db;
+    var result = await dbClient.rawQuery(
+        'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE storeId = ? AND goodId = ? AND documentType = ?',
+        [storeId,goodId, type.index]);
     int value = result[0]["SUM(quantity)"];
     return value == null ? 0 : value;
   }
@@ -570,5 +564,118 @@ class DBHelper {
     int res = await dbClient.update(EXPENSES_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id]);
     return res == 1;
+  }
+
+  Future<int> insertDocument(Document document, List<DocumentTransaction> transactions) async{
+    var storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    var dbClient = await db;
+    return dbClient.transaction((txn) async{
+      //insert document
+      document.createdDate = DateTime.now();
+      document.updatedDate = DateTime.now();
+      int documentId = await txn.insert(DOCUMENTS_TABLE_NAME, document.toMap());
+      //insert transaction
+      for (var transaction in transactions){
+        transaction.documentId = documentId;
+        transaction.storeId = storeId;
+        await txn.insert(DOCUMENT_TRANSACTIONS_TABLE_NAME, transaction.toMap());
+      }
+      //check valid
+      List<Map> list = await txn.rawQuery(
+          'SELECT id, name FROM $GOODS_TABLE_NAME WHERE storeId = ?',
+          [storeId]);
+      for (int i = 0; i < list.length; i++) {
+        var goodId = list[i]["id"];
+        var goodName = list[i]["name"];
+        var result1 = await txn.rawQuery(
+            'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE storeId = ? AND goodId = ? AND documentType = ?',
+            [storeId,goodId, DocumentType.incoming.index]);
+        var result2 = await txn.rawQuery(
+            'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE storeId = ? AND goodId = ? AND documentType = ?',
+            [storeId,goodId, DocumentType.outgoing.index]);
+        int incomingQuantity = result1[0]["SUM(quantity)"] == null ? 0 : result1[0]["SUM(quantity)"];
+        int outgoingQuantity = result2[0]["SUM(quantity)"] == null ? 0 : result2[0]["SUM(quantity)"];
+        int quantity = incomingQuantity - outgoingQuantity;
+        if (quantity < 0){
+          throw Exception("error quantity, $goodName");
+        }
+      }
+      return documentId;
+    });
+  }
+  //udpate document
+  Future<bool> updateDocument(Document document, List<DocumentTransaction> transactions) async{
+    var storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    var dbClient = await db;
+    return dbClient.transaction((txn) async{
+      //update document
+      document.updatedDate = DateTime.now();
+      int res = await txn.update(DOCUMENTS_TABLE_NAME, document.toMap(),
+          where: "id = ?", whereArgs: <int>[document.id]);
+      //delete transaction
+      await txn.rawDelete(
+          'DELETE FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE documentId =?',
+          [document.id]);
+      //insert transaction
+      for (var transaction in transactions){
+        transaction.documentId = document.id;
+        transaction.storeId = storeId;
+        await txn.insert(DOCUMENT_TRANSACTIONS_TABLE_NAME, transaction.toMap());
+      }
+      //check valid
+      List<Map> list = await txn.rawQuery(
+          'SELECT id, name FROM $GOODS_TABLE_NAME WHERE storeId = ?',
+          [storeId]);
+      for (int i = 0; i < list.length; i++) {
+        var goodId = list[i]["id"];
+        var goodName = list[i]["name"];
+        var result1 = await txn.rawQuery(
+            'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE storeId = ? AND goodId = ? AND documentType = ?',
+            [storeId,goodId, DocumentType.incoming.index]);
+        var result2 = await txn.rawQuery(
+            'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE storeId = ? AND goodId = ? AND documentType = ?',
+            [storeId,goodId, DocumentType.outgoing.index]);
+        int incomingQuantity = result1[0]["SUM(quantity)"] == null ? 0 : result1[0]["SUM(quantity)"];
+        int outgoingQuantity = result2[0]["SUM(quantity)"] == null ? 0 : result2[0]["SUM(quantity)"];
+        int quantity = incomingQuantity - outgoingQuantity;
+        if (quantity < 0){
+          throw Exception("error quantity, $goodName");
+        }
+      }
+      return res > 0;
+    });
+  }
+  Future<bool> deleteDocument(int id) async{
+    var storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    var dbClient = await db;
+    return dbClient.transaction((txn) async{
+      //delete transactions
+      await txn.rawDelete(
+          'DELETE FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE documentId =?',
+          [id]);
+      //delete document
+      int res = await txn.rawDelete('DELETE FROM $DOCUMENTS_TABLE_NAME WHERE id =?',[id]);
+      //check valid
+      List<Map> list = await txn.rawQuery(
+          'SELECT id, name FROM $GOODS_TABLE_NAME WHERE storeId = ?',
+          [storeId]);
+      for (int i = 0; i < list.length; i++) {
+        var goodId = list[i]["id"];
+        var goodName = list[i]["name"];
+        var result1 = await txn.rawQuery(
+            'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE storeId = ? AND goodId = ? AND documentType = ?',
+            [storeId,goodId, DocumentType.incoming.index]);
+        var result2 = await txn.rawQuery(
+            'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE storeId = ? AND goodId = ? AND documentType = ?',
+            [storeId,goodId, DocumentType.outgoing.index]);
+        int incomingQuantity = result1[0]["SUM(quantity)"] == null ? 0 : result1[0]["SUM(quantity)"];
+        int outgoingQuantity = result2[0]["SUM(quantity)"] == null ? 0 : result2[0]["SUM(quantity)"];
+        int quantity = incomingQuantity - outgoingQuantity;
+        if (quantity < 0){
+          throw Exception("error quantity, $goodName");
+        }
+      }
+      return res > 0;
+    });
   }
 }

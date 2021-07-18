@@ -69,11 +69,16 @@ class _SaveSupplierPageView
           builder: (context, controller) {
         return TextFormField(
             controller: controller.nameTextController,
+            onChanged: (a) => controller.validate({
+              'context': context,
+              'formKey': _formKey,
+              'globalKey': globalKey
+            }),
             decoration: InputDecoration(
                 labelText: AppLocalizations.of(context).field_name),
             validator: (String value) {
               if (value.trim().isEmpty) {
-                return "error";
+                return AppLocalizations.of(context).message_name_blank;
               } else {
                 return null;
               }

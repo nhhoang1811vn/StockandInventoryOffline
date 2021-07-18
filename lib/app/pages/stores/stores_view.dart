@@ -6,21 +6,24 @@ import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_store_repository.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-
 class StoresPage extends View {
-  StoresPage({Key key}) : super(key: key);
+  final bool isSelection;
+
+  StoresPage({
+    Key key,
+    @required this.isSelection,
+  });
 
   @override
-  _StoresPageView createState() => _StoresPageView();
+  _StoresPageView createState() => _StoresPageView(isSelection);
 }
 
 class _StoresPageView extends ViewState<StoresPage, StoresController> {
-  _StoresPageView() : super(StoresController(DataStoreRepository()));
+  _StoresPageView(isSelection) : super(StoresController(DataStoreRepository(),isSelection));
 
   @override
-  Widget get view =>
-      Scaffold(
-          key: globalKey,
+  Widget get view => Scaffold(
+      key: globalKey,
       appBar: appBar,
       body: ControlledWidgetBuilder<StoresController>(
           builder: (context, controller) {
@@ -36,7 +39,7 @@ class _StoresPageView extends ViewState<StoresPage, StoresController> {
       }));
 
   Widget get appBar => AppBar(
-      title: new Text(AppLocalizations.of(context).stores_title),
+      title: Text(widget.isSelection?AppLocalizations.of(context).stores_select_title:AppLocalizations.of(context).stores_title),
       actions: [searchMenu, sortMenu, helpMenu]);
 
   Widget getBody() {

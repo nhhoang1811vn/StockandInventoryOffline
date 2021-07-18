@@ -5,7 +5,6 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/goods/good_item_row.dart';
 import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/app/widgets/custom_action_row.dart';
 import 'package:good_manager/data/repositories/data_document_repository.dart';
 import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
 import 'package:good_manager/domain/entities/document.dart';
@@ -93,42 +92,21 @@ class SaveDocumentPageView
             return Text(controller.getTitleText());
           }),
           actions: <Widget>[
-            ControlledWidgetBuilder<SaveDocumentController>(
-                builder: (context, controller) {
-              return CustomActionsRow(
-                  availableWidth: MediaQuery.of(context).size.width /
-                      2, // half the screen width
-                  actionWidth: 48, // default for IconButtons
-                  actions: [
-                    CustomAction(
-                      visibleWidget: IconButton(
-                        onPressed: () => controller.onSaveDocumentTapped({
-                          'context': context,
-                          'formKey': _formKey,
-                          'globalKey': globalKey
-                        }),
-                        icon: Icon(Icons.check),
-                      ),
-                      showAsAction: ShowAsAction.ALWAYS,
-                    ),
-                    CustomAction(
-                      overflowWidget: GestureDetector(
-                        onTap: () {},
-                        child: const Text("Sắp xếp"),
-                      ),
-                      showAsAction: ShowAsAction.NEVER,
-                    ),
-                    CustomAction(
-                      overflowWidget: GestureDetector(
-                        onTap: () {},
-                        child: const Text("Trợ giúp"),
-                      ),
-                      showAsAction: ShowAsAction.NEVER,
-                    ),
-                  ]);
-            })
+           save
           ]);
-
+  Widget get save => ControlledWidgetBuilder<SaveDocumentController>(
+      builder: (context, controller) {
+        return Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+              onTap: () => controller.onSaveDocumentTapped({
+                'context': context,
+                'formKey': _formKey,
+                'globalKey': globalKey
+              }),
+              child: Icon(Icons.check, size: 26)),
+        );
+      });
   Widget get name => ControlledWidgetBuilder<SaveDocumentController>(
           builder: (context, controller) {
         return TextFormField(
@@ -152,7 +130,7 @@ class SaveDocumentPageView
           dateMask: 'dd/MM/yyyy',
           firstDate: DateTime(2000),
           lastDate: DateTime(2100),
-          dateLabelText: AppLocalizations.of(context).field_created,
+          dateLabelText: AppLocalizations.of(context).field_date,
         );
       });
 
@@ -207,7 +185,7 @@ class SaveDocumentPageView
                     )),
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text('No transactions', textAlign: TextAlign.center))
+                    child: Text(AppLocalizations.of(context).empty_goods, textAlign: TextAlign.center))
               ]),
           visible: controller.transactions.isEmpty,
         );

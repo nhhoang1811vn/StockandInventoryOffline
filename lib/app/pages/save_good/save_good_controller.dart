@@ -84,8 +84,7 @@ class SaveGoodController extends Controller {
   }
 
   void checkForm(Map<String, dynamic> params) {
-    dynamic formKey = params['formKey'];
-    if (formKey.currentState.validate()) {
+    if (validate(params)) {
       updateItem();
       if (_item.id == null) {
         presenter.insert(_item);
@@ -94,6 +93,11 @@ class SaveGoodController extends Controller {
       }
     }
   }
+  bool validate(Map<String, dynamic> params){
+    dynamic formKey = params['formKey'];
+    return formKey.currentState.validate();
+  }
+
 
   void updateItem() {
     _item.avatar = avatar;
@@ -108,7 +112,9 @@ class SaveGoodController extends Controller {
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           "#ff6666", "Cancel", true, ScanMode.BARCODE);
-      barCodeTextController.text = barcodeScanRes;
+      if (barcodeScanRes != "-1"){
+        barCodeTextController.text = barcodeScanRes;
+      }
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
@@ -143,7 +149,6 @@ class SaveGoodController extends Controller {
 
     if (result != null) {
       avatar = result.paths[0];
-      files.addAll(result.paths);
       refreshUI();
     }
   }

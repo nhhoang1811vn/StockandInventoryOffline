@@ -7,20 +7,18 @@ import 'package:good_manager/domain/repositories/transaction_repositories.dart';
 class DeleteDocumentUseCase
     extends CompletableUseCase<DeleteDocumentUseCaseParams> {
   final DocumentRepository _documentRepository;
-  final DocumentTransactionRepository _transactionRepository;
 
-  DeleteDocumentUseCase(this._documentRepository, this._transactionRepository);
+  DeleteDocumentUseCase(this._documentRepository);
 
   @override
   Future<Stream<void>> buildUseCaseStream(
       DeleteDocumentUseCaseParams params) async {
     final StreamController<void> controller = StreamController();
     try {
-      await _transactionRepository.deleteByDocumentId(params.id);
-      await _documentRepository.delete(params.id);
+      await _documentRepository.deleteDocument(params.id);
       controller.close();
     } catch (e) {
-      controller.addError(e);
+      controller.addError(e.message);
     }
     return controller.stream;
   }

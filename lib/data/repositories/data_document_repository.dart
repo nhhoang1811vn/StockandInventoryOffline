@@ -5,6 +5,7 @@ import 'package:good_manager/domain/entities/documents_settings.dart';
 import 'package:good_manager/domain/entities/search_documents_type.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
+import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/domain/repositories/document_repositories.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,17 +27,17 @@ class DataDocumentRepository implements DocumentRepository {
 
   @override
   Future<bool> delete(int id) {
-    return db.deleteDocument(id);
+    throw UnimplementedError();
   }
-
+  
   @override
   Future<int> insert(Document item) {
-    return db.insertDocument(item);
+    throw UnimplementedError();
   }
 
   @override
   Future<bool> update(Document item) {
-    return db.updateDocument(item);
+    throw UnimplementedError();
   }
 
   @override
@@ -81,7 +82,19 @@ class DataDocumentRepository implements DocumentRepository {
 
   @override
   Future<Document> get(int id) {
-    // TODO: implement get
     throw UnimplementedError();
+  }
+
+  @override
+  Future<int> insertDocument(Document document, List<DocumentTransaction> transactions) {
+    return db.insertDocument(document, transactions);
+  }
+  @override
+  Future<bool> updateDocument(Document document, List<DocumentTransaction> transactions) {
+    return db.updateDocument(document, transactions);
+  }
+  @override
+  Future<bool> deleteDocument(int id) {
+    return db.deleteDocument(id);
   }
 }

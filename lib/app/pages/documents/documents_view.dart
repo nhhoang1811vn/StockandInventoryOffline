@@ -20,7 +20,7 @@ class DocumentsPage extends View {
 class DocumentPageView extends ViewState<DocumentsPage, DocumentsController> {
   DocumentPageView()
       : super(DocumentsController(
-            DataDocumentRepository(), DataDocumentTransactionRepository()));
+            DataDocumentRepository()));
   bool showSearchView = false;
 
   Widget get allDocumentView => ControlledWidgetBuilder<DocumentsController>(

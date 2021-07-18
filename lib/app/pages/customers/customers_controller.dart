@@ -112,15 +112,18 @@ class CustomersController extends BaseListController<Customer,
         });
   }
 
-  void onOpenHelpPage() {
-    Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
-      "title": "Nhà cung cấp",
-      "content": HelpUtils.getMarkdownDataSupplierCustomer()
-    });
-  }
-
   @override
   bool filterItem(Customer item, String textSearch) {
     return item.name.contains(textSearch);
+  }
+
+  @override
+  HelpType getHelpType() {
+    return HelpType.SUPPLIER_AND_CUSTOMER;
+  }
+
+  @override
+  String getTitle() {
+    return AppLocalizations.of(getContext()).customers_title;
   }
 }

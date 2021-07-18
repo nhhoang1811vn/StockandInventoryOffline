@@ -11,6 +11,8 @@ import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/extension/date_time_apis.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sprintf/sprintf.dart';
 
 class SaveDocumentController extends Controller {
   // Text field controller
@@ -73,14 +75,24 @@ class SaveDocumentController extends Controller {
       Navigator.of(getContext()).pop(_item);
     };
     presenter.insertDocumentOnError = (e) {
-      showErrorToast(e.toString());
+      if (e.toString().startsWith("error quantity")){
+        var goodName = e.toString().split(",")[1];
+        showErrorToast(sprintf(AppLocalizations.of(getContext()).message_error_negative_quantity_save_document, [goodName]));
+      }else{
+        showErrorToast(e.toString());
+      }
     };
 
     presenter.updateDocumentOnComplete = () async {
       Navigator.of(getContext()).pop(_item);
     };
     presenter.updateDocumentOnError = (e) {
-      showErrorToast(e.toString());
+      if (e.toString().startsWith("error quantity")){
+        var goodName = e.toString().split(",")[1];
+        showErrorToast(sprintf(AppLocalizations.of(getContext()).message_error_negative_quantity_save_document, [goodName]));
+      }else{
+        showErrorToast(e.toString());
+      }
     };
 
     presenter.getTransactionsByDocumentIdOnNext = (transactions) {

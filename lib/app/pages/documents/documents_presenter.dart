@@ -31,11 +31,9 @@ class DocumentsPresenter extends Presenter {
   BaseGetSettingsUseCase<DocumentSettings> getSettingsUseCase;
   BaseSetSettingsUseCase<DocumentSettings> setSettingsUseCase;
 
-  DocumentsPresenter(documentRepository, transactionRepository) {
+  DocumentsPresenter(documentRepository) {
     getItemsUseCase = BaseGetItemsUseCase(documentRepository);
-    deleteDocumentUseCase =
-        DeleteDocumentUseCase(documentRepository, transactionRepository);
-
+    deleteDocumentUseCase = DeleteDocumentUseCase(documentRepository);
     getSettingsUseCase = BaseGetSettingsUseCase(documentRepository);
     setSettingsUseCase = BaseSetSettingsUseCase(documentRepository);
   }

@@ -11,4 +11,5 @@ abstract class DocumentTransactionRepository
   Future<List<DocumentTransaction>> getTransactions(int documentId);
 
   Future<int> getSumQuantity();
+  Future<int> getSumQuantityByGoodId(int goodId);
 }

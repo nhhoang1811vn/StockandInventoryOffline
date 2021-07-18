@@ -50,7 +50,7 @@ class DocumentItemRow extends StatelessWidget {
         case DocumentType.outgoing:
           return "${AppLocalizations.of(context).document_list_outgoing_name} $name";
         default:
-          return "${AppLocalizations.of(context).document_list_stock_taking_name} $name";
+          return "";
       }
     } else {
       return name;

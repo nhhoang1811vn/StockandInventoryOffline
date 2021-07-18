@@ -37,9 +37,7 @@ abstract class BaseSaveItemController<M extends BaseModel,
   }
 
   void checkForm(Map<String, dynamic> params) {
-    dynamic formKey = params['formKey'];
-    assert(formKey is GlobalKey<FormState>);
-    if (formKey.currentState.validate()) {
+    if (validate(params)) {
       updateItem();
       if (_item.id == null) {
         _presenter.insert(_item);
@@ -47,6 +45,10 @@ abstract class BaseSaveItemController<M extends BaseModel,
         _presenter.update(_item);
       }
     }
+  }
+  bool validate(Map<String, dynamic> params){
+    dynamic formKey = params['formKey'];
+    return formKey.currentState.validate();
   }
 
   @override

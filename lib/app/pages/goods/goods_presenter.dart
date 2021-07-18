@@ -27,6 +27,9 @@ class GoodsPresenter extends Presenter {
   Function updateGoodOnComplete;
   Function updateGoodOnError;
 
+  Function updateGroupOnComplete;
+  Function updateGroupOnError;
+
   GetGroupsByGroupIdUseCase getGroupsByGroupIdUseCase;
   GetGoodsByGroupIdUseCase getGoodsByGroupIdUseCase;
   GetGoodsSettingsUseCase getGoodsSettingsUseCase;
@@ -35,6 +38,7 @@ class GoodsPresenter extends Presenter {
   DeleteGoodUseCase deleteGoodUseCase;
 
   BaseUpdateItemUseCase<Good> updateGoodUseCase;
+  BaseUpdateItemUseCase<Group> updateGroupUseCase;
 
   GoodsPresenter(groupRepository, goodRepository, transactionRepository) {
     getGroupsByGroupIdUseCase = GetGroupsByGroupIdUseCase(groupRepository);
@@ -47,6 +51,7 @@ class GoodsPresenter extends Presenter {
         DeleteGoodUseCase(goodRepository, transactionRepository);
 
     updateGoodUseCase = BaseUpdateItemUseCase(goodRepository);
+    updateGroupUseCase = BaseUpdateItemUseCase(groupRepository);
   }
 
   @override
@@ -55,6 +60,10 @@ class GoodsPresenter extends Presenter {
     getGoodsByGroupIdUseCase.dispose();
     getGoodsSettingsUseCase.dispose();
     setGoodsSettingsUseCase.dispose();
+
+    deleteGoodUseCase.dispose();
+    updateGoodUseCase.dispose();
+    updateGroupUseCase.dispose();
   }
 
   void getGroupsByGroupId(groupId) => getGroupsByGroupIdUseCase.execute(
@@ -74,8 +83,10 @@ class GoodsPresenter extends Presenter {
   void deleteGood(int id) => deleteGoodUseCase.execute(
       DeleteGoodUseCaseObserver(this), DeleteGoodUseCaseParam(id));
 
-  void update(Good good) => updateGoodUseCase.execute(
+  void updateGood(Good good) => updateGoodUseCase.execute(
       UpdateGoodUseCaseObserver(this), BaseUpdateItemUseCaseParam(good));
+  void updateGroup(Group group) => updateGroupUseCase.execute(
+      UpdateGroupUseCaseObserver(this), BaseUpdateItemUseCaseParam(group));
 }
 
 class _GetGroupsUseCaseObserver implements Observer<List<Group>>{
@@ -181,6 +192,25 @@ class UpdateGoodUseCaseObserver implements Observer<bool> {
   @override
   void onError(e) {
     _presenter.updateGoodOnError(e);
+  }
+
+  @override
+  void onNext(bool response) {}
+}
+
+class UpdateGroupUseCaseObserver implements Observer<bool> {
+  GoodsPresenter _presenter;
+
+  UpdateGroupUseCaseObserver(this._presenter);
+
+  @override
+  void onComplete() {
+    _presenter.updateGroupOnComplete();
+  }
+
+  @override
+  void onError(e) {
+    _presenter.updateGroupOnError(e);
   }
 
   @override

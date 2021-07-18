@@ -21,9 +21,9 @@ class SaveDocumentPresenter extends Presenter {
 
   SaveDocumentPresenter(_documentRepository, _transactionRepository) {
     insertDocumentUseCase =
-        InsertDocumentUseCase(_documentRepository, _transactionRepository);
+        InsertDocumentUseCase(_documentRepository);
     updateDocumentUseCase =
-        UpdateDocumentUseCase(_documentRepository, _transactionRepository);
+        UpdateDocumentUseCase(_documentRepository);
     getTransactionsByDocumentIdUseCase =
         GetTransactionsByDocumentIdUseCase(_transactionRepository);
   }

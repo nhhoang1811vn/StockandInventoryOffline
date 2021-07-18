@@ -43,7 +43,7 @@ class SortDocumentsDialogState extends State<SortDocumentsDialog> {
                 getSortByNameRadioListTile(SortByText.no_sort),
                 getSortByNameRadioListTile(SortByText.a_to_z),
                 getSortByNameRadioListTile(SortByText.z_to_a),
-                Text(AppLocalizations.of(context).field_created),
+                Text(AppLocalizations.of(context).field_date),
                 Divider(color: Colors.grey),
                 getSortByDateRadioListTile(SortByNumber.no_sort),
                 getSortByDateRadioListTile(SortByNumber.ascending),

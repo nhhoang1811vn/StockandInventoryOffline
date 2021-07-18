@@ -24,99 +24,134 @@ class _SaveExpensePageView
       : super(SaveExpenseController(DataExpenseRepository(), item));
 
   @override
-  Widget get view => Scaffold(
-      key: globalKey,
-      appBar: AppBar(
-          title: Text(AppLocalizations.of(context).save_expense_title),
-          actions: <Widget>[
-            ControlledWidgetBuilder<SaveExpenseController>(
-                builder: (context, controller) {
-              return Padding(
-                padding: EdgeInsets.only(right: 20.0),
-                child: GestureDetector(
-                    onTap: () => controller.checkForm({
-                          'context': context,
-                          'formKey': _formKey,
-                          'globalKey': globalKey
-                        }),
-                    child: Icon(Icons.check, size: 26)),
-              );
-            })
-          ]),
-      body: ListView(
-        children: <Widget>[
-          Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: UIConstants.screenSpace,
-                    vertical: UIConstants.screenSpace),
-                child: Column(
-                  children: <Widget>[
-                    name,
-                    description,
-                    Row(
-                      children: [
-                        Expanded(child: date),
-                        SizedBox(
-                          width: 15.0,
+  Widget get view =>
+      Scaffold(
+          key: globalKey,
+          appBar: AppBar(
+              title: Text(AppLocalizations
+                  .of(context)
+                  .save_expense_title),
+              actions: <Widget>[
+                save
+              ]),
+          body: ListView(
+            children: <Widget>[
+              Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: UIConstants.screenSpace,
+                        vertical: UIConstants.screenSpace),
+                    child: Column(
+                      children: <Widget>[
+                        name,
+                        description,
+                        Row(
+                          children: [
+                            Expanded(child: date),
+                            SizedBox(
+                              width: 15.0,
+                            ),
+                            Expanded(child: amount),
+                            calculatorButton
+
+                          ],
                         ),
-                        Expanded(child: amount),
-                        Image.asset(
-                          UIConstants.calculatorIconPath,
-                          width: 24,
-                        )
                       ],
                     ),
-                  ],
-                ),
-              ))
-        ],
-      ));
+                  ))
+            ],
+          ));
 
-  Widget get name => ControlledWidgetBuilder<SaveExpenseController>(
+  Widget get name =>
+      ControlledWidgetBuilder<SaveExpenseController>(
           builder: (context, controller) {
-        return TextFormField(
-            controller: controller.nameTextController,
-            decoration: InputDecoration(
-                labelText: AppLocalizations.of(context).field_name),
-            validator: (String value) {
-              if (value.trim().isEmpty) {
-                return "error";
-              } else {
-                return null;
-              }
-            });
-      });
+            return TextFormField(
+                controller: controller.nameTextController,
+                onChanged: (a) =>
+                    controller.validate({
+                      'context': context,
+                      'formKey': _formKey,
+                      'globalKey': globalKey
+                    }),
+                decoration: InputDecoration(labelText: AppLocalizations
+                    .of(context)
+                    .field_name),
+                validator: (String value) {
+                  if (value
+                      .trim()
+                      .isEmpty) {
+                    return AppLocalizations
+                        .of(context)
+                        .message_name_blank;
+                  } else {
+                    return null;
+                  }
+                });
+          });
 
-  Widget get description => ControlledWidgetBuilder<SaveExpenseController>(
+  Widget get description =>
+      ControlledWidgetBuilder<SaveExpenseController>(
           builder: (context, controller) {
-        return TextFormField(
-          controller: controller.descriptionTextController,
-          decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).field_desc),
-        );
-      });
+            return TextFormField(
+              controller: controller.descriptionTextController,
+              decoration: InputDecoration(
+                  labelText: AppLocalizations
+                      .of(context)
+                      .field_desc),
+            );
+          });
 
-  Widget get date => ControlledWidgetBuilder<SaveExpenseController>(
+  Widget get date =>
+      ControlledWidgetBuilder<SaveExpenseController>(
           builder: (context, controller) {
-        return DateTimePicker(
-          type: DateTimePickerType.date,
-          controller: controller.dateTextController,
-          dateMask: 'dd/MM/yyyy',
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2100),
-          dateLabelText: AppLocalizations.of(context).field_date,
-        );
-      });
+            return DateTimePicker(
+              type: DateTimePickerType.date,
+              controller: controller.dateTextController,
+              dateMask: 'dd/MM/yyyy',
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2100),
+              dateLabelText: AppLocalizations
+                  .of(context)
+                  .field_date,
+            );
+          });
 
-  Widget get amount => ControlledWidgetBuilder<SaveExpenseController>(
+  Widget get amount =>
+      ControlledWidgetBuilder<SaveExpenseController>(
           builder: (context, controller) {
-        return TextFormField(
-          keyboardType: TextInputType.number,
-          controller: controller.amountTextController,
-          decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).field_amount),
-        );
-      });
+            return TextFormField(
+              keyboardType: TextInputType.number,
+              controller: controller.amountTextController,
+              decoration: InputDecoration(
+                  labelText: AppLocalizations
+                      .of(context)
+                      .field_amount),
+            );
+          });
+
+  Widget get calculatorButton =>
+      ControlledWidgetBuilder<SaveExpenseController>(
+          builder: (context, controller) {
+            return IconButton(icon: Image.asset(
+            UIConstants.calculatorIconPath,
+            width: 24,
+            ), onPressed: controller.onOpenCalculator);
+          });
+
+  Widget get save =>
+      ControlledWidgetBuilder<SaveExpenseController>(
+          builder: (context, controller) {
+            return Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                  onTap: () =>
+                      controller.checkForm({
+                        'context': context,
+                        'formKey': _formKey,
+                        'globalKey': globalKey
+                      }),
+                  child: Icon(Icons.check, size: 26)),
+            );
+          });
 }

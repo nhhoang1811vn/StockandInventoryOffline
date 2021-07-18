@@ -5,6 +5,7 @@ import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/general_infomation.dart';
+import 'package:good_manager/domain/entities/store.dart';
 
 import '../pages.dart';
 
@@ -63,6 +64,9 @@ class HomeController extends Controller {
 
     var result = await Navigator.of(getContext())
         .pushNamed(Pages.save_document, arguments: {'item': item});
+    if (result != null){
+      loadData();
+    }
   }
 
   void openSaveOutgoingDocument() async {
@@ -72,15 +76,17 @@ class HomeController extends Controller {
 
     var result = await Navigator.of(getContext())
         .pushNamed(Pages.save_document, arguments: {'item': item});
+    if (result != null){
+      loadData();
+    }
   }
 
-  void openSelectStore() async {
-    int currentStoreId =
-        await appDataManager.sharedPrefsHelper.getSelectedStoreId();
-    final selectedStoreId = await Navigator.of(getContext())
-        .pushNamed(Pages.select_store, arguments: {"storeId": currentStoreId});
-    if (selectedStoreId != null && selectedStoreId != currentStoreId) {
-      appDataManager.sharedPrefsHelper.setSelectedStoreId(selectedStoreId);
+  void openStores() async {
+    final result = await Navigator.of(getContext())
+        .pushNamed(Pages.store_list, arguments: {'isSelection': true});
+    if (result != null){
+      Store store = result;
+      appDataManager.sharedPrefsHelper.setSelectedStoreId(store.id);
       loadData();
     }
   }

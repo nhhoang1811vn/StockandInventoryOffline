@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/sort_item_dialog.dart';
 import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/domain/entities/base_model.dart';
 import 'package:good_manager/domain/entities/base_settings.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
 
 import 'base/base_sort_items.dart';
 import 'base_list_presenter.dart';
+import 'help_content.dart';
 
 abstract class BaseListController<M extends BaseModel, S extends BaseSettings,
     P extends BaseListPresenter> extends Controller {
@@ -31,6 +34,9 @@ abstract class BaseListController<M extends BaseModel, S extends BaseSettings,
   P get presenter => _presenter;
 
   String getSaveItemRouteName();
+
+  String getTitle();
+  HelpType getHelpType();
 
   M getEmptyItem();
 
@@ -168,6 +174,13 @@ abstract class BaseListController<M extends BaseModel, S extends BaseSettings,
       allItems[index] = result;
       refreshItems();
     }
+  }
+  void onOpenHelpPage() async{
+    String languageCode = await appDataManager.sharedPrefsHelper.getLanguageCode();
+    Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
+      "title": getTitle(),
+      "content": HelpUtils.getMarkdownData(languageCode, getHelpType())
+    });
   }
 
   @override

@@ -1,11 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:good_manager/app/pages/base_list_controller.dart';
+import 'package:good_manager/app/pages/help_content.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/entities/expenses_settings.dart';
 
 import '../pages.dart';
 import 'expenses_presenter.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ExpensesController
     extends BaseListController<Expense, ExpensesSettings, ExpensesPresenter> {
   ExpensesController(repository) : super(ExpensesPresenter(repository));
@@ -25,8 +26,13 @@ class ExpensesController
     return Pages.save_expense;
   }
 
-  void onOpenHelpPage() {
-    Navigator.of(getContext()).pushNamed(Pages.help,
-        arguments: {"title": "Stores", "content": "Help of store content"});
+  @override
+  HelpType getHelpType() {
+    return HelpType.EXPENSE;
+  }
+
+  @override
+  String getTitle() {
+    return AppLocalizations.of(getContext()).expenses_title;
   }
 }

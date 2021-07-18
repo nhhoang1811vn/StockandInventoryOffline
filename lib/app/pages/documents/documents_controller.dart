@@ -16,6 +16,7 @@ import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
 import 'package:sprintf/sprintf.dart';
 
+import '../help_content.dart';
 import '../pages.dart';
 import 'add_document_dialog.dart';
 
@@ -34,9 +35,9 @@ class DocumentsController extends Controller {
 
   String get textSearch => _textSearch;
 
-  DocumentsController(documentRepository, transactionRepository)
+  DocumentsController(documentRepository)
       : presenter =
-            DocumentsPresenter(documentRepository, transactionRepository),
+            DocumentsPresenter(documentRepository),
         super() {
     searchTextController = TextEditingController();
     isLoading = true;
@@ -77,7 +78,12 @@ class DocumentsController extends Controller {
       refreshItems();
     };
     presenter.deleteDocumentOnError = (e) {
-      showErrorToast(e.toString());
+      if (e.toString().startsWith("error quantity")){
+        var goodName = e.toString().split(",")[1];
+        showErrorToast(sprintf(AppLocalizations.of(getContext()).message_error_negative_quantity_save_document, [goodName]));
+      }else{
+        showErrorToast(e.toString());
+      }
     };
     presenter.getDocumentSettingsOnNext = (settings) {
       _settings = settings;
@@ -321,7 +327,13 @@ class DocumentsController extends Controller {
     return false;
   }
 
-  void onOpenHelpPage() {}
+  void onOpenHelpPage() async{
+    String code = await appDataManager.sharedPrefsHelper.getLanguageCode();
+    Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
+      "title": AppLocalizations.of(getContext()).documents_title,
+      "content": HelpUtils.getMarkdownData(code, HelpType.DOCUMENTS)
+    });
+  }
 
   String getSearchTextHint() {
     switch (_settings.searchDocumentsType) {

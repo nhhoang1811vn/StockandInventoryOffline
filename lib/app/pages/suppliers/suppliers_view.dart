@@ -44,7 +44,7 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
   }
 
   Widget get appBar => AppBar(
-      title: new Text(AppLocalizations.of(context).suppliers_title),
+      title: new Text(widget.isSelection?AppLocalizations.of(context).suppliers_select_title:AppLocalizations.of(context).suppliers_title),
       actions: [searchMenu, sortMenu, helpMenu]);
 
   Widget getBody() {

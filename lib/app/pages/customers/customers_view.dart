@@ -45,7 +45,7 @@ class CustomersPageView extends ViewState<CustomersPage, CustomersController> {
   }
 
   Widget get appBar => AppBar(
-      title: new Text(AppLocalizations.of(context).customers_title),
+      title: new Text(widget.isSelection?AppLocalizations.of(context).customers_select_title:AppLocalizations.of(context).customers_title),
       actions: [searchMenu, sortMenu, helpMenu]);
 
   Widget getBody() {

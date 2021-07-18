@@ -114,7 +114,8 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
 
   Widget get avatar => ControlledWidgetBuilder<SaveGoodController>(
           builder: (context, controller) {
-        return Container(
+        return GestureDetector(
+        onTap: controller.onChangeAvatar,child: Container(
             width: 75,
             height: 75,
             alignment: Alignment.center,
@@ -122,13 +123,18 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
                 shape: BoxShape.circle,
                 image: DecorationImage(
                     image: FileImage(File(controller.avatar)),
-                    fit: BoxFit.fill)));
+                    fit: BoxFit.fill))));
       });
 
   Widget get name => ControlledWidgetBuilder<SaveGoodController>(
           builder: (context, controller) {
         return TextFormField(
             controller: controller.nameTextController,
+            onChanged: (a) => controller.validate({
+              'context': context,
+              'formKey': _formKey,
+              'globalKey': globalKey
+            }),
             decoration: InputDecoration(
                 labelText: AppLocalizations.of(context).field_name),
             validator: (String value) {
@@ -155,6 +161,7 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
           children: [
             Expanded(
                 child: TextFormField(
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                   labelText: AppLocalizations.of(context).field_bar_code),
               controller: controller.barCodeTextController,

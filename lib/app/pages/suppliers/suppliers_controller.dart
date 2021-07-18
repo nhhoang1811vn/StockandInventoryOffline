@@ -102,13 +102,6 @@ class SuppliersController
         });
   }
 
-  void onOpenHelpPage() {
-    Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
-      "title": "Nhà cung cấp",
-      "content": HelpUtils.getMarkdownDataSupplierCustomer()
-    });
-  }
-
   @override
   bool filterItem(Supplier item, String textSearch) {
     return item.name.contains(textSearch);
@@ -122,5 +115,15 @@ class SuppliersController
   @override
   String getSaveItemRouteName() {
     return Pages.save_supplier;
+  }
+
+  @override
+  HelpType getHelpType() {
+    return HelpType.SUPPLIER_AND_CUSTOMER;
+  }
+
+  @override
+  String getTitle() {
+    return AppLocalizations.of(getContext()).suppliers_title;
   }
 }

@@ -45,7 +45,7 @@ class UIConstants {
 void showInfoToast(msg){
   Fluttertoast.showToast(
       msg: msg,
-      toastLength: Toast.LENGTH_SHORT,
+      toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.CENTER,
       timeInSecForIosWeb: 1,
       backgroundColor: UIConstants.primaryColor,
@@ -56,7 +56,7 @@ void showInfoToast(msg){
 void showErrorToast(String msg){
   Fluttertoast.showToast(
       msg: msg,
-      toastLength: Toast.LENGTH_SHORT,
+      toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.CENTER,
       backgroundColor: Colors.red,
       textColor: Colors.white,

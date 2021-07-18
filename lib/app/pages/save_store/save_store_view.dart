@@ -65,7 +65,7 @@ class _SaveStorePageView extends ViewState<SaveStorePage, SaveStoreController> {
                 labelText: AppLocalizations.of(context).field_name),
             validator: (String value) {
               if (value.trim().isEmpty) {
-                return "error";
+                return AppLocalizations.of(context).message_name_blank;
               } else {
                 return null;
               }

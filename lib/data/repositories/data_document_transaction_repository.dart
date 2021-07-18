@@ -63,6 +63,12 @@ class DataDocumentTransactionRepository
     int outgoingQuantity = await db.getSumQuantity(DocumentType.outgoing);
     return (incomingQuantity - outgoingQuantity);
   }
+  @override
+  Future<int> getSumQuantityByGoodId(int goodId) async {
+    int incomingQuantity = await db.getSumQuantityByGoodId(DocumentType.incoming, goodId);
+    int outgoingQuantity = await db.getSumQuantityByGoodId(DocumentType.outgoing, goodId);
+    return (incomingQuantity - outgoingQuantity);
+  }
 
   @override
   Future<DocumentTransaction> get(int id) {

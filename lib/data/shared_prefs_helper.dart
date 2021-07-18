@@ -1,6 +1,16 @@
-import 'package:good_manager/assets/constants.dart';
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
+const String keySortByStore = "sort_by_store";
+const String keySelectedStoreId = "key_selected_store_id";
+const String keyFirstTime = "key_first_time";
+const String keyAutoDocumentName = "key_auto_document_name";
+const String keyLanguageCode = "keyLanguageCode";
+
+const String ENGLISH = "en";
+const String VIETNAMESE = "vi";
 class SharedPrefsHelper{
   SharedPreferences prefs;
   Future<String> getAutoDocumentName() async{
@@ -39,4 +49,22 @@ class SharedPrefsHelper{
     prefs = await SharedPreferences.getInstance();
     return prefs.getInt(keySelectedStoreId);
   }
+  Future<String> getLanguageCode() async {
+    String deviceLanguageCode = Platform.localeName;
+    String defaultLanguageCode = ENGLISH;
+    if (deviceLanguageCode == "vi_VN") {
+      defaultLanguageCode = VIETNAMESE;
+    } else {
+      defaultLanguageCode = ENGLISH;
+    }
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    String languageCode = _prefs.getString(keyLanguageCode) ?? defaultLanguageCode;
+    return languageCode;
+  }
+
+  Future<void> setLanguageCode(String code) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    _prefs.setString(keyLanguageCode, code);
+  }
+
 }
