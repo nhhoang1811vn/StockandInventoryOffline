@@ -16,6 +16,7 @@ abstract class BaseListController<M extends BaseModel, S extends BaseSettings,
     P extends BaseListPresenter> extends Controller {
   bool filterItem(M item, String textSearch);
 
+  bool _isSelection = false;
   bool isLoading = false;
   TextEditingController searchTextController;
   List<M> _allItems = [];
@@ -31,6 +32,8 @@ abstract class BaseListController<M extends BaseModel, S extends BaseSettings,
 
   String get textSearch => _textSearch;
 
+  bool get isSelection => _isSelection;
+
   P get presenter => _presenter;
 
   String getSaveItemRouteName();
@@ -40,8 +43,9 @@ abstract class BaseListController<M extends BaseModel, S extends BaseSettings,
 
   M getEmptyItem();
 
-  BaseListController(this._presenter) : super() {
+  BaseListController(this._presenter, this._isSelection) : super() {
     isLoading = true;
+    showSearchBar = _isSelection;
     searchTextController = TextEditingController();
     _presenter.getSettings();
   }
@@ -175,13 +179,50 @@ abstract class BaseListController<M extends BaseModel, S extends BaseSettings,
       refreshItems();
     }
   }
-  void onOpenHelpPage() async{
-    String languageCode = await appDataManager.sharedPrefsHelper.getLanguageCode();
+
+  void onOpenHelpPage() async {
+    String languageCode =
+        await appDataManager.sharedPrefsHelper.getLanguageCode();
     Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
       "title": getTitle(),
       "content": HelpUtils.getMarkdownData(languageCode, getHelpType())
     });
   }
+
+  /*Future<bool> onWillPop() async {
+    if (hasChanged()) {
+      showDialog(
+          context: getContext(),
+          builder: (BuildContext builder) =>
+              AlertDialog(
+                title: Text(AppLocalizations
+                    .of(getContext())
+                    .dialog_title_data_not_save),
+                content: Text(AppLocalizations
+                    .of(getContext())
+                    .dialog_content_data_not_save),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(getContext()),
+                    child: Text(AppLocalizations
+                        .of(getContext())
+                        .action_cancel),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(getContext()).pop();
+                      Navigator.of(getContext()).pop();
+                    },
+                    child: Text(AppLocalizations
+                        .of(getContext())
+                        .action_ok),
+                  ),
+                ],
+              ));
+    } else {
+      Navigator.of(getContext()).pop();
+    }
+  }*/
 
   @override
   void dispose() {

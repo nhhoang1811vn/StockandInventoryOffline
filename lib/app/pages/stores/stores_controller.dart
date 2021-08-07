@@ -11,8 +11,8 @@ import '../help_content.dart';
 
 class StoresController
     extends BaseListController<Store, StoresSettings, StoresPresenter> {
-  final bool isSelection;
-  StoresController(repository, this.isSelection) : super(StoresPresenter(repository));
+  StoresController(repository, isSelection)
+      : super(StoresPresenter(repository), isSelection);
 
   @override
   bool filterItem(Store item, String textSearch) {

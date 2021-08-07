@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/repositories/document_repositories.dart';
-import 'package:good_manager/domain/repositories/transaction_repositories.dart';
 
 class DeleteDocumentUseCase
     extends CompletableUseCase<DeleteDocumentUseCaseParams> {

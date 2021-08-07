@@ -12,14 +12,12 @@ import '../help_content.dart';
 
 class SuppliersController
     extends BaseListController<Supplier, SupplierSettings, SuppliersPresenter> {
-  bool _isSelection;
-
-  SuppliersController(repository, this._isSelection)
-      : super(SuppliersPresenter(repository));
+  SuppliersController(repository, isSelection)
+      : super(SuppliersPresenter(repository), isSelection);
 
   @override
   void onItemPressed(Supplier item) {
-    if (_isSelection) {
+    if (isSelection) {
       Navigator.of(getContext()).pop(item);
     } else {
       super.onItemPressed(item);

@@ -33,7 +33,6 @@ dependencies:
   path_provider: ^2.0.0
   path: 1.8.0
   open_file: ^3.2.1
-  #flutter_search_bar: ^2.1.0
   flutter_speed_dial: ^3.0.5
   flutter_barcode_scanner: ^2.0.0
   shared_preferences: 2.0.5
@@ -44,6 +43,8 @@ dependencies:
   fluttertoast: ^8.0.7
   sprintf: ^4.0.0
   flutter_markdown: ^0.6.2
+  flutter_beep: ^1.0.0
+  vibration: ^1.7.3
 
   # UI
   modal_progress_hud: ^0.1.2
@@ -107,7 +108,7 @@ flutter:
     - images/new.png
     - images/settings.png
     - images/barcode.png
-  #   - images/a_dot_ham.jpeg
+    - images/search_barcode.png
 
   # An image asset can refer to one or app.pages.more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

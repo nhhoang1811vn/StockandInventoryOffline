@@ -32,9 +32,8 @@ class SaveGoodController extends Controller {
   String avatar = "";
   List<String> files = [];
 
-  SaveGoodController(
-      goodRepository, transactionRepository, this._item, this._quantity)
-      : presenter = SaveGoodPresenter(goodRepository, transactionRepository),
+  SaveGoodController(goodRepository, this._item, this._quantity)
+      : presenter = SaveGoodPresenter(goodRepository),
         super() {
     nameTextController = TextEditingController();
     descriptionTextController = TextEditingController();
@@ -111,8 +110,11 @@ class SaveGoodController extends Controller {
     String barcodeScanRes;
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          "#ff6666", "Cancel", true, ScanMode.BARCODE);
-      if (barcodeScanRes != "-1"){
+          "#ff6666",
+          AppLocalizations.of(getContext()).action_cancel,
+          true,
+          ScanMode.BARCODE);
+      if (barcodeScanRes != "-1") {
         barCodeTextController.text = barcodeScanRes;
       }
     } on PlatformException {

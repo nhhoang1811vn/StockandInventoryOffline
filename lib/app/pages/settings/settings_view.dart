@@ -32,6 +32,15 @@ class SettingsPageView extends ViewState<SettingsPage, SettingsController> {
               onTap: controller.showSelectLanguageDialog,
             );
           }),
+          ControlledWidgetBuilder<SettingsController>(
+              builder: (context, controller) {
+            return ListTile(
+              leading: Icon(Icons.language),
+              title: Text(
+                  AppLocalizations.of(context).menu_item_barcode_scanner_title),
+              onTap: controller.onBarcodeScannerPressed,
+            );
+          })
         ],
       ));
 }

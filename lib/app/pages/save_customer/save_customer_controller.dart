@@ -42,4 +42,28 @@ class SaveCustomerController
     item.taxID = taxIDTextController.text;
     item.bankDetail = bankDetailsTextController.text;
   }
+
+  @override
+  Customer getOriginalItem(Customer item) {
+    Customer customer = Customer();
+    customer.name = item.name;
+    customer.description = item.description;
+    customer.address = item.address;
+    customer.email = item.email;
+    customer.phone = item.phone;
+    customer.taxID = item.taxID;
+    customer.bankDetail = item.bankDetail;
+    return customer;
+  }
+
+  @override
+  bool hasChanged(Customer item, Customer originalItem) {
+    return (item.name != originalItem.name ||
+        item.description != originalItem.description ||
+        item.address != originalItem.address ||
+        item.email != originalItem.email ||
+        item.phone != originalItem.phone ||
+        item.taxID != originalItem.taxID ||
+        item.bankDetail != originalItem.bankDetail);
+  }
 }

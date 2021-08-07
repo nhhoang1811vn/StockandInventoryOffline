@@ -5,7 +5,6 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/save_good/save_good_controller.dart';
 import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
 import 'package:good_manager/data/repositories/data_good_repository.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:path/path.dart' as p;
@@ -24,8 +23,7 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   SaveGroupPageView(item, quantity)
-      : super(SaveGoodController(DataGoodRepository(),
-            DataDocumentTransactionRepository(), item, quantity));
+      : super(SaveGoodController(DataGoodRepository(), item, quantity));
 
   @override
   Widget get view => Scaffold(

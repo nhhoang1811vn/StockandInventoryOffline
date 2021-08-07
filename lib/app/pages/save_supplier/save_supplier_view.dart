@@ -23,57 +23,64 @@ class _SaveSupplierPageView
       : super(SaveSupplierController(DataSupplierRepository(), item));
 
   @override
-  Widget get view => Scaffold(
-      key: globalKey,
-      appBar: AppBar(
-          title: Text(AppLocalizations.of(context).save_supplier_title),
-          actions: <Widget>[
-            ControlledWidgetBuilder<SaveSupplierController>(
-                builder: (context, controller) {
-              return Padding(
-                padding: EdgeInsets.only(right: 20.0),
-                child: GestureDetector(
-                    onTap: () => controller.checkForm({
-                          'context': context,
-                          'formKey': _formKey,
-                          'globalKey': globalKey
-                        }),
-                    child: Icon(Icons.check, size: 26)),
-              );
-            })
-          ]),
-      body: ListView(
-        children: <Widget>[
-          Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: UIConstants.screenSpace,
-                    vertical: UIConstants.screenSpace),
-                child: Column(
+  Widget get view => ControlledWidgetBuilder<SaveSupplierController>(
+          builder: (context, controller) {
+        return WillPopScope(
+            key: globalKey,
+            child: Scaffold(
+                key: globalKey,
+                appBar: AppBar(
+                    title:
+                        Text(AppLocalizations.of(context).save_customer_title),
+                    actions: <Widget>[
+                      ControlledWidgetBuilder<SaveSupplierController>(
+                          builder: (context, controller) {
+                        return Padding(
+                          padding: EdgeInsets.only(right: 20.0),
+                          child: GestureDetector(
+                              onTap: () => controller.checkForm({
+                                    'context': context,
+                                    'formKey': _formKey,
+                                    'globalKey': globalKey
+                                  }),
+                              child: Icon(Icons.check, size: 26)),
+                        );
+                      })
+                    ]),
+                body: ListView(
                   children: <Widget>[
-                    name,
-                    description,
-                    address,
-                    email,
-                    phone,
-                    taxID,
-                    bankDetails
+                    Form(
+                        key: _formKey,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: UIConstants.screenSpace,
+                              vertical: UIConstants.screenSpace),
+                          child: Column(
+                            children: <Widget>[
+                              name,
+                              description,
+                              address,
+                              email,
+                              phone,
+                              taxID,
+                              bankDetails
+                            ],
+                          ),
+                        ))
                   ],
-                ),
-              ))
-        ],
-      ));
+                )),
+            onWillPop: controller.onWillPop);
+      });
 
   Widget get name => ControlledWidgetBuilder<SaveSupplierController>(
           builder: (context, controller) {
         return TextFormField(
             controller: controller.nameTextController,
             onChanged: (a) => controller.validate({
-              'context': context,
-              'formKey': _formKey,
-              'globalKey': globalKey
-            }),
+                  'context': context,
+                  'formKey': _formKey,
+                  'globalKey': globalKey
+                }),
             decoration: InputDecoration(
                 labelText: AppLocalizations.of(context).field_name),
             validator: (String value) {

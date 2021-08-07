@@ -36,7 +36,7 @@ class HomePageView extends ViewState<HomePage, HomeController> {
             DataExpenseRepository()));
 
   double height = 150;
-  double iconSize = 30;
+  double iconSize = 40;
 
   @override
   Widget get view => Scaffold(

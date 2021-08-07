@@ -24,38 +24,44 @@ class _SaveStorePageView extends ViewState<SaveStorePage, SaveStoreController> {
       : super(SaveStoreController(DataStoreRepository(), store));
 
   @override
-  Widget get view => Scaffold(
-      key: globalKey,
-      appBar: AppBar(
-          title: Text(AppLocalizations.of(context).save_store_title),
-          actions: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: ControlledWidgetBuilder<SaveStoreController>(
-                  builder: (context, controller) {
-                return GestureDetector(
-                    onTap: () => controller.checkForm({
-                          'context': context,
-                          'formKey': _formKey,
-                          'globalKey': globalKey
-                        }),
-                    child: Icon(Icons.check, size: 26));
-              }),
-            )
-          ]),
-      body: ListView(
-        children: <Widget>[
-          Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 20.0),
-                child: Column(
-                  children: <Widget>[name, description],
-                ),
-              ))
-        ],
-      ));
+  Widget get view => ControlledWidgetBuilder<SaveStoreController>(
+          builder: (context, controller) {
+        return WillPopScope(
+          key: globalKey,
+          child: Scaffold(
+              appBar: AppBar(
+                  title: Text(AppLocalizations.of(context).save_store_title),
+                  actions: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(right: 20.0),
+                      child: ControlledWidgetBuilder<SaveStoreController>(
+                          builder: (context, controller) {
+                        return GestureDetector(
+                            onTap: () => controller.checkForm({
+                                  'context': context,
+                                  'formKey': _formKey,
+                                  'globalKey': globalKey
+                                }),
+                            child: Icon(Icons.check, size: 26));
+                      }),
+                    )
+                  ]),
+              body: ListView(
+                children: <Widget>[
+                  Form(
+                      key: _formKey,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 20.0),
+                        child: Column(
+                          children: <Widget>[name, description],
+                        ),
+                      ))
+                ],
+              )),
+          onWillPop: controller.onWillPop,
+        );
+      });
 
   Widget get name => ControlledWidgetBuilder<SaveStoreController>(
           builder: (context, controller) {

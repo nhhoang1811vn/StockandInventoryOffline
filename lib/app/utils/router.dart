@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/app/main.dart';
+import 'package:good_manager/app/pages/barcode_scanner/barcode_scanner_view.dart';
 import 'package:good_manager/app/pages/customers/customers_view.dart';
 import 'package:good_manager/app/pages/documents/documents_view.dart';
 import 'package:good_manager/app/pages/expenses/expenses_view.dart';
@@ -105,6 +106,8 @@ class AppRouter {
       case Pages.select_group:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(settings, SelectGroupPage(args['groupId']));
+      case Pages.barcode_scanner:
+        return _buildRoute(settings, BarcodeScannerPage());
       default:
         return null;
     }

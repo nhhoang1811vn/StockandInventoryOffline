@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/base/base_sort_items.dart';
@@ -56,12 +58,14 @@ class GoodsController extends Controller {
   DocumentType get documentType => _documentType;
 
   GoodsSettings _settings;
+  bool justScanCode = false;
 
   GoodsController(storeRepository, goodRepository, transactionRepository,
       this._isSelection, this._documentType, this.transactions)
       : presenter = GoodsPresenter(
             storeRepository, goodRepository, transactionRepository),
         super() {
+    showSearchBar = _isSelection;
     searchTextController = TextEditingController();
     isLoading = true;
     retrieveSettings();
@@ -278,16 +282,10 @@ class GoodsController extends Controller {
   }
 
   void showAddQuantityDialog(Good good) {
-    String title = "";
-    if (_documentType == DocumentType.incoming) {
-      title = AppLocalizations.of(getContext()).add_quantity_dialog_title;
-    } else {
-      title = AppLocalizations.of(getContext()).subtract_quantity_dialog_title;
-    }
     showDialog(
         context: getContext(),
-        builder: (_) =>
-            AddQuantityGoodDialog(title, (it) => {onQuantityAdded(good, it)}),
+        builder: (_) => InputQuantityGoodDialog(
+            good, (it) => {onQuantityAdded(good, it)}, () => {}),
         barrierDismissible: true);
   }
 
@@ -443,6 +441,9 @@ class GoodsController extends Controller {
     if (_textSearch.trim().isEmpty) {
       return true;
     }
+    if (justScanCode) {
+      return group.barCode.contains(_textSearch);
+    }
     switch (_settings.searchGoodsType) {
       case SearchGoodsType.byName:
         {
@@ -468,6 +469,9 @@ class GoodsController extends Controller {
   filterGood(Good good) {
     if (_textSearch.trim().isEmpty) {
       return true;
+    }
+    if (justScanCode) {
+      return good.barCode.contains(_textSearch);
     }
     switch (_settings.searchGoodsType) {
       case SearchGoodsType.byName:
@@ -604,5 +608,23 @@ class GoodsController extends Controller {
 
   Future<bool> onBackPressed() {
     Navigator.of(getContext()).pop(transactions);
+  }
+
+  onSearchBarCode() async {
+    try {
+      var barcodeResult = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666",
+          AppLocalizations.of(getContext()).action_cancel,
+          true,
+          ScanMode.BARCODE);
+      if (barcodeResult != "-1") {
+        searchTextController.text = barcodeResult;
+        justScanCode = true;
+        onSearchChanged(barcodeResult);
+        justScanCode = false;
+      }
+    } on PlatformException {
+      showErrorToast('Failed to get platform version.');
+    }
   }
 }

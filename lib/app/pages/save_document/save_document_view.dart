@@ -5,11 +5,15 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/goods/good_item_row.dart';
 import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/data/repositories/data_app_repository.dart';
 import 'package:good_manager/data/repositories/data_document_repository.dart';
 import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
+import 'package:good_manager/data/repositories/data_good_repository.dart';
 import 'package:good_manager/domain/entities/document.dart';
 
 import 'save_document_controller.dart';
+
+enum OverflowItemMenu { batchscan, sortby, help }
 
 class SaveDocumentPage extends View {
   final Document item;
@@ -17,7 +21,7 @@ class SaveDocumentPage extends View {
   SaveDocumentPage(this.item) : super();
 
   @override
-  SaveDocumentPageView createState() => SaveDocumentPageView(this.item);
+  SaveDocumentPageView createState() => SaveDocumentPageView(item);
 }
 
 class SaveDocumentPageView
@@ -26,46 +30,58 @@ class SaveDocumentPageView
   final Document item;
 
   SaveDocumentPageView(this.item)
-      : super(SaveDocumentController(DataDocumentRepository(),
-            DataDocumentTransactionRepository(), item));
+      : super(SaveDocumentController(
+            DataAppRepository(),
+            DataDocumentRepository(),
+            DataDocumentTransactionRepository(),
+            DataGoodRepository(),
+            item));
 
   Widget get body => Column(children: <Widget>[
-        Form(
-            key: _formKey,
-            child: Padding(
-              child: Column(children: <Widget>[
-                Row(
-                  children: [
-                    Expanded(child: name),
-                    SizedBox(
-                      width: 15.0,
+        ExpansionTile(
+          title: Text("Document Information"),
+          initiallyExpanded: true,
+          children: [
+            Form(
+                key: _formKey,
+                child: Padding(
+                  child: Column(children: <Widget>[
+                    Row(
+                      children: [
+                        Expanded(child: name),
+                        SizedBox(
+                          width: 15.0,
+                        ),
+                        Expanded(child: date)
+                      ],
                     ),
-                    Expanded(child: date)
-                  ],
-                ),
-                ControlledWidgetBuilder<SaveDocumentController>(
-                    builder: (context, controller) {
-                  return Visibility(
-                      child: supplier,
-                      visible: controller.item.type == DocumentType.incoming);
-                }),
-                ControlledWidgetBuilder<SaveDocumentController>(
-                    builder: (context, controller) {
-                  return Visibility(
-                      child: customer,
-                      visible: controller.item.type == DocumentType.outgoing);
-                }),
-                description,
-              ]),
-              padding: const EdgeInsets.symmetric(
-                  horizontal: UIConstants.screenSpace,
-                  vertical: UIConstants.screenSpace),
-            )),
-        goodHeader,
-        Expanded(
-            child: Stack(
-          children: [emptyGoodsView, transactionsView],
-        ))
+                    ControlledWidgetBuilder<SaveDocumentController>(
+                        builder: (context, controller) {
+                      return Visibility(
+                          child: supplier,
+                          visible:
+                              controller.item.type == DocumentType.incoming);
+                    }),
+                    ControlledWidgetBuilder<SaveDocumentController>(
+                        builder: (context, controller) {
+                      return Visibility(
+                          child: customer,
+                          visible:
+                              controller.item.type == DocumentType.outgoing);
+                    }),
+                    description,
+                  ]),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: UIConstants.screenSpace),
+                )),
+          ],
+        ),
+        ControlledWidgetBuilder<SaveDocumentController>(
+            builder: (context, controller) {
+          return Visibility(
+              child: searchBar, visible: controller.showSearchBar);
+        }),
+        Expanded(child: transactionsView)
       ]);
 
   @override
@@ -78,8 +94,8 @@ class SaveDocumentPageView
               body: body,
               floatingActionButton: FloatingActionButton.extended(
                 onPressed: controller.onAddGood,
-                label: const Text('Thêm sản phẩm'),
-                icon: const Icon(Icons.add_photo_alternate),
+                label:
+                    Text(AppLocalizations.of(context).save_document_add_goods),
                 backgroundColor: Colors.blue,
               ),
             ),
@@ -92,21 +108,62 @@ class SaveDocumentPageView
             return Text(controller.getTitleText());
           }),
           actions: <Widget>[
-           save
+            ControlledWidgetBuilder<SaveDocumentController>(
+                builder: (context, controller) {
+              return IconButton(
+                  onPressed: () => controller.toggleSearchBar(),
+                  icon: Icon(
+                    UIConstants.searchMenuIconData,
+                    color: controller.showSearchBar
+                        ? UIConstants.highlightMenuColor
+                        : UIConstants.normalMenuColor,
+                  ));
+            }),
+            ControlledWidgetBuilder<SaveDocumentController>(
+                builder: (context, controller) {
+              return IconButton(
+                  onPressed: () => controller.onSaveDocumentTapped({
+                        'context': context,
+                        'formKey': _formKey,
+                        'globalKey': globalKey
+                      }),
+                  icon: Icon(Icons.check));
+            }),
+            ControlledWidgetBuilder<SaveDocumentController>(
+                builder: (context, controller) {
+              return PopupMenuButton<OverflowItemMenu>(
+                onSelected: (OverflowItemMenu result) {
+                  switch (result) {
+                    case OverflowItemMenu.batchscan:
+                      controller.onBatchScanPressed();
+                      break;
+                    case OverflowItemMenu.sortby:
+                      break;
+                    case OverflowItemMenu.help:
+                      controller.openHelpPage();
+                      break;
+                    default:
+                  }
+                },
+                itemBuilder: (BuildContext a) =>
+                    <PopupMenuEntry<OverflowItemMenu>>[
+                  PopupMenuItem<OverflowItemMenu>(
+                      value: OverflowItemMenu.batchscan,
+                      child: Text(AppLocalizations.of(context)
+                          .save_document_batch_scan)),
+                  PopupMenuItem<OverflowItemMenu>(
+                      value: OverflowItemMenu.sortby,
+                      child: Text(
+                          AppLocalizations.of(context).save_document_sort_by)),
+                  PopupMenuItem<OverflowItemMenu>(
+                      value: OverflowItemMenu.help,
+                      child: Text(
+                          AppLocalizations.of(context).save_document_help)),
+                ],
+              );
+            })
           ]);
-  Widget get save => ControlledWidgetBuilder<SaveDocumentController>(
-      builder: (context, controller) {
-        return Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          child: GestureDetector(
-              onTap: () => controller.onSaveDocumentTapped({
-                'context': context,
-                'formKey': _formKey,
-                'globalKey': globalKey
-              }),
-              child: Icon(Icons.check, size: 26)),
-        );
-      });
+
   Widget get name => ControlledWidgetBuilder<SaveDocumentController>(
           builder: (context, controller) {
         return TextFormField(
@@ -117,10 +174,10 @@ class SaveDocumentPageView
               if (value.trim().isEmpty) {
                 return AppLocalizations.of(context).message_name_blank;
               } else {
-                    return null;
-                  }
-                });
-          });
+                return null;
+              }
+            });
+      });
 
   Widget get date => ControlledWidgetBuilder<SaveDocumentController>(
       builder: (context, controller) {
@@ -165,29 +222,36 @@ class SaveDocumentPageView
         );
       });
 
-  Widget get goodHeader =>
-      Text(AppLocalizations.of(context).save_document_list_goods_title,
-          style: TextStyle(
-              color: UIConstants.primaryColor, fontWeight: FontWeight.bold));
-
-  Widget get emptyGoodsView => ControlledWidgetBuilder<SaveDocumentController>(
+  Widget get searchBar => ControlledWidgetBuilder<SaveDocumentController>(
           builder: (context, controller) {
-        return Visibility(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+        return Card(
+          child: ListTile(
+            title: TextField(
+              decoration: InputDecoration(
+                  hintText: "Search...", border: InputBorder.none),
+              onChanged: controller.onSearchChanged,
+              controller: controller.searchTextController,
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
-                    height: 60,
-                    width: 60,
-                    child: Image.asset(
-                      UIConstants.goodIconPath,
-                    )),
-                Padding(
-                    padding: EdgeInsets.only(top: 16),
-                    child: Text(AppLocalizations.of(context).empty_goods, textAlign: TextAlign.center))
-              ]),
-          visible: controller.transactions.isEmpty,
+                Visibility(
+                  child: IconButton(
+                    icon: Icon(UIConstants.cancelIconData),
+                    onPressed: controller.resetSearchText,
+                  ),
+                  visible: controller.textSearch.isNotEmpty,
+                ),
+                IconButton(
+                  icon: Image.asset(
+                    UIConstants.searchBarcodeIconPath,
+                    width: 24,
+                  ),
+                  onPressed: controller.onSearchBarCode,
+                )
+              ],
+            ),
+          ),
         );
       });
 

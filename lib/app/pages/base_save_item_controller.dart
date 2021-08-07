@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/base_save_item_presenter.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/base_model.dart';
@@ -14,9 +15,47 @@ abstract class BaseSaveItemController<M extends BaseModel,
 
   M get item => _item;
 
-  BaseSaveItemController(this._presenter, this._item) : super();
+  M _originalItem;
+
+  BaseSaveItemController(this._presenter, this._item) : super() {
+    _originalItem = getOriginalItem(item);
+  }
+
+  M getOriginalItem(M item);
+
+  bool hasChanged(M item, M originalItem);
 
   void updateItem();
+
+  Future<bool> onWillPop() async {
+    updateItem();
+    if (hasChanged(_item, _originalItem)) {
+      showDialog(
+          context: getContext(),
+          builder: (BuildContext builder) => AlertDialog(
+                title: Text(AppLocalizations.of(getContext())
+                    .dialog_title_data_not_save),
+                content: Text(AppLocalizations.of(getContext())
+                    .dialog_content_data_not_save),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(getContext()),
+                    child:
+                        Text(AppLocalizations.of(getContext()).action_cancel),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(getContext()).pop();
+                      Navigator.of(getContext()).pop();
+                    },
+                    child: Text(AppLocalizations.of(getContext()).action_ok),
+                  ),
+                ],
+              ));
+    } else {
+      Navigator.of(getContext()).pop();
+    }
+  }
 
   @override
   void initListeners() {

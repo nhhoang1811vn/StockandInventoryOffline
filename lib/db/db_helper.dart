@@ -65,10 +65,10 @@ class DBHelper {
             "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id))");
 
     await db.execute(
-        "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, groupId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
+        "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, groupId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
     await db.execute(
-        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, avatar TEXT, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
+        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, avatar TEXT, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
 
     await db.execute(
@@ -376,12 +376,33 @@ class DBHelper {
     List<Good> goods = new List();
     for (int i = 0; i < list.length; i++) {
       var good = Good.map(list[i]);
-      int incomingQuantity = await getSumQuantityByGoodId(DocumentType.incoming, good.id);
-      int outgoingQuantity = await getSumQuantityByGoodId(DocumentType.outgoing, good.id);
+      int incomingQuantity =
+          await getSumQuantityByGoodId(DocumentType.incoming, good.id);
+      int outgoingQuantity =
+          await getSumQuantityByGoodId(DocumentType.outgoing, good.id);
       good.quantity = incomingQuantity - outgoingQuantity;
       goods.add(good);
     }
     return goods;
+  }
+
+  Future<Good> getGoodByBarcode(String barcode) async {
+    var dbClient = await db;
+    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    List<Map> list = await dbClient.rawQuery(
+        'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ? AND barcode = ?',
+        [storeId, barcode]);
+    if (list.length > 0) {
+      var good = Good.map(list[0]);
+      int incomingQuantity =
+          await getSumQuantityByGoodId(DocumentType.incoming, good.id);
+      int outgoingQuantity =
+          await getSumQuantityByGoodId(DocumentType.outgoing, good.id);
+      good.quantity = incomingQuantity - outgoingQuantity;
+      return good;
+    } else {
+      throw Exception("not found barcode");
+    }
   }
 
   Future<bool> deleteGood(int id) async {

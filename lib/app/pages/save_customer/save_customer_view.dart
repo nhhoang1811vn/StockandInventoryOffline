@@ -23,47 +23,54 @@ class _SaveCustomerPageView
       : super(SaveCustomerController(DataCustomerRepository(), item));
 
   @override
-  Widget get view => Scaffold(
-      key: globalKey,
-      appBar: AppBar(
-          title: Text(AppLocalizations.of(context).save_customer_title),
-          actions: <Widget>[
-            ControlledWidgetBuilder<SaveCustomerController>(
-                builder: (context, controller) {
-              return Padding(
-                padding: EdgeInsets.only(right: 20.0),
-                child: GestureDetector(
-                    onTap: () => controller.checkForm({
-                          'context': context,
-                          'formKey': _formKey,
-                          'globalKey': globalKey
-                        }),
-                    child: Icon(Icons.check, size: 26)),
-              );
-            })
-          ]),
-      body: ListView(
-        children: <Widget>[
-          Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: UIConstants.screenSpace,
-                    vertical: UIConstants.screenSpace),
-                child: Column(
+  Widget get view => ControlledWidgetBuilder<SaveCustomerController>(
+          builder: (context, controller) {
+        return WillPopScope(
+            key: globalKey,
+            child: Scaffold(
+                key: globalKey,
+                appBar: AppBar(
+                    title:
+                        Text(AppLocalizations.of(context).save_customer_title),
+                    actions: <Widget>[
+                      ControlledWidgetBuilder<SaveCustomerController>(
+                          builder: (context, controller) {
+                        return Padding(
+                          padding: EdgeInsets.only(right: 20.0),
+                          child: GestureDetector(
+                              onTap: () => controller.checkForm({
+                                    'context': context,
+                                    'formKey': _formKey,
+                                    'globalKey': globalKey
+                                  }),
+                              child: Icon(Icons.check, size: 26)),
+                        );
+                      })
+                    ]),
+                body: ListView(
                   children: <Widget>[
-                    name,
-                    description,
-                    address,
-                    email,
-                    phone,
-                    taxID,
-                    bankDetails
+                    Form(
+                        key: _formKey,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: UIConstants.screenSpace,
+                              vertical: UIConstants.screenSpace),
+                          child: Column(
+                            children: <Widget>[
+                              name,
+                              description,
+                              address,
+                              email,
+                              phone,
+                              taxID,
+                              bankDetails
+                            ],
+                          ),
+                        ))
                   ],
-                ),
-              ))
-        ],
-      ));
+                )),
+            onWillPop: controller.onWillPop);
+      });
 
   Widget get name => ControlledWidgetBuilder<SaveCustomerController>(
           builder: (context, controller) {

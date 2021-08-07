@@ -32,6 +32,7 @@ class SaveSupplierController
     taxIDTextController.text = item.taxID;
     bankDetailsTextController.text = item.bankDetail;
   }
+
   @override
   void updateItem() {
     item.name = nameTextController.text;
@@ -41,5 +42,30 @@ class SaveSupplierController
     item.phone = phoneTextController.text;
     item.taxID = taxIDTextController.text;
     item.bankDetail = bankDetailsTextController.text;
+  }
+
+  @override
+  Supplier getOriginalItem(Supplier item) {
+    Supplier supplier = Supplier();
+    supplier.name = item.name;
+    supplier.description = item.description;
+    supplier.address = item.address;
+    supplier.email = item.email;
+    supplier.phone = item.phone;
+    supplier.taxID = item.taxID;
+    supplier.bankDetail = item.bankDetail;
+
+    return supplier;
+  }
+
+  @override
+  bool hasChanged(Supplier item, Supplier originalItem) {
+    return (item.name != originalItem.name ||
+        item.description != originalItem.description ||
+        item.address != originalItem.address ||
+        item.email != originalItem.email ||
+        item.phone != originalItem.phone ||
+        item.taxID != originalItem.taxID ||
+        item.bankDetail != originalItem.bankDetail);
   }
 }

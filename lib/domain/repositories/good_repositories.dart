@@ -6,5 +6,7 @@ abstract class GoodRepository
     extends BaseCommonRepository<Good, GoodsSettings> {
   Future<List<Good>> getGoodsByGroupId(int groupId);
 
+  Future<Good> getGoodByBarcode(String barcode);
+
   Future<int> getCount();
 }

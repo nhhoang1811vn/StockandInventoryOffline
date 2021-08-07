@@ -23,4 +23,12 @@ class Constants {
   static const String sortByBarCodeGoodsKey = "sortByBarCodeGoodsKey";
   static const String sortByQuantityGoodsKey = "sortByQuantityGoodsKey";
   static const String searchGoodsTypeKey = "searchGoodsTypeKey";
+
+  //bar code scanner
+  static const String barcodeScannerBatchModeScanKey =
+      "barcodeScannerBatchModeScanKey";
+  static const String barcodeScannerEnableBeepKey =
+      "barcodeScannerEnableBeepKey";
+  static const String barcodeScannerEnableVibrateKey =
+      "barcodeScannerEnableVibrateKey";
 }

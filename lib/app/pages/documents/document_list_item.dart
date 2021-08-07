@@ -31,9 +31,7 @@ class DocumentList extends StatelessWidget{
           return "${AppLocalizations.of(context).document_list_incoming_name} $name";
         case DocumentType.outgoing:
           return "${AppLocalizations.of(context).document_list_outgoing_name} $name";
-        default:
-          return "${AppLocalizations.of(context).document_list_stock_taking_name} $name";
-      }
+        }
     } else {
       return name;
     }

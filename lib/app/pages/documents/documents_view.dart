@@ -4,7 +4,6 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_document_repository.dart';
-import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/search_documents_type.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';

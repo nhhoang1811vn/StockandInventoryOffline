@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
-
 
 class AddDocumentDialogWidget extends StatefulWidget {
   final void Function(DocumentType type) onValueChange;
@@ -18,15 +18,18 @@ class AddDocumentDialogWidgetState extends State<AddDocumentDialogWidget> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Thêm giao dịch'),
+      title: Text(AppLocalizations.of(context).add_document_title),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             Column(
               children: [
-                getRadioListTile("Nhập Kho", DocumentType.incoming),
-                getRadioListTile("Xuất Kho", DocumentType.outgoing),
-                //getRadioListTile("Kiểm kê", DocumentType.stock_taking)
+                getRadioListTile(
+                    AppLocalizations.of(context).document_list_incoming_name,
+                    DocumentType.incoming),
+                getRadioListTile(
+                    AppLocalizations.of(context).document_list_outgoing_name,
+                    DocumentType.outgoing),
               ],
             )
           ],
@@ -34,10 +37,8 @@ class AddDocumentDialogWidgetState extends State<AddDocumentDialogWidget> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text('OK'),
+          child: Text(AppLocalizations.of(context).action_ok),
           onPressed: () async {
-            //final prefs = await SharedPreferences.getInstance();
-            //prefs.setString(Constants.KEY_SORT_BY_STORE, EnumToString.convertToString(_sortByName));
             widget.onValueChange(_documentType);
             Navigator.of(context).pop();
           },

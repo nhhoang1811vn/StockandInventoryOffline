@@ -4,22 +4,25 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_calculator/flutter_calculator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/domain/entities/good.dart';
 
-class AddQuantityGoodDialog extends StatefulWidget {
-  final String title;
-  final void Function(int quantity) onQuantityAdded;
+class InputQuantityGoodDialog extends StatefulWidget {
+  final Good good;
+  final void Function(int quantity) onOK;
+  final void Function() onDismiss;
 
-  AddQuantityGoodDialog(this.title, this.onQuantityAdded);
+  InputQuantityGoodDialog(this.good, this.onOK, this.onDismiss);
 
   @override
-  State<StatefulWidget> createState() => AddQuantityGoodDialogState();
+  State<StatefulWidget> createState() => InputQuantityGoodDialogState();
 }
 
-class AddQuantityGoodDialogState extends State<AddQuantityGoodDialog> {
+class InputQuantityGoodDialogState extends State<InputQuantityGoodDialog> {
   TextEditingController quantityTextController;
 
-  AddQuantityGoodDialogState() {
+  InputQuantityGoodDialogState() {
     quantityTextController = TextEditingController();
+    quantityTextController.text = "1";
   }
 
   void _showCalculatorDialog(BuildContext context) async {
@@ -30,12 +33,17 @@ class AddQuantityGoodDialogState extends State<AddQuantityGoodDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.title),
+      title: Text(AppLocalizations.of(context).input_quantity_dialog_title),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(widget.good.name),
+                Text(widget.good.description),
+                Text(widget.good.barCode),
+                //Text(sprintf(AppLocalizations.of(context).in_stock_text, [widget.good.quantity])),
                 Row(
                   children: [
                     Expanded(
@@ -47,8 +55,8 @@ class AddQuantityGoodDialogState extends State<AddQuantityGoodDialog> {
                       keyboardType: TextInputType.number,
                       inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly,
-                      ],
-                    )),
+                          ],
+                        )),
                     Align(
                       alignment: Alignment.centerRight,
                       child: IconButton(
@@ -68,9 +76,16 @@ class AddQuantityGoodDialogState extends State<AddQuantityGoodDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text('OK'),
+          child: Text(AppLocalizations.of(context).action_cancel),
           onPressed: () async {
-            widget.onQuantityAdded(int.parse(quantityTextController.text));
+            widget.onDismiss();
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          child: Text(AppLocalizations.of(context).action_ok),
+          onPressed: () async {
+            widget.onOK(int.parse(quantityTextController.text));
             Navigator.of(context).pop();
           },
         ),

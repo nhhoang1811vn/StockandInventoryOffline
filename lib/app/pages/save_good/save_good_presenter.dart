@@ -13,7 +13,7 @@ class SaveGoodPresenter extends Presenter {
   InsertGoodUseCase _insertGoodUseCase;
   UpdateGoodUseCase _updateGoodUseCase;
 
-  SaveGoodPresenter(_goodRepository, _transactionRepository) {
+  SaveGoodPresenter(_goodRepository) {
     _insertGoodUseCase = InsertGoodUseCase(_goodRepository);
     _updateGoodUseCase = UpdateGoodUseCase(_goodRepository);
   }

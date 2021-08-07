@@ -12,10 +12,8 @@ import 'customers_presenter.dart';
 
 class CustomersController extends BaseListController<Customer,
     CustomersSettings, CustomersPresenter> {
-  bool _isSelection;
-
-  CustomersController(repository, this._isSelection)
-      : super(CustomersPresenter(repository));
+  CustomersController(repository, isSelection)
+      : super(CustomersPresenter(repository), isSelection);
 
   @override
   Customer getEmptyItem() {
@@ -29,7 +27,7 @@ class CustomersController extends BaseListController<Customer,
 
   @override
   void onItemPressed(Customer item) {
-    if (_isSelection) {
+    if (isSelection) {
       Navigator.of(getContext()).pop(item);
     } else {
       super.onItemPressed(item);

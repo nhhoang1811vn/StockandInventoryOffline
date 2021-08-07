@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/domain/entities/goods_settings.dart';
-import 'package:good_manager/domain/entities/sort_by_number.dart';
-import 'package:good_manager/domain/entities/sort_by_text.dart';
 enum MessageType{
   BUG_REPORT,
   FEEDBACK,

@@ -22,22 +22,29 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
       : super(SaveGroupController(DataGroupRepository(), item));
 
   @override
-  Widget get view => Scaffold(
-      key: globalKey,
-      appBar: appBar,
-      body: ListView(
-        children: <Widget>[
-          Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 20.0),
-                child: Column(
-                  children: <Widget>[name, description, barCode],
-                ),
-              ))
-        ],
-      ));
+  Widget get view => ControlledWidgetBuilder<SaveGroupController>(
+          builder: (context, controller) {
+        return WillPopScope(
+          key: globalKey,
+          child: Scaffold(
+              key: globalKey,
+              appBar: appBar,
+              body: ListView(
+                children: <Widget>[
+                  Form(
+                      key: _formKey,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 20.0),
+                        child: Column(
+                          children: <Widget>[name, description, barCode],
+                        ),
+                      ))
+                ],
+              )),
+          onWillPop: controller.onWillPop,
+        );
+      });
 
   Widget get appBar => AppBar(
           title: Text(AppLocalizations.of(context).save_group_title),

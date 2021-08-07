@@ -24,54 +24,52 @@ class _SaveExpensePageView
       : super(SaveExpenseController(DataExpenseRepository(), item));
 
   @override
-  Widget get view =>
-      Scaffold(
-          key: globalKey,
-          appBar: AppBar(
-              title: Text(AppLocalizations
-                  .of(context)
-                  .save_expense_title),
-              actions: <Widget>[
-                save
-              ]),
-          body: ListView(
-            children: <Widget>[
-              Form(
-                  key: _formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: UIConstants.screenSpace,
-                        vertical: UIConstants.screenSpace),
-                    child: Column(
-                      children: <Widget>[
-                        name,
-                        description,
-                        Row(
-                          children: [
-                            Expanded(child: date),
-                            SizedBox(
-                              width: 15.0,
-                            ),
-                            Expanded(child: amount),
-                            calculatorButton
-
-                          ],
-                        ),
-                      ],
-                    ),
-                  ))
-            ],
-          ));
-
-  Widget get name =>
-      ControlledWidgetBuilder<SaveExpenseController>(
+  Widget get view => ControlledWidgetBuilder<SaveExpenseController>(
           builder: (context, controller) {
-            return TextFormField(
-                controller: controller.nameTextController,
-                onChanged: (a) =>
-                    controller.validate({
-                      'context': context,
-                      'formKey': _formKey,
+        return WillPopScope(
+            child: Scaffold(
+                key: globalKey,
+                appBar: AppBar(
+                    title:
+                        Text(AppLocalizations.of(context).save_expense_title),
+                    actions: <Widget>[save]),
+                body: ListView(
+                  children: <Widget>[
+                    Form(
+                        key: _formKey,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: UIConstants.screenSpace,
+                              vertical: UIConstants.screenSpace),
+                          child: Column(
+                            children: <Widget>[
+                              name,
+                              description,
+                              Row(
+                                children: [
+                                  Expanded(child: date),
+                                  SizedBox(
+                                    width: 15.0,
+                                  ),
+                                  Expanded(child: amount),
+                                  calculatorButton
+                                ],
+                              ),
+                            ],
+                          ),
+                        ))
+                  ],
+                )),
+            onWillPop: controller.onWillPop);
+      });
+
+  Widget get name => ControlledWidgetBuilder<SaveExpenseController>(
+          builder: (context, controller) {
+        return TextFormField(
+            controller: controller.nameTextController,
+            onChanged: (a) => controller.validate({
+                  'context': context,
+                  'formKey': _formKey,
                       'globalKey': globalKey
                     }),
                 decoration: InputDecoration(labelText: AppLocalizations
@@ -134,8 +132,8 @@ class _SaveExpensePageView
       ControlledWidgetBuilder<SaveExpenseController>(
           builder: (context, controller) {
             return IconButton(icon: Image.asset(
-            UIConstants.calculatorIconPath,
-            width: 24,
+              UIConstants.calculatorIconPath,
+              width: 24,
             ), onPressed: controller.onOpenCalculator);
           });
 

@@ -186,17 +186,20 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
                     shape: CircleBorder(),
                     children: [
                       SpeedDialChild(
-                          child: Icon(
-                            Icons.folder,
-                            color: Colors.grey,
+                          child: Image.asset(
+                            UIConstants.folderIconPath,
+                            width: 24,
                           ),
                           backgroundColor: Colors.white,
-                          label: 'Nhóm',
+                          label: AppLocalizations.of(context).folder,
                           onTap: controller.onAddGroup),
                       SpeedDialChild(
-                          child: Icon(Icons.image, color: Colors.grey),
+                          child: Image.asset(
+                            UIConstants.goodIconPath,
+                            width: 24,
+                          ),
                           backgroundColor: Colors.white,
-                          label: 'Sản phẩm',
+                          label: AppLocalizations.of(context).good,
                           onTap: controller.onAddGood)
                     ],
                   );
@@ -264,12 +267,24 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
                 onChanged: controller.onSearchChanged,
                 controller: controller.searchTextController,
               ),
-              trailing: Visibility(
-                child: IconButton(
-                  icon: Icon(UIConstants.cancelIconData),
-                  onPressed: controller.resetSearchText,
-                ),
-                visible: controller.textSearch.isNotEmpty,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Visibility(
+                    child: IconButton(
+                      icon: Icon(UIConstants.cancelIconData),
+                      onPressed: controller.resetSearchText,
+                    ),
+                    visible: controller.textSearch.isNotEmpty,
+                  ),
+                  IconButton(
+                    icon: Image.asset(
+                      UIConstants.searchBarcodeIconPath,
+                      width: 24,
+                    ),
+                    onPressed: controller.onSearchBarCode,
+                  )
+                ],
               ),
             ),
           )),

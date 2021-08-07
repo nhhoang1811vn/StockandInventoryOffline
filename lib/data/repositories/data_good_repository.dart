@@ -82,4 +82,9 @@ class DataGoodRepository implements GoodRepository {
     // TODO: implement get
     throw UnimplementedError();
   }
+
+  @override
+  Future<Good> getGoodByBarcode(String barcode) {
+    return db.getGoodByBarcode(barcode);
+  }
 }

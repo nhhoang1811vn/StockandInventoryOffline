@@ -30,6 +30,7 @@ class UIConstants {
   static String settingsIconPath = "images/settings.png";
   static String newIconPath = "images/new.png";
   static String barcodeIconPath = "images/barcode.png";
+  static String searchBarcodeIconPath = "images/search_barcode.png";
 
   static const TextStyle fieldHintStyle =
       TextStyle(fontWeight: FontWeight.w300, color: Colors.black);
@@ -42,7 +43,8 @@ class UIConstants {
   static Color normalMenuColor = Colors.white;
   static Color highlightMenuColor = Colors.orange[600];
 }
-void showInfoToast(msg){
+
+void showInfoToast(msg) {
   Fluttertoast.showToast(
       msg: msg,
       toastLength: Toast.LENGTH_LONG,
@@ -50,16 +52,26 @@ void showInfoToast(msg){
       timeInSecForIosWeb: 1,
       backgroundColor: UIConstants.primaryColor,
       textColor: Colors.white,
-      fontSize: 16.0
-  );
+      fontSize: 16.0);
 }
-void showErrorToast(String msg){
+
+void showShortInfoToast(msg) {
+  Fluttertoast.showToast(
+      msg: msg,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: UIConstants.primaryColor,
+      textColor: Colors.white,
+      fontSize: 16.0);
+}
+
+void showErrorToast(String msg) {
   Fluttertoast.showToast(
       msg: msg,
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.CENTER,
       backgroundColor: Colors.red,
       textColor: Colors.white,
-      fontSize: 16.0
-  );
+      fontSize: 16.0);
 }
