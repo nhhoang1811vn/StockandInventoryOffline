@@ -41,9 +41,6 @@ class HomePageView extends ViewState<HomePage, HomeController> {
   @override
   Widget get view => Scaffold(
       key: globalKey,
-      appBar: new AppBar(
-        title: new Text(AppLocalizations.of(context).home_title),
-      ),
       body: ControlledWidgetBuilder<HomeController>(
           builder: (context, controller) {
         return ModalProgressHUD(

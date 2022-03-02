@@ -150,5 +150,7 @@
   "after_each_scan_manually": "Nhập số lượng bằng tay",
   "when_a_barcode_is_found": "Khi một mã vạch được tìm thấy",
   "beep": "Kêu",
-  "vibrate": "Rung"
+  "vibrate": "Rung",
+  "question_or_suggestion_title" : "Câu hỏi và đề xuất",
+  "your_subscriptions_title" : "Thông tin đăng ký PRO"
 }

@@ -28,7 +28,7 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
   Widget get view {
     return Scaffold(
         key: globalKey,
-        appBar: appBar,
+        //appBar: appBar,
         body: ControlledWidgetBuilder<SuppliersController>(
             builder: (context, controller) {
           return ModalProgressHUD(
@@ -223,4 +223,8 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
           ),
         );
       });
+
+  void onSearchClicked(){
+
+  }
 }

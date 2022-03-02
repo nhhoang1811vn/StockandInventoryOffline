@@ -150,5 +150,7 @@
   "after_each_scan_manually": "Set quantity manually",
   "when_a_barcode_is_found": "When a barcode is found",
   "beep": "Beep",
-  "vibrate": "Vibrate"
+  "vibrate": "Vibrate",
+  "question_or_suggestion_title" : "Question or suggestion",
+  "your_subscriptions_title" : "Your subscriptions"
 }
