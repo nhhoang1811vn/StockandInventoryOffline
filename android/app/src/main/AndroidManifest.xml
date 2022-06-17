@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ssteam.good_manager">
    <application
-        android:label="Quản Lý Kho"
-        android:icon="@mipmap/ic_launcher">
+        android:label="@string/app_name"
+       android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -28,14 +28,24 @@
               android:resource="@drawable/launch_background"
               />
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- Don't delete the meta-data below.
-             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
-        <meta-data
-            android:name="flutterEmbedding"
-            android:value="2" />
-    </application>
+       <!-- Don't delete the meta-data below.
+            This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+       <meta-data
+           android:name="flutterEmbedding"
+           android:value="2" />
+
+       <provider
+           android:name="androidx.core.content.FileProvider"
+           android:authorities="${applicationId}.fileProvider"
+           android:exported="false"
+           android:grantUriPermissions="true">
+           <meta-data
+               android:name="android.support.FILE_PROVIDER_PATHS"
+               android:resource="@xml/filepaths" />
+       </provider>
+   </application>
 </manifest>

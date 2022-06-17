@@ -1,0 +1,63 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/domain/entities/document.dart';
+
+class AddDocumentDialogWidget extends StatefulWidget {
+  final void Function(DocumentType type) onValueChange;
+
+  AddDocumentDialogWidget(this.onValueChange, {Key key}) : super(key: key);
+
+  @override
+  State createState() => AddDocumentDialogWidgetState();
+}
+
+class AddDocumentDialogWidgetState extends State<AddDocumentDialogWidget> {
+  DocumentType _documentType = DocumentType.incoming;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(AppLocalizations.of(context).add_document_title),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            Column(
+              children: [
+                getRadioListTile(
+                    AppLocalizations.of(context).document_list_incoming_name,
+                    DocumentType.incoming),
+                getRadioListTile(
+                    AppLocalizations.of(context).document_list_outgoing_name,
+                    DocumentType.outgoing),
+              ],
+            )
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: Text(AppLocalizations.of(context).action_ok),
+          onPressed: () async {
+            widget.onValueChange(_documentType);
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+  }
+
+  RadioListTile<DocumentType> getRadioListTile(
+      String text, DocumentType value) {
+    return RadioListTile<DocumentType>(
+      title: Text(text),
+      value: value,
+      groupValue: _documentType,
+      onChanged: (DocumentType value) {
+        setState(() {
+          _documentType = value;
+        });
+      },
+    );
+  }
+}
