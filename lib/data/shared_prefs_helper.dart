@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String keySortByStore = "sort_by_store";
 const String keySelectedStoreId = "key_selected_store_id";
+const String keySelectedStoreName = "keySelectedStoreName";
 const String keyFirstTime = "key_first_time";
 const String keyAutoDocumentName = "key_auto_document_name";
 const String keyLanguageCode = "keyLanguageCode";
@@ -48,6 +49,17 @@ class SharedPrefsHelper{
     prefs = await SharedPreferences.getInstance();
     return prefs.getInt(keySelectedStoreId);
   }
+
+  void setSelectedStoreName(String storeName) async{
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString(keySelectedStoreName, storeName);
+  }
+  Future<String> getSelectedStoreName() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.getString(keySelectedStoreName);
+  }
+
+
   Future<String> getLanguageCode() async {
     String deviceLanguageCode = Platform.localeName;
     String defaultLanguageCode = ENGLISH;

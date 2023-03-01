@@ -4,18 +4,18 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/repositories/group_repositories.dart';
 
-class GetGroupsByGroupIdUseCase
-    extends UseCase<List<Group>, GetGroupsByGroupIdUseCaseParams> {
+class GetGroupsByDirectoryUseCase
+    extends UseCase<List<Group>, GetGroupsByDirectoryUseCaseParams> {
   final GroupRepository _repository;
 
-  GetGroupsByGroupIdUseCase(this._repository);
+  GetGroupsByDirectoryUseCase(this._repository);
 
   @override
   Future<Stream<List<Group>>> buildUseCaseStream(
-      GetGroupsByGroupIdUseCaseParams params) async {
+      GetGroupsByDirectoryUseCaseParams params) async {
     final StreamController<List<Group>> controller = StreamController();
     try {
-      List<Group> items = await _repository.getGroupsByGroupId(params.groupId);
+      List<Group> items = await _repository.getGroupsByDirectory(params.directory);
       controller.add(items);
       controller.close();
     } catch (e) {
@@ -25,8 +25,8 @@ class GetGroupsByGroupIdUseCase
   }
 }
 
-class GetGroupsByGroupIdUseCaseParams {
-  final int groupId;
+class GetGroupsByDirectoryUseCaseParams {
+  final String directory;
 
-  GetGroupsByGroupIdUseCaseParams(this.groupId);
+  GetGroupsByDirectoryUseCaseParams(this.directory);
 }

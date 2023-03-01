@@ -10,6 +10,7 @@ class SelectGroupController extends Controller {
   SelectGroupPresenter presenter;
   List<Group> items = [];
   int groupId;
+  int selectedIndex = -1;
 
   SelectGroupController(repository, this.groupId)
       : presenter = SelectGroupPresenter(repository),
@@ -21,11 +22,13 @@ class SelectGroupController extends Controller {
 
   @override
   void initListeners() {
-    presenter.getGroupsOnNext = (groups) {
+    presenter.getGroupsOnNext = (List<Group> groups) {
       Group noGroup = Group();
       noGroup.id = -1;
       noGroup.name = "No Group";
+      noGroup.directory = "";
       items.add(noGroup);
+      groups.removeWhere((element) => element.id == groupId);
       items.addAll(groups);
       isLoading = false;
       refreshUI();
@@ -38,11 +41,11 @@ class SelectGroupController extends Controller {
   }
 
   void save() {
-    Navigator.of(getContext()).pop(groupId);
+    Navigator.of(getContext()).pop(items[selectedIndex]);
   }
 
   void select(int index) {
-    groupId = items[index].id;
+    selectedIndex = index;
     refreshUI();
   }
 }

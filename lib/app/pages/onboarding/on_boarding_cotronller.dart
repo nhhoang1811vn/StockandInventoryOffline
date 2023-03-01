@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/app/pages/onboarding/on_boarding_presenter.dart';
@@ -19,7 +20,9 @@ class OnBoardingController extends Controller {
     presenter.insertStoreOnNext = (storeId) async {
       presenter.setFirstTime(false);
       presenter.setSelectedStoreId(storeId);
-      Navigator.of(getContext()).pushReplacementNamed(Pages.main);
+      presenter.setSelectedStoreName(name);
+      //Navigator.of(getContext()).pushReplacementNamed(Pages.main);
+      Navigator.of(getContext()).pushReplacementNamed(Pages.home);
     };
     presenter.insertStoreOnError = (e) {
       showErrorToast(e.toString());

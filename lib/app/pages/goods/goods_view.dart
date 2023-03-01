@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
 import 'package:good_manager/data/repositories/data_good_repository.dart';
@@ -12,6 +13,8 @@ import 'package:good_manager/domain/entities/search_goods_type.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
+import '../../widgets/SelectedStoreView.dart';
+import '../main_page.dart';
 import 'good_item_row.dart';
 import 'goods_controller.dart';
 import 'group_item_row.dart';
@@ -45,6 +48,7 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
   Widget getBody() {
     List<Widget> children = [
       //StoreView(),
+      SelectedStoreView(),
       selectedGroupView,
       ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
         return Visibility(child: searchBar, visible: controller.showSearchBar);
@@ -158,6 +162,7 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
             onWillPop: controller.onBackPressed,
             child: Scaffold(
                 key: globalKey,
+                drawer: CustomNavigationDrawer(),
                 appBar: new AppBar(
                     title: new Text(AppLocalizations.of(context).goods_title),
                     actions: [searchMenu, sortMenu, helpMenu]),
@@ -186,18 +191,12 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
                     shape: CircleBorder(),
                     children: [
                       SpeedDialChild(
-                          child: Image.asset(
-                            UIConstants.folderIconPath,
-                            width: 24,
-                          ),
+                          child: Icon(FontAwesomeIcons.solidFolder, color: Colors.blue),
                           backgroundColor: Colors.white,
                           label: AppLocalizations.of(context).folder,
                           onTap: controller.onAddGroup),
                       SpeedDialChild(
-                          child: Image.asset(
-                            UIConstants.goodIconPath,
-                            width: 24,
-                          ),
+                          child: Icon(FontAwesomeIcons.boxOpen, color: Colors.blue),
                           backgroundColor: Colors.white,
                           label: AppLocalizations.of(context).good,
                           onTap: controller.onAddGood)

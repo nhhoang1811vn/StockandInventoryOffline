@@ -6,6 +6,7 @@ import 'package:good_manager/app/pages/documents/documents_view.dart';
 import 'package:good_manager/app/pages/expenses/expenses_view.dart';
 import 'package:good_manager/app/pages/goods/goods_view.dart';
 import 'package:good_manager/app/pages/help/help_page_dart.dart';
+import 'package:good_manager/app/pages/home/home_view.dart';
 import 'package:good_manager/app/pages/main_page.dart';
 import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/save_customer/save_customer_view.dart';
@@ -28,8 +29,8 @@ class AppRouter {
 
   Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
-      case Pages.main:
-        return _buildRoute(settings, MainPage());
+      case Pages.home:
+        return _buildRoute(settings, HomePage());
       case Pages.store_list:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(settings, StoresPage(isSelection: args['isSelection']));

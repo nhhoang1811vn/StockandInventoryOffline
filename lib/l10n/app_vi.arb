@@ -94,7 +94,6 @@
   "input_quantity_dialog_title": "Nhâp số lượng",
   "in_stock_text": "Số lượng trong kho: %d",
   "menu_item_invite_friend_header": "Mời bạn bè",
-  "menu_item_invite_friend_description": "Chia sẻ ứng dụng đến bạn bè",
   "send_mail_invite_friend_subject": "Lời mời sử dụng ứng dụng",
   "send_mail_invite_friend_content": "Đây là ứng dụng rất tuyệt vời mà mình sử dụng thường xuyên để quản lý kho, mình muốn giới thiệu nó cho bạn",
   "menu_item_write_review_header": "Viết đánh giá",
@@ -152,5 +151,7 @@
   "beep": "Kêu",
   "vibrate": "Rung",
   "question_or_suggestion_title" : "Câu hỏi và đề xuất",
+  "help_title" : "Trợ giúp",
+  "whats_new_title": "Thông tin cập nhật mới",
   "your_subscriptions_title" : "Thông tin đăng ký PRO"
 }

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+class Config {
+  static String supportEmail = "nhhoang1811vn@gmail.com";
+}
+
 class UIConstants {
   static IconData moreIconData = Icons.more_horiz;
   static IconData searchMenuIconData = Icons.search;
@@ -24,6 +28,8 @@ class UIConstants {
 
   static String ratingIconPath = "images/rating.png";
   static String feedbackIconPath = "images/feedback.png";
+  static String helpIconPath = "images/feedback.png";
+  static String whatsnewIconPath = "images/feedback.png";
   static String communityIconPath = "images/community.png";
 
   static String invitationIconPath = "images/invitation.png";
@@ -31,6 +37,9 @@ class UIConstants {
   static String newIconPath = "images/new.png";
   static String barcodeIconPath = "images/barcode.png";
   static String searchBarcodeIconPath = "images/search_barcode.png";
+
+  //dimension
+  static const double drawerMenuSize = 24.0;
 
   static const TextStyle fieldHintStyle =
       TextStyle(fontWeight: FontWeight.w300, color: Colors.black);

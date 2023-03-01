@@ -89,13 +89,13 @@ class GoodsController extends Controller {
   }
 
   void retrieveGroups() async {
-    int groupId = getSelectedGroupId();
-    presenter.getGroupsByGroupId(groupId);
+    String directory = getDirectory();
+    presenter.getGroupsByDirectory(directory);
   }
 
   void retrieveGoods() async {
-    int groupId = getSelectedGroupId();
-    presenter.getGoodsByGroupId(groupId);
+    String directory = getDirectory();
+    presenter.getGoodsByDirectory(directory);
   }
 
   void refreshItems() {
@@ -176,7 +176,7 @@ class GoodsController extends Controller {
 
   void onAddGood() async {
     Good item = Good();
-    item.groupId = getSelectedGroupId();
+    item.directory = getDirectory();
     item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
 
     final result = await Navigator.of(getContext())
@@ -192,7 +192,7 @@ class GoodsController extends Controller {
 
   void onAddGroup() async {
     Group item = Group();
-    item.groupId = getSelectedGroupId();
+    item.directory = getDirectory();
     item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
 
     final result = await Navigator.of(getContext())
@@ -209,13 +209,12 @@ class GoodsController extends Controller {
       "content": HelpUtils.getMarkdownData(code, HelpType.GOODS)
     });
   }
-
-  int getSelectedGroupId() {
-    if (selectedGroups.isEmpty) {
-      return -1;
-    } else {
-      return selectedGroups.last.id;
-    }
+  String getDirectory(){
+    String result = "/";
+    selectedGroups.forEach((element) {
+      result += element.id.toString() + "/";
+    });
+    return result;
   }
 
   void onSelectedGroupTapped(int index) {
@@ -244,7 +243,7 @@ class GoodsController extends Controller {
                 padding: EdgeInsets.all(16.0),
                 onPressed: () {
                   Navigator.pop(getContext());
-                  onMoveGroupToGroup(group);
+                  openSelectGroupForGroup(group);
                 },
                 child: Text(
                     AppLocalizations.of(getContext()).action_move_to_group),
@@ -336,8 +335,7 @@ class GoodsController extends Controller {
                 padding: EdgeInsets.all(16.0),
                 onPressed: () {
                   Navigator.pop(getContext());
-                  onMoveGoodToGroup(good);
-                  //showDeleteDocumentConfirm(item);
+                  openSelectGroupForGood(good);
                 },
                 child: Text(
                     AppLocalizations.of(getContext()).action_move_to_group),
@@ -356,28 +354,42 @@ class GoodsController extends Controller {
         barrierDismissible: true);
   }
 
-  void onMoveGoodToGroup(Good good) async {
-    int groupId = getSelectedGroupId();
-    final newGroupId = await Navigator.of(getContext())
-        .pushNamed(Pages.select_group, arguments: {"groupId": groupId});
-    if (newGroupId != null) {
-      //result is new group id
-      if (good.groupId != newGroupId) {
-        good.groupId = newGroupId;
-        presenter.updateGood(good);
-      }
+  void openSelectGroupForGood(Good good) async {
+    final newGroup = await Navigator.of(getContext())
+        .pushNamed(Pages.select_group, arguments: {"groupId": -2});
+    if (newGroup != null) {
+      onMoveGoodToGroup(good, newGroup);
     }
   }
-  void onMoveGroupToGroup(Group group) async {
-    int groupId = getSelectedGroupId();
-    final newGroupId = await Navigator.of(getContext())
-        .pushNamed(Pages.select_group, arguments: {"groupId": groupId});
-    if (newGroupId != null) {
-      //result is new group id
-      if (group.groupId != newGroupId) {
-        group.groupId = newGroupId;
-        presenter.updateGroup(group);
-      }
+  void openSelectGroupForGroup(Group group) async {
+    final newGroup = await Navigator.of(getContext())
+        .pushNamed(Pages.select_group, arguments: {"groupId": group.id});
+    if (newGroup != null) {
+      onMoveGroupToGroup(group, newGroup);
+    }
+  }
+  void onMoveGroupToGroup(Group src, Group dest){
+    var destDirectory = "";
+    if (dest.id == -1){
+      destDirectory = "/";
+    }else{
+      destDirectory = dest.directory + dest.id.toString() + "/";
+    }
+    if (src.directory != destDirectory){
+      src.directory = destDirectory;
+      presenter.updateGroup(src);
+    }
+  }
+  void onMoveGoodToGroup(Good src, Group dest){
+    var destDirectory = "";
+    if (dest.id == -1){
+      destDirectory = "/";
+    }else{
+      destDirectory = dest.directory + dest.id.toString() + "/";
+    }
+    if (src.directory != destDirectory){
+      src.directory = destDirectory;
+      presenter.updateGood(src);
     }
   }
 

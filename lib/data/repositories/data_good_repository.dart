@@ -29,9 +29,12 @@ class DataGoodRepository implements GoodRepository {
     return db.updateGood(item);
   }
 
-  @override
-  Future<List<Good>> getGoodsByGroupId(int groupId) {
-    return db.getGoodsByGroupId(groupId);
+  //@override
+  //Future<List<Good>> getGoodsByGroupId(int groupId) {
+  //  return db.getGoodsByGroupId(groupId);
+  //}
+  Future<List<Good>> getGoodsByDirectory(String directory){
+    return db.getGoodsByDirectory(directory);
   }
 
   @override

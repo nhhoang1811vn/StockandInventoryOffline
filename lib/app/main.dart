@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/pages/home/home_view.dart';
 import 'package:good_manager/app/pages/main_page.dart';
 import 'package:good_manager/app/pages/onboarding/on_boarding_view.dart';
 import 'package:good_manager/app/utils/router.dart';
@@ -79,8 +80,12 @@ class MyAppState extends State<MyApp> {
       return MaterialApp(
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          inputDecorationTheme: InputDecorationTheme(
+            isDense: true,
+            //contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+          )
         ),
-        home: firstTime ? OnBoardingPage() : MainPage(),
+        home: firstTime ? OnBoardingPage() : HomePage(),
         onGenerateRoute: _router.getRoute,
         navigatorObservers: [_router.routeObserver],
         locale: locale(_languageCode),

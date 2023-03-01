@@ -8,6 +8,8 @@ import 'package:good_manager/data/repositories/data_expense_repository.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
+import '../main_page.dart';
+
 class ExpensesPage extends View {
   ExpensesPage({Key key}) : super(key: key);
 
@@ -21,6 +23,7 @@ class ExpensesPageView extends ViewState<ExpensesPage, ExpensesController> {
   @override
   Widget get view => Scaffold(
       key: globalKey,
+      drawer: CustomNavigationDrawer(),
       appBar: appBar,
       body: ControlledWidgetBuilder<ExpensesController>(
           builder: (context, controller) {

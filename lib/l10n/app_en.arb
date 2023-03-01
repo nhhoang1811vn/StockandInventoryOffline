@@ -4,7 +4,7 @@
   "expenses_title": "Expenses",
   "empty_goods": "No goods",
   "good": "Good",
-  "folder": "Folder",
+  "folder": "Group",
   "save_goods_title": "Save Good",
   "documents_title": "Document",
   "save_expense_title": "Save Expense",
@@ -94,7 +94,6 @@
   "input_quantity_dialog_title": "Input quantity",
   "in_stock_text": "In Stock: %d",
   "menu_item_invite_friend_header": "Invite friends",
-  "menu_item_invite_friend_description": "Share the good app to your friends",
   "send_mail_invite_friend_subject": "Invitation using App",
   "send_mail_invite_friend_content": "This is a good application, I use it everyday and recommend it for you.",
   "menu_item_write_review_header": "Write a review",
@@ -152,5 +151,7 @@
   "beep": "Beep",
   "vibrate": "Vibrate",
   "question_or_suggestion_title" : "Question or suggestion",
+  "help_title" : "Help",
+  "whats_new_title": "What's New",
   "your_subscriptions_title" : "Your subscriptions"
 }

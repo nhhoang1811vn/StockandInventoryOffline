@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/pages/main_page.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_customer_repository.dart';
 import 'package:good_manager/domain/entities/customer.dart';
@@ -29,6 +30,7 @@ class CustomersPageView extends ViewState<CustomersPage, CustomersController> {
   Widget get view {
     return Scaffold(
         key: globalKey,
+        drawer: CustomNavigationDrawer(),
         appBar: appBar,
         body: ControlledWidgetBuilder<CustomersController>(
             builder: (context, controller) {

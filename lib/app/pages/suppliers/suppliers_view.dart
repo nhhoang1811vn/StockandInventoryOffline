@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/pages/main_page.dart';
+import 'package:good_manager/app/pages/my_drawer.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_controller.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_supplier_repository.dart';
@@ -28,7 +30,8 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
   Widget get view {
     return Scaffold(
         key: globalKey,
-        //appBar: appBar,
+        drawer: CustomNavigationDrawer(),
+        appBar: appBar,
         body: ControlledWidgetBuilder<SuppliersController>(
             builder: (context, controller) {
           return ModalProgressHUD(

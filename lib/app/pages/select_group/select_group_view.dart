@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/select_group/select_group_controller.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_group_repository.dart';
+import 'package:good_manager/domain/entities/group.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class SelectGroupPage extends View {
@@ -46,7 +47,7 @@ class SelectGroupPageView
                 ),
                 title: Text(controller.items[index].name),
                 subtitle: Text(controller.items[index].description),
-                selected: controller.items[index].id == controller.groupId,
+                selected: index == controller.selectedIndex,
                 onTap: () => controller.select(index),
               );
             },

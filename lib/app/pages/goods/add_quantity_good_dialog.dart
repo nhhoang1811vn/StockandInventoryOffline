@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_calculator/flutter_calculator.dart';
+//import 'package:flutter_calculator/flutter_calculator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/good.dart';
@@ -26,8 +25,8 @@ class InputQuantityGoodDialogState extends State<InputQuantityGoodDialog> {
   }
 
   void _showCalculatorDialog(BuildContext context) async {
-    final result = await showCalculator(context: context) ?? 0;
-    quantityTextController.text = result.toInt().toString();
+    /*final result = await showCalculator(context: context) ?? 0;
+    quantityTextController.text = result.toInt().toString();*/
   }
 
   @override

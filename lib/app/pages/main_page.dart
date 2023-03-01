@@ -1,192 +1,246 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/app/pages/customers/customers_view.dart';
+import 'package:good_manager/app/pages/documents/documents_view.dart';
 import 'package:good_manager/app/pages/expenses/expenses_view.dart';
 import 'package:good_manager/app/pages/home/home_view.dart';
+import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/settings/settings_view.dart';
 import 'package:good_manager/app/pages/stores/stores_view.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_view.dart';
 import 'package:good_manager/app/utils/constants.dart';
-
-import 'documents/documents_view.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../data/app_data_manager.dart';
 import 'goods/goods_view.dart';
-import 'more/more_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'help_content.dart';
+import '../widgets/select_message_type_dialog.dart';
 
-class MainPage extends StatefulWidget {
-  MainPage({Key key}) : super(key: key);
 
+class CustomNavigationDrawer extends StatelessWidget{
   @override
-  _MainPageState createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  int selectedIndex = 0;
-  static Widget _homePage = HomePage();
-  static Widget _goodsPage = GoodsPage(isSelection: false);
-  static Widget _documentsPage = DocumentsPage();
-  static Widget _expensesPage = ExpensesPage();
-  static Widget _reportPage = ExpensesPage();
-  static SuppliersPage _suppliersPage = SuppliersPage(isSelection: false);
-  static Widget _customersPage = CustomersPage(isSelection: false);
-  static Widget _storesPage = StoresPage(isSelection: false);
-
-
-  static List<Widget> _widgetOptions = <Widget>[
-    _homePage,
-    _goodsPage,
-    _documentsPage,
-    _expensesPage,
-    _reportPage,
-    _suppliersPage,
-    _customersPage,
-    _storesPage,
-    SettingsPage(),
-  ];
-  static List<Widget> _appbarOptions = <Widget>[
-    AppBar(
-      title: Text("AppViet Quan ly Kho"),
-    ),
-    AppBar(
-      title: Text("AppViet Quan ly Kho"),
-    ),
-    AppBar(
-      title: Text("AppViet Quan ly Kho"),
-    ),
-    AppBar(
-      title: Text("AppViet Quan ly Kho"),
-    ),
-    AppBar(
-      title: Text("AppViet Quan ly Kho"),
-    ),
-    AppBar(
-      title: Text("Suppliers"),
-      actions: [
-        Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          child: GestureDetector(
-            child: Icon(UIConstants.searchMenuIconData, size: 26, color: UIConstants.normalMenuColor),
-            //onTap: _suppliersPage.,
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          child: GestureDetector(
-            child: Icon(UIConstants.sortMenuIconData,
-                size: 26, color: UIConstants.normalMenuColor),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          child: GestureDetector(
-            child: Icon(UIConstants.helpMenuIconData,
-                size: 26, color: UIConstants.normalMenuColor),
-          ),
-        ),
-      ],
-    ),
-    //  AppBar(title: Text(AppLocalizations.of(context).goods_title),),
-  ];
-
-  Widget getListTile(int index, String icon, String title) {
-    return ListTile(
-      leading: Image.asset(
-        icon,
-        width: 24,
+  Widget build(BuildContext context) => Drawer(
+    child: SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          buildHeader(context),
+          buildMenuItems(context)
+        ],
       ),
-      trailing: Visibility(
-        child: Text("Selected"),
-        visible: selectedIndex == index,
+    ),
+  );
+
+  Widget buildHeader(BuildContext context) => Container(
+    padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+  );
+
+  Widget buildMenuItems(BuildContext context) => Container(
+    padding: const EdgeInsets.all(24),
+    child: Wrap(
+      //runSpacing: 4,//vertical spacing
+    children: [
+      ListTile(
+        leading: Image.asset(UIConstants.homeIconPath, width: UIConstants.drawerMenuSize),
+        title: Text(AppLocalizations.of(context).home_title),
+        onTap: () {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+        },
       ),
-      title: Text(title),
-      onTap: () {
-        setState(() {
-          selectedIndex = index;
-        });
-        Navigator.pop(context);
-      },
+      Divider(),
+      ListTile(
+        leading: Image.asset(UIConstants.goodIconPath, width: UIConstants.drawerMenuSize),
+        title: Text(AppLocalizations.of(context).goods_title),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.of(context).push(MaterialPageRoute(builder:(context) => GoodsPage(isSelection: false)));
+        },
+      ),
+      ListTile(
+        leading: Image.asset(UIConstants.documentIconPath, width: UIConstants.drawerMenuSize),
+        title: Text(AppLocalizations.of(context).documents_title),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.of(context).push(MaterialPageRoute(builder:(context) => DocumentsPage()));
+        },
+      ),
+      ListTile(
+        leading: Image.asset(UIConstants.expenseIconPath, width: UIConstants.drawerMenuSize),
+        title: Text(AppLocalizations.of(context).expenses_title),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.of(context).push(MaterialPageRoute(builder:(context) => ExpensesPage()));
+        },
+      ),
+      ListTile(
+        leading: Image.asset(UIConstants.reportIconPath, width: UIConstants.drawerMenuSize),
+        title: Text(AppLocalizations.of(context).report_title),
+        onTap: () {
+          Navigator.pop(context);
+          //Navigator.of(context).push(MaterialPageRoute(builder:(context) => Report()));
+        },
+      ),
+      Divider(),
+      ListTile(
+        leading: Image.asset(UIConstants.supplierIconPath, width: UIConstants.drawerMenuSize),
+        title: Text(AppLocalizations.of(context).suppliers_title),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.of(context).push(MaterialPageRoute(builder:(context) => SuppliersPage(isSelection: false)));
+        },
+      ),
+      ListTile(
+        leading: Image.asset(UIConstants.customerIconPath, width: UIConstants.drawerMenuSize),
+        title: Text(AppLocalizations.of(context).customers_title),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.of(context).push(MaterialPageRoute(builder:(context) => CustomersPage(isSelection: false)));
+        },
+      ),
+      ListTile(
+        leading: Image.asset(UIConstants.storeIconPath, width: UIConstants.drawerMenuSize),
+        title: Text(AppLocalizations.of(context).stores_title),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.of(context).push(MaterialPageRoute(builder:(context) => StoresPage(isSelection: false)));
+        },
+      ),
+      Divider(),
+      ListTile(
+        leading: Image.asset(UIConstants.settingsIconPath, width: UIConstants.drawerMenuSize),
+        title: Text(AppLocalizations.of(context).settings_title),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingsPage()));
+        },
+      ),
+      ListTile(
+        leading: Image.asset(UIConstants.invitationIconPath, width: UIConstants.drawerMenuSize),
+        title: Text(AppLocalizations.of(context).menu_item_invite_friend_header),
+        //subtitle: Text(AppLocalizations.of(context).menu_item_invite_friend_description),
+        onTap: () => onInviteFriend(context),
+      ),
+      ListTile(
+        leading: Image.asset(UIConstants.feedbackIconPath, width: UIConstants.drawerMenuSize),
+        title: Text(AppLocalizations.of(context).question_or_suggestion_title),
+        onTap: () => onSelectMessageType(context),
+      ),
+      ListTile(
+        leading: Image.asset(UIConstants.helpIconPath, width: UIConstants.drawerMenuSize),
+        title: Text(AppLocalizations.of(context).help_title),
+        onTap: () => onHelp(context),
+      ),
+      ListTile(
+        leading: Image.asset(UIConstants.communityIconPath, width: UIConstants.drawerMenuSize),
+        title: Text(AppLocalizations.of(context).menu_item_community_header),
+        onTap: () => onCommunity(context),
+      ),
+      ListTile(
+        leading: Image.asset(UIConstants.whatsnewIconPath, width: UIConstants.drawerMenuSize),
+        title: Text(AppLocalizations.of(context).whats_new_title),
+        onTap: () => onWhatsNew(context),
+      )
+    ]),
+  );
+  void onInviteFriend(BuildContext context) {
+    String encodeQueryParameters(Map<String, String> params) {
+      return params.entries
+          .map((e) =>
+      '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+          .join('&');
+    }
+
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: '',
+      query: encodeQueryParameters(<String, String>{
+        'subject':
+        AppLocalizations.of(context).send_mail_invite_friend_subject,
+        'body':
+        AppLocalizations.of(context).send_mail_invite_friend_content,
+      }),
     );
+
+    launch(emailLaunchUri.toString());
+  }
+  void onSelectMessageType(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_) => SelectMessageTypeDialog((messageType) {
+          switch(messageType){
+            case MessageType.BUG_REPORT:
+              onBugReport(context);
+              break;
+            case MessageType.FEEDBACK:
+              onFeedback(context);
+              break;
+            case MessageType.SUGGESTION:
+              onSuggestion(context);
+              break;
+            case MessageType.QUESTION:
+              onQuestion(context);
+              break;
+          }
+        }),
+        barrierDismissible: true);
+  }
+  void onBugReport(BuildContext context){
+    String subject = AppLocalizations.of(context).send_mail_bug_report_subject;
+    onSendMail(subject);
+  }
+  void onSuggestion(BuildContext context){
+    String subject = AppLocalizations.of(context).send_mail_suggestion_subject;
+    onSendMail(subject);
+  }
+  void onQuestion(BuildContext context){
+    String subject = AppLocalizations.of(context).send_mail_question_subject;
+    onSendMail(subject);
+  }
+  void onFeedback(BuildContext context){
+    String subject = AppLocalizations.of(context).send_mail_feedback_subject;
+    onSendMail(subject);
+  }
+  void onSendMail(String subject){
+    String encodeQueryParameters(Map<String, String> params) {
+      return params.entries
+          .map((e) =>
+      '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+          .join('&');
+    }
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: Config.supportEmail,
+      query: encodeQueryParameters(<String, String>{
+        'subject': subject,
+        'body': ""
+      }),
+    );
+    launchUrl(emailLaunchUri);
+    //launch(emailLaunchUri.toString());
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _appbarOptions[selectedIndex],
-      body: Container(child: _widgetOptions[selectedIndex]),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Drawer Header'),
-            ),
-            getListTile(0, UIConstants.homeIconPath,
-                AppLocalizations.of(context).home_title),
-            Divider(),
-            getListTile(1, UIConstants.goodIconPath,
-                AppLocalizations.of(context).goods_title),
-            getListTile(2, UIConstants.documentIconPath,
-                AppLocalizations.of(context).documents_title),
-            getListTile(3, UIConstants.expenseIconPath,
-                AppLocalizations.of(context).expenses_title),
-            getListTile(4, UIConstants.reportIconPath,
-                AppLocalizations.of(context).report_title),
-            Divider(),
-            getListTile(5, UIConstants.supplierIconPath,
-                AppLocalizations.of(context).suppliers_title),
-            getListTile(6, UIConstants.customerIconPath,
-                AppLocalizations.of(context).customers_title),
-            getListTile(7, UIConstants.storeIconPath,
-                AppLocalizations.of(context).stores_title),
-            Divider(),
-            ListTile(
-              leading: Image.asset(
-                UIConstants.settingsIconPath,
-                width: 24,
-              ),
-              title: Text(AppLocalizations.of(context).settings_title),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: Image.asset(
-                UIConstants.settingsIconPath,
-                width: 24,
-              ),
-              title: Text(
-                  AppLocalizations.of(context).question_or_suggestion_title),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: Image.asset(
-                UIConstants.settingsIconPath,
-                width: 24,
-              ),
-              title:
-                  Text(AppLocalizations.of(context).your_subscriptions_title),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: Image.asset(
-                UIConstants.settingsIconPath,
-                width: 24,
-              ),
-              title: Text("Help"),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: Image.asset(
-                UIConstants.settingsIconPath,
-                width: 24,
-              ),
-              title: Text("What's news"),
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
-    );
+  void onWhatsNew(BuildContext context) async{
+    String code = await appDataManager.sharedPrefsHelper.getLanguageCode();
+    Navigator.of(context).pushNamed(Pages.help, arguments: {
+      "title": AppLocalizations.of(context).menu_item_whats_new_header,
+      "content": HelpUtils.getMarkdownData(code, HelpType.WHATSNEW)
+    });
+  }
+  void onHelp(BuildContext context){
+
+  }
+  void onCommunity(BuildContext context) async{
+    String url = "fb://profile/112596241092855";
+    String fallbackUrl = "https://www.facebook.com/AppViet-Qu%E1%BA%A3n-l%C3%BD-kho-112596241092855";
+    try {
+      bool launched =
+          await launch(url, forceSafariVC: false, forceWebView: false);
+      if (!launched) {
+        await launch(fallbackUrl, forceSafariVC: false, forceWebView: false);
+      }
+    } catch (e) {
+      await launch(fallbackUrl, forceSafariVC: false, forceWebView: false);
+    }
   }
 }

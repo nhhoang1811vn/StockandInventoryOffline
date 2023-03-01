@@ -22,6 +22,9 @@ class OnBoardingPresenter extends Presenter {
   void setSelectedStoreId(int storeId) async {
     appDataManager.sharedPrefsHelper.setSelectedStoreId(storeId);
   }
+  void setSelectedStoreName(String storeName) async{
+    appDataManager.sharedPrefsHelper.setSelectedStoreName(storeName);
+  }
 
   void insert(Store store) => insertItemUseCase.execute(
       InsertStoreUseCaseObserver(this), BaseInsertItemUseCaseParam(store));

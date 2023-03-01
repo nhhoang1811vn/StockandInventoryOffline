@@ -1,5 +1,5 @@
 class Pages {
-  static const String main = '/main';
+  static const String home = '/home';
 
   static const String good_list = '/good_list';
   static const String save_good = '/save_good';

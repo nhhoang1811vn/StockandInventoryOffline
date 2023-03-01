@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calculator/flutter_calculator.dart';
+//import 'package:flutter_calculator/flutter_calculator.dart';
 import 'package:good_manager/app/pages/base_save_item_controller.dart';
 import 'package:good_manager/app/pages/save_expense/save_expense_presenter.dart';
 import 'package:good_manager/domain/entities/expense.dart';
@@ -35,8 +35,8 @@ class SaveExpenseController
   }
 
   void onOpenCalculator() async {
-    final result = await showCalculator(context: getContext()) ?? 0;
-    amountTextController.text = result.toInt().toString();
+    /*final result = await showCalculator(context: getContext()) ?? 0;
+    amountTextController.text = result.toInt().toString();*/
   }
 
   @override

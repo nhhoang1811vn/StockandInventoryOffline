@@ -14,6 +14,8 @@ import 'package:good_manager/data/repositories/data_supplier_repository.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:sprintf/sprintf.dart';
 
+import '../main_page.dart';
+
 class HomePage extends View {
   HomePage({Key key}) : super(key: key);
 
@@ -41,6 +43,8 @@ class HomePageView extends ViewState<HomePage, HomeController> {
   @override
   Widget get view => Scaffold(
       key: globalKey,
+      appBar: AppBar(title: Text(AppLocalizations.of(context).home_title)),
+      drawer: CustomNavigationDrawer(),
       body: ControlledWidgetBuilder<HomeController>(
           builder: (context, controller) {
         return ModalProgressHUD(

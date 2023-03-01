@@ -1,9 +1,8 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:flutter_calculator/flutter_calculator.dart';
+//import 'package:flutter_calculator/flutter_calculator.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/pages.dart';
@@ -29,8 +28,9 @@ class SaveGoodController extends Controller {
 
   int get quantity => _quantity;
 
-  String avatar = "";
   List<String> files = [];
+
+  int selectedImagePosition = -1;
 
   SaveGoodController(goodRepository, this._item, this._quantity)
       : presenter = SaveGoodPresenter(goodRepository),
@@ -40,11 +40,13 @@ class SaveGoodController extends Controller {
     barCodeTextController = TextEditingController();
     quantityTextController = TextEditingController();
 
-    avatar = _item.avatar;
     nameTextController.text = _item.name;
     descriptionTextController.text = _item.description;
     barCodeTextController.text = _item.barCode;
     files = _item.files;
+    if (_item.files.isNotEmpty){
+      selectedImagePosition = 0;
+    }
 
     if (_quantity != null) {
       quantityTextController.text = _quantity.toString();
@@ -99,7 +101,6 @@ class SaveGoodController extends Controller {
 
 
   void updateItem() {
-    _item.avatar = avatar;
     _item.name = nameTextController.text;
     _item.description = descriptionTextController.text;
     _item.barCode = barCodeTextController.text;
@@ -123,47 +124,43 @@ class SaveGoodController extends Controller {
   }
 
   void onInputQuantityPressed() async {
-    final result = await showCalculator(context: getContext()) ?? 0;
-    quantityTextController.text = result.toInt().toString();
+    /*final result = await showCalculator(context: getContext()) ?? 0;
+    quantityTextController.text = result.toInt().toString();*/
   }
 
-  void onTakeAPictureForAvatar() async {
-    final result =
-        await Navigator.of(getContext()).pushNamed(Pages.take_picture);
-    if (result != null) {
-      avatar = result;
-      refreshUI();
-    }
-  }
-
-  void onTakeAPictureForFiles() async {
-    final result =
-        await Navigator.of(getContext()).pushNamed(Pages.take_picture);
-    if (result != null) {
-      files.add(result);
-      refreshUI();
-    }
-  }
-
-  void onLoadPictureFromGalleryForAvatar() async {
-    FilePickerResult result = await FilePicker.platform
-        .pickFiles(allowMultiple: false, type: FileType.image);
-
-    if (result != null) {
-      avatar = result.paths[0];
-      refreshUI();
-    }
-  }
-
-  void onLoadPictureFromGalleryForFiles() async {
+  void onAddPhotoPressed() async{
     FilePickerResult result = await FilePicker.platform
         .pickFiles(allowMultiple: true, type: FileType.image);
-
     if (result != null) {
       files.addAll(result.paths);
+      if (selectedImagePosition == -1){
+        selectedImagePosition = 0;
+      }
       refreshUI();
     }
   }
+  void onTakePhotoPressed() async{
+    final result =
+    await Navigator.of(getContext()).pushNamed(Pages.take_picture);
+    if (result != null) {
+      files.add(result);
+      //if (selectedFile.isEmpty){
+      //  selectedFile = (String)result
+      //}
+      refreshUI();
+    }
+  }
+  void onChangeSelected(){
+
+  }
+  void onImagePressed(int position){
+    selectedImagePosition = position;
+    refreshUI();
+  }
+
+
+
+
 
   void onBrowseFile() async {
     FilePickerResult result =
@@ -177,38 +174,7 @@ class SaveGoodController extends Controller {
       // User canceled the picker
     }
   }
-
-  void onChangeAvatar() async {
-    showDialog(
-        context: getContext(),
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            children: <Widget>[
-              SimpleDialogOption(
-                padding: EdgeInsets.all(16.0),
-                onPressed: () {
-                  Navigator.pop(getContext());
-                  onTakeAPictureForAvatar();
-                },
-                child:
-                    Text(AppLocalizations.of(getContext()).action_take_picture),
-              ),
-              SimpleDialogOption(
-                padding: EdgeInsets.all(16.0),
-                onPressed: () {
-                  Navigator.pop(getContext());
-                  onLoadPictureFromGalleryForAvatar();
-                },
-                child: Text(
-                    AppLocalizations.of(getContext()).action_load_from_gallery),
-              )
-            ],
-          );
-        },
-        barrierDismissible: true);
-  }
-
-  void onAddFile() async {
+  /*void onAddFile() async {
     showDialog(
         context: getContext(),
         builder: (BuildContext context) {
@@ -281,5 +247,5 @@ class SaveGoodController extends Controller {
             ],
           );
         });
-  }
+  }*/
 }

@@ -4,10 +4,10 @@ import 'package:good_manager/domain/entities/goods_settings.dart';
 import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/usecases/base_update_item_usecase.dart';
 import 'package:good_manager/domain/usecases/goods/delete_good_usecase.dart';
-import 'package:good_manager/domain/usecases/goods/get_good_usecase.dart';
+import 'package:good_manager/domain/usecases/goods/get_goods_by_directory_usecase.dart';
 import 'package:good_manager/domain/usecases/goods/get_goods_settings_usecase.dart';
 import 'package:good_manager/domain/usecases/goods/set_goods_settings_usecase.dart';
-import 'package:good_manager/domain/usecases/groups/get_group_usecase.dart';
+import 'package:good_manager/domain/usecases/groups/get_groups_by_directory_usecase.dart';
 
 class GoodsPresenter extends Presenter {
   Function getGroupsOnNext;
@@ -30,8 +30,8 @@ class GoodsPresenter extends Presenter {
   Function updateGroupOnComplete;
   Function updateGroupOnError;
 
-  GetGroupsByGroupIdUseCase getGroupsByGroupIdUseCase;
-  GetGoodsByGroupIdUseCase getGoodsByGroupIdUseCase;
+  GetGroupsByDirectoryUseCase getGroupsByDirectoryUseCase;
+  GetGoodsByDirectoryUseCase getGoodsByDirectoryUseCase;
   GetGoodsSettingsUseCase getGoodsSettingsUseCase;
   SetGoodsSettingsUseCase setGoodsSettingsUseCase;
 
@@ -41,8 +41,8 @@ class GoodsPresenter extends Presenter {
   BaseUpdateItemUseCase<Group> updateGroupUseCase;
 
   GoodsPresenter(groupRepository, goodRepository, transactionRepository) {
-    getGroupsByGroupIdUseCase = GetGroupsByGroupIdUseCase(groupRepository);
-    getGoodsByGroupIdUseCase = GetGoodsByGroupIdUseCase(goodRepository);
+    getGroupsByDirectoryUseCase = GetGroupsByDirectoryUseCase(groupRepository);
+    getGoodsByDirectoryUseCase = GetGoodsByDirectoryUseCase(goodRepository);
 
     getGoodsSettingsUseCase = GetGoodsSettingsUseCase(goodRepository);
     setGoodsSettingsUseCase = SetGoodsSettingsUseCase(goodRepository);
@@ -56,8 +56,8 @@ class GoodsPresenter extends Presenter {
 
   @override
   void dispose() {
-    getGroupsByGroupIdUseCase.dispose();
-    getGoodsByGroupIdUseCase.dispose();
+    getGroupsByDirectoryUseCase.dispose();
+    getGoodsByDirectoryUseCase.dispose();
     getGoodsSettingsUseCase.dispose();
     setGoodsSettingsUseCase.dispose();
 
@@ -66,12 +66,12 @@ class GoodsPresenter extends Presenter {
     updateGroupUseCase.dispose();
   }
 
-  void getGroupsByGroupId(groupId) => getGroupsByGroupIdUseCase.execute(
+  void getGroupsByDirectory(directory) => getGroupsByDirectoryUseCase.execute(
       _GetGroupsUseCaseObserver(this),
-      GetGroupsByGroupIdUseCaseParams(groupId));
+      GetGroupsByDirectoryUseCaseParams(directory));
 
-  void getGoodsByGroupId(groupId) => getGoodsByGroupIdUseCase.execute(
-      _GetGoodsUseCaseObserver(this), GetGoodsByGroupIdUseCaseParams(groupId));
+  void getGoodsByDirectory(directory) => getGoodsByDirectoryUseCase.execute(
+      _GetGoodsUseCaseObserver(this), GetGoodsByDirectoryUseCaseParams(directory));
 
   void getSettings() =>
       getGoodsSettingsUseCase.execute(_GetGoodsSettingsUseCaseObserver(this));

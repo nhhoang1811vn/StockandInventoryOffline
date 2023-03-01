@@ -57,8 +57,8 @@ class GoodItemRow extends StatelessWidget {
               ? getPendingView()
               : Container()
         ]),
-        leading: item.avatar.isNotEmpty
-            ? getAvatarWidget(item.avatar)
+        leading: item.files.isNotEmpty
+            ? getAvatarWidget(item.files.first)
             : emptyAvatarWidget,
         onTap: () => onGoodTapped(item),
         onLongPress: () => onGoodLongPressed(item));

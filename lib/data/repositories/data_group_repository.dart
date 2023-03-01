@@ -24,8 +24,8 @@ class DataGroupRepository implements GroupRepository {
   }
 
   @override
-  Future<List<Group>> getGroupsByGroupId(int groupId) {
-    return db.getGroupsByGroupId(groupId);
+  Future<List<Group>> getGroupsByDirectory(String directory) {
+    return db.getGroupsByDirectory(directory);
   }
 
   @override

@@ -4,7 +4,7 @@ import 'package:good_manager/domain/repositories/base_common_repository.dart';
 
 abstract class GoodRepository
     extends BaseCommonRepository<Good, GoodsSettings> {
-  Future<List<Good>> getGoodsByGroupId(int groupId);
+  Future<List<Good>> getGoodsByDirectory(String directory);
 
   Future<Good> getGoodByBarcode(String barcode);
 

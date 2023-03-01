@@ -65,10 +65,10 @@ class DBHelper {
             "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id))");
 
     await db.execute(
-        "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, groupId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
+        "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, directory TEXT, createdDate INTEGER, updatedDate INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
     await db.execute(
-        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, avatar TEXT, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
+        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, directory TEXT, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
 
     await db.execute(
@@ -300,12 +300,12 @@ class DBHelper {
     return groups;
   }
 
-  Future<List<Group>> getGroupsByGroupId(int groupId) async {
+  Future<List<Group>> getGroupsByDirectory(String directory) async {
     var dbClient = await db;
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     List<Map> list = await dbClient.rawQuery(
-        'SELECT * FROM $GROUPS_TABLE_NAME WHERE storeId = ? AND groupId = ?',
-        [storeId, groupId]);
+        'SELECT * FROM $GROUPS_TABLE_NAME WHERE storeId = ? AND directory = ?',
+        [storeId, directory]);
     List<Group> groups = new List();
     for (int i = 0; i < list.length; i++) {
       var group = Group.map(list[i]);
@@ -367,19 +367,19 @@ class DBHelper {
     }
     return goods;
   }
-  Future<List<Good>> getGoodsByGroupId(int groupId) async {
+  Future<List<Good>> getGoodsByDirectory(String directory) async {
     var dbClient = await db;
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     List<Map> list = await dbClient.rawQuery(
-        'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ? AND groupId = ?',
-        [storeId, groupId]);
+        'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ? AND directory = ?',
+        [storeId, directory]);
     List<Good> goods = new List();
     for (int i = 0; i < list.length; i++) {
       var good = Good.map(list[i]);
       int incomingQuantity =
-          await getSumQuantityByGoodId(DocumentType.incoming, good.id);
+      await getSumQuantityByGoodId(DocumentType.incoming, good.id);
       int outgoingQuantity =
-          await getSumQuantityByGoodId(DocumentType.outgoing, good.id);
+      await getSumQuantityByGoodId(DocumentType.outgoing, good.id);
       good.quantity = incomingQuantity - outgoingQuantity;
       goods.add(good);
     }

@@ -5,6 +5,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/save_good/save_good_controller.dart';
 import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/app/widgets/SelectedStoreView.dart';
 import 'package:good_manager/data/repositories/data_good_repository.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:path/path.dart' as p;
@@ -29,44 +30,30 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
   Widget get view => Scaffold(
       key: globalKey,
       appBar: appBar,
-      body: Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: UIConstants.screenSpace,
-              vertical: UIConstants.screenSpace),
-          child: ListView(
-            children: <Widget>[
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    ControlledWidgetBuilder<SaveGoodController>(
-                        builder: (context, controller) {
-                      return Visibility(
-                        child: changeAvatarButton,
-                        visible: controller.avatar.isEmpty,
-                      );
-                    }),
-                    ControlledWidgetBuilder<SaveGoodController>(
-                        builder: (context, controller) {
-                      return Visibility(
-                        child: avatar,
-                        visible: controller.avatar.isNotEmpty,
-                      );
-                    }),
-                    name,
-                    description,
-                    barCode,
-                    ControlledWidgetBuilder<SaveGoodController>(
-                        builder: (context, controller) {
-                      return Visibility(
-                        child: quantity,
-                        visible: controller.quantity != null,
-                      );
-                    })
-                  ],
-                ),
+      body: Column(children: [
+        SelectedStoreView(),
+        Expanded(
+            child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.all(UIConstants.screenSpace),
+          children: <Widget>[
+            Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  name,
+                  SizedBox(height: 12),
+                  description,
+                  SizedBox(height: 12),
+                  barCode,
+                  SizedBox(height: 12),
+                  quantity,
+                  previewImage,
+                  imageListView,
+                ],
               ),
-              Container(
+            ),
+            /*Container(
                   child: Text(
                     AppLocalizations.of(context).field_attachments,
                     style: TextStyle(color: Colors.grey[700], fontSize: 16),
@@ -74,9 +61,10 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
                   margin: const EdgeInsets.only(top: 16)),
               Container(
                   child: addFileButton, margin: const EdgeInsets.only(top: 12)),
-              filesView
-            ],
-          )));
+              filesView*/
+          ],
+        ))
+      ]));
 
   Widget get appBar => AppBar(
           title: Text(AppLocalizations.of(context).save_goods_title),
@@ -95,44 +83,15 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
             })
           ]);
 
-  Widget get changeAvatarButton => ControlledWidgetBuilder<SaveGoodController>(
-          builder: (context, controller) {
-        return RawMaterialButton(
-          onPressed: controller.onChangeAvatar,
-          elevation: 2.0,
-          fillColor: Colors.white,
-          child: Icon(
-            Icons.camera_alt,
-            size: 35.0,
-          ),
-          padding: EdgeInsets.all(20.0),
-          shape: CircleBorder(),
-        );
-      });
-
-  Widget get avatar => ControlledWidgetBuilder<SaveGoodController>(
-          builder: (context, controller) {
-        return GestureDetector(
-        onTap: controller.onChangeAvatar,child: Container(
-            width: 75,
-            height: 75,
-            alignment: Alignment.center,
-            decoration: new BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                    image: FileImage(File(controller.avatar)),
-                    fit: BoxFit.fill))));
-      });
-
   Widget get name => ControlledWidgetBuilder<SaveGoodController>(
           builder: (context, controller) {
         return TextFormField(
             controller: controller.nameTextController,
             onChanged: (a) => controller.validate({
-              'context': context,
-              'formKey': _formKey,
-              'globalKey': globalKey
-            }),
+                  'context': context,
+                  'formKey': _formKey,
+                  'globalKey': globalKey
+                }),
             decoration: InputDecoration(
                 labelText: AppLocalizations.of(context).field_name),
             validator: (String value) {
@@ -145,7 +104,7 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
       });
 
   Widget get description => ControlledWidgetBuilder<SaveGoodController>(
-      builder: (context, controller) {
+          builder: (context, controller) {
         return TextFormField(
           controller: controller.descriptionTextController,
           decoration: InputDecoration(
@@ -153,67 +112,97 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
         );
       });
 
+  Widget get addPhotoButton => ControlledWidgetBuilder<SaveGoodController>(
+          builder: (context, controller) {
+        return MaterialButton(
+          minWidth: 24,
+          onPressed: controller.onAddPhotoPressed,
+          color: Colors.blue,
+          textColor: Colors.white,
+          child: Icon(
+            Icons.add_photo_alternate_outlined,
+            size: 24,
+          ),
+          padding: EdgeInsets.all(8),
+          shape: CircleBorder(),
+        );
+      });
+
+  Widget get takePhotoButton => ControlledWidgetBuilder<SaveGoodController>(
+          builder: (context, controller) {
+        return MaterialButton(
+          minWidth: 24,
+          onPressed: controller.onTakePhotoPressed,
+          color: Colors.blue,
+          textColor: Colors.white,
+          child: Icon(
+            Icons.add_a_photo_outlined,
+            size: 24,
+          ),
+          padding: EdgeInsets.all(8),
+          shape: CircleBorder(),
+        );
+      });
+
   Widget get barCode => ControlledWidgetBuilder<SaveGoodController>(
-      builder: (context, controller) {
+          builder: (context, controller) {
         return Row(
           children: [
             Expanded(
                 child: TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context).field_bar_code),
-              controller: controller.barCodeTextController,
-            )),
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context).field_bar_code),
+                    controller: controller.barCodeTextController)),
             Align(
                 alignment: Alignment.centerRight,
-                child: IconButton(
-                    icon: Image.asset(
-                      UIConstants.barcodeIconPath,
-                      width: 24,
-                    ),
-                    onPressed: controller.onInputBarCodePressed))
+                child: MaterialButton(
+                  minWidth: 24,
+                  onPressed: controller.onInputBarCodePressed,
+                  color: Colors.blue,
+                  textColor: Colors.white,
+                  child: Icon(
+                    Icons.barcode_reader,
+                    size: 24,
+                  ),
+                  padding: EdgeInsets.all(8),
+                  shape: CircleBorder(),
+                ))
           ],
         );
       });
 
   Widget get quantity => ControlledWidgetBuilder<SaveGoodController>(
-      builder: (context, controller) {
-        return Row(
-          children: [
-            Expanded(
-                child: TextFormField(
-              decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context).field_quantity),
-              controller: controller.quantityTextController,
-            )),
-            Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                    icon: Image.asset(
-                      UIConstants.calculatorIconPath,
-                      width: 24,
-                    ),
-                    onPressed: controller.onInputQuantityPressed))
-          ],
-        );
-      });
-
-  Widget get addFileButton => ControlledWidgetBuilder<SaveGoodController>(
           builder: (context, controller) {
-        return OutlinedButton(
-          //style: outlineButtonStyle,
-          onPressed: controller.onAddFile,
-          child: Padding(
-            padding: EdgeInsets.only(top: 16, bottom: 16),
-            child: Text(
-              AppLocalizations.of(context).action_add_attachment,
-              style: TextStyle(fontSize: 16),
-            ),
-          ),
-        );
+        return Visibility(
+            visible: controller.quantity != null,
+            child: Row(
+              children: [
+                Expanded(
+                    child: TextFormField(
+                  decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context).field_quantity),
+                  controller: controller.quantityTextController,
+                )),
+                Align(
+                    alignment: Alignment.centerRight,
+                    child: MaterialButton(
+                      minWidth: 24,
+                      onPressed: controller.onInputQuantityPressed,
+                      color: Colors.blue,
+                      textColor: Colors.white,
+                      child: Icon(
+                        Icons.calculate,
+                        size: 24,
+                      ),
+                      padding: EdgeInsets.all(8),
+                      shape: CircleBorder(),
+                    ))
+              ],
+            ));
       });
 
-  Widget get filesView => ControlledWidgetBuilder<SaveGoodController>(
+  /*Widget get filesView => ControlledWidgetBuilder<SaveGoodController>(
           builder: (context, controller) {
         return Container(
           child: ListView.builder(
@@ -233,6 +222,50 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
               scrollDirection: Axis.vertical),
           height: 500,
         );
+      });*/
+  Widget get previewImage => ControlledWidgetBuilder<SaveGoodController>(builder: (context, controller) {
+    return controller.selectedImagePosition > -1?
+      Container(
+          width: 250,
+          height: 250,
+        alignment: Alignment.center,
+        decoration: new BoxDecoration(
+            image: DecorationImage(
+                image: FileImage(File(controller.files[controller.selectedImagePosition])), fit: BoxFit.fill))
+    ):SizedBox(height: 20.0);});
+
+  Widget get imageListView => ControlledWidgetBuilder<SaveGoodController>(
+          builder: (context, controller) {
+        return Container(
+          padding: const EdgeInsets.all(4),
+          child: Row(
+            children: [
+              Expanded(
+                  child: Container(
+                      height: 80,
+                      child: ListView.builder(
+                          itemBuilder: (context, position) {
+                            return GestureDetector(onTap: () => controller.onImagePressed(position),child:  Container(
+                                margin: EdgeInsets.only(left: 4, right: 4),
+                                width: 80,
+                                height: 80,
+                                alignment: Alignment.center,
+                                decoration: new BoxDecoration(
+                                    border: position == controller.selectedImagePosition ? Border.all(color: Colors.blue) : null,
+                                    image: DecorationImage(
+                                        image: FileImage(File(controller.files[position])), fit: BoxFit.contain))
+                            ));
+                          },
+                          itemCount: controller.files.length,
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true))),
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: Column(children: [addPhotoButton, takePhotoButton]))
+            ],
+          ),
+          decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+        );
       });
 
   Widget getLeadingFile(String path) {
@@ -244,7 +277,6 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
           decoration: new BoxDecoration(
               image: DecorationImage(
                   image: FileImage(File(path)), fit: BoxFit.fill))
-          //  child: Image.file(file),
           );
     } else {
       return Container(
