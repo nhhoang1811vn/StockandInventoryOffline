@@ -15,6 +15,8 @@ class UIConstants {
 
   static const double screenSpace = 16.0;
 
+  static String appIconPath = "images/good.png";
+
   static String homeIconPath = "images/home.png";
   static String goodIconPath = "images/good.png";
   static String folderIconPath = "images/folder.png";
@@ -28,13 +30,12 @@ class UIConstants {
 
   static String ratingIconPath = "images/rating.png";
   static String feedbackIconPath = "images/feedback.png";
-  static String helpIconPath = "images/feedback.png";
-  static String whatsnewIconPath = "images/feedback.png";
+  static String helpIconPath = "images/help.png";
+  static String whatsnewIconPath = "images/new.png";
   static String communityIconPath = "images/community.png";
 
   static String invitationIconPath = "images/invitation.png";
   static String settingsIconPath = "images/settings.png";
-  static String newIconPath = "images/new.png";
   static String barcodeIconPath = "images/barcode.png";
   static String searchBarcodeIconPath = "images/search_barcode.png";
 

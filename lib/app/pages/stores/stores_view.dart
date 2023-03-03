@@ -6,7 +6,7 @@ import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_store_repository.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import '../main_page.dart';
+import '../custom_navigation_drawer.dart';
 
 class StoresPage extends View {
   final bool isSelection;
@@ -27,7 +27,7 @@ class _StoresPageView extends ViewState<StoresPage, StoresController> {
   Widget get view => Scaffold(
       key: globalKey,
       appBar: appBar,
-      drawer: CustomNavigationDrawer(),
+      drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 7,),
       body: ControlledWidgetBuilder<StoresController>(
           builder: (context, controller) {
         return ModalProgressHUD(

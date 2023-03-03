@@ -1,14 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/pages/main_page.dart';
+import 'package:good_manager/app/pages/custom_navigation_drawer.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_document_repository.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/search_documents_type.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
+import '../../widgets/selected_store_view.dart';
 import 'document_item_row.dart';
 import 'documents_controller.dart';
 
@@ -63,15 +63,18 @@ class DocumentPageView extends ViewState<DocumentsPage, DocumentsController> {
       length: 3,
       child: Builder(builder: (BuildContext context) {
         return Scaffold(
-          drawer: CustomNavigationDrawer(),
+          drawer: CustomNavigationDrawer(selectedIndex: 2),
             appBar: appBar,
-            body: TabBarView(
-              children: [
-                allDocumentView,
-                incomingDocumentView,
-                outgoingDocumentView,
-              ],
-            ),
+            body:
+              //SelectedStoreView(),
+              TabBarView(
+                children: [
+                  allDocumentView,
+                  incomingDocumentView,
+                  outgoingDocumentView,
+                ]
+              )
+             ,
             floatingActionButton: ControlledWidgetBuilder<DocumentsController>(
                 builder: (context, controller) {
               return FloatingActionButton(
@@ -89,6 +92,7 @@ class DocumentPageView extends ViewState<DocumentsPage, DocumentsController> {
             preferredSize: Size.fromHeight(showSearchView ? (74.0 + 65.0) : 74),
             child: Column(
               children: [
+                SelectedStoreView(),
                 Visibility(child: searchBar, visible: showSearchView),
                 TabBar(
                   indicatorColor: Colors.white,

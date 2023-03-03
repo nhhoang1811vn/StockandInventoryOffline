@@ -7,7 +7,6 @@ import 'package:good_manager/app/pages/expenses/expenses_view.dart';
 import 'package:good_manager/app/pages/goods/goods_view.dart';
 import 'package:good_manager/app/pages/help/help_page_dart.dart';
 import 'package:good_manager/app/pages/home/home_view.dart';
-import 'package:good_manager/app/pages/main_page.dart';
 import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/save_customer/save_customer_view.dart';
 import 'package:good_manager/app/pages/save_document/save_document_view.dart';

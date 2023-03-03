@@ -6,7 +6,7 @@ import 'package:good_manager/app/pages/stores/stores_presenter.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/domain/entities/stores_settings.dart';
 
-import '../base_list_controller.dart';
+import '../base/base_list_controller.dart';
 import '../help_content.dart';
 
 class StoresController

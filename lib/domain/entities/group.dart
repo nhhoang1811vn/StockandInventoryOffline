@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:good_manager/domain/entities/base_model.dart';
 
 class Group extends BaseModel {
   String barCode = "";
   int storeId;
   String directory;
+  List<String> files = [];
 
   Group();
   Group.map(dynamic obj) {
@@ -11,6 +14,7 @@ class Group extends BaseModel {
     this.barCode = obj["barCode"];
     this.storeId = obj["storeId"];
     this.directory = obj["directory"];
+    this.files = (jsonDecode(obj["files"]) as List<dynamic>).cast<String>();
   }
 
   Map<String, dynamic> toMap() {
@@ -18,6 +22,7 @@ class Group extends BaseModel {
     map["barCode"] = barCode;
     map["storeId"] = storeId;
     map["directory"] = directory;
+    map["files"] = jsonEncode(files);
     return map;
   }
 }

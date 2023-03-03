@@ -2,7 +2,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/home/home_view.dart';
-import 'package:good_manager/app/pages/main_page.dart';
 import 'package:good_manager/app/pages/onboarding/on_boarding_view.dart';
 import 'package:good_manager/app/utils/router.dart';
 import 'package:good_manager/data/app_data_manager.dart';

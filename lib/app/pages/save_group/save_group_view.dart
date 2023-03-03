@@ -3,8 +3,11 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/save_group/save_group_controller.dart';
 import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:good_manager/data/repositories/data_group_repository.dart';
 import 'package:good_manager/domain/entities/group.dart';
+
+import '../../widgets/images_preview_view.dart';
 
 class SaveGroupPage extends View {
   final Group item;
@@ -31,13 +34,32 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
               appBar: appBar,
               body: ListView(
                 children: <Widget>[
+                  SelectedStoreView(),
                   Form(
                       key: _formKey,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 20.0),
                         child: Column(
-                          children: <Widget>[name, description, barCode],
+                          children: <Widget>[name,
+                            SizedBox(height: 12),
+                            description,
+                            SizedBox(height: 12),
+                            barCode,
+                            SizedBox(height: 12),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                AppLocalizations.of(context).field_images,
+                                style: TextStyle(
+                                    color: UIConstants.primaryColor,
+                                    fontSize: 16),
+                              ),
+                            ),
+                            SizedBox(height: 12),
+                            ImagesPreviewView(controller.files, false, controller.onImagesChanged)
+
+                          ],
                         ),
                       ))
                 ],

@@ -6,6 +6,8 @@ import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_supplier_repository.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 
+import '../../widgets/selected_store_view.dart';
+
 class SaveSupplierPage extends View {
   final Supplier item;
 
@@ -31,7 +33,7 @@ class _SaveSupplierPageView
                 key: globalKey,
                 appBar: AppBar(
                     title:
-                        Text(AppLocalizations.of(context).save_customer_title),
+                        Text(AppLocalizations.of(context).save_supplier_title),
                     actions: <Widget>[
                       ControlledWidgetBuilder<SaveSupplierController>(
                           builder: (context, controller) {
@@ -49,6 +51,7 @@ class _SaveSupplierPageView
                     ]),
                 body: ListView(
                   children: <Widget>[
+                    SelectedStoreView(),
                     Form(
                         key: _formKey,
                         child: Padding(

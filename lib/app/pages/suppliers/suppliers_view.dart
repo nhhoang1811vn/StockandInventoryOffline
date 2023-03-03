@@ -1,15 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/pages/main_page.dart';
-import 'package:good_manager/app/pages/my_drawer.dart';
+import 'package:good_manager/app/pages/custom_navigation_drawer.dart';
 import 'package:good_manager/app/pages/suppliers/suppliers_controller.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_supplier_repository.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../widgets/selected_store_view.dart';
 
 enum SupplierItemMenu { sendEmail, sendSMS, phoneCall }
 
@@ -30,7 +30,7 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
   Widget get view {
     return Scaffold(
         key: globalKey,
-        drawer: CustomNavigationDrawer(),
+        drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 5),
         appBar: appBar,
         body: ControlledWidgetBuilder<SuppliersController>(
             builder: (context, controller) {
@@ -52,6 +52,7 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
 
   Widget getBody() {
     List<Widget> children = [
+      SelectedStoreView(),
       ControlledWidgetBuilder<SuppliersController>(
           builder: (context, controller) {
         return Visibility(child: searchBar, visible: controller.showSearchBar);
@@ -139,13 +140,13 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
                 onSelected: (SupplierItemMenu result) {
                   switch (result) {
                     case SupplierItemMenu.sendEmail:
-                      _launchURL("mailto:${item.email}");
+                      _launchUrl("mailto:${item.email}");
                       break;
                     case SupplierItemMenu.sendSMS:
-                      _launchURL("sms:${item.phone}");
+                      _launchUrl("sms:${item.phone}");
                       break;
                     case SupplierItemMenu.phoneCall:
-                      _launchURL("tel:${item.phone}");
+                      _launchUrl("tel:${item.phone}");
                       break;
                     default:
                   }
@@ -174,10 +175,6 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
           itemCount: controller.items.length);
     });
   }
-
-  void _launchURL(_url) async => await canLaunch(_url)
-      ? await launch(_url)
-      : throw 'Could not launch $_url';
 
   Widget get searchMenu => ControlledWidgetBuilder<SuppliersController>(
           builder: (context, controller) {
@@ -229,5 +226,11 @@ class SuppliersPageView extends ViewState<SuppliersPage, SuppliersController> {
 
   void onSearchClicked(){
 
+  }
+  Future<void> _launchUrl(String value) async {
+    Uri url = Uri.parse(value);
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
   }
 }

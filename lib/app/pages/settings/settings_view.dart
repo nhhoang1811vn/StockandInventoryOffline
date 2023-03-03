@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../main_page.dart';
+import '../custom_navigation_drawer.dart';
 import 'settings_controller.dart';
 
 class SettingsPage extends View {
@@ -17,7 +17,7 @@ class SettingsPageView extends ViewState<SettingsPage, SettingsController> {
 
   @override
   Widget get view => Scaffold(
-      drawer: CustomNavigationDrawer(),
+      drawer: const CustomNavigationDrawer(selectedIndex: 8),
       appBar: new AppBar(
           title: new Text(AppLocalizations.of(context).settings_title)),
       body: ListView(

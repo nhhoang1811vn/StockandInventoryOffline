@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/pages/base_list_controller.dart';
+import 'package:good_manager/app/pages/base/base_list_controller.dart';
 import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/customers_settings.dart';

@@ -6,6 +6,8 @@ import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_customer_repository.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 
+import '../../widgets/selected_store_view.dart';
+
 class SaveCustomerPage extends View {
   final Customer item;
 
@@ -49,6 +51,7 @@ class _SaveCustomerPageView
                     ]),
                 body: ListView(
                   children: <Widget>[
+                    SelectedStoreView(),
                     Form(
                         key: _formKey,
                         child: Padding(

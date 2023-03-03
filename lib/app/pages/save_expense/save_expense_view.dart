@@ -7,6 +7,8 @@ import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_expense_repository.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 
+import '../../widgets/selected_store_view.dart';
+
 class SaveExpensePage extends View {
   final Expense item;
 
@@ -35,6 +37,7 @@ class _SaveExpensePageView
                     actions: <Widget>[save]),
                 body: ListView(
                   children: <Widget>[
+                    SelectedStoreView(),
                     Form(
                         key: _formKey,
                         child: Padding(

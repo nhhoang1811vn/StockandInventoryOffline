@@ -65,7 +65,7 @@ class DBHelper {
             "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id))");
 
     await db.execute(
-        "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, directory TEXT, createdDate INTEGER, updatedDate INTEGER, " +
+        "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, directory TEXT, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
     await db.execute(
         "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, directory TEXT, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
@@ -77,6 +77,7 @@ class DBHelper {
             "FOREIGN KEY(goodId) REFERENCES $GOODS_TABLE_NAME(id) ON DELETE CASCADE, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)");
   }
+
 
   ///STORE
   Future<int> insertStore(Store item) async {
@@ -101,7 +102,7 @@ class DBHelper {
     var dbClient = await db;
     List<Map> list =
         await dbClient.rawQuery('SELECT * FROM $STORES_TABLE_NAME');
-    List<Store> stores = new List();
+    List<Store> stores = [];
     for (int i = 0; i < list.length; i++) {
       Store store = Store();
       store.map(list[i]);
@@ -133,7 +134,7 @@ class DBHelper {
     var dbClient = await db;
     List<Map> list =
         await dbClient.rawQuery('SELECT * FROM $SUPPLIERS_TABLE_NAME');
-    List<Supplier> suppliers = new List();
+    List<Supplier> suppliers = [];
     for (int i = 0; i < list.length; i++) {
       Supplier supplier = Supplier.map(list[i]);
       supplier.numberDocument = await getCountDocumentBySupplierId(supplier.id);
@@ -204,7 +205,7 @@ class DBHelper {
     var dbClient = await db;
     List<Map> list =
         await dbClient.rawQuery('SELECT * FROM $CUSTOMERS_TABLE_NAME');
-    List<Customer> customers = new List();
+    List<Customer> customers = [];
     for (int i = 0; i < list.length; i++) {
       Customer customer = Customer.map(list[i]);
       customer.numberDocument = await getCountDocumentByCustomerId(customer.id);
@@ -292,7 +293,7 @@ class DBHelper {
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $GROUPS_TABLE_NAME where storeId = ?', [storeId]);
-    List<Group> groups = new List();
+    List<Group> groups = [];
     for (int i = 0; i < list.length; i++) {
       var group = Group.map(list[i]);
       groups.add(group);
@@ -306,7 +307,7 @@ class DBHelper {
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $GROUPS_TABLE_NAME WHERE storeId = ? AND directory = ?',
         [storeId, directory]);
-    List<Group> groups = new List();
+    List<Group> groups = [];
     for (int i = 0; i < list.length; i++) {
       var group = Group.map(list[i]);
       groups.add(group);
@@ -357,7 +358,7 @@ class DBHelper {
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ?',
         [storeId]);
-    List<Good> goods = new List();
+    List<Good> goods = [];
     for (int i = 0; i < list.length; i++) {
       var good = Good.map(list[i]);
       int incomingQuantity = await getSumQuantityByGoodId(DocumentType.incoming, good.id);
@@ -373,7 +374,7 @@ class DBHelper {
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ? AND directory = ?',
         [storeId, directory]);
-    List<Good> goods = new List();
+    List<Good> goods = [];
     for (int i = 0; i < list.length; i++) {
       var good = Good.map(list[i]);
       int incomingQuantity =
@@ -440,7 +441,7 @@ class DBHelper {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $DOCUMENTS_TABLE_NAME where storeId = ?', [storeId]);
-    List<Document> documents = new List();
+    List<Document> documents = [];
     for (int i = 0; i < list.length; i++) {
       var document = Document.map(list[i]);
       document.quantity = await getQuantityByDocumentId(document.id);
@@ -485,7 +486,7 @@ class DBHelper {
         'SELECT * FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME where documentId = ?',
         [documentId]);
 
-    List<DocumentTransaction> transactions = new List();
+    List<DocumentTransaction> transactions = [];
     for (int i = 0; i < list.length; i++) {
       var transaction = DocumentTransaction.map(list[i]);
       var good = await findGood(transaction.goodId);
@@ -555,7 +556,7 @@ class DBHelper {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $EXPENSES_TABLE_NAME where storeId = ?', [storeId]);
-    List<Expense> items = new List();
+    List<Expense> items = [];
     for (int i = 0; i < list.length; i++) {
       Expense item = Expense.map(list[i]);
       items.add(item);

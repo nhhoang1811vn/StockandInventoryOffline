@@ -1,14 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/pages/main_page.dart';
+import 'package:good_manager/app/pages/custom_navigation_drawer.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/repositories/data_customer_repository.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../widgets/selected_store_view.dart';
 import 'customers_controller.dart';
 
 enum CustomerItemMenu { sendEmail, sendSMS, phoneCall }
@@ -30,7 +30,7 @@ class CustomersPageView extends ViewState<CustomersPage, CustomersController> {
   Widget get view {
     return Scaffold(
         key: globalKey,
-        drawer: CustomNavigationDrawer(),
+        drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 6,),
         appBar: appBar,
         body: ControlledWidgetBuilder<CustomersController>(
             builder: (context, controller) {
@@ -52,6 +52,7 @@ class CustomersPageView extends ViewState<CustomersPage, CustomersController> {
 
   Widget getBody() {
     List<Widget> children = [
+      SelectedStoreView(),
       ControlledWidgetBuilder<CustomersController>(
           builder: (context, controller) {
         return Visibility(child: searchBar, visible: controller.showSearchBar);
@@ -139,13 +140,13 @@ class CustomersPageView extends ViewState<CustomersPage, CustomersController> {
                 onSelected: (CustomerItemMenu result) {
                   switch (result) {
                     case CustomerItemMenu.sendEmail:
-                      _launchURL("mailto:${item.email}");
+                      _launchUrl("mailto:${item.email}");
                       break;
                     case CustomerItemMenu.sendSMS:
-                      _launchURL("sms:${item.phone}");
+                      _launchUrl("sms:${item.phone}");
                       break;
                     case CustomerItemMenu.phoneCall:
-                      _launchURL("tel:${item.phone}");
+                      _launchUrl("tel:${item.phone}");
                       break;
                     default:
                   }
@@ -175,9 +176,12 @@ class CustomersPageView extends ViewState<CustomersPage, CustomersController> {
     });
   }
 
-  void _launchURL(_url) async => await canLaunch(_url)
-      ? await launch(_url)
-      : throw 'Could not launch $_url';
+  Future<void> _launchUrl(String value) async {
+    Uri url = Uri.parse(value);
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
+  }
 
   Widget get searchMenu => ControlledWidgetBuilder<CustomersController>(
           builder: (context, controller) {

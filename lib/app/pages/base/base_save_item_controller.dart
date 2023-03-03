@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/pages/base_save_item_presenter.dart';
+import 'package:good_manager/app/pages/base/base_save_item_presenter.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/base_model.dart';
 
@@ -17,7 +17,16 @@ abstract class BaseSaveItemController<M extends BaseModel,
 
   M _originalItem;
 
+  TextEditingController nameTextController;
+  TextEditingController descriptionTextController;
+
   BaseSaveItemController(this._presenter, this._item) : super() {
+    nameTextController = TextEditingController();
+    descriptionTextController = TextEditingController();
+
+    nameTextController.text = item.name;
+    descriptionTextController.text = item.description;
+
     _originalItem = getOriginalItem(item);
   }
 
@@ -25,7 +34,10 @@ abstract class BaseSaveItemController<M extends BaseModel,
 
   bool hasChanged(M item, M originalItem);
 
-  void updateItem();
+  void updateItem(){
+    item.name = nameTextController.text;
+    item.description = descriptionTextController.text;
+  }
 
   Future<bool> onWillPop() async {
     updateItem();

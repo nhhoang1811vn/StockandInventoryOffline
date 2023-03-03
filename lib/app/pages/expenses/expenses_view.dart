@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -8,7 +7,8 @@ import 'package:good_manager/data/repositories/data_expense_repository.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import '../main_page.dart';
+import '../../widgets/selected_store_view.dart';
+import '../custom_navigation_drawer.dart';
 
 class ExpensesPage extends View {
   ExpensesPage({Key key}) : super(key: key);
@@ -23,7 +23,7 @@ class ExpensesPageView extends ViewState<ExpensesPage, ExpensesController> {
   @override
   Widget get view => Scaffold(
       key: globalKey,
-      drawer: CustomNavigationDrawer(),
+      drawer: CustomNavigationDrawer(selectedIndex: 3),
       appBar: appBar,
       body: ControlledWidgetBuilder<ExpensesController>(
           builder: (context, controller) {
@@ -92,7 +92,7 @@ class ExpensesPageView extends ViewState<ExpensesPage, ExpensesController> {
 
   Widget getBody() {
     List<Widget> children = [
-      //StoreView(),
+      SelectedStoreView(),
       ControlledWidgetBuilder<ExpensesController>(
           builder: (context, controller) {
         return Visibility(child: searchBar, visible: controller.showSearchBar);

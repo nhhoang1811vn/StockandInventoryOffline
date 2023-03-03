@@ -1,10 +1,10 @@
 import 'package:date_time_picker/date_time_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/goods/good_item_row.dart';
 import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:good_manager/data/repositories/data_app_repository.dart';
 import 'package:good_manager/data/repositories/data_document_repository.dart';
 import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
@@ -38,6 +38,7 @@ class SaveDocumentPageView
             item));
 
   Widget get body => Column(children: <Widget>[
+        SelectedStoreView(),
         ExpansionTile(
           title: Text("Document Information"),
           initiallyExpanded: true,

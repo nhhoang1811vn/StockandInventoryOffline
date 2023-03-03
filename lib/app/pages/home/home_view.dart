@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/home/home_controller.dart';
 import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:good_manager/data/repositories/data_customer_repository.dart';
 import 'package:good_manager/data/repositories/data_document_repository.dart';
 import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
@@ -14,7 +14,7 @@ import 'package:good_manager/data/repositories/data_supplier_repository.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../main_page.dart';
+import '../custom_navigation_drawer.dart';
 
 class HomePage extends View {
   HomePage({Key key}) : super(key: key);
@@ -44,7 +44,7 @@ class HomePageView extends ViewState<HomePage, HomeController> {
   Widget get view => Scaffold(
       key: globalKey,
       appBar: AppBar(title: Text(AppLocalizations.of(context).home_title)),
-      drawer: CustomNavigationDrawer(),
+      drawer: CustomNavigationDrawer(selectedIndex: 0),
       body: ControlledWidgetBuilder<HomeController>(
           builder: (context, controller) {
         return ModalProgressHUD(
@@ -53,7 +53,8 @@ class HomePageView extends ViewState<HomePage, HomeController> {
 
   Widget getBody() {
     List<Widget> children = [
-      storeView,
+      SelectedStoreView(),
+      //storeView,
       Padding(
           padding: EdgeInsets.all(4),
           child: Column(
@@ -152,7 +153,7 @@ class HomePageView extends ViewState<HomePage, HomeController> {
     return Column(children: children);
   }
 
-  Widget get storeView =>
+  /*Widget get storeView =>
       ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
         return GestureDetector(
             onTap: controller.openStores,
@@ -177,7 +178,7 @@ class HomePageView extends ViewState<HomePage, HomeController> {
                         color: Colors.white,
                       )))
                 ])));
-      });
+      });*/
 
   Widget get goods =>
       ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
