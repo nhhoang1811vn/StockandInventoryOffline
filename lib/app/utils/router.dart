@@ -48,7 +48,7 @@ class AppRouter {
       case Pages.save_good:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(
-            settings, SaveGoodPage(args['item'], args['quantity']));
+            settings, SaveGoodPage(args['item'], args['enableAddTransactions']));
       case Pages.save_group:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(settings, SaveGroupPage(args['item']));

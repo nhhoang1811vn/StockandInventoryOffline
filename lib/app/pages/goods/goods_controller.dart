@@ -179,7 +179,7 @@ class GoodsController extends Controller {
     item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
 
     final result = await Navigator.of(getContext())
-        .pushNamed(Pages.save_good, arguments: {"item": item});
+        .pushNamed(Pages.save_good, arguments: {"item": item, "enableAddTransactions": true});
     if (result != null) {
       if (_isSelection) {
         showAddQuantityDialog(result);
@@ -292,7 +292,7 @@ class GoodsController extends Controller {
       showAddQuantityDialog(good);
     } else {
       final result = await Navigator.of(getContext())
-          .pushNamed(Pages.save_good, arguments: {"item": good});
+          .pushNamed(Pages.save_good, arguments: {"item": good, "enableAddTransactions": true});
       if (result != null) {
         loadData();
       }

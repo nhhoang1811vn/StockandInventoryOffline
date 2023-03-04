@@ -189,12 +189,12 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
                     shape: CircleBorder(),
                     children: [
                       SpeedDialChild(
-                          child: IconButton(icon: Image.asset(UIConstants.folderIconPath, width: 24), onPressed: () {  },),
+                          child: IconButton(icon: Image.asset(UIConstants.folderIconPath, width: 24),),
                           backgroundColor: Colors.white,
                           label: AppLocalizations.of(context).folder,
                           onTap: controller.onAddGroup),
                       SpeedDialChild(
-                          child: IconButton(icon: Image.asset(UIConstants.goodIconPath, width: 24,), onPressed: () {  },),
+                          child: IconButton(icon: Image.asset(UIConstants.goodIconPath, width: 24,),),
                           backgroundColor: Colors.white,
                           label: AppLocalizations.of(context).good,
                           onTap: controller.onAddGood)

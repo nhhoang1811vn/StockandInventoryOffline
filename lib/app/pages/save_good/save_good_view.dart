@@ -11,20 +11,19 @@ import '../../widgets/images_preview_view.dart';
 
 class SaveGoodPage extends View {
   final Good item;
-  final int quantity;
+  bool enableAddTransactions = true;
 
-  SaveGoodPage(this.item, [this.quantity]) : super();
+  SaveGoodPage(this.item, this.enableAddTransactions) : super();
 
   @override
-  SaveGroupPageView createState() => SaveGroupPageView(item, quantity);
+  SaveGroupPageView createState() => SaveGroupPageView(item);
 }
 
 class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  SaveGroupPageView(item, quantity)
-      : super(SaveGoodController(DataGoodRepository(), item, quantity));
-
+  SaveGroupPageView(item)
+      : super(SaveGoodController(DataGoodRepository(), item));
 
   @override
   Widget get view => ControlledWidgetBuilder<SaveGoodController>(
@@ -62,7 +61,8 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
                               ),
                             ),
                             SizedBox(height: 12),
-                           ImagesPreviewView(controller.files, true, controller.onImagesChanged)
+                            ImagesPreviewView(controller.files, true,
+                                controller.onImagesChanged)
                           ],
                         ),
                       ),
@@ -146,33 +146,85 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
         );
       });
 
+  Widget get addQuantityButton => ControlledWidgetBuilder<SaveGoodController>(
+          builder: (context, controller) {
+        return MaterialButton(
+          minWidth: 24,
+          onPressed: () =>  controller.onAddQuantityButtonPressed({
+            'context': context,
+            'formKey': _formKey,
+            'globalKey': globalKey
+          }),
+          color: Colors.blue,
+          textColor: Colors.white,
+          child: Icon(
+            Icons.add,
+            size: 24,
+          ),
+          padding: EdgeInsets.all(8),
+          shape: CircleBorder(),
+        );
+      });
+
+  Widget get subQuantityButton => ControlledWidgetBuilder<SaveGoodController>(
+          builder: (context, controller) {
+        return MaterialButton(
+          minWidth: 24,
+          onPressed: () =>  controller.onSubQuantityButtonPressed({
+            'context': context,
+            'formKey': _formKey,
+            'globalKey': globalKey
+          }),
+          color: Colors.blue,
+          textColor: Colors.white,
+          child: Icon(
+            Icons.remove,
+            size: 24,
+          ),
+          padding: EdgeInsets.all(8),
+          shape: CircleBorder(),
+        );
+      });
+
+  Widget get modifyQuantityButton =>
+      ControlledWidgetBuilder<SaveGoodController>(
+          builder: (context, controller) {
+        return MaterialButton(
+          minWidth: 24,
+          onPressed: controller.onModifyQuantityButtonPressed,
+          color: Colors.blue,
+          textColor: Colors.white,
+          child: Icon(
+            Icons.calculate_outlined,
+            size: 24,
+          ),
+          padding: EdgeInsets.all(8),
+          shape: CircleBorder(),
+        );
+      });
+
   Widget get quantity => ControlledWidgetBuilder<SaveGoodController>(
           builder: (context, controller) {
-        return Visibility(
-            visible: controller.quantity != null,
-            child: Row(
-              children: [
-                Expanded(
-                    child: TextFormField(
-                  decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context).field_quantity),
-                  controller: controller.quantityTextController,
-                )),
-                Align(
-                    alignment: Alignment.centerRight,
-                    child: MaterialButton(
-                      minWidth: 24,
-                      onPressed: controller.onInputQuantityPressed,
-                      color: Colors.blue,
-                      textColor: Colors.white,
-                      child: Icon(
-                        Icons.calculate,
-                        size: 24,
-                      ),
-                      padding: EdgeInsets.all(8),
-                      shape: CircleBorder(),
-                    ))
-              ],
-            ));
+        return Row(
+          children: [
+            Expanded(
+                child: TextFormField(
+                  enabled: false,
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context).field_quantity),
+              controller: controller.quantityTextController,
+            )),
+            Align(
+                alignment: Alignment.centerRight,
+                child: Row(
+                  children: [
+                    if (widget.enableAddTransactions)
+                      addQuantityButton,subQuantityButton,
+                    if (!widget.enableAddTransactions)
+                      modifyQuantityButton
+                  ],
+                ))
+          ],
+        );
       });
 }

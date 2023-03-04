@@ -4,28 +4,26 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/base/base_save_item_controller.dart';
 import 'package:good_manager/app/pages/save_good/save_good_presenter.dart';
+import 'package:good_manager/app/widgets/receive_good_dialog.dart';
+import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 
+import '../../../data/app_data_manager.dart';
 import '../../utils/utils.dart';
 
 class SaveGoodController extends BaseSaveItemController<Good, SaveGoodPresenter> {
   TextEditingController barCodeTextController;
   TextEditingController quantityTextController;
-
-  int _quantity;
-  int get quantity => _quantity;
-
   List<String> files = [];
 
-  SaveGoodController(goodRepository, Good item, this._quantity) :
+  SaveGoodController(goodRepository, Good item) :
         super(SaveGoodPresenter(goodRepository), item) {
     barCodeTextController = TextEditingController();
     quantityTextController = TextEditingController();
+
     barCodeTextController.text = item.barCode;
+    quantityTextController.text = item.quantity.toString();
     files = item.files;
-    if (_quantity != null) {
-      quantityTextController.text = _quantity.toString();
-    }
   }
 
   /*@override
@@ -56,6 +54,7 @@ class SaveGoodController extends BaseSaveItemController<Good, SaveGoodPresenter>
   void updateItem() {
     super.updateItem();
     item.barCode = barCodeTextController.text;
+    item.quantity = int.parse(quantityTextController.text);
     item.files = files;
   }
 
@@ -74,8 +73,28 @@ class SaveGoodController extends BaseSaveItemController<Good, SaveGoodPresenter>
       barcodeScanRes = 'Failed to get platform version.';
     }
   }
+  void onAddQuantityButtonPressed(Map<String, dynamic> params) async{
+    if (validate(params)){
+      //show dialog
+      Document document = new Document();
+      document.type = DocumentType.incoming;
+      document.date = DateTime.now();
+      document.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
 
-  void onInputQuantityPressed() async {
+      int quantity = 1;
+      showDialog(
+          context: getContext(),
+          builder: (_) => ReceiveGoodDialog(document, quantity, onSaveIncomingDocument),
+          barrierDismissible: false);
+    }
+  }
+  void onSaveIncomingDocument(Document document, int supplierID, int quanity){
+    print("break");
+  }
+  void onSubQuantityButtonPressed(Map<String, dynamic> params){
+
+  }
+  void onModifyQuantityButtonPressed(){
     /*final result = await showCalculator(context: getContext()) ?? 0;
     quantityTextController.text = result.toInt().toString();*/
   }

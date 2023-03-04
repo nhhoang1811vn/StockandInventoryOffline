@@ -8,7 +8,7 @@ class Good extends BaseModel {
   String directory = "/";
   List<String> files = [];
 
-  int quantity;
+  int quantity = 0;
   int pendingQuantity = 0;
 
   Good();

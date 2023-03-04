@@ -238,21 +238,24 @@ class SaveDocumentController extends Controller {
   }
 
   void onTransactionTapped(int index) async {
-    final result = await Navigator.of(getContext()).pushNamed(Pages.save_good,
+    /*final result = await Navigator.of(getContext()).pushNamed(Pages.save_good,
         arguments: {
           "item": transactions[index].good,
           "quantity": transactions[index].quantity
-        });
+        });*/
+    final result = await Navigator.of(getContext())
+        .pushNamed(Pages.save_good,
+        arguments: {"item" : transactions[index].good, "enableAddTransactions": false});
     if (result != null) {
       var map = Map<String, dynamic>.from(result);
       Good good = map["item"];
-      int quantity = map["quantity"];
+      //int quantity = map["quantity"];
       transactions.forEach((transaction) {
         if (transaction.goodId == good.id) {
           transaction.good = good;
         }
       });
-      transactions[index].quantity = quantity;
+      transactions[index].quantity = good.quantity;
       refreshUI();
     }
   }
