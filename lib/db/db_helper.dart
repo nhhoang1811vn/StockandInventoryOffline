@@ -595,15 +595,18 @@ class DBHelper {
       //insert document
       document.createdDate = DateTime.now();
       document.updatedDate = DateTime.now();
+      document.storeId = storeId;
       int documentId = await txn.insert(DOCUMENTS_TABLE_NAME, document.toMap());
       //insert transaction
       for (var transaction in transactions){
         transaction.documentId = documentId;
         transaction.storeId = storeId;
+        transaction.createdDate = DateTime.now();
+        transaction.updatedDate = DateTime.now();
         await txn.insert(DOCUMENT_TRANSACTIONS_TABLE_NAME, transaction.toMap());
       }
       //check valid
-      List<Map> list = await txn.rawQuery(
+      /*List<Map> list = await txn.rawQuery(
           'SELECT id, name FROM $GOODS_TABLE_NAME WHERE storeId = ?',
           [storeId]);
       for (int i = 0; i < list.length; i++) {
@@ -621,7 +624,7 @@ class DBHelper {
         if (quantity < 0){
           throw Exception("error quantity, $goodName");
         }
-      }
+      }*/
       return documentId;
     });
   }
@@ -645,7 +648,7 @@ class DBHelper {
         await txn.insert(DOCUMENT_TRANSACTIONS_TABLE_NAME, transaction.toMap());
       }
       //check valid
-      List<Map> list = await txn.rawQuery(
+      /*List<Map> list = await txn.rawQuery(
           'SELECT id, name FROM $GOODS_TABLE_NAME WHERE storeId = ?',
           [storeId]);
       for (int i = 0; i < list.length; i++) {
@@ -663,7 +666,7 @@ class DBHelper {
         if (quantity < 0){
           throw Exception("error quantity, $goodName");
         }
-      }
+      }*/
       return res > 0;
     });
   }

@@ -3,6 +3,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class Config {
   static String supportEmail = "nhhoang1811vn@gmail.com";
+  static String dateTimeFormat = "yyyy-MM-dd";
+  static String displayDateTimeFormat = "dd/MM/yyyy";
+  static int minYear = 1900;
+  static int maxYear = 2100;
 }
 
 class UIConstants {

@@ -22,7 +22,9 @@ class SaveGroupController extends BaseSaveItemController<Group, SaveGroupPresent
   @override
   void updateItem() {
     super.updateItem();
-    item.barCode = barCodeTextController.text;
+    if (barCodeTextController.text.isNotEmpty){
+      item.barCode = barCodeTextController.text;
+    }
     item.files = files;
   }
 

@@ -25,6 +25,7 @@ class Document extends BaseModel {
     newDocument.supplierId = this.supplierId;
     newDocument.customerId = this.customerId;
     newDocument.date = this.date;
+    newDocument.type = this.type;
     return newDocument;
   }
 

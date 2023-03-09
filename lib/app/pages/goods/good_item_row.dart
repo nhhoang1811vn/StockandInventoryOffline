@@ -13,7 +13,8 @@ class GoodItemRow extends StatelessWidget {
   final bool isSelection;
   final DocumentType _documentType;
 
-  GoodItemRow(this.item, this.quantity, this.onGoodTapped, this.onGoodLongPressed,
+  GoodItemRow(
+      this.item, this.quantity, this.onGoodTapped, this.onGoodLongPressed,
       [this.isSelection = false, this._documentType]);
 
   @override
@@ -36,18 +37,17 @@ class GoodItemRow extends StatelessWidget {
                 style: bodyStyle,
               ),
             ),
-            Visibility(
-                visible: item.barCode.isNotEmpty,
-                child: Row(children: [
-                  Image.asset(
-                    UIConstants.barcodeIconPath,
-                    width: 24,
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Text(item.barCode, style: bodyStyle)
-                ]))
+            if (item.barCode != null)
+              Row(children: [
+                Image.asset(
+                  UIConstants.barcodeIconPath,
+                  width: 24,
+                ),
+                SizedBox(
+                  width: 8,
+                ),
+                Text(item.barCode, style: bodyStyle)
+              ])
           ],
         ),
         trailing: Row(mainAxisSize: MainAxisSize.min, children: [

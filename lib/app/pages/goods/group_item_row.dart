@@ -27,18 +27,17 @@ class GroupItemRow extends StatelessWidget {
                 style: TextStyle(fontSize: 14),
               ),
             ),
-            Visibility(
-                visible: item.barCode.isNotEmpty,
-                child: Row(children: [
-                  Image.asset(
-                    UIConstants.barcodeIconPath,
-                    width: 24,
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Text(item.barCode, style: TextStyle(fontSize: 14))
-                ]))
+            if (item.barCode != null)
+              Row(children: [
+                Image.asset(
+                  UIConstants.barcodeIconPath,
+                  width: 24,
+                ),
+                SizedBox(
+                  width: 8,
+                ),
+                Text(item.barCode, style: TextStyle(fontSize: 14))
+              ])
           ],
         ),
         //trailing: Text(item.quality.toString()),

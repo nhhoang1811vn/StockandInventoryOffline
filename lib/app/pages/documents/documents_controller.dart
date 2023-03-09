@@ -137,6 +137,7 @@ class DocumentsController extends Controller {
     Document item = Document();
     item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     item.type = type;
+    item.name = await appDataManager.sharedPrefsHelper.getAutoDocumentName();
 
     var result = await Navigator.of(getContext())
         .pushNamed(Pages.save_document, arguments: {'item': item});

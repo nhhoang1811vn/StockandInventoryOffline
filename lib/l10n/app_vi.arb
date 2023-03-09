@@ -153,5 +153,7 @@
   "question_or_suggestion_title" : "Câu hỏi và đề xuất",
   "help_title" : "Trợ giúp",
   "whats_new_title": "Thông tin cập nhật mới",
-  "your_subscriptions_title" : "Thông tin đăng ký PRO"
+  "your_subscriptions_title" : "Thông tin đăng ký PRO",
+  "receive_goods_title": "Nhập SP",
+  "issue_goods_title": "Xuất SP"
 }

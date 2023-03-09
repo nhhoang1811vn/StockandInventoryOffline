@@ -21,6 +21,7 @@ class SharedPrefsHelper{
     }else{
       index = 1;
     }
+    prefs.setInt(keyAutoDocumentName, index+ 1);
     return "Giao dich $index";
   }
 

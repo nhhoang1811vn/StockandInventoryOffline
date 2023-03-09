@@ -153,5 +153,7 @@
   "question_or_suggestion_title" : "Question or suggestion",
   "help_title" : "Help",
   "whats_new_title": "What's New",
-  "your_subscriptions_title" : "Your subscriptions"
+  "your_subscriptions_title" : "Your subscriptions",
+  "receive_goods_title": "Receive goods",
+  "issue_goods_title": "Issue goods"
 }

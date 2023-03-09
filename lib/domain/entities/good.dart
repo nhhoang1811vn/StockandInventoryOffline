@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:good_manager/domain/entities/base_model.dart';
 
 class Good extends BaseModel {
-  String barCode = "";
+  String barCode;
   int storeId;
   String directory = "/";
   List<String> files = [];

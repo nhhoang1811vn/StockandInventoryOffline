@@ -4,6 +4,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/save_good/save_good_controller.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/selected_store_view.dart';
+import 'package:good_manager/data/repositories/data_document_repository.dart';
+import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
 import 'package:good_manager/data/repositories/data_good_repository.dart';
 import 'package:good_manager/domain/entities/good.dart';
 
@@ -16,14 +18,14 @@ class SaveGoodPage extends View {
   SaveGoodPage(this.item, this.enableAddTransactions) : super();
 
   @override
-  SaveGroupPageView createState() => SaveGroupPageView(item);
+  SaveGoodPageView createState() => SaveGoodPageView(item);
 }
 
-class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
+class SaveGoodPageView extends ViewState<SaveGoodPage, SaveGoodController> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  SaveGroupPageView(item)
-      : super(SaveGoodController(DataGoodRepository(), item));
+  SaveGoodPageView(item)
+      : super(SaveGoodController(DataGoodRepository(),DataDocumentRepository(), item));
 
   @override
   Widget get view => ControlledWidgetBuilder<SaveGoodController>(
@@ -209,7 +211,7 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
           children: [
             Expanded(
                 child: TextFormField(
-                  enabled: false,
+                  readOnly: true,
               decoration: InputDecoration(
                   labelText: AppLocalizations.of(context).field_quantity),
               controller: controller.quantityTextController,
@@ -219,7 +221,9 @@ class SaveGroupPageView extends ViewState<SaveGoodPage, SaveGoodController> {
                 child: Row(
                   children: [
                     if (widget.enableAddTransactions)
-                      addQuantityButton,subQuantityButton,
+                      addQuantityButton,
+                    if (widget.enableAddTransactions)
+                      subQuantityButton,
                     if (!widget.enableAddTransactions)
                       modifyQuantityButton
                   ],

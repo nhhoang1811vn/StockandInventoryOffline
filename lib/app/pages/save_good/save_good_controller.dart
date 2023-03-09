@@ -4,6 +4,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/base/base_save_item_controller.dart';
 import 'package:good_manager/app/pages/save_good/save_good_presenter.dart';
+import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/receive_good_dialog.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
@@ -16,14 +17,25 @@ class SaveGoodController extends BaseSaveItemController<Good, SaveGoodPresenter>
   TextEditingController quantityTextController;
   List<String> files = [];
 
-  SaveGoodController(goodRepository, Good item) :
-        super(SaveGoodPresenter(goodRepository), item) {
+  SaveGoodController(goodRepository,documentRepository, Good item) :
+        super(SaveGoodPresenter(goodRepository, documentRepository), item) {
     barCodeTextController = TextEditingController();
     quantityTextController = TextEditingController();
 
     barCodeTextController.text = item.barCode;
     quantityTextController.text = item.quantity.toString();
     files = item.files;
+  }
+  @override
+  void initListeners() {
+    // TODO: implement initListeners
+    super.initListeners();
+    presenter.quickInsertTransactionOnNext = (result){
+      showInfoToast("Đã tạo Giao Dịch số 1");
+    };
+    presenter.quickInsertTransactionOnError = (e){
+      showErrorToast(e.toString());
+    };
   }
 
   /*@override
@@ -53,7 +65,9 @@ class SaveGoodController extends BaseSaveItemController<Good, SaveGoodPresenter>
   @override
   void updateItem() {
     super.updateItem();
-    item.barCode = barCodeTextController.text;
+    if (barCodeTextController.text.isNotEmpty){
+      item.barCode = barCodeTextController.text;
+    }
     item.quantity = int.parse(quantityTextController.text);
     item.files = files;
   }
@@ -79,8 +93,8 @@ class SaveGoodController extends BaseSaveItemController<Good, SaveGoodPresenter>
       Document document = new Document();
       document.type = DocumentType.incoming;
       document.date = DateTime.now();
-      document.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
-
+      //document.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+      document.name = await appDataManager.sharedPrefsHelper.getAutoDocumentName();
       int quantity = 1;
       showDialog(
           context: getContext(),
@@ -88,8 +102,9 @@ class SaveGoodController extends BaseSaveItemController<Good, SaveGoodPresenter>
           barrierDismissible: false);
     }
   }
-  void onSaveIncomingDocument(Document document, int supplierID, int quanity){
-    print("break");
+  void onSaveIncomingDocument(Document document, int quantity){
+    updateItem();
+    presenter.quickInsertTransaction(item, document, quantity);
   }
   void onSubQuantityButtonPressed(Map<String, dynamic> params){
 
