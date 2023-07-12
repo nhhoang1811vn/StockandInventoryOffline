@@ -11,7 +11,7 @@ class GoodItemRow extends StatelessWidget {
   final void Function(Good good) onGoodTapped;
   final void Function(Good good) onGoodLongPressed;
   final bool isSelection;
-  final DocumentType _documentType;
+  final DocumentType? _documentType;
 
   GoodItemRow(
       this.item, this.quantity, this.onGoodTapped, this.onGoodLongPressed,

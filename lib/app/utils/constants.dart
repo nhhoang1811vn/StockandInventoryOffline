@@ -51,11 +51,11 @@ class UIConstants {
   static const String appName = "Hotter'n Hell";
   static const double progressBarOpacity = 0.6;
   static const Color progressBarColor = Colors.black;
-  static Color primaryColor = Colors.blue[600];
-  static Color primaryDarkColor = Colors.blue[800];
+  static Color primaryColor = Colors.blue[600]!;
+  static Color primaryDarkColor = Colors.blue[800]!;
 
   static Color normalMenuColor = Colors.white;
-  static Color highlightMenuColor = Colors.orange[600];
+  static Color highlightMenuColor = Colors.orange[600]!;
 }
 
 void showInfoToast(msg) {

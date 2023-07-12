@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
-import 'package:good_manager/domain/repositories/transaction_repositories.dart';
+import 'package:good_manager/domain/repositories/document_transaction_repositories.dart';
 
 class GetTransactionsByDocumentIdUseCase extends UseCase<
     List<DocumentTransaction>, GetTransactionsByDocumentIdUseCaseParams> {
@@ -12,12 +12,12 @@ class GetTransactionsByDocumentIdUseCase extends UseCase<
 
   @override
   Future<Stream<List<DocumentTransaction>>> buildUseCaseStream(
-      GetTransactionsByDocumentIdUseCaseParams params) async {
+      GetTransactionsByDocumentIdUseCaseParams? params) async {
     final StreamController<List<DocumentTransaction>> controller =
         StreamController();
     try {
       List<DocumentTransaction> transactions =
-          await _repository.getTransactions(params.documentId);
+          await _repository.getTransactions(params!.documentId);
       controller.add(transactions);
       controller.close();
     } catch (e) {

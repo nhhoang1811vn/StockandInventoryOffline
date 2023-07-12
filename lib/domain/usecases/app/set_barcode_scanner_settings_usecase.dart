@@ -12,10 +12,10 @@ class SetBarcodeScannerSettingsUseCase
 
   @override
   Future<Stream<void>> buildUseCaseStream(
-      SetBarcodeScannerSettingsParams params) async {
+      SetBarcodeScannerSettingsParams? params) async {
     final StreamController<void> controller = StreamController();
     try {
-      await repository.setBarcodeScannerSettings(params.settings);
+      await repository.setBarcodeScannerSettings(params!.settings);
       controller.close();
     } catch (e) {
       print(e);

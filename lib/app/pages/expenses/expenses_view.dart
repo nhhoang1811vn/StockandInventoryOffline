@@ -1,140 +1,133 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/pages/expenses/expenses_controller.dart';
+import 'package:good_manager/app/pages/base/base_page.dart';
+import 'package:good_manager/app/pages/expenses/bloc/expenses_cubit.dart';
+import 'package:good_manager/app/pages/expenses/bloc/expenses_data.dart';
 import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/data/repositories/data_expense_repository.dart';
 import 'package:good_manager/domain/entities/expense.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../../widgets/selected_store_view.dart';
+import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';
 
-class ExpensesPage extends View {
-  ExpensesPage({Key key}) : super(key: key);
+class ExpensesPage extends StatefulWidget {
+  ExpensesPage({Key? key}) : super(key: key);
 
   @override
-  ExpensesPageView createState() => ExpensesPageView();
+  ExpensesPageState createState() => ExpensesPageState();
 }
 
-class ExpensesPageView extends ViewState<ExpensesPage, ExpensesController> {
-  ExpensesPageView() : super(ExpensesController(DataExpenseRepository()));
-
+class ExpensesPageState extends BasePageState<ExpensesPage, ExpensesCubit, ExpensesData> {
   @override
-  Widget get view => Scaffold(
-      key: globalKey,
-      drawer: CustomNavigationDrawer(selectedIndex: 3),
-      appBar: appBar,
-      body: ControlledWidgetBuilder<ExpensesController>(
-          builder: (context, controller) {
-        return ModalProgressHUD(
-            child: getBody(), inAsyncCall: controller.isLoading, opacity: 0);
-      }),
-      floatingActionButton: ControlledWidgetBuilder<ExpensesController>(
-          builder: (context, controller) {
-        return FloatingActionButton(
-          onPressed: () => controller.onAddItem(),
-          child: Icon(Icons.add),
-        );
-      }));
+  Widget buildPage(BuildContext context, ExpensesData data) {
+    return Scaffold(
+        //key: globalKey,
+        drawer: CustomNavigationDrawer(selectedIndex: 3),
+        appBar: _buildAppBar(data),
+        body: _buildBody(data),
+        floatingActionButton: FloatingActionButton(
+                onPressed: () => {},
+                child: Icon(Icons.add),
+              ));
+  }
+  PreferredSize _buildAppBar(ExpensesData data){
+    return PreferredSize(
+      preferredSize: Size.fromHeight(70), child:  AppBar(
+        title: new Text(AppLocalizations.of(context)!.expenses_title),
+        actions: [_buildSearchMenu(data), _buildSortMenu(data), helpMenu]),
+    );
+  }
 
-  Widget get appBar => AppBar(
-      title: new Text(AppLocalizations.of(context).expenses_title),
-      actions: [searchMenu, sortMenu, helpMenu]);
-
-  Widget get searchMenu => ControlledWidgetBuilder<ExpensesController>(
-          builder: (context, controller) {
-        return Padding(
+  Widget _buildSearchMenu(ExpensesData data) => Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: GestureDetector(
             child: Icon(
               UIConstants.searchMenuIconData,
               size: 26,
-              color: controller.showSearchBar
+              color: data.showSearchBar
                   ? UIConstants.highlightMenuColor
                   : UIConstants.normalMenuColor,
             ),
-            onTap: controller.toggleSearchBar,
+            onTap: cubit.onShowSearchBarMenuClicked,
           ),
         );
-      });
 
-  Widget get sortMenu => ControlledWidgetBuilder<ExpensesController>(
-          builder: (context, controller) {
-        return Padding(
+
+  Widget _buildSortMenu(ExpensesData data) => Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: GestureDetector(
             child: Icon(
               UIConstants.sortMenuIconData,
               size: 26,
-              color: controller.hasSortOptions()
+              color: cubit.hasSortOptions()
                   ? UIConstants.highlightMenuColor
                   : UIConstants.normalMenuColor,
             ),
-            onTap: controller.onShowSortDialog,
+            onTap: cubit.onSortMenuClicked,
           ),
         );
-      });
 
-  Widget get helpMenu => ControlledWidgetBuilder<ExpensesController>(
-          builder: (context, controller) {
-        return Padding(
+
+  Widget get helpMenu => Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: GestureDetector(
             child: Icon(
               UIConstants.helpMenuIconData,
               size: 26,
             ),
-            onTap: controller.onOpenHelpPage,
+            onTap: cubit.onHelpMenuClick,
           ),
         );
-      });
-
-  Widget getBody() {
+  Widget _buildLoading() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+  Widget _buildBody(ExpensesData data) {
+    final state = data.state;
+    if (state is LoadingState) {
+      return _buildLoading();
+    }
+    return _buildContent(data);
+  }
+  Widget _buildContent(ExpensesData data){
     List<Widget> children = [
       SelectedStoreView(),
-      ControlledWidgetBuilder<ExpensesController>(
-          builder: (context, controller) {
-        return Visibility(child: searchBar, visible: controller.showSearchBar);
-      }),
-      ControlledWidgetBuilder<ExpensesController>(
-          builder: (context, controller) {
-        return Expanded(
-            child: Stack(children: [
-          Visibility(
-            child: emptyView,
-            visible: controller.items.isEmpty && !controller.isLoading,
-          ),
-          Visibility(
-            child: listView,
-            visible: controller.items.isNotEmpty && !controller.isLoading,
-          )
-        ]));
-      })
+      Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
+      Expanded(
+                child: Stack(children: [
+                  Visibility(
+                    child: emptyView,
+                    visible: data.items.isEmpty,
+                  ),
+                  Visibility(
+                    child: _buildListView(data),
+                    visible: data.items.isNotEmpty,
+                  )
+                ]))
     ];
     return Column(children: children);
   }
 
-  Widget get searchBar => ControlledWidgetBuilder<ExpensesController>(
-          builder: (context, controller) {
-        return Card(
-          child: ListTile(
-            title: TextField(
-              decoration: InputDecoration(
-                  hintText: "by name", border: InputBorder.none),
-              onChanged: controller.onSearchChanged,
-              controller: controller.searchTextController,
-            ),
-            trailing: Visibility(
-              child: IconButton(
-                icon: Icon(UIConstants.cancelIconData),
-                onPressed: controller.resetSearchText,
-              ),
-              visible: controller.textSearch.isNotEmpty,
-            ),
+  Widget _buildSearchBar(ExpensesData data) {
+    return Card(
+      child: ListTile(
+        title: TextField(
+          decoration: InputDecoration(
+              hintText: "by name", border: InputBorder.none),
+          onChanged: cubit.searchTextChanged,
+          //controller: controller.searchTextController,
+        ),
+        trailing: Visibility(
+          child: IconButton(
+            icon: Icon(UIConstants.cancelIconData),
+            onPressed: cubit.resetSearchText,
           ),
-        );
-      });
+          visible: data.textSearch.isNotEmpty,
+        ),
+      ),
+    );
+  }
 
   Widget get emptyView => Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -148,29 +141,26 @@ class ExpensesPageView extends ViewState<ExpensesPage, ExpensesController> {
                 )),
             Padding(
                 padding: EdgeInsets.only(top: 16),
-                child: Text(AppLocalizations.of(context).empty_expense,
+                child: Text(AppLocalizations.of(context)!.empty_expense,
                     textAlign: TextAlign.center))
           ]);
 
-  Widget get listView => ControlledWidgetBuilder<ExpensesController>(
-          builder: (context, controller) {
-        return ListView.separated(
+  Widget _buildListView(ExpensesData data) =>  ListView.separated(
             itemBuilder: (BuildContext context, index) {
-              Expense item = controller.items[index];
+              Expense item = data.items[index];
               return ListTile(
                 title: Text(item.name),
                 subtitle: Text(item.description),
                 trailing: item.amount > 0
                     ? getPositiveAmount(item.amount)
                     : getNegativeAmount(item.amount),
-                onTap: () => controller.onItemPressed(controller.items[index]),
+                //onTap: () => cubit.onItemPressed(data.items[index]),
               );
             },
             separatorBuilder: (context, index) {
               return Divider();
             },
-            itemCount: controller.items.length);
-      });
+            itemCount: data.items.length);
 
   Widget getPositiveAmount(amount) {
     return Text(

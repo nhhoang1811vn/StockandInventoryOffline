@@ -1,92 +1,97 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/pages/stores/stores_controller.dart';
+import 'package:good_manager/app/pages/base/base_page.dart';
 import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/data/repositories/data_store_repository.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 
+import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';
+import 'bloc/bloc.dart';
 
-class StoresPage extends View {
+class StoresPage extends StatefulWidget {
   final bool isSelection;
 
   StoresPage({
-    Key key,
-    @required this.isSelection,
+    Key? key,
+    required this.isSelection,
   });
 
   @override
-  _StoresPageView createState() => _StoresPageView(isSelection);
+  _StoresPageState createState() => _StoresPageState();
 }
 
-class _StoresPageView extends ViewState<StoresPage, StoresController> {
-  _StoresPageView(isSelection) : super(StoresController(DataStoreRepository(),isSelection));
-
+class _StoresPageState extends BasePageState<StoresPage, StoresCubit, StoresData> {
   @override
-  Widget get view => Scaffold(
-      key: globalKey,
-      appBar: appBar,
-      drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 7,),
-      body: ControlledWidgetBuilder<StoresController>(
-          builder: (context, controller) {
-        return ModalProgressHUD(
-            child: getBody(), inAsyncCall: controller.isLoading, opacity: 0);
-      }),
-      floatingActionButton: ControlledWidgetBuilder<StoresController>(
-          builder: (context, controller) {
-        return FloatingActionButton(
-          onPressed: () => controller.onAddItem(),
-          child: Icon(Icons.add),
-        );
-      }));
+  Widget buildPage(BuildContext context, StoresData data) {
+    return Scaffold(
+        //key: globalKey,
+        appBar: _buildAppBar(data),
+        drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 7,),
+        body: _buildBody(data),
+        floatingActionButton:  FloatingActionButton(
+          onPressed: () => {},
+                child: Icon(Icons.add),
+              )
+            );
+  }
 
-  Widget get appBar => AppBar(
-      title: Text(widget.isSelection?AppLocalizations.of(context).stores_select_title:AppLocalizations.of(context).stores_title),
-      actions: [searchMenu, sortMenu, helpMenu]);
+  PreferredSize _buildAppBar(StoresData data){
+    return PreferredSize(
+      preferredSize: Size.fromHeight(70), child:  AppBar(
+        title: Text(widget.isSelection?AppLocalizations.of(context)!.stores_select_title:AppLocalizations.of(context)!.stores_title),
+        actions: [_buildSearchMenu(data), sortMenu, helpMenu]),
+    );
+  }
 
-  Widget getBody() {
+  Widget _buildBody(StoresData data) {
+    final state = data.state;
+    if (state is LoadingState) {
+      return _buildLoading();
+    }
+    return _buildContent(data);
+  }
+  Widget _buildLoading(){
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget _buildContent(StoresData data) {
     List<Widget> children = [
-      ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
-        return Visibility(child: searchBar, visible: controller.showSearchBar);
-      }),
-      ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
-        return Expanded(
+     Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
+      Expanded(
             child: Stack(children: [
           Visibility(
             child: emptyView,
-            visible: controller.items.isEmpty && !controller.isLoading,
+            visible: data.items.isEmpty,
           ),
           Visibility(
-            child: listView,
-            visible: controller.items.isNotEmpty && !controller.isLoading,
+            child: _buildListView(data),
+            visible: data.items.isNotEmpty,
           )
-        ]));
-      })
+        ]))
     ];
     return Column(children: children);
   }
 
-  Widget get searchBar =>
-      ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
-        return Card(
+  Widget _buildSearchBar(StoresData data) =>
+      Card(
           child: ListTile(
             title: TextField(
               decoration: InputDecoration(
                   hintText: "by name", border: InputBorder.none),
-              onChanged: controller.onSearchChanged,
-              controller: controller.searchTextController,
+              onChanged: cubit.searchTextChanged,
+              //controller: controller.searchTextController,
             ),
             trailing: Visibility(
               child: IconButton(
                 icon: Icon(UIConstants.cancelIconData),
-                onPressed: controller.resetSearchText,
+                onPressed: cubit.resetSearchText,
               ),
-              visible: controller.textSearch.isNotEmpty,
+              visible: data.textSearch.isNotEmpty,
             ),
           ),
         );
-      });
+      
 
   Widget get emptyView => Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -100,71 +105,60 @@ class _StoresPageView extends ViewState<StoresPage, StoresController> {
                 )),
             Padding(
                 padding: EdgeInsets.only(top: 16),
-                child: Text(AppLocalizations.of(context).empty_stores,
+                child: Text(AppLocalizations.of(context)!.empty_stores,
                     textAlign: TextAlign.center))
           ]);
 
-  Widget get listView =>
-      ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
-        return ListView.separated(
+  Widget _buildListView(StoresData data) => ListView.separated(
             itemBuilder: (BuildContext context, index) {
               return ListTile(
-                title: Text(controller.items[index].name),
-                subtitle: Text(controller.items[index].description),
-                onTap: () => controller.onItemPressed(controller.items[index]),
+                title: Text(data.items[index].name),
+                subtitle: Text(data.items[index].description),
+                onTap: () => cubit.onItemPressed(data.items[index]),
               );
             },
             separatorBuilder: (context, index) {
               return Divider();
             },
-            itemCount: controller.items.length);
-      });
+            itemCount: data.items.length);
 
-  Widget get searchMenu =>
-      ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
-        return Padding(
+  Widget _buildSearchMenu(StoresData data) => Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: GestureDetector(
             child: Icon(
               UIConstants.searchMenuIconData,
               size: 26,
-              color: controller.showSearchBar
+              color: data.showSearchBar
                   ? UIConstants.highlightMenuColor
                   : UIConstants.normalMenuColor,
             ),
-            onTap: controller.toggleSearchBar,
+            onTap: cubit.onShowSearchBarMenuClicked,
           ),
         );
-      });
 
-  Widget get sortMenu =>
-      ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
-        return Padding(
+  Widget get sortMenu => Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: GestureDetector(
             child: Icon(
               UIConstants.sortMenuIconData,
               size: 26,
-              color: controller.hasSortOptions()
+              color: cubit.hasSortOptions()
                   ? UIConstants.highlightMenuColor
                   : UIConstants.normalMenuColor,
             ),
-            onTap: controller.onShowSortDialog,
+            onTap: cubit.onSortMenuClicked,
           ),
         );
-      });
+  
 
-  Widget get helpMenu =>
-      ControlledWidgetBuilder<StoresController>(builder: (context, controller) {
-        return Padding(
+  Widget get helpMenu => Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: GestureDetector(
             child: Icon(
               UIConstants.helpMenuIconData,
               size: 26,
             ),
-            onTap: controller.onOpenHelpPage,
+            onTap: cubit.onHelpMenuClick,
           ),
         );
-      });
 }

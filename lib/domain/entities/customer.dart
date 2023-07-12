@@ -6,7 +6,7 @@ class Customer extends BaseModel {
   String phone = "";
   String taxID = "";
   String bankDetail = "";
-  int storeId;
+  late int storeId;
 
   int numberDocument = 0;
 

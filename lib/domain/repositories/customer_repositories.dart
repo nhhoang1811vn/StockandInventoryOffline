@@ -1,6 +1,4 @@
 import 'package:good_manager/domain/entities/customer.dart';
-import 'package:good_manager/domain/entities/customers_settings.dart';
-import 'package:good_manager/domain/repositories/base_common_repository.dart';
+import 'package:good_manager/domain/repositories/base_repository.dart';
 
-abstract class CustomerRepository
-    extends BaseCommonRepository<Customer, CustomersSettings> {}
+abstract class CustomerRepository extends BaseRepository<Customer> {}

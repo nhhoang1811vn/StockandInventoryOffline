@@ -1,111 +1,101 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:good_manager/app/pages/base/base_page.dart';
+import 'package:good_manager/app/pages/goods/bloc/goods_data.dart';
 import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
-import 'package:good_manager/data/repositories/data_good_repository.dart';
-import 'package:good_manager/data/repositories/data_group_repository.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/search_goods_type.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../../widgets/selected_store_view.dart';
+import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';
+import 'bloc/goods_cubit2.dart';
 import 'good_item_row.dart';
-import 'goods_controller.dart';
 import 'group_item_row.dart';
 
-class GoodsPage extends View {
+class GoodsPage extends StatefulWidget {
   final bool isSelection;
-  final DocumentType documentType;
-  final List<DocumentTransaction> transactions;
+  final DocumentType? documentType;
+  final List<DocumentTransaction>? transactions;
 
-  GoodsPage(
-      {Key key,
-      @required this.isSelection,
+  GoodsPage({
+      required this.isSelection,
       this.documentType,
       this.transactions});
 
   @override
-  GoodsPageView createState() =>
-      GoodsPageView(this.isSelection, this.documentType, this.transactions);
+  GoodsPageState createState() => GoodsPageState();
 }
 
-class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
-  GoodsPageView(isSelection, documentType, transactions)
-      : super(GoodsController(
-            DataGroupRepository(),
-            DataGoodRepository(),
-            DataDocumentTransactionRepository(),
-            isSelection,
-            documentType,
-            transactions));
-
-  Widget getBody() {
+class GoodsPageState extends BasePageState<GoodsPage, GoodsCubit, GoodsData> {
+  @override
+  void initState() {
+    cubit.initState();
+    super.initState();
+  }
+  Widget _buildBody(BuildContext context, GoodsData data) {
+    final state = data.state;
+    if (state is LoadingState) {
+      return _buildLoading();
+    }
     List<Widget> children = [
       //StoreView(),
       SelectedStoreView(),
-      selectedGroupView,
-      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
-        return Visibility(child: searchBar, visible: controller.showSearchBar);
-      }),
-      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
-        return Expanded(
+      _buildSelectedGroupView(data),
+      _buildSearchBar(context, data),
+      Expanded(
             child: Stack(children: [
           Visibility(
             child: emptyView,
-            visible: controller.isEmpty(),
+            visible: (data.goods.isEmpty && data.groups.isEmpty),
           ),
           Visibility(
-            child: listView,
-            visible: !controller.isEmpty(),
+            child: _buildListView(data),
+            visible: !(data.goods.isEmpty && data.groups.isEmpty),
           )
-        ]));
-      })
+        ]))
     ];
     return Column(children: children);
   }
 
-  Widget get selectedGroupView =>
-      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
-        return Visibility(
-          visible: controller.selectedGroups.isNotEmpty,
+  Widget _buildSelectedGroupView(GoodsData data) =>
+      Visibility(
+          visible: data.selectedGroups.isNotEmpty,
           child: Container(
             height: 40,
             color: Colors.blue,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: controller.selectedGroups.length,
+              itemCount: data.selectedGroups.length,
               itemBuilder: (context, index) {
                 if (index == 0) {
                   return Row(children: [
                     GestureDetector(
                         child: Icon(Icons.home, color: Colors.white),
-                        onTap: () => controller.onSelectedGroupTapped(-1)),
+                        onTap: () => cubit.onSelectedGroupTapped(-1)),
                     GestureDetector(
                         child: Row(children: [
                           Icon(Icons.navigate_next, color: Colors.white),
-                          Text(controller.selectedGroups[index].name,
+                          Text(data.selectedGroups[index].name,
                               style: TextStyle(color: Colors.white))
                         ]),
-                        onTap: () => controller.onSelectedGroupTapped(0))
+                        onTap: () => cubit.onSelectedGroupTapped(0))
                   ]);
                 } else {
                   return GestureDetector(
                       child: Row(children: [
                         Icon(Icons.navigate_next, color: Colors.white),
-                        Text(controller.selectedGroups[index].name,
+                        Text(data.selectedGroups[index].name,
                             style: TextStyle(color: Colors.white))
                       ]),
-                      onTap: () => controller.onSelectedGroupTapped(index));
+                      onTap: () => cubit.onSelectedGroupTapped(index));
                 }
               },
             ),
           ),
         );
-      });
 
   Widget get emptyView => Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -119,61 +109,52 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
               )),
           Padding(
               padding: EdgeInsets.only(top: 16),
-              child: Text(AppLocalizations.of(context).empty_goods,
+              child: Text(AppLocalizations.of(context)!.empty_goods,
                   textAlign: TextAlign.center))
         ],
       );
 
-  Widget get listView {
-    return ControlledWidgetBuilder<GoodsController>(
-        builder: (context, controller) {
+  Widget _buildListView(GoodsData data) {
       return ListView.separated(
           itemBuilder: (BuildContext context, index) {
-            if (index < controller.groups.length) {
-              var group = controller.groups[index];
+            if (index < data.groups.length) {
+              var group = data.groups[index];
               return GroupItemRow(
                   group,
-                  (item) => controller.onGroupTapped(group),
-                  (item) => controller.onGroupLongPressed(group));
+                  (item) => cubit.onGroupTapped(group),
+                  (item) => cubit.onGroupLongPressed(group));
             } else {
-              var good = controller.goods[index - controller.groups.length];
+              var good = data.goods[index - data.groups.length];
               return GoodItemRow(
                   good,
                   good.quantity,
-                  (item) => controller.onGoodTapped(good),
-                  (item) => controller.onGoodLongPressed(good),
-                  controller.isSelection,
-                  controller.documentType);
+                  (item) => cubit.onGoodTapped(good),
+                  (item) => cubit.onGoodLongPressed(good),
+                  data.isSelection,
+                  data.documentType);
             }
           },
           separatorBuilder: (context, index) {
             return Divider();
           },
-          itemCount: controller.groups.length + controller.goods.length);
-    });
+          itemCount: data.groups.length + data.goods.length);
   }
 
   @override
-  Widget get view =>
-      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
+  Widget buildPage(BuildContext context, GoodsData data){
         return WillPopScope(
-            onWillPop: controller.onBackPressed,
+            onWillPop: () async {
+              return true;
+            },
+            //onWillPop: (){cubit.onBackPressed},
             child: Scaffold(
-                key: globalKey,
+                //key: globalKey,
                 drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 1),
                 appBar: new AppBar(
-                    title: new Text(AppLocalizations.of(context).goods_title),
-                    actions: [searchMenu, sortMenu, helpMenu]),
-                body: ControlledWidgetBuilder<GoodsController>(
-                    builder: (context, controller) {
-                  return ModalProgressHUD(
-                      child: getBody(),
-                      inAsyncCall: controller.isLoading,
-                      opacity: 0);
-                }),
-                floatingActionButton: ControlledWidgetBuilder<GoodsController>(
-                    builder: (context, controller) {
-                  return SpeedDial(
+                    title: new Text(AppLocalizations.of(context)!.goods_title),
+                    actions: [_buildSearchMenu(data), _buildSortMenu(data), helpMenu]),
+                body: _buildBody(context,data),
+                floatingActionButton: SpeedDial(
                     icon: Icons.add,
                     activeIcon: Icons.close,
                     buttonSize: 56.0,
@@ -189,80 +170,74 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
                     shape: CircleBorder(),
                     children: [
                       SpeedDialChild(
-                          child: IconButton(icon: Image.asset(UIConstants.folderIconPath, width: 24),),
+                          child: IconButton(icon: Image.asset(UIConstants.folderIconPath, width: 24), onPressed: () {  },),
                           backgroundColor: Colors.white,
-                          label: AppLocalizations.of(context).folder,
-                          onTap: controller.onAddGroup),
+                          label: AppLocalizations.of(context)!.folder,
+                          onTap: cubit.onAddGroup),
                       SpeedDialChild(
-                          child: IconButton(icon: Image.asset(UIConstants.goodIconPath, width: 24,),),
+                          child: IconButton(icon: Image.asset(UIConstants.goodIconPath, width: 24,), onPressed: () {  },),
                           backgroundColor: Colors.white,
-                          label: AppLocalizations.of(context).good,
-                          onTap: controller.onAddGood)
+                          label: AppLocalizations.of(context)!.good,
+                          onTap: cubit.onAddGood)
                     ],
-                  );
-                })));
-      });
+                  )
+                ));
+  }
 
-  Widget get searchMenu =>
-      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
-        return Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          child: GestureDetector(
-            child: Icon(
-              UIConstants.searchMenuIconData,
-              size: 26,
-              color: controller.showSearchBar
-                  ? UIConstants.highlightMenuColor
-                  : UIConstants.normalMenuColor,
-            ),
-            onTap: controller.toggleSearchBar,
-          ),
-        );
-      });
-
-  Widget get sortMenu =>
-      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
-        return Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          child: GestureDetector(
-            child: Icon(
-              UIConstants.sortMenuIconData,
-              size: 26,
-              color: controller.hasSortOptions()
-                  ? UIConstants.highlightMenuColor
-                  : UIConstants.normalMenuColor,
-            ),
-            onTap: controller.onShowSortDialog,
-          ),
-        );
-      });
-
+  Widget _buildSearchMenu(GoodsData data){
+    return Padding(
+      padding: EdgeInsets.only(right: 20.0),
+      child: GestureDetector(
+        child: Icon(
+          UIConstants.searchMenuIconData,
+          size: 26,
+          color: data.showSearchBar
+              ? UIConstants.highlightMenuColor
+              : UIConstants.normalMenuColor,
+        ),
+        onTap: cubit.toggleSearchBar,
+      ),
+    );
+  }
+  Widget _buildSortMenu(GoodsData data){
+    return Padding(
+      padding: EdgeInsets.only(right: 20.0),
+      child: GestureDetector(
+        child: Icon(
+          UIConstants.sortMenuIconData,
+          size: 26,
+          color: data.hasSortOptions
+              ? UIConstants.highlightMenuColor
+              : UIConstants.normalMenuColor,
+        ),
+        onTap: cubit.onShowSortDialog,
+      ),
+    );
+  }
   Widget get helpMenu =>
-      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
-        return Padding(
+       Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: GestureDetector(
-            onTap: controller.openHelpPage,
+            onTap: cubit.openHelpPage,
             child: Icon(
               UIConstants.helpMenuIconData,
               size: 26,
             ),
           ),
         );
-      });
 
-  Widget get searchBar =>
-      ControlledWidgetBuilder<GoodsController>(builder: (context, controller) {
-        return Row(children: [
-          Expanded(
-              child: Card(
+
+  Widget _buildSearchBar(BuildContext context,GoodsData data){
+    return Visibility(child: Row(children: [
+      Expanded(
+          child: Card(
             child: ListTile(
               title: TextField(
                 decoration: InputDecoration(
-                    hintText: controller.getSearchTextHint(),
+                    hintText: cubit.getSearchTextHint(context),
                     border: InputBorder.none),
-                onChanged: controller.onSearchChanged,
-                controller: controller.searchTextController,
+                onChanged: cubit.onSearchTextChanged,
+                //controller: controller.searchTextController,
               ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -270,42 +245,48 @@ class GoodsPageView extends ViewState<GoodsPage, GoodsController> {
                   Visibility(
                     child: IconButton(
                       icon: Icon(UIConstants.cancelIconData),
-                      onPressed: controller.resetSearchText,
+                      onPressed: cubit.resetSearchText,
                     ),
-                    visible: controller.textSearch.isNotEmpty,
+                    visible: data.searchText.isNotEmpty,
                   ),
                   IconButton(
                     icon: Image.asset(
                       UIConstants.searchBarcodeIconPath,
                       width: 24,
                     ),
-                    onPressed: controller.onSearchBarCode,
+                    onPressed: cubit.onSearchBarCode,
                   )
                 ],
               ),
             ),
           )),
-          PopupMenuButton<SearchGoodsType>(
-            itemBuilder: (BuildContext a) => <PopupMenuEntry<SearchGoodsType>>[
-              PopupMenuItem<SearchGoodsType>(
-                  value: SearchGoodsType.byName,
-                  child: Text(
-                      AppLocalizations.of(context).search_goods_type_by_name)),
-              PopupMenuItem<SearchGoodsType>(
-                  value: SearchGoodsType.byDescription,
-                  child: Text(AppLocalizations.of(context)
-                      .search_goods_type_by_description)),
-              PopupMenuItem<SearchGoodsType>(
-                  value: SearchGoodsType.byBarcode,
-                  child: Text(AppLocalizations.of(context)
-                      .search_goods_type_by_barcode)),
-              PopupMenuItem<SearchGoodsType>(
-                  value: SearchGoodsType.everywhere,
-                  child: Text(AppLocalizations.of(context)
-                      .search_goods_type_everywhere)),
-            ],
-            onSelected: controller.setSearchGoodsType,
-          )
-        ]);
-      });
+      PopupMenuButton<SearchGoodsType>(
+        itemBuilder: (BuildContext a) => <PopupMenuEntry<SearchGoodsType>>[
+          PopupMenuItem<SearchGoodsType>(
+              value: SearchGoodsType.byName,
+              child: Text(
+                  AppLocalizations.of(context)!.search_goods_type_by_name)),
+          PopupMenuItem<SearchGoodsType>(
+              value: SearchGoodsType.byDescription,
+              child: Text(AppLocalizations.of(context)!
+                  .search_goods_type_by_description)),
+          PopupMenuItem<SearchGoodsType>(
+              value: SearchGoodsType.byBarcode,
+              child: Text(AppLocalizations.of(context)!
+                  .search_goods_type_by_barcode)),
+          PopupMenuItem<SearchGoodsType>(
+              value: SearchGoodsType.everywhere,
+              child: Text(AppLocalizations.of(context)!
+                  .search_goods_type_everywhere)),
+        ],
+        onSelected: cubit.setSearchGoodsType,
+      )
+    ]), visible: data.showSearchBar);
+  }
+
+  Widget _buildLoading() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
 }

@@ -1,3 +1,4 @@
+/*
 import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
@@ -30,3 +31,4 @@ class BaseInsertItemUseCaseParam<M extends BaseModel> {
 
   BaseInsertItemUseCaseParam(this.item);
 }
+*/

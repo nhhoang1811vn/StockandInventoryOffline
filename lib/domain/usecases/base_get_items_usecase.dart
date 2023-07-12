@@ -1,3 +1,4 @@
+/*
 import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
@@ -22,3 +23,4 @@ class BaseGetItemsUseCase<M extends BaseModel> extends UseCase<List<M>, void> {
     return controller.stream;
   }
 }
+*/

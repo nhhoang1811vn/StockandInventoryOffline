@@ -2,25 +2,25 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/home/home_view.dart';
-import 'package:good_manager/app/pages/onboarding/on_boarding_view.dart';
+import 'package:good_manager/app/pages/onboarding/on_boarding_page.dart';
 import 'package:good_manager/app/utils/router.dart';
-import 'package:good_manager/data/app_data_manager.dart';
+import 'package:good_manager/data/storage.dart';
 
-List<CameraDescription> cameras;
+import '../common/helpers/injection.container.dart';
+
+late List<CameraDescription> cameras;
+
+Storage storage = getIt<Storage>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  configureDependencies();
+  await storage.init();
   cameras = await availableCameras();
   runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  static void setLocale(BuildContext context, String code) {
-    MyAppState state = context.findAncestorStateOfType<MyAppState>();
-    state.setLanguageCode(code);
-  }
-
   @override
   State<StatefulWidget> createState() {
     return MyAppState();
@@ -28,32 +28,14 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  String _languageCode;
+  String? _languageCode;
   final AppRouter _router;
-  bool firstTime = false;
+  bool? firstTime;
+  //Storage storage = getIt<Storage>();
 
   MyAppState() : _router = AppRouter() {
-    appDataManager.sharedPrefsHelper
-        .getFirstTime()
-        .then((value) => setState(() {
-              firstTime = value;
-            }));
-  }
-
-  void setLanguageCode(String code) {
-    setState(() {
-      _languageCode = code;
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    appDataManager.sharedPrefsHelper.getLanguageCode().then((code) {
-      setState(() {
-        _languageCode = code;
-      });
-    });
-    super.didChangeDependencies();
+    firstTime = storage.getFirstTime();
+    _languageCode = storage.getLanguageCode();
   }
   Locale locale(String languageCode) {
     Locale _temp;
@@ -84,10 +66,10 @@ class MyAppState extends State<MyApp> {
             //contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
           )
         ),
-        home: firstTime ? OnBoardingPage() : HomePage(),
+        home: firstTime! ? OnBoardingPage() : HomePage(),
         onGenerateRoute: _router.getRoute,
         navigatorObservers: [_router.routeObserver],
-        locale: locale(_languageCode),
+        locale: locale(_languageCode!),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       );

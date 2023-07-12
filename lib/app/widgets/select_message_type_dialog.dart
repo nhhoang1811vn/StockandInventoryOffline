@@ -18,7 +18,7 @@ class SelectMessageTypeDialog extends StatefulWidget {
 }
 
 class SelectMessageTypeDialogState extends State<SelectMessageTypeDialog> {
-  MessageType _messageType;
+  late MessageType _messageType;
 
   @override
   void initState() {
@@ -29,17 +29,17 @@ class SelectMessageTypeDialogState extends State<SelectMessageTypeDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context).message_type),
+      title: Text(AppLocalizations.of(context)!.message_type),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                getRadioListTile(MessageType.BUG_REPORT, AppLocalizations.of(context).message_type_bug_report),
-                getRadioListTile(MessageType.FEEDBACK, AppLocalizations.of(context).message_type_feedback),
-                getRadioListTile(MessageType.SUGGESTION, AppLocalizations.of(context).message_type_suggestion),
-                getRadioListTile(MessageType.QUESTION, AppLocalizations.of(context).message_type_question)
+                getRadioListTile(MessageType.BUG_REPORT, AppLocalizations.of(context)!.message_type_bug_report),
+                getRadioListTile(MessageType.FEEDBACK, AppLocalizations.of(context)!.message_type_feedback),
+                getRadioListTile(MessageType.SUGGESTION, AppLocalizations.of(context)!.message_type_suggestion),
+                getRadioListTile(MessageType.QUESTION, AppLocalizations.of(context)!.message_type_question)
 
               ],
             )
@@ -48,7 +48,7 @@ class SelectMessageTypeDialogState extends State<SelectMessageTypeDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(AppLocalizations.of(context).action_ok),
+          child: Text(AppLocalizations.of(context)!.action_ok),
           onPressed: () async {
             widget.onValueChange(_messageType);
             Navigator.of(context).pop();
@@ -63,9 +63,9 @@ class SelectMessageTypeDialogState extends State<SelectMessageTypeDialog> {
       title: Text(text),
       value: value,
       groupValue: _messageType,
-      onChanged: (MessageType value) {
+      onChanged: (MessageType? value) {
         setState(() {
-          _messageType = value;
+          _messageType = value!;
         });
       },
       dense: true,

@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -32,7 +33,7 @@ class SelectGroupPageView
       );
 
   Widget get appBar => AppBar(
-      title: new Text(AppLocalizations.of(context).select_group_title),
+      title: new Text(AppLocalizations.of(context)!.select_group_title),
       actions: [save]);
 
   Widget get listView => ControlledWidgetBuilder<SelectGroupController>(
@@ -65,3 +66,4 @@ class SelectGroupPageView
         }),
       );
 }
+*/

@@ -18,36 +18,49 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.17.1 <3.0.0"
 dependencies:
+  formz: ^0.6.0
+  freezed: ^2.3.5
   #meta: 1.8.2
   flutter_localizations:
     sdk: flutter
   #localization: 2.1.0
   flutter:
     sdk: flutter
-  intl: 0.17.0   # Add this line
-  sqflite: ^1.3.2
-  camera: 0.10.0+4
+  intl: 0.18.0  # Add this line
+  sqflite: ^2.2.8+4
+  camera: ^0.10.5+2
   file_picker: ^3.0.3
   path_provider: ^2.0.0
-  path: 1.8.2
+  path: 1.8.3
   open_file: ^3.2.1
   flutter_speed_dial: ^3.0.5
   flutter_barcode_scanner: ^2.0.0
-  shared_preferences: 2.0.5
-  date_time_picker: ^2.0.0
+  shared_preferences: ^2.2.0
+  #date_time_picker: ^2.1.0
+  #date_picker_timeline: ^1.2.1
   introduction_screen: ^2.0.0
+  #State Management
+  flutter_bloc: 8.1.3
+  #DI
+  get_it: ^7.2.0
+  injectable: ^2.1.2
+  #Storage
+  #flutter_secure_storage: ^5.0.2
+  #hive: ^2.2.3
+  #clean, will remove this lib after refactor code
   flutter_clean_architecture: ^5.0.0
   url_launcher: ^6.1.10
   fluttertoast: ^8.0.7
-  sprintf: ^4.0.0
+  sprintf: ^7.0.0
   flutter_markdown: ^0.6.2
   flutter_beep: ^1.0.0
-  vibration: ^1.7.3
+  #vibration: ^1.7.3
+  copy_with_extension: ^5.0.2
 
   # UI
-  modal_progress_hud: ^0.1.2
+  #modal_progress_hud: ^0.1.3
   font_awesome_flutter: 10.4.0
 
   #flutter_calculator:
@@ -69,6 +82,11 @@ dependencies:
   #flutter_barcode_scanner: ^1.0.1
 
 dev_dependencies:
+  injectable_generator: ^2.1.6
+  build_runner: ^2.4.4
+  build: ^2.4.0
+  copy_with_extension_gen: ^5.0.2
+  #json_serializable: ^6.7.0
   # flutter_test:
   #  sdk: flutter
   #integration_test:

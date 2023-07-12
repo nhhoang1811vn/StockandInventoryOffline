@@ -1,15 +1,12 @@
 import 'package:good_manager/domain/entities/base_model.dart';
-
 class Supplier extends BaseModel {
-  String description = "";
   String address = "";
   String email = "";
   String phone = "";
   String taxID = "";
   String bankDetail = "";
-  int storeId;
-
-  int numberDocument = 0;
+  late int storeId;
+  //int numberDocument = 0;
 
   Supplier();
 

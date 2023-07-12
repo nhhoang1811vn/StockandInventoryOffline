@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/barcode_scanner_settings.dart';
@@ -26,17 +27,17 @@ class ChangeBatchModeScanDialogWidgetState
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context).after_each_scan),
+      title: Text(AppLocalizations.of(context)!.after_each_scan),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             Column(
               children: [
                 getRadioListTile(
-                    AppLocalizations.of(context).after_each_scan_auto,
+                    AppLocalizations.of(context)!.after_each_scan_auto,
                     BatchModeScan.AUTO),
                 getRadioListTile(
-                    AppLocalizations.of(context).after_each_scan_manually,
+                    AppLocalizations.of(context)!.after_each_scan_manually,
                     BatchModeScan.MANUALLY),
               ],
             )
@@ -45,7 +46,7 @@ class ChangeBatchModeScanDialogWidgetState
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(AppLocalizations.of(context).action_ok),
+          child: Text(AppLocalizations.of(context)!.action_ok),
           onPressed: () async {
             widget.onValueChange(_mode);
             Navigator.of(context).pop();
@@ -69,3 +70,4 @@ class ChangeBatchModeScanDialogWidgetState
     );
   }
 }
+*/

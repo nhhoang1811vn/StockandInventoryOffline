@@ -1,140 +1,112 @@
+/*
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/pages/save_good/save_good_controller.dart';
+import 'package:good_manager/app/pages/base/base_page.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/selected_store_view.dart';
-import 'package:good_manager/data/repositories/data_document_repository.dart';
-import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
-import 'package:good_manager/data/repositories/data_good_repository.dart';
 import 'package:good_manager/domain/entities/good.dart';
+import 'bloc/save_good_cubit.dart';
+import 'bloc/save_good_data.dart';
 
-import '../../widgets/images_preview_view.dart';
-
-class SaveGoodPage extends View {
+class SaveGoodPage extends StatefulWidget {
   final Good item;
-  bool enableAddTransactions = true;
+  final bool enableAddTransactions;
 
   SaveGoodPage(this.item, this.enableAddTransactions) : super();
 
   @override
-  SaveGoodPageView createState() => SaveGoodPageView(item);
+  State<SaveGoodPage> createState() => SaveGoodPageState();
 }
 
-class SaveGoodPageView extends ViewState<SaveGoodPage, SaveGoodController> {
+class SaveGoodPageState extends BasePageState<SaveGoodPage, SaveGoodCubit, SaveGoodData> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  SaveGoodPageView(item)
-      : super(SaveGoodController(DataGoodRepository(),DataDocumentRepository(), item));
-
   @override
-  Widget get view => ControlledWidgetBuilder<SaveGoodController>(
-          builder: (context, controller) {
-        return WillPopScope(
-            child: Scaffold(
-                key: globalKey,
-                appBar: appBar,
-                body: Column(children: [
-                  SelectedStoreView(),
-                  Expanded(
-                      child: ListView(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.all(UIConstants.screenSpace),
-                    children: <Widget>[
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          children: <Widget>[
-                            name,
-                            SizedBox(height: 12),
-                            description,
-                            SizedBox(height: 12),
-                            barCode,
-                            SizedBox(height: 12),
-                            quantity,
-                            SizedBox(height: 12),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                AppLocalizations.of(context).field_images,
-                                style: TextStyle(
-                                    color: UIConstants.primaryColor,
-                                    fontSize: 16),
-                              ),
-                            ),
-                            SizedBox(height: 12),
-                            ImagesPreviewView(controller.files, true,
-                                controller.onImagesChanged)
-                          ],
+  Widget buildPage(BuildContext context, SaveGoodData data) {
+    return WillPopScope(
+        child: Scaffold(
+          //key: globalKey,
+          appBar: appBar,
+          body: Column(
+            children: [
+              SelectedStoreView(),
+              Expanded(
+                  child: ListView(
+                shrinkWrap: true,
+                padding: EdgeInsets.all(UIConstants.screenSpace),
+                children: <Widget>[
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        _buildName(data),
+                        SizedBox(height: 12),
+                        _buildDescription(data),
+                        SizedBox(height: 12),
+                        _buildBarCode(data),
+                        SizedBox(height: 12),
+                        _buildQuantity(data),
+                        SizedBox(height: 12),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            AppLocalizations.of(context)!.field_images,
+                            style: TextStyle(color: UIConstants.primaryColor, fontSize: 16),
+                          ),
                         ),
-                      ),
-                    ],
-                  ))
-                ])),
-            onWillPop: controller.onWillPop);
-      });
+                        SizedBox(height: 12),
+                        //ImagesPreviewView(controller.files, true,
+                        //    controller.onImagesChanged)
+                      ],
+                    ),
+                  ),
+                ],
+              ))
+            ],
+          ),
+        ),
+        onWillPop: cubit.onWillPop);
+  }
 
-  Widget get appBar => AppBar(
-          title: Text(AppLocalizations.of(context).save_goods_title),
-          actions: <Widget>[
-            ControlledWidgetBuilder<SaveGoodController>(
-                builder: (context, controller) {
-              return Padding(
-                  padding: EdgeInsets.only(right: 20.0),
-                  child: GestureDetector(
-                      onTap: () => controller.checkForm({
-                            'context': context,
-                            'formKey': _formKey,
-                            'globalKey': globalKey
-                          }),
-                      child: Icon(Icons.check, size: 26)));
-            })
-          ]);
+  Widget get appBar => AppBar(title: Text(AppLocalizations.of(context)!.save_goods_title), actions: <Widget>[
+        Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(onTap: () => {}, child: Icon(Icons.check, size: 26)))
+      ]);
 
-  Widget get name => ControlledWidgetBuilder<SaveGoodController>(
-          builder: (context, controller) {
-        return TextFormField(
-            controller: controller.nameTextController,
-            onChanged: (a) => controller.validate({
-                  'context': context,
-                  'formKey': _formKey,
-                  'globalKey': globalKey
-                }),
-            decoration: InputDecoration(
-                labelText: AppLocalizations.of(context).field_name),
-            validator: (String value) {
-              if (value.trim().isEmpty) {
-                return AppLocalizations.of(context).message_name_blank;
-              } else {
-                return null;
-              }
-            });
-      });
+  Widget _buildName(SaveGoodData data) {
+    return TextFormField(
+        decoration: InputDecoration(labelText: AppLocalizations.of(context)!.field_name),
+        validator: (String value) {
+          if (value.trim().isEmpty) {
+            return AppLocalizations.of(context)!.message_name_blank;
+          } else {
+            return null;
+          }
+        });
+  }
 
-  Widget get description => ControlledWidgetBuilder<SaveGoodController>(
-          builder: (context, controller) {
-        return TextFormField(
-          controller: controller.descriptionTextController,
-          decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).field_desc),
-        );
-      });
+  Widget _buildDescription(SaveGoodData data) {
+    return TextFormField(
+      //controller: controller.descriptionTextController,
+      decoration: InputDecoration(labelText: AppLocalizations.of(context)!.field_desc),
+    );
+  }
 
-  Widget get barCode => ControlledWidgetBuilder<SaveGoodController>(
-          builder: (context, controller) {
-        return Row(
+  Widget _buildBarCode(SaveGoodData data){
+    return Row(
           children: [
             Expanded(
                 child: TextFormField(
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context).field_bar_code),
-                    controller: controller.barCodeTextController)),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.field_bar_code),
+                    //controller: controller.barCodeTextController
+                )),
             Align(
                 alignment: Alignment.centerRight,
                 child: MaterialButton(
                   minWidth: 24,
-                  onPressed: controller.onInputBarCodePressed,
+                  //onPressed: controller.onInputBarCodePressed,
                   color: Colors.blue,
                   textColor: Colors.white,
                   child: Icon(
@@ -146,17 +118,12 @@ class SaveGoodPageView extends ViewState<SaveGoodPage, SaveGoodController> {
                 ))
           ],
         );
-      });
+      }
 
-  Widget get addQuantityButton => ControlledWidgetBuilder<SaveGoodController>(
-          builder: (context, controller) {
+  Widget _buildAddQuantityButton(SaveGoodData data) {
         return MaterialButton(
           minWidth: 24,
-          onPressed: () =>  controller.onAddQuantityButtonPressed({
-            'context': context,
-            'formKey': _formKey,
-            'globalKey': globalKey
-          }),
+          //onPressed: () => controller.onAddQuantityButtonPressed({'context': context, 'formKey': _formKey, 'globalKey': globalKey}),
           color: Colors.blue,
           textColor: Colors.white,
           child: Icon(
@@ -166,17 +133,12 @@ class SaveGoodPageView extends ViewState<SaveGoodPage, SaveGoodController> {
           padding: EdgeInsets.all(8),
           shape: CircleBorder(),
         );
-      });
+      }
 
-  Widget get subQuantityButton => ControlledWidgetBuilder<SaveGoodController>(
-          builder: (context, controller) {
+  Widget _buildSubQuantityButton(SaveGoodData data){
         return MaterialButton(
           minWidth: 24,
-          onPressed: () =>  controller.onSubQuantityButtonPressed({
-            'context': context,
-            'formKey': _formKey,
-            'globalKey': globalKey
-          }),
+          //onPressed: () => controller.onSubQuantityButtonPressed({'context': context, 'formKey': _formKey, 'globalKey': globalKey}),
           color: Colors.blue,
           textColor: Colors.white,
           child: Icon(
@@ -186,14 +148,12 @@ class SaveGoodPageView extends ViewState<SaveGoodPage, SaveGoodController> {
           padding: EdgeInsets.all(8),
           shape: CircleBorder(),
         );
-      });
+      }
 
-  Widget get modifyQuantityButton =>
-      ControlledWidgetBuilder<SaveGoodController>(
-          builder: (context, controller) {
+  Widget _buildModifyQuantityButton(SaveGoodData data){
         return MaterialButton(
           minWidth: 24,
-          onPressed: controller.onModifyQuantityButtonPressed,
+          //onPressed: controller.onModifyQuantityButtonPressed,
           color: Colors.blue,
           textColor: Colors.white,
           child: Icon(
@@ -203,32 +163,28 @@ class SaveGoodPageView extends ViewState<SaveGoodPage, SaveGoodController> {
           padding: EdgeInsets.all(8),
           shape: CircleBorder(),
         );
-      });
+      }
 
-  Widget get quantity => ControlledWidgetBuilder<SaveGoodController>(
-          builder: (context, controller) {
+  Widget _buildQuantity(SaveGoodData data){
         return Row(
           children: [
             Expanded(
                 child: TextFormField(
-                  readOnly: true,
-              decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context).field_quantity),
-              controller: controller.quantityTextController,
+              readOnly: true,
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.field_quantity),
+              //controller: controller.quantityTextController,
             )),
             Align(
                 alignment: Alignment.centerRight,
                 child: Row(
                   children: [
-                    if (widget.enableAddTransactions)
-                      addQuantityButton,
-                    if (widget.enableAddTransactions)
-                      subQuantityButton,
-                    if (!widget.enableAddTransactions)
-                      modifyQuantityButton
+                    if (widget.enableAddTransactions) _buildAddQuantityButton(data),
+                    if (widget.enableAddTransactions) _buildSubQuantityButton(data),
+                    if (!widget.enableAddTransactions) _buildModifyQuantityButton(data)
                   ],
                 ))
           ],
         );
-      });
+      }
 }
+*/

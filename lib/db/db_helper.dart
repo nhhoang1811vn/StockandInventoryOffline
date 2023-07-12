@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:io' as io;
-
-import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/expense.dart';
@@ -19,23 +17,23 @@ class DBHelper {
 
   factory DBHelper() => _instance;
 
-  static Database _db;
+  static Database? _db;
 
-  final String STORES_TABLE_NAME = "Stores";
-  final String SUPPLIERS_TABLE_NAME = "Suppliers";
-  final String CUSTOMERS_TABLE_NAME = "Customers";
+  static const String STORES_TABLE_NAME = "Stores";
+  static const String SUPPLIERS_TABLE_NAME = "Suppliers";
+  static const String CUSTOMERS_TABLE_NAME = "Customers";
 
-  final String GROUPS_TABLE_NAME = "Groups";
-  final String GOODS_TABLE_NAME = "Goods";
+  static const String GROUPS_TABLE_NAME = "Groups";
+  static const String GOODS_TABLE_NAME = "Goods";
 
-  final String DOCUMENTS_TABLE_NAME = "Documents";
-  final String DOCUMENT_TRANSACTIONS_TABLE_NAME = "Transactions";
-  final String EXPENSES_TABLE_NAME = "Expenses";
+  static const String DOCUMENTS_TABLE_NAME = "Documents";
+  static const String DOCUMENT_TRANSACTIONS_TABLE_NAME = "Transactions";
+  static const String EXPENSES_TABLE_NAME = "Expenses";
 
   Future<Database> get db async {
-    if (_db != null) return _db;
+    if (_db != null) return _db!;
     _db = await initDb();
-    return _db;
+    return _db!;
   }
 
   DBHelper.internal();
@@ -95,7 +93,8 @@ class DBHelper {
     if (list.isNotEmpty) {
       return Store.map(list.first);
     }
-    return null;
+    throw Exception("");
+    //return null;
   }
 
   Future<List<Store>> getStores() async {
@@ -129,8 +128,19 @@ class DBHelper {
   }
 
   //SUPPLIER
+  Future<List<Supplier>> getSuppliers(int storeId) async {
+    var dbClient = await db;
+    List<Map> list = await dbClient.rawQuery('SELECT * FROM $SUPPLIERS_TABLE_NAME WHERE storeId = ?', [storeId]);
+    List<Supplier> suppliers = [];
+    for (int i = 0; i < list.length; i++) {
+      Supplier supplier = Supplier.map(list[i]);
+      //supplier.numberDocument = await getCountDocumentBySupplierId(supplier.id);
+      suppliers.add(supplier);
+    }
+    return suppliers;
+  }
 
-  Future<List<Supplier>> getSuppliers() async {
+  /*Future<List<Supplier>> getSuppliers() async {
     var dbClient = await db;
     List<Map> list =
         await dbClient.rawQuery('SELECT * FROM $SUPPLIERS_TABLE_NAME');
@@ -141,18 +151,17 @@ class DBHelper {
       suppliers.add(supplier);
     }
     return suppliers;
-  }
+  }*/
 
-  Future<int> getCountSupplier() async {
+  /*Future<int> getCountSupplier() async {
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     var result = await dbClient.rawQuery(
         "SELECT COUNT(*) FROM $SUPPLIERS_TABLE_NAME WHERE storeId = ?",
         [storeId]);
-
-    int value = result[0]["COUNT(*)"];
-    return value == null ? 0 : value;
-  }
+    int? count = Sqflite.firstIntValue(result);
+    return count == null ? 0 : count;
+  }*/
 
   Future<int> getCountDocumentBySupplierId(int supplierId) async {
     var dbClient = await db;
@@ -160,34 +169,29 @@ class DBHelper {
         "SELECT COUNT(*) FROM $DOCUMENTS_TABLE_NAME WHERE supplierId = ?",
         [supplierId]);
 
-    int value = result[0]["COUNT(*)"];
-    return value == null ? 0 : value;
+    int? count = Sqflite.firstIntValue(result);
+    return count == null ? 0 : count;
   }
 
   Future<int> insertSupplier(Supplier item) async {
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
-    item.createdDate = DateTime.now();
-    item.updatedDate = DateTime.now();
-    item.storeId = storeId;
     int res = await dbClient.insert(SUPPLIERS_TABLE_NAME, item.toMap());
     return res;
   }
 
   Future<bool> updateSupplier(Supplier item) async {
     var dbClient = await db;
-    item.updatedDate = DateTime.now();
     int res = await dbClient.update(SUPPLIERS_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id]);
     return res == 1;
   }
 
-  Future<Supplier> getSupplier(int id) async {
+  Future<Supplier?> getSupplier(int? id) async {
     var dbClient = await db;
     var list = await dbClient
         .rawQuery('SELECT * FROM $SUPPLIERS_TABLE_NAME where id = ?', [id]);
     if (list.isNotEmpty) {
-      return Supplier.map(list.first);
+      //return Supplier.map(list.first);
     }
     return null;
   }
@@ -214,16 +218,16 @@ class DBHelper {
     return customers;
   }
 
-  Future<int> getCountCustomer() async {
+  /*Future<int> getCountCustomer() async {
     int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     var result = await dbClient.rawQuery(
         "SELECT COUNT(*) FROM $CUSTOMERS_TABLE_NAME WHERE storeId = ?",
         [storeId]);
 
-    int value = result[0]["COUNT(*)"];
-    return value == null ? 0 : value;
-  }
+    int? count = Sqflite.firstIntValue(result);
+    return count == null ? 0 : count;
+  }*/
 
   Future<int> getCountDocumentByCustomerId(int customerId) async {
     var dbClient = await db;
@@ -231,16 +235,12 @@ class DBHelper {
         "SELECT COUNT(*) FROM $DOCUMENTS_TABLE_NAME WHERE customerId = ?",
         [customerId]);
 
-    int value = result[0]["COUNT(*)"];
-    return value == null ? 0 : value;
+    int? count = Sqflite.firstIntValue(result);
+    return count == null ? 0 : count;
   }
 
   Future<int> insertCustomer(Customer item) async {
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
-    item.createdDate = DateTime.now();
-    item.updatedDate = DateTime.now();
-    item.storeId = storeId;
     int res = await dbClient.insert(CUSTOMERS_TABLE_NAME, item.toMap());
     return res;
   }
@@ -261,7 +261,7 @@ class DBHelper {
     return res == 1;
   }
 
-  Future<Customer> getCustomer(int id) async {
+  Future<Customer?> getCustomer(int? id) async {
     var dbClient = await db;
     var list = await dbClient
         .rawQuery('SELECT * FROM $CUSTOMERS_TABLE_NAME where id = ?', [id]);
@@ -288,9 +288,8 @@ class DBHelper {
     return res > 0;
   }
 
-  Future<List<Group>> getGroups() async {
+  Future<List<Group>> getGroups(String storeId) async {
     var dbClient = await db;
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $GROUPS_TABLE_NAME where storeId = ?', [storeId]);
     List<Group> groups = [];
@@ -301,9 +300,8 @@ class DBHelper {
     return groups;
   }
 
-  Future<List<Group>> getGroupsByDirectory(String directory) async {
+  Future<List<Group>> getGroupsByDirectory(String storeId,String directory) async {
     var dbClient = await db;
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $GROUPS_TABLE_NAME WHERE storeId = ? AND directory = ?',
         [storeId, directory]);
@@ -316,14 +314,13 @@ class DBHelper {
   }
 
   //GOOD
-  Future<int> getCountGood() async {
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+  Future<int> getCountGood(int storeId) async {
     var dbClient = await db;
     var result = await dbClient.rawQuery(
         "SELECT COUNT(*) FROM $GOODS_TABLE_NAME WHERE storeId = ?", [storeId]);
 
-    int value = result[0]["COUNT(*)"];
-    return value == null ? 0 : value;
+    int? count = Sqflite.firstIntValue(result);
+    return count == null ? 0 : count;
   }
 
 
@@ -334,27 +331,27 @@ class DBHelper {
     if (list.isNotEmpty) {
       return Good.map(list.first);
     }
-    return null;
+    throw Exception("No Good");
   }
 
   Future<int> insertGood(Good item) async {
     var dbClient = await db;
-    item.createdDate = DateTime.now();
-    item.updatedDate = DateTime.now();
+    //item.createdDate = DateTime.now();
+    //item.updatedDate = DateTime.now();
     int res = await dbClient.insert(GOODS_TABLE_NAME, item.toMap());
     return res;
   }
 
   Future<bool> updateGood(Good item) async {
     var dbClient = await db;
-    item.updatedDate = DateTime.now();
+    //item.updatedDate = DateTime.now();
     int res = await dbClient.update(GOODS_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id]);
     return res > 0;
   }
-  Future<List<Good>> getGoods() async {
+  Future<List<Good>> getGoods(String storeId) async {
     var dbClient = await db;
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ?',
         [storeId]);
@@ -368,9 +365,9 @@ class DBHelper {
     }
     return goods;
   }
-  Future<List<Good>> getGoodsByDirectory(String directory) async {
+  Future<List<Good>> getGoodsByDirectory(String storeId,String directory) async {
     var dbClient = await db;
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ? AND directory = ?',
         [storeId, directory]);
@@ -389,10 +386,10 @@ class DBHelper {
 
   Future<Good> getGoodByBarcode(String barcode) async {
     var dbClient = await db;
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     List<Map> list = await dbClient.rawQuery(
-        'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ? AND barcode = ?',
-        [storeId, barcode]);
+        'SELECT * FROM $GOODS_TABLE_NAME WHERE barcode = ?',
+        [barcode]);
     if (list.length > 0) {
       var good = Good.map(list[0]);
       int incomingQuantity =
@@ -436,8 +433,8 @@ class DBHelper {
     return list.map((e) => Document.map(e)).toList();
   }
 
-  Future<List<Document>> getDocuments() async {
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+  Future<List<Document>> getDocuments(String storeId) async {
+    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $DOCUMENTS_TABLE_NAME where storeId = ?', [storeId]);
@@ -447,11 +444,11 @@ class DBHelper {
       document.quantity = await getQuantityByDocumentId(document.id);
       if (document.type == DocumentType.incoming) {
         if (document.supplierId != null) {
-          document.supplierName = (await getSupplier(document.supplierId)).name;
+          //document.supplierName = (await getSupplier(document.supplierId))?.common.name;
         }
       } else if (document.type == DocumentType.outgoing) {
         if (document.customerId != null) {
-          document.customerName = (await getCustomer(document.customerId)).name;
+          document.customerName = (await getCustomer(document.customerId))?.name;
         }
       }
       documents.add(document);
@@ -459,15 +456,15 @@ class DBHelper {
     return documents;
   }
 
-  Future<int> getCountDocument() async {
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+  Future<int> getCountDocument(String storeId) async {
+    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     var result = await dbClient.rawQuery(
         "SELECT COUNT(*) FROM $DOCUMENTS_TABLE_NAME WHERE storeId = ?",
         [storeId]);
 
-    int value = result[0]["COUNT(*)"];
-    return value == null ? 0 : value;
+    int? count = Sqflite.firstIntValue(result);
+    return count == null ? 0 : count;
   }
 
   Future<int> getQuantityByDocumentId(int documentId) async {
@@ -475,8 +472,8 @@ class DBHelper {
     var result = await dbClient.rawQuery(
         'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE documentId = ?',
         [documentId]);
-    int value = result[0]["SUM(quantity)"];
-    return value == null ? 0 : value;
+    int? count = Sqflite.firstIntValue(result);
+    return count == null ? 0 : count;
   }
 
   Future<List<DocumentTransaction>> getTransactionsByDocumentId(
@@ -499,7 +496,7 @@ class DBHelper {
 
   //TRANSACTION
   Future<int> insertTransaction(DocumentTransaction item) async {
-    item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    //item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     int res =
         await dbClient.insert(DOCUMENT_TRANSACTIONS_TABLE_NAME, item.toMap());
@@ -521,38 +518,39 @@ class DBHelper {
     return res == 1;
   }
 
-  Future<int> getSumQuantity(DocumentType type) async {
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+  Future<int> getSumQuantity(String storeId,DocumentType type) async {
+    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     var result = await dbClient.rawQuery(
         'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE storeId = ? AND documentType = ?',
         [storeId, type.index]);
-    int value = result[0]["SUM(quantity)"];
-    return value == null ? 0 : value;
+    //int value = result[0]["SUM(quantity)"];
+    //return value == null ? 0 : value;
+    int? count = Sqflite.firstIntValue(result);
+    return count == null ? 0 : count;
   }
   Future<int> getSumQuantityByGoodId(DocumentType type, int goodId) async {
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     var result = await dbClient.rawQuery(
-        'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE storeId = ? AND goodId = ? AND documentType = ?',
-        [storeId,goodId, type.index]);
-    int value = result[0]["SUM(quantity)"];
-    return value == null ? 0 : value;
+        'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE goodId = ? AND documentType = ?',
+        [goodId, type.index]);
+    int? count = Sqflite.firstIntValue(result);
+    return count == null ? 0 : count;
   }
 
   //EXPENSES
-  Future<double> getSumExpense() async {
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+  Future<double> getSumExpense(String storeId) async {
+    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     var result = await dbClient.rawQuery(
         'SELECT SUM(amount) FROM $EXPENSES_TABLE_NAME WHERE storeId = ?',
         [storeId]);
-    double value = result[0]["SUM(amount)"];
-    return value == null ? 0 : value;
+    double count = result[0]["SUM(amount)"] as double;
+    return count;
   }
 
-  Future<List<Expense>> getExpenses() async {
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+  Future<List<Expense>> getExpenses(String storeId) async {
+    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $EXPENSES_TABLE_NAME where storeId = ?', [storeId]);
@@ -566,9 +564,9 @@ class DBHelper {
 
   Future<int> insertExpense(Expense item) async {
     var dbClient = await db;
-    item.createdDate = DateTime.now();
-    item.updatedDate = DateTime.now();
-    item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    //item.createdDate = DateTime.now();
+    //item.updatedDate = DateTime.now();
+    //item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     int res = await dbClient.insert(EXPENSES_TABLE_NAME, item.toMap());
     return res;
   }
@@ -582,25 +580,25 @@ class DBHelper {
 
   Future<bool> updateExpense(Expense item) async {
     var dbClient = await db;
-    item.updatedDate = DateTime.now();
+    //item.updatedDate = DateTime.now();
     int res = await dbClient.update(EXPENSES_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id]);
     return res == 1;
   }
 
   Future<int> insertDocument(Document document, List<DocumentTransaction> transactions) async{
-    var storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    //var storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     return dbClient.transaction((txn) async{
       //insert document
-      document.createdDate = DateTime.now();
-      document.updatedDate = DateTime.now();
-      document.storeId = storeId;
+      //document.createdDate = DateTime.now();
+      //document.updatedDate = DateTime.now();
+      //document.storeId = storeId;
       int documentId = await txn.insert(DOCUMENTS_TABLE_NAME, document.toMap());
       //insert transaction
       for (var transaction in transactions){
         transaction.documentId = documentId;
-        transaction.storeId = storeId;
+        //transaction.storeId = storeId;
         transaction.createdDate = DateTime.now();
         transaction.updatedDate = DateTime.now();
         await txn.insert(DOCUMENT_TRANSACTIONS_TABLE_NAME, transaction.toMap());
@@ -630,7 +628,7 @@ class DBHelper {
   }
   //udpate document
   Future<bool> updateDocument(Document document, List<DocumentTransaction> transactions) async{
-    var storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    //var storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     return dbClient.transaction((txn) async{
       //update document
@@ -644,7 +642,7 @@ class DBHelper {
       //insert transaction
       for (var transaction in transactions){
         transaction.documentId = document.id;
-        transaction.storeId = storeId;
+        //transaction.storeId = storeId;
         await txn.insert(DOCUMENT_TRANSACTIONS_TABLE_NAME, transaction.toMap());
       }
       //check valid
@@ -671,7 +669,7 @@ class DBHelper {
     });
   }
   Future<bool> deleteDocument(int id) async{
-    var storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+    //var storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     return dbClient.transaction((txn) async{
       //delete transactions
@@ -681,7 +679,7 @@ class DBHelper {
       //delete document
       int res = await txn.rawDelete('DELETE FROM $DOCUMENTS_TABLE_NAME WHERE id =?',[id]);
       //check valid
-      List<Map> list = await txn.rawQuery(
+      /*List<Map> list = await txn.rawQuery(
           'SELECT id, name FROM $GOODS_TABLE_NAME WHERE storeId = ?',
           [storeId]);
       for (int i = 0; i < list.length; i++) {
@@ -693,13 +691,20 @@ class DBHelper {
         var result2 = await txn.rawQuery(
             'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE storeId = ? AND goodId = ? AND documentType = ?',
             [storeId,goodId, DocumentType.outgoing.index]);
-        int incomingQuantity = result1[0]["SUM(quantity)"] == null ? 0 : result1[0]["SUM(quantity)"];
-        int outgoingQuantity = result2[0]["SUM(quantity)"] == null ? 0 : result2[0]["SUM(quantity)"];
+        int? count1 = Sqflite.firstIntValue(result1);
+        int incomingQuantity = count1 == null ? 0 : count1;
+
+        int? count2 = Sqflite.firstIntValue(result2);
+        int outgoingQuantity = count2 == null ? 0 : count2;
+
+
+        //int incomingQuantity = result1[0]["SUM(quantity)"] == null ? 0 : result1[0]["SUM(quantity)"];
+        //int outgoingQuantity = result2[0]["SUM(quantity)"] == null ? 0 : result2[0]["SUM(quantity)"];
         int quantity = incomingQuantity - outgoingQuantity;
         if (quantity < 0){
           throw Exception("error quantity, $goodName");
         }
-      }
+      }*/
       return res > 0;
     });
   }

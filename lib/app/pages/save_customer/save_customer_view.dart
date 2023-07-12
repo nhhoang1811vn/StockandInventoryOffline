@@ -1,43 +1,38 @@
+/*
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/pages/save_customer/save_customer_controller.dart';
+import 'package:good_manager/app/pages/base/base_page.dart';
+import 'package:good_manager/app/pages/save_customer/bloc/save_customer_cubit.dart';
 import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/data/repositories/data_customer_repository.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 
 import '../../widgets/selected_store_view.dart';
+import 'bloc/save_customer_data.dart';
 
-class SaveCustomerPage extends View {
+class SaveCustomerPage extends StatefulWidget {
   final Customer item;
 
-  SaveCustomerPage({Key key, @required this.item}) : super(key: key);
+  SaveCustomerPage({Key? key, required this.item}) : super(key: key);
 
   @override
-  _SaveCustomerPageView createState() => _SaveCustomerPageView(item);
+  _SaveCustomerPageState createState() => _SaveCustomerPageState();
 }
 
-class _SaveCustomerPageView
-    extends ViewState<SaveCustomerPage, SaveCustomerController> {
+class _SaveCustomerPageState
+    extends BasePageState<SaveCustomerPage, SaveCustomerCubit, SaveCustomerData> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  _SaveCustomerPageView(item)
-      : super(SaveCustomerController(DataCustomerRepository(), item));
-
   @override
-  Widget get view => ControlledWidgetBuilder<SaveCustomerController>(
-          builder: (context, controller) {
-        return WillPopScope(
-            key: globalKey,
+  Widget buildPage(BuildContext context, data) {
+    return WillPopScope(
+            //key: globalKey,
             child: Scaffold(
-                key: globalKey,
+                //key: globalKey,
                 appBar: AppBar(
                     title:
-                        Text(AppLocalizations.of(context).save_customer_title),
+                        Text(AppLocalizations.of(context)!.save_customer_title),
                     actions: <Widget>[
-                      ControlledWidgetBuilder<SaveCustomerController>(
-                          builder: (context, controller) {
-                        return Padding(
+                      */
+/*Padding(
                           padding: EdgeInsets.only(right: 20.0),
                           child: GestureDetector(
                               onTap: () => controller.checkForm({
@@ -46,8 +41,8 @@ class _SaveCustomerPageView
                                     'globalKey': globalKey
                                   }),
                               child: Icon(Icons.check, size: 26)),
-                        );
-                      })
+                        )*//*
+
                     ]),
                 body: ListView(
                   children: <Widget>[
@@ -60,24 +55,23 @@ class _SaveCustomerPageView
                               vertical: UIConstants.screenSpace),
                           child: Column(
                             children: <Widget>[
-                              name,
-                              description,
-                              address,
-                              email,
-                              phone,
-                              taxID,
-                              bankDetails
+                              //name,
+                              //description,
+                              //address,
+                              //email,
+                              //phone,
+                              //taxID,
+                              //bankDetails
                             ],
                           ),
                         ))
                   ],
                 )),
             onWillPop: controller.onWillPop);
-      });
+      }
 
-  Widget get name => ControlledWidgetBuilder<SaveCustomerController>(
-          builder: (context, controller) {
-        return TextFormField(
+  */
+/*Widget get name => TextFormField(
             controller: controller.nameTextController,
             onChanged: (a) => controller.validate({
               'context': context,
@@ -85,22 +79,22 @@ class _SaveCustomerPageView
               'globalKey': globalKey
             }),
             decoration: InputDecoration(
-                labelText: AppLocalizations.of(context).field_name),
-            validator: (String value) {
-              if (value.trim().isEmpty) {
-                return AppLocalizations.of(context).message_name_blank;
+                labelText: AppLocalizations.of(context)!.field_name),
+            validator: (String? value) {
+              if (value?.trim()?.isEmpty) {
+                return AppLocalizations.of(context)!.message_name_blank;
               } else {
                 return null;
               }
             });
-      });
+
 
   Widget get description => ControlledWidgetBuilder<SaveCustomerController>(
           builder: (context, controller) {
         return TextFormField(
           controller: controller.descriptionTextController,
           decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).field_desc),
+              labelText: AppLocalizations.of(context)!.field_desc),
         );
       });
 
@@ -109,7 +103,7 @@ class _SaveCustomerPageView
         return TextFormField(
           controller: controller.addressTextController,
           decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).field_address),
+              labelText: AppLocalizations.of(context)!.field_address),
         );
       });
 
@@ -118,7 +112,7 @@ class _SaveCustomerPageView
         return TextFormField(
           controller: controller.emailTextController,
           decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).field_email),
+              labelText: AppLocalizations.of(context)!.field_email),
         );
       });
 
@@ -127,7 +121,7 @@ class _SaveCustomerPageView
         return TextFormField(
           controller: controller.phoneTextController,
           decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).field_phone),
+              labelText: AppLocalizations.of(context)!.field_phone),
         );
       });
 
@@ -136,7 +130,7 @@ class _SaveCustomerPageView
         return TextFormField(
           controller: controller.taxIDTextController,
           decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).field_tax_ID),
+              labelText: AppLocalizations.of(context)!.field_tax_ID),
         );
       });
 
@@ -145,7 +139,9 @@ class _SaveCustomerPageView
         return TextFormField(
           controller: controller.bankDetailsTextController,
           decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).field_bank_details),
+              labelText: AppLocalizations.of(context)!.field_bank_details),
         );
-      });
+      });*//*
+
 }
+*/

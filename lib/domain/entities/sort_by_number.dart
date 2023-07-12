@@ -1,57 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-enum SortByNumber { no_sort, ascending, descending }
+enum SortByNumber {
+  no_sort(0),
+  ascending(1),
+  descending(2);
 
-class SortByNumberHelper {
-  static SortByNumber get(int value) {
-    switch (value) {
-      case 1:
-        {
-          return SortByNumber.ascending;
-        }
-      case 2:
-        {
-          return SortByNumber.descending;
-        }
-      default:
-        {
-          return SortByNumber.no_sort;
-        }
-    }
-  }
+  const SortByNumber(this.value);
+  final int value;
+}
 
-  static String getText(BuildContext context, SortByNumber a) {
-    switch (a) {
+extension SortByNumberExtension on SortByNumber{
+  String getText(BuildContext context){
+    switch(this){
+      case SortByNumber.no_sort:
+        return AppLocalizations.of(context)!.sort_by_option_no_sort_text;
       case SortByNumber.ascending:
-        {
-          return AppLocalizations.of(context).sort_by_option_ascending_text;
-        }
+        return AppLocalizations.of(context)!.sort_by_option_ascending_text;
       case SortByNumber.descending:
-        {
-          return AppLocalizations.of(context).sort_by_option_descending_text;
-        }
-      default:
-        {
-          return AppLocalizations.of(context).sort_by_option_no_sort_text;
-        }
-    }
-  }
-
-  static int getValue(SortByNumber a) {
-    switch (a) {
-      case SortByNumber.ascending:
-        {
-          return 1;
-        }
-      case SortByNumber.descending:
-        {
-          return 2;
-        }
-      default:
-        {
-          return 0;
-        }
+        return AppLocalizations.of(context)!.sort_by_option_descending_text;
     }
   }
 }

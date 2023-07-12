@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -38,7 +39,8 @@ class SaveGoodController extends BaseSaveItemController<Good, SaveGoodPresenter>
     };
   }
 
-  /*@override
+  */
+/*@override
   void initListeners() {
     presenter.insertGoodOnNext = (goodId) {
       _item.id = goodId;
@@ -61,7 +63,8 @@ class SaveGoodController extends BaseSaveItemController<Good, SaveGoodPresenter>
     presenter.updateGoodOnError = (e) {
       showErrorToast(e.toString());
     };
-  }*/
+  }*//*
+
   @override
   void updateItem() {
     super.updateItem();
@@ -110,8 +113,10 @@ class SaveGoodController extends BaseSaveItemController<Good, SaveGoodPresenter>
 
   }
   void onModifyQuantityButtonPressed(){
-    /*final result = await showCalculator(context: getContext()) ?? 0;
-    quantityTextController.text = result.toInt().toString();*/
+    */
+/*final result = await showCalculator(context: getContext()) ?? 0;
+    quantityTextController.text = result.toInt().toString();*//*
+
   }
   void onImagesChanged(List<String> images){
     print("onImagesChanged ${images.length}");
@@ -137,3 +142,4 @@ class SaveGoodController extends BaseSaveItemController<Good, SaveGoodPresenter>
     );
   }
 }
+*/

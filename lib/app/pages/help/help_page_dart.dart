@@ -1,37 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:good_manager/app/pages/base/base_page.dart';
+import 'package:good_manager/app/pages/help/bloc/help_cubit.dart';
+import 'package:good_manager/app/pages/help/bloc/help_data.dart';
 
-class HelpPage extends View {
+class HelpPage extends StatelessWidget {
   final String title;
   final String content;
 
-  HelpPage({Key key, @required this.title, @required this.content})
+  HelpPage({Key? key, required this.title, required this.content})
       : super(key: key);
 
-  @override
-  HelpPageView createState() => HelpPageView(title, content);
-}
-class HelpPageView extends ViewState<HelpPage, HelpController> {
-  final String title;
-  final String content;
-
-  HelpPageView(this.title, this.content) : super(HelpController());
-
-  @override
-  Widget get view => Scaffold(
-      appBar: AppBar(title: Text(title)),
-      key: globalKey,
-      body: Padding(
-          padding: EdgeInsets.all(0),
-          child: Markdown(
-            data: content,
-          )));
-}
-
-class HelpController extends Controller {
-  @override
-  void initListeners() {
+ @override
+  Widget build(BuildContext context) {
+   return Scaffold(
+       appBar: AppBar(title: Text(title)),
+       body: Padding(
+           padding: EdgeInsets.all(0),
+           child: Markdown(
+             data: content,
+           )));
   }
-
 }

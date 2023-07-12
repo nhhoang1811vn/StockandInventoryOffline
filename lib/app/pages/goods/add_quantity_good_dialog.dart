@@ -17,7 +17,7 @@ class InputQuantityGoodDialog extends StatefulWidget {
 }
 
 class InputQuantityGoodDialogState extends State<InputQuantityGoodDialog> {
-  TextEditingController quantityTextController;
+  late TextEditingController quantityTextController;
 
   InputQuantityGoodDialogState() {
     quantityTextController = TextEditingController();
@@ -32,7 +32,7 @@ class InputQuantityGoodDialogState extends State<InputQuantityGoodDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context).input_quantity_dialog_title),
+      title: Text(AppLocalizations.of(context)!.input_quantity_dialog_title),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
@@ -42,13 +42,13 @@ class InputQuantityGoodDialogState extends State<InputQuantityGoodDialog> {
                 Text(widget.good.name),
                 Text(widget.good.description),
                 Text(widget.good.barCode),
-                //Text(sprintf(AppLocalizations.of(context).in_stock_text, [widget.good.quantity])),
+                //Text(sprintf(AppLocalizations.of(context)!.in_stock_text, [widget.good.quantity])),
                 Row(
                   children: [
                     Expanded(
                         child: TextFormField(
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context).field_quantity,
+                        labelText: AppLocalizations.of(context)!.field_quantity,
                       ),
                       controller: quantityTextController,
                       keyboardType: TextInputType.number,
@@ -75,14 +75,14 @@ class InputQuantityGoodDialogState extends State<InputQuantityGoodDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(AppLocalizations.of(context).action_cancel),
+          child: Text(AppLocalizations.of(context)!.action_cancel),
           onPressed: () async {
             widget.onDismiss();
             Navigator.of(context).pop();
           },
         ),
         TextButton(
-          child: Text(AppLocalizations.of(context).action_ok),
+          child: Text(AppLocalizations.of(context)!.action_ok),
           onPressed: () async {
             widget.onOK(int.parse(quantityTextController.text));
             Navigator.of(context).pop();

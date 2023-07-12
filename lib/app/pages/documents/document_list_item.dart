@@ -27,9 +27,9 @@ class DocumentList extends StatelessWidget{
     if (showAll) {
       switch (type) {
         case DocumentType.incoming:
-          return "${AppLocalizations.of(context).document_list_incoming_name} $name";
+          return "${AppLocalizations.of(context)!.document_list_incoming_name} $name";
         case DocumentType.outgoing:
-          return "${AppLocalizations.of(context).document_list_outgoing_name} $name";
+          return "${AppLocalizations.of(context)!.document_list_outgoing_name} $name";
         }
     } else {
       return name;
@@ -62,7 +62,7 @@ class DocumentList extends StatelessWidget{
                 children: [
                     Text('Ngày ' + format.format(items[index].date)),
                     items[index].supplierName != null
-                        ? Text(items[index].supplierName)
+                        ? Text(items[index].supplierName!)
                         : Container(),
                     items[index].description.isNotEmpty
                         ? Text(items[index].description)

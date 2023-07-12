@@ -1,17 +1,15 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-//import 'package:fluttertoast/fluttertoast.dart';
-//import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/data/repositories/data_store_repository.dart';
 import 'package:good_manager/domain/entities/store.dart';
 
 import 'save_store_controller.dart';
 
-class SaveStorePage extends View {
+class SaveStorePage extends StatefulWidget {
   final Store store;
 
-  SaveStorePage({Key key, this.store}) : super(key: key);
+  SaveStorePage({Key? key, required this.store}) : super(key: key);
 
   @override
   _SaveStorePageView createState() => _SaveStorePageView(store);
@@ -30,7 +28,7 @@ class _SaveStorePageView extends ViewState<SaveStorePage, SaveStoreController> {
           key: globalKey,
           child: Scaffold(
               appBar: AppBar(
-                  title: Text(AppLocalizations.of(context).save_store_title),
+                  title: Text(AppLocalizations.of(context)!.save_store_title),
                   actions: <Widget>[
                     Padding(
                       padding: EdgeInsets.only(right: 20.0),
@@ -68,10 +66,10 @@ class _SaveStorePageView extends ViewState<SaveStorePage, SaveStoreController> {
         return TextFormField(
             controller: controller.nameTextController,
             decoration: InputDecoration(
-                labelText: AppLocalizations.of(context).field_name),
+                labelText: AppLocalizations.of(context)!.field_name),
             validator: (String value) {
               if (value.trim().isEmpty) {
-                return AppLocalizations.of(context).message_name_blank;
+                return AppLocalizations.of(context)!.message_name_blank;
               } else {
                 return null;
               }
@@ -83,7 +81,8 @@ class _SaveStorePageView extends ViewState<SaveStorePage, SaveStoreController> {
         return TextFormField(
           controller: controller.descriptionTextController,
           decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).field_desc),
+              labelText: AppLocalizations.of(context)!.field_desc),
         );
       });
 }
+*/

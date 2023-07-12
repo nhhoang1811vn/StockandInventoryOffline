@@ -1,3 +1,4 @@
+/*
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/barcode_scanner_settings.dart';
 import 'package:good_manager/domain/usecases/app/get_barcode_scanner_settings_usecase.dart';
@@ -73,3 +74,4 @@ class SetBarcodeScannerSettingsUseCaseObserver implements Observer<void> {
   @override
   void onNext(void response) {}
 }
+*/

@@ -15,9 +15,9 @@ class SortDocumentsDialog extends StatefulWidget {
 }
 
 class SortDocumentsDialogState extends State<SortDocumentsDialog> {
-  SortByText _sortByName;
-  SortByNumber _sortByDate;
-  SortByNumber _sortByQuantity;
+  late SortByText _sortByName;
+  late SortByNumber _sortByDate;
+  late SortByNumber _sortByQuantity;
 
   @override
   void initState() {
@@ -30,24 +30,24 @@ class SortDocumentsDialogState extends State<SortDocumentsDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context).dialog_title_sort_by),
+      title: Text(AppLocalizations.of(context)!.dialog_title_sort_by),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             Wrap(
               runSpacing: 0,
               children: [
-                Text(AppLocalizations.of(context).field_name),
+                Text(AppLocalizations.of(context)!.field_name),
                 Divider(),
                 getSortByNameRadioListTile(SortByText.no_sort),
                 getSortByNameRadioListTile(SortByText.a_to_z),
                 getSortByNameRadioListTile(SortByText.z_to_a),
-                Text(AppLocalizations.of(context).field_date),
+                Text(AppLocalizations.of(context)!.field_date),
                 Divider(),
                 getSortByDateRadioListTile(SortByNumber.no_sort),
                 getSortByDateRadioListTile(SortByNumber.ascending),
                 getSortByDateRadioListTile(SortByNumber.descending),
-                Text(AppLocalizations.of(context).field_quantity),
+                Text(AppLocalizations.of(context)!.field_quantity),
                 Divider(),
                 getSortByQuantityRadioListTile(SortByNumber.no_sort),
                 getSortByQuantityRadioListTile(SortByNumber.ascending),
@@ -59,7 +59,7 @@ class SortDocumentsDialogState extends State<SortDocumentsDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(AppLocalizations.of(context).action_ok),
+          child: Text(AppLocalizations.of(context)!.action_ok),
           onPressed: () async {
             widget.settings.sortByName = _sortByName;
             widget.settings.sortByDate = _sortByDate;
@@ -75,14 +75,14 @@ class SortDocumentsDialogState extends State<SortDocumentsDialog> {
   RadioListTile<SortByText> getSortByNameRadioListTile(SortByText value) {
     return RadioListTile<SortByText>(
       title: Text(
-        SortByTextHelper.getText(context, value),
+        value.getText(context),
         style: TextStyle(fontSize: 14),
       ),
       value: value,
       groupValue: _sortByName,
-      onChanged: (SortByText value) {
+      onChanged: (SortByText? value) {
         setState(() {
-          _sortByName = value;
+          _sortByName = value!;
         });
       },
       dense: true,
@@ -91,14 +91,13 @@ class SortDocumentsDialogState extends State<SortDocumentsDialog> {
 
   RadioListTile<SortByNumber> getSortByDateRadioListTile(SortByNumber value) {
     return RadioListTile<SortByNumber>(
-
-        title: Text(SortByNumberHelper.getText(context, value),
+        title: Text(value.getText(context),
             style: TextStyle(fontSize: 14)),
         value: value,
         groupValue: _sortByDate,
-        onChanged: (SortByNumber value) {
+        onChanged: (SortByNumber? value) {
           setState(() {
-            _sortByDate = value;
+            _sortByDate = value!;
           });
         },
         dense: true);
@@ -107,13 +106,13 @@ class SortDocumentsDialogState extends State<SortDocumentsDialog> {
   RadioListTile<SortByNumber> getSortByQuantityRadioListTile(
       SortByNumber value) {
     return RadioListTile<SortByNumber>(
-      title: Text(SortByNumberHelper.getText(context, value),
+      title: Text(value.getText(context),
           style: TextStyle(fontSize: 14)),
       value: value,
       groupValue: _sortByQuantity,
-      onChanged: (SortByNumber value) {
+      onChanged: (SortByNumber? value) {
         setState(() {
-          _sortByQuantity = value;
+          _sortByQuantity = value!;
         });
       },
       dense: true,

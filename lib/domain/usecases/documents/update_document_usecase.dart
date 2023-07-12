@@ -13,17 +13,17 @@ class UpdateDocumentUseCase
 
   @override
   Future<Stream<void>> buildUseCaseStream(
-      UpdateDocumentUseCaseParams params) async {
+      UpdateDocumentUseCaseParams? params) async {
     final StreamController<void> controller = StreamController();
     try {
-      bool successful = await _documentRepository.updateDocument(params.document, params.transactions);
+      bool successful = await _documentRepository.updateDocument(params!.document, params!.transactions);
       if (successful) {
         controller.close();
       } else {
         throw Exception("update failed");
       }
     } catch (e) {
-      controller.addError(e.message);
+      controller.addError(e);
     }
     return controller.stream;
   }

@@ -3,15 +3,15 @@ import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 
 class DocumentTransaction extends BaseModel {
-  int id;
-  int documentId;
-  int goodId;
-  int quantity;
-  DocumentType type;
-  int storeId;
+  late int id;
+  late int documentId;
+  late int goodId;
+  late int quantity;
+  late DocumentType type;
+  late int storeId;
 
   int currentQuantity = 0;
-  Good good;
+  late Good good;
 
   DocumentTransaction();
 

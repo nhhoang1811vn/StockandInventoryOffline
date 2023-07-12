@@ -1,3 +1,4 @@
+/*
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
@@ -12,7 +13,7 @@ import '../../widgets/selected_store_view.dart';
 class SaveExpensePage extends View {
   final Expense item;
 
-  SaveExpensePage({Key key, @required this.item}) : super(key: key);
+  SaveExpensePage({Key? key, required this.item}) : super(key: key);
 
   @override
   _SaveExpensePageView createState() => _SaveExpensePageView(item);
@@ -33,7 +34,7 @@ class _SaveExpensePageView
                 key: globalKey,
                 appBar: AppBar(
                     title:
-                        Text(AppLocalizations.of(context).save_expense_title),
+                        Text(AppLocalizations.of(context)!.save_expense_title),
                     actions: <Widget>[save]),
                 body: ListView(
                   children: <Widget>[
@@ -156,3 +157,4 @@ class _SaveExpensePageView
             );
           });
 }
+*/

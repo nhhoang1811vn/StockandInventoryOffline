@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import '../../data/app_data_manager.dart';
 import '../utils/constants.dart';
 
 class SelectedStoreView extends StatefulWidget {
@@ -11,15 +9,9 @@ class SelectedStoreView extends StatefulWidget {
 }
 
 class SelectedStoreViewState extends State<SelectedStoreView> {
-  String storeName = "";
+  String storeName = "Test";
 
-  SelectedStoreViewState() {
-    appDataManager.sharedPrefsHelper
-        .getSelectedStoreName()
-        .then((value) => setState(() {
-              storeName = value;
-            }));
-  }
+  SelectedStoreViewState();
 
   @override
   Widget build(BuildContext context) {

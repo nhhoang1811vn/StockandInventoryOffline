@@ -1,9 +1,9 @@
 class BaseModel {
-  int id;
+  late int id;
   String name = "";
   String description = "";
-  DateTime createdDate;
-  DateTime updatedDate;
+  late DateTime createdDate;
+  late DateTime updatedDate;
 
   BaseModel();
 

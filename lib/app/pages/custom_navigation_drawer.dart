@@ -7,17 +7,15 @@ import 'package:good_manager/app/pages/home/home_view.dart';
 import 'package:good_manager/app/pages/pages.dart';
 import 'package:good_manager/app/pages/settings/settings_view.dart';
 import 'package:good_manager/app/pages/stores/stores_view.dart';
-import 'package:good_manager/app/pages/suppliers/suppliers_view.dart';
+import 'package:good_manager/app/pages/suppliers/suppliers_page.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../data/app_data_manager.dart';
 import '../widgets/select_message_type_dialog.dart';
 import 'goods/goods_view.dart';
 import 'help_content.dart';
 
 class CustomNavigationDrawer extends StatefulWidget {
-  const CustomNavigationDrawer({Key key, @required this.selectedIndex})
+  const CustomNavigationDrawer({Key? key, required this.selectedIndex})
       : super(key: key);
   final int selectedIndex;
 
@@ -43,7 +41,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                       AppDrawerTile(
                           index: 0,
                           selectedIndex: widget.selectedIndex,
-                          text: AppLocalizations.of(context).home_title,
+                          text: AppLocalizations.of(context)!.home_title,
                           onTap: () {
                             //updateState(0);
                             Navigator.of(context).pushReplacement(
@@ -53,7 +51,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                       AppDrawerTile(
                           index: 1,
                           selectedIndex: widget.selectedIndex,
-                          text: AppLocalizations.of(context).goods_title,
+                          text: AppLocalizations.of(context)!.goods_title,
                           onTap: () {
                             //updateState(1);
                             Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -63,7 +61,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                       AppDrawerTile(
                           index: 2,
                           selectedIndex: widget.selectedIndex,
-                          text: AppLocalizations.of(context).documents_title,
+                          text: AppLocalizations.of(context)!.documents_title,
                           onTap: (){
                             Navigator.of(context).pushReplacement(MaterialPageRoute(
                                 builder: (context) =>
@@ -72,7 +70,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                       AppDrawerTile(
                           index: 3,
                           selectedIndex: widget.selectedIndex,
-                          text: AppLocalizations.of(context).expenses_title,
+                          text: AppLocalizations.of(context)!.expenses_title,
                           onTap: () {
                             Navigator.of(context).pushReplacement(MaterialPageRoute(
                                 builder: (context) =>
@@ -81,7 +79,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                       AppDrawerTile(
                           index: 4,
                           selectedIndex: widget.selectedIndex,
-                          text: AppLocalizations.of(context).report_title,
+                          text: AppLocalizations.of(context)!.report_title,
                           onTap: () {
                             //updateState(5);
                             //Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context) => Report()));
@@ -90,7 +88,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                       AppDrawerTile(
                           index: 5,
                           selectedIndex: widget.selectedIndex,
-                          text: AppLocalizations.of(context).suppliers_title,
+                          text: AppLocalizations.of(context)!.suppliers_title,
                           onTap: () {
                             //updateState(5);
                             Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context) => SuppliersPage(isSelection: false)));
@@ -98,7 +96,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                       AppDrawerTile(
                           index: 6,
                           selectedIndex: widget.selectedIndex,
-                          text: AppLocalizations.of(context).customers_title,
+                          text: AppLocalizations.of(context)!.customers_title,
                           onTap: () {
                             //updateState(5);
                             Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context) => CustomersPage(isSelection: false)));
@@ -106,7 +104,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                       AppDrawerTile(
                           index: 7,
                           selectedIndex: widget.selectedIndex,
-                          text: AppLocalizations.of(context).stores_title,
+                          text: AppLocalizations.of(context)!.stores_title,
                           onTap: () {
                             //updateState(5);
                             Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context) => StoresPage(isSelection: false)));
@@ -115,7 +113,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                       AppDrawerTile(
                           index: 8,
                           selectedIndex: widget.selectedIndex,
-                          text: AppLocalizations.of(context).settings_title,
+                          text: AppLocalizations.of(context)!.settings_title,
                           onTap: () {
                             //updateState(5);
                             Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context) => SettingsPage()));
@@ -123,28 +121,28 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                       ListTile(
                         leading: Image.asset(UIConstants.invitationIconPath,
                             width: UIConstants.drawerMenuSize),
-                        title: Text(AppLocalizations.of(context)
+                        title: Text(AppLocalizations.of(context)!
                             .menu_item_invite_friend_header),
-                        //subtitle: Text(AppLocalizations.of(context).menu_item_invite_friend_description),
+                        //subtitle: Text(AppLocalizations.of(context)!.menu_item_invite_friend_description),
                         onTap: () => onInviteFriend(context),
                       ),
                       ListTile(
                         leading: Image.asset(UIConstants.feedbackIconPath,
                             width: UIConstants.drawerMenuSize),
-                        title: Text(AppLocalizations.of(context)
+                        title: Text(AppLocalizations.of(context)!
                             .question_or_suggestion_title),
                         onTap: () => onSelectMessageType(context),
                       ),
                       ListTile(
                         leading: Image.asset(UIConstants.helpIconPath,
                             width: UIConstants.drawerMenuSize),
-                        title: Text(AppLocalizations.of(context).help_title),
+                        title: Text(AppLocalizations.of(context)!.help_title),
                         onTap: () => onHelp(context),
                       ),
                       ListTile(
                         leading: Image.asset(UIConstants.communityIconPath,
                             width: UIConstants.drawerMenuSize),
-                        title: Text(AppLocalizations.of(context)
+                        title: Text(AppLocalizations.of(context)!
                             .menu_item_community_header),
                         onTap: () => onCommunity(context),
                       ),
@@ -152,7 +150,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                         leading: Image.asset(UIConstants.whatsnewIconPath,
                             width: UIConstants.drawerMenuSize),
                         title:
-                            Text(AppLocalizations.of(context).whats_new_title),
+                            Text(AppLocalizations.of(context)!.whats_new_title),
                         onTap: () => onWhatsNew(context),
                       )
                     ]),
@@ -205,8 +203,8 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
       scheme: 'mailto',
       path: '',
       query: encodeQueryParameters(<String, String>{
-        'subject': AppLocalizations.of(context).send_mail_invite_friend_subject,
-        'body': AppLocalizations.of(context).send_mail_invite_friend_content,
+        'subject': AppLocalizations.of(context)!.send_mail_invite_friend_subject,
+        'body': AppLocalizations.of(context)!.send_mail_invite_friend_content,
       }),
     );
 
@@ -236,22 +234,22 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
   }
 
   void onBugReport(BuildContext context) {
-    String subject = AppLocalizations.of(context).send_mail_bug_report_subject;
+    String subject = AppLocalizations.of(context)!.send_mail_bug_report_subject;
     onSendMail(subject);
   }
 
   void onSuggestion(BuildContext context) {
-    String subject = AppLocalizations.of(context).send_mail_suggestion_subject;
+    String subject = AppLocalizations.of(context)!.send_mail_suggestion_subject;
     onSendMail(subject);
   }
 
   void onQuestion(BuildContext context) {
-    String subject = AppLocalizations.of(context).send_mail_question_subject;
+    String subject = AppLocalizations.of(context)!.send_mail_question_subject;
     onSendMail(subject);
   }
 
   void onFeedback(BuildContext context) {
-    String subject = AppLocalizations.of(context).send_mail_feedback_subject;
+    String subject = AppLocalizations.of(context)!.send_mail_feedback_subject;
     onSendMail(subject);
   }
 
@@ -274,9 +272,10 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
   }
 
   void onWhatsNew(BuildContext context) async {
-    String code = await appDataManager.sharedPrefsHelper.getLanguageCode();
+    //String code = await appDataManager.sharedPrefsHelper.getLanguageCode();
+    String code = "vi";
     Navigator.of(context).pushNamed(Pages.help, arguments: {
-      "title": AppLocalizations.of(context).menu_item_whats_new_header,
+      "title": AppLocalizations.of(context)!.menu_item_whats_new_header,
       "content": HelpUtils.getMarkdownData(code, HelpType.WHATSNEW)
     });
   }
@@ -301,17 +300,17 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
 
 class AppDrawerTile extends StatelessWidget {
   const AppDrawerTile(
-      {Key key,
-      @required this.index,
-      @required this.selectedIndex,
-      @required this.text,
-      @required this.onTap})
+      {Key? key,
+      required this.index,
+      required this.selectedIndex,
+      required this.text,
+      required this.onTap})
       : super(key: key);
 
   final int index;
   final String text;
   final int selectedIndex;
-  final Function onTap;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -50,7 +51,7 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                AppLocalizations.of(context).field_images,
+                                AppLocalizations.of(context)!.field_images,
                                 style: TextStyle(
                                     color: UIConstants.primaryColor,
                                     fontSize: 16),
@@ -69,7 +70,7 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
       });
 
   Widget get appBar => AppBar(
-          title: Text(AppLocalizations.of(context).save_group_title),
+          title: Text(AppLocalizations.of(context)!.save_group_title),
           actions: <Widget>[
             ControlledWidgetBuilder<SaveGroupController>(
                 builder: (context, controller) {
@@ -95,10 +96,10 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
               'globalKey': globalKey
             }),
             decoration: InputDecoration(
-                labelText: AppLocalizations.of(context).field_name),
+                labelText: AppLocalizations.of(context)!.field_name),
             validator: (String value) {
               if (value.trim().isEmpty) {
-                return AppLocalizations.of(context).message_name_blank;
+                return AppLocalizations.of(context)!.message_name_blank;
               } else {
                 return null;
               }
@@ -110,7 +111,7 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
         return TextFormField(
           controller: controller.descriptionTextController,
           decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).field_desc),
+              labelText: AppLocalizations.of(context)!.field_desc),
         );
       });
 
@@ -122,7 +123,7 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
                 child: TextFormField(
         keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context).field_bar_code),
+                  labelText: AppLocalizations.of(context)!.field_bar_code),
               controller: controller.barCodeTextController,
             )),
             Align(
@@ -137,3 +138,4 @@ class SaveGroupPageView extends ViewState<SaveGroupPage, SaveGroupController> {
         );
       });
 }
+*/

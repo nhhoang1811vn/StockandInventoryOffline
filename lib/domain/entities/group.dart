@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:good_manager/domain/entities/base_model.dart';
 
 class Group extends BaseModel {
-  String barCode;
-  int storeId;
-  String directory;
+  String barCode = "";
+  late int storeId;
+  String directory = "/";
   List<String> files = [];
 
   Group();

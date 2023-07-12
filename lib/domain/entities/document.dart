@@ -3,18 +3,17 @@ import 'package:good_manager/domain/entities/base_model.dart';
 enum DocumentType {
   incoming,
   outgoing,
-  //stock_taking
 }
 
 class Document extends BaseModel {
   DateTime date = DateTime.now();
-  DocumentType type;
-  int supplierId;
-  String supplierName;
-  String customerName;
-  int customerId;
-  int storeId;
-  int quantity;
+  late DocumentType type;
+  int? supplierId;
+  String? supplierName;
+  String? customerName;
+  int? customerId;
+  int? storeId;
+  int quantity = 0;
 
   Document();
 

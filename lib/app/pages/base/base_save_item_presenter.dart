@@ -1,3 +1,4 @@
+/*
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:good_manager/domain/entities/base_model.dart';
 import 'package:good_manager/domain/usecases/base_insert_item_usecase.dart';
@@ -68,3 +69,4 @@ class _UpdateItemUseCaseObserver implements Observer<void> {
   @override
   void onNext(void response) {}
 }
+*/

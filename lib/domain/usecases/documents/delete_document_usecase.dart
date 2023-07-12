@@ -11,13 +11,13 @@ class DeleteDocumentUseCase
 
   @override
   Future<Stream<void>> buildUseCaseStream(
-      DeleteDocumentUseCaseParams params) async {
+      DeleteDocumentUseCaseParams? params) async {
     final StreamController<void> controller = StreamController();
     try {
-      await _documentRepository.deleteDocument(params.id);
+      await _documentRepository.deleteDocument(params!.id);
       controller.close();
     } catch (e) {
-      controller.addError(e.message);
+      controller.addError(e);
     }
     return controller.stream;
   }

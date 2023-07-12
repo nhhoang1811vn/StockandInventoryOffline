@@ -12,14 +12,14 @@ class InsertDocumentUseCase extends UseCase<int, InsertDocumentUseCaseParams> {
 
   @override
   Future<Stream<int>> buildUseCaseStream(
-      InsertDocumentUseCaseParams params) async {
+      InsertDocumentUseCaseParams? params) async {
     final StreamController<int> controller = StreamController();
     try {
-      int documentId = await _documentRepository.insertDocument(params.document, params.transactions);
+      int documentId = await _documentRepository.insertDocument(params!.document, params!.transactions);
       controller.add(documentId);
       controller.close();
     } catch (e) {
-      controller.addError(e.message);
+      controller.addError(e);
     }
     return controller.stream;
   }

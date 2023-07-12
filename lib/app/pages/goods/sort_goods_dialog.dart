@@ -15,9 +15,9 @@ class SortGoodsDialog extends StatefulWidget {
 }
 
 class SortGoodsDialogState extends State<SortGoodsDialog> {
-  SortByText _sortByName;
-  SortByNumber _sortByBarCode;
-  SortByNumber _sortByQuantity;
+  late SortByText _sortByName;
+  late SortByNumber _sortByBarCode;
+  late SortByNumber _sortByQuantity;
 
   @override
   void initState() {
@@ -30,24 +30,24 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context).dialog_title_sort_by),
+      title: Text(AppLocalizations.of(context)!.dialog_title_sort_by),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(AppLocalizations.of(context).field_name),
+                Text(AppLocalizations.of(context)!.field_name),
                 Divider(color: Colors.grey),
                 getRadioListTileSortByName(SortByText.no_sort),
                 getRadioListTileSortByName(SortByText.a_to_z),
                 getRadioListTileSortByName(SortByText.z_to_a),
-                Text(AppLocalizations.of(context).field_bar_code),
+                Text(AppLocalizations.of(context)!.field_bar_code),
                 Divider(color: Colors.grey),
                 getRadioListTileSortByBarCode(SortByNumber.no_sort),
                 getRadioListTileSortByBarCode(SortByNumber.ascending),
                 getRadioListTileSortByBarCode(SortByNumber.descending),
-                Text(AppLocalizations.of(context).field_quantity),
+                Text(AppLocalizations.of(context)!.field_quantity),
                 Divider(color: Colors.grey),
                 getRadioListTileSortByQuantity(SortByNumber.no_sort),
                 getRadioListTileSortByQuantity(SortByNumber.ascending),
@@ -59,7 +59,7 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(AppLocalizations.of(context).action_ok),
+          child: Text(AppLocalizations.of(context)!.action_ok),
           onPressed: () async {
             widget.settings.sortByName = _sortByName;
             widget.settings.sortByBarcode = _sortByBarCode;
@@ -74,12 +74,12 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
 
   RadioListTile<SortByText> getRadioListTileSortByName(SortByText value) {
     return RadioListTile<SortByText>(
-      title: Text(SortByTextHelper.getText(context, value)),
+      title: Text(value.getText(context)),
       value: value,
       groupValue: _sortByName,
-      onChanged: (SortByText value) {
+      onChanged: (SortByText? value) {
         setState(() {
-          _sortByName = value;
+          _sortByName = value!;
         });
       },
       dense: true,
@@ -89,12 +89,12 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
   RadioListTile<SortByNumber> getRadioListTileSortByBarCode(
       SortByNumber value) {
     return RadioListTile<SortByNumber>(
-      title: Text(SortByNumberHelper.getText(context, value)),
+      title: Text(value.getText(context)),
       value: value,
       groupValue: _sortByBarCode,
-      onChanged: (SortByNumber value) {
+      onChanged: (SortByNumber? value) {
         setState(() {
-          _sortByBarCode = value;
+          _sortByBarCode = value!;
         });
       },
       dense: true,
@@ -104,12 +104,12 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
   RadioListTile<SortByNumber> getRadioListTileSortByQuantity(
       SortByNumber value) {
     return RadioListTile<SortByNumber>(
-      title: Text(SortByNumberHelper.getText(context, value)),
+      title: Text(value.getText(context)),
       value: value,
       groupValue: _sortByQuantity,
-      onChanged: (SortByNumber value) {
+      onChanged: (SortByNumber? value) {
         setState(() {
-          _sortByQuantity = value;
+          _sortByQuantity = value!;
         });
       },
       dense: true,

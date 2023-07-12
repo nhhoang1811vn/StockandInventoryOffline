@@ -1,45 +1,26 @@
-enum SearchGoodsType { byName, byDescription, byBarcode, everywhere }
+import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class SearchGoodsTypeHelper {
-  static SearchGoodsType get(int value) {
-    switch (value) {
-      case 1:
-        {
-          return SearchGoodsType.byName;
-        }
-      case 2:
-        {
-          return SearchGoodsType.byDescription;
-        }
-      case 3:
-        {
-          return SearchGoodsType.byBarcode;
-        }
-      default:
-        {
-          return SearchGoodsType.everywhere;
-        }
-    }
-  }
+enum SearchGoodsType {
+  byName(1),
+  byDescription(2),
+  byBarcode(3),
+  everywhere(4);
 
-  static int getValue(SearchGoodsType a) {
-    switch (a) {
+  const SearchGoodsType(this.value);
+  final int value;
+}
+extension SearchGoodsTypeExtension on SearchGoodsType{
+  String getText(BuildContext context){
+    switch(this){
       case SearchGoodsType.byName:
-        {
-          return 1;
-        }
+        return AppLocalizations.of(context)!.search_goods_type_by_name;
       case SearchGoodsType.byDescription:
-        {
-          return 2;
-        }
+        return AppLocalizations.of(context)!.search_goods_type_by_description;
       case SearchGoodsType.byBarcode:
-        {
-          return 3;
-        }
+        return AppLocalizations.of(context)!.search_goods_type_by_barcode;
       default:
-        {
-          return 0;
-        }
+        return AppLocalizations.of(context)!.search_goods_type_everywhere;
     }
   }
 }

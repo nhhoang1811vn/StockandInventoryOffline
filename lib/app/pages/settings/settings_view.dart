@@ -1,48 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/pages/base/base_page.dart';
+import 'package:good_manager/app/pages/settings/bloc/settings_data.dart';
 
 import '../custom_navigation_drawer.dart';
-import 'settings_controller.dart';
+import 'bloc/settings_cubit.dart';
 
-class SettingsPage extends View {
-  SettingsPage({Key key}) : super(key: key);
+class SettingsPage extends StatefulWidget {
+  SettingsPage({Key? key}) : super(key: key);
 
   @override
-  SettingsPageView createState() => SettingsPageView();
+  SettingsPageState createState() => SettingsPageState();
 }
 
-class SettingsPageView extends ViewState<SettingsPage, SettingsController> {
-  SettingsPageView() : super(SettingsController());
-
+class SettingsPageState extends BasePageState<SettingsPage, SettingsCubit, SettingsData> {
   @override
-  Widget get view => Scaffold(
-      drawer: const CustomNavigationDrawer(selectedIndex: 8),
-      appBar: new AppBar(
-          title: new Text(AppLocalizations.of(context).settings_title)),
-      body: ListView(
-        key: globalKey,
-        children: [
-          ControlledWidgetBuilder<SettingsController>(
-              builder: (context, controller) {
-            return ListTile(
-              leading: Icon(Icons.language),
-              title:
-                  Text(AppLocalizations.of(context).menu_item_language_title),
-              subtitle:
-                  Text(AppLocalizations.of(context).menu_item_language_desc),
-              onTap: controller.showSelectLanguageDialog,
-            );
-          }),
-          ControlledWidgetBuilder<SettingsController>(
-              builder: (context, controller) {
-            return ListTile(
-              leading: Icon(Icons.language),
-              title: Text(
-                  AppLocalizations.of(context).menu_item_barcode_scanner_title),
-              onTap: controller.onBarcodeScannerPressed,
-            );
-          })
-        ],
-      ));
+  Widget buildPage(BuildContext context, SettingsData data) {
+    return Scaffold(
+        drawer: const CustomNavigationDrawer(selectedIndex: 8),
+        appBar: new AppBar(
+            title: new Text(AppLocalizations.of(context)!.settings_title)),
+        body: ListView(
+          //key: globalKey,
+          children: [
+           ListTile(
+                    leading: Icon(Icons.language),
+                    title:
+                    Text(AppLocalizations.of(context)!.menu_item_language_title),
+                    subtitle:
+                    Text(AppLocalizations.of(context)!.menu_item_language_desc),
+                    onTap: cubit.showSelectLanguageDialog,
+                  )
+                ,
+            ListTile(
+                    leading: Icon(Icons.language),
+                    title: Text(
+                        AppLocalizations.of(context)!.menu_item_barcode_scanner_title),
+                    onTap: cubit.onBarcodeScannerPressed,
+                  )
+
+          ],
+        ));
+  }
 }

@@ -1,60 +1,58 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/pages/home/home_controller.dart';
+import 'package:good_manager/app/pages/base/base_page.dart';
+import 'package:good_manager/app/pages/home/bloc/home_cubit.dart';
+import 'package:good_manager/app/pages/home/bloc/home_data.dart';
+import 'package:good_manager/app/pages/home/bloc/home_state.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/selected_store_view.dart';
-import 'package:good_manager/data/repositories/data_customer_repository.dart';
-import 'package:good_manager/data/repositories/data_document_repository.dart';
-import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
-import 'package:good_manager/data/repositories/data_expense_repository.dart';
-import 'package:good_manager/data/repositories/data_good_repository.dart';
-import 'package:good_manager/data/repositories/data_store_repository.dart';
-import 'package:good_manager/data/repositories/data_supplier_repository.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:sprintf/sprintf.dart';
 
+import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';
+import '../pages.dart';
 
-class HomePage extends View {
-  HomePage({Key key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  HomePage() : super();
 
   @override
-  HomePageView createState() => HomePageView();
+  HomePageState createState() => HomePageState();
 }
 
-class HomePageView extends ViewState<HomePage, HomeController> {
+class HomePageState extends BasePageState<HomePage, HomeCubit, HomeData> {
   static const titleStyle = TextStyle(color: Colors.blue, fontSize: 16);
   static const bodyStyle = TextStyle(fontSize: 16);
 
-  HomePageView()
-      : super(HomeController(
-            DataStoreRepository(),
-            DataGoodRepository(),
-            DataDocumentRepository(),
-            DataDocumentTransactionRepository(),
-            DataSupplierRepository(),
-            DataCustomerRepository(),
-            DataExpenseRepository()));
+  @override
+  void onDataChange(BuildContext context, HomeData data) {
+    if (data.state is OpenSupplierState){
+      Navigator.of(context).pushNamed(Pages.supplier_list, arguments: {'isSelection': false});
+    }else if (data.state is OpenCustomersState){
+      Navigator.of(context).pushNamed(Pages.customer_list, arguments: {'isSelection': false});
+    }
+    super.onDataChange(context, data);
+  }
 
   double height = 150;
   double iconSize = 40;
 
-  @override
-  Widget get view => Scaffold(
-      key: globalKey,
-      appBar: AppBar(title: Text(AppLocalizations.of(context).home_title)),
-      drawer: CustomNavigationDrawer(selectedIndex: 0),
-      body: ControlledWidgetBuilder<HomeController>(
-          builder: (context, controller) {
-        return ModalProgressHUD(
-            child: getBody(), inAsyncCall: controller.isLoading, opacity: 0);
-      }));
+  Widget _buildBody(HomeData data) {
+    final state = data.state;
+    if (state is LoadingState) {
+      return _buildLoading();
+    }
+    return _buildContent(data);
+  }
 
-  Widget getBody() {
+  Widget _buildLoading() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget _buildContent(HomeData data) {
     List<Widget> children = [
       SelectedStoreView(),
-      //storeView,
       Padding(
           padding: EdgeInsets.all(4),
           child: Column(
@@ -65,7 +63,7 @@ class HomePageView extends ViewState<HomePage, HomeController> {
                     fit: FlexFit.tight,
                     child: Container(
                       height: height,
-                      child: goods,
+                      child: _buildGoods(data),
                     ),
                     flex: 1,
                   ),
@@ -73,7 +71,7 @@ class HomePageView extends ViewState<HomePage, HomeController> {
                     fit: FlexFit.tight,
                     child: Container(
                       height: height,
-                      child: documents,
+                      child: _buildDocuments(data),
                     ),
                     flex: 1,
                   )
@@ -90,12 +88,12 @@ class HomePageView extends ViewState<HomePage, HomeController> {
                         children: [
                           Flexible(
                             fit: FlexFit.tight,
-                            child: incomingDocument,
+                            child: _buildIncomingDocument(),
                             flex: 1,
                           ),
                           Flexible(
                             fit: FlexFit.tight,
-                            child: outgoingDocument,
+                            child: _buildOutgoingDocument(),
                             flex: 1,
                           ),
                         ],
@@ -112,12 +110,12 @@ class HomePageView extends ViewState<HomePage, HomeController> {
                         children: [
                           Flexible(
                             fit: FlexFit.tight,
-                            child: suppliers,
+                            child: _buildSuppliers(data),
                             flex: 1,
                           ),
                           Flexible(
                             fit: FlexFit.tight,
-                            child: customers,
+                            child: _buildCustomers(data),
                             flex: 1,
                           ),
                         ],
@@ -133,7 +131,7 @@ class HomePageView extends ViewState<HomePage, HomeController> {
                     fit: FlexFit.tight,
                     child: Container(
                       height: height,
-                      child: expenses,
+                      child: _buildExpenses(data),
                     ),
                     flex: 1,
                   ),
@@ -141,7 +139,7 @@ class HomePageView extends ViewState<HomePage, HomeController> {
                     fit: FlexFit.tight,
                     child: Container(
                       height: height,
-                      child: report,
+                      child: _buildReport(data),
                     ),
                     flex: 1,
                   )
@@ -153,224 +151,182 @@ class HomePageView extends ViewState<HomePage, HomeController> {
     return Column(children: children);
   }
 
-  /*Widget get storeView =>
-      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
-        return GestureDetector(
-            onTap: controller.openStores,
-            child: Container(
-                height: 40,
-                color: UIConstants.primaryDarkColor,
-                width: double.infinity,
-                child: Stack(children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(controller.info.storeName,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold)),
-                  ),
-                  Align(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                          icon: Icon(
-                        Icons.arrow_drop_down,
-                        color: Colors.white,
-                      )))
-                ])));
-      });*/
+  Widget _buildGoods(HomeData data) {
+    return Card(
+        child: InkWell(
+      onTap: cubit.openGoods,
+      child: Padding(
+          padding: EdgeInsets.all(4),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                UIConstants.goodIconPath,
+                width: iconSize,
+              ),
+              Text(AppLocalizations.of(context)!.goods_title, style: titleStyle),
+              Text(sprintf("%d/%d", [data.info.countGood, data.info.quantityGood]), style: bodyStyle),
+            ],
+          )),
+    ));
+  }
 
-  Widget get goods =>
-      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
-        return Card(
-            child: InkWell(
-          onTap: controller.openGoods,
-          child: Padding(
-              padding: EdgeInsets.all(4),
-              child: Column(
+  Widget _buildDocuments(HomeData data) {
+    return Card(
+        child: InkWell(
+      onTap: cubit.openDocuments,
+      child: Padding(
+          padding: EdgeInsets.all(4),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                UIConstants.documentIconPath,
+                width: iconSize,
+              ),
+              Text(AppLocalizations.of(context)!.documents_title, style: titleStyle),
+              Text(data.info.countDocument.toString(), style: bodyStyle),
+            ],
+          )),
+    ));
+  }
+
+  Widget _buildIncomingDocument() {
+    return Card(
+        child: InkWell(
+      onTap: cubit.openSaveIncomingDocument,
+      child: Padding(
+          padding: EdgeInsets.all(4),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                "images/add_incoming_document.png",
+                width: iconSize,
+              ),
+              Text(AppLocalizations.of(context)!.incoming_goods, style: titleStyle)
+            ],
+          )),
+    ));
+  }
+
+  Widget _buildOutgoingDocument() {
+    return Card(
+        child: InkWell(
+      onTap: cubit.openSaveOutgoingDocument,
+      child: Padding(
+          padding: EdgeInsets.all(4),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                "images/add_outgoing_document.png",
+                width: iconSize,
+              ),
+              Text(AppLocalizations.of(context)!.outgoing_goods, style: titleStyle)
+            ],
+          )),
+    ));
+  }
+
+  Widget _buildCustomers(HomeData data) {
+    return Card(
+        child: InkWell(
+      onTap: cubit.openCustomers,
+      child: Padding(
+          padding: EdgeInsets.all(4),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                "images/customer.png",
+                width: iconSize,
+              ),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    UIConstants.goodIconPath,
-                    width: iconSize,
-                  ),
-                  Text(AppLocalizations.of(context).goods_title,
-                      style: titleStyle),
-                  Text(
-                      sprintf("%d/%d", [
-                        controller.info.countGood,
-                        controller.info.quantityGood
-                      ]),
-                      style: bodyStyle),
+                  Text(AppLocalizations.of(context)!.customers_title, style: titleStyle),
+                  Text(sprintf("(%d)", [data.info.countCustomer]), style: bodyStyle)
                 ],
-              )),
-        ));
-      });
+              )
+            ],
+          )),
+    ));
+  }
 
-  Widget get documents =>
-      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
-        return Card(
-            child: InkWell(
-          onTap: controller.openDocuments,
-          child: Padding(
-              padding: EdgeInsets.all(4),
-              child: Column(
+  Widget _buildSuppliers(HomeData data) {
+    return Card(
+        child: InkWell(
+      onTap: cubit.openSuppliers,
+      child: Padding(
+          padding: EdgeInsets.all(4),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                "images/supplier.png",
+                width: iconSize,
+              ),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    UIConstants.documentIconPath,
-                    width: iconSize,
-                  ),
-                  Text(AppLocalizations.of(context).documents_title,
-                      style: titleStyle),
-                  Text(controller.info.countDocument.toString(),
-                      style: bodyStyle),
+                  Text(AppLocalizations.of(context)!.suppliers_title, style: titleStyle),
+                  Text(sprintf("(%d)", [data.info.countSupplier]), style: bodyStyle),
                 ],
-              )),
-        ));
-      });
+              )
+            ],
+          )),
+    ));
+  }
 
-  Widget get incomingDocument =>
-      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
-        return Card(
-            child: InkWell(
-          onTap: controller.openSaveIncomingDocument,
-          child: Padding(
-              padding: EdgeInsets.all(4),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "images/add_incoming_document.png",
-                    width: iconSize,
-                  ),
-                  Text(AppLocalizations.of(context).incoming_goods,
-                      style: titleStyle)
-                ],
-              )),
-        ));
-      });
+  Widget _buildExpenses(HomeData data) {
+    return Card(
+        child: InkWell(
+      onTap: cubit.openExpenses,
+      child: Padding(
+          padding: EdgeInsets.all(4),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                UIConstants.expenseIconPath,
+                width: iconSize,
+              ),
+              Text(AppLocalizations.of(context)!.expenses_title, style: titleStyle),
+              Text(
+                data.info.sumExpense.toString(),
+                style: bodyStyle,
+              ),
+            ],
+          )),
+    ));
+  }
 
-  Widget get outgoingDocument =>
-      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
-        return Card(
-            child: InkWell(
-          onTap: controller.openSaveOutgoingDocument,
-          child: Padding(
-              padding: EdgeInsets.all(4),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "images/add_outgoing_document.png",
-                    width: iconSize,
-                  ),
-                  Text(AppLocalizations.of(context).outgoing_goods,
-                      style: titleStyle)
-                ],
-              )),
-        ));
-      });
+  Widget _buildReport(HomeData data) {
+    return Card(
+        child: InkWell(
+      onTap: cubit.openReport,
+      child: Padding(
+          padding: EdgeInsets.all(4),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                UIConstants.reportIconPath,
+                width: iconSize,
+              ),
+              Text(AppLocalizations.of(context)!.report_title, style: titleStyle),
+            ],
+          )),
+    ));
+  }
 
-  Widget get customers =>
-      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
-        return Card(
-            child: InkWell(
-          onTap: controller.openCustomers,
-          child: Padding(
-              padding: EdgeInsets.all(4),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "images/customer.png",
-                    width: iconSize,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(AppLocalizations.of(context).customers_title,
-                          style: titleStyle),
-                      Text(sprintf("(%d)", [controller.info.countCustomer]),
-                          style: bodyStyle)
-                    ],
-                  )
-                ],
-              )),
-        ));
-      });
-
-  Widget get suppliers =>
-      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
-        return Card(
-            child: InkWell(
-          onTap: controller.openSuppliers,
-          child: Padding(
-              padding: EdgeInsets.all(4),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "images/supplier.png",
-                    width: iconSize,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(AppLocalizations.of(context).suppliers_title,
-                          style: titleStyle),
-                      Text(sprintf("(%d)", [controller.info.countSupplier]),
-                          style: bodyStyle),
-                    ],
-                  )
-                ],
-              )),
-        ));
-      });
-
-  Widget get expenses =>
-      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
-        return Card(
-            child: InkWell(
-          onTap: controller.openExpenses,
-          child: Padding(
-              padding: EdgeInsets.all(4),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    UIConstants.expenseIconPath,
-                    width: iconSize,
-                  ),
-                  Text(AppLocalizations.of(context).expenses_title,
-                      style: titleStyle),
-                  Text(
-                    controller.info.sumExpense.toString(),
-                    style: bodyStyle,
-                  ),
-                ],
-              )),
-        ));
-      });
-
-  Widget get report =>
-      ControlledWidgetBuilder<HomeController>(builder: (context, controller) {
-        return Card(
-            child: InkWell(
-          onTap: controller.openReport,
-          child: Padding(
-              padding: EdgeInsets.all(4),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    UIConstants.reportIconPath,
-                    width: iconSize,
-                  ),
-                  Text(AppLocalizations.of(context).report_title,
-                      style: titleStyle),
-                ],
-              )),
-        ));
-      });
+  @override
+  Widget buildPage(BuildContext context, HomeData data) {
+    return Scaffold(
+        //key: globalKey,
+        appBar: AppBar(title: Text(AppLocalizations.of(context)!.home_title)),
+        drawer: CustomNavigationDrawer(selectedIndex: 0),
+        body: _buildBody(data));
+  }
 }

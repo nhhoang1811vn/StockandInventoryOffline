@@ -30,8 +30,8 @@ class DocumentItemRow extends StatelessWidget {
         offset: Offset(-32, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('Ngày ' + format.format(item.date)),
-          item.supplierName != null ? Text(item.supplierName) : Container(),
-          item.customerName != null ? Text(item.customerName) : Container(),
+          item.supplierName != null ? Text(item.supplierName!) : Container(),
+          item.customerName != null ? Text(item.customerName!) : Container(),
           item.description.isNotEmpty ? Text(item.description) : Container()
         ]),
       ),
@@ -45,9 +45,9 @@ class DocumentItemRow extends StatelessWidget {
     if (showAll) {
       switch (type) {
         case DocumentType.incoming:
-          return "${AppLocalizations.of(context).document_list_incoming_name} $name";
+          return "${AppLocalizations.of(context)!.document_list_incoming_name} $name";
         case DocumentType.outgoing:
-          return "${AppLocalizations.of(context).document_list_outgoing_name} $name";
+          return "${AppLocalizations.of(context)!.document_list_outgoing_name} $name";
         default:
           return "";
       }

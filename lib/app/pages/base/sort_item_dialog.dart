@@ -14,7 +14,7 @@ class SortItemDialog extends StatefulWidget {
 }
 
 class SortItemDialogState extends State<SortItemDialog> {
-  SortByText _sortByName;
+  late SortByText _sortByName;
 
   @override
   void initState() {
@@ -25,14 +25,14 @@ class SortItemDialogState extends State<SortItemDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context).dialog_title_sort_by),
+      title: Text(AppLocalizations.of(context)!.dialog_title_sort_by),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(AppLocalizations.of(context).field_name),
+                Text(AppLocalizations.of(context)!.field_name),
                 Divider(color: Colors.grey),
                 getRadioListTile(SortByText.no_sort),
                 getRadioListTile(SortByText.a_to_z),
@@ -44,7 +44,7 @@ class SortItemDialogState extends State<SortItemDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(AppLocalizations.of(context).action_ok),
+          child: Text(AppLocalizations.of(context)!.action_ok),
           onPressed: () async {
             widget.settings.sortByName = _sortByName;
             widget.onValueChange();
@@ -57,12 +57,12 @@ class SortItemDialogState extends State<SortItemDialog> {
 
   RadioListTile<SortByText> getRadioListTile(SortByText value) {
     return RadioListTile<SortByText>(
-      title: Text(SortByTextHelper.getText(context, value), style: TextStyle(fontSize: 14)),
+      title: Text(value.getText(context), style: TextStyle(fontSize: 14)),
       value: value,
       groupValue: _sortByName,
-      onChanged: (SortByText value) {
+      onChanged: (SortByText? value) {
         setState(() {
-          _sortByName = value;
+          _sortByName = value!;
         });
       },
       dense: true,

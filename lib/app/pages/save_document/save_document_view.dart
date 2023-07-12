@@ -1,3 +1,4 @@
+/*
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
@@ -5,10 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/goods/good_item_row.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/selected_store_view.dart';
-import 'package:good_manager/data/repositories/data_app_repository.dart';
-import 'package:good_manager/data/repositories/data_document_repository.dart';
-import 'package:good_manager/data/repositories/data_document_transaction_repository.dart';
-import 'package:good_manager/data/repositories/data_good_repository.dart';
+import 'package:good_manager/data/repositories/goods_repository_impl.dart';
 import 'package:good_manager/domain/entities/document.dart';
 
 import 'save_document_controller.dart';
@@ -96,7 +94,7 @@ class SaveDocumentPageView
               floatingActionButton: FloatingActionButton.extended(
                 onPressed: controller.onAddGood,
                 label:
-                    Text(AppLocalizations.of(context).save_document_add_goods),
+                    Text(AppLocalizations.of(context)!.save_document_add_goods),
                 backgroundColor: Colors.blue,
               ),
             ),
@@ -150,16 +148,16 @@ class SaveDocumentPageView
                     <PopupMenuEntry<OverflowItemMenu>>[
                   PopupMenuItem<OverflowItemMenu>(
                       value: OverflowItemMenu.batchscan,
-                      child: Text(AppLocalizations.of(context)
+                      child: Text(AppLocalizations.of(context)!
                           .save_document_batch_scan)),
                   PopupMenuItem<OverflowItemMenu>(
                       value: OverflowItemMenu.sortby,
                       child: Text(
-                          AppLocalizations.of(context).save_document_sort_by)),
+                          AppLocalizations.of(context)!.save_document_sort_by)),
                   PopupMenuItem<OverflowItemMenu>(
                       value: OverflowItemMenu.help,
                       child: Text(
-                          AppLocalizations.of(context).save_document_help)),
+                          AppLocalizations.of(context)!.save_document_help)),
                 ],
               );
             })
@@ -170,10 +168,10 @@ class SaveDocumentPageView
         return TextFormField(
             controller: controller.nameTextController,
             decoration: InputDecoration(
-                labelText: AppLocalizations.of(context).field_name),
+                labelText: AppLocalizations.of(context)!.field_name),
             validator: (String value) {
               if (value.trim().isEmpty) {
-                return AppLocalizations.of(context).message_name_blank;
+                return AppLocalizations.of(context)!.message_name_blank;
               } else {
                 return null;
               }
@@ -188,7 +186,7 @@ class SaveDocumentPageView
           dateMask: 'dd/MM/yyyy',
           firstDate: DateTime(2000),
           lastDate: DateTime(2100),
-          dateLabelText: AppLocalizations.of(context).field_date,
+          dateLabelText: AppLocalizations.of(context)!.field_date,
         );
       });
 
@@ -199,7 +197,7 @@ class SaveDocumentPageView
           onTap: controller.onSupplierTapped,
           controller: controller.supplierTextController,
           decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).field_supplier),
+              labelText: AppLocalizations.of(context)!.field_supplier),
         );
       });
 
@@ -210,7 +208,7 @@ class SaveDocumentPageView
           onTap: controller.onCustomerTapped,
           controller: controller.customerTextController,
           decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).field_customer),
+              labelText: AppLocalizations.of(context)!.field_customer),
         );
       });
 
@@ -219,7 +217,7 @@ class SaveDocumentPageView
         return TextFormField(
           controller: controller.descriptionTextController,
           decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).field_desc),
+              labelText: AppLocalizations.of(context)!.field_desc),
         );
       });
 
@@ -275,3 +273,4 @@ class SaveDocumentPageView
     });
   }
 }
+*/

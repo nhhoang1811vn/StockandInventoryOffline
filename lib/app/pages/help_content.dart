@@ -125,45 +125,35 @@ class HelpUtils {
       switch(help){
         case HelpType.STORE:
           return _markdownDataStoreVN;
-          break;
         case HelpType.SUPPLIER_AND_CUSTOMER:
           return _markdownDataSupplierCustomerVN;
-          break;
         case HelpType.GOODS:
           return _markdownDataGoodsVN;
-          break;
         case HelpType.DOCUMENTS:
           return _markdownDataDocumentsVN;
-          break;
         case HelpType.WHATSNEW:
           return _markdownDataWhatsNewVN;
-          break;
         case HelpType.EXPENSE:
           return _markdownDataExpenseVN;
-              break;
         default:
+          return "";
       }
     }else{
       switch(help){
         case HelpType.STORE:
           return _markdownDataStoreEN;
-          break;
         case HelpType.SUPPLIER_AND_CUSTOMER:
           return _markdownDataSupplierCustomerEN;
-          break;
         case HelpType.GOODS:
           return _markdownDataGoodsEN;
-          break;
         case HelpType.DOCUMENTS:
           return _markdownDataDocumentsEN;
-          break;
         case HelpType.WHATSNEW:
           return _markdownDataWhatsNewEN;
-          break;
         case HelpType.EXPENSE:
           return _markdownDataExpenseEN;
-          break;
         default:
+          return "";
       }
     }
   }

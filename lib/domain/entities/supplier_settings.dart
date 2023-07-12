@@ -1,3 +1,11 @@
-import 'package:good_manager/domain/entities/base_settings.dart';
+import 'sort_by_text.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+part 'supplier_settings.freezed.dart';
+@freezed
+class SupplierSettings with _$SupplierSettings{
+  const factory SupplierSettings({
+    required String sortByName
+  }) = _SupplierSettings;
 
-class SupplierSettings extends BaseSettings {}
+  factory SupplierSettings.fromJson(Map<String, Object?> json) => _$SupplierSettingsFromJson(json);
+}

@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -7,7 +8,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/pages/goods/add_quantity_good_dialog.dart';
 import 'package:good_manager/app/pages/help_content.dart';
 import 'package:good_manager/app/pages/pages.dart';
-import 'package:good_manager/app/pages/save_document/save_document_presenter.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/data/app_data_manager.dart';
 import 'package:good_manager/domain/entities/barcode_scanner_settings.dart';
@@ -238,11 +238,13 @@ class SaveDocumentController extends Controller {
   }
 
   void onTransactionTapped(int index) async {
-    /*final result = await Navigator.of(getContext()).pushNamed(Pages.save_good,
+    */
+/*final result = await Navigator.of(getContext()).pushNamed(Pages.save_good,
         arguments: {
           "item": transactions[index].good,
           "quantity": transactions[index].quantity
-        });*/
+        });*//*
+
     final result = await Navigator.of(getContext())
         .pushNamed(Pages.save_good,
         arguments: {"item" : transactions[index].good, "enableAddTransactions": false});
@@ -476,3 +478,4 @@ class SaveDocumentController extends Controller {
     });
   }
 }
+*/

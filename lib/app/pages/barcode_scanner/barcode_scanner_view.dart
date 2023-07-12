@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -19,17 +20,17 @@ class BarcodeScannerPageView
 
   Widget get appBar => AppBar(
       title: new Text(
-          AppLocalizations.of(context).menu_item_barcode_scanner_title));
+          AppLocalizations.of(context)!.menu_item_barcode_scanner_title));
 
   Widget getBody() {
     List<Widget> children = [
       ListTile(
-        title: Text(AppLocalizations.of(context).batch_mode_scan),
+        title: Text(AppLocalizations.of(context)!.batch_mode_scan),
         dense: true,
       ),
       batchModeScan,
       ListTile(
-        title: Text(AppLocalizations.of(context).when_a_barcode_is_found),
+        title: Text(AppLocalizations.of(context)!.when_a_barcode_is_found),
         dense: true,
       ),
       beep,
@@ -41,7 +42,7 @@ class BarcodeScannerPageView
   Widget get batchModeScan => ControlledWidgetBuilder<BarcodeScannerController>(
           builder: (context, controller) {
         return ListTile(
-          title: Text(AppLocalizations.of(context).after_each_scan),
+          title: Text(AppLocalizations.of(context)!.after_each_scan),
           subtitle: Text(controller.getBatchModeScanText()),
           onTap: controller.onChangeBatchModeScan,
         );
@@ -50,7 +51,7 @@ class BarcodeScannerPageView
   Widget get beep => ControlledWidgetBuilder<BarcodeScannerController>(
           builder: (context, controller) {
         return SwitchListTile(
-          title: Text(AppLocalizations.of(context).beep),
+          title: Text(AppLocalizations.of(context)!.beep),
           value: controller.settings.enableBeep,
           onChanged: (value) {
             controller.setEnableBeep(value);
@@ -61,7 +62,7 @@ class BarcodeScannerPageView
   Widget get vibrate => ControlledWidgetBuilder<BarcodeScannerController>(
           builder: (context, controller) {
         return SwitchListTile(
-          title: Text(AppLocalizations.of(context).vibrate),
+          title: Text(AppLocalizations.of(context)!.vibrate),
           value: controller.settings.enableVibrate,
           onChanged: (value) {
             controller.setEnableVibrate(value);
@@ -76,3 +77,4 @@ class BarcodeScannerPageView
         body: getBody(),
       );
 }
+*/
