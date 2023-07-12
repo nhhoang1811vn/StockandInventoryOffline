@@ -10,14 +10,6 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:get_it/get_it.dart' as _i1;
-import 'package:good_manager/app/pages/goods/bloc/goods_cubit2.dart' as _i5;
-import 'package:good_manager/app/pages/home/bloc/home_cubit.dart' as _i14;
-import 'package:good_manager/app/pages/onboarding/bloc/on_boarding_cubit.dart'
-    as _i25;
-import 'package:good_manager/app/pages/save_good/bloc/save_good_cubit.dart'
-    as _i15;
-import 'package:good_manager/app/pages/suppliers/bloc/suppliers_cubit.dart'
-    as _i26;
 import 'package:good_manager/data/repositories/document_transactions_repository_impl.dart'
     as _i4;
 import 'package:good_manager/data/repositories/goods_repository_impl.dart'
@@ -54,6 +46,18 @@ import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart'
     as _i23;
 import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases_impl.dart'
     as _i24;
+import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit2.dart'
+    as _i5;
+import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart'
+    as _i14;
+import 'package:good_manager/presentation/pages/onboarding/bloc/on_boarding_cubit.dart'
+    as _i25;
+import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.dart'
+    as _i15;
+import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart'
+    as _i26;
+import 'package:good_manager/presentation/pages/suppliers/bloc/suppliers_cubit.dart'
+    as _i27;
 import 'package:injectable/injectable.dart' as _i2;
 
 extension GetItInjectableX on _i1.GetIt {
@@ -92,7 +96,9 @@ extension GetItInjectableX on _i1.GetIt {
           useCase: gh<_i19.StoresUseCase>(),
           storage: gh<_i16.Storage>(),
         ));
-    gh.factory<_i26.SuppliersCubit>(() => _i26.SuppliersCubit(
+    gh.factory<_i26.SaveSupplierCubit>(
+        () => _i26.SaveSupplierCubit(useCase: gh<_i23.SuppliersUseCase>()));
+    gh.factory<_i27.SuppliersCubit>(() => _i27.SuppliersCubit(
           storage: gh<_i16.Storage>(),
           useCase: gh<_i23.SuppliersUseCase>(),
         ));

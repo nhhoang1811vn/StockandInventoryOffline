@@ -20,7 +20,7 @@ SupplierSettings _$SupplierSettingsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$SupplierSettings {
-  String get sortByName => throw _privateConstructorUsedError;
+  SortByText get sortByName => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -34,7 +34,7 @@ abstract class $SupplierSettingsCopyWith<$Res> {
           SupplierSettings value, $Res Function(SupplierSettings) then) =
       _$SupplierSettingsCopyWithImpl<$Res, SupplierSettings>;
   @useResult
-  $Res call({String sortByName});
+  $Res call({SortByText sortByName});
 }
 
 /// @nodoc
@@ -56,7 +56,7 @@ class _$SupplierSettingsCopyWithImpl<$Res, $Val extends SupplierSettings>
       sortByName: null == sortByName
           ? _value.sortByName
           : sortByName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as SortByText,
     ) as $Val);
   }
 }
@@ -69,7 +69,7 @@ abstract class _$$_SupplierSettingsCopyWith<$Res>
       __$$_SupplierSettingsCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String sortByName});
+  $Res call({SortByText sortByName});
 }
 
 /// @nodoc
@@ -89,7 +89,7 @@ class __$$_SupplierSettingsCopyWithImpl<$Res>
       sortByName: null == sortByName
           ? _value.sortByName
           : sortByName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as SortByText,
     ));
   }
 }
@@ -103,7 +103,7 @@ class _$_SupplierSettings implements _SupplierSettings {
       _$$_SupplierSettingsFromJson(json);
 
   @override
-  final String sortByName;
+  final SortByText sortByName;
 
   @override
   String toString() {
@@ -138,14 +138,14 @@ class _$_SupplierSettings implements _SupplierSettings {
 }
 
 abstract class _SupplierSettings implements SupplierSettings {
-  const factory _SupplierSettings({required final String sortByName}) =
+  const factory _SupplierSettings({required final SortByText sortByName}) =
       _$_SupplierSettings;
 
   factory _SupplierSettings.fromJson(Map<String, dynamic> json) =
       _$_SupplierSettings.fromJson;
 
   @override
-  String get sortByName;
+  SortByText get sortByName;
   @override
   @JsonKey(ignore: true)
   _$$_SupplierSettingsCopyWith<_$_SupplierSettings> get copyWith =>

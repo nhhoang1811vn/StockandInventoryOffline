@@ -1,0 +1,666 @@
+/*
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/presentation/pages/base/base_cubit.dart';
+import 'package:good_manager/presentation/pages/base/base_sort_items.dart';
+import 'package:good_manager/presentation/pages/goods/add_quantity_good_dialog.dart';
+import 'package:good_manager/presentation/pages/goods/sort/sort_by_barcode_goods.dart';
+import 'package:good_manager/presentation/pages/goods/sort/sort_by_barcode_groups.dart';
+import 'package:good_manager/presentation/pages/goods/sort/sort_by_quantity_goods.dart';
+import 'package:good_manager/presentation/pages/goods/sort_goods_dialog.dart';
+import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/data/app_data_manager.dart';
+import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/good.dart';
+import 'package:good_manager/domain/entities/goods_settings.dart';
+import 'package:good_manager/domain/entities/group.dart';
+import 'package:good_manager/domain/entities/search_goods_type.dart';
+import 'package:good_manager/domain/entities/sort_by_number.dart';
+import 'package:good_manager/domain/entities/sort_by_text.dart';
+import 'package:good_manager/domain/entities/transaction.dart';
+import 'package:injectable/injectable.dart';
+import 'package:sprintf/sprintf.dart';
+
+import '../../../../cache/storages/secure_storage_service.dart';
+import '../../base/base_state.dart';
+import '../../help_content.dart';
+import '../../pages.dart';
+import 'goods_data.dart';
+
+@injectable
+class GoodsCubit extends BaseCubit<GoodsData> {
+  TextEditingController searchTextController;
+
+  bool isLoading = false;
+
+  bool groupsRetrieved;
+  bool goodsRetrieved;
+
+  //bool _isSelection;
+  List<Group> _allGroups = [];
+  List<Good> _allGoods = [];
+
+  List<Group> _groups = [];
+  List<Good> _goods = [];
+
+  List<Group> get groups => _groups;
+
+  List<Good> get goods => _goods;
+
+  //bool get isSelection => _isSelection;
+  DocumentType _documentType;
+  List<DocumentTransaction> transactions = [];
+
+  //bool showSearchBar = false;
+  //String _textSearch = "";
+
+  //String get textSearch => _textSearch;
+
+  //DocumentType get documentType => _documentType;
+
+  //GoodsSettings _settings;
+  bool justScanCode = false;
+
+  */
+/*GoodsCubit(storeRepository, goodRepository, transactionRepository,
+      this._isSelection, this._documentType, this.transactions)
+      : presenter = GoodsPresenter(
+            storeRepository, goodRepository, transactionRepository),
+        super() {
+    showSearchBar = _isSelection;
+    searchTextController = TextEditingController();
+    isLoading = true;
+    retrieveSettings();
+  }*//*
+
+  final SecureStorage secureStorage;
+  GoodsCubit({required this.secureStorage}) : super(
+      GoodsData(
+          state: InitialState(), 
+          isSelection: false, 
+          goods: [], 
+          groups: [],
+          hasSortOptions: false,
+          searchText: "",
+          settings: GoodsSettings(),
+          showSearchBar: false
+      ));
+
+  Future<void> initState() async {
+    //final settings = await secureStorage.
+    //emit(state.copy)
+    //emit(state.copyWith());
+  }
+
+  void loadData() {
+    isLoading = true;
+    groupsRetrieved = goodsRetrieved = false;
+    _allGroups = [];
+    _allGoods = [];
+
+    _groups = [];
+    _goods = [];
+
+    retrieveGroups();
+    retrieveGoods();
+  }
+
+  void retrieveSettings() {
+    presenter.getSettings();
+  }
+
+  void retrieveGroups() async {
+    String directory = getDirectory();
+    presenter.getGroupsByDirectory(directory);
+  }
+
+  void retrieveGoods() async {
+    String directory = getDirectory();
+    presenter.getGoodsByDirectory(directory);
+  }
+
+  void refreshItems() {
+    sort();
+    filter();
+    if (transactions != null) {
+      this._goods.forEach((element) {
+        element.pendingQuantity = getPendingQuantity(element.id);
+      });
+    }
+    refreshUI();
+  }
+
+  @override
+  void initListeners() {
+    presenter.getGroupsOnNext = (groups) {
+      this._allGroups = groups;
+    };
+    presenter.getGroupsOnComplete = () {
+      groupsRetrieved = true;
+      if (goodsRetrieved) {
+        isLoading = false;
+        refreshItems();
+      }
+    };
+    presenter.getGroupsOnError = (e) {
+      showErrorToast(e.message.toString());
+    };
+
+    presenter.getGoodsOnNext = (goods) {
+      _allGoods = goods;
+    };
+    presenter.getGoodsOnComplete = () {
+      goodsRetrieved = true;
+      if (groupsRetrieved) {
+        isLoading = false;
+        refreshItems();
+      }
+    };
+    presenter.getGoodsOnError = (e) {
+      showErrorToast(e.message.toString());
+    };
+
+    presenter.getGoodsSettingsOnNext = (settings) {
+      this._settings = settings;
+      loadData();
+    };
+    presenter.getGoodsSettingsOnError = (e) {
+      showErrorToast(e.message.toString());
+    };
+
+    presenter.deleteGoodOnComplete = () {
+      loadData();
+    };
+    presenter.deleteGoodOnError = (e) {
+      showErrorToast(e.toString());
+    };
+
+    presenter.updateGoodOnComplete = () {
+      loadData();
+    };
+    presenter.updateGoodOnError = (e) {
+      showErrorToast(e.toString());
+    };
+    presenter.updateGroupOnComplete = () {
+      loadData();
+    };
+    presenter.updateGroupOnError = (e) {
+      showErrorToast(e.toString());
+    };
+  }
+
+  @override
+  void dispose() {
+    presenter.dispose();
+    super.dispose();
+  }
+
+  void onAddGood() async {
+    Good item = Good();
+    item.directory = getDirectory();
+    item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+
+    final result = await Navigator.of(getContext())
+        .pushNamed(Pages.save_good, arguments: {"item": item, "enableAddTransactions": true});
+    if (result != null) {
+      if (_isSelection) {
+        showAddQuantityDialog(result);
+      } else {
+        loadData();
+      }
+    }
+  }
+
+  void onAddGroup() async {
+    Group item = Group();
+    item.directory = getDirectory();
+    item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+
+    final result = await Navigator.of(getContext())
+        .pushNamed(Pages.save_group, arguments: {"item": item});
+    if (result != null) {
+      loadData();
+    }
+  }
+
+  void openHelpPage() async {
+    String code = await appDataManager.sharedPrefsHelper.getLanguageCode();
+    Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
+      "title": AppLocalizations.of(getContext()).goods_title,
+      "content": HelpUtils.getMarkdownData(code, HelpType.GOODS)
+    });
+  }
+  String getDirectory(){
+    String result = "/";
+    selectedGroups.forEach((element) {
+      result += element.id.toString() + "/";
+    });
+    return result;
+  }
+
+  void onSelectedGroupTapped(int index) {
+    if (index == -1) {
+      selectedGroups.clear();
+    } else {
+      selectedGroups = selectedGroups.sublist(0, index + 1);
+    }
+    loadData();
+    refreshUI();
+  }
+
+  void onGroupTapped(Group group) {
+    selectedGroups.add(group);
+    loadData();
+    refreshUI();
+  }
+
+  void onGroupLongPressed(Group group) {
+    showDialog(
+        context: getContext(),
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            children: <Widget>[
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  Navigator.pop(getContext());
+                  openSelectGroupForGroup(group);
+                },
+                child: Text(
+                    AppLocalizations.of(getContext())?.action_move_to_group??''),
+              ),
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  Navigator.pop(getContext());
+                  onEditGroup(group);
+                },
+                child:
+                    Text(AppLocalizations.of(getContext()).action_edit_group),
+              ),
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  Navigator.pop(getContext());
+                  showInfoToast("under development");
+                },
+                child:
+                    Text(AppLocalizations.of(getContext()).action_delete_group),
+              ),
+            ],
+          );
+        },
+        barrierDismissible: true);
+  }
+
+  void onEditGroup(Group group) async {
+    final result = await Navigator.of(getContext())
+        .pushNamed(Pages.save_group, arguments: {"item": group});
+    if (result != null) {
+      loadData();
+    }
+  }
+
+  void showAddQuantityDialog(Good good) {
+    showDialog(
+        context: getContext(),
+        builder: (_) => InputQuantityGoodDialog(
+            good, (it) => {onQuantityAdded(good, it)}, () => {}),
+        barrierDismissible: true);
+  }
+
+  void onGoodTapped(Good good) async {
+    if (this._isSelection) {
+      showAddQuantityDialog(good);
+    } else {
+      final result = await Navigator.of(getContext())
+          .pushNamed(Pages.save_good, arguments: {"item": good, "enableAddTransactions": true});
+      if (result != null) {
+        loadData();
+      }
+    }
+  }
+
+  void onShowSortDialog() async {
+    showDialog(
+        context: getContext(),
+        builder: (_) => SortGoodsDialog(_settings, () {
+              presenter.setSettings(_settings);
+              refreshItems();
+            }),
+        barrierDismissible: true);
+  }
+
+  void onQuantityAdded(Good good, int quantity) {
+    DocumentTransaction transaction = DocumentTransaction();
+    transaction.goodId = good.id;
+    transaction.currentQuantity = 0;
+    transaction.quantity = quantity;
+    transaction.type = _documentType;
+
+    good.quantity = quantity;
+    transaction.good = good;
+
+    transactions.add(transaction);
+
+    loadData();
+  }
+
+  void onGoodLongPressed(Good good) {
+    showDialog(
+        context: getContext(),
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            children: <Widget>[
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  Navigator.pop(getContext());
+                  openSelectGroupForGood(good);
+                },
+                child: Text(
+                    AppLocalizations.of(getContext()).action_move_to_group),
+              ),
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  Navigator.pop(getContext());
+                  showDeleteGoodConfirm(good);
+                },
+                child: Text(AppLocalizations.of(getContext()).action_delete),
+              ),
+            ],
+          );
+        },
+        barrierDismissible: true);
+  }
+
+  void openSelectGroupForGood(Good good) async {
+    final newGroup = await Navigator.of(getContext())
+        .pushNamed(Pages.select_group, arguments: {"groupId": -2});
+    if (newGroup != null) {
+      onMoveGoodToGroup(good, newGroup);
+    }
+  }
+  void openSelectGroupForGroup(Group group) async {
+    final newGroup = await Navigator.of(getContext())
+        .pushNamed(Pages.select_group, arguments: {"groupId": group.id});
+    if (newGroup != null) {
+      onMoveGroupToGroup(group, newGroup);
+    }
+  }
+  void onMoveGroupToGroup(Group src, Group dest){
+    var destDirectory = "";
+    if (dest.id == -1){
+      destDirectory = "/";
+    }else{
+      destDirectory = dest.directory + dest.id.toString() + "/";
+    }
+    if (src.directory != destDirectory){
+      src.directory = destDirectory;
+      presenter.updateGroup(src);
+    }
+  }
+  void onMoveGoodToGroup(Good src, Group dest){
+    var destDirectory = "";
+    if (dest.id == -1){
+      destDirectory = "/";
+    }else{
+      destDirectory = dest.directory + dest.id.toString() + "/";
+    }
+    if (src.directory != destDirectory){
+      src.directory = destDirectory;
+      presenter.updateGood(src);
+    }
+  }
+
+  void showDeleteGoodConfirm(Good good) {
+    showDialog(
+        context: getContext(),
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+                AppLocalizations.of(getContext()).notification_dialog_title),
+            content: Text(sprintf(
+                AppLocalizations.of(getContext()).message_confirm_delete_good,
+                [good.name])),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(getContext()),
+                  child: Text(AppLocalizations.of(getContext()).action_cancel)),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(getContext());
+                  presenter.deleteGood(good.id);
+                },
+                child: Text(AppLocalizations.of(getContext()).action_ok),
+              )
+            ],
+          );
+        });
+  }
+
+  int getPendingQuantity(int goodId) {
+    int quantity = 0;
+    transactions.forEach((transaction) {
+      if (transaction.goodId == goodId) {
+        quantity += (transaction.quantity - transaction.currentQuantity);
+      }
+    });
+    return quantity;
+  }
+
+  bool isEmpty() {
+    return groups.isEmpty && goods.isEmpty;
+  }
+
+  void toggleSearchBar() {
+    showSearchBar = !showSearchBar;
+    resetSearchText();
+  }
+  void onSearchTextChanged(String newValue) {
+    //_textSearch = val;
+    //filter();
+    //refreshUI();
+
+    final trimValue = newValue.trim();
+    emit(state.copyWith(textSearch))
+    if (trimValue.isEmpty) {
+      //emit(state.copyWith(state: ShowPagingVisitsState(), searchText: newValue));
+    } else {
+      //List<Visit> filteredVisits = getFilteredVisits(trimValue);
+      //emit(state.copyWith(state: ShowFilteredVisitsState(), searchText: newValue, filteredVisits: filteredVisits));
+    }
+  }
+
+  void filter() {
+    _groups = _allGroups.where((element) => filterGroup(element)).toList();
+    _goods = _allGoods.where((element) => filterGood(element)).toList();
+  }
+
+  filterGroup(Group group) {
+    if (_textSearch.trim().isEmpty) {
+      return true;
+    }
+    if (justScanCode) {
+      return group.barCode.contains(_textSearch);
+    }
+    switch (_settings.searchGoodsType) {
+      case SearchGoodsType.byName:
+        {
+          return group.name.contains(_textSearch);
+        }
+      case SearchGoodsType.byDescription:
+        {
+          return group.description.contains(_textSearch);
+        }
+      case SearchGoodsType.byBarcode:
+        {
+          return group.barCode.contains(_textSearch);
+        }
+      default:
+        {
+          return group.name.contains(_textSearch) ||
+              group.description.contains(_textSearch) ||
+              group.barCode.contains(_textSearch);
+        }
+    }
+  }
+
+  filterGood(Good good) {
+    if (_textSearch.trim().isEmpty) {
+      return true;
+    }
+    if (justScanCode) {
+      return good.barCode.contains(_textSearch);
+    }
+    switch (_settings.searchGoodsType) {
+      case SearchGoodsType.byName:
+        {
+          return good.name.contains(_textSearch);
+        }
+      case SearchGoodsType.byDescription:
+        {
+          return good.description.contains(_textSearch);
+        }
+      case SearchGoodsType.byBarcode:
+        {
+          return good.barCode.contains(_textSearch);
+        }
+      default:
+        {
+          return good.name.contains(_textSearch) ||
+              good.description.contains(_textSearch) ||
+              good.barCode.contains(_textSearch);
+        }
+    }
+  }
+
+  void sort() {
+    List<SortItems<Group>> groupSortOptions = [];
+    List<SortItems<Good>> goodSortOptions = [];
+    switch (_settings.sortByName) {
+      case SortByText.a_to_z:
+        {
+          groupSortOptions.add(SortByNameAToZ());
+          goodSortOptions.add(SortByNameAToZ());
+          break;
+        }
+      case SortByText.z_to_a:
+        {
+          groupSortOptions.add(SortByNameZToA());
+          goodSortOptions.add(SortByNameZToA());
+          break;
+        }
+      default:
+        {}
+    }
+    switch (_settings.sortByBarcode) {
+      case SortByNumber.ascending:
+        {
+          groupSortOptions.add(SortByBarCodeAscendingGroup());
+          goodSortOptions.add(SortByBarCodeAscendingGood());
+          break;
+        }
+      case SortByNumber.descending:
+        {
+          groupSortOptions.add(SortByBarCodeDescendingGroup());
+          goodSortOptions.add(SortByBarCodeDescendingGood());
+          break;
+        }
+      default:
+        {}
+    }
+    switch (_settings.sortByQuantity) {
+      case SortByNumber.ascending:
+        {
+          goodSortOptions.add(SortByQuantityAscendingGood());
+          break;
+        }
+      case SortByNumber.descending:
+        {
+          goodSortOptions.add(SortByQuantityDescendingGood());
+          break;
+        }
+      default:
+        {}
+    }
+    if (groupSortOptions.isEmpty) {
+      groupSortOptions.add(SortByCreatedDate());
+    }
+    if (goodSortOptions.isEmpty) {
+      goodSortOptions.add(SortByCreatedDate());
+    }
+    _allGroups.sort((item1, item2) {
+      int compare = 0;
+      for (final option in groupSortOptions) {
+        compare = option.getResult(item1, item2);
+        if (compare != 0) break;
+      }
+      return compare;
+    });
+    _allGoods.sort((item1, item2) {
+      int compare = 0;
+      for (final option in goodSortOptions) {
+        compare = option.getResult(item1, item2);
+        if (compare != 0) break;
+      }
+      return compare;
+    });
+  }
+
+  void setSearchGoodsType(SearchGoodsType type) {
+    _settings.searchGoodsType = type;
+    presenter.setSettings(_settings);
+
+    resetSearchText();
+  }
+
+  void resetSearchText() {
+    searchTextController.text = "";
+    onSearchChanged("");
+  }
+
+  String getSearchTextHint(BuildContext context) {
+    return _settings.searchGoodsType.getText(context);
+  }
+
+  */
+/*bool hasSortOptions() {
+    if (_settings == null) {
+      return false;
+    }
+    if (_settings.sortByName != SortByText.no_sort ||
+        _settings.sortByBarcode != SortByNumber.no_sort ||
+        _settings.sortByQuantity != SortByNumber.no_sort) {
+      return true;
+    }
+    return false;
+  }*//*
+
+
+  Future<bool> onBackPressed() {
+    Navigator.of(getContext()).pop(transactions);
+  }
+
+  onSearchBarCode() async {
+    try {
+      var barcodeResult = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666",
+          AppLocalizations.of(getContext()).action_cancel,
+          true,
+          ScanMode.BARCODE);
+      if (barcodeResult != "-1") {
+        searchTextController.text = barcodeResult;
+        justScanCode = true;
+        onSearchChanged(barcodeResult);
+        justScanCode = false;
+      }
+    } on PlatformException {
+      showErrorToast('Failed to get platform version.');
+    }
+  }
+}
+*/

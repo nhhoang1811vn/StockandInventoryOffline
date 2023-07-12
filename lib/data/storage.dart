@@ -12,22 +12,25 @@ class Storage{
   late SharedPreferences prefs;
   Future<void> init() async{
     prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey(StorageKeys.SupplierSettings)){
+      setSupplierSettings(SupplierSettings.getDefault());
+    }
   }
   int getSelectedStoreId() {
-    return prefs.getInt(StorageKeys.SelectedStoreId)!;
+    return prefs.getInt(StorageKeys.SelectedStoreId)??-1;
   }
 
   void setSelectedStoreId(int storeId) {
     prefs.setInt(StorageKeys.SelectedStoreId, storeId);
   }
-  String? getSelectedStoreName(){
-    return prefs.getString(StorageKeys.SelectedStoreName);
+  String getSelectedStoreName(){
+    return prefs.getString(StorageKeys.SelectedStoreName)??"";
   }
   void setSelectedStoreName(String value){
     prefs.setString(StorageKeys.SelectedStoreName, value);
   }
-  bool? getFirstTime() {
-    return prefs.getBool(StorageKeys.FirstTime);
+  bool getFirstTime() {
+    return prefs.getBool(StorageKeys.FirstTime)??true;
   }
   void setFirstTime(bool value) {
     prefs.setBool(StorageKeys.FirstTime, value);
@@ -36,11 +39,7 @@ class Storage{
     prefs.setString(StorageKeys.LanguageCode, value);
   }
   String getLanguageCode() {
-    String? value = prefs.getString(StorageKeys.LanguageCode);
-    if (value == null){
-      return "vi";
-    }
-    return value; 
+    return prefs.getString(StorageKeys.LanguageCode)??"vi";
   }
   void setSupplierSettings(SupplierSettings settings){
     prefs.setString(StorageKeys.SupplierSettings, jsonEncode(settings.toJson()));
