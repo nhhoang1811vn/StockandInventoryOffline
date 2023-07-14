@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/presentation/pages/base/base_page.dart';
-import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart';
-import 'package:good_manager/presentation/pages/expenses/bloc/expenses_data.dart';
 import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/domain/entities/expense.dart';
-
 import 'package:good_manager/app/widgets/selected_store_view.dart';
+import 'package:good_manager/domain/entities/expense.dart';
+import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart';
+
 import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';
 
@@ -17,53 +16,41 @@ class ExpensesPage extends StatefulWidget {
   ExpensesPageState createState() => ExpensesPageState();
 }
 
-class ExpensesPageState extends BasePageState<ExpensesPage, ExpensesCubit, ExpensesData> {
-  @override
-  Widget buildPage(BuildContext context, ExpensesData data) {
-    return Scaffold(
-        //key: globalKey,
-        drawer: CustomNavigationDrawer(selectedIndex: 3),
-        appBar: _buildAppBar(data),
-        body: _buildBody(data),
-        floatingActionButton: FloatingActionButton(
-                onPressed: () => {},
-                child: Icon(Icons.add),
-              ));
-  }
-  PreferredSize _buildAppBar(ExpensesData data){
+class ExpensesPageState extends State<ExpensesPage> {
+  PreferredSize _buildAppBar(ExpensesState state){
     return PreferredSize(
       preferredSize: Size.fromHeight(70), child:  AppBar(
         title: new Text(AppLocalizations.of(context)!.expenses_title),
-        actions: [_buildSearchMenu(data), _buildSortMenu(data), helpMenu]),
+        actions: [_buildSearchMenu(state), _buildSortMenu(state), helpMenu]),
     );
   }
 
-  Widget _buildSearchMenu(ExpensesData data) => Padding(
+  Widget _buildSearchMenu(ExpensesState state) => Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: GestureDetector(
             child: Icon(
               UIConstants.searchMenuIconData,
               size: 26,
-              color: data.showSearchBar
+              color: state.showSearchBar
                   ? UIConstants.highlightMenuColor
                   : UIConstants.normalMenuColor,
             ),
-            onTap: cubit.onShowSearchBarMenuClicked,
+            onTap: context.read<ExpensesCubit>().onShowSearchBarMenuClicked,
           ),
         );
 
 
-  Widget _buildSortMenu(ExpensesData data) => Padding(
+  Widget _buildSortMenu(ExpensesState data) => Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: GestureDetector(
             child: Icon(
               UIConstants.sortMenuIconData,
               size: 26,
-              color: cubit.hasSortOptions()
+              color: context.read<ExpensesCubit>().hasSortOptions()
                   ? UIConstants.highlightMenuColor
                   : UIConstants.normalMenuColor,
             ),
-            onTap: cubit.onSortMenuClicked,
+            onTap: context.read<ExpensesCubit>().onSortMenuClicked,
           ),
         );
 
@@ -75,7 +62,7 @@ class ExpensesPageState extends BasePageState<ExpensesPage, ExpensesCubit, Expen
               UIConstants.helpMenuIconData,
               size: 26,
             ),
-            onTap: cubit.onHelpMenuClick,
+            onTap: context.read<ExpensesCubit>().onHelpMenuClick,
           ),
         );
   Widget _buildLoading() {
@@ -83,14 +70,14 @@ class ExpensesPageState extends BasePageState<ExpensesPage, ExpensesCubit, Expen
       child: CircularProgressIndicator(),
     );
   }
-  Widget _buildBody(ExpensesData data) {
+  Widget _buildBody(ExpensesState data) {
     final state = data.state;
     if (state is LoadingState) {
       return _buildLoading();
     }
     return _buildContent(data);
   }
-  Widget _buildContent(ExpensesData data){
+  Widget _buildContent(ExpensesState data){
     List<Widget> children = [
       SelectedStoreView(),
       Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
@@ -109,19 +96,19 @@ class ExpensesPageState extends BasePageState<ExpensesPage, ExpensesCubit, Expen
     return Column(children: children);
   }
 
-  Widget _buildSearchBar(ExpensesData data) {
+  Widget _buildSearchBar(ExpensesState data) {
     return Card(
       child: ListTile(
         title: TextField(
           decoration: InputDecoration(
               hintText: "by name", border: InputBorder.none),
-          onChanged: cubit.searchTextChanged,
+          onChanged: context.read<ExpensesCubit>().searchTextChanged,
           //controller: controller.searchTextController,
         ),
         trailing: Visibility(
           child: IconButton(
             icon: Icon(UIConstants.cancelIconData),
-            onPressed: cubit.resetSearchText,
+            onPressed: context.read<ExpensesCubit>().resetSearchText,
           ),
           visible: data.textSearch.isNotEmpty,
         ),
@@ -145,7 +132,7 @@ class ExpensesPageState extends BasePageState<ExpensesPage, ExpensesCubit, Expen
                     textAlign: TextAlign.center))
           ]);
 
-  Widget _buildListView(ExpensesData data) =>  ListView.separated(
+  Widget _buildListView(ExpensesState data) =>  ListView.separated(
             itemBuilder: (BuildContext context, index) {
               Expense item = data.items[index];
               return ListTile(
@@ -174,5 +161,23 @@ class ExpensesPageState extends BasePageState<ExpensesPage, ExpensesCubit, Expen
       amount.toString(),
       style: TextStyle(color: Colors.red),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<ExpensesCubit, ExpensesState>(
+        builder: (context, state) => Scaffold(
+          //key: globalKey,
+            drawer: CustomNavigationDrawer(selectedIndex: 3),
+            appBar: _buildAppBar(state),
+            body: _buildBody(state),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => {},
+              child: Icon(Icons.add),
+            )),
+        listenWhen: (p1, p2) => p1.state != p2.state,
+    listener: (context, state) async{
+
+    });
   }
 }

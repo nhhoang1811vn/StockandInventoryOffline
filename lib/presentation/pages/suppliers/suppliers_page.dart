@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/presentation/pages/base/base_page.dart';
-import 'package:good_manager/presentation/pages/custom_navigation_drawer.dart';
 import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
+import 'package:good_manager/domain/entities/suppliers_setting.dart';
+import 'package:good_manager/presentation/pages/custom_navigation_drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:good_manager/app/widgets/selected_store_view.dart';
 import '../base/base_state.dart';
-import '../base/sort_item_dialog.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'bloc/bloc.dart';
+import 'widgets/sort_supplier_dialog.dart';
 
 enum SupplierItemMenu { sendEmail, sendSMS, phoneCall }
 
@@ -34,30 +34,35 @@ class SuppliersPageState extends State<SuppliersPage> {
   @override
   Widget build(BuildContext context){
     return BlocConsumer<SuppliersCubit, SuppliersState>(
-      listenWhen: (p1, p2) => p1.state != p2.state,
+        listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async{
           if (state.state is OpenSortDialogListState){
-            /*showDialog(
+            SuppliersSetting settings = await showDialog(
                 context: context,
-                builder: (_) => SortItemDialog(state.settings, () {
-                  //context.read<SuppliersCubit>().setSettings(_se)
-                  //_presenter.setSettings(_settings);
-                }),
-                barrierDismissible: true);*/
+                builder: (_) => SortSupplierDialog(state.settings),
+                barrierDismissible: true);
+            context.read<SuppliersCubit>().setSettings(settings);
           }
-          if (state.state is OpenSaveItemState){
-            final result = await Navigator.of(context).pushNamed(Pages.save_supplier, arguments: {"item": Supplier()});
-            /*if (result != null) {
-              allItems.add(result);
-              refreshItems();
-            }*/
+          else if (state.state is AddSupplierState){
+            final result = await Navigator.of(context).pushNamed(Pages.save_supplier);
+            if (result != null) {
+              context.read<SuppliersCubit>().addNewSupplier(result as Supplier);
+            }
           }
-          if (state.state is OpenHelpPageState){
+          else if (state.state is EditSupplierState){
+            final currentState = state.state as EditSupplierState;
+            final result = await Navigator.of(context).pushNamed(Pages.save_supplier, arguments: {"item" : currentState.item});
+            if (result != null){
+              context.read<SuppliersCubit>().onModifySupplier(result as Supplier);
+            }
+          }
+          else if (state.state is OpenHelpPageState){
             Navigator.of(context).pushNamed(Pages.help, arguments: {
-              "title": "abc",
+              "title": AppLocalizations.of(context)?.suppliers_title,
               "content": HelpUtils.getMarkdownData("vi", HelpType.SUPPLIER_AND_CUSTOMER)
             });
           }
+
         },
         builder: (context, state) =>  Scaffold(
         //key: globalKey,

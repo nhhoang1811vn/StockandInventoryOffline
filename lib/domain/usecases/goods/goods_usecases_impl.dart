@@ -23,7 +23,7 @@ class GoodsUseCaseImpl implements GoodsUseCases{
   @override
   Future<bool> delete(int id) async{
     try {
-      final deleteTransactionsResult = await documentTransactionRepository.deleteByGoodId(id);
+      //final deleteTransactionsResult = await documentTransactionRepository.deleteByGoodId(id);
       final deleteGoodResult = await repository.delete(id);
       //return Future.value(deleteTransactionsResult && deleteGoodResult);
       return Future.value(true);

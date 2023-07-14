@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:good_manager/presentation/pages/base/base_page.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_data.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_state.dart';
-import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../base/base_state.dart';
@@ -25,10 +25,14 @@ class HomePageState extends BasePageState<HomePage, HomeCubit, HomeData> {
 
   @override
   void onDataChange(BuildContext context, HomeData data) {
-    if (data.state is OpenSupplierState){
+    if (data.state is OpenGoodsState){
+      Navigator.of(context).pushNamed(Pages.good_list, arguments: {'isSelection': false});
+    } else if (data.state is OpenSuppliersState){
       Navigator.of(context).pushNamed(Pages.supplier_list, arguments: {'isSelection': false});
     }else if (data.state is OpenCustomersState){
       Navigator.of(context).pushNamed(Pages.customer_list, arguments: {'isSelection': false});
+    }else if (data.state is OpenExpensesState){
+      Navigator.of(context).pushNamed(Pages.expenses);
     }
     super.onDataChange(context, data);
   }

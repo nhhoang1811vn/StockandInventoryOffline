@@ -25,7 +25,7 @@ mixin _$SaveSupplierState {
   String get bankDetails => throw _privateConstructorUsedError;
   FormzSubmissionStatus get status => throw _privateConstructorUsedError;
   String get exceptionError => throw _privateConstructorUsedError;
-  bool get isInsert => throw _privateConstructorUsedError;
+  Supplier? get item => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
@@ -38,7 +38,7 @@ mixin _$SaveSupplierState {
             String bankDetails,
             FormzSubmissionStatus status,
             String exceptionError,
-            bool isInsert)
+            Supplier? item)
         initial,
   }) =>
       throw _privateConstructorUsedError;
@@ -54,7 +54,7 @@ mixin _$SaveSupplierState {
             String bankDetails,
             FormzSubmissionStatus status,
             String exceptionError,
-            bool isInsert)?
+            Supplier? item)?
         initial,
   }) =>
       throw _privateConstructorUsedError;
@@ -70,7 +70,7 @@ mixin _$SaveSupplierState {
             String bankDetails,
             FormzSubmissionStatus status,
             String exceptionError,
-            bool isInsert)?
+            Supplier? item)?
         initial,
     required TResult orElse(),
   }) =>
@@ -113,7 +113,7 @@ abstract class $SaveSupplierStateCopyWith<$Res> {
       String bankDetails,
       FormzSubmissionStatus status,
       String exceptionError,
-      bool isInsert});
+      Supplier? item});
 }
 
 /// @nodoc
@@ -138,7 +138,7 @@ class _$SaveSupplierStateCopyWithImpl<$Res, $Val extends SaveSupplierState>
     Object? bankDetails = null,
     Object? status = null,
     Object? exceptionError = null,
-    Object? isInsert = null,
+    Object? item = freezed,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -177,10 +177,10 @@ class _$SaveSupplierStateCopyWithImpl<$Res, $Val extends SaveSupplierState>
           ? _value.exceptionError
           : exceptionError // ignore: cast_nullable_to_non_nullable
               as String,
-      isInsert: null == isInsert
-          ? _value.isInsert
-          : isInsert // ignore: cast_nullable_to_non_nullable
-              as bool,
+      item: freezed == item
+          ? _value.item
+          : item // ignore: cast_nullable_to_non_nullable
+              as Supplier?,
     ) as $Val);
   }
 }
@@ -203,7 +203,7 @@ abstract class _$$_InitialCopyWith<$Res>
       String bankDetails,
       FormzSubmissionStatus status,
       String exceptionError,
-      bool isInsert});
+      Supplier? item});
 }
 
 /// @nodoc
@@ -225,7 +225,7 @@ class __$$_InitialCopyWithImpl<$Res>
     Object? bankDetails = null,
     Object? status = null,
     Object? exceptionError = null,
-    Object? isInsert = null,
+    Object? item = freezed,
   }) {
     return _then(_$_Initial(
       name: null == name
@@ -264,10 +264,10 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.exceptionError
           : exceptionError // ignore: cast_nullable_to_non_nullable
               as String,
-      isInsert: null == isInsert
-          ? _value.isInsert
-          : isInsert // ignore: cast_nullable_to_non_nullable
-              as bool,
+      item: freezed == item
+          ? _value.item
+          : item // ignore: cast_nullable_to_non_nullable
+              as Supplier?,
     ));
   }
 }
@@ -285,7 +285,7 @@ class _$_Initial implements _Initial {
       this.bankDetails = '',
       this.status = FormzSubmissionStatus.initial,
       this.exceptionError = '',
-      this.isInsert = true});
+      this.item});
 
   @override
   @JsonKey()
@@ -315,12 +315,11 @@ class _$_Initial implements _Initial {
   @JsonKey()
   final String exceptionError;
   @override
-  @JsonKey()
-  final bool isInsert;
+  final Supplier? item;
 
   @override
   String toString() {
-    return 'SaveSupplierState.initial(name: $name, description: $description, address: $address, email: $email, phone: $phone, taxID: $taxID, bankDetails: $bankDetails, status: $status, exceptionError: $exceptionError, isInsert: $isInsert)';
+    return 'SaveSupplierState.initial(name: $name, description: $description, address: $address, email: $email, phone: $phone, taxID: $taxID, bankDetails: $bankDetails, status: $status, exceptionError: $exceptionError, item: $item)';
   }
 
   @override
@@ -340,13 +339,12 @@ class _$_Initial implements _Initial {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.exceptionError, exceptionError) ||
                 other.exceptionError == exceptionError) &&
-            (identical(other.isInsert, isInsert) ||
-                other.isInsert == isInsert));
+            (identical(other.item, item) || other.item == item));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, name, description, address,
-      email, phone, taxID, bankDetails, status, exceptionError, isInsert);
+      email, phone, taxID, bankDetails, status, exceptionError, item);
 
   @JsonKey(ignore: true)
   @override
@@ -367,11 +365,11 @@ class _$_Initial implements _Initial {
             String bankDetails,
             FormzSubmissionStatus status,
             String exceptionError,
-            bool isInsert)
+            Supplier? item)
         initial,
   }) {
     return initial(name, description, address, email, phone, taxID, bankDetails,
-        status, exceptionError, isInsert);
+        status, exceptionError, item);
   }
 
   @override
@@ -387,11 +385,11 @@ class _$_Initial implements _Initial {
             String bankDetails,
             FormzSubmissionStatus status,
             String exceptionError,
-            bool isInsert)?
+            Supplier? item)?
         initial,
   }) {
     return initial?.call(name, description, address, email, phone, taxID,
-        bankDetails, status, exceptionError, isInsert);
+        bankDetails, status, exceptionError, item);
   }
 
   @override
@@ -407,13 +405,13 @@ class _$_Initial implements _Initial {
             String bankDetails,
             FormzSubmissionStatus status,
             String exceptionError,
-            bool isInsert)?
+            Supplier? item)?
         initial,
     required TResult orElse(),
   }) {
     if (initial != null) {
       return initial(name, description, address, email, phone, taxID,
-          bankDetails, status, exceptionError, isInsert);
+          bankDetails, status, exceptionError, item);
     }
     return orElse();
   }
@@ -458,7 +456,7 @@ abstract class _Initial implements SaveSupplierState {
       final String bankDetails,
       final FormzSubmissionStatus status,
       final String exceptionError,
-      final bool isInsert}) = _$_Initial;
+      final Supplier? item}) = _$_Initial;
 
   @override
   NameInput get name;
@@ -479,7 +477,7 @@ abstract class _Initial implements SaveSupplierState {
   @override
   String get exceptionError;
   @override
-  bool get isInsert;
+  Supplier? get item;
   @override
   @JsonKey(ignore: true)
   _$$_InitialCopyWith<_$_Initial> get copyWith =>

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/app/widgets/select_message_type_dialog.dart';
 //import 'package:good_manager/presentation/pages/customers/customers_view.dart';
 import 'package:good_manager/presentation/pages/documents/documents_view.dart';
 import 'package:good_manager/presentation/pages/expenses/expenses_view.dart';
@@ -8,9 +10,8 @@ import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/settings/settings_view.dart';
 import 'package:good_manager/presentation/pages/stores/stores_view.dart';
 import 'package:good_manager/presentation/pages/suppliers/suppliers_page.dart';
-import 'package:good_manager/app/utils/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:good_manager/app/widgets/select_message_type_dialog.dart';
+
 import 'goods/goods_view.dart';
 import 'help_content.dart';
 
@@ -54,9 +55,11 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                           text: AppLocalizations.of(context)!.goods_title,
                           onTap: () {
                             //updateState(1);
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                builder: (context) =>
-                                    GoodsPage(isSelection: false)));
+                            Navigator.of(context).pushNamed(Pages.good_list, arguments: {'isSelection': false});
+                            //Navigator.of(context).pushNamed(Pages.good_list);
+                            //Navigator.of(context).pushReplacement(MaterialPageRoute(
+                             //   builder: (context) =>
+                              //      GoodsPage(isSelection: false)));
                           }),
                       AppDrawerTile(
                           index: 2,
@@ -72,9 +75,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                           selectedIndex: widget.selectedIndex,
                           text: AppLocalizations.of(context)!.expenses_title,
                           onTap: () {
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                builder: (context) =>
-                                    ExpensesPage()));
+                            Navigator.of(context).pushNamed(Pages.expenses);
                           }),
                       AppDrawerTile(
                           index: 4,

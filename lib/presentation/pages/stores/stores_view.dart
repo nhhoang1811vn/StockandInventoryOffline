@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/presentation/pages/base/base_page.dart';
 import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/presentation/pages/base/base_page.dart';
 
 import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';

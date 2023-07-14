@@ -1,8 +1,9 @@
+import 'package:good_manager/domain/entities/general_infomation.dart';
 import 'package:good_manager/presentation/pages/base/base_cubit.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_data.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_state.dart';
-import 'package:good_manager/domain/entities/general_infomation.dart';
 import 'package:injectable/injectable.dart';
+
 import '../../base/base_state.dart';
 
 @injectable
@@ -47,11 +48,6 @@ class HomeCubit extends BaseCubit<HomeData> {
     }
   }
 
-  void openGoods() {
-    Navigator.of(getContext())
-        .pushNamed(Pages.good_list, arguments: {'isSelection': false});
-  }
-
   void openDocuments() {
     Navigator.of(getContext()).pushNamed(Pages.document_list);
   }
@@ -70,10 +66,10 @@ class HomeCubit extends BaseCubit<HomeData> {
     // TODO: implement dispose
   }
   void openGoods(){
-    //emit(state.cop)
+    emit(state.copyWith(state: OpenGoodsState()));
   }
   void openDocuments(){
-
+    emit(state.copyWith(state: OpenDocumentsState()));
   }
   void openSaveIncomingDocument(){
 
@@ -82,15 +78,15 @@ class HomeCubit extends BaseCubit<HomeData> {
 
   }
   void openCustomers(){
-
+    emit(state.copyWith(state: OpenCustomersState()));
   }
   void openSuppliers(){
-    emit(state.copyWith(state: OpenSupplierState()));
+    emit(state.copyWith(state: OpenSuppliersState()));
   }
   void openExpenses(){
-
+    emit(state.copyWith(state: OpenExpensesState()));
   }
   void openReport(){
-  
+    emit(state.copyWith(state: OpenReportState()));
   }
 }

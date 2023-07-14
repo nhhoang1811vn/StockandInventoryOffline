@@ -12,7 +12,7 @@ class SaveSupplierState with _$SaveSupplierState {
     @Default('') String bankDetails,
     @Default(FormzSubmissionStatus.initial) FormzSubmissionStatus status,
     @Default('') String exceptionError,
-    @Default(true) bool isInsert
+    Supplier? item
   }) = _Initial;
 }
 

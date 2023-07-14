@@ -40,6 +40,7 @@
   "empty_customers": "Chưa có khách hàng",
   "save_group_title": "Lưu nhóm",
   "field_name": "Tên",
+  "error_field_name_empty": "Tên không được bỏ trống",
   "field_desc": "Mô tả",
   "field_bar_code": "Mã vạch",
   "field_quantity": "Số lượng",

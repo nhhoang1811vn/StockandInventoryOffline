@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/presentation/pages/base/base_page.dart';
-import 'package:good_manager/presentation/pages/custom_navigation_drawer.dart';
-import 'package:good_manager/presentation/pages/documents/bloc/documents_data.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/search_documents_type.dart';
+import 'package:good_manager/presentation/pages/base/base_page.dart';
+import 'package:good_manager/presentation/pages/custom_navigation_drawer.dart';
+import 'package:good_manager/presentation/pages/documents/bloc/documents_data.dart';
 
 import 'bloc/documents_cubit.dart';
 import 'document_item_row.dart';

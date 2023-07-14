@@ -16,21 +16,21 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$SuppliersState {
-  BaseState? get state => throw _privateConstructorUsedError;
+  BaseState get state => throw _privateConstructorUsedError;
   List<Supplier> get allItems => throw _privateConstructorUsedError;
   List<Supplier> get items => throw _privateConstructorUsedError;
   String get textSearch => throw _privateConstructorUsedError;
-  SupplierSettings? get settings => throw _privateConstructorUsedError;
+  SuppliersSetting get settings => throw _privateConstructorUsedError;
   bool get showSearchBar => throw _privateConstructorUsedError;
   bool get isSelection => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
-            BaseState? state,
+            BaseState state,
             List<Supplier> allItems,
             List<Supplier> items,
             String textSearch,
-            SupplierSettings? settings,
+            SuppliersSetting settings,
             bool showSearchBar,
             bool isSelection)
         initial,
@@ -39,11 +39,11 @@ mixin _$SuppliersState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
-            BaseState? state,
+            BaseState state,
             List<Supplier> allItems,
             List<Supplier> items,
             String textSearch,
-            SupplierSettings? settings,
+            SuppliersSetting settings,
             bool showSearchBar,
             bool isSelection)?
         initial,
@@ -52,11 +52,11 @@ mixin _$SuppliersState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
-            BaseState? state,
+            BaseState state,
             List<Supplier> allItems,
             List<Supplier> items,
             String textSearch,
-            SupplierSettings? settings,
+            SuppliersSetting settings,
             bool showSearchBar,
             bool isSelection)?
         initial,
@@ -92,15 +92,15 @@ abstract class $SuppliersStateCopyWith<$Res> {
       _$SuppliersStateCopyWithImpl<$Res, SuppliersState>;
   @useResult
   $Res call(
-      {BaseState? state,
+      {BaseState state,
       List<Supplier> allItems,
       List<Supplier> items,
       String textSearch,
-      SupplierSettings? settings,
+      SuppliersSetting settings,
       bool showSearchBar,
       bool isSelection});
 
-  $SupplierSettingsCopyWith<$Res>? get settings;
+  $SuppliersSettingCopyWith<$Res> get settings;
 }
 
 /// @nodoc
@@ -116,19 +116,19 @@ class _$SuppliersStateCopyWithImpl<$Res, $Val extends SuppliersState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? state = freezed,
+    Object? state = null,
     Object? allItems = null,
     Object? items = null,
     Object? textSearch = null,
-    Object? settings = freezed,
+    Object? settings = null,
     Object? showSearchBar = null,
     Object? isSelection = null,
   }) {
     return _then(_value.copyWith(
-      state: freezed == state
+      state: null == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
-              as BaseState?,
+              as BaseState,
       allItems: null == allItems
           ? _value.allItems
           : allItems // ignore: cast_nullable_to_non_nullable
@@ -141,10 +141,10 @@ class _$SuppliersStateCopyWithImpl<$Res, $Val extends SuppliersState>
           ? _value.textSearch
           : textSearch // ignore: cast_nullable_to_non_nullable
               as String,
-      settings: freezed == settings
+      settings: null == settings
           ? _value.settings
           : settings // ignore: cast_nullable_to_non_nullable
-              as SupplierSettings?,
+              as SuppliersSetting,
       showSearchBar: null == showSearchBar
           ? _value.showSearchBar
           : showSearchBar // ignore: cast_nullable_to_non_nullable
@@ -158,12 +158,8 @@ class _$SuppliersStateCopyWithImpl<$Res, $Val extends SuppliersState>
 
   @override
   @pragma('vm:prefer-inline')
-  $SupplierSettingsCopyWith<$Res>? get settings {
-    if (_value.settings == null) {
-      return null;
-    }
-
-    return $SupplierSettingsCopyWith<$Res>(_value.settings!, (value) {
+  $SuppliersSettingCopyWith<$Res> get settings {
+    return $SuppliersSettingCopyWith<$Res>(_value.settings, (value) {
       return _then(_value.copyWith(settings: value) as $Val);
     });
   }
@@ -178,16 +174,16 @@ abstract class _$$_InitialCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {BaseState? state,
+      {BaseState state,
       List<Supplier> allItems,
       List<Supplier> items,
       String textSearch,
-      SupplierSettings? settings,
+      SuppliersSetting settings,
       bool showSearchBar,
       bool isSelection});
 
   @override
-  $SupplierSettingsCopyWith<$Res>? get settings;
+  $SuppliersSettingCopyWith<$Res> get settings;
 }
 
 /// @nodoc
@@ -200,19 +196,19 @@ class __$$_InitialCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? state = freezed,
+    Object? state = null,
     Object? allItems = null,
     Object? items = null,
     Object? textSearch = null,
-    Object? settings = freezed,
+    Object? settings = null,
     Object? showSearchBar = null,
     Object? isSelection = null,
   }) {
     return _then(_$_Initial(
-      state: freezed == state
+      state: null == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
-              as BaseState?,
+              as BaseState,
       allItems: null == allItems
           ? _value._allItems
           : allItems // ignore: cast_nullable_to_non_nullable
@@ -225,10 +221,10 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.textSearch
           : textSearch // ignore: cast_nullable_to_non_nullable
               as String,
-      settings: freezed == settings
+      settings: null == settings
           ? _value.settings
           : settings // ignore: cast_nullable_to_non_nullable
-              as SupplierSettings?,
+              as SuppliersSetting,
       showSearchBar: null == showSearchBar
           ? _value.showSearchBar
           : showSearchBar // ignore: cast_nullable_to_non_nullable
@@ -245,18 +241,18 @@ class __$$_InitialCopyWithImpl<$Res>
 
 class _$_Initial implements _Initial {
   const _$_Initial(
-      {this.state,
+      {required this.state,
       final List<Supplier> allItems = const [],
       final List<Supplier> items = const [],
       this.textSearch = '',
-      this.settings,
+      required this.settings,
       this.showSearchBar = false,
       this.isSelection = false})
       : _allItems = allItems,
         _items = items;
 
   @override
-  final BaseState? state;
+  final BaseState state;
   final List<Supplier> _allItems;
   @override
   @JsonKey()
@@ -279,7 +275,7 @@ class _$_Initial implements _Initial {
   @JsonKey()
   final String textSearch;
   @override
-  final SupplierSettings? settings;
+  final SuppliersSetting settings;
   @override
   @JsonKey()
   final bool showSearchBar;
@@ -331,11 +327,11 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
-            BaseState? state,
+            BaseState state,
             List<Supplier> allItems,
             List<Supplier> items,
             String textSearch,
-            SupplierSettings? settings,
+            SuppliersSetting settings,
             bool showSearchBar,
             bool isSelection)
         initial,
@@ -348,11 +344,11 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
-            BaseState? state,
+            BaseState state,
             List<Supplier> allItems,
             List<Supplier> items,
             String textSearch,
-            SupplierSettings? settings,
+            SuppliersSetting settings,
             bool showSearchBar,
             bool isSelection)?
         initial,
@@ -365,11 +361,11 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
-            BaseState? state,
+            BaseState state,
             List<Supplier> allItems,
             List<Supplier> items,
             String textSearch,
-            SupplierSettings? settings,
+            SuppliersSetting settings,
             bool showSearchBar,
             bool isSelection)?
         initial,
@@ -413,16 +409,16 @@ class _$_Initial implements _Initial {
 
 abstract class _Initial implements SuppliersState {
   const factory _Initial(
-      {final BaseState? state,
+      {required final BaseState state,
       final List<Supplier> allItems,
       final List<Supplier> items,
       final String textSearch,
-      final SupplierSettings? settings,
+      required final SuppliersSetting settings,
       final bool showSearchBar,
       final bool isSelection}) = _$_Initial;
 
   @override
-  BaseState? get state;
+  BaseState get state;
   @override
   List<Supplier> get allItems;
   @override
@@ -430,7 +426,7 @@ abstract class _Initial implements SuppliersState {
   @override
   String get textSearch;
   @override
-  SupplierSettings? get settings;
+  SuppliersSetting get settings;
   @override
   bool get showSearchBar;
   @override

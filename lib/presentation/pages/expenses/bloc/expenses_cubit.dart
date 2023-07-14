@@ -1,16 +1,23 @@
-import 'package:good_manager/presentation/pages/base/base_cubit.dart';
-import 'package:good_manager/presentation/pages/expenses/bloc/expenses_data.dart';
-import 'package:good_manager/presentation/pages/help_content.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/domain/entities/expense.dart';
-
+import 'package:injectable/injectable.dart';
+import '../../../../data/storage.dart';
+import '../../../../domain/entities/expenses_setting.dart';
 import '../../../../domain/entities/sort_by_text.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class ExpensesCubit extends BaseCubit<ExpensesData> {
-  ExpensesCubit(super.initialData);
+import '../../base/base_state.dart';
+part 'expenses_cubit.freezed.dart';
+part 'expenses_state.dart';
 
-  void initState(bool isSelection){
-    //emit(state.copyWith());
-  }
+@injectable
+class ExpensesCubit extends Cubit<ExpensesState> {
+  final Storage storage;
+  ExpensesCubit({
+    required this.storage
+  }) : super(ExpensesState.initial(state: InitialState(), settings: storage.getExpensesSetting()));
+
+
   void searchTextChanged(String value){
     emit(state.copyWith(textSearch: value));
   }
@@ -28,30 +35,5 @@ class ExpensesCubit extends BaseCubit<ExpensesData> {
   }
   void onHelpMenuClick(){
 
-  }
-
-  @override
-  bool filterItem(Expense item, String textSearch) {
-    return item.name.contains(textSearch);
-  }
-
-  @override
-  Expense getEmptyItem() {
-    return Expense();
-  }
-
-  @override
-  String getSaveItemRouteName() {
-    return "Pages.save_expense";
-  }
-
-  @override
-  HelpType getHelpType() {
-    return HelpType.EXPENSE;
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
   }
 }

@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:formz/formz.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Define input validation errors
 enum NameInputError { empty }
@@ -19,10 +21,10 @@ class NameInput extends FormzInput<String, NameInputError> {
 }
 
 extension NameInputErrorExtension on NameInputError {
-  String text() {
+  String text(BuildContext context) {
     switch (this) {
       case NameInputError.empty:
-        return 'Please ensure the email entered is valid';
+        return AppLocalizations.of(context)!.error_field_name_empty;
     }
   }
 }

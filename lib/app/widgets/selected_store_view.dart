@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:good_manager/app/main.dart';
+
 import '../utils/constants.dart';
 
 class SelectedStoreView extends StatefulWidget {
@@ -9,7 +11,7 @@ class SelectedStoreView extends StatefulWidget {
 }
 
 class SelectedStoreViewState extends State<SelectedStoreView> {
-  String storeName = "Test";
+  String storeName = storage.getSelectedStoreName();
 
   SelectedStoreViewState();
 

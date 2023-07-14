@@ -1,3 +1,4 @@
+/*
 import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
@@ -45,4 +46,4 @@ class QuickInsertTransactionUseCaseParam {
   final Document document;
   final int quantity;
   QuickInsertTransactionUseCaseParam(this.good, this.document, this.quantity);
-}
+}*/

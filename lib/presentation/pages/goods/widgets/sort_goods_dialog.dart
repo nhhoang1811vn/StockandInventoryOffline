@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/domain/entities/goods_settings.dart';
+import 'package:good_manager/domain/entities/goods_setting.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
 
 class SortGoodsDialog extends StatefulWidget {
-  final void Function() onValueChange;
-  final GoodsSettings settings;
+  final GoodsSetting settings;
 
-  SortGoodsDialog(this.settings, this.onValueChange);
+  SortGoodsDialog(this.settings);
 
   @override
   SortGoodsDialogState createState() => SortGoodsDialogState();
@@ -61,11 +60,8 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
         TextButton(
           child: Text(AppLocalizations.of(context)!.action_ok),
           onPressed: () async {
-            widget.settings.sortByName = _sortByName;
-            widget.settings.sortByBarcode = _sortByBarCode;
-            widget.settings.sortByQuantity = _sortByQuantity;
-            widget.onValueChange();
-            Navigator.of(context).pop();
+            GoodsSetting result = widget.settings.copyWith(sortByName: _sortByName, sortByBarcode: _sortByBarCode, sortByQuantity: _sortByQuantity);
+            Navigator.of(context).pop(result);
           },
         ),
       ],

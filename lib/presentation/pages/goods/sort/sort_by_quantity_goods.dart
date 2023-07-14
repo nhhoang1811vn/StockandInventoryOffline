@@ -1,5 +1,5 @@
-import 'package:good_manager/presentation/pages/base/base_sort_items.dart';
 import 'package:good_manager/domain/entities/good.dart';
+import 'package:good_manager/presentation/pages/base/base_sort_items.dart';
 
 class SortByQuantityAscendingGood extends SortItems<Good> {
   @override

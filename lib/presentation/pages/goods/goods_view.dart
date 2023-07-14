@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:good_manager/presentation/pages/base/base_page.dart';
-import 'package:good_manager/presentation/pages/goods/bloc/goods_data.dart';
 import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/good.dart';
+import 'package:good_manager/domain/entities/goods_setting.dart';
+import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/entities/search_goods_type.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
+import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit2.dart';
+import 'package:good_manager/presentation/pages/goods/widgets/sort_goods_dialog.dart';
+import 'package:sprintf/sprintf.dart';
 
-import 'package:good_manager/app/widgets/selected_store_view.dart';
 import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';
-import 'bloc/goods_cubit2.dart';
+import '../help_content.dart';
+import '../pages.dart';
 import 'good_item_row.dart';
 import 'group_item_row.dart';
 
@@ -29,68 +35,69 @@ class GoodsPage extends StatefulWidget {
   GoodsPageState createState() => GoodsPageState();
 }
 
-class GoodsPageState extends BasePageState<GoodsPage, GoodsCubit, GoodsData> {
+class GoodsPageState extends State<GoodsPage> {
+  final TextEditingController searchTextController = TextEditingController();
   @override
   void initState() {
-    cubit.initState();
     super.initState();
+    context.read<GoodsCubit>().initState(widget.isSelection, widget.documentType);
   }
-  Widget _buildBody(BuildContext context, GoodsData data) {
-    final state = data.state;
-    if (state is LoadingState) {
+  Widget _buildBody(BuildContext context, GoodsState state) {
+    if (state.state is LoadingState) {
       return _buildLoading();
     }
     List<Widget> children = [
       //StoreView(),
       SelectedStoreView(),
-      _buildSelectedGroupView(data),
-      _buildSearchBar(context, data),
+      _buildSelectedGroupView(state),
+      _buildSearchBar(context, state),
       Expanded(
             child: Stack(children: [
           Visibility(
             child: emptyView,
-            visible: (data.goods.isEmpty && data.groups.isEmpty),
+            visible: (state.goods.isEmpty && state.groups.isEmpty),
           ),
           Visibility(
-            child: _buildListView(data),
-            visible: !(data.goods.isEmpty && data.groups.isEmpty),
+            child: _buildListView(state),
+            visible: !(state.goods.isEmpty && state.groups.isEmpty),
           )
         ]))
     ];
     return Column(children: children);
   }
 
-  Widget _buildSelectedGroupView(GoodsData data) =>
+  Widget _buildSelectedGroupView(GoodsState state) =>
       Visibility(
-          visible: data.selectedGroups.isNotEmpty,
+          visible: state.selectedGroups.isNotEmpty,
           child: Container(
             height: 40,
+            padding: EdgeInsets.only(left: 16.0),
             color: Colors.blue,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: data.selectedGroups.length,
+              itemCount: state.selectedGroups.length,
               itemBuilder: (context, index) {
                 if (index == 0) {
                   return Row(children: [
                     GestureDetector(
                         child: Icon(Icons.home, color: Colors.white),
-                        onTap: () => cubit.onSelectedGroupTapped(-1)),
+                        onTap: () => context.read<GoodsCubit>().onSelectedGroupTapped(-1)),
                     GestureDetector(
                         child: Row(children: [
                           Icon(Icons.navigate_next, color: Colors.white),
-                          Text(data.selectedGroups[index].name,
+                          Text(state.selectedGroups[index].name,
                               style: TextStyle(color: Colors.white))
                         ]),
-                        onTap: () => cubit.onSelectedGroupTapped(0))
+                        onTap: () => context.read<GoodsCubit>().onSelectedGroupTapped(0))
                   ]);
                 } else {
                   return GestureDetector(
                       child: Row(children: [
                         Icon(Icons.navigate_next, color: Colors.white),
-                        Text(data.selectedGroups[index].name,
+                        Text(state.selectedGroups[index].name,
                             style: TextStyle(color: Colors.white))
                       ]),
-                      onTap: () => cubit.onSelectedGroupTapped(index));
+                      onTap: () => context.read<GoodsCubit>().onSelectedGroupTapped(index));
                 }
               },
             ),
@@ -114,103 +121,59 @@ class GoodsPageState extends BasePageState<GoodsPage, GoodsCubit, GoodsData> {
         ],
       );
 
-  Widget _buildListView(GoodsData data) {
+  Widget _buildListView(GoodsState state) {
       return ListView.separated(
           itemBuilder: (BuildContext context, index) {
-            if (index < data.groups.length) {
-              var group = data.groups[index];
+            if (index < state.groups.length) {
+              var group = state.groups[index];
               return GroupItemRow(
                   group,
-                  (item) => cubit.onGroupTapped(group),
-                  (item) => cubit.onGroupLongPressed(group));
+                  (item) => onPressedGroup(group),
+                  (item) => onLongPressedGroup(group));
             } else {
-              var good = data.goods[index - data.groups.length];
+              var good = state.goods[index - state.groups.length];
               return GoodItemRow(
                   good,
                   good.quantity,
-                  (item) => cubit.onGoodTapped(good),
-                  (item) => cubit.onGoodLongPressed(good),
-                  data.isSelection,
-                  data.documentType);
+                  (item) => onPressedGood(good),
+                  (item) => onLongPressedGood(good),
+                  state.isSelection,
+                  state.documentType);
             }
           },
           separatorBuilder: (context, index) {
             return Divider();
           },
-          itemCount: data.groups.length + data.goods.length);
+          itemCount: state.groups.length + state.goods.length);
   }
 
-  @override
-  Widget buildPage(BuildContext context, GoodsData data){
-        return WillPopScope(
-            onWillPop: () async {
-              return true;
-            },
-            //onWillPop: (){cubit.onBackPressed},
-            child: Scaffold(
-                //key: globalKey,
-                drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 1),
-                appBar: new AppBar(
-                    title: new Text(AppLocalizations.of(context)!.goods_title),
-                    actions: [_buildSearchMenu(data), _buildSortMenu(data), helpMenu]),
-                body: _buildBody(context,data),
-                floatingActionButton: SpeedDial(
-                    icon: Icons.add,
-                    activeIcon: Icons.close,
-                    buttonSize: 56.0,
-                    visible: true,
-                    closeManually: false,
-                    renderOverlay: false,
-                    curve: Curves.bounceIn,
-                    overlayColor: Colors.black,
-                    overlayOpacity: 0.5,
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                    elevation: 8.0,
-                    shape: CircleBorder(),
-                    children: [
-                      SpeedDialChild(
-                          child: IconButton(icon: Image.asset(UIConstants.folderIconPath, width: 24), onPressed: () {  },),
-                          backgroundColor: Colors.white,
-                          label: AppLocalizations.of(context)!.folder,
-                          onTap: cubit.onAddGroup),
-                      SpeedDialChild(
-                          child: IconButton(icon: Image.asset(UIConstants.goodIconPath, width: 24,), onPressed: () {  },),
-                          backgroundColor: Colors.white,
-                          label: AppLocalizations.of(context)!.good,
-                          onTap: cubit.onAddGood)
-                    ],
-                  )
-                ));
-  }
-
-  Widget _buildSearchMenu(GoodsData data){
+  Widget _buildSearchMenu(GoodsState state){
     return Padding(
       padding: EdgeInsets.only(right: 20.0),
       child: GestureDetector(
         child: Icon(
           UIConstants.searchMenuIconData,
           size: 26,
-          color: data.showSearchBar
+          color: state.showSearchBar
               ? UIConstants.highlightMenuColor
               : UIConstants.normalMenuColor,
         ),
-        onTap: cubit.toggleSearchBar,
+        onTap: context.read<GoodsCubit>().onShowSearchBarMenuClicked,
       ),
     );
   }
-  Widget _buildSortMenu(GoodsData data){
+  Widget _buildSortMenu(GoodsState state){
     return Padding(
       padding: EdgeInsets.only(right: 20.0),
       child: GestureDetector(
         child: Icon(
           UIConstants.sortMenuIconData,
           size: 26,
-          color: data.hasSortOptions
+          color: context.read<GoodsCubit>().hasSortOptions()
               ? UIConstants.highlightMenuColor
               : UIConstants.normalMenuColor,
         ),
-        onTap: cubit.onShowSortDialog,
+        onTap: context.read<GoodsCubit>().onSortMenuClicked,
       ),
     );
   }
@@ -218,7 +181,7 @@ class GoodsPageState extends BasePageState<GoodsPage, GoodsCubit, GoodsData> {
        Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: GestureDetector(
-            onTap: cubit.openHelpPage,
+            onTap: context.read<GoodsCubit>().openHelpPage,
             child: Icon(
               UIConstants.helpMenuIconData,
               size: 26,
@@ -227,16 +190,17 @@ class GoodsPageState extends BasePageState<GoodsPage, GoodsCubit, GoodsData> {
         );
 
 
-  Widget _buildSearchBar(BuildContext context,GoodsData data){
+  Widget _buildSearchBar(BuildContext context,GoodsState state){
     return Visibility(child: Row(children: [
       Expanded(
           child: Card(
             child: ListTile(
               title: TextField(
+                controller: searchTextController,
                 decoration: InputDecoration(
-                    hintText: cubit.getSearchTextHint(context),
+                    hintText: context.read<GoodsCubit>().getSearchTextHint(context),
                     border: InputBorder.none),
-                onChanged: cubit.onSearchTextChanged,
+                onChanged: context.read<GoodsCubit>().onSearchTextChanged,
                 //controller: controller.searchTextController,
               ),
               trailing: Row(
@@ -245,16 +209,19 @@ class GoodsPageState extends BasePageState<GoodsPage, GoodsCubit, GoodsData> {
                   Visibility(
                     child: IconButton(
                       icon: Icon(UIConstants.cancelIconData),
-                      onPressed: cubit.resetSearchText,
+                      onPressed: (){
+                        searchTextController.text = "";
+                        context.read<GoodsCubit>().resetSearchText();
+                      },
                     ),
-                    visible: data.searchText.isNotEmpty,
+                    visible: state.textSearch.isNotEmpty,
                   ),
                   IconButton(
                     icon: Image.asset(
                       UIConstants.searchBarcodeIconPath,
                       width: 24,
                     ),
-                    onPressed: cubit.onSearchBarCode,
+                    onPressed: context.read<GoodsCubit>().onSearchBarCode,
                   )
                 ],
               ),
@@ -279,14 +246,212 @@ class GoodsPageState extends BasePageState<GoodsPage, GoodsCubit, GoodsData> {
               child: Text(AppLocalizations.of(context)!
                   .search_goods_type_everywhere)),
         ],
-        onSelected: cubit.setSearchGoodsType,
+        onSelected: context.read<GoodsCubit>().setSearchGoodsType,
       )
-    ]), visible: data.showSearchBar);
+    ]), visible: state.showSearchBar);
   }
 
   Widget _buildLoading() {
     return const Center(
       child: CircularProgressIndicator(),
     );
+  }
+  void onPressedGood(Good item) async{
+    final result = await Navigator.of(context)
+        .pushNamed(Pages.save_good, arguments: {"item": item, "enableAddTransactions": true});
+    if (result != null) {
+      context.read<GoodsCubit>().loadItems();
+    }
+
+    /*if (this._isSelection) {
+      showAddQuantityDialog(good);
+    } else {
+      final result = await Navigator.of(getContext())
+          .pushNamed(Pages.save_good, arguments: {"item": good, "enableAddTransactions": true});
+      if (result != null) {
+        loadData();
+      }
+    }*/
+  }
+  void onLongPressedGood(Good item){
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            children: <Widget>[
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  Navigator.pop(context);
+                  //openSelectGroupForGood(good);
+                },
+                child: Text(
+                    AppLocalizations.of(context)!.action_move_to_group),
+              ),
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  Navigator.pop(context);
+                  showDeleteGoodConfirmPopup(item);
+                },
+                child: Text(AppLocalizations.of(context)!.action_delete),
+              ),
+            ],
+          );
+        },
+        barrierDismissible: true);
+  }
+  void showDeleteGoodConfirmPopup(Good item) async{
+    bool result = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+                AppLocalizations.of(context)!.notification_dialog_title),
+            content: Text(sprintf(
+                AppLocalizations.of(context)!.message_confirm_delete_good,
+                [item.name])),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(AppLocalizations.of(context)!.action_cancel)),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  context.read<GoodsCubit>().deleteGood(item.id);
+                },
+                child: Text(AppLocalizations.of(context)!.action_ok),
+              )
+            ],
+          );
+        });
+    if (result){
+      int a = 2;
+    }else{
+      int a = 1;
+    }
+  }
+
+  void onPressedGroup(Group item){
+    context.read<GoodsCubit>().onGroupTapped(item);
+  }
+  void onLongPressedGroup(Group item){
+    showDialog(
+        context: context,
+        builder: (BuildContext a) {
+          return SimpleDialog(
+            children: <Widget>[
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  Navigator.pop(context);
+                  //openSelectGroupForGroup(group);
+                },
+                child: Text(
+                    AppLocalizations.of(context)!.action_move_to_group),
+              ),
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () async{
+                  Navigator.pop(context);
+                  final result = await Navigator.of(context)
+                      .pushNamed(Pages.save_group, arguments: {"item": item});
+                  if (result != null) {
+                    context.read<GoodsCubit>().loadItems();
+                  }
+                  //onEditGroup(group);
+                },
+                child:
+                Text(AppLocalizations.of(context)!.action_edit_group),
+              ),
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  Navigator.pop(context);
+                  showInfoToast("under development");
+                },
+                child:
+                Text(AppLocalizations.of(context)!.action_delete_group),
+              ),
+            ],
+          );
+        },
+        barrierDismissible: true);
+  }
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<GoodsCubit, GoodsState>(
+        listenWhen: (p1, p2) => p1.state != p2.state,
+        listener: (context, state) async{
+          if (state.state is OpenSortDialogListState){
+            GoodsSetting settings = await showDialog(
+                context: context,
+                builder: (_) => SortGoodsDialog(state.settings),
+                barrierDismissible: true);
+            context.read<GoodsCubit>().setSettings(settings);
+          }
+          else if (state.state is OpenHelpPageState){
+            ///TODO
+            //String code = await appDataManager.sharedPrefsHelper.getLanguageCode();
+            Navigator.of(context).pushNamed(Pages.help, arguments: {
+              "title": AppLocalizations.of(context)?.goods_title,
+              "content": HelpUtils.getMarkdownData("vi", HelpType.GOODS)
+            });
+          }else if (state.state is AddGoodState){
+            final currentState = state.state as AddGoodState;
+            final result = await Navigator.of(context)
+                .pushNamed(Pages.save_good, arguments: {"item": currentState.item, "enableAddTransactions": true});
+            ///TODO
+            /*if (result != null) {
+              if (_isSelection) {
+                showAddQuantityDialog(result);
+              } else {
+                loadData();
+              }
+            }*/
+            if (result != null){
+              context.read<GoodsCubit>().loadItems();
+            }
+          }else if (state.state is AddGroupState){
+            final currentState = state.state as AddGroupState;
+            final result = await Navigator.of(context).pushNamed(Pages.save_group, arguments: {"item" : currentState.item});
+            if (result != null){
+              context.read<GoodsCubit>().loadItems();
+            }
+          }
+        },
+        builder: (context, state) =>  Scaffold(
+            drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 1),
+            appBar: new AppBar(
+                title: new Text(AppLocalizations.of(context)!.goods_title),
+                actions: [_buildSearchMenu(state), _buildSortMenu(state), helpMenu]),
+            body: _buildBody(context,state),
+            floatingActionButton: SpeedDial(
+              icon: Icons.add,
+              activeIcon: Icons.close,
+              buttonSize: 56.0,
+              visible: true,
+              closeManually: false,
+              renderOverlay: false,
+              curve: Curves.bounceIn,
+              overlayColor: Colors.black,
+              overlayOpacity: 0.5,
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              elevation: 8.0,
+              shape: CircleBorder(),
+              children: [
+                SpeedDialChild(
+                    child: IconButton(icon: Image.asset(UIConstants.folderIconPath, width: 24), onPressed: context.read<GoodsCubit>().onAddGroup,),
+                    backgroundColor: Colors.white,
+                    label: AppLocalizations.of(context)!.folder
+                ),
+                SpeedDialChild(
+                    child: IconButton(icon: Image.asset(UIConstants.goodIconPath, width: 24), onPressed: context.read<GoodsCubit>().onAddGood,),
+                    backgroundColor: Colors.white,
+                    label: AppLocalizations.of(context)!.good)
+              ],
+            )
+        ));
   }
 }

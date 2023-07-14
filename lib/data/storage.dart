@@ -1,19 +1,25 @@
 import 'dart:convert';
 
-import 'package:good_manager/domain/entities/sort_by_text.dart';
+import 'package:good_manager/domain/entities/expenses_setting.dart';
+import 'package:good_manager/domain/entities/goods_setting.dart';
 import 'package:injectable/injectable.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../domain/entities/supplier_settings.dart';
+import '../domain/entities/suppliers_setting.dart';
 
 @singleton
 class Storage{
   late SharedPreferences prefs;
   Future<void> init() async{
     prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey(StorageKeys.SupplierSettings)){
-      setSupplierSettings(SupplierSettings.getDefault());
+    if (!prefs.containsKey(StorageKeys.SuppliersSetting)){
+      setSuppliersSetting(SuppliersSetting.getDefault());
+    }
+    if (!prefs.containsKey(StorageKeys.GoodsSetting)){
+      setGoodsSetting(GoodsSetting.getDefault());
+    }
+    if (!prefs.containsKey(StorageKeys.ExpensesSetting)){
+      setExpensesSetting(ExpensesSetting.getDefault());
     }
   }
   int getSelectedStoreId() {
@@ -41,12 +47,27 @@ class Storage{
   String getLanguageCode() {
     return prefs.getString(StorageKeys.LanguageCode)??"vi";
   }
-  void setSupplierSettings(SupplierSettings settings){
-    prefs.setString(StorageKeys.SupplierSettings, jsonEncode(settings.toJson()));
+  void setSuppliersSetting(SuppliersSetting settings){
+    prefs.setString(StorageKeys.SuppliersSetting, jsonEncode(settings.toJson()));
   }
-  SupplierSettings getSupplierSettings() {
-    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.SupplierSettings)!);
-    return SupplierSettings.fromJson(json);
+  SuppliersSetting getSuppliersSetting() {
+    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.SuppliersSetting)!);
+    return SuppliersSetting.fromJson(json);
+  }
+
+  void setGoodsSetting(GoodsSetting settings){
+    prefs.setString(StorageKeys.GoodsSetting, jsonEncode(settings.toJson()));
+  }
+  GoodsSetting getGoodsSetting(){
+    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.GoodsSetting)!);
+    return GoodsSetting.fromJson(json);
+  }
+  void setExpensesSetting(ExpensesSetting settings){
+    prefs.setString(StorageKeys.ExpensesSetting, jsonEncode(settings.toJson()));
+  }
+  ExpensesSetting getExpensesSetting(){
+    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.ExpensesSetting)!);
+    return ExpensesSetting.fromJson(json);
   }
 }
 class StorageKeys{
@@ -55,5 +76,7 @@ class StorageKeys{
   static const String FirstTime = "FirstTime";
   static const String LanguageCode = "LanguageCode";
 
-  static const String SupplierSettings = "SupplierSettings";
+  static const String SuppliersSetting = "SuppliersSetting";
+  static const String GoodsSetting = "GoodsSetting";
+  static const String ExpensesSetting = "ExpensesSetting";
 }

@@ -27,9 +27,9 @@ class AppTextField extends StatelessWidget{
       initialValue: initialValue,
       keyboardType: keyboardType,
         decoration: InputDecoration(
-          border: border,
-          disabledBorder: border,
-          enabledBorder: border,
+          //border: border,
+          //disabledBorder: border,
+          //enabledBorder: border,
           errorBorder: errorBorder,
           focusedErrorBorder: errorBorder,
           labelText: labelText,

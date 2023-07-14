@@ -2,6 +2,7 @@ import 'package:good_manager/db/db_helper.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/domain/entities/stores_settings.dart';
 import 'package:injectable/injectable.dart';
+
 import '../../domain/repositories/stores_repositories.dart';
 
 @Injectable(as: StoresRepository)

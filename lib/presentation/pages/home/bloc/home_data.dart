@@ -1,6 +1,6 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
-import 'package:good_manager/presentation/pages/base/base_data.dart';
 import 'package:good_manager/domain/entities/general_infomation.dart';
+import 'package:good_manager/presentation/pages/base/base_data.dart';
 
 import '../../base/base_state.dart';
 

@@ -1,26 +1,50 @@
-/*
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/presentation/pages/base/base_page.dart';
-import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:good_manager/domain/entities/good.dart';
-import 'bloc/save_good_cubit.dart';
-import 'bloc/save_good_data.dart';
 
-class SaveGoodPage extends StatefulWidget {
+import 'bloc/save_good_cubit.dart';
+import 'components/save_good_form.dart';
+
+class SaveGoodPage extends StatelessWidget {
   final Good item;
   final bool enableAddTransactions;
 
-  SaveGoodPage(this.item, this.enableAddTransactions) : super();
+  SaveGoodPage({required this.item, required this.enableAddTransactions});
+
 
   @override
-  State<SaveGoodPage> createState() => SaveGoodPageState();
+  Widget build(BuildContext context) {
+    context.read<SaveGoodCubit>().init(item);
+    return Scaffold(
+        appBar: _buildAppBar(context),
+        backgroundColor: Colors.blueGrey[100],
+        body: Column(children: [
+          SelectedStoreView(),
+          Expanded(child: SaveGoodForm(item: item, enableAddTransactions: enableAddTransactions))
+
+        ],)
+        //body: SaveGoodForm(item: item, enableAddTransactions: enableAddTransactions)
+    );
+  }
+  PreferredSize _buildAppBar(BuildContext context){
+    return PreferredSize(preferredSize : Size.fromHeight(58), child: AppBar(
+        title: Text(AppLocalizations.of(context)!.save_goods_title),
+        actions: <Widget>[
+          InkWell(
+            onTap: () => context.read<SaveGoodCubit>().onSaveClicked(),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.check),
+            ),
+          )
+        ]));
+  }
 }
 
-class SaveGoodPageState extends BasePageState<SaveGoodPage, SaveGoodCubit, SaveGoodData> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+/*class SaveGoodPageState extends State<SaveGoodPage> {
   @override
   Widget buildPage(BuildContext context, SaveGoodData data) {
     return WillPopScope(
@@ -186,5 +210,5 @@ class SaveGoodPageState extends BasePageState<SaveGoodPage, SaveGoodCubit, SaveG
           ],
         );
       }
-}
-*/
+}*/
+

@@ -1,6 +1,6 @@
+import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/presentation/pages/base/base_cubit.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_data.dart';
-import 'package:good_manager/domain/entities/store.dart';
 
 import '../../../../domain/entities/sort_by_text.dart';
 import '../../help_content.dart';

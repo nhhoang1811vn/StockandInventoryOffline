@@ -31,7 +31,8 @@ dependencies:
   intl: 0.18.0  # Add this line
   sqflite: ^2.2.8+4
   camera: ^0.10.5+2
-  file_picker: ^3.0.3
+  file_picker: ^5.3.2
+  #file_picker: ^3.0.3
   path_provider: ^2.0.0
   path: 1.8.3
   open_file: ^3.2.1
@@ -50,7 +51,7 @@ dependencies:
   #flutter_secure_storage: ^5.0.2
   #hive: ^2.2.3
   #clean, will remove this lib after refactor code
-  flutter_clean_architecture: ^5.0.0
+  #flutter_clean_architecture: ^5.0.0
   url_launcher: ^6.1.10
   fluttertoast: ^8.0.7
   sprintf: ^7.0.0

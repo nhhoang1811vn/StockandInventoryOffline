@@ -225,37 +225,6 @@ class GoodsCubit extends BaseCubit<GoodsData> {
     }
   }
 
-  void openHelpPage() async {
-    String code = await appDataManager.sharedPrefsHelper.getLanguageCode();
-    Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
-      "title": AppLocalizations.of(getContext()).goods_title,
-      "content": HelpUtils.getMarkdownData(code, HelpType.GOODS)
-    });
-  }
-  String getDirectory(){
-    String result = "/";
-    selectedGroups.forEach((element) {
-      result += element.id.toString() + "/";
-    });
-    return result;
-  }
-
-  void onSelectedGroupTapped(int index) {
-    if (index == -1) {
-      selectedGroups.clear();
-    } else {
-      selectedGroups = selectedGroups.sublist(0, index + 1);
-    }
-    loadData();
-    refreshUI();
-  }
-
-  void onGroupTapped(Group group) {
-    selectedGroups.add(group);
-    loadData();
-    refreshUI();
-  }
-
   void onGroupLongPressed(Group group) {
     showDialog(
         context: getContext(),

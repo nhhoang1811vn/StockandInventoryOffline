@@ -3,6 +3,8 @@ import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/repositories/goods_repositories.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../app/main.dart';
+
 @Injectable(as: GoodsRepository)
 class GoodsRepositoryImpl implements GoodsRepository {
   GoodsRepositoryImpl();
@@ -11,18 +13,20 @@ class GoodsRepositoryImpl implements GoodsRepository {
 
   @override
   Future<int> insert(Good item) {
+    item.createdDate = DateTime.now();
+    item.updatedDate = DateTime.now();
     return db.insertGood(item);
   }
 
   @override
   Future<bool> update(Good item) {
+    item.updatedDate = DateTime.now();
     return db.updateGood(item);
   }
 
   Future<List<Good>> getGoodsByDirectory(String directory){
-    // TODO: implement get
-    throw UnimplementedError();
-    //return db.getGoodsByDirectory(directory);
+    int storeId = storage.getSelectedStoreId();
+    return db.getGoodsByDirectory(storeId, directory);
   }
 
   @override

@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../data/storage.dart';
 import '../../../../domain/usecases/stores/stores_usecases.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'on_boarding_cubit.freezed.dart';
 part 'on_boarding_state.dart';

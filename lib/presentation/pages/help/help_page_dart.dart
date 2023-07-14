@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:good_manager/presentation/pages/base/base_page.dart';
-import 'package:good_manager/presentation/pages/help/bloc/help_cubit.dart';
-import 'package:good_manager/presentation/pages/help/bloc/help_data.dart';
 
 class HelpPage extends StatelessWidget {
   final String title;

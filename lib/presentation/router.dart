@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/app/main.dart';
+import 'package:good_manager/common/helpers/injection.container.dart';
+import 'package:good_manager/domain/entities/supplier.dart';
 //import 'package:good_manager/presentation/pages/customers/customers_view.dart';
 import 'package:good_manager/presentation/pages/documents/documents_view.dart';
+import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart';
 import 'package:good_manager/presentation/pages/expenses/expenses_view.dart';
+import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit2.dart';
 import 'package:good_manager/presentation/pages/goods/goods_view.dart';
 import 'package:good_manager/presentation/pages/help/help_page_dart.dart';
 import 'package:good_manager/presentation/pages/home/home_view.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
+import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.dart';
+import 'package:good_manager/presentation/pages/save_good/save_good_view.dart';
+import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
+import 'package:good_manager/presentation/pages/save_group/save_group_view.dart';
 import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart';
 import 'package:good_manager/presentation/pages/save_supplier/save_supplier_page.dart';
 import 'package:good_manager/presentation/pages/settings/settings_view.dart';
@@ -15,17 +23,10 @@ import 'package:good_manager/presentation/pages/stores/stores_view.dart';
 import 'package:good_manager/presentation/pages/suppliers/bloc/bloc.dart';
 import 'package:good_manager/presentation/pages/suppliers/suppliers_page.dart';
 import 'package:good_manager/presentation/pages/take_picture_screen.dart';
-import 'package:good_manager/common/helpers/injection.container.dart';
-
-import '../domain/usecases/suppliers/suppliers_usecases.dart';
 
 class AppRouter {
   final RouteObserver<PageRoute> routeObserver;
-
   AppRouter() : routeObserver = RouteObserver<PageRoute>();
-
-  //SuppliersCubit suppliersCubit = getIt();
-
   Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
       case Pages.home:
@@ -38,21 +39,33 @@ class AppRouter {
       //  return _buildRoute(settings, SaveStorePage(store: args['item']));
       case Pages.good_list:
         Map<dynamic, dynamic> args = settings.arguments as Map;
-        return _buildRoute(
+        /*return _buildRoute(
             settings,
             GoodsPage(
               isSelection: args['isSelection'],
               documentType: args['documentType'],
               transactions: args['transactions'],
-            ));
-      //case Pages.save_good:
-      //  Map<String, dynamic> args = settings.arguments as Map;
-      //  return _buildRoute(
-      //      settings, SaveGoodPage(args['item'], args['enableAddTransactions']));
-      //case Pages.save_group:
-      //  Map<String, dynamic> args = settings.arguments as Map;
-      //  return _buildRoute(settings, SaveGroupPage(args['item']));
-
+            ));*/
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<GoodsCubit>(),
+              child:  GoodsPage(
+                isSelection: args['isSelection'],
+                documentType: args['documentType'],
+                transactions: args['transactions'],
+              ),));
+      case Pages.save_good:
+        Map<dynamic, dynamic> args= settings.arguments as Map;
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<SaveGoodCubit>(),
+              child: SaveGoodPage(item: args['item'], enableAddTransactions: args['enableAddTransactions']),));
+      case Pages.save_group:
+        Map<dynamic, dynamic> args= settings.arguments as Map;
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<SaveGroupCubit>(),
+              child: SaveGroupPage(item: args['item']),));
       case Pages.supplier_list:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
@@ -62,12 +75,16 @@ class AppRouter {
                 isSelection: args['isSelection']
               ),));
       case Pages.save_supplier:
-        Map<dynamic, dynamic> args = settings.arguments as Map;
+        Supplier? item;
+        if (settings.arguments != null){
+          Map<dynamic, dynamic> args = settings.arguments as Map;
+          item = args['item'];
+        }
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
               create: (context) => getIt<SaveSupplierCubit>(),
               child: SaveSupplierPage(
-          item: args['item'],
+          item: item,
         ),));
       /*case Pages.customer_list:
         Map<dynamic, dynamic> args = settings.arguments as Map;
@@ -95,7 +112,10 @@ class AppRouter {
       case Pages.take_picture:
         return _buildRoute(settings, TakePictureScreen(camera: cameras.first));
       case Pages.expenses:
-        return _buildRoute(settings, ExpensesPage());
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                create: (context) => getIt<ExpensesCubit>(),
+                child: ExpensesPage()));
       /*case Pages.save_expense:
         Map<String, dynamic> args = settings.arguments as Map;
         return _buildRoute(

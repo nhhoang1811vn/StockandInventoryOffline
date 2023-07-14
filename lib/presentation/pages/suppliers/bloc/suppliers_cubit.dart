@@ -1,14 +1,14 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/presentation/pages/base/base_state.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
-import 'package:good_manager/domain/entities/supplier_settings.dart';
+import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
+
 import '../../../../data/storage.dart';
 import '../../../../domain/entities/sort_by_text.dart';
+import '../../../../domain/entities/suppliers_setting.dart';
 import '../../../../domain/usecases/suppliers/suppliers_usecases.dart';
-
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'suppliers_cubit.freezed.dart';
 part 'suppliers_state.dart';
@@ -17,25 +17,30 @@ part 'suppliers_state.dart';
 class SuppliersCubit extends Cubit<SuppliersState> {
   final SuppliersUseCase useCase;
   final Storage storage;
-  SuppliersCubit({required this.storage,required this.useCase}) : super(SuppliersState.initial(state: InitialState()));
+  SuppliersCubit({required this.storage,required this.useCase}) : super(SuppliersState.initial(state: InitialState(), settings: storage.getSuppliersSetting()));
 
   void initState(bool isSelection) async{
     final storeId = storage.getSelectedStoreId();
-    final settings = storage.getSupplierSettings();
     List<Supplier> allItems = await useCase.getAllByStoreId(storeId);
-    emit(state.copyWith(allItems : allItems, items: allItems, isSelection: isSelection, settings: settings));
+    emit(state.copyWith(allItems : allItems, items: allItems, isSelection: isSelection));
   }
   void searchTextChanged(String value){
     emit(state.copyWith(textSearch: value));
+    refreshData();
+  }
+  void refreshData(){
+    List<Supplier> items = state.allItems.where((element) => filterItem(element, state.textSearch)).toList();
+    emit(state.copyWith(items: items));
   }
   void resetSearchText(){
     emit(state.copyWith(textSearch: ""));
+    refreshData();
   }
   void onShowSearchBarMenuClicked(){
     emit(state.copyWith(showSearchBar: !state.showSearchBar));
   }
   bool hasSortOptions() {
-    return (state.settings?.sortByName != SortByText.no_sort);
+    return (state.settings.sortByName != SortByText.no_sort);
   }
   void onSortMenuClicked(){
     emit(state.copyWith(state: OpenSortDialogListState()));
@@ -43,19 +48,12 @@ class SuppliersCubit extends Cubit<SuppliersState> {
   void onHelpMenuClick(){
     emit(state.copyWith(state: OpenHelpPageState()));
   }
-
-  @override
   void onItemPressed(Supplier item) {
     if (state.isSelection){
-      //emite(stat
+      emit(state.copyWith());
     }else{
-      //emit(state.copyWith(OpenSaveItemState()))
+      emit(state.copyWith(state: EditSupplierState(item)));
     }
-    /*if (isSelection) {
-      Navigator.of(getContext()).pop(item);
-    } else {
-      super.onItemPressed(item);
-    }*/
   }
 
   void onItemLongPressed(Supplier supplier) async {
@@ -134,11 +132,37 @@ class SuppliersCubit extends Cubit<SuppliersState> {
         });*/
   }
 
-  @override
+
   bool filterItem(Supplier item, String textSearch) {
-    return item.name.contains(textSearch);
+    return item.name.toLowerCase().contains(textSearch.toLowerCase());
   }
   void onAddItem() {
-    emit(state.copyWith(state: OpenSaveItemState()));
+    emit(state.copyWith(state: AddSupplierState()));
+  }
+
+  void addNewSupplier(Supplier result) {
+    List<Supplier> allItems  = [];
+    allItems.addAll(state.allItems);
+    allItems.add(result);
+    emit(state.copyWith(allItems: allItems));
+    refreshData();
+  }
+  void onModifySupplier(Supplier result){
+    List<Supplier> allItems  = [];
+    for (Supplier item in state.allItems){
+      if (item.id == result.id){
+        allItems.add(result);
+      }else{
+        allItems.add(item);
+      }
+    }
+    emit(state.copyWith(allItems: allItems));
+    refreshData();
+  }
+
+  void setSettings(SuppliersSetting settings) {
+    storage.setSuppliersSetting(settings);
+    emit(state.copyWith(settings: settings));
+    refreshData();
   }
 }

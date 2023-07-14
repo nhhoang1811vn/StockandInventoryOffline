@@ -3,11 +3,11 @@ part of 'suppliers_cubit.dart';
 @freezed
 class SuppliersState with _$SuppliersState {
   const factory SuppliersState.initial({
-    BaseState? state,
+    required BaseState state,
     @Default([]) List<Supplier> allItems,
     @Default([]) List<Supplier> items,
     @Default('') String textSearch,
-    SupplierSettings? settings,
+    required SuppliersSetting settings,
     @Default(false) bool showSearchBar,
     @Default(false) bool isSelection
   }) = _Initial;

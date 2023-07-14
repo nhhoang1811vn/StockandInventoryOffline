@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io' as io;
+
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/expense.dart';
@@ -63,10 +64,10 @@ class DBHelper {
             "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id))");
 
     await db.execute(
-        "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, directory TEXT, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
+        "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, directory TEXT, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
     await db.execute(
-        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, directory TEXT, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
+        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, directory TEXT, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
 
     await db.execute(
@@ -300,7 +301,7 @@ class DBHelper {
     return groups;
   }
 
-  Future<List<Group>> getGroupsByDirectory(String storeId,String directory) async {
+  Future<List<Group>> getGroupsByDirectory(int storeId,String directory) async {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $GROUPS_TABLE_NAME WHERE storeId = ? AND directory = ?',
@@ -365,7 +366,7 @@ class DBHelper {
     }
     return goods;
   }
-  Future<List<Good>> getGoodsByDirectory(String storeId,String directory) async {
+  Future<List<Good>> getGoodsByDirectory(int storeId,String directory) async {
     var dbClient = await db;
     //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     List<Map> list = await dbClient.rawQuery(

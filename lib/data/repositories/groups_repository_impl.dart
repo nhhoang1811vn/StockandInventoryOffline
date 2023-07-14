@@ -1,3 +1,4 @@
+import 'package:good_manager/app/main.dart';
 import 'package:good_manager/db/db_helper.dart';
 import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/repositories/groups_repositories.dart';
@@ -45,7 +46,7 @@ class GroupsRepositoryImpl implements GroupsRepository {
 
   @override
   Future<List<Group>> getGroupsByDirectory(String directory) {
-    // TODO: implement getGroupsByDirectory
-    throw UnimplementedError();
+    int storeId = storage.getSelectedStoreId();
+    return db.getGroupsByDirectory(storeId, directory);
   }
 }

@@ -1,10 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/presentation/pages/home/home_view.dart';
 import 'package:good_manager/presentation/pages/onboarding/on_boarding_page.dart';
 import 'package:good_manager/presentation/router.dart';
-import 'package:good_manager/data/storage.dart';
 
 import '../common/helpers/injection.container.dart';
 

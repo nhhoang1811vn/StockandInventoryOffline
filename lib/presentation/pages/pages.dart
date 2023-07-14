@@ -2,8 +2,8 @@ class Pages {
   static const String home = '/home';
 
   static const String good_list = '/good_list';
-  //static const String save_good = '/save_good';
-  //static const String save_group = '/save_group';
+  static const String save_good = '/save_good';
+  static const String save_group = '/save_group';
 
   static const String store_list = '/store_list';
   //static const String save_store = '/save_store';

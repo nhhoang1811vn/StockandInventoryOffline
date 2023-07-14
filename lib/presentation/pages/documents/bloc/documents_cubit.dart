@@ -1,9 +1,9 @@
-import 'package:good_manager/presentation/pages/base/base_cubit.dart';
-import 'package:good_manager/presentation/pages/documents/bloc/documents_data.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/search_documents_type.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
+import 'package:good_manager/presentation/pages/base/base_cubit.dart';
+import 'package:good_manager/presentation/pages/documents/bloc/documents_data.dart';
 
 class DocumentsCubit extends BaseCubit<DocumentsData> {
   DocumentsCubit(super.initialData);

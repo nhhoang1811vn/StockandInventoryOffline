@@ -1,5 +1,5 @@
-import 'package:good_manager/presentation/pages/base/base_sort_items.dart';
 import 'package:good_manager/domain/entities/group.dart';
+import 'package:good_manager/presentation/pages/base/base_sort_items.dart';
 
 class SortByBarCodeAscendingGroup extends SortItems<Group> {
   @override

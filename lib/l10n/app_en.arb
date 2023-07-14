@@ -40,6 +40,7 @@
   "empty_customers": "No Customers",
   "save_group_title": "Save Group",
   "field_name": "Name",
+  "error_field_name_empty": "Please ensure the email entered is valid",
   "field_desc": "Description",
   "field_bar_code": "Barcode",
   "field_quantity": "Quantity",
