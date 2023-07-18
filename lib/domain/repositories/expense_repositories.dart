@@ -3,5 +3,6 @@ import 'package:good_manager/domain/repositories/base_repository.dart';
 
 abstract class ExpenseRepository
     extends BaseRepository<Expense> {
-  Future<double> getSum();
+  Future<List<Expense>> getAllByStoreId(int storeId);
+  Future<double> getSum(int storeId);
 }

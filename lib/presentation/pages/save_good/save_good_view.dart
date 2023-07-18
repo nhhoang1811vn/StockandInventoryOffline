@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:good_manager/domain/entities/good.dart';
 
@@ -20,7 +21,6 @@ class SaveGoodPage extends StatelessWidget {
     context.read<SaveGoodCubit>().init(item);
     return Scaffold(
         appBar: _buildAppBar(context),
-        backgroundColor: Colors.blueGrey[100],
         body: Column(children: [
           SelectedStoreView(),
           Expanded(child: SaveGoodForm(item: item, enableAddTransactions: enableAddTransactions))
@@ -30,7 +30,7 @@ class SaveGoodPage extends StatelessWidget {
     );
   }
   PreferredSize _buildAppBar(BuildContext context){
-    return PreferredSize(preferredSize : Size.fromHeight(58), child: AppBar(
+    return PreferredSize(preferredSize : Size.fromHeight(UIConstants.appBarHeight), child: AppBar(
         title: Text(AppLocalizations.of(context)!.save_goods_title),
         actions: <Widget>[
           InkWell(

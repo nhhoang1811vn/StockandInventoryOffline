@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/main.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/suppliers_setting.dart';
 import 'package:good_manager/presentation/pages/custom_navigation_drawer.dart';
+import 'package:good_manager/presentation/pages/suppliers/widgets/supplier_item_row.dart';
+import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../base/base_state.dart';
@@ -14,7 +17,7 @@ import '../pages.dart';
 import 'bloc/bloc.dart';
 import 'widgets/sort_supplier_dialog.dart';
 
-enum SupplierItemMenu { sendEmail, sendSMS, phoneCall }
+
 
 class SuppliersPage extends StatefulWidget {
   final bool isSelection;
@@ -26,9 +29,14 @@ class SuppliersPage extends StatefulWidget {
 }
 
 class SuppliersPageState extends State<SuppliersPage> {
+  final TextEditingController searchTextController = TextEditingController();
+  final FocusNode searchTextFocusNode = FocusNode();
   @override
   void initState() {
     super.initState();
+    if (widget.isSelection){
+      searchTextFocusNode.requestFocus();
+    }
     context.read<SuppliersCubit>().initState(widget.isSelection);
   }
   @override
@@ -43,17 +51,11 @@ class SuppliersPageState extends State<SuppliersPage> {
                 barrierDismissible: true);
             context.read<SuppliersCubit>().setSettings(settings);
           }
-          else if (state.state is AddSupplierState){
-            final result = await Navigator.of(context).pushNamed(Pages.save_supplier);
-            if (result != null) {
-              context.read<SuppliersCubit>().addNewSupplier(result as Supplier);
-            }
-          }
-          else if (state.state is EditSupplierState){
-            final currentState = state.state as EditSupplierState;
+          else if (state.state is SaveSupplierState){
+            final currentState = state.state as SaveSupplierState;
             final result = await Navigator.of(context).pushNamed(Pages.save_supplier, arguments: {"item" : currentState.item});
             if (result != null){
-              context.read<SuppliersCubit>().onModifySupplier(result as Supplier);
+              context.read<SuppliersCubit>().loadItems();
             }
           }
           else if (state.state is OpenHelpPageState){
@@ -65,19 +67,18 @@ class SuppliersPageState extends State<SuppliersPage> {
 
         },
         builder: (context, state) =>  Scaffold(
-        //key: globalKey,
-        drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 5),
+        drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 5, storeName: storage.getSelectedStoreName(),),
         appBar: _buildAppBar(state),
         body: _buildBody(state),
         floatingActionButton:  FloatingActionButton(
-                onPressed: () => context.read<SuppliersCubit>().onAddItem(),
+                onPressed: () => context.read<SuppliersCubit>().onAddButtonClicked(),
                 child: Icon(Icons.add),
               )
             ));
   }
   PreferredSize _buildAppBar(SuppliersState data){
     return PreferredSize(
-      preferredSize: Size.fromHeight(70), child:  AppBar(
+      preferredSize: Size.fromHeight(UIConstants.appBarHeight), child:  AppBar(
         title: new Text(widget.isSelection?AppLocalizations.of(context)!.suppliers_select_title:AppLocalizations.of(context)!.suppliers_title),
         actions: [_buildSearchMenu(data), sortMenu, helpMenu]),
     );
@@ -119,16 +120,19 @@ class SuppliersPageState extends State<SuppliersPage> {
   Widget _buildSearchBar(SuppliersState data) => Card(
           child: ListTile(
             title: TextField(
+              focusNode: searchTextFocusNode,
               decoration: InputDecoration(
-                  hintText: "by name", border: InputBorder.none),
+                  hintText: AppLocalizations.of(context)!.search_by_name, border: InputBorder.none),
               onChanged: context.read<SuppliersCubit>().searchTextChanged,
-
-              //controller: controller.searchTextController,
+              controller: searchTextController,
             ),
             trailing: Visibility(
               child: IconButton(
                 icon: Icon(UIConstants.cancelIconData),
-                onPressed: context.read<SuppliersCubit>().resetSearchText,
+                onPressed: (){
+                  searchTextController.text = "";
+                  context.read<SuppliersCubit>().resetSearchText();
+                }
               ),
               visible: data.textSearch.isNotEmpty,
             ),
@@ -156,74 +160,93 @@ class SuppliersPageState extends State<SuppliersPage> {
     return  ListView.separated(
           itemBuilder: (BuildContext context, index) {
             Supplier item = data.items[index];
-            return ListTile(
-              leading: CircleAvatar(
-                child: Text('${item.name[0].toUpperCase()}'),
-              ),
-              title: Text(item.name),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  item.description.isNotEmpty
-                      ? Text(item.description)
-                      : Container(),
-                  //item.numberDocument > 0
-                  //    ? Text(item.numberDocument.toString() + "GD")
-                   //   : Container()
-                ],
-              ),
-              onTap: () => context.read<SuppliersCubit>().onItemPressed(item),
-              onLongPress: () => context.read<SuppliersCubit>().onItemLongPressed(item),
-              trailing: PopupMenuButton<SupplierItemMenu>(
-                onSelected: (SupplierItemMenu result) {
-                  switch (result) {
-                    case SupplierItemMenu.sendEmail:
-                      _launchUrl("mailto:${item.email}");
-                      break;
-                    case SupplierItemMenu.sendSMS:
-                      _launchUrl("sms:${item.phone}");
-                      break;
-                    case SupplierItemMenu.phoneCall:
-                      _launchUrl("tel:${item.phone}");
-                      break;
-                    default:
-                  }
-                },
-                itemBuilder: (BuildContext a) =>
-                <PopupMenuEntry<SupplierItemMenu>>[
-                  PopupMenuItem<SupplierItemMenu>(
-                      value: SupplierItemMenu.sendEmail,
-                      child:
-                      Text(AppLocalizations.of(context)!.action_send_email)),
-                  PopupMenuItem<SupplierItemMenu>(
-                      value: SupplierItemMenu.sendSMS,
-                      child:
-                      Text(AppLocalizations.of(context)!.action_send_sms)),
-                  PopupMenuItem<SupplierItemMenu>(
-                      value: SupplierItemMenu.phoneCall,
-                      child:
-                          Text(AppLocalizations.of(context)!.action_phone_call)),
-                ],
-              ),
-            );
+            return SupplierItemRow(item, (item) {
+              onPressed(item);
+            }, (item) {
+              onLongPressed(item);
+            }, (item) {
+              _launchUrl("mailto:${item.email}");
+            }, (item) {
+              _launchUrl("sms:${item.phone}");
+            }, (item) {
+              _launchUrl("tel:${item.phone}");
+            });
           },
           separatorBuilder: (context, index) {
             return Divider();
           },
           itemCount: data.items.length);
   }
+  void onPressed(Supplier item) async {
+    if (widget.isSelection){
+      Navigator.of(context).pop(item);
+    }else{
+      context.read<SuppliersCubit>().onAddItem(item);
+    }
+  }
+  void onLongPressed(Supplier item){
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            children: <Widget>[
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  Navigator.pop(context);
+                  showDeleteConfirmPopup(item);
+                },
+                child: Text(AppLocalizations.of(context)!.action_delete),
+              ),
+            ],
+          );
+        },
+        barrierDismissible: true);
+  }
+  void showDeleteConfirmPopup(Supplier item) async{
+    showDialog(
+        context: context,
+        builder: (BuildContext mContext) {
+          return AlertDialog(
+            title: Text(
+                AppLocalizations.of(context)!.notification_dialog_title),
+            content: Text(sprintf(
+                AppLocalizations.of(context)!.message_confirm_delete,
+                [item.name])),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(AppLocalizations.of(context)!.action_cancel)),
+              TextButton(
+                onPressed: () async{
+                  await context.read<SuppliersCubit>().delete(item.id);
+                  Navigator.pop(context);
+                },
+                child: Text(AppLocalizations.of(context)!.action_ok),
+              )
+            ],
+          );
+        });
+  }
 
-  Widget _buildSearchMenu(SuppliersState data) => Padding(
+
+  Widget _buildSearchMenu(SuppliersState state) => Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: GestureDetector(
             child: Icon(
               UIConstants.searchMenuIconData,
               size: 26,
-              color: data.showSearchBar
+              color: state.showSearchBar
                   ? UIConstants.highlightMenuColor
                   : UIConstants.normalMenuColor,
             ),
-            onTap: context.read<SuppliersCubit>().onShowSearchBarMenuClicked,
+            onTap: (){
+              searchTextController.text = "";
+              if (!state.showSearchBar){
+                searchTextFocusNode.requestFocus();
+              }
+              context.read<SuppliersCubit>().onShowSearchBarMenuClicked();
+            } ,
           ),
         );
 
@@ -253,10 +276,6 @@ class SuppliersPageState extends State<SuppliersPage> {
             onTap: context.read<SuppliersCubit>().onHelpMenuClick,
           ),
         );
-
-  void onSearchClicked(){
-
-  }
   Future<void> _launchUrl(String value) async {
     Uri url = Uri.parse(value);
     if (!await launchUrl(url)) {

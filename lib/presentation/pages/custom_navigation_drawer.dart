@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/main.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/select_message_type_dialog.dart';
-//import 'package:good_manager/presentation/pages/customers/customers_view.dart';
-import 'package:good_manager/presentation/pages/documents/documents_view.dart';
-import 'package:good_manager/presentation/pages/expenses/expenses_view.dart';
-import 'package:good_manager/presentation/pages/home/home_view.dart';
+import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
-import 'package:good_manager/presentation/pages/settings/settings_view.dart';
-import 'package:good_manager/presentation/pages/stores/stores_view.dart';
-import 'package:good_manager/presentation/pages/suppliers/suppliers_page.dart';
+import 'package:good_manager/presentation/pages/settings/settings_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'goods/goods_view.dart';
 import 'help_content.dart';
 
 class CustomNavigationDrawer extends StatefulWidget {
-  const CustomNavigationDrawer({Key? key, required this.selectedIndex})
+  const CustomNavigationDrawer({Key? key, required this.selectedIndex, required this.storeName})
       : super(key: key);
   final int selectedIndex;
+  final String storeName;
 
   @override
   CustomNavigationDrawerState createState() {
@@ -37,17 +33,14 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
               Container(
                 padding: const EdgeInsets.only(left: 8, right: 8),
                 child: Wrap(
-                    //runSpacing: 4,//vertical spacing
                     children: [
                       AppDrawerTile(
                           index: 0,
                           selectedIndex: widget.selectedIndex,
                           text: AppLocalizations.of(context)!.home_title,
                           onTap: () {
+                            Navigator.of(context).pushReplacementNamed(Pages.home);
                             //updateState(0);
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) => HomePage()));
                           }),
                       AppDrawerTile(
                           index: 1,
@@ -55,27 +48,21 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                           text: AppLocalizations.of(context)!.goods_title,
                           onTap: () {
                             //updateState(1);
-                            Navigator.of(context).pushNamed(Pages.good_list, arguments: {'isSelection': false});
-                            //Navigator.of(context).pushNamed(Pages.good_list);
-                            //Navigator.of(context).pushReplacement(MaterialPageRoute(
-                             //   builder: (context) =>
-                              //      GoodsPage(isSelection: false)));
+                            Navigator.of(context).pushReplacementNamed(Pages.good_list, arguments: {'isSelection': false});
                           }),
                       AppDrawerTile(
                           index: 2,
                           selectedIndex: widget.selectedIndex,
                           text: AppLocalizations.of(context)!.documents_title,
                           onTap: (){
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                builder: (context) =>
-                                    DocumentsPage()));
+                            Navigator.of(context).pushReplacementNamed(Pages.document_list);
                           }),
                       AppDrawerTile(
                           index: 3,
                           selectedIndex: widget.selectedIndex,
                           text: AppLocalizations.of(context)!.expenses_title,
                           onTap: () {
-                            Navigator.of(context).pushNamed(Pages.expenses);
+                            Navigator.of(context).pushReplacementNamed(Pages.expenses);
                           }),
                       AppDrawerTile(
                           index: 4,
@@ -92,23 +79,22 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                           text: AppLocalizations.of(context)!.suppliers_title,
                           onTap: () {
                             //updateState(5);
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context) => SuppliersPage(isSelection: false)));
+                            Navigator.of(context).pushReplacementNamed(Pages.supplier_list, arguments: {"isSelection": false});
                           }),
-                      /*AppDrawerTile(
+                      AppDrawerTile(
                           index: 6,
                           selectedIndex: widget.selectedIndex,
                           text: AppLocalizations.of(context)!.customers_title,
                           onTap: () {
-                            //updateState(5);
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context) => CustomersPage(isSelection: false)));
-                          }),*/
+                            //Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context) => CustomersPage(isSelection: false)));
+                          }),
                       AppDrawerTile(
                           index: 7,
                           selectedIndex: widget.selectedIndex,
                           text: AppLocalizations.of(context)!.stores_title,
                           onTap: () {
                             //updateState(5);
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context) => StoresPage(isSelection: false)));
+                            Navigator.of(context).pushReplacementNamed(Pages.store_list, arguments: {"isSelection" : false});
                           }),
                       Divider(),
                       AppDrawerTile(
@@ -128,7 +114,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                         onTap: () => onInviteFriend(context),
                       ),
                       ListTile(
-                        leading: Image.asset(UIConstants.feedbackIconPath,
+                        leading: Image.asset(UIConstants.helpIconPath,
                             width: UIConstants.drawerMenuSize),
                         title: Text(AppLocalizations.of(context)!
                             .question_or_suggestion_title),
@@ -166,32 +152,59 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
   Widget buildHeader(BuildContext context) => Container(
         color: UIConstants.primaryColor,
         padding: EdgeInsets.only(
-            top: MediaQuery.of(context).padding.top,
-            left: 8.0,
-            right: 8.0,
-            bottom: MediaQuery.of(context).padding.top),
-        child: Row(
-          children: [
-            Image.asset(UIConstants.appIconPath, width: 60),
-            SizedBox(width: 8.0),
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "AppViet Quản Lý Kho",
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-                SizedBox(height: 8.0),
-                Text("Ver 1.0.0",
-                    style: TextStyle(fontSize: 14, color: Colors.white)),
-              ],
-            ))
-          ],
-        ),
+            top: MediaQuery.of(context).padding.top),
+        child: Column(children: [
+          Container(color: UIConstants.primaryColor, padding: EdgeInsets.all(16.0), child: Row(
+            children: [
+              Image.asset(UIConstants.appIconPath, width: 40),
+              SizedBox(width: 8.0),
+              Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "AppViet Quản Lý Kho",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                      SizedBox(height: 8.0),
+                      Text("Ver 1.0.0",
+                          style: TextStyle(fontSize: 14, color: Colors.white)),
+                    ],
+                  ))
+            ],
+          )),
+          GestureDetector(child: Container(color: UIConstants.primaryDarkColor, padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),  child: Row(children: [Expanded(child: Text(widget.storeName, style: TextStyle(color: Colors.white),)), Icon(Icons.expand_circle_down_sharp, color: UIConstants.highlightMenuColor,)],)), onTap: () => onChangeStore())
+        ],)
       );
 
-  //Widget buildMenuItems(BuildContext context) =>
+  void onChangeStore() async{
+    final result = await Navigator.of(context).pushNamed(Pages.store_list, arguments: {"isSelection" : true});
+    if (result != null){
+      Store store = result as Store;
+
+      storage.setSelectedStoreId(store.id);
+      storage.setSelectedStoreName(store.name);
+
+      if (widget.selectedIndex == 0){
+        Navigator.of(context).pushReplacementNamed(Pages.home);
+      }else if (widget.selectedIndex == 1){
+        Navigator.of(context).pushReplacementNamed(Pages.good_list, arguments: {"isSelection" : false});
+      }else if (widget.selectedIndex == 2){
+        Navigator.of(context).pushReplacementNamed(Pages.document_list);
+      }else if (widget.selectedIndex == 3){
+        Navigator.of(context).pushReplacementNamed(Pages.expenses);
+      }else if (widget.selectedIndex == 4){
+        //report
+      }else if (widget.selectedIndex == 5){
+        //supplier
+        Navigator.of(context).pushReplacementNamed(Pages.supplier_list, arguments: {"isSelection" : false});
+      }else if (widget.selectedIndex == 6){
+        //customer
+      }else if (widget.selectedIndex == 7){
+        //store
+      }
+    }
+  }
   void onInviteFriend(BuildContext context) {
     String encodeQueryParameters(Map<String, String> params) {
       return params.entries

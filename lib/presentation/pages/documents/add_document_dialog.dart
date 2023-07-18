@@ -3,14 +3,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
 
 class AddDocumentDialogWidget extends StatefulWidget {
-  final void Function(DocumentType type) onValueChange;
-
-  AddDocumentDialogWidget(this.onValueChange, {Key? key}) : super(key: key);
-
   @override
   State createState() => AddDocumentDialogWidgetState();
 }
-
 class AddDocumentDialogWidgetState extends State<AddDocumentDialogWidget> {
   DocumentType _documentType = DocumentType.incoming;
 
@@ -38,8 +33,8 @@ class AddDocumentDialogWidgetState extends State<AddDocumentDialogWidget> {
         TextButton(
           child: Text(AppLocalizations.of(context)!.action_ok),
           onPressed: () async {
-            widget.onValueChange(_documentType);
-            Navigator.of(context).pop();
+            //widget.onValueChange(_documentType);
+            Navigator.of(context).pop(_documentType);
           },
         ),
       ],

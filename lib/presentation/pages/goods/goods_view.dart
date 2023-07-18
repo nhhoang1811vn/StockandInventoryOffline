@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:good_manager/domain/entities/document.dart';
@@ -14,22 +15,21 @@ import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit2.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/sort_goods_dialog.dart';
 import 'package:sprintf/sprintf.dart';
 
+import '../../../app/main.dart';
+import '../../widgets/snackbar_widgets.dart';
 import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';
 import '../help_content.dart';
 import '../pages.dart';
+import 'add_quantity_good_dialog.dart';
 import 'good_item_row.dart';
 import 'group_item_row.dart';
 
 class GoodsPage extends StatefulWidget {
   final bool isSelection;
+  final int? documentId;
   final DocumentType? documentType;
-  final List<DocumentTransaction>? transactions;
-
-  GoodsPage({
-      required this.isSelection,
-      this.documentType,
-      this.transactions});
+  GoodsPage({required this.isSelection, this.documentId, this.documentType});
 
   @override
   GoodsPageState createState() => GoodsPageState();
@@ -37,10 +37,14 @@ class GoodsPage extends StatefulWidget {
 
 class GoodsPageState extends State<GoodsPage> {
   final TextEditingController searchTextController = TextEditingController();
+  final FocusNode searchTextFocusNode = FocusNode();
   @override
   void initState() {
     super.initState();
-    context.read<GoodsCubit>().initState(widget.isSelection, widget.documentType);
+    if (widget.isSelection){
+      searchTextFocusNode.requestFocus();
+    }
+    context.read<GoodsCubit>().initState(widget.isSelection, widget.documentId, widget.documentType);
   }
   Widget _buildBody(BuildContext context, GoodsState state) {
     if (state.state is LoadingState) {
@@ -137,8 +141,7 @@ class GoodsPageState extends State<GoodsPage> {
                   good.quantity,
                   (item) => onPressedGood(good),
                   (item) => onLongPressedGood(good),
-                  state.isSelection,
-                  state.documentType);
+                  state.isSelection);
             }
           },
           separatorBuilder: (context, index) {
@@ -158,7 +161,13 @@ class GoodsPageState extends State<GoodsPage> {
               ? UIConstants.highlightMenuColor
               : UIConstants.normalMenuColor,
         ),
-        onTap: context.read<GoodsCubit>().onShowSearchBarMenuClicked,
+        onTap: (){
+          searchTextController.text = "";
+          if (!state.showSearchBar){
+            searchTextFocusNode.requestFocus();
+          }
+          context.read<GoodsCubit>().onShowSearchBarMenuClicked();
+        },
       ),
     );
   }
@@ -181,7 +190,7 @@ class GoodsPageState extends State<GoodsPage> {
        Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: GestureDetector(
-            onTap: context.read<GoodsCubit>().openHelpPage,
+            onTap: context.read<GoodsCubit>().onHelpMenuClicked,
             child: Icon(
               UIConstants.helpMenuIconData,
               size: 26,
@@ -196,6 +205,7 @@ class GoodsPageState extends State<GoodsPage> {
           child: Card(
             child: ListTile(
               title: TextField(
+                focusNode: searchTextFocusNode,
                 controller: searchTextController,
                 decoration: InputDecoration(
                     hintText: context.read<GoodsCubit>().getSearchTextHint(context),
@@ -232,19 +242,19 @@ class GoodsPageState extends State<GoodsPage> {
           PopupMenuItem<SearchGoodsType>(
               value: SearchGoodsType.byName,
               child: Text(
-                  AppLocalizations.of(context)!.search_goods_type_by_name)),
+                  AppLocalizations.of(context)!.search_by_name)),
           PopupMenuItem<SearchGoodsType>(
               value: SearchGoodsType.byDescription,
               child: Text(AppLocalizations.of(context)!
-                  .search_goods_type_by_description)),
+                  .search_by_description)),
           PopupMenuItem<SearchGoodsType>(
               value: SearchGoodsType.byBarcode,
               child: Text(AppLocalizations.of(context)!
-                  .search_goods_type_by_barcode)),
+                  .search_by_barcode)),
           PopupMenuItem<SearchGoodsType>(
               value: SearchGoodsType.everywhere,
               child: Text(AppLocalizations.of(context)!
-                  .search_goods_type_everywhere)),
+                  .search_by_everywhere)),
         ],
         onSelected: context.read<GoodsCubit>().setSearchGoodsType,
       )
@@ -257,21 +267,24 @@ class GoodsPageState extends State<GoodsPage> {
     );
   }
   void onPressedGood(Good item) async{
-    final result = await Navigator.of(context)
-        .pushNamed(Pages.save_good, arguments: {"item": item, "enableAddTransactions": true});
-    if (result != null) {
-      context.read<GoodsCubit>().loadItems();
-    }
-
-    /*if (this._isSelection) {
-      showAddQuantityDialog(good);
-    } else {
-      final result = await Navigator.of(getContext())
-          .pushNamed(Pages.save_good, arguments: {"item": good, "enableAddTransactions": true});
+    if (widget.isSelection){
+      showAddQuantityDialog(item);
+    }else{
+      final result = await Navigator.of(context)
+          .pushNamed(Pages.save_good, arguments: {"item": item, "enableAddTransactions": true});
       if (result != null) {
-        loadData();
+        context.read<GoodsCubit>().loadItems();
       }
-    }*/
+    }
+  }
+  void showAddQuantityDialog(Good good) async{
+    int? quantity = await showDialog(
+        context: context,
+        builder: (_) => InputQuantityGoodDialog(good),
+        barrierDismissible: true);
+    if (quantity != null){
+      context.read<GoodsCubit>().addTransaction(good, quantity);
+    }
   }
   void onLongPressedGood(Good item){
     showDialog(
@@ -283,7 +296,7 @@ class GoodsPageState extends State<GoodsPage> {
                 padding: EdgeInsets.all(16.0),
                 onPressed: () {
                   Navigator.pop(context);
-                  //openSelectGroupForGood(good);
+                  openSelectGroupForGood(item);
                 },
                 child: Text(
                     AppLocalizations.of(context)!.action_move_to_group),
@@ -301,35 +314,48 @@ class GoodsPageState extends State<GoodsPage> {
         },
         barrierDismissible: true);
   }
+  int getGroupId(Good item){
+    if (item.directory == "/"){
+      return -1;
+    }else{
+      return int.parse(item.directory.split("/").last);
+    }
+  }
+  void openSelectGroupForGood(Good item) async{
+    int groupId = getGroupId(item);
+    final result = await Navigator.of(context).pushNamed(Pages.select_group, arguments: {"groupId": groupId});
+    if (result != null){
+      Group group = result as Group;
+      if (group.id != groupId){
+        //user has select another group
+        context.read<GoodsCubit>().moveGoodToGroup(item, group);
+      }
+    }
+  }
   void showDeleteGoodConfirmPopup(Good item) async{
-    bool result = await showDialog(
+    showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (BuildContext mContext) {
           return AlertDialog(
             title: Text(
                 AppLocalizations.of(context)!.notification_dialog_title),
             content: Text(sprintf(
-                AppLocalizations.of(context)!.message_confirm_delete_good,
+                AppLocalizations.of(context)!.message_confirm_delete,
                 [item.name])),
             actions: [
               TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: Text(AppLocalizations.of(context)!.action_cancel)),
               TextButton(
-                onPressed: () {
+                onPressed: () async{
+                  await context.read<GoodsCubit>().deleteGood(item.id);
                   Navigator.pop(context);
-                  context.read<GoodsCubit>().deleteGood(item.id);
                 },
                 child: Text(AppLocalizations.of(context)!.action_ok),
               )
             ],
           );
         });
-    if (result){
-      int a = 2;
-    }else{
-      int a = 1;
-    }
   }
 
   void onPressedGroup(Group item){
@@ -397,18 +423,10 @@ class GoodsPageState extends State<GoodsPage> {
               "title": AppLocalizations.of(context)?.goods_title,
               "content": HelpUtils.getMarkdownData("vi", HelpType.GOODS)
             });
-          }else if (state.state is AddGoodState){
-            final currentState = state.state as AddGoodState;
+          }else if (state.state is SaveGoodState){
+            final currentState = state.state as SaveGoodState;
             final result = await Navigator.of(context)
                 .pushNamed(Pages.save_good, arguments: {"item": currentState.item, "enableAddTransactions": true});
-            ///TODO
-            /*if (result != null) {
-              if (_isSelection) {
-                showAddQuantityDialog(result);
-              } else {
-                loadData();
-              }
-            }*/
             if (result != null){
               context.read<GoodsCubit>().loadItems();
             }
@@ -418,10 +436,14 @@ class GoodsPageState extends State<GoodsPage> {
             if (result != null){
               context.read<GoodsCubit>().loadItems();
             }
+          }else if (state.state is InsertTransactionSuccessState){
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccessWithText(AppLocalizations.of(context)!.insert_transaction_success));
+          }else if (state.state is InsertTransactionFailedState){
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(snackBarFailureText: "Insert Transaction Failed!"));
           }
         },
         builder: (context, state) =>  Scaffold(
-            drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 1),
+            drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 1, storeName: storage.getSelectedStoreName()),
             appBar: new AppBar(
                 title: new Text(AppLocalizations.of(context)!.goods_title),
                 actions: [_buildSearchMenu(state), _buildSortMenu(state), helpMenu]),
@@ -442,13 +464,15 @@ class GoodsPageState extends State<GoodsPage> {
               shape: CircleBorder(),
               children: [
                 SpeedDialChild(
-                    child: IconButton(icon: Image.asset(UIConstants.folderIconPath, width: 24), onPressed: context.read<GoodsCubit>().onAddGroup,),
+                    child: Icon(FontAwesomeIcons.solidFolder,color: Colors.orange),
                     backgroundColor: Colors.white,
+                    onTap: context.read<GoodsCubit>().onAddGroup,
                     label: AppLocalizations.of(context)!.folder
                 ),
                 SpeedDialChild(
-                    child: IconButton(icon: Image.asset(UIConstants.goodIconPath, width: 24), onPressed: context.read<GoodsCubit>().onAddGood,),
+                    child: Icon(FontAwesomeIcons.box,color: Colors.orange,),
                     backgroundColor: Colors.white,
+                    onTap: context.read<GoodsCubit>().onAddGood,
                     label: AppLocalizations.of(context)!.good)
               ],
             )

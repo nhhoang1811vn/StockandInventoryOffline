@@ -1,12 +1,39 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/domain/entities/search_documents_type.dart';
-import 'package:good_manager/domain/entities/sort_by_number.dart';
-import 'package:good_manager/domain/entities/sort_by_text.dart';
-import 'package:good_manager/presentation/pages/base/base_cubit.dart';
-import 'package:good_manager/presentation/pages/documents/bloc/documents_data.dart';
+import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
+import 'package:injectable/injectable.dart';
 
-class DocumentsCubit extends BaseCubit<DocumentsData> {
-  DocumentsCubit(super.initialData);
+import '../../../../data/storage.dart';
+import '../../base/base_state.dart';
+
+part 'documents_cubit.freezed.dart';
+part 'documents_state.dart';
+
+@injectable
+class DocumentsCubit extends Cubit<DocumentsState> {
+  final DocumentUseCases useCase;
+  final Storage storage;
+  DocumentsCubit({required this.storage,required this.useCase}) : super(DocumentsState.initial(state: InitialState(), settings: storage.getDocumentsSetting()));
+
+  void initState(){
+    loadItems();
+  }
+  void loadItems() async{
+    int storeId = storage.getSelectedStoreId();
+    List<Document> items = await useCase.getAllByStoreId(storeId);
+
+    List<Document> incomingItems = items
+        .where((element) => element.type == DocumentType.incoming)
+        .toList();
+    List<Document> outgoingItems = items
+        .where((element) => element.type == DocumentType.outgoing)
+        .toList();
+
+    emit(state.copyWith(items: items, incomingItems: incomingItems, outgoingItems: outgoingItems));
+  }
 
   //TextEditingController searchTextController;
   //bool isLoading = true;
@@ -76,104 +103,8 @@ class DocumentsCubit extends BaseCubit<DocumentsData> {
         .toList();*/
   }
 
-  Future<void> onAddDocument(index) async {
-    /*switch (index) {
-      case 0:
-        showDialog(
-            context: getContext(),
-            builder: (_) =>
-                AddDocumentDialogWidget((it) => {_onAddDocumentWithType(it)}),
-            barrierDismissible: true);
-        break;
-      case 1:
-        _onAddDocumentWithType(DocumentType.incoming);
-        break;
-      case 2:
-        _onAddDocumentWithType(DocumentType.outgoing);
-        break;*/
-    //case 3:
-    //  _onAddDocumentWithType(DocumentType.stock_taking);
-    //  break;
-    }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-  }
-
-
-  void _onAddDocumentWithType(DocumentType type) async {
-    /*Document item = Document();
-    item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
-    item.type = type;
-    item.name = await appDataManager.sharedPrefsHelper.getAutoDocumentName();
-
-    var result = await Navigator.of(getContext())
-        .pushNamed(Pages.save_document, arguments: {'item': item});
-    if (result != null) {
-      allDocuments.add(result);
-      refreshItems();
-    }*/
-  }
-
-  void onDocumentTapped(Document item) async {
-    /*var result = await Navigator.of(getContext())
-        .pushNamed(Pages.save_document, arguments: {'item': item});
-    if (result != null) {
-      int index = allDocuments.indexWhere((element) => element.id == item.id);
-      allDocuments[index] = result;
-      refreshItems();
-    }*/
-  }
-
-  void onDocumentLongPressed(Document item) {
-    /*showDialog(
-        context: getContext(),
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            children: <Widget>[
-              SimpleDialogOption(
-                padding: EdgeInsets.all(16.0),
-                onPressed: () {
-                  Navigator.pop(getContext());
-                  showDeleteDocumentConfirm(item);
-                },
-                child: Text(AppLocalizations.of(getContext()).action_delete),
-              ),
-            ],
-          );
-        },
-        barrierDismissible: true);*/
-  }
-
-  void showDeleteDocumentConfirm(Document document) {
-    /*showDialog(
-        context: getContext(),
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(
-                AppLocalizations.of(getContext()).notification_dialog_title),
-            content: Text(sprintf(
-                AppLocalizations.of(getContext())
-                    .message_confirm_delete_document,
-                [document.name])),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(getContext()),
-                  child: Text(AppLocalizations.of(getContext()).action_cancel)),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(getContext());
-                  presenter.delete(document.id);
-                },
-                child: Text(AppLocalizations.of(getContext()).action_ok),
-              )
-            ],
-          );
-        });*/
-  }
-
   void toggleSearchBar() {
+    emit(state.copyWith(showSearchBar: !state.showSearchBar));
     /*showSearchBar = !showSearchBar;
     resetSearchText();*/
   }
@@ -286,23 +217,18 @@ class DocumentsCubit extends BaseCubit<DocumentsData> {
   }
 
   bool hasSortOptions() {
-    if (state.settings.sortByName != SortByText.no_sort ||
+    /*if (state.settings.sortByName != SortByText.no_sort ||
         state.settings.sortByDate != SortByNumber.no_sort ||
         state.settings.sortByQuantity != SortByNumber.no_sort) {
       return true;
     }
-    return false;
+    return false;*/
+    return true;
   }
 
   void onOpenHelpPage() async{
-    /*String code = await appDataManager.sharedPrefsHelper.getLanguageCode();
-    Navigator.of(getContext()).pushNamed(Pages.help, arguments: {
-      "title": AppLocalizations.of(getContext()).documents_title,
-      "content": HelpUtils.getMarkdownData(code, HelpType.DOCUMENTS)
-    });*/
+    emit(state.copyWith(state: OpenHelpPageState()));
   }
-
-
   void setSearchDocumentsType(SearchDocumentsType type) {
     /*_settings.searchDocumentsType = type;
     presenter.setSettings(_settings);

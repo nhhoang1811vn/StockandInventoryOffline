@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 class Config {
   static String supportEmail = "nhhoang1811vn@gmail.com";
   static String dateTimeFormat = "yyyy-MM-dd";
   static String displayDateTimeFormat = "dd/MM/yyyy";
-  static int minYear = 1900;
-  static int maxYear = 2100;
+
+  static DateTime minTime = DateTime(1900, 1, 1);
+  static DateTime maxTime = DateTime(2101, 1, 1);
+
+  static DateFormat dateFormat = DateFormat('dd/MM/yyyy');
 }
 
 class UIConstants {
+  //dimension
+  static const double appBarHeight = 58.0;
+
   static IconData moreIconData = Icons.more_horiz;
   static IconData searchMenuIconData = Icons.search;
   static IconData sortMenuIconData = Icons.sort_by_alpha;
@@ -65,27 +72,6 @@ void showInfoToast(msg) {
       gravity: ToastGravity.CENTER,
       timeInSecForIosWeb: 1,
       backgroundColor: UIConstants.primaryColor,
-      textColor: Colors.white,
-      fontSize: 16.0);
-}
-
-void showShortInfoToast(msg) {
-  Fluttertoast.showToast(
-      msg: msg,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-      timeInSecForIosWeb: 1,
-      backgroundColor: UIConstants.primaryColor,
-      textColor: Colors.white,
-      fontSize: 16.0);
-}
-
-void showErrorToast(String msg) {
-  Fluttertoast.showToast(
-      msg: msg,
-      toastLength: Toast.LENGTH_LONG,
-      gravity: ToastGravity.CENTER,
-      backgroundColor: Colors.red,
       textColor: Colors.white,
       fontSize: 16.0);
 }

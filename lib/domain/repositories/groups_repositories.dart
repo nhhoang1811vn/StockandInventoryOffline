@@ -4,4 +4,5 @@ import 'base_repository.dart';
 
 abstract class GroupsRepository extends BaseRepository<Group> {
   Future<List<Group>> getGroupsByDirectory(String directory);
+  Future<List<Group>> getAllByStoreId(int storeId);
 }

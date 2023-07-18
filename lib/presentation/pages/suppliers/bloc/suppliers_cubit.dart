@@ -9,6 +9,7 @@ import '../../../../data/storage.dart';
 import '../../../../domain/entities/sort_by_text.dart';
 import '../../../../domain/entities/suppliers_setting.dart';
 import '../../../../domain/usecases/suppliers/suppliers_usecases.dart';
+import '../../base/base_sort_items.dart';
 
 part 'suppliers_cubit.freezed.dart';
 part 'suppliers_state.dart';
@@ -19,25 +20,23 @@ class SuppliersCubit extends Cubit<SuppliersState> {
   final Storage storage;
   SuppliersCubit({required this.storage,required this.useCase}) : super(SuppliersState.initial(state: InitialState(), settings: storage.getSuppliersSetting()));
 
-  void initState(bool isSelection) async{
-    final storeId = storage.getSelectedStoreId();
-    List<Supplier> allItems = await useCase.getAllByStoreId(storeId);
-    emit(state.copyWith(allItems : allItems, items: allItems, isSelection: isSelection));
+  void initState(bool isSelection){
+    emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection));
+    loadItems();
   }
   void searchTextChanged(String value){
     emit(state.copyWith(textSearch: value));
-    refreshData();
-  }
-  void refreshData(){
-    List<Supplier> items = state.allItems.where((element) => filterItem(element, state.textSearch)).toList();
-    emit(state.copyWith(items: items));
+    filter();
+    sort();
   }
   void resetSearchText(){
     emit(state.copyWith(textSearch: ""));
-    refreshData();
+    filter();
+    sort();
   }
   void onShowSearchBarMenuClicked(){
     emit(state.copyWith(showSearchBar: !state.showSearchBar));
+    resetSearchText();
   }
   bool hasSortOptions() {
     return (state.settings.sortByName != SortByText.no_sort);
@@ -47,45 +46,6 @@ class SuppliersCubit extends Cubit<SuppliersState> {
   }
   void onHelpMenuClick(){
     emit(state.copyWith(state: OpenHelpPageState()));
-  }
-  void onItemPressed(Supplier item) {
-    if (state.isSelection){
-      emit(state.copyWith());
-    }else{
-      emit(state.copyWith(state: EditSupplierState(item)));
-    }
-  }
-
-  void onItemLongPressed(Supplier supplier) async {
-    /*showDialog(
-        context: getContext(),
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            children: <Widget>[
-              SimpleDialogOption(
-                padding: EdgeInsets.all(16.0),
-                onPressed: () {
-                  Navigator.pop(getContext());
-                  if (supplier.numberDocument > 0) {
-                    showCanNotDeleteDialog();
-                  } else {
-                    showDeleteConfirmDialog(supplier);
-                  }
-                },
-                child: Text(AppLocalizations.of(getContext()).action_delete),
-              ),
-              SimpleDialogOption(
-                padding: EdgeInsets.all(16.0),
-                onPressed: () {
-                  //TODO
-                },
-                child: Text(
-                    AppLocalizations.of(getContext()).action_view_transaction),
-              )
-            ],
-          );
-        },
-        barrierDismissible: true);*/
   }
 
   void showCanNotDeleteDialog() {
@@ -105,64 +65,84 @@ class SuppliersCubit extends Cubit<SuppliersState> {
             ));*/
   }
 
-  void showDeleteConfirmDialog(Supplier supplier) {
-    /*showDialog(
-        context: getContext(),
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(
-                AppLocalizations.of(getContext()).notification_dialog_title),
-            content: Text(sprintf(
-                AppLocalizations.of(getContext())
-                    .message_confirm_delete_supplier,
-                [supplier.name])),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(getContext()),
-                  child: Text(AppLocalizations.of(getContext()).action_cancel)),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(getContext());
-                  presenter.delete(supplier.id);
-                },
-                child: Text(AppLocalizations.of(getContext()).action_ok),
-              )
-            ],
-          );
-        });*/
-  }
-
-
   bool filterItem(Supplier item, String textSearch) {
     return item.name.toLowerCase().contains(textSearch.toLowerCase());
   }
-  void onAddItem() {
-    emit(state.copyWith(state: AddSupplierState()));
+  void onAddButtonClicked() {
+    Supplier item = Supplier();
+    item.storeId = storage.getSelectedStoreId();
+    onAddItem(item);
   }
-
-  void addNewSupplier(Supplier result) {
-    List<Supplier> allItems  = [];
-    allItems.addAll(state.allItems);
-    allItems.add(result);
-    emit(state.copyWith(allItems: allItems));
-    refreshData();
-  }
-  void onModifySupplier(Supplier result){
-    List<Supplier> allItems  = [];
-    for (Supplier item in state.allItems){
-      if (item.id == result.id){
-        allItems.add(result);
-      }else{
-        allItems.add(item);
-      }
-    }
-    emit(state.copyWith(allItems: allItems));
-    refreshData();
+  void onAddItem(Supplier item){
+    emit(state.copyWith(state: SaveSupplierState(item)));
   }
 
   void setSettings(SuppliersSetting settings) {
     storage.setSuppliersSetting(settings);
     emit(state.copyWith(settings: settings));
-    refreshData();
+    sort();
+  }
+
+
+  void loadItems() async{
+    final storeId = storage.getSelectedStoreId();
+    List<Supplier> allItems = await useCase.getAllByStoreId(storeId);
+    emit(state.copyWith(allItems: allItems));
+    filter();
+    sort();
+  }
+  void filter(){
+    List<Supplier> items = filterSuppliers();
+    emit(state.copyWith(items: items));
+  }
+  List<Supplier> filterSuppliers(){
+    List<Supplier> results = state.allItems.where((element) => filterSupplier(element)).toList();
+    return results;
+  }
+  bool filterSupplier(Supplier item) {
+    if (state.textSearch.trim().isEmpty) {
+      return true;
+    }
+    return item.name.contains(state.textSearch);
+  }
+  void sort(){
+    List<Supplier> items = sortSuppliers();
+    emit(state.copyWith(items: items));
+  }
+  List<Supplier> sortSuppliers(){
+    List<SortItems<Supplier>> options = [];
+    switch (state.settings.sortByName) {
+      case SortByText.a_to_z:
+        {
+          options.add(SortByNameAToZ());
+          break;
+        }
+      case SortByText.z_to_a:
+        {
+          options.add(SortByNameZToA());
+          break;
+        }
+      default:
+        {}
+    }
+
+    if (options.isEmpty) {
+      options.add(SortByCreatedDate());
+    }
+    List<Supplier> items = [];
+    items.addAll(state.items);
+    items.sort((item1, item2) {
+      int compare = 0;
+      for (final option in options) {
+        compare = option.getResult(item1, item2);
+        if (compare != 0) break;
+      }
+      return compare;
+    });
+    return items;
+  }
+  delete(int id) async{
+    await useCase.delete(id);
+    loadItems();
   }
 }

@@ -37,14 +37,13 @@ class SuppliersRepositoryImpl implements SuppliersRepository {
   }
 
   @override
-  Future<int> getCount() {
-    // TODO: implement getCount
-    throw UnimplementedError();
-  }
-
-  @override
   Future<bool> update(Supplier item) {
     item.updatedDate = DateTime.now();
     return db.updateSupplier(item);
+  }
+
+  @override
+  Future<int> getCount(int storeId) {
+    return db.getCountSupplier(storeId);
   }
 }

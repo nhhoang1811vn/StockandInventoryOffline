@@ -7,10 +7,7 @@ import 'package:good_manager/domain/entities/good.dart';
 
 class InputQuantityGoodDialog extends StatefulWidget {
   final Good good;
-  final void Function(int quantity) onOK;
-  final void Function() onDismiss;
-
-  InputQuantityGoodDialog(this.good, this.onOK, this.onDismiss);
+  InputQuantityGoodDialog(this.good);
 
   @override
   State<StatefulWidget> createState() => InputQuantityGoodDialogState();
@@ -77,15 +74,13 @@ class InputQuantityGoodDialogState extends State<InputQuantityGoodDialog> {
         TextButton(
           child: Text(AppLocalizations.of(context)!.action_cancel),
           onPressed: () async {
-            widget.onDismiss();
             Navigator.of(context).pop();
           },
         ),
         TextButton(
           child: Text(AppLocalizations.of(context)!.action_ok),
           onPressed: () async {
-            widget.onOK(int.parse(quantityTextController.text));
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(int.parse(quantityTextController.text));
           },
         ),
       ],

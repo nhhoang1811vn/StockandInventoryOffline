@@ -1,41 +1,51 @@
-/*
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/presentation/pages/goods/good_item_row.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/selected_store_view.dart';
-import 'package:good_manager/data/repositories/goods_repository_impl.dart';
 import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/presentation/pages/pages.dart';
+import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
 
-import 'save_document_controller.dart';
-
+import 'components/save_document_form.dart';
 enum OverflowItemMenu { batchscan, sortby, help }
 
-class SaveDocumentPage extends View {
+class SaveDocumentPage extends StatelessWidget {
   final Document item;
 
   SaveDocumentPage(this.item) : super();
-
   @override
-  SaveDocumentPageView createState() => SaveDocumentPageView(item);
-}
+  Widget build(BuildContext context) {
+    context.read<SaveDocumentCubit>().init(item);
+    return Scaffold(
+        appBar: _buildAppBar(context),
+        body: Column(children: [
+          SelectedStoreView(),
+          Expanded(child: SaveDocumentForm(item: item))
+        ],),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => context.read<SaveDocumentCubit>().onAddGoodClicked(),
+        label:
+        Text(AppLocalizations.of(context)!.save_document_add_goods),
+        backgroundColor: Colors.blue,
+      ),
+    );
+  }
+  PreferredSize _buildAppBar(BuildContext context){
+    return PreferredSize(preferredSize : Size.fromHeight(UIConstants.appBarHeight), child: AppBar(
+        title: Text(item.type == DocumentType.incoming? AppLocalizations.of(context)!.save_document_incoming_title :AppLocalizations.of(context)!.save_document_outgoing_title),
+        actions: <Widget>[
+          InkWell(
+            onTap: () => context.read<SaveDocumentCubit>().onSaveClicked(),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.check),
+            ),
+          )
+        ]));
+  }
 
-class SaveDocumentPageView
-    extends ViewState<SaveDocumentPage, SaveDocumentController> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final Document item;
-
-  SaveDocumentPageView(this.item)
-      : super(SaveDocumentController(
-            DataAppRepository(),
-            DataDocumentRepository(),
-            DataDocumentTransactionRepository(),
-            DataGoodRepository(),
-            item));
-
-  Widget get body => Column(children: <Widget>[
+  /*Widget get body => Column(children: <Widget>[
         SelectedStoreView(),
         ExpansionTile(
           title: Text("Document Information"),
@@ -271,6 +281,5 @@ class SaveDocumentPageView
           },
           itemCount: controller.transactions.length);
     });
-  }
+  }*/
 }
-*/

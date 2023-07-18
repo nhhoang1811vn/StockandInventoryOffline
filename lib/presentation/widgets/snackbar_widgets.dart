@@ -13,3 +13,9 @@ SnackBar snackBarWhenSuccess() {
     backgroundColor: Colors.green,
   );
 }
+SnackBar snackBarWhenSuccessWithText(String text){
+  return SnackBar(
+    content: Text(text),
+    backgroundColor: Colors.green,
+  );
+}

@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/app/main.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:injectable/injectable.dart';
 
@@ -17,10 +16,22 @@ class SaveSupplierCubit extends Cubit<SaveSupplierState> {
   final SuppliersUseCase useCase;
   SaveSupplierCubit({required this.useCase}) : super(const SaveSupplierState.initial());
 
-  void init(Supplier? item){
-    if (item != null){
-      emit(state.copyWith(item: item));
-    }
+  void init(Supplier item){
+      SaveSupplierState initState;
+      if (item.id == -1){
+        initState = state.copyWith(item: item);
+      }else{
+        initState = state.copyWith(item: item,
+            name: NameInput.dirty(value: item.name),
+            description: item.description,
+            address: item.address,
+            email: Email.dirty(value: item.email),
+            phone: item.phone,
+            taxID: item.taxID,
+            bankDetails: item.bankDetail
+        );
+      }
+      emit(initState);
   }
 
   Future<bool> onWillPop() async {
@@ -55,12 +66,13 @@ class SaveSupplierCubit extends Cubit<SaveSupplierState> {
     if (validate){
       try{
         emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-        Supplier item;
-        if (state.item == null){
-          item = Supplier();
-        }else{
-          item = state.item!;
-        }
+        Supplier item = state.item!;
+        //Supplier item;
+        //if (state.item == null){
+        //  item = Supplier();
+        //}else{
+        //  item = state.item!;
+        //}
         item.name = state.name.value;
         item.description = state.description;
         item.address = state.address;
@@ -68,7 +80,7 @@ class SaveSupplierCubit extends Cubit<SaveSupplierState> {
         item.phone = state.phone;
         item.taxID = state.taxID;
         item.bankDetail = state.bankDetails;
-        item.storeId = storage.getSelectedStoreId();
+        //item.storeId = storage.getSelectedStoreId();
         if (item.id == -1){
           await useCase.insert(item);
         }else{

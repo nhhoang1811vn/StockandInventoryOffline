@@ -204,6 +204,14 @@ class DBHelper {
         .rawDelete('DELETE FROM $SUPPLIERS_TABLE_NAME WHERE id = ?', [id]);
     return res == 1;
   }
+  Future<int> getCountSupplier(int storeId) async {
+    var dbClient = await db;
+    var result = await dbClient.rawQuery(
+        "SELECT COUNT(*) FROM $SUPPLIERS_TABLE_NAME WHERE storeId = ?", [storeId]);
+
+    int? count = Sqflite.firstIntValue(result);
+    return count == null ? 0 : count;
+  }
 
   //CUSTOMER
   Future<List<Customer>> getCustomers() async {
@@ -289,7 +297,7 @@ class DBHelper {
     return res > 0;
   }
 
-  Future<List<Group>> getGroups(String storeId) async {
+  Future<List<Group>> getGroups(int storeId) async {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $GROUPS_TABLE_NAME where storeId = ?', [storeId]);
@@ -434,8 +442,7 @@ class DBHelper {
     return list.map((e) => Document.map(e)).toList();
   }
 
-  Future<List<Document>> getDocuments(String storeId) async {
-    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+  Future<List<Document>> getDocuments(int storeId) async {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $DOCUMENTS_TABLE_NAME where storeId = ?', [storeId]);
@@ -457,8 +464,7 @@ class DBHelper {
     return documents;
   }
 
-  Future<int> getCountDocument(String storeId) async {
-    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+  Future<int> getCountDocument(int storeId) async {
     var dbClient = await db;
     var result = await dbClient.rawQuery(
         "SELECT COUNT(*) FROM $DOCUMENTS_TABLE_NAME WHERE storeId = ?",
@@ -497,7 +503,6 @@ class DBHelper {
 
   //TRANSACTION
   Future<int> insertTransaction(DocumentTransaction item) async {
-    //item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     int res =
         await dbClient.insert(DOCUMENT_TRANSACTIONS_TABLE_NAME, item.toMap());
@@ -540,18 +545,20 @@ class DBHelper {
   }
 
   //EXPENSES
-  Future<double> getSumExpense(String storeId) async {
-    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+  Future<double> getSumExpense(int storeId) async {
     var dbClient = await db;
     var result = await dbClient.rawQuery(
         'SELECT SUM(amount) FROM $EXPENSES_TABLE_NAME WHERE storeId = ?',
         [storeId]);
-    double count = result[0]["SUM(amount)"] as double;
-    return count;
+    var value = result[0]["SUM(amount)"];
+    if (value == null){
+      return 0.0;
+    }else{
+      return value as double;
+    }
   }
 
-  Future<List<Expense>> getExpenses(String storeId) async {
-    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+  Future<List<Expense>> getExpenses(int storeId) async {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $EXPENSES_TABLE_NAME where storeId = ?', [storeId]);
@@ -565,9 +572,6 @@ class DBHelper {
 
   Future<int> insertExpense(Expense item) async {
     var dbClient = await db;
-    //item.createdDate = DateTime.now();
-    //item.updatedDate = DateTime.now();
-    //item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     int res = await dbClient.insert(EXPENSES_TABLE_NAME, item.toMap());
     return res;
   }
@@ -581,14 +585,22 @@ class DBHelper {
 
   Future<bool> updateExpense(Expense item) async {
     var dbClient = await db;
-    //item.updatedDate = DateTime.now();
     int res = await dbClient.update(EXPENSES_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id]);
     return res == 1;
   }
-
-  Future<int> insertDocument(Document document, List<DocumentTransaction> transactions) async{
-    //var storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+  Future<int> insertDocument(Document item) async {
+    var dbClient = await db;
+    int res = await dbClient.insert(DOCUMENTS_TABLE_NAME, item.toMap());
+    return res;
+  }
+  Future<bool> updateDocument(Document item) async {
+    var dbClient = await db;
+    int res = await dbClient.update(DOCUMENTS_TABLE_NAME, item.toMap(),
+        where: "id = ?", whereArgs: <int>[item.id]);
+    return res == 1;
+  }
+  /*Future<int> insertDocument(Document document, List<DocumentTransaction> transactions) async{
     var dbClient = await db;
     return dbClient.transaction((txn) async{
       //insert document
@@ -626,9 +638,9 @@ class DBHelper {
       }*/
       return documentId;
     });
-  }
+  }*/
   //udpate document
-  Future<bool> updateDocument(Document document, List<DocumentTransaction> transactions) async{
+  /*Future<bool> updateDocument(Document document, List<DocumentTransaction> transactions) async{
     //var storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     return dbClient.transaction((txn) async{
@@ -668,7 +680,7 @@ class DBHelper {
       }*/
       return res > 0;
     });
-  }
+  }*/
   Future<bool> deleteDocument(int id) async{
     //var storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;

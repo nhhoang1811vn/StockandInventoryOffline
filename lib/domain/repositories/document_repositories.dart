@@ -7,4 +7,7 @@ abstract class DocumentRepository
   Future<int> insertDocument(Document document, List<DocumentTransaction> transactions);
   Future<bool> updateDocument(Document document, List<DocumentTransaction> transactions);
   Future<bool> deleteDocument(int id);
+  Future<int> getCount(int storeId);
+
+  Future<List<Document>> getAllByStoreId(int storeId);
 }

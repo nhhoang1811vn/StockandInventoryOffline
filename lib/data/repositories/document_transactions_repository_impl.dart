@@ -53,14 +53,12 @@ class DocumentTransactionRepositoryImpl implements DocumentTransactionRepository
 
   @override
   Future<List<DocumentTransaction>> getTransactions(int documentId) {
-    // TODO: implement getTransactions
-    throw UnimplementedError();
+    return db.getTransactionsByDocumentId(documentId);
   }
 
   @override
   Future<int> insert(DocumentTransaction item) {
-    // TODO: implement insert
-    throw UnimplementedError();
+    return db.insertTransaction(item);
   }
 
   @override

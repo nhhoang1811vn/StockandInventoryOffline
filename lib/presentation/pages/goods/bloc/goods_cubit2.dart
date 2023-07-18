@@ -1,17 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
+import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/pages/goods/sort/sort_by_barcode_goods.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../data/storage.dart';
-import '../../../../domain/entities/document.dart';
 import '../../../../domain/entities/good.dart';
 import '../../../../domain/entities/goods_setting.dart';
 import '../../../../domain/entities/group.dart';
 import '../../../../domain/entities/search_goods_type.dart';
 import '../../../../domain/entities/sort_by_text.dart';
+import '../../../../domain/usecases/documents/document_usecases.dart';
 import '../../../../domain/usecases/goods/goods_usercases.dart';
 import '../../../../domain/usecases/groups/groups_usecases.dart';
 import '../../base/base_sort_items.dart';
@@ -27,13 +29,16 @@ class GoodsCubit extends Cubit<GoodsState> {
   final Storage storage;
   final GoodsUseCases goodsUseCase;
   final GroupsUseCases groupsUseCase;
+  final DocumentUseCases documentsUseCases;
   GoodsCubit({
     required this.storage,
     required this.goodsUseCase,
-    required this.groupsUseCase
+    required this.groupsUseCase,
+    required this.documentsUseCases
+
   }) : super(GoodsState.initial(state: InitialState(), settings: storage.getGoodsSetting()));
-  void initState(bool isSelection, DocumentType? documentType) async {
-    emit(state.copyWith(isSelection: isSelection, documentType: documentType));
+  void initState(bool isSelection, int? documentId, DocumentType? documentType) async {
+    emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection, documentId: documentId, documentType: documentType));
     loadItems();
   }
   void onSelectedGroupTapped(int index) {
@@ -57,13 +62,16 @@ class GoodsCubit extends Cubit<GoodsState> {
     item.directory = getDirectory();
     item.storeId = storage.getSelectedStoreId();
 
-    emit(state.copyWith(state: AddGoodState(item)));
+    emit(state.copyWith(state: SaveGoodState(item)));
   }
   String getDirectory(){
-    String result = "/";
+    String result = "";
     state.selectedGroups.forEach((element) {
-      result += element.id.toString() + "/";
+      result += "/" + element.id.toString();
     });
+    if (result.isEmpty){
+      result = "/";
+    }
     return result;
   }
   void onAddGroup() async {
@@ -84,11 +92,12 @@ class GoodsCubit extends Cubit<GoodsState> {
   }
   void onShowSearchBarMenuClicked(){
     emit(state.copyWith(showSearchBar: !state.showSearchBar));
+    resetSearchText();
   }
   void onSortMenuClicked(){
     emit(state.copyWith(state: OpenSortDialogListState()));
   }
-  void openHelpPage() async {
+  void onHelpMenuClicked() async {
     emit(state.copyWith(state: OpenHelpPageState()));
   }
   String getSearchTextHint(BuildContext context) {
@@ -120,10 +129,12 @@ class GoodsCubit extends Cubit<GoodsState> {
   void resetSearchText() {
     emit(state.copyWith(textSearch: ""));
     filter();
+    sort();
   }
   void onSearchTextChanged(String newValue) {
     emit(state.copyWith(textSearch: newValue));
     filter();
+    sort();
   }
   void onBackPressed() {
     //Navigator.of(getContext()).pop(transactions);
@@ -262,12 +273,13 @@ class GoodsCubit extends Cubit<GoodsState> {
     });
     return items;
   }
-  Future<bool> deleteGood(int id) async{
-    return await goodsUseCase.delete(id);
+  deleteGood(int id) async{
+    await goodsUseCase.delete(id);
+    loadItems();
   }
-  Future<bool> deleteGroup(int id) async{
+  /*Future<bool> deleteGroup(int id) async{
     return await groupsUseCase.delete(id);
-  }
+  }*/
   List<Group> filterGroups(){
     List<Group> results = state.allGroups.where((element) => filterGroup(element)).toList();
     return results;
@@ -324,6 +336,33 @@ class GoodsCubit extends Cubit<GoodsState> {
               item.description.contains(state.textSearch) ||
               item.barCode.contains(state.textSearch);
         }
+    }
+  }
+
+  void moveGoodToGroup(Good item, Group group) {
+    if (group.id == -1){
+      item.directory = "/";
+    } else if (group.directory == "/"){
+      item.directory = "/" + group.id.toString();
+    }else{
+      item.directory = group.directory + "/" + group.id.toString();
+    }
+    goodsUseCase.update(item);
+    loadItems();
+  }
+
+  void addTransaction(Good good, int quantity) async {
+    DocumentTransaction transaction = DocumentTransaction();
+    transaction.documentId = state.documentId!;
+    transaction.goodId = good.id;
+    transaction.quantity = quantity;
+    transaction.type = state.documentType!;
+    transaction.storeId = storage.getSelectedStoreId();
+    int id = await documentsUseCases.insertTransaction(transaction);
+    if (id > 0){
+      emit(state.copyWith(state: InsertTransactionSuccessState()));
+    }else{
+      emit(state.copyWith(state: InsertTransactionFailedState()));
     }
   }
 }

@@ -5,4 +5,5 @@ import '../../entities/good.dart';
 abstract class GoodsUseCases extends ItemsUseCase<Good>{
   Future<Good> getGoodsByBarCode(String barCode);
   Future<List<Good>> getGoodsByDirectory(String directory);
+  Future<int> getCount(int storeId);
 }

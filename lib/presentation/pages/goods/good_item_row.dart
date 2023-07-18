@@ -11,11 +11,10 @@ class GoodItemRow extends StatelessWidget {
   final void Function(Good good) onGoodTapped;
   final void Function(Good good) onGoodLongPressed;
   final bool isSelection;
-  final DocumentType? _documentType;
 
   GoodItemRow(
       this.item, this.quantity, this.onGoodTapped, this.onGoodLongPressed,
-      [this.isSelection = false, this._documentType]);
+      [this.isSelection = false]);
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +51,6 @@ class GoodItemRow extends StatelessWidget {
         ),
         trailing: Row(mainAxisSize: MainAxisSize.min, children: [
           Text(quantity.toString(), style: TextStyle(fontSize: 16)),
-          (isSelection && item.pendingQuantity != 0)
-              ? getPendingView()
-              : Container()
         ]),
         leading: item.files.isNotEmpty
             ? getAvatarWidget(item.files.first)
@@ -78,30 +74,4 @@ class GoodItemRow extends StatelessWidget {
         UIConstants.goodIconPath,
         width: 36,
       );
-
-  Widget getPendingView() {
-    if (_documentType == DocumentType.incoming) {
-      if (item.pendingQuantity > 0) {
-        return getGreenTextView(item.pendingQuantity);
-      } else {
-        return getRedTextView(-item.pendingQuantity);
-      }
-    } else {
-      if (item.pendingQuantity > 0) {
-        return getRedTextView(item.pendingQuantity);
-      } else {
-        return getGreenTextView(-item.pendingQuantity);
-      }
-    }
-  }
-
-  Widget getGreenTextView(int quantity) {
-    return Text(" + " + quantity.toString(),
-        style: TextStyle(fontSize: 16, color: Colors.green));
-  }
-
-  Widget getRedTextView(int quantity) {
-    return Text(" - " + quantity.toString(),
-        style: TextStyle(fontSize: 16, color: Colors.red));
-  }
 }

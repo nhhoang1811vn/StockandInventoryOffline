@@ -24,7 +24,6 @@ class StoresUseCaseImpl implements StoresUseCase{
 
   @override
   Future<List<Store>> getAll() {
-    // TODO: implement getAll
-    throw UnimplementedError();
+    return repository.getAll();
   }
 }

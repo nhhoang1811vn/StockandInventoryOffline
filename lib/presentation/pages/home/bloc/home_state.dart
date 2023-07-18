@@ -1,9 +1,13 @@
-import 'package:good_manager/presentation/pages/base/base_state.dart';
-
-abstract class HomeState extends BaseState {}
-class OpenGoodsState extends HomeState{}
-class OpenDocumentsState extends HomeState {}
-class OpenSuppliersState extends HomeState{}
-class OpenCustomersState extends HomeState{}
-class OpenExpensesState extends HomeState {}
-class OpenReportState extends HomeState {}
+part of 'home_cubit.dart';
+@freezed
+class HomeState with _$HomeState {
+  const factory HomeState.initial({
+    required BaseState state,
+    @Default(0) int countGood,
+    @Default(0) int quantityGood,
+    @Default(0) int countDocument,
+    @Default(0) int countSupplier,
+    @Default(0) int countCustomer,
+    @Default(0) double sumExpense,
+  }) = _Initial;
+}

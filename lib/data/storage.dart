@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/domain/entities/expenses_setting.dart';
 import 'package:good_manager/domain/entities/goods_setting.dart';
+import 'package:good_manager/domain/entities/stores_setting.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,6 +22,12 @@ class Storage{
     }
     if (!prefs.containsKey(StorageKeys.ExpensesSetting)){
       setExpensesSetting(ExpensesSetting.getDefault());
+    }
+    if (!prefs.containsKey(StorageKeys.DocumentsSetting)){
+      setDocumentsSetting(DocumentsSetting.getDefault());
+    }
+    if (!prefs.containsKey(StorageKeys.StoresSetting)){
+      setStoresSetting(StoresSetting.getDefault());
     }
   }
   int getSelectedStoreId() {
@@ -69,6 +77,30 @@ class Storage{
     Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.ExpensesSetting)!);
     return ExpensesSetting.fromJson(json);
   }
+  void setStoresSetting(StoresSetting settings){
+    prefs.setString(StorageKeys.StoresSetting, jsonEncode(settings.toJson()));
+  }
+  StoresSetting getStoresSetting(){
+    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.StoresSetting)!);
+    return StoresSetting.fromJson(json);
+  }
+
+  void setDocumentsSetting(DocumentsSetting settings){
+    prefs.setString(StorageKeys.DocumentsSetting, jsonEncode(settings.toJson()));
+  }
+  DocumentsSetting getDocumentsSetting(){
+    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.DocumentsSetting)!);
+    return DocumentsSetting.fromJson(json);
+  }
+
+  int getAutoDocumentNo(int storeId){
+    int? value = prefs.getInt(StorageKeys.AutoDocumentName + storeId.toString());
+    if (value == null){
+      return 1;
+    }else{
+      return value + 1;
+    }
+  }
 }
 class StorageKeys{
   static const String SelectedStoreId = "SelectedStoreId";
@@ -76,7 +108,11 @@ class StorageKeys{
   static const String FirstTime = "FirstTime";
   static const String LanguageCode = "LanguageCode";
 
+  static const String StoresSetting = "StoresSetting";
   static const String SuppliersSetting = "SuppliersSetting";
   static const String GoodsSetting = "GoodsSetting";
   static const String ExpensesSetting = "ExpensesSetting";
+  static const String DocumentsSetting = "DocumentsSetting";
+
+  static const String AutoDocumentName = "AutoDocumentName";
 }

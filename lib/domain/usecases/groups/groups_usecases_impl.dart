@@ -30,4 +30,8 @@ class GroupsUseCaseImpl implements GroupsUseCases{
     // TODO: implement getAll
     throw UnimplementedError();
   }
+  @override
+  Future<List<Group>> getAllByStoreId(int storeId) {
+    return repository.getAllByStoreId(storeId);
+  }
 }

@@ -49,4 +49,8 @@ class GroupsRepositoryImpl implements GroupsRepository {
     int storeId = storage.getSelectedStoreId();
     return db.getGroupsByDirectory(storeId, directory);
   }
+  @override
+  Future<List<Group>> getAllByStoreId(int storeId) {
+    return db.getGroups(storeId);
+  }
 }

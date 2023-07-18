@@ -1,8 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/data/storage.dart';
-import 'package:good_manager/presentation/pages/home/home_view.dart';
+import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
+import 'package:good_manager/presentation/pages/home/home_page.dart';
 import 'package:good_manager/presentation/pages/onboarding/on_boarding_page.dart';
 import 'package:good_manager/presentation/router.dart';
 
@@ -24,6 +26,10 @@ class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return MyAppState();
+  }
+  static void setLocale(BuildContext context, String code) async {
+    MyAppState? state = context.findAncestorStateOfType<MyAppState>();
+    state?.changeLanguage(code);
   }
 }
 
@@ -48,7 +54,17 @@ class MyAppState extends State<MyApp> {
     }
     return _temp;
   }
+  changeLanguage(String code) {
+    setState(() {
+      _languageCode = code;
+    });
+  }
 
+  Widget _homePage(){
+    return BlocProvider(
+      create: (context) => getIt<HomeCubit>(),
+      child:  HomePage(),);
+  }
   @override
   Widget build(BuildContext context) {
     if (_languageCode == null || firstTime == null) {
@@ -66,7 +82,7 @@ class MyAppState extends State<MyApp> {
             //contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
           )
         ),
-        home: firstTime! ? OnBoardingPage() : HomePage(),
+        home: firstTime! ? OnBoardingPage() : _homePage(),
         onGenerateRoute: _router.getRoute,
         navigatorObservers: [_router.routeObserver],
         locale: locale(_languageCode!),
