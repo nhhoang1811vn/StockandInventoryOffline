@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../domain/entities/models/name.dart';
 import '../../../../domain/entities/store.dart';
+import '../../base/base_state.dart';
 
 part 'save_store_cubit.freezed.dart';
 part 'save_store_state.dart';
@@ -13,7 +14,7 @@ part 'save_store_state.dart';
 @injectable
 class SaveStoreCubit extends Cubit<SaveStoreState> {
   final StoresUseCase useCase;
-  SaveStoreCubit({required this.useCase}) : super(const SaveStoreState.initial());
+  SaveStoreCubit({required this.useCase}) : super(SaveStoreState.initial(state: InitialState()));
 
   void init(Store item){
     SaveStoreState initState;
@@ -43,7 +44,7 @@ class SaveStoreCubit extends Cubit<SaveStoreState> {
     final validate = Formz.validate([state.name]);
     if (validate){
       try{
-        emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+        //emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
         Store item = state.item!;
         item.name = state.name.value;
         item.description = state.description;
@@ -52,11 +53,9 @@ class SaveStoreCubit extends Cubit<SaveStoreState> {
         }else{
           await useCase.update(item);
         }
-        emit(state.copyWith(status: FormzSubmissionStatus.success, item: item));
+        emit(state.copyWith(state: SaveItemSuccessful(), item: item));
       } catch(error){
-        emit(state.copyWith(
-            exceptionError: "Unexpected error please try again later",
-            status: FormzSubmissionStatus.failure));
+        emit(state.copyWith(state: SaveItemError(error.toString())));
       }
     }else{
       emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));

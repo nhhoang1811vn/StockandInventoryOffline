@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:flutter_calculator/flutter_calculator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/good.dart';
+import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
+import 'package:sprintf/sprintf.dart';
 
 class InputQuantityGoodDialog extends StatefulWidget {
   final Good good;
@@ -21,9 +23,24 @@ class InputQuantityGoodDialogState extends State<InputQuantityGoodDialog> {
     quantityTextController.text = "1";
   }
 
-  void _showCalculatorDialog(BuildContext context) async {
-    /*final result = await showCalculator(context: context) ?? 0;
-    quantityTextController.text = result.toInt().toString();*/
+  void showCalculatorPopup(BuildContext context) async {
+    var calc = SimpleCalculator(
+      value: double.parse(quantityTextController.text),
+      onChanged: (key, value, expression) {
+        quantityTextController.text = value!.toInt().toString();
+        //context.read<SaveGoodCubit>().quantityChanged(quantityTextController.text);
+      },
+      theme: const CalculatorThemeData(
+        displayColor: Colors.white,
+        displayStyle: const TextStyle(fontSize: 20, color: Colors.blue),
+      ),
+    );
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext context) {
+          return SizedBox(height: MediaQuery.of(context).size.height * 0.75, child: calc);
+        });
   }
 
   @override
@@ -37,9 +54,9 @@ class InputQuantityGoodDialogState extends State<InputQuantityGoodDialog> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(widget.good.name),
-                Text(widget.good.description),
-                Text(widget.good.barCode),
-                //Text(sprintf(AppLocalizations.of(context)!.in_stock_text, [widget.good.quantity])),
+                widget.good.description.isNotEmpty ? Text(widget.good.description) : Container(),
+                widget.good.barCode.isNotEmpty ? Text(widget.good.barCode) : Container(),
+                Text(sprintf(AppLocalizations.of(context)!.in_stock_text, [widget.good.quantity])),
                 Row(
                   children: [
                     Expanded(
@@ -55,13 +72,7 @@ class InputQuantityGoodDialogState extends State<InputQuantityGoodDialog> {
                         )),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: IconButton(
-                        icon: Image.asset(
-                          UIConstants.calculatorIconPath,
-                          width: 24,
-                        ),
-                        onPressed: () => _showCalculatorDialog(context),
-                      ),
+                      child: CircleButton(UIConstants.calculatorIconData, () => showCalculatorPopup(context))
                     )
                   ],
                 )

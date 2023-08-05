@@ -16,6 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$SaveSupplierState {
+  BaseState get state => throw _privateConstructorUsedError;
   NameInput get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get address => throw _privateConstructorUsedError;
@@ -23,12 +24,12 @@ mixin _$SaveSupplierState {
   String get phone => throw _privateConstructorUsedError;
   String get taxID => throw _privateConstructorUsedError;
   String get bankDetails => throw _privateConstructorUsedError;
-  FormzSubmissionStatus get status => throw _privateConstructorUsedError;
   String get exceptionError => throw _privateConstructorUsedError;
   Supplier? get item => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
+            BaseState state,
             NameInput name,
             String description,
             String address,
@@ -36,7 +37,6 @@ mixin _$SaveSupplierState {
             String phone,
             String taxID,
             String bankDetails,
-            FormzSubmissionStatus status,
             String exceptionError,
             Supplier? item)
         initial,
@@ -45,6 +45,7 @@ mixin _$SaveSupplierState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
+            BaseState state,
             NameInput name,
             String description,
             String address,
@@ -52,7 +53,6 @@ mixin _$SaveSupplierState {
             String phone,
             String taxID,
             String bankDetails,
-            FormzSubmissionStatus status,
             String exceptionError,
             Supplier? item)?
         initial,
@@ -61,6 +61,7 @@ mixin _$SaveSupplierState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
+            BaseState state,
             NameInput name,
             String description,
             String address,
@@ -68,7 +69,6 @@ mixin _$SaveSupplierState {
             String phone,
             String taxID,
             String bankDetails,
-            FormzSubmissionStatus status,
             String exceptionError,
             Supplier? item)?
         initial,
@@ -104,14 +104,14 @@ abstract class $SaveSupplierStateCopyWith<$Res> {
       _$SaveSupplierStateCopyWithImpl<$Res, SaveSupplierState>;
   @useResult
   $Res call(
-      {NameInput name,
+      {BaseState state,
+      NameInput name,
       String description,
       String address,
       Email email,
       String phone,
       String taxID,
       String bankDetails,
-      FormzSubmissionStatus status,
       String exceptionError,
       Supplier? item});
 }
@@ -129,6 +129,7 @@ class _$SaveSupplierStateCopyWithImpl<$Res, $Val extends SaveSupplierState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? state = null,
     Object? name = null,
     Object? description = null,
     Object? address = null,
@@ -136,11 +137,14 @@ class _$SaveSupplierStateCopyWithImpl<$Res, $Val extends SaveSupplierState>
     Object? phone = null,
     Object? taxID = null,
     Object? bankDetails = null,
-    Object? status = null,
     Object? exceptionError = null,
     Object? item = freezed,
   }) {
     return _then(_value.copyWith(
+      state: null == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
+              as BaseState,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -169,10 +173,6 @@ class _$SaveSupplierStateCopyWithImpl<$Res, $Val extends SaveSupplierState>
           ? _value.bankDetails
           : bankDetails // ignore: cast_nullable_to_non_nullable
               as String,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as FormzSubmissionStatus,
       exceptionError: null == exceptionError
           ? _value.exceptionError
           : exceptionError // ignore: cast_nullable_to_non_nullable
@@ -194,14 +194,14 @@ abstract class _$$_InitialCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {NameInput name,
+      {BaseState state,
+      NameInput name,
       String description,
       String address,
       Email email,
       String phone,
       String taxID,
       String bankDetails,
-      FormzSubmissionStatus status,
       String exceptionError,
       Supplier? item});
 }
@@ -216,6 +216,7 @@ class __$$_InitialCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? state = null,
     Object? name = null,
     Object? description = null,
     Object? address = null,
@@ -223,11 +224,14 @@ class __$$_InitialCopyWithImpl<$Res>
     Object? phone = null,
     Object? taxID = null,
     Object? bankDetails = null,
-    Object? status = null,
     Object? exceptionError = null,
     Object? item = freezed,
   }) {
     return _then(_$_Initial(
+      state: null == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
+              as BaseState,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -256,10 +260,6 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.bankDetails
           : bankDetails // ignore: cast_nullable_to_non_nullable
               as String,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as FormzSubmissionStatus,
       exceptionError: null == exceptionError
           ? _value.exceptionError
           : exceptionError // ignore: cast_nullable_to_non_nullable
@@ -276,17 +276,19 @@ class __$$_InitialCopyWithImpl<$Res>
 
 class _$_Initial implements _Initial {
   const _$_Initial(
-      {this.name = const NameInput.pure(),
+      {required this.state,
+      this.name = const NameInput.pure(),
       this.description = '',
       this.address = '',
       this.email = const Email.pure(),
       this.phone = '',
       this.taxID = '',
       this.bankDetails = '',
-      this.status = FormzSubmissionStatus.initial,
       this.exceptionError = '',
       this.item});
 
+  @override
+  final BaseState state;
   @override
   @JsonKey()
   final NameInput name;
@@ -310,16 +312,13 @@ class _$_Initial implements _Initial {
   final String bankDetails;
   @override
   @JsonKey()
-  final FormzSubmissionStatus status;
-  @override
-  @JsonKey()
   final String exceptionError;
   @override
   final Supplier? item;
 
   @override
   String toString() {
-    return 'SaveSupplierState.initial(name: $name, description: $description, address: $address, email: $email, phone: $phone, taxID: $taxID, bankDetails: $bankDetails, status: $status, exceptionError: $exceptionError, item: $item)';
+    return 'SaveSupplierState.initial(state: $state, name: $name, description: $description, address: $address, email: $email, phone: $phone, taxID: $taxID, bankDetails: $bankDetails, exceptionError: $exceptionError, item: $item)';
   }
 
   @override
@@ -327,6 +326,7 @@ class _$_Initial implements _Initial {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_Initial &&
+            (identical(other.state, state) || other.state == state) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -336,15 +336,14 @@ class _$_Initial implements _Initial {
             (identical(other.taxID, taxID) || other.taxID == taxID) &&
             (identical(other.bankDetails, bankDetails) ||
                 other.bankDetails == bankDetails) &&
-            (identical(other.status, status) || other.status == status) &&
             (identical(other.exceptionError, exceptionError) ||
                 other.exceptionError == exceptionError) &&
             (identical(other.item, item) || other.item == item));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, name, description, address,
-      email, phone, taxID, bankDetails, status, exceptionError, item);
+  int get hashCode => Object.hash(runtimeType, state, name, description,
+      address, email, phone, taxID, bankDetails, exceptionError, item);
 
   @JsonKey(ignore: true)
   @override
@@ -356,6 +355,7 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
+            BaseState state,
             NameInput name,
             String description,
             String address,
@@ -363,19 +363,19 @@ class _$_Initial implements _Initial {
             String phone,
             String taxID,
             String bankDetails,
-            FormzSubmissionStatus status,
             String exceptionError,
             Supplier? item)
         initial,
   }) {
-    return initial(name, description, address, email, phone, taxID, bankDetails,
-        status, exceptionError, item);
+    return initial(state, name, description, address, email, phone, taxID,
+        bankDetails, exceptionError, item);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
+            BaseState state,
             NameInput name,
             String description,
             String address,
@@ -383,19 +383,19 @@ class _$_Initial implements _Initial {
             String phone,
             String taxID,
             String bankDetails,
-            FormzSubmissionStatus status,
             String exceptionError,
             Supplier? item)?
         initial,
   }) {
-    return initial?.call(name, description, address, email, phone, taxID,
-        bankDetails, status, exceptionError, item);
+    return initial?.call(state, name, description, address, email, phone, taxID,
+        bankDetails, exceptionError, item);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
+            BaseState state,
             NameInput name,
             String description,
             String address,
@@ -403,15 +403,14 @@ class _$_Initial implements _Initial {
             String phone,
             String taxID,
             String bankDetails,
-            FormzSubmissionStatus status,
             String exceptionError,
             Supplier? item)?
         initial,
     required TResult orElse(),
   }) {
     if (initial != null) {
-      return initial(name, description, address, email, phone, taxID,
-          bankDetails, status, exceptionError, item);
+      return initial(state, name, description, address, email, phone, taxID,
+          bankDetails, exceptionError, item);
     }
     return orElse();
   }
@@ -447,17 +446,19 @@ class _$_Initial implements _Initial {
 
 abstract class _Initial implements SaveSupplierState {
   const factory _Initial(
-      {final NameInput name,
+      {required final BaseState state,
+      final NameInput name,
       final String description,
       final String address,
       final Email email,
       final String phone,
       final String taxID,
       final String bankDetails,
-      final FormzSubmissionStatus status,
       final String exceptionError,
       final Supplier? item}) = _$_Initial;
 
+  @override
+  BaseState get state;
   @override
   NameInput get name;
   @override
@@ -472,8 +473,6 @@ abstract class _Initial implements SaveSupplierState {
   String get taxID;
   @override
   String get bankDetails;
-  @override
-  FormzSubmissionStatus get status;
   @override
   String get exceptionError;
   @override

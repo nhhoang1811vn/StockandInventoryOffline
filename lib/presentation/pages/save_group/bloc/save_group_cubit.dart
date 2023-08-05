@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/usecases/groups/groups_usecases.dart';
+import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../domain/entities/group.dart';
@@ -12,7 +13,7 @@ part 'save_group_state.dart';
 @injectable
 class SaveGroupCubit extends Cubit<SaveGroupState>{
   final GroupsUseCases useCase;
-  SaveGroupCubit({required this.useCase}) : super(const SaveGroupState.initial());
+  SaveGroupCubit({required this.useCase}) : super(SaveGroupState.initial(state: InitialState()));
   void init(Group item){
     SaveGroupState initState;
     if (item.id == -1){
@@ -31,7 +32,7 @@ class SaveGroupCubit extends Cubit<SaveGroupState>{
   void onSaveClicked() async{
     final validate = Formz.validate([state.name]);
     if (validate){
-      emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+      //emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       Group item = state.item!;
       item.name = state.name.value;
       item.description = state.description;
@@ -42,7 +43,7 @@ class SaveGroupCubit extends Cubit<SaveGroupState>{
       }else{
         await useCase.update(item);
       }
-      emit(state.copyWith(status: FormzSubmissionStatus.success));
+      emit(state.copyWith(state: SaveItemSuccessful()));
     }else{
       emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));
     }

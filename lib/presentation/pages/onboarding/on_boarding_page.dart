@@ -33,7 +33,7 @@ class OnBoardingPage extends StatelessWidget {
     return BlocProvider(create: (context) => cubit, child: BlocConsumer<OnBoardingCubit, OnBoardingState>(listener: (context, state){
       if (state.status.isFailure) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(snackBarWhenFailure(snackBarFailureText: state.exceptionError));
+            .showSnackBar(snackBarWhenFailureWithText(state.exceptionError));
       } else if (state.status.isSuccess) {
         Navigator.of(context).pushReplacementNamed(Pages.home);
       }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:formz/formz.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
+import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
 
 import '../../../../presentation/widgets/snackbar_widgets.dart';
@@ -20,10 +20,10 @@ class SaveGroupForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<SaveGroupCubit, SaveGroupState>(
         listener: (context, state) {
-          if (state.status.isFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(snackBarFailureText: state.exceptionError));
-          } else if (state.status.isSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess());
+          if (state.state is SaveItemError) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+          } else if (state.state is SaveItemSuccessful) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
             Navigator.of(context).pop(state.item);
           }
         },
@@ -54,25 +54,18 @@ class SaveGroupForm extends StatelessWidget {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               AppLocalizations.of(context)!.field_images,
-                              style: TextStyle(color: UIConstants.primaryColor, fontSize: 16),
+                              style: TextStyle(color: AppColors.secondaryColor, fontSize: 16),
                             ),
                           ),
                           SizedBox(height: 12),
+
                           ImagesPreviewView(state.files, false, context
                               .read<SaveGroupCubit>()
                               .onImagesChanged)
 
                         ],
                       ),
-                    )),
-                state.status.isInProgress
-                    ? const Positioned(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-                    : Container()
+                    ))
               ],
             ));
   }

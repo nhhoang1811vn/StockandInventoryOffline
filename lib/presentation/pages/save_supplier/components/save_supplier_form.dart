@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:formz/formz.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/models/email.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
+import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart';
 
 import '../../../../presentation/widgets/snackbar_widgets.dart';
@@ -20,10 +20,10 @@ class SaveSupplierForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<SaveSupplierCubit, SaveSupplierState>(
         listener: (context, state) {
-          if (state.status.isFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(snackBarFailureText: state.exceptionError));
-          } else if (state.status.isSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess());
+          if (state.state is SaveItemError) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+          } else if (state.state is SaveItemSuccessful) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
             Navigator.of(context).pop(state.item);
           }
         },
@@ -76,15 +76,7 @@ class SaveSupplierForm extends StatelessWidget {
                           keyboardType: TextInputType.text),
                     ],
                   ),
-                )),
-                state.status.isInProgress
-                    ? const Positioned(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    : Container()
+                ))
               ],
             ));
   }

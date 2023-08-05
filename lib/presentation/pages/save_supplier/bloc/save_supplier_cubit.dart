@@ -7,6 +7,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../domain/entities/models/email.dart';
 import '../../../../domain/entities/models/name.dart';
 import '../../../../domain/usecases/suppliers/suppliers_usecases.dart';
+import '../../base/base_state.dart';
 
 part 'save_supplier_cubit.freezed.dart';
 part 'save_supplier_state.dart';
@@ -14,7 +15,7 @@ part 'save_supplier_state.dart';
 @injectable
 class SaveSupplierCubit extends Cubit<SaveSupplierState> {
   final SuppliersUseCase useCase;
-  SaveSupplierCubit({required this.useCase}) : super(const SaveSupplierState.initial());
+  SaveSupplierCubit({required this.useCase}) : super(SaveSupplierState.initial(state: InitialState()));
 
   void init(Supplier item){
       SaveSupplierState initState;
@@ -65,14 +66,8 @@ class SaveSupplierCubit extends Cubit<SaveSupplierState> {
     final validate = Formz.validate([state.name]);
     if (validate){
       try{
-        emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+        //emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
         Supplier item = state.item!;
-        //Supplier item;
-        //if (state.item == null){
-        //  item = Supplier();
-        //}else{
-        //  item = state.item!;
-        //}
         item.name = state.name.value;
         item.description = state.description;
         item.address = state.address;
@@ -80,17 +75,14 @@ class SaveSupplierCubit extends Cubit<SaveSupplierState> {
         item.phone = state.phone;
         item.taxID = state.taxID;
         item.bankDetail = state.bankDetails;
-        //item.storeId = storage.getSelectedStoreId();
         if (item.id == -1){
           await useCase.insert(item);
         }else{
           await useCase.update(item);
         }
-        emit(state.copyWith(status: FormzSubmissionStatus.success, item: item));
+        emit(state.copyWith(state: SaveItemSuccessful()));
       } catch(error){
-        emit(state.copyWith(
-            exceptionError: "Unexpected error please try again later",
-            status: FormzSubmissionStatus.failure));
+        emit(state.copyWith(state: SaveItemError(error.toString())));
       }
     }else{
       emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));

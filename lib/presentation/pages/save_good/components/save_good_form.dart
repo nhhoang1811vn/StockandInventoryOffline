@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:formz/formz.dart';
+import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
+import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.dart';
+import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
 
 import '../../../../domain/entities/good.dart';
 import '../../../../presentation/widgets/snackbar_widgets.dart';
@@ -13,70 +16,86 @@ import '../../../widgets/images_preview/images_preview_view.dart';
 
 class SaveGoodForm extends StatelessWidget {
   final Good item;
-  final bool enableAddTransactions;
+  final int quantity;
 
-  const SaveGoodForm({Key? key, required this.item, required this.enableAddTransactions}) : super(key: key);
+  final quantityTextController = TextEditingController();
 
+  SaveGoodForm({Key? key, required this.item, required this.quantity}) : super(key: key);
+
+  void showCalculatorPopup(BuildContext context){
+    var calc = SimpleCalculator(
+      value: double.parse(quantityTextController.text),
+      onChanged: (key, value, expression) {
+        quantityTextController.text = value!.toInt().toString();
+        context.read<SaveGoodCubit>().quantityChanged(quantityTextController.text);
+      },
+      theme: const CalculatorThemeData(
+        displayColor: Colors.white,
+        displayStyle: const TextStyle(fontSize: 20, color: Colors.blue),
+      ),
+    );
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext context) {
+          return SizedBox(height: MediaQuery.of(context).size.height * 0.75, child: calc);
+        });
+  }
   @override
   Widget build(BuildContext context) {
+    quantityTextController.text = quantity.toString();
     return BlocConsumer<SaveGoodCubit, SaveGoodState>(
+      listenWhen: (state1, state2){
+        return state1.state != state2.state;
+      },
         listener: (context, state) {
-          if (state.status.isFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(snackBarFailureText: state.exceptionError));
-          } else if (state.status.isSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess());
-            Navigator.of(context).pop(state.item);
+          if (state.state is SaveItemError) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+          } else if (state.state is SaveItemSuccessful) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
+            Navigator.of(context).pop({"item": state.item, "quantity": state.quantity});
+          } else if (state.state is OpenCalculatorToInputQuantityState) {
+            showCalculatorPopup(context);
           }
         },
-        builder: (context, state) => Stack(
-              children: [
-                Positioned.fill(
-                    child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(UIConstants.screenSpace),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      AppTextField(
-                          labelText: AppLocalizations.of(context)!.field_name,
-                          initialValue: state.name.value,
-                          onChanged: (value) => context.read<SaveGoodCubit>().nameChanged(value),
-                          keyboardType: TextInputType.name,
-                          error: state.name.displayError?.text(context)),
-                      AppTextField(
-                          labelText: AppLocalizations.of(context)!.field_desc,
-                          initialValue: state.description,
-                          onChanged: (value) => context.read<SaveGoodCubit>().descriptionChanged(value),
-                          keyboardType: TextInputType.name),
-                      _buildBarCode(context, state),
-                      //SizedBox(height: 12),
-                      //_buildQuantity(context, state),
-                      SizedBox(height: 12),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          AppLocalizations.of(context)!.field_images,
-                          style: TextStyle(color: UIConstants.primaryColor, fontSize: 16),
-                        ),
-                      ),
-                      SizedBox(height: 12),
-                      ImagesPreviewView(state.files, true, context.read<SaveGoodCubit>().onImagesChanged),
-
-                    ],
+        builder: (context, state) => SingleChildScrollView(
+              padding: const EdgeInsets.all(UIConstants.screenSpace),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  AppTextField(
+                      labelText: AppLocalizations.of(context)!.field_name,
+                      initialValue: state.name.value,
+                      onChanged: (value) => context.read<SaveGoodCubit>().nameChanged(value),
+                      keyboardType: TextInputType.name,
+                      error: state.name.displayError?.text(context)),
+                  AppTextField(
+                      labelText: AppLocalizations.of(context)!.field_desc,
+                      initialValue: state.description,
+                      onChanged: (value) => context.read<SaveGoodCubit>().descriptionChanged(value),
+                      keyboardType: TextInputType.name),
+                  _buildBarCode(context, state),
+                  if (quantity > 0)
+                    Column(
+                      children: [SizedBox(height: 12), _buildQuantity(context, state)],
+                    ),
+                  SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      AppLocalizations.of(context)!.field_images,
+                      style: TextStyle(color: AppColors.secondaryColor, fontSize: 16),
+                    ),
                   ),
-                )),
-                state.status.isInProgress
-                    ? const Positioned(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    : Container()
-              ],
+                  SizedBox(height: 12),
+                  ImagesPreviewView(state.files, true, context.read<SaveGoodCubit>().onImagesChanged),
+                ],
+              ),
             ));
   }
-  Widget _buildBarCode(BuildContext context, SaveGoodState state){
+
+  Widget _buildBarCode(BuildContext context, SaveGoodState state) {
     return Row(
       children: [
         Expanded(
@@ -88,84 +107,26 @@ class SaveGoodForm extends StatelessWidget {
         ),
         Align(
             alignment: Alignment.centerRight,
-            child: MaterialButton(
-              minWidth: 24,
-              //onPressed: controller.onInputBarCodePressed,
-              color: Colors.blue,
-              textColor: Colors.white,
-              child: Icon(
-                Icons.barcode_reader,
-                size: 24,
-              ),
-              padding: EdgeInsets.all(8),
-              shape: CircleBorder(), onPressed: () {  },
-            ))
+            child: CircleButton(Icons.barcode_reader, context.read<SaveGoodCubit>().onModifyQuantityButtonPressed))
       ],
     );
   }
-  Widget _buildQuantity(BuildContext context, SaveGoodState state){
+
+  Widget _buildQuantity(BuildContext context, SaveGoodState state) {
     return Row(
       children: [
         Expanded(
-            child: TextFormField(
-              readOnly: true,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.field_quantity),
-              //controller: controller.quantityTextController,
-            )),
+            child: AppTextField(
+          labelText: AppLocalizations.of(context)!.field_quantity,
+          keyboardType: TextInputType.number,
+          onChanged: (value) => context.read<SaveGoodCubit>().quantityChanged(value),
+          controller: quantityTextController,
+        )),
         Align(
             alignment: Alignment.centerRight,
-            child: Row(
-              children: [
-                if (enableAddTransactions) _buildAddQuantityButton(context),
-                if (enableAddTransactions) _buildSubQuantityButton(context),
-                if (!enableAddTransactions) _buildModifyQuantityButton(context)
-              ],
-            ))
+            child:
+                CircleButton(FontAwesomeIcons.calculator, context.read<SaveGoodCubit>().onModifyQuantityButtonPressed))
       ],
-    );
-  }
-  Widget _buildAddQuantityButton(BuildContext context) {
-    return MaterialButton(
-      minWidth: 20,
-      onPressed: context.read<SaveGoodCubit>().onAddQuantityButtonPressed,
-      color: Colors.blue,
-      textColor: Colors.white,
-      child: Icon(
-        Icons.add,
-        size: 20,
-      ),
-      padding: EdgeInsets.all(8),
-      shape: CircleBorder(),
-    );
-  }
-
-  Widget _buildSubQuantityButton(BuildContext context){
-    return MaterialButton(
-      minWidth: 20,
-      onPressed: context.read<SaveGoodCubit>().onSubQuantityButtonPressed,
-      color: Colors.blue,
-      textColor: Colors.white,
-      child: Icon(
-        Icons.remove,
-        size: 20
-      ),
-      padding: EdgeInsets.all(8),
-      shape: CircleBorder(),
-    );
-  }
-
-  Widget _buildModifyQuantityButton(BuildContext context){
-    return MaterialButton(
-      minWidth: 20,
-      onPressed: context.read<SaveGoodCubit>().onModifyQuantityButtonPressed,
-      color: Colors.blue,
-      textColor: Colors.white,
-      child: Icon(
-        Icons.calculate_outlined,
-        size: 20,
-      ),
-      padding: EdgeInsets.all(8),
-      shape: CircleBorder(),
     );
   }
 }

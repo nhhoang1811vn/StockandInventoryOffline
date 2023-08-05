@@ -4,34 +4,57 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
-import 'package:formz/formz.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
+import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_expense/bloc/save_expense_cubit.dart';
+import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
 
 import '../../../../presentation/widgets/snackbar_widgets.dart';
 
 class SaveExpenseForm extends StatelessWidget {
   final Expense item;
+  final TextEditingController dateController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
 
-  const SaveExpenseForm({Key? key, required this.item}) : super(key: key);
+
+  SaveExpenseForm({Key? key, required this.item}) : super(key: key);
+
+  void showCalculatorPopup(BuildContext context){
+    var calc = SimpleCalculator(
+      value: double.parse(amountController.text),
+
+      onChanged: (key, value, expression) {
+        amountController.text = value.toString();
+        context.read<SaveExpenseCubit>().amountChanged(double.parse(amountController.text));
+      },
+      theme: const CalculatorThemeData(
+        displayColor: Colors.white,
+        displayStyle: const TextStyle(fontSize: 20, color: Colors.blue),
+      ),
+    );
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext context) {
+          return SizedBox(height: MediaQuery.of(context).size.height * 0.75, child: calc);
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController dateController = TextEditingController();
-    final TextEditingController amountController = TextEditingController();
 
     dateController.text = Config.dateFormat.format(item.date);
     amountController.text = item.amount.toString();
 
     return BlocConsumer<SaveExpenseCubit, SaveExpenseState>(
         listener: (context, state) {
-          if (state.status.isFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(snackBarFailureText: state.exceptionError));
-          } else if (state.status.isSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess());
+          if (state.state is SaveItemError) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+          } else if (state.state is SaveItemSuccessful) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
             Navigator.of(context).pop(state.item);
           }
         },
@@ -81,44 +104,12 @@ class SaveExpenseForm extends StatelessWidget {
                             onChanged: (value) => context.read<SaveExpenseCubit>().amountChanged(double.parse(value)),
                             keyboardType: TextInputType.number,
                           )),
-                          IconButton(
-                              icon: Image.asset(
-                                UIConstants.calculatorIconPath,
-                                width: 24,
-                              ),
-                              onPressed: () {
-                                var calc = SimpleCalculator(
-                                  onChanged: (key, value, expression) {
-                                    if (key == '=') {
-                                      amountController.text = value.toString();
-                                      context.read<SaveExpenseCubit>().amountChanged(value ?? 0);
-                                    }
-                                  },
-                                  theme: const CalculatorThemeData(
-                                    displayColor: Colors.black,
-                                    displayStyle: const TextStyle(fontSize: 20, color: Colors.yellow),
-                                  ),
-                                );
-                                showModalBottomSheet(
-                                    isScrollControlled: true,
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return SizedBox(height: MediaQuery.of(context).size.height * 0.75, child: calc);
-                                    });
-                              })
+                          CircleButton(UIConstants.calculatorIconData, () => showCalculatorPopup(context))
                         ],
                       )
                     ],
                   ),
-                )),
-                state.status.isInProgress
-                    ? const Positioned(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    : Container()
+                ))
               ],
             ));
   }

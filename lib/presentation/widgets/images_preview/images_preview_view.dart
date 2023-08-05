@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/presentation/widgets/images_preview/images_preview_state.dart';
 
 import '../../pages/pages.dart';
@@ -25,13 +26,23 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
   ImagesPreviewCubit cubit = ImagesPreviewCubit();
 
   @override
+  void initState() {
+    super.initState();
+    cubit.initState(widget.items);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(create: (_) => cubit, child: _buildBody());
   }
 
   Widget _buildBody() {
     return BlocConsumer<ImagesPreviewCubit, ImagesPreviewData>(
+      listenWhen: (state1,state2) => state1.state != state2.state,
         listener: (context, state) async {
+          if (state.state is TransitionPageViewState){
+            pageController.animateToPage(state.selectedPosition, duration: Duration(milliseconds: 300), curve: Curves.ease);
+          }
           if (state.state is DataChangedState) {
             widget.onDataChanged(state.items);
           } else if (state.state is TakePictureState) {
@@ -45,7 +56,7 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: Text(AppLocalizations.of(context)!.notification_dialog_title),
-                    content: Text(AppLocalizations.of(context)!.message_confirm_delete_file),
+                    content: Text(AppLocalizations.of(context)!.message_confirm_delete_no_args),
                     actions: [
                       TextButton(
                           onPressed: () => Navigator.pop(context),
@@ -141,14 +152,13 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
         ),
       );
 
-  //PageController pageController = PageController();
-
+  PageController pageController = PageController();
   Widget _buildPageView(ImagesPreviewData data) {
     return Container(
         child: Stack(
       children: [
         PageView.builder(
-          controller: cubit.pageController,
+          controller: pageController,
           itemBuilder: (context, position) {
             return createPage(data.items[position]);
           },
@@ -176,7 +186,7 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
     return Container(
       height: 250,
       padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
+      decoration: BoxDecoration(border: Border.all(color: AppColors.secondaryColor)),
       child: data.items.isEmpty ? buildEmptyView() : _buildPageView(data),
     );
   }
@@ -185,7 +195,7 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
     return Container(
       height: 120,
       padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
+      decoration: BoxDecoration(border: Border.all(color: AppColors.secondaryColor)),
       child: Row(
         children: [
           Expanded(
@@ -197,8 +207,8 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
                             margin: EdgeInsets.only(left: 4, right: 4),
                             width: 80,
                             alignment: Alignment.center,
-                            decoration: new BoxDecoration(
-                                border: position == data.selectedPosition ? Border.all(color: Colors.blue) : null,
+                            decoration: BoxDecoration(
+                                border: position == data.selectedPosition ? Border.all(color: AppColors.primaryColor, width: 2) : null,
                                 image: DecorationImage(
                                     image: FileImage(File(data.items[position])), fit: BoxFit.contain))));
                   },

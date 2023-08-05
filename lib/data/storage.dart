@@ -101,6 +101,14 @@ class Storage{
       return value + 1;
     }
   }
+  void increaseAutoDocumentNo(int storeId){
+    int? value = prefs.getInt(StorageKeys.AutoDocumentName + storeId.toString());
+    if (value == null){
+      prefs.setInt(StorageKeys.AutoDocumentName + storeId.toString(), 1);
+    }else{
+      prefs.setInt(StorageKeys.AutoDocumentName + storeId.toString(), value + 1);
+    }
+  }
 }
 class StorageKeys{
   static const String SelectedStoreId = "SelectedStoreId";

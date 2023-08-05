@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
@@ -82,4 +83,4 @@ class DocumentList extends StatelessWidget{
       );
     }
   }
-}
+}*/

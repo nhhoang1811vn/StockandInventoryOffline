@@ -243,8 +243,8 @@ class ExpensesPageState extends State<ExpensesPage> {
               "title": AppLocalizations.of(context)?.expenses_title,
               "content": HelpUtils.getMarkdownData("vi", HelpType.EXPENSE)
             });
-          } else if (state.state is SaveExpenseState) {
-            final SaveExpenseState currentState = state.state as SaveExpenseState;
+          } else if (state.state is OpenSaveExpensePageState) {
+            final currentState = state.state as OpenSaveExpensePageState;
             final result =
                 await Navigator.of(context).pushNamed(Pages.save_expense, arguments: {"item": currentState.item});
             if (result != null) {

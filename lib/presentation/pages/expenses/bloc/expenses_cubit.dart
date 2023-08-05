@@ -52,7 +52,7 @@ class ExpensesCubit extends Cubit<ExpensesState> {
   void onAddItem() {
     Expense item = Expense();
     item.storeId = storage.getSelectedStoreId();
-    emit(state.copyWith(state: SaveExpenseState(item)));
+    emit(state.copyWith(state: OpenSaveExpensePageState(item)));
   }
   void loadItems() async{
     final storeId = storage.getSelectedStoreId();

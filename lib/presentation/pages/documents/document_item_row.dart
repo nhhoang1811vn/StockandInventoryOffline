@@ -30,8 +30,7 @@ class DocumentItemRow extends StatelessWidget {
         offset: Offset(-32, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('Ngày ' + format.format(item.date)),
-          item.supplierName != null ? Text(item.supplierName!) : Container(),
-          item.customerName != null ? Text(item.customerName!) : Container(),
+          item.personName != null ? Text(item.personName!) : Container(),
           item.description.isNotEmpty ? Text(item.description) : Container()
         ]),
       ),

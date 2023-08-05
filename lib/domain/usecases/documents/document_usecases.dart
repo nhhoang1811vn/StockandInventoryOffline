@@ -6,5 +6,7 @@ abstract class DocumentUseCases extends ItemsUseCase<Document>{
   Future<List<Document>> getAllByStoreId(int storeId);
   Future<int> getCount(int storeId);
   Future<int> insertTransaction(DocumentTransaction item);
+  Future<bool> updateTransaction(DocumentTransaction item);
   Future<List<DocumentTransaction>> getTransactionsByDocumentId(int documentId);
+  Future<bool> deleteTransaction(int transactionId);
 }

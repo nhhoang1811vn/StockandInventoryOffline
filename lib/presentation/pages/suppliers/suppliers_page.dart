@@ -17,11 +17,8 @@ import '../pages.dart';
 import 'bloc/bloc.dart';
 import 'widgets/sort_supplier_dialog.dart';
 
-
-
 class SuppliersPage extends StatefulWidget {
   final bool isSelection;
-
   SuppliersPage({Key? key, required this.isSelection});
 
   @override
@@ -34,9 +31,9 @@ class SuppliersPageState extends State<SuppliersPage> {
   @override
   void initState() {
     super.initState();
-    if (widget.isSelection){
-      searchTextFocusNode.requestFocus();
-    }
+    //if (widget.isSelection){
+    //  searchTextFocusNode.requestFocus();
+    //}
     context.read<SuppliersCubit>().initState(widget.isSelection);
   }
   @override
@@ -51,8 +48,8 @@ class SuppliersPageState extends State<SuppliersPage> {
                 barrierDismissible: true);
             context.read<SuppliersCubit>().setSettings(settings);
           }
-          else if (state.state is SaveSupplierState){
-            final currentState = state.state as SaveSupplierState;
+          else if (state.state is OpenSaveSupplierPageState){
+            final currentState = state.state as OpenSaveSupplierPageState;
             final result = await Navigator.of(context).pushNamed(Pages.save_supplier, arguments: {"item" : currentState.item});
             if (result != null){
               context.read<SuppliersCubit>().loadItems();

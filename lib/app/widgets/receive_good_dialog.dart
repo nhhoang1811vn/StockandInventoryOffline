@@ -89,7 +89,7 @@ class ReceiveGoodDialogState extends State<ReceiveGoodDialog> {
             Document document = widget.document.clone();
             //document.date = (new DateFormat(Config.dateTimeFormat)).parse(date);
             document.description = teDescription.text;
-            document.supplierId = supplierId;
+            document.personId = supplierId;
             Navigator.of(context).pop();
             widget.onSaveRecord(document, int.parse(teQuantity.text));
 

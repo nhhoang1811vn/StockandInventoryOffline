@@ -10,8 +10,7 @@ import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/goods_setting.dart';
 import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/entities/search_goods_type.dart';
-import 'package:good_manager/domain/entities/transaction.dart';
-import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit2.dart';
+import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/sort_goods_dialog.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -41,9 +40,9 @@ class GoodsPageState extends State<GoodsPage> {
   @override
   void initState() {
     super.initState();
-    if (widget.isSelection){
-      searchTextFocusNode.requestFocus();
-    }
+    //if (widget.isSelection){
+    //  searchTextFocusNode.requestFocus();
+    //}
     context.read<GoodsCubit>().initState(widget.isSelection, widget.documentId, widget.documentType);
   }
   Widget _buildBody(BuildContext context, GoodsState state) {
@@ -51,7 +50,6 @@ class GoodsPageState extends State<GoodsPage> {
       return _buildLoading();
     }
     List<Widget> children = [
-      //StoreView(),
       SelectedStoreView(),
       _buildSelectedGroupView(state),
       _buildSearchBar(context, state),
@@ -205,7 +203,7 @@ class GoodsPageState extends State<GoodsPage> {
           child: Card(
             child: ListTile(
               title: TextField(
-                focusNode: searchTextFocusNode,
+                //focusNode: searchTextFocusNode,
                 controller: searchTextController,
                 decoration: InputDecoration(
                     hintText: context.read<GoodsCubit>().getSearchTextHint(context),
@@ -397,7 +395,7 @@ class GoodsPageState extends State<GoodsPage> {
                   showInfoToast("under development");
                 },
                 child:
-                Text(AppLocalizations.of(context)!.action_delete_group),
+                Text(AppLocalizations.of(context)!.action_delete),
               ),
             ],
           );
@@ -423,8 +421,8 @@ class GoodsPageState extends State<GoodsPage> {
               "title": AppLocalizations.of(context)?.goods_title,
               "content": HelpUtils.getMarkdownData("vi", HelpType.GOODS)
             });
-          }else if (state.state is SaveGoodState){
-            final currentState = state.state as SaveGoodState;
+          }else if (state.state is OpenSaveGoodPageState){
+            final currentState = state.state as OpenSaveGoodPageState;
             final result = await Navigator.of(context)
                 .pushNamed(Pages.save_good, arguments: {"item": currentState.item, "enableAddTransactions": true});
             if (result != null){
@@ -437,9 +435,11 @@ class GoodsPageState extends State<GoodsPage> {
               context.read<GoodsCubit>().loadItems();
             }
           }else if (state.state is InsertTransactionSuccessState){
+            final currentState = state.state as InsertTransactionSuccessState;
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccessWithText(AppLocalizations.of(context)!.insert_transaction_success));
+            context.read<GoodsCubit>().updateQuantity(currentState.goodId, currentState.quantity);
           }else if (state.state is InsertTransactionFailedState){
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(snackBarFailureText: "Insert Transaction Failed!"));
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.insert_transaction_fail));
           }
         },
         builder: (context, state) =>  Scaffold(

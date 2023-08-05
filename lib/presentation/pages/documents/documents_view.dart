@@ -104,6 +104,7 @@ class DocumentPageState extends State<DocumentsPage> {
       allDocuments.add(result);
       refreshItems();
     }*/
+
   }
   void onAddDocument(int index) async{
     switch (index) {
@@ -358,6 +359,7 @@ class DocumentPageState extends State<DocumentsPage> {
       allDocuments[index] = result;
       refreshItems();
     }*/
+    context.read<DocumentsCubit>().loadItems();
   }
   void onLongPressedDocument(Document item){
     showDialog(

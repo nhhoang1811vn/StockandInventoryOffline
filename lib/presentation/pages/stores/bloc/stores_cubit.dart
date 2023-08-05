@@ -51,7 +51,7 @@ class StoresCubit extends Cubit<StoresState> {
     onAddItem(item);
   }
   void onAddItem(Store item){
-    emit(state.copyWith(state: SaveStoreState(item)));
+    emit(state.copyWith(state: OpenSaveStorePageState(item)));
   }
 
   void setSettings(StoresSetting settings) {

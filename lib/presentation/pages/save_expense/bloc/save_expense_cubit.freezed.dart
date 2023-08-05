@@ -16,21 +16,21 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$SaveExpenseState {
+  BaseState get state => throw _privateConstructorUsedError;
   NameInput get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   DateTime? get date => throw _privateConstructorUsedError;
   double get amount => throw _privateConstructorUsedError;
-  FormzSubmissionStatus get status => throw _privateConstructorUsedError;
   String get exceptionError => throw _privateConstructorUsedError;
   Expense? get item => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
+            BaseState state,
             NameInput name,
             String description,
             DateTime? date,
             double amount,
-            FormzSubmissionStatus status,
             String exceptionError,
             Expense? item)
         initial,
@@ -39,11 +39,11 @@ mixin _$SaveExpenseState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
+            BaseState state,
             NameInput name,
             String description,
             DateTime? date,
             double amount,
-            FormzSubmissionStatus status,
             String exceptionError,
             Expense? item)?
         initial,
@@ -52,11 +52,11 @@ mixin _$SaveExpenseState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
+            BaseState state,
             NameInput name,
             String description,
             DateTime? date,
             double amount,
-            FormzSubmissionStatus status,
             String exceptionError,
             Expense? item)?
         initial,
@@ -92,11 +92,11 @@ abstract class $SaveExpenseStateCopyWith<$Res> {
       _$SaveExpenseStateCopyWithImpl<$Res, SaveExpenseState>;
   @useResult
   $Res call(
-      {NameInput name,
+      {BaseState state,
+      NameInput name,
       String description,
       DateTime? date,
       double amount,
-      FormzSubmissionStatus status,
       String exceptionError,
       Expense? item});
 }
@@ -114,15 +114,19 @@ class _$SaveExpenseStateCopyWithImpl<$Res, $Val extends SaveExpenseState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? state = null,
     Object? name = null,
     Object? description = null,
     Object? date = freezed,
     Object? amount = null,
-    Object? status = null,
     Object? exceptionError = null,
     Object? item = freezed,
   }) {
     return _then(_value.copyWith(
+      state: null == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
+              as BaseState,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -139,10 +143,6 @@ class _$SaveExpenseStateCopyWithImpl<$Res, $Val extends SaveExpenseState>
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
               as double,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as FormzSubmissionStatus,
       exceptionError: null == exceptionError
           ? _value.exceptionError
           : exceptionError // ignore: cast_nullable_to_non_nullable
@@ -164,11 +164,11 @@ abstract class _$$_InitialCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {NameInput name,
+      {BaseState state,
+      NameInput name,
       String description,
       DateTime? date,
       double amount,
-      FormzSubmissionStatus status,
       String exceptionError,
       Expense? item});
 }
@@ -183,15 +183,19 @@ class __$$_InitialCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? state = null,
     Object? name = null,
     Object? description = null,
     Object? date = freezed,
     Object? amount = null,
-    Object? status = null,
     Object? exceptionError = null,
     Object? item = freezed,
   }) {
     return _then(_$_Initial(
+      state: null == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
+              as BaseState,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -208,10 +212,6 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
               as double,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as FormzSubmissionStatus,
       exceptionError: null == exceptionError
           ? _value.exceptionError
           : exceptionError // ignore: cast_nullable_to_non_nullable
@@ -228,14 +228,16 @@ class __$$_InitialCopyWithImpl<$Res>
 
 class _$_Initial implements _Initial {
   const _$_Initial(
-      {this.name = const NameInput.pure(),
+      {required this.state,
+      this.name = const NameInput.pure(),
       this.description = '',
       this.date,
       this.amount = 0,
-      this.status = FormzSubmissionStatus.initial,
       this.exceptionError = '',
       this.item});
 
+  @override
+  final BaseState state;
   @override
   @JsonKey()
   final NameInput name;
@@ -249,16 +251,13 @@ class _$_Initial implements _Initial {
   final double amount;
   @override
   @JsonKey()
-  final FormzSubmissionStatus status;
-  @override
-  @JsonKey()
   final String exceptionError;
   @override
   final Expense? item;
 
   @override
   String toString() {
-    return 'SaveExpenseState.initial(name: $name, description: $description, date: $date, amount: $amount, status: $status, exceptionError: $exceptionError, item: $item)';
+    return 'SaveExpenseState.initial(state: $state, name: $name, description: $description, date: $date, amount: $amount, exceptionError: $exceptionError, item: $item)';
   }
 
   @override
@@ -266,20 +265,20 @@ class _$_Initial implements _Initial {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_Initial &&
+            (identical(other.state, state) || other.state == state) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.amount, amount) || other.amount == amount) &&
-            (identical(other.status, status) || other.status == status) &&
             (identical(other.exceptionError, exceptionError) ||
                 other.exceptionError == exceptionError) &&
             (identical(other.item, item) || other.item == item));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, name, description, date, amount,
-      status, exceptionError, item);
+  int get hashCode => Object.hash(runtimeType, state, name, description, date,
+      amount, exceptionError, item);
 
   @JsonKey(ignore: true)
   @override
@@ -291,45 +290,45 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
+            BaseState state,
             NameInput name,
             String description,
             DateTime? date,
             double amount,
-            FormzSubmissionStatus status,
             String exceptionError,
             Expense? item)
         initial,
   }) {
     return initial(
-        name, description, date, amount, status, exceptionError, item);
+        state, name, description, date, amount, exceptionError, item);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
+            BaseState state,
             NameInput name,
             String description,
             DateTime? date,
             double amount,
-            FormzSubmissionStatus status,
             String exceptionError,
             Expense? item)?
         initial,
   }) {
     return initial?.call(
-        name, description, date, amount, status, exceptionError, item);
+        state, name, description, date, amount, exceptionError, item);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
+            BaseState state,
             NameInput name,
             String description,
             DateTime? date,
             double amount,
-            FormzSubmissionStatus status,
             String exceptionError,
             Expense? item)?
         initial,
@@ -337,7 +336,7 @@ class _$_Initial implements _Initial {
   }) {
     if (initial != null) {
       return initial(
-          name, description, date, amount, status, exceptionError, item);
+          state, name, description, date, amount, exceptionError, item);
     }
     return orElse();
   }
@@ -373,14 +372,16 @@ class _$_Initial implements _Initial {
 
 abstract class _Initial implements SaveExpenseState {
   const factory _Initial(
-      {final NameInput name,
+      {required final BaseState state,
+      final NameInput name,
       final String description,
       final DateTime? date,
       final double amount,
-      final FormzSubmissionStatus status,
       final String exceptionError,
       final Expense? item}) = _$_Initial;
 
+  @override
+  BaseState get state;
   @override
   NameInput get name;
   @override
@@ -389,8 +390,6 @@ abstract class _Initial implements SaveExpenseState {
   DateTime? get date;
   @override
   double get amount;
-  @override
-  FormzSubmissionStatus get status;
   @override
   String get exceptionError;
   @override

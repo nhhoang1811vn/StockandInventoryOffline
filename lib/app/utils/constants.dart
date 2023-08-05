@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
+class AppColors{
+  static Color primaryColor = Colors.blue;
+  static const Color secondaryColor = Colors.black54;
+}
+class IntAppColors{
+  static const int secondaryColor = 0x8A000000;
+  static const int whiteColor = 0xFFFFFFFF;
+}
 class Config {
   static String supportEmail = "nhhoang1811vn@gmail.com";
   static String dateTimeFormat = "yyyy-MM-dd";
@@ -16,11 +25,13 @@ class Config {
 class UIConstants {
   //dimension
   static const double appBarHeight = 58.0;
-
+  //icons
   static IconData moreIconData = Icons.more_horiz;
   static IconData searchMenuIconData = Icons.search;
   static IconData sortMenuIconData = Icons.sort_by_alpha;
   static IconData helpMenuIconData = Icons.help;
+  static IconData barcodeScannerMenuIconData = Icons.barcode_reader;
+  static IconData calculatorIconData = FontAwesomeIcons.calculator;
 
   static IconData cancelIconData = Icons.close;
 
@@ -37,7 +48,6 @@ class UIConstants {
   static String documentIconPath = "images/document.png";
   static String expenseIconPath = "images/expense.png";
   static String reportIconPath = "images/report.png";
-  static String calculatorIconPath = "images/calculator.png";
 
   static String ratingIconPath = "images/rating.png";
   static String feedbackIconPath = "images/feedback.png";

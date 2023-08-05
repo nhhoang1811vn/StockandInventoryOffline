@@ -3,6 +3,7 @@ import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/usecases/expenses/expense_usercases.dart';
+import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../domain/entities/models/name.dart';
@@ -14,7 +15,7 @@ part 'save_expense_state.dart';
 class SaveExpenseCubit extends Cubit<SaveExpenseState> {
   final ExpenseUseCases useCase;
 
-  SaveExpenseCubit({required this.useCase}) : super(const SaveExpenseState.initial());
+  SaveExpenseCubit({required this.useCase}) : super(SaveExpenseState.initial(state: InitialState()));
 
   void init(Expense item) {
     SaveExpenseState initState;
@@ -45,7 +46,6 @@ class SaveExpenseCubit extends Cubit<SaveExpenseState> {
   void onSaveClicked() async {
     final validate = Formz.validate([state.name]);
     if (validate){
-      emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       Expense item = state.item!;
       item.name = state.name.value;
       item.description = state.description;
@@ -56,7 +56,7 @@ class SaveExpenseCubit extends Cubit<SaveExpenseState> {
       }else{
         await useCase.update(item);
       }
-      emit(state.copyWith(status: FormzSubmissionStatus.success));
+      emit(state.copyWith(state: SaveItemSuccessful()));
     }else{
       emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));
     }

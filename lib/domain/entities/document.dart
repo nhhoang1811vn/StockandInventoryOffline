@@ -8,10 +8,9 @@ enum DocumentType {
 class Document extends BaseModel {
   DateTime date = DateTime.now();
   late DocumentType type;
-  int? supplierId;
-  String? supplierName;
-  String? customerName;
-  int? customerId;
+  int? personId;
+  String? personName;
+
   int? storeId;
   int quantity = 0;
 
@@ -21,8 +20,7 @@ class Document extends BaseModel {
     Document newDocument = Document();
     newDocument.name = this.name;
     newDocument.description = this.description;
-    newDocument.supplierId = this.supplierId;
-    newDocument.customerId = this.customerId;
+    newDocument.personId = this.personId;
     newDocument.date = this.date;
     newDocument.type = this.type;
     return newDocument;
@@ -37,8 +35,11 @@ class Document extends BaseModel {
         return;
       }
     });
-    this.supplierId = obj["supplierId"];
-    this.customerId = obj["customerId"];
+    if (type == DocumentType.incoming){
+      this.personId = obj["supplierId"];
+    }else{
+      this.personId = obj["customerId"];
+    }
     this.storeId = obj["storeId"];
   }
 
@@ -46,8 +47,11 @@ class Document extends BaseModel {
     var map = super.toMap();
     map["date"] = date.millisecondsSinceEpoch;
     map["type"] = type.index;
-    map["supplierId"] = supplierId;
-    map["customerId"] = customerId;
+    if (type == DocumentType.incoming){
+      map["supplierId"] = personId;
+    }else{
+      map["customerId"] = personId;
+    }
     map["storeId"] = storeId;
     return map;
   }

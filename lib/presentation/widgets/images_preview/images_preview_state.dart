@@ -12,3 +12,5 @@ class DataChangedState extends ImagesPreviewState{
 class ShowDeletePopupState extends ImagesPreviewState{
 
 }
+class TransitionPageViewState extends ImagesPreviewState{
+}

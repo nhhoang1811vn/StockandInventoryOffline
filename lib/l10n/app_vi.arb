@@ -79,7 +79,6 @@
   "search_documents_type_by_customer_supplier": "Theo tên KH, NCC",
   "action_move_to_group": "Di chuyển nhóm",
   "action_edit_group": "Sửa nhóm",
-  "action_delete_group": "Xoá nhóm",
   "action_add_attachment": "Nhấn để thêm file",
   "action_take_picture": "Chụp hình",
   "action_load_from_gallery": "Chọn ảnh từ thư viện",
@@ -115,13 +114,13 @@
   "action_skip": "Bỏ qua",
   "main_store": "Cửa hàng chính",
   "all_stores": "Tất cả cửa hàng",
+  "message_confirm_delete_no_args": "Bạn có chắc muốn xoá nó ?",
   "message_confirm_delete": "Bạn có chắc muốn xoá %s ?",
   "menu_item_settings_title": "Cài đặt",
   "menu_item_settings_desc": "Các thông tin cài đặt",
   "menu_item_language_title": "Ngôn ngữ",
   "menu_item_language_desc": "Thay đổi ngôn ngữ",
   "menu_item_barcode_scanner_title": "Quét mã vạch",
-  "message_confirm_delete_file": "Bạn có chắc muốn xoá tệp này không ?",
   "settings_title": "Cài đặt",
   "dialog_title_change_language": "Chọn ngôn ngữ",
   "english_text": "Tiếng Anh",
@@ -156,5 +155,8 @@
   "receive_goods_title": "Nhập SP",
   "issue_goods_title": "Xuất SP",
   "document_name_no": "Số.",
-  "insert_transaction_success" : "Sản phẩm được thêm thành công!"
+  "insert_transaction_success" : "Đã thêm sản phầm thành công!",
+  "insert_transaction_fail" : "Đã thêm sản phầm thất bại!",
+  "success": "Thành công!",
+  "error" : "Thất bại!"
 }

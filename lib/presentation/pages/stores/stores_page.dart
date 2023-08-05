@@ -32,9 +32,9 @@ class StoresPageState extends State<StoresPage> {
   @override
   void initState() {
     super.initState();
-    if (widget.isSelection){
-      searchTextFocusNode.requestFocus();
-    }
+    //if (widget.isSelection){
+    //  searchTextFocusNode.requestFocus();
+    //}
     context.read<StoresCubit>().initState(widget.isSelection);
   }
   @override
@@ -51,8 +51,8 @@ class StoresPageState extends State<StoresPage> {
               context.read<StoresCubit>().setSettings(settings);
             }
           }
-          else if (state.state is SaveStoreState){
-            final currentState = state.state as SaveStoreState;
+          else if (state.state is OpenSaveStorePageState){
+            final currentState = state.state as OpenSaveStorePageState;
             final result = await Navigator.of(context).pushNamed(Pages.save_store, arguments: {"item" : currentState.item});
             if (result != null){
               context.read<StoresCubit>().loadItems();

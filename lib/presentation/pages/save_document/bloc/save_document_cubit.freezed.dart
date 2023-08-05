@@ -21,10 +21,10 @@ mixin _$SaveDocumentState {
   NameInput get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   DateTime? get date => throw _privateConstructorUsedError;
-  FormzSubmissionStatus get status => throw _privateConstructorUsedError;
   String get exceptionError => throw _privateConstructorUsedError;
   Document? get item => throw _privateConstructorUsedError;
-  Supplier? get supplier => throw _privateConstructorUsedError;
+  int? get personId => throw _privateConstructorUsedError;
+  String? get personName => throw _privateConstructorUsedError;
   List<DocumentTransaction> get transactions =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -35,10 +35,10 @@ mixin _$SaveDocumentState {
             NameInput name,
             String description,
             DateTime? date,
-            FormzSubmissionStatus status,
             String exceptionError,
             Document? item,
-            Supplier? supplier,
+            int? personId,
+            String? personName,
             List<DocumentTransaction> transactions)
         initial,
   }) =>
@@ -51,10 +51,10 @@ mixin _$SaveDocumentState {
             NameInput name,
             String description,
             DateTime? date,
-            FormzSubmissionStatus status,
             String exceptionError,
             Document? item,
-            Supplier? supplier,
+            int? personId,
+            String? personName,
             List<DocumentTransaction> transactions)?
         initial,
   }) =>
@@ -67,10 +67,10 @@ mixin _$SaveDocumentState {
             NameInput name,
             String description,
             DateTime? date,
-            FormzSubmissionStatus status,
             String exceptionError,
             Document? item,
-            Supplier? supplier,
+            int? personId,
+            String? personName,
             List<DocumentTransaction> transactions)?
         initial,
     required TResult orElse(),
@@ -110,10 +110,10 @@ abstract class $SaveDocumentStateCopyWith<$Res> {
       NameInput name,
       String description,
       DateTime? date,
-      FormzSubmissionStatus status,
       String exceptionError,
       Document? item,
-      Supplier? supplier,
+      int? personId,
+      String? personName,
       List<DocumentTransaction> transactions});
 }
 
@@ -135,10 +135,10 @@ class _$SaveDocumentStateCopyWithImpl<$Res, $Val extends SaveDocumentState>
     Object? name = null,
     Object? description = null,
     Object? date = freezed,
-    Object? status = null,
     Object? exceptionError = null,
     Object? item = freezed,
-    Object? supplier = freezed,
+    Object? personId = freezed,
+    Object? personName = freezed,
     Object? transactions = null,
   }) {
     return _then(_value.copyWith(
@@ -162,10 +162,6 @@ class _$SaveDocumentStateCopyWithImpl<$Res, $Val extends SaveDocumentState>
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as FormzSubmissionStatus,
       exceptionError: null == exceptionError
           ? _value.exceptionError
           : exceptionError // ignore: cast_nullable_to_non_nullable
@@ -174,10 +170,14 @@ class _$SaveDocumentStateCopyWithImpl<$Res, $Val extends SaveDocumentState>
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
               as Document?,
-      supplier: freezed == supplier
-          ? _value.supplier
-          : supplier // ignore: cast_nullable_to_non_nullable
-              as Supplier?,
+      personId: freezed == personId
+          ? _value.personId
+          : personId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      personName: freezed == personName
+          ? _value.personName
+          : personName // ignore: cast_nullable_to_non_nullable
+              as String?,
       transactions: null == transactions
           ? _value.transactions
           : transactions // ignore: cast_nullable_to_non_nullable
@@ -200,10 +200,10 @@ abstract class _$$_InitialCopyWith<$Res>
       NameInput name,
       String description,
       DateTime? date,
-      FormzSubmissionStatus status,
       String exceptionError,
       Document? item,
-      Supplier? supplier,
+      int? personId,
+      String? personName,
       List<DocumentTransaction> transactions});
 }
 
@@ -222,10 +222,10 @@ class __$$_InitialCopyWithImpl<$Res>
     Object? name = null,
     Object? description = null,
     Object? date = freezed,
-    Object? status = null,
     Object? exceptionError = null,
     Object? item = freezed,
-    Object? supplier = freezed,
+    Object? personId = freezed,
+    Object? personName = freezed,
     Object? transactions = null,
   }) {
     return _then(_$_Initial(
@@ -249,10 +249,6 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as FormzSubmissionStatus,
       exceptionError: null == exceptionError
           ? _value.exceptionError
           : exceptionError // ignore: cast_nullable_to_non_nullable
@@ -261,10 +257,14 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
               as Document?,
-      supplier: freezed == supplier
-          ? _value.supplier
-          : supplier // ignore: cast_nullable_to_non_nullable
-              as Supplier?,
+      personId: freezed == personId
+          ? _value.personId
+          : personId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      personName: freezed == personName
+          ? _value.personName
+          : personName // ignore: cast_nullable_to_non_nullable
+              as String?,
       transactions: null == transactions
           ? _value._transactions
           : transactions // ignore: cast_nullable_to_non_nullable
@@ -282,10 +282,10 @@ class _$_Initial implements _Initial {
       this.name = const NameInput.pure(),
       this.description = '',
       this.date,
-      this.status = FormzSubmissionStatus.initial,
       this.exceptionError = '',
       this.item,
-      this.supplier,
+      this.personId,
+      this.personName,
       final List<DocumentTransaction> transactions = const []})
       : _transactions = transactions;
 
@@ -304,14 +304,13 @@ class _$_Initial implements _Initial {
   final DateTime? date;
   @override
   @JsonKey()
-  final FormzSubmissionStatus status;
-  @override
-  @JsonKey()
   final String exceptionError;
   @override
   final Document? item;
   @override
-  final Supplier? supplier;
+  final int? personId;
+  @override
+  final String? personName;
   final List<DocumentTransaction> _transactions;
   @override
   @JsonKey()
@@ -323,7 +322,7 @@ class _$_Initial implements _Initial {
 
   @override
   String toString() {
-    return 'SaveDocumentState.initial(state: $state, id: $id, name: $name, description: $description, date: $date, status: $status, exceptionError: $exceptionError, item: $item, supplier: $supplier, transactions: $transactions)';
+    return 'SaveDocumentState.initial(state: $state, id: $id, name: $name, description: $description, date: $date, exceptionError: $exceptionError, item: $item, personId: $personId, personName: $personName, transactions: $transactions)';
   }
 
   @override
@@ -337,12 +336,13 @@ class _$_Initial implements _Initial {
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.date, date) || other.date == date) &&
-            (identical(other.status, status) || other.status == status) &&
             (identical(other.exceptionError, exceptionError) ||
                 other.exceptionError == exceptionError) &&
             (identical(other.item, item) || other.item == item) &&
-            (identical(other.supplier, supplier) ||
-                other.supplier == supplier) &&
+            (identical(other.personId, personId) ||
+                other.personId == personId) &&
+            (identical(other.personName, personName) ||
+                other.personName == personName) &&
             const DeepCollectionEquality()
                 .equals(other._transactions, _transactions));
   }
@@ -355,10 +355,10 @@ class _$_Initial implements _Initial {
       name,
       description,
       date,
-      status,
       exceptionError,
       item,
-      supplier,
+      personId,
+      personName,
       const DeepCollectionEquality().hash(_transactions));
 
   @JsonKey(ignore: true)
@@ -376,15 +376,15 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             DateTime? date,
-            FormzSubmissionStatus status,
             String exceptionError,
             Document? item,
-            Supplier? supplier,
+            int? personId,
+            String? personName,
             List<DocumentTransaction> transactions)
         initial,
   }) {
-    return initial(state, id, name, description, date, status, exceptionError,
-        item, supplier, transactions);
+    return initial(state, id, name, description, date, exceptionError, item,
+        personId, personName, transactions);
   }
 
   @override
@@ -396,15 +396,15 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             DateTime? date,
-            FormzSubmissionStatus status,
             String exceptionError,
             Document? item,
-            Supplier? supplier,
+            int? personId,
+            String? personName,
             List<DocumentTransaction> transactions)?
         initial,
   }) {
-    return initial?.call(state, id, name, description, date, status,
-        exceptionError, item, supplier, transactions);
+    return initial?.call(state, id, name, description, date, exceptionError,
+        item, personId, personName, transactions);
   }
 
   @override
@@ -416,17 +416,17 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             DateTime? date,
-            FormzSubmissionStatus status,
             String exceptionError,
             Document? item,
-            Supplier? supplier,
+            int? personId,
+            String? personName,
             List<DocumentTransaction> transactions)?
         initial,
     required TResult orElse(),
   }) {
     if (initial != null) {
-      return initial(state, id, name, description, date, status, exceptionError,
-          item, supplier, transactions);
+      return initial(state, id, name, description, date, exceptionError, item,
+          personId, personName, transactions);
     }
     return orElse();
   }
@@ -467,10 +467,10 @@ abstract class _Initial implements SaveDocumentState {
       final NameInput name,
       final String description,
       final DateTime? date,
-      final FormzSubmissionStatus status,
       final String exceptionError,
       final Document? item,
-      final Supplier? supplier,
+      final int? personId,
+      final String? personName,
       final List<DocumentTransaction> transactions}) = _$_Initial;
 
   @override
@@ -484,13 +484,13 @@ abstract class _Initial implements SaveDocumentState {
   @override
   DateTime? get date;
   @override
-  FormzSubmissionStatus get status;
-  @override
   String get exceptionError;
   @override
   Document? get item;
   @override
-  Supplier? get supplier;
+  int? get personId;
+  @override
+  String? get personName;
   @override
   List<DocumentTransaction> get transactions;
   @override

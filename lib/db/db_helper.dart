@@ -192,7 +192,7 @@ class DBHelper {
     var list = await dbClient
         .rawQuery('SELECT * FROM $SUPPLIERS_TABLE_NAME where id = ?', [id]);
     if (list.isNotEmpty) {
-      //return Supplier.map(list.first);
+      return Supplier.map(list.first);
     }
     return null;
   }
@@ -451,12 +451,12 @@ class DBHelper {
       var document = Document.map(list[i]);
       document.quantity = await getQuantityByDocumentId(document.id);
       if (document.type == DocumentType.incoming) {
-        if (document.supplierId != null) {
-          //document.supplierName = (await getSupplier(document.supplierId))?.common.name;
+        if (document.personId != null) {
+          document.personName = (await getSupplier(document.personId))?.name;
         }
       } else if (document.type == DocumentType.outgoing) {
-        if (document.customerId != null) {
-          document.customerName = (await getCustomer(document.customerId))?.name;
+        if (document.personId != null) {
+          document.personName = (await getCustomer(document.personId))?.name;
         }
       }
       documents.add(document);

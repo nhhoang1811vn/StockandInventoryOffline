@@ -7,10 +7,10 @@ class SaveDocumentState with _$SaveDocumentState {
     @Default(NameInput.pure()) NameInput name,
     @Default('') String description,
     DateTime? date,
-    @Default(FormzSubmissionStatus.initial) FormzSubmissionStatus status,
     @Default('') String exceptionError,
     Document? item,
-    Supplier? supplier,
+    int? personId,
+    String? personName,
     @Default([]) List<DocumentTransaction> transactions
   }) = _Initial;
 }

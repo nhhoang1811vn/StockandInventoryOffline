@@ -1,4 +1,4 @@
-part of 'goods_cubit2.dart';
+part of 'goods_cubit.dart';
 
 @freezed
 class GoodsState with _$GoodsState {

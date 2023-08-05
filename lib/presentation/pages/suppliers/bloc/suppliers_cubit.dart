@@ -74,7 +74,7 @@ class SuppliersCubit extends Cubit<SuppliersState> {
     onAddItem(item);
   }
   void onAddItem(Supplier item){
-    emit(state.copyWith(state: SaveSupplierState(item)));
+    emit(state.copyWith(state: OpenSaveSupplierPageState(item)));
   }
 
   void setSettings(SuppliersSetting settings) {

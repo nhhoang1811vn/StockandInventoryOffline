@@ -16,21 +16,21 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$SaveGroupState {
+  BaseState get state => throw _privateConstructorUsedError;
   NameInput get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get barCode => throw _privateConstructorUsedError;
   List<String> get files => throw _privateConstructorUsedError;
-  FormzSubmissionStatus get status => throw _privateConstructorUsedError;
   String get exceptionError => throw _privateConstructorUsedError;
   Group? get item => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
+            BaseState state,
             NameInput name,
             String description,
             String barCode,
             List<String> files,
-            FormzSubmissionStatus status,
             String exceptionError,
             Group? item)
         initial,
@@ -39,11 +39,11 @@ mixin _$SaveGroupState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
+            BaseState state,
             NameInput name,
             String description,
             String barCode,
             List<String> files,
-            FormzSubmissionStatus status,
             String exceptionError,
             Group? item)?
         initial,
@@ -52,11 +52,11 @@ mixin _$SaveGroupState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
+            BaseState state,
             NameInput name,
             String description,
             String barCode,
             List<String> files,
-            FormzSubmissionStatus status,
             String exceptionError,
             Group? item)?
         initial,
@@ -92,11 +92,11 @@ abstract class $SaveGroupStateCopyWith<$Res> {
       _$SaveGroupStateCopyWithImpl<$Res, SaveGroupState>;
   @useResult
   $Res call(
-      {NameInput name,
+      {BaseState state,
+      NameInput name,
       String description,
       String barCode,
       List<String> files,
-      FormzSubmissionStatus status,
       String exceptionError,
       Group? item});
 }
@@ -114,15 +114,19 @@ class _$SaveGroupStateCopyWithImpl<$Res, $Val extends SaveGroupState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? state = null,
     Object? name = null,
     Object? description = null,
     Object? barCode = null,
     Object? files = null,
-    Object? status = null,
     Object? exceptionError = null,
     Object? item = freezed,
   }) {
     return _then(_value.copyWith(
+      state: null == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
+              as BaseState,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -139,10 +143,6 @@ class _$SaveGroupStateCopyWithImpl<$Res, $Val extends SaveGroupState>
           ? _value.files
           : files // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as FormzSubmissionStatus,
       exceptionError: null == exceptionError
           ? _value.exceptionError
           : exceptionError // ignore: cast_nullable_to_non_nullable
@@ -164,11 +164,11 @@ abstract class _$$_InitialCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {NameInput name,
+      {BaseState state,
+      NameInput name,
       String description,
       String barCode,
       List<String> files,
-      FormzSubmissionStatus status,
       String exceptionError,
       Group? item});
 }
@@ -183,15 +183,19 @@ class __$$_InitialCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? state = null,
     Object? name = null,
     Object? description = null,
     Object? barCode = null,
     Object? files = null,
-    Object? status = null,
     Object? exceptionError = null,
     Object? item = freezed,
   }) {
     return _then(_$_Initial(
+      state: null == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
+              as BaseState,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -208,10 +212,6 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value._files
           : files // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as FormzSubmissionStatus,
       exceptionError: null == exceptionError
           ? _value.exceptionError
           : exceptionError // ignore: cast_nullable_to_non_nullable
@@ -228,15 +228,17 @@ class __$$_InitialCopyWithImpl<$Res>
 
 class _$_Initial implements _Initial {
   const _$_Initial(
-      {this.name = const NameInput.pure(),
+      {required this.state,
+      this.name = const NameInput.pure(),
       this.description = '',
       this.barCode = '',
       final List<String> files = const [],
-      this.status = FormzSubmissionStatus.initial,
       this.exceptionError = '',
       this.item})
       : _files = files;
 
+  @override
+  final BaseState state;
   @override
   @JsonKey()
   final NameInput name;
@@ -257,16 +259,13 @@ class _$_Initial implements _Initial {
 
   @override
   @JsonKey()
-  final FormzSubmissionStatus status;
-  @override
-  @JsonKey()
   final String exceptionError;
   @override
   final Group? item;
 
   @override
   String toString() {
-    return 'SaveGroupState.initial(name: $name, description: $description, barCode: $barCode, files: $files, status: $status, exceptionError: $exceptionError, item: $item)';
+    return 'SaveGroupState.initial(state: $state, name: $name, description: $description, barCode: $barCode, files: $files, exceptionError: $exceptionError, item: $item)';
   }
 
   @override
@@ -274,12 +273,12 @@ class _$_Initial implements _Initial {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_Initial &&
+            (identical(other.state, state) || other.state == state) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.barCode, barCode) || other.barCode == barCode) &&
             const DeepCollectionEquality().equals(other._files, _files) &&
-            (identical(other.status, status) || other.status == status) &&
             (identical(other.exceptionError, exceptionError) ||
                 other.exceptionError == exceptionError) &&
             (identical(other.item, item) || other.item == item));
@@ -288,11 +287,11 @@ class _$_Initial implements _Initial {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      state,
       name,
       description,
       barCode,
       const DeepCollectionEquality().hash(_files),
-      status,
       exceptionError,
       item);
 
@@ -306,45 +305,45 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
+            BaseState state,
             NameInput name,
             String description,
             String barCode,
             List<String> files,
-            FormzSubmissionStatus status,
             String exceptionError,
             Group? item)
         initial,
   }) {
     return initial(
-        name, description, barCode, files, status, exceptionError, item);
+        state, name, description, barCode, files, exceptionError, item);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
+            BaseState state,
             NameInput name,
             String description,
             String barCode,
             List<String> files,
-            FormzSubmissionStatus status,
             String exceptionError,
             Group? item)?
         initial,
   }) {
     return initial?.call(
-        name, description, barCode, files, status, exceptionError, item);
+        state, name, description, barCode, files, exceptionError, item);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
+            BaseState state,
             NameInput name,
             String description,
             String barCode,
             List<String> files,
-            FormzSubmissionStatus status,
             String exceptionError,
             Group? item)?
         initial,
@@ -352,7 +351,7 @@ class _$_Initial implements _Initial {
   }) {
     if (initial != null) {
       return initial(
-          name, description, barCode, files, status, exceptionError, item);
+          state, name, description, barCode, files, exceptionError, item);
     }
     return orElse();
   }
@@ -388,14 +387,16 @@ class _$_Initial implements _Initial {
 
 abstract class _Initial implements SaveGroupState {
   const factory _Initial(
-      {final NameInput name,
+      {required final BaseState state,
+      final NameInput name,
       final String description,
       final String barCode,
       final List<String> files,
-      final FormzSubmissionStatus status,
       final String exceptionError,
       final Group? item}) = _$_Initial;
 
+  @override
+  BaseState get state;
   @override
   NameInput get name;
   @override
@@ -404,8 +405,6 @@ abstract class _Initial implements SaveGroupState {
   String get barCode;
   @override
   List<String> get files;
-  @override
-  FormzSubmissionStatus get status;
   @override
   String get exceptionError;
   @override

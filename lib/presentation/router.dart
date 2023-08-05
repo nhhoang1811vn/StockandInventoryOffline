@@ -7,7 +7,7 @@ import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.d
 import 'package:good_manager/presentation/pages/documents/documents_view.dart';
 import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart';
 import 'package:good_manager/presentation/pages/expenses/expenses_page.dart';
-import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit2.dart';
+import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/goods_view.dart';
 import 'package:good_manager/presentation/pages/help/help_page_dart.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
@@ -82,7 +82,10 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
               create: (context) => getIt<SaveGoodCubit>(),
-              child: SaveGoodPage(item: args['item'], enableAddTransactions: args['enableAddTransactions']),));
+              child: SaveGoodPage(
+                  item: args['item'],
+                  quantity: args['quantity']??0
+              ),));
       case Pages.save_group:
         Map<dynamic, dynamic> args= settings.arguments as Map;
         return MaterialPageRoute(

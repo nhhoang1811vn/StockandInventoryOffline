@@ -11,8 +11,7 @@ class DocumentTransactionRepositoryImpl implements DocumentTransactionRepository
 
   @override
   Future<bool> delete(int id) {
-    // TODO: implement delete
-    throw UnimplementedError();
+    return db.deleteTransaction(id);
   }
 
   @override
@@ -63,7 +62,6 @@ class DocumentTransactionRepositoryImpl implements DocumentTransactionRepository
 
   @override
   Future<bool> update(DocumentTransaction item) {
-    // TODO: implement update
-    throw UnimplementedError();
+    return db.updateTransaction(item);
   }
 }
