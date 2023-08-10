@@ -4,11 +4,10 @@ import 'package:good_manager/app/main.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/select_message_type_dialog.dart';
 import 'package:good_manager/domain/entities/store.dart';
+import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/settings/settings_page.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'help_content.dart';
 
 class CustomNavigationDrawer extends StatefulWidget {
   const CustomNavigationDrawer({Key? key, required this.selectedIndex, required this.storeName})
@@ -182,7 +181,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
     if (result != null){
       Store store = result as Store;
 
-      storage.setSelectedStoreId(store.id);
+      storage.setSelectedStoreId(store.id!);
       storage.setSelectedStoreName(store.name);
 
       if (widget.selectedIndex == 0){
@@ -286,15 +285,15 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
   }
 
   void onWhatsNew(BuildContext context) async {
-    //String code = await appDataManager.sharedPrefsHelper.getLanguageCode();
-    String code = "vi";
     Navigator.of(context).pushNamed(Pages.help, arguments: {
       "title": AppLocalizations.of(context)!.menu_item_whats_new_header,
-      "content": HelpUtils.getMarkdownData(code, HelpType.WHATSNEW)
+      "content": MDProviderFactory.get().getWhatNews()
     });
   }
 
-  void onHelp(BuildContext context) {}
+  void onHelp(BuildContext context) {
+    Navigator.of(context).pushNamed(Pages.helps, arguments: {});
+  }
 
   void onCommunity(BuildContext context) async {
     String url = "fb://profile/112596241092855";

@@ -17,7 +17,6 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$SaveDocumentState {
   BaseState get state => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
   NameInput get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   DateTime? get date => throw _privateConstructorUsedError;
@@ -25,13 +24,18 @@ mixin _$SaveDocumentState {
   Document? get item => throw _privateConstructorUsedError;
   int? get personId => throw _privateConstructorUsedError;
   String? get personName => throw _privateConstructorUsedError;
+  SaveDocumentSetting get setting => throw _privateConstructorUsedError;
+  List<DocumentTransaction> get allTransactions =>
+      throw _privateConstructorUsedError;
   List<DocumentTransaction> get transactions =>
       throw _privateConstructorUsedError;
+  bool get showSearchBar => throw _privateConstructorUsedError;
+  String get textSearch => throw _privateConstructorUsedError;
+  int get totalQuantity => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
             BaseState state,
-            int id,
             NameInput name,
             String description,
             DateTime? date,
@@ -39,7 +43,12 @@ mixin _$SaveDocumentState {
             Document? item,
             int? personId,
             String? personName,
-            List<DocumentTransaction> transactions)
+            SaveDocumentSetting setting,
+            List<DocumentTransaction> allTransactions,
+            List<DocumentTransaction> transactions,
+            bool showSearchBar,
+            String textSearch,
+            int totalQuantity)
         initial,
   }) =>
       throw _privateConstructorUsedError;
@@ -47,7 +56,6 @@ mixin _$SaveDocumentState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
             BaseState state,
-            int id,
             NameInput name,
             String description,
             DateTime? date,
@@ -55,7 +63,12 @@ mixin _$SaveDocumentState {
             Document? item,
             int? personId,
             String? personName,
-            List<DocumentTransaction> transactions)?
+            SaveDocumentSetting setting,
+            List<DocumentTransaction> allTransactions,
+            List<DocumentTransaction> transactions,
+            bool showSearchBar,
+            String textSearch,
+            int totalQuantity)?
         initial,
   }) =>
       throw _privateConstructorUsedError;
@@ -63,7 +76,6 @@ mixin _$SaveDocumentState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
             BaseState state,
-            int id,
             NameInput name,
             String description,
             DateTime? date,
@@ -71,7 +83,12 @@ mixin _$SaveDocumentState {
             Document? item,
             int? personId,
             String? personName,
-            List<DocumentTransaction> transactions)?
+            SaveDocumentSetting setting,
+            List<DocumentTransaction> allTransactions,
+            List<DocumentTransaction> transactions,
+            bool showSearchBar,
+            String textSearch,
+            int totalQuantity)?
         initial,
     required TResult orElse(),
   }) =>
@@ -106,7 +123,6 @@ abstract class $SaveDocumentStateCopyWith<$Res> {
   @useResult
   $Res call(
       {BaseState state,
-      int id,
       NameInput name,
       String description,
       DateTime? date,
@@ -114,7 +130,14 @@ abstract class $SaveDocumentStateCopyWith<$Res> {
       Document? item,
       int? personId,
       String? personName,
-      List<DocumentTransaction> transactions});
+      SaveDocumentSetting setting,
+      List<DocumentTransaction> allTransactions,
+      List<DocumentTransaction> transactions,
+      bool showSearchBar,
+      String textSearch,
+      int totalQuantity});
+
+  $SaveDocumentSettingCopyWith<$Res> get setting;
 }
 
 /// @nodoc
@@ -131,7 +154,6 @@ class _$SaveDocumentStateCopyWithImpl<$Res, $Val extends SaveDocumentState>
   @override
   $Res call({
     Object? state = null,
-    Object? id = null,
     Object? name = null,
     Object? description = null,
     Object? date = freezed,
@@ -139,17 +161,18 @@ class _$SaveDocumentStateCopyWithImpl<$Res, $Val extends SaveDocumentState>
     Object? item = freezed,
     Object? personId = freezed,
     Object? personName = freezed,
+    Object? setting = null,
+    Object? allTransactions = null,
     Object? transactions = null,
+    Object? showSearchBar = null,
+    Object? textSearch = null,
+    Object? totalQuantity = null,
   }) {
     return _then(_value.copyWith(
       state: null == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
               as BaseState,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -178,11 +201,39 @@ class _$SaveDocumentStateCopyWithImpl<$Res, $Val extends SaveDocumentState>
           ? _value.personName
           : personName // ignore: cast_nullable_to_non_nullable
               as String?,
+      setting: null == setting
+          ? _value.setting
+          : setting // ignore: cast_nullable_to_non_nullable
+              as SaveDocumentSetting,
+      allTransactions: null == allTransactions
+          ? _value.allTransactions
+          : allTransactions // ignore: cast_nullable_to_non_nullable
+              as List<DocumentTransaction>,
       transactions: null == transactions
           ? _value.transactions
           : transactions // ignore: cast_nullable_to_non_nullable
               as List<DocumentTransaction>,
+      showSearchBar: null == showSearchBar
+          ? _value.showSearchBar
+          : showSearchBar // ignore: cast_nullable_to_non_nullable
+              as bool,
+      textSearch: null == textSearch
+          ? _value.textSearch
+          : textSearch // ignore: cast_nullable_to_non_nullable
+              as String,
+      totalQuantity: null == totalQuantity
+          ? _value.totalQuantity
+          : totalQuantity // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $SaveDocumentSettingCopyWith<$Res> get setting {
+    return $SaveDocumentSettingCopyWith<$Res>(_value.setting, (value) {
+      return _then(_value.copyWith(setting: value) as $Val);
+    });
   }
 }
 
@@ -196,7 +247,6 @@ abstract class _$$_InitialCopyWith<$Res>
   @useResult
   $Res call(
       {BaseState state,
-      int id,
       NameInput name,
       String description,
       DateTime? date,
@@ -204,7 +254,15 @@ abstract class _$$_InitialCopyWith<$Res>
       Document? item,
       int? personId,
       String? personName,
-      List<DocumentTransaction> transactions});
+      SaveDocumentSetting setting,
+      List<DocumentTransaction> allTransactions,
+      List<DocumentTransaction> transactions,
+      bool showSearchBar,
+      String textSearch,
+      int totalQuantity});
+
+  @override
+  $SaveDocumentSettingCopyWith<$Res> get setting;
 }
 
 /// @nodoc
@@ -218,7 +276,6 @@ class __$$_InitialCopyWithImpl<$Res>
   @override
   $Res call({
     Object? state = null,
-    Object? id = null,
     Object? name = null,
     Object? description = null,
     Object? date = freezed,
@@ -226,17 +283,18 @@ class __$$_InitialCopyWithImpl<$Res>
     Object? item = freezed,
     Object? personId = freezed,
     Object? personName = freezed,
+    Object? setting = null,
+    Object? allTransactions = null,
     Object? transactions = null,
+    Object? showSearchBar = null,
+    Object? textSearch = null,
+    Object? totalQuantity = null,
   }) {
     return _then(_$_Initial(
       state: null == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
               as BaseState,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -265,10 +323,30 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.personName
           : personName // ignore: cast_nullable_to_non_nullable
               as String?,
+      setting: null == setting
+          ? _value.setting
+          : setting // ignore: cast_nullable_to_non_nullable
+              as SaveDocumentSetting,
+      allTransactions: null == allTransactions
+          ? _value._allTransactions
+          : allTransactions // ignore: cast_nullable_to_non_nullable
+              as List<DocumentTransaction>,
       transactions: null == transactions
           ? _value._transactions
           : transactions // ignore: cast_nullable_to_non_nullable
               as List<DocumentTransaction>,
+      showSearchBar: null == showSearchBar
+          ? _value.showSearchBar
+          : showSearchBar // ignore: cast_nullable_to_non_nullable
+              as bool,
+      textSearch: null == textSearch
+          ? _value.textSearch
+          : textSearch // ignore: cast_nullable_to_non_nullable
+              as String,
+      totalQuantity: null == totalQuantity
+          ? _value.totalQuantity
+          : totalQuantity // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -278,7 +356,6 @@ class __$$_InitialCopyWithImpl<$Res>
 class _$_Initial implements _Initial {
   const _$_Initial(
       {required this.state,
-      this.id = -1,
       this.name = const NameInput.pure(),
       this.description = '',
       this.date,
@@ -286,14 +363,17 @@ class _$_Initial implements _Initial {
       this.item,
       this.personId,
       this.personName,
-      final List<DocumentTransaction> transactions = const []})
-      : _transactions = transactions;
+      required this.setting,
+      final List<DocumentTransaction> allTransactions = const [],
+      final List<DocumentTransaction> transactions = const [],
+      this.showSearchBar = false,
+      this.textSearch = '',
+      this.totalQuantity = 0})
+      : _allTransactions = allTransactions,
+        _transactions = transactions;
 
   @override
   final BaseState state;
-  @override
-  @JsonKey()
-  final int id;
   @override
   @JsonKey()
   final NameInput name;
@@ -311,6 +391,17 @@ class _$_Initial implements _Initial {
   final int? personId;
   @override
   final String? personName;
+  @override
+  final SaveDocumentSetting setting;
+  final List<DocumentTransaction> _allTransactions;
+  @override
+  @JsonKey()
+  List<DocumentTransaction> get allTransactions {
+    if (_allTransactions is EqualUnmodifiableListView) return _allTransactions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_allTransactions);
+  }
+
   final List<DocumentTransaction> _transactions;
   @override
   @JsonKey()
@@ -321,8 +412,18 @@ class _$_Initial implements _Initial {
   }
 
   @override
+  @JsonKey()
+  final bool showSearchBar;
+  @override
+  @JsonKey()
+  final String textSearch;
+  @override
+  @JsonKey()
+  final int totalQuantity;
+
+  @override
   String toString() {
-    return 'SaveDocumentState.initial(state: $state, id: $id, name: $name, description: $description, date: $date, exceptionError: $exceptionError, item: $item, personId: $personId, personName: $personName, transactions: $transactions)';
+    return 'SaveDocumentState.initial(state: $state, name: $name, description: $description, date: $date, exceptionError: $exceptionError, item: $item, personId: $personId, personName: $personName, setting: $setting, allTransactions: $allTransactions, transactions: $transactions, showSearchBar: $showSearchBar, textSearch: $textSearch, totalQuantity: $totalQuantity)';
   }
 
   @override
@@ -331,7 +432,6 @@ class _$_Initial implements _Initial {
         (other.runtimeType == runtimeType &&
             other is _$_Initial &&
             (identical(other.state, state) || other.state == state) &&
-            (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -343,15 +443,23 @@ class _$_Initial implements _Initial {
                 other.personId == personId) &&
             (identical(other.personName, personName) ||
                 other.personName == personName) &&
+            (identical(other.setting, setting) || other.setting == setting) &&
             const DeepCollectionEquality()
-                .equals(other._transactions, _transactions));
+                .equals(other._allTransactions, _allTransactions) &&
+            const DeepCollectionEquality()
+                .equals(other._transactions, _transactions) &&
+            (identical(other.showSearchBar, showSearchBar) ||
+                other.showSearchBar == showSearchBar) &&
+            (identical(other.textSearch, textSearch) ||
+                other.textSearch == textSearch) &&
+            (identical(other.totalQuantity, totalQuantity) ||
+                other.totalQuantity == totalQuantity));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
       state,
-      id,
       name,
       description,
       date,
@@ -359,7 +467,12 @@ class _$_Initial implements _Initial {
       item,
       personId,
       personName,
-      const DeepCollectionEquality().hash(_transactions));
+      setting,
+      const DeepCollectionEquality().hash(_allTransactions),
+      const DeepCollectionEquality().hash(_transactions),
+      showSearchBar,
+      textSearch,
+      totalQuantity);
 
   @JsonKey(ignore: true)
   @override
@@ -372,7 +485,6 @@ class _$_Initial implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function(
             BaseState state,
-            int id,
             NameInput name,
             String description,
             DateTime? date,
@@ -380,11 +492,29 @@ class _$_Initial implements _Initial {
             Document? item,
             int? personId,
             String? personName,
-            List<DocumentTransaction> transactions)
+            SaveDocumentSetting setting,
+            List<DocumentTransaction> allTransactions,
+            List<DocumentTransaction> transactions,
+            bool showSearchBar,
+            String textSearch,
+            int totalQuantity)
         initial,
   }) {
-    return initial(state, id, name, description, date, exceptionError, item,
-        personId, personName, transactions);
+    return initial(
+        state,
+        name,
+        description,
+        date,
+        exceptionError,
+        item,
+        personId,
+        personName,
+        setting,
+        allTransactions,
+        transactions,
+        showSearchBar,
+        textSearch,
+        totalQuantity);
   }
 
   @override
@@ -392,7 +522,6 @@ class _$_Initial implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
             BaseState state,
-            int id,
             NameInput name,
             String description,
             DateTime? date,
@@ -400,11 +529,29 @@ class _$_Initial implements _Initial {
             Document? item,
             int? personId,
             String? personName,
-            List<DocumentTransaction> transactions)?
+            SaveDocumentSetting setting,
+            List<DocumentTransaction> allTransactions,
+            List<DocumentTransaction> transactions,
+            bool showSearchBar,
+            String textSearch,
+            int totalQuantity)?
         initial,
   }) {
-    return initial?.call(state, id, name, description, date, exceptionError,
-        item, personId, personName, transactions);
+    return initial?.call(
+        state,
+        name,
+        description,
+        date,
+        exceptionError,
+        item,
+        personId,
+        personName,
+        setting,
+        allTransactions,
+        transactions,
+        showSearchBar,
+        textSearch,
+        totalQuantity);
   }
 
   @override
@@ -412,7 +559,6 @@ class _$_Initial implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
             BaseState state,
-            int id,
             NameInput name,
             String description,
             DateTime? date,
@@ -420,13 +566,31 @@ class _$_Initial implements _Initial {
             Document? item,
             int? personId,
             String? personName,
-            List<DocumentTransaction> transactions)?
+            SaveDocumentSetting setting,
+            List<DocumentTransaction> allTransactions,
+            List<DocumentTransaction> transactions,
+            bool showSearchBar,
+            String textSearch,
+            int totalQuantity)?
         initial,
     required TResult orElse(),
   }) {
     if (initial != null) {
-      return initial(state, id, name, description, date, exceptionError, item,
-          personId, personName, transactions);
+      return initial(
+          state,
+          name,
+          description,
+          date,
+          exceptionError,
+          item,
+          personId,
+          personName,
+          setting,
+          allTransactions,
+          transactions,
+          showSearchBar,
+          textSearch,
+          totalQuantity);
     }
     return orElse();
   }
@@ -463,7 +627,6 @@ class _$_Initial implements _Initial {
 abstract class _Initial implements SaveDocumentState {
   const factory _Initial(
       {required final BaseState state,
-      final int id,
       final NameInput name,
       final String description,
       final DateTime? date,
@@ -471,12 +634,15 @@ abstract class _Initial implements SaveDocumentState {
       final Document? item,
       final int? personId,
       final String? personName,
-      final List<DocumentTransaction> transactions}) = _$_Initial;
+      required final SaveDocumentSetting setting,
+      final List<DocumentTransaction> allTransactions,
+      final List<DocumentTransaction> transactions,
+      final bool showSearchBar,
+      final String textSearch,
+      final int totalQuantity}) = _$_Initial;
 
   @override
   BaseState get state;
-  @override
-  int get id;
   @override
   NameInput get name;
   @override
@@ -492,7 +658,17 @@ abstract class _Initial implements SaveDocumentState {
   @override
   String? get personName;
   @override
+  SaveDocumentSetting get setting;
+  @override
+  List<DocumentTransaction> get allTransactions;
+  @override
   List<DocumentTransaction> get transactions;
+  @override
+  bool get showSearchBar;
+  @override
+  String get textSearch;
+  @override
+  int get totalQuantity;
   @override
   @JsonKey(ignore: true)
   _$$_InitialCopyWith<_$_Initial> get copyWith =>

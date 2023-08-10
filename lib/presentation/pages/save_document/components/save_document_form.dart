@@ -5,162 +5,26 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
-import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
 
-import '../../../../presentation/widgets/snackbar_widgets.dart';
-import '../../base/base_state.dart';
 import '../../goods/good_item_row.dart';
-import '../../pages.dart';
 
 class SaveDocumentForm extends StatelessWidget {
   final Document item;
+  final SaveDocumentState state;
 
-  const SaveDocumentForm({Key? key, required this.item}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    //final TextEditingController supplierNameController = TextEditingController();
-    final TextEditingController personNameController = TextEditingController();
-    final TextEditingController dateController = TextEditingController();
-    dateController.text = Config.dateFormat.format(item.date);
-    personNameController.text = item.personName ?? '';
-    return BlocConsumer<SaveDocumentCubit, SaveDocumentState>(
-        listenWhen: (state1, state2) => state1.state != state2.state,
-        listener: (context, state) async {
-          if (state.state is SaveDocumentFailedState) {
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(state.exceptionError));
-          } else if (state.state is SaveDocumentSuccessfulState) {
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
-            Navigator.of(context).pop();
-            //Navigator.of(context).pop(state.item);
-          } else if (state.state is OpenPersonListState) {
-            if (state.item?.type == DocumentType.incoming){
-              final result = await Navigator.of(context).pushNamed(Pages.supplier_list, arguments: {"isSelection": true});
-              if (result != null) {
-                Supplier supplier = result as Supplier;
-                personNameController.text = supplier.name;
-                context.read<SaveDocumentCubit>().onPersonChanged(supplier.id);
-              }
-            }else{
-              //todo
-            }
-
-          } else if (state.state is OpenCustomerListState) {
-          } else if (state.state is OpenGoodListState) {
-            final result = await Navigator.of(context).pushNamed(Pages.good_list,
-                arguments: {"isSelection": true, "documentId": state.id, "documentType": state.item?.type});
-            context.read<SaveDocumentCubit>().loadTransactions();
-          } else if (state.state is OpenSaveGoodState) {
-            final finalState = state.state as OpenSaveGoodState;
-            final transaction = finalState.item;
-            final result = await Navigator.of(context)
-                .pushNamed(Pages.save_good, arguments: {"item": transaction.good, "quantity": transaction.quantity});
-            if (result != null) {
-              Map<String, dynamic> objects = result as Map<String, dynamic>;
-              //Good good = objects["item"];
-              int quantity = objects["quantity"];
-              transaction.quantity = quantity;
-              context.read<SaveDocumentCubit>().updateTransaction(transaction);
-              context.read<SaveDocumentCubit>().loadTransactions();
-            }
-          }
-        },
-        builder: (context, state) => Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  color: AppColors.primaryColor,
-                  child: ExpansionTile(
-                    iconColor: Colors.white,
-                    collapsedIconColor: Colors.white,
-                    title: Text(
-                      AppLocalizations.of(context)!.document_information,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    initiallyExpanded: true,
-                    childrenPadding: EdgeInsets.only(left: UIConstants.screenSpace, right: UIConstants.screenSpace),
-                    children: [
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: AppTextField(
-                                    color: IntAppColors.whiteColor,
-                                    labelText: AppLocalizations.of(context)!.field_name,
-                                    initialValue: state.name.value,
-                                    onChanged: (value) => context.read<SaveDocumentCubit>().nameChanged(value),
-                                    keyboardType: TextInputType.name,
-                                    error: state.name.displayError?.text(context)),
-                              ),
-                              SizedBox(
-                                width: 15.0,
-                              ),
-                              Expanded(
-                                  child: AppTextField(
-                                color: IntAppColors.whiteColor,
-                                controller: dateController,
-                                labelText: AppLocalizations.of(context)!.field_date,
-                                keyboardType: TextInputType.datetime,
-                                readOnly: true,
-                                onTapped: () => {
-                                  DatePicker.showDatePicker(context,
-                                      showTitleActions: true,
-                                      minTime: Config.minTime,
-                                      maxTime: Config.maxTime, onChanged: (date) {
-                                    print('change $date');
-                                  }, onConfirm: (date) {
-                                    context.read<SaveDocumentCubit>().dateChanged(date);
-                                    dateController.text = Config.dateFormat.format(date);
-                                  }, currentTime: state.date, locale: LocaleType.vi)
-                                },
-                              )),
-                            ],
-                          ),
-                          AppTextField(
-                            color: IntAppColors.whiteColor,
-                            controller: personNameController,
-                            labelText: state.item?.type == DocumentType.incoming
-                                ? AppLocalizations.of(context)!.field_supplier
-                                : AppLocalizations.of(context)!.field_customer,
-                            keyboardType: TextInputType.none,
-                            readOnly: true,
-                            onTapped: () => {context.read<SaveDocumentCubit>().onPersonClicked()},
-                          ),
-                          AppTextField(
-                              color: IntAppColors.whiteColor,
-                              labelText: AppLocalizations.of(context)!.field_desc,
-                              initialValue: state.description,
-                              onChanged: (value) => context.read<SaveDocumentCubit>().descriptionChanged(value),
-                              keyboardType: TextInputType.name),
-                          SizedBox(height: 16)
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                    child: Stack(
-                  children: [
-                    Visibility(
-                      child: _buildEmptyTransaction(context),
-                      visible: state.transactions.isEmpty,
-                    ),
-                    Visibility(
-                      child: _buildTransactionsView(context, state),
-                      visible: state.transactions.isNotEmpty,
-                    )
-                  ],
-                ))
-              ],
-            ));
-  }
+  SaveDocumentForm({Key? key, required this.item, required this.state}) : super(key: key);
+  final TextEditingController searchTextController = TextEditingController();
+  final TextEditingController personNameController = TextEditingController();
+  final TextEditingController dateController = TextEditingController();
 
   Widget _buildEmptyTransaction(BuildContext context) {
+    dateController.text = Config.dateFormat.format(state.item!.date);
+    personNameController.text = state.personName??'';
+    searchTextController.text = state.textSearch;
+    searchTextController.selection = TextSelection.fromPosition(TextPosition(offset: state.textSearch.length));
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -236,5 +100,153 @@ class SaveDocumentForm extends StatelessWidget {
             ],
           );
         });
+  }
+
+  Widget _buildSearchBar(BuildContext context, SaveDocumentState state) {
+    return Visibility(
+        child: Card(
+          child: ListTile(
+            title: TextField(
+              //focusNode: searchTextFocusNode,
+              controller: searchTextController,
+              decoration: InputDecoration(hintText: "Search...", border: InputBorder.none),
+              onChanged: context.read<SaveDocumentCubit>().onSearchTextChanged,
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Visibility(
+                  child: IconButton(
+                    icon: Icon(UIConstants.cancelIconData),
+                    onPressed: () {
+                      searchTextController.text = "";
+                      context.read<SaveDocumentCubit>().resetSearchText();
+                    },
+                  ),
+                  visible: state.textSearch.isNotEmpty,
+                ),
+                IconButton(
+                  icon: Image.asset(
+                    UIConstants.searchBarcodeIconPath,
+                    width: 24,
+                  ),
+                  onPressed: context.read<SaveDocumentCubit>().onSearchBarcodeClicked,
+                )
+              ],
+            ),
+          ),
+        ),
+        visible: state.showSearchBar);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          color: AppColors.primaryColor,
+          child: ExpansionTile(
+            iconColor: Colors.white,
+            collapsedIconColor: Colors.white,
+            title: Text(
+              AppLocalizations.of(context)!.document_information,
+              style: TextStyle(color: Colors.white),
+            ),
+            initiallyExpanded: true,
+            childrenPadding: EdgeInsets.only(left: UIConstants.screenSpace, right: UIConstants.screenSpace),
+            children: [
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AppTextField(
+                            color: IntAppColors.whiteColor,
+                            labelText: AppLocalizations.of(context)!.field_name,
+                            initialValue: state.name.value,
+                            onChanged: (value) => context.read<SaveDocumentCubit>().nameChanged(value),
+                            keyboardType: TextInputType.name,
+                            error: state.name.displayError?.text(context)),
+                      ),
+                      SizedBox(
+                        width: 15.0,
+                      ),
+                      Expanded(
+                          child: AppTextField(
+                        color: IntAppColors.whiteColor,
+                        controller: dateController,
+                        labelText: AppLocalizations.of(context)!.field_date,
+                        keyboardType: TextInputType.datetime,
+                        readOnly: true,
+                        onTapped: () => {
+                          DatePicker.showDatePicker(context,
+                              showTitleActions: true,
+                              minTime: Config.minTime,
+                              maxTime: Config.maxTime, onChanged: (date) {
+                            print('change $date');
+                          }, onConfirm: (date) {
+                            context.read<SaveDocumentCubit>().dateChanged(date);
+                            dateController.text = Config.dateFormat.format(date);
+                          }, currentTime: state.date, locale: LocaleType.vi)
+                        },
+                      )),
+                    ],
+                  ),
+                  AppTextField(
+                    color: IntAppColors.whiteColor,
+                    controller: personNameController,
+                    labelText: state.item?.type == DocumentType.incoming
+                        ? AppLocalizations.of(context)!.field_supplier
+                        : AppLocalizations.of(context)!.field_customer,
+                    keyboardType: TextInputType.none,
+                    readOnly: true,
+                    onTapped: () => {context.read<SaveDocumentCubit>().onPersonClicked()},
+                  ),
+                  AppTextField(
+                      color: IntAppColors.whiteColor,
+                      labelText: AppLocalizations.of(context)!.field_desc,
+                      initialValue: state.description,
+                      onChanged: (value) => context.read<SaveDocumentCubit>().descriptionChanged(value),
+                      keyboardType: TextInputType.name),
+                  SizedBox(height: 16)
+                ],
+              )
+            ],
+          ),
+        ),
+        _buildSearchBar(context, state),
+        Expanded(
+            child: Stack(
+          children: [
+            Visibility(
+              child: _buildEmptyTransaction(context),
+              visible: state.transactions.isEmpty,
+            ),
+            Visibility(
+              child: _buildTransactionsView(context, state),
+              visible: state.transactions.isNotEmpty,
+            )
+          ],
+        )),
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 20,
+              color: Colors.blue,
+              child: IntrinsicHeight(child:  Row(
+                children: [
+                  SizedBox(width: 16),
+                  Text(state.transactions.length.toString(), style: TextStyle(color: Colors.white)),
+                  SizedBox(width: 16),
+                  VerticalDivider(width: 2, color: Colors.white),
+                  SizedBox(width: 16),
+                  Text(state.totalQuantity.toString(), style: TextStyle(color: Colors.white)),
+                ],
+              )),
+            ))
+      ],
+    );
   }
 }

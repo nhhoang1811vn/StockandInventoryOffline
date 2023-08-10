@@ -16,9 +16,13 @@ part of 'documents_cubit.dart';
 class DocumentsState with _$DocumentsState{
   const factory DocumentsState.initial({
     required BaseState state,
-    @Default([]) List<Document> items,
-    @Default([]) List<Document> incomingItems,
-    @Default([]) List<Document> outgoingItems,
+    @Default([]) List<Document> allDocuments,
+    @Default([]) List<Document> documents,
+    @Default([]) List<Document> incomingDocuments,
+    @Default([]) List<Document> outgoingDocuments,
+    @Default([]) List<DocumentUI> items,
+    @Default([]) List<DocumentUI> incomingItems,
+    @Default([]) List<DocumentUI> outgoingItems,
     @Default('') String textSearch,
     required DocumentsSetting settings,
     @Default(false) bool showSearchBar}) = _Initial;

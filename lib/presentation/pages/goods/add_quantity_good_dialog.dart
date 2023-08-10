@@ -55,7 +55,7 @@ class InputQuantityGoodDialogState extends State<InputQuantityGoodDialog> {
               children: [
                 Text(widget.good.name),
                 widget.good.description.isNotEmpty ? Text(widget.good.description) : Container(),
-                widget.good.barCode.isNotEmpty ? Text(widget.good.barCode) : Container(),
+                widget.good.barCode != null ? Text(widget.good.barCode!) : Container(),
                 Text(sprintf(AppLocalizations.of(context)!.in_stock_text, [widget.good.quantity])),
                 Row(
                   children: [

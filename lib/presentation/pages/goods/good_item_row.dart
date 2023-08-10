@@ -44,7 +44,7 @@ class GoodItemRow extends StatelessWidget {
                 SizedBox(
                   width: 8,
                 ),
-                Text(item.barCode, style: bodyStyle)
+                Text(item.barCode!, style: bodyStyle)
               ])
           ],
         ),

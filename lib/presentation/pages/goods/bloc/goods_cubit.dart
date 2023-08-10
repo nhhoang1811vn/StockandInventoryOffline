@@ -37,8 +37,8 @@ class GoodsCubit extends Cubit<GoodsState> {
     required this.documentsUseCases
 
   }) : super(GoodsState.initial(state: InitialState(), settings: storage.getGoodsSetting()));
-  void initState(bool isSelection, int? documentId, DocumentType? documentType) async {
-    emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection, documentId: documentId, documentType: documentType));
+  void initState(bool isSelection, Document? document) async {
+    emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection, document: document));
     loadItems();
   }
   void onSelectedGroupTapped(int index) {
@@ -103,22 +103,8 @@ class GoodsCubit extends Cubit<GoodsState> {
   String getSearchTextHint(BuildContext context) {
     return state.settings.searchGoodsType.getText(context);
   }
-  onSearchBarCode() async {
-    /*try {
-      var barcodeResult = await FlutterBarcodeScanner.scanBarcode(
-          "#ff6666",
-          AppLocalizations.of(getContext()).action_cancel,
-          true,
-          ScanMode.BARCODE);
-      if (barcodeResult != "-1") {
-        searchTextController.text = barcodeResult;
-        justScanCode = true;
-        onSearchChanged(barcodeResult);
-        justScanCode = false;
-      }
-    } on PlatformException {
-      showErrorToast('Failed to get platform version.');
-    }*/
+  void onSearchBarcodeClicked(){
+    emit(state.copyWith(state: OpenBarcodeScannerToSearchState()));
   }
   void setSearchGoodsType(SearchGoodsType type) {
     GoodsSetting settings = state.settings.copyWith(searchGoodsType: type);
@@ -129,12 +115,11 @@ class GoodsCubit extends Cubit<GoodsState> {
   void resetSearchText() {
     emit(state.copyWith(textSearch: ""));
     filter();
-    sort();
   }
   void onSearchTextChanged(String newValue) {
     emit(state.copyWith(textSearch: newValue));
     filter();
-    sort();
+    //sort();
   }
   void onBackPressed() {
     //Navigator.of(getContext()).pop(transactions);
@@ -149,6 +134,7 @@ class GoodsCubit extends Cubit<GoodsState> {
     storage.setGoodsSetting(settings);
     emit(state.copyWith(settings: settings));
     sort();
+    filter();
   }
 
   void loadItems() async{
@@ -156,8 +142,8 @@ class GoodsCubit extends Cubit<GoodsState> {
     List<Group> allGroups = await groupsUseCase.getGroupsByDirectory(directory);
     List<Good> allGoods = await goodsUseCase.getGoodsByDirectory(directory);
     emit(state.copyWith(allGroups: allGroups, allGoods: allGoods));
-    filter();
     sort();
+    filter();
   }
   void filter(){
     List<Group> groups = filterGroups();
@@ -167,7 +153,7 @@ class GoodsCubit extends Cubit<GoodsState> {
   void sort(){
     List<Group> groups = sortGroups();
     List<Good> goods = sortGoods();
-    emit(state.copyWith(groups: groups, goods: goods));
+    emit(state.copyWith(allGroups: groups, allGoods: goods));
   }
   List<Group> sortGroups(){
     List<SortItems<Group>> options = [];
@@ -203,7 +189,7 @@ class GoodsCubit extends Cubit<GoodsState> {
       options.add(SortByCreatedDate());
     }
     List<Group> items = [];
-    items.addAll(state.groups);
+    items.addAll(state.allGroups);
     items.sort((item1, item2) {
       int compare = 0;
       for (final option in options) {
@@ -262,7 +248,7 @@ class GoodsCubit extends Cubit<GoodsState> {
       options.add(SortByCreatedDate());
     }
     List<Good> items = [];
-    items.addAll(state.goods);
+    items.addAll(state.allGoods);
     items.sort((item1, item2) {
       int compare = 0;
       for (final option in options) {
@@ -299,13 +285,13 @@ class GoodsCubit extends Cubit<GoodsState> {
         }
       case SearchGoodsType.byBarcode:
         {
-          return group.barCode.contains(state.textSearch);
+          return (group.barCode != null && group.barCode!.contains(state.textSearch));
         }
       default:
         {
           return group.name.contains(state.textSearch) ||
               group.description.contains(state.textSearch) ||
-              group.barCode.contains(state.textSearch);
+              (group.barCode != null && group.barCode!.contains(state.textSearch));
         }
     }
   }
@@ -328,19 +314,19 @@ class GoodsCubit extends Cubit<GoodsState> {
         }
       case SearchGoodsType.byBarcode:
         {
-          return item.barCode.contains(state.textSearch);
+          return (item.barCode != null && item.barCode!.contains(state.textSearch));
         }
       default:
         {
           return item.name.contains(state.textSearch) ||
               item.description.contains(state.textSearch) ||
-              item.barCode.contains(state.textSearch);
+              (item.barCode != null && item.barCode!.contains(state.textSearch));
         }
     }
   }
 
   void moveGoodToGroup(Good item, Group group) {
-    if (group.id == -1){
+    if (group.id == null){
       item.directory = "/";
     } else if (group.directory == "/"){
       item.directory = "/" + group.id.toString();
@@ -350,24 +336,37 @@ class GoodsCubit extends Cubit<GoodsState> {
     goodsUseCase.update(item);
     loadItems();
   }
-
-  void addTransaction(Good good, int quantity) async {
-    DocumentTransaction transaction = DocumentTransaction();
-    transaction.documentId = state.documentId!;
-    transaction.goodId = good.id;
-    transaction.quantity = quantity;
-    transaction.type = state.documentType!;
-    transaction.storeId = storage.getSelectedStoreId();
-    int id = await documentsUseCases.insertTransaction(transaction);
-    if (id > 0){
-      if (transaction.type == DocumentType.incoming){
-        emit(state.copyWith(state: InsertTransactionSuccessState(good.id, quantity)));
+  void saveDocumentThenAddTransaction(Good good, int quantity) async{
+    bool result = await saveDocument();
+    if (result){
+      DocumentTransaction transaction = DocumentTransaction();
+      transaction.documentId = state.document!.id!;
+      transaction.goodId = good.id!;
+      transaction.quantity = quantity;
+      transaction.type = state.document!.type;
+      transaction.storeId = storage.getSelectedStoreId();
+      int transactionId = await documentsUseCases.insertTransaction(transaction);
+      if (transactionId > 0){
+        if (transaction.type == DocumentType.incoming){
+          emit(state.copyWith(state: InsertTransactionSuccessState(good.id!, quantity)));
+        }else{
+          emit(state.copyWith(state: InsertTransactionSuccessState(good.id!, -quantity)));
+        }
       }else{
-        emit(state.copyWith(state: InsertTransactionSuccessState(good.id, -quantity)));
+        emit(state.copyWith(state: InsertTransactionFailedState()));
       }
-    }else{
-      emit(state.copyWith(state: InsertTransactionFailedState()));
     }
+  }
+  Future<bool> saveDocument() async{
+      Document item = state.document!;
+      if (item.id == null) {
+        int id = await documentsUseCases.insert(item);
+        item.id = id;
+      } else {
+        await documentsUseCases.update(item);
+      }
+      emit(state.copyWith(document: item));
+      return true;
   }
 
   void updateQuantity(int goodId, int quantity) {

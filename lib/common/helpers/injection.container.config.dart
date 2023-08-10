@@ -21,10 +21,10 @@ import 'package:good_manager/data/repositories/goods_repository_impl.dart'
 import 'package:good_manager/data/repositories/groups_repository_impl.dart'
     as _i16;
 import 'package:good_manager/data/repositories/stores_repository_impl.dart'
-    as _i25;
+    as _i24;
 import 'package:good_manager/data/repositories/suppliers_repository_impl.dart'
-    as _i29;
-import 'package:good_manager/data/storage.dart' as _i23;
+    as _i28;
+import 'package:good_manager/data/storage.dart' as _i22;
 import 'package:good_manager/domain/repositories/document_repositories.dart'
     as _i3;
 import 'package:good_manager/domain/repositories/document_transaction_repositories.dart'
@@ -36,9 +36,9 @@ import 'package:good_manager/domain/repositories/goods_repositories.dart'
 import 'package:good_manager/domain/repositories/groups_repositories.dart'
     as _i15;
 import 'package:good_manager/domain/repositories/stores_repositories.dart'
-    as _i24;
+    as _i23;
 import 'package:good_manager/domain/repositories/suppliers_repositories.dart'
-    as _i28;
+    as _i27;
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart'
     as _i32;
 import 'package:good_manager/domain/usecases/documents/document_usecases_impl.dart'
@@ -56,12 +56,14 @@ import 'package:good_manager/domain/usecases/groups/groups_usecases.dart'
 import 'package:good_manager/domain/usecases/groups/groups_usecases_impl.dart'
     as _i18;
 import 'package:good_manager/domain/usecases/stores/stores_usecases.dart'
-    as _i26;
+    as _i25;
 import 'package:good_manager/domain/usecases/stores/stores_usecases_impl.dart'
-    as _i27;
+    as _i26;
 import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart'
-    as _i30;
+    as _i29;
 import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases_impl.dart'
+    as _i30;
+import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart'
     as _i31;
 import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.dart'
     as _i34;
@@ -78,19 +80,19 @@ import 'package:good_manager/presentation/pages/save_document/bloc/save_document
 import 'package:good_manager/presentation/pages/save_expense/bloc/save_expense_cubit.dart'
     as _i19;
 import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.dart'
-    as _i20;
-import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart'
-    as _i21;
-import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit.dart'
     as _i40;
-import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart'
+import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart'
+    as _i20;
+import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit.dart'
     as _i41;
-import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart'
-    as _i22;
-import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart'
+import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart'
     as _i42;
-import 'package:good_manager/presentation/pages/suppliers/bloc/suppliers_cubit.dart'
+import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart'
+    as _i21;
+import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart'
     as _i43;
+import 'package:good_manager/presentation/pages/suppliers/bloc/suppliers_cubit.dart'
+    as _i44;
 import 'package:injectable/injectable.dart' as _i2;
 
 extension GetItInjectableX on _i1.GetIt {
@@ -121,62 +123,70 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i18.GroupsUseCaseImpl(repository: gh<_i15.GroupsRepository>()));
     gh.factory<_i19.SaveExpenseCubit>(
         () => _i19.SaveExpenseCubit(useCase: gh<_i9.ExpenseUseCases>()));
-    gh.factory<_i20.SaveGoodCubit>(
-        () => _i20.SaveGoodCubit(useCase: gh<_i13.GoodsUseCases>()));
-    gh.factory<_i21.SaveGroupCubit>(
-        () => _i21.SaveGroupCubit(useCase: gh<_i17.GroupsUseCases>()));
-    gh.factory<_i22.SelectGroupCubit>(
-        () => _i22.SelectGroupCubit(groupsUseCase: gh<_i17.GroupsUseCases>()));
-    gh.singleton<_i23.Storage>(_i23.Storage());
-    gh.factory<_i24.StoresRepository>(() => _i25.StoresRepositoryImpl());
-    gh.factory<_i26.StoresUseCase>(
-        () => _i27.StoresUseCaseImpl(repository: gh<_i24.StoresRepository>()));
-    gh.factory<_i28.SuppliersRepository>(() => _i29.SuppliersRepositoryImpl());
-    gh.factory<_i30.SuppliersUseCase>(() =>
-        _i31.SuppliersUseCaseImpl(repository: gh<_i28.SuppliersRepository>()));
+    gh.factory<_i20.SaveGroupCubit>(
+        () => _i20.SaveGroupCubit(useCase: gh<_i17.GroupsUseCases>()));
+    gh.factory<_i21.SelectGroupCubit>(
+        () => _i21.SelectGroupCubit(groupsUseCase: gh<_i17.GroupsUseCases>()));
+    gh.singleton<_i22.Storage>(_i22.Storage());
+    gh.factory<_i23.StoresRepository>(() => _i24.StoresRepositoryImpl());
+    gh.factory<_i25.StoresUseCase>(
+        () => _i26.StoresUseCaseImpl(repository: gh<_i23.StoresRepository>()));
+    gh.factory<_i27.SuppliersRepository>(() => _i28.SuppliersRepositoryImpl());
+    gh.factory<_i29.SuppliersUseCase>(() =>
+        _i30.SuppliersUseCaseImpl(repository: gh<_i27.SuppliersRepository>()));
+    gh.factory<_i31.BarcodeScannerCubit>(
+        () => _i31.BarcodeScannerCubit(storage: gh<_i22.Storage>()));
     gh.factory<_i32.DocumentUseCases>(() => _i33.DocumentUseCasesImpl(
-          storage: gh<_i23.Storage>(),
+          storage: gh<_i22.Storage>(),
           repository: gh<_i3.DocumentRepository>(),
           transactionRepository: gh<_i5.DocumentTransactionRepository>(),
         ));
     gh.factory<_i34.DocumentsCubit>(() => _i34.DocumentsCubit(
-          storage: gh<_i23.Storage>(),
+          storage: gh<_i22.Storage>(),
           useCase: gh<_i32.DocumentUseCases>(),
         ));
     gh.factory<_i35.ExpensesCubit>(() => _i35.ExpensesCubit(
-          storage: gh<_i23.Storage>(),
+          storage: gh<_i22.Storage>(),
           useCase: gh<_i9.ExpenseUseCases>(),
         ));
     gh.factory<_i36.GoodsCubit>(() => _i36.GoodsCubit(
-          storage: gh<_i23.Storage>(),
+          storage: gh<_i22.Storage>(),
           goodsUseCase: gh<_i13.GoodsUseCases>(),
           groupsUseCase: gh<_i17.GroupsUseCases>(),
           documentsUseCases: gh<_i32.DocumentUseCases>(),
         ));
     gh.factory<_i37.HomeCubit>(() => _i37.HomeCubit(
-          storage: gh<_i23.Storage>(),
+          storage: gh<_i22.Storage>(),
           goodsUseCases: gh<_i13.GoodsUseCases>(),
           documentsUseCases: gh<_i32.DocumentUseCases>(),
-          supplierUseCases: gh<_i30.SuppliersUseCase>(),
+          supplierUseCases: gh<_i29.SuppliersUseCase>(),
           expenseUseCases: gh<_i9.ExpenseUseCases>(),
         ));
     gh.factory<_i38.OnBoardingCubit>(() => _i38.OnBoardingCubit(
-          useCase: gh<_i26.StoresUseCase>(),
-          storage: gh<_i23.Storage>(),
+          useCase: gh<_i25.StoresUseCase>(),
+          storage: gh<_i22.Storage>(),
         ));
-    gh.factory<_i39.SaveDocumentCubit>(
-        () => _i39.SaveDocumentCubit(useCase: gh<_i32.DocumentUseCases>()));
-    gh.factory<_i40.SaveStoreCubit>(
-        () => _i40.SaveStoreCubit(useCase: gh<_i26.StoresUseCase>()));
-    gh.factory<_i41.SaveSupplierCubit>(
-        () => _i41.SaveSupplierCubit(useCase: gh<_i30.SuppliersUseCase>()));
-    gh.factory<_i42.StoresCubit>(() => _i42.StoresCubit(
-          storage: gh<_i23.Storage>(),
-          useCase: gh<_i26.StoresUseCase>(),
+    gh.factory<_i39.SaveDocumentCubit>(() => _i39.SaveDocumentCubit(
+          useCase: gh<_i32.DocumentUseCases>(),
+          goodUseCases: gh<_i13.GoodsUseCases>(),
+          storage: gh<_i22.Storage>(),
         ));
-    gh.factory<_i43.SuppliersCubit>(() => _i43.SuppliersCubit(
-          storage: gh<_i23.Storage>(),
-          useCase: gh<_i30.SuppliersUseCase>(),
+    gh.factory<_i40.SaveGoodCubit>(() => _i40.SaveGoodCubit(
+          useCase: gh<_i13.GoodsUseCases>(),
+          documentsUseCases: gh<_i32.DocumentUseCases>(),
+          storage: gh<_i22.Storage>(),
+        ));
+    gh.factory<_i41.SaveStoreCubit>(
+        () => _i41.SaveStoreCubit(useCase: gh<_i25.StoresUseCase>()));
+    gh.factory<_i42.SaveSupplierCubit>(
+        () => _i42.SaveSupplierCubit(useCase: gh<_i29.SuppliersUseCase>()));
+    gh.factory<_i43.StoresCubit>(() => _i43.StoresCubit(
+          storage: gh<_i22.Storage>(),
+          useCase: gh<_i25.StoresUseCase>(),
+        ));
+    gh.factory<_i44.SuppliersCubit>(() => _i44.SuppliersCubit(
+          storage: gh<_i22.Storage>(),
+          useCase: gh<_i29.SuppliersUseCase>(),
         ));
     return this;
   }

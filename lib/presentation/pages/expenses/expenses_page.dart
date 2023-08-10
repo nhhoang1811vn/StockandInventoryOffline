@@ -5,6 +5,7 @@ import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/entities/expenses_setting.dart';
+import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart';
 import 'package:good_manager/presentation/pages/expenses/components/expense_item_row.dart';
 import 'package:good_manager/presentation/pages/expenses/components/sort_expenses_dialog.dart';
@@ -208,7 +209,7 @@ class ExpensesPageState extends State<ExpensesPage> {
                   child: Text(AppLocalizations.of(context)!.action_cancel)),
               TextButton(
                 onPressed: () async{
-                  await context.read<ExpensesCubit>().delete(item.id);
+                  await context.read<ExpensesCubit>().delete(item.id!);
                   Navigator.pop(context);
                 },
                 child: Text(AppLocalizations.of(context)!.action_ok),
@@ -241,7 +242,7 @@ class ExpensesPageState extends State<ExpensesPage> {
           } else if (state.state is OpenHelpPageState) {
             Navigator.of(context).pushNamed(Pages.help, arguments: {
               "title": AppLocalizations.of(context)?.expenses_title,
-              "content": HelpUtils.getMarkdownData("vi", HelpType.EXPENSE)
+              "content": MDProviderFactory.get().getHelpText(HelpType.EXPENSE)
             });
           } else if (state.state is OpenSaveExpensePageState) {
             final currentState = state.state as OpenSaveExpensePageState;

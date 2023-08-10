@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:intl/intl.dart';
 
@@ -14,7 +15,7 @@ class DocumentItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateFormat format = DateFormat("dd/MM/yyyy");
+    //DateFormat format = DateFormat("dd/MM/yyyy");
     return ListTile(
       leading: Container(
         width: 8,
@@ -29,7 +30,7 @@ class DocumentItemRow extends StatelessWidget {
       subtitle: Transform.translate(
         offset: Offset(-32, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Ngày ' + format.format(item.date)),
+          Text(Config.dateFormat.format(item.date)),
           item.personName != null ? Text(item.personName!) : Container(),
           item.description.isNotEmpty ? Text(item.description) : Container()
         ]),

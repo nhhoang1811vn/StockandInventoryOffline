@@ -75,6 +75,9 @@ class OpenSaveStorePageState extends BaseState{
 class OpenCalculatorToInputQuantityState extends BaseState{
 
 }
+class OpenBarcodeScannerPageState extends BaseState{
+
+}
 //commons
 class SaveItemSuccessful extends BaseState{
 
@@ -82,4 +85,18 @@ class SaveItemSuccessful extends BaseState{
 class SaveItemError extends BaseState{
   late String error;
   SaveItemError(this.error);
+}
+class SaveItemSameBarcodeError extends BaseState{
+
+}
+class OpenSaveGoodPageWithBarcodeState extends BaseState{
+  late String barcode;
+  OpenSaveGoodPageWithBarcodeState(this.barcode);
+}
+class OpenInputQuantityDialogState extends BaseState{
+  late Good good;
+  OpenInputQuantityDialogState(this.good);
+}
+class OpenBarcodeScannerToSearchState extends BaseState{
+
 }

@@ -27,12 +27,10 @@ class SuppliersCubit extends Cubit<SuppliersState> {
   void searchTextChanged(String value){
     emit(state.copyWith(textSearch: value));
     filter();
-    sort();
   }
   void resetSearchText(){
     emit(state.copyWith(textSearch: ""));
     filter();
-    sort();
   }
   void onShowSearchBarMenuClicked(){
     emit(state.copyWith(showSearchBar: !state.showSearchBar));
@@ -81,6 +79,7 @@ class SuppliersCubit extends Cubit<SuppliersState> {
     storage.setSuppliersSetting(settings);
     emit(state.copyWith(settings: settings));
     sort();
+    filter();
   }
 
 
@@ -88,8 +87,8 @@ class SuppliersCubit extends Cubit<SuppliersState> {
     final storeId = storage.getSelectedStoreId();
     List<Supplier> allItems = await useCase.getAllByStoreId(storeId);
     emit(state.copyWith(allItems: allItems));
-    filter();
     sort();
+    filter();
   }
   void filter(){
     List<Supplier> items = filterSuppliers();
@@ -107,7 +106,7 @@ class SuppliersCubit extends Cubit<SuppliersState> {
   }
   void sort(){
     List<Supplier> items = sortSuppliers();
-    emit(state.copyWith(items: items));
+    emit(state.copyWith(allItems: items));
   }
   List<Supplier> sortSuppliers(){
     List<SortItems<Supplier>> options = [];
@@ -130,7 +129,7 @@ class SuppliersCubit extends Cubit<SuppliersState> {
       options.add(SortByCreatedDate());
     }
     List<Supplier> items = [];
-    items.addAll(state.items);
+    items.addAll(state.allItems);
     items.sort((item1, item2) {
       int compare = 0;
       for (final option in options) {

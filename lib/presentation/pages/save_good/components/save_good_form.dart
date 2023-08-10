@@ -9,6 +9,7 @@ import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.dart';
 import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../../../../domain/entities/good.dart';
 import '../../../../presentation/widgets/snackbar_widgets.dart';
@@ -16,9 +17,10 @@ import '../../../widgets/images_preview/images_preview_view.dart';
 
 class SaveGoodForm extends StatelessWidget {
   final Good item;
-  final int quantity;
+  final int? quantity;
 
   final quantityTextController = TextEditingController();
+  final barcodeTextController = TextEditingController();
 
   SaveGoodForm({Key? key, required this.item, required this.quantity}) : super(key: key);
 
@@ -44,18 +46,31 @@ class SaveGoodForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     quantityTextController.text = quantity.toString();
+    barcodeTextController.text = item.barCode??'';
     return BlocConsumer<SaveGoodCubit, SaveGoodState>(
       listenWhen: (state1, state2){
         return state1.state != state2.state;
       },
-        listener: (context, state) {
+        listener: (context, state) async{
           if (state.state is SaveItemError) {
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+          } else if (state.state is SaveItemSameBarcodeError){
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.error_same_barcode));
           } else if (state.state is SaveItemSuccessful) {
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
-            Navigator.of(context).pop({"item": state.item, "quantity": state.quantity});
+            Navigator.of(context).pop({"item": state.item, "quantity": state.quantity, "document": state.document});
           } else if (state.state is OpenCalculatorToInputQuantityState) {
             showCalculatorPopup(context);
+          } else if (state.state is OpenBarcodeScannerPageState){
+            var result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SimpleBarcodeScannerPage(),
+                ));
+            if (result != "-1"){
+              barcodeTextController.text = result;
+              context.read<SaveGoodCubit>().barCodeChanged(result);
+            }
           }
         },
         builder: (context, state) => SingleChildScrollView(
@@ -76,7 +91,7 @@ class SaveGoodForm extends StatelessWidget {
                       onChanged: (value) => context.read<SaveGoodCubit>().descriptionChanged(value),
                       keyboardType: TextInputType.name),
                   _buildBarCode(context, state),
-                  if (quantity > 0)
+                  if (quantity != null)
                     Column(
                       children: [SizedBox(height: 12), _buildQuantity(context, state)],
                     ),
@@ -100,14 +115,14 @@ class SaveGoodForm extends StatelessWidget {
       children: [
         Expanded(
           child: AppTextField(
+              controller: barcodeTextController,
               labelText: AppLocalizations.of(context)!.field_bar_code,
-              initialValue: state.barCode,
               onChanged: (value) => context.read<SaveGoodCubit>().barCodeChanged(value),
               keyboardType: TextInputType.number),
         ),
         Align(
             alignment: Alignment.centerRight,
-            child: CircleButton(Icons.barcode_reader, context.read<SaveGoodCubit>().onModifyQuantityButtonPressed))
+            child: CircleButton(Icons.barcode_reader, context.read<SaveGoodCubit>().onBarcodeScannerPressed))
       ],
     );
   }

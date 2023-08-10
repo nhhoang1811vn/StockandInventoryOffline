@@ -46,7 +46,7 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
           if (state.state is DataChangedState) {
             widget.onDataChanged(state.items);
           } else if (state.state is TakePictureState) {
-            final result = await Navigator.of(context).pushReplacementNamed(Pages.take_picture);
+            final result = await Navigator.of(context).pushNamed(Pages.take_picture);
             if (result != null) {
               cubit.onAddPhoto(result as String);
             }

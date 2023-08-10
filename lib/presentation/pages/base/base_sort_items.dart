@@ -21,6 +21,6 @@ class SortByNameZToA<T extends BaseModel> extends SortItems<T> {
 class SortByCreatedDate<T extends BaseModel> extends SortItems<T> {
   @override
   int getResult(T item1, T item2) {
-    return item1.createdDate.compareTo(item2.createdDate);
+    return item2.createdDate.compareTo(item1.createdDate);
   }
 }

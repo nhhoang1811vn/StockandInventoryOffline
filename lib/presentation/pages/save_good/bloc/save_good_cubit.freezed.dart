@@ -21,8 +21,10 @@ mixin _$SaveGoodState {
   String get description => throw _privateConstructorUsedError;
   String get barCode => throw _privateConstructorUsedError;
   List<String> get files => throw _privateConstructorUsedError;
-  int get quantity => throw _privateConstructorUsedError;
+  int? get quantity => throw _privateConstructorUsedError;
   Good? get item => throw _privateConstructorUsedError;
+  Document? get document => throw _privateConstructorUsedError;
+  DocumentTransaction? get transaction => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
@@ -31,22 +33,40 @@ mixin _$SaveGoodState {
             String description,
             String barCode,
             List<String> files,
-            int quantity,
-            Good? item)
+            int? quantity,
+            Good? item,
+            Document? document,
+            DocumentTransaction? transaction)
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(BaseState state, NameInput name, String description,
-            String barCode, List<String> files, int quantity, Good? item)?
+    TResult? Function(
+            BaseState state,
+            NameInput name,
+            String description,
+            String barCode,
+            List<String> files,
+            int? quantity,
+            Good? item,
+            Document? document,
+            DocumentTransaction? transaction)?
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(BaseState state, NameInput name, String description,
-            String barCode, List<String> files, int quantity, Good? item)?
+    TResult Function(
+            BaseState state,
+            NameInput name,
+            String description,
+            String barCode,
+            List<String> files,
+            int? quantity,
+            Good? item,
+            Document? document,
+            DocumentTransaction? transaction)?
         initial,
     required TResult orElse(),
   }) =>
@@ -85,8 +105,10 @@ abstract class $SaveGoodStateCopyWith<$Res> {
       String description,
       String barCode,
       List<String> files,
-      int quantity,
-      Good? item});
+      int? quantity,
+      Good? item,
+      Document? document,
+      DocumentTransaction? transaction});
 }
 
 /// @nodoc
@@ -107,8 +129,10 @@ class _$SaveGoodStateCopyWithImpl<$Res, $Val extends SaveGoodState>
     Object? description = null,
     Object? barCode = null,
     Object? files = null,
-    Object? quantity = null,
+    Object? quantity = freezed,
     Object? item = freezed,
+    Object? document = freezed,
+    Object? transaction = freezed,
   }) {
     return _then(_value.copyWith(
       state: null == state
@@ -131,14 +155,22 @@ class _$SaveGoodStateCopyWithImpl<$Res, $Val extends SaveGoodState>
           ? _value.files
           : files // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      quantity: null == quantity
+      quantity: freezed == quantity
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       item: freezed == item
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
               as Good?,
+      document: freezed == document
+          ? _value.document
+          : document // ignore: cast_nullable_to_non_nullable
+              as Document?,
+      transaction: freezed == transaction
+          ? _value.transaction
+          : transaction // ignore: cast_nullable_to_non_nullable
+              as DocumentTransaction?,
     ) as $Val);
   }
 }
@@ -157,8 +189,10 @@ abstract class _$$_InitialCopyWith<$Res>
       String description,
       String barCode,
       List<String> files,
-      int quantity,
-      Good? item});
+      int? quantity,
+      Good? item,
+      Document? document,
+      DocumentTransaction? transaction});
 }
 
 /// @nodoc
@@ -176,8 +210,10 @@ class __$$_InitialCopyWithImpl<$Res>
     Object? description = null,
     Object? barCode = null,
     Object? files = null,
-    Object? quantity = null,
+    Object? quantity = freezed,
     Object? item = freezed,
+    Object? document = freezed,
+    Object? transaction = freezed,
   }) {
     return _then(_$_Initial(
       state: null == state
@@ -200,14 +236,22 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value._files
           : files // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      quantity: null == quantity
+      quantity: freezed == quantity
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       item: freezed == item
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
               as Good?,
+      document: freezed == document
+          ? _value.document
+          : document // ignore: cast_nullable_to_non_nullable
+              as Document?,
+      transaction: freezed == transaction
+          ? _value.transaction
+          : transaction // ignore: cast_nullable_to_non_nullable
+              as DocumentTransaction?,
     ));
   }
 }
@@ -221,8 +265,10 @@ class _$_Initial implements _Initial {
       this.description = '',
       this.barCode = '',
       final List<String> files = const [],
-      this.quantity = 0,
-      this.item})
+      this.quantity,
+      this.item,
+      this.document,
+      this.transaction})
       : _files = files;
 
   @override
@@ -246,14 +292,17 @@ class _$_Initial implements _Initial {
   }
 
   @override
-  @JsonKey()
-  final int quantity;
+  final int? quantity;
   @override
   final Good? item;
+  @override
+  final Document? document;
+  @override
+  final DocumentTransaction? transaction;
 
   @override
   String toString() {
-    return 'SaveGoodState.initial(state: $state, name: $name, description: $description, barCode: $barCode, files: $files, quantity: $quantity, item: $item)';
+    return 'SaveGoodState.initial(state: $state, name: $name, description: $description, barCode: $barCode, files: $files, quantity: $quantity, item: $item, document: $document, transaction: $transaction)';
   }
 
   @override
@@ -269,12 +318,25 @@ class _$_Initial implements _Initial {
             const DeepCollectionEquality().equals(other._files, _files) &&
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity) &&
-            (identical(other.item, item) || other.item == item));
+            (identical(other.item, item) || other.item == item) &&
+            (identical(other.document, document) ||
+                other.document == document) &&
+            (identical(other.transaction, transaction) ||
+                other.transaction == transaction));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, state, name, description,
-      barCode, const DeepCollectionEquality().hash(_files), quantity, item);
+  int get hashCode => Object.hash(
+      runtimeType,
+      state,
+      name,
+      description,
+      barCode,
+      const DeepCollectionEquality().hash(_files),
+      quantity,
+      item,
+      document,
+      transaction);
 
   @JsonKey(ignore: true)
   @override
@@ -291,34 +353,54 @@ class _$_Initial implements _Initial {
             String description,
             String barCode,
             List<String> files,
-            int quantity,
-            Good? item)
+            int? quantity,
+            Good? item,
+            Document? document,
+            DocumentTransaction? transaction)
         initial,
   }) {
-    return initial(state, name, description, barCode, files, quantity, item);
+    return initial(state, name, description, barCode, files, quantity, item,
+        document, transaction);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(BaseState state, NameInput name, String description,
-            String barCode, List<String> files, int quantity, Good? item)?
+    TResult? Function(
+            BaseState state,
+            NameInput name,
+            String description,
+            String barCode,
+            List<String> files,
+            int? quantity,
+            Good? item,
+            Document? document,
+            DocumentTransaction? transaction)?
         initial,
   }) {
-    return initial?.call(
-        state, name, description, barCode, files, quantity, item);
+    return initial?.call(state, name, description, barCode, files, quantity,
+        item, document, transaction);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(BaseState state, NameInput name, String description,
-            String barCode, List<String> files, int quantity, Good? item)?
+    TResult Function(
+            BaseState state,
+            NameInput name,
+            String description,
+            String barCode,
+            List<String> files,
+            int? quantity,
+            Good? item,
+            Document? document,
+            DocumentTransaction? transaction)?
         initial,
     required TResult orElse(),
   }) {
     if (initial != null) {
-      return initial(state, name, description, barCode, files, quantity, item);
+      return initial(state, name, description, barCode, files, quantity, item,
+          document, transaction);
     }
     return orElse();
   }
@@ -359,8 +441,10 @@ abstract class _Initial implements SaveGoodState {
       final String description,
       final String barCode,
       final List<String> files,
-      final int quantity,
-      final Good? item}) = _$_Initial;
+      final int? quantity,
+      final Good? item,
+      final Document? document,
+      final DocumentTransaction? transaction}) = _$_Initial;
 
   @override
   BaseState get state;
@@ -373,9 +457,13 @@ abstract class _Initial implements SaveGoodState {
   @override
   List<String> get files;
   @override
-  int get quantity;
+  int? get quantity;
   @override
   Good? get item;
+  @override
+  Document? get document;
+  @override
+  DocumentTransaction? get transaction;
   @override
   @JsonKey(ignore: true)
   _$$_InitialCopyWith<_$_Initial> get copyWith =>

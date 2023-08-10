@@ -36,7 +36,7 @@ class GroupItemRow extends StatelessWidget {
                 SizedBox(
                   width: 8,
                 ),
-                Text(item.barCode, style: TextStyle(fontSize: 14))
+                Text(item.barCode!, style: TextStyle(fontSize: 14))
               ])
           ],
         ),

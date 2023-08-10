@@ -14,7 +14,7 @@ class GoodsUseCaseImpl implements GoodsUseCases{
   GoodsUseCaseImpl({required this.repository, required this.documentTransactionRepository});
   @override
   Future<int> insert(Good item) {
-    return repository.insert(item);
+      return repository.insert(item);
   }
   @override
   Future<bool> update(Good item) {

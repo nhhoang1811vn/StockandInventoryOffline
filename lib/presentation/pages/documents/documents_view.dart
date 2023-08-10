@@ -4,8 +4,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/main.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/domain/entities/search_documents_type.dart';
+import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/custom_navigation_drawer.dart';
+import 'package:good_manager/presentation/pages/documents/components/document_date_row.dart';
+import 'package:good_manager/presentation/pages/documents/document_ui.dart';
+import 'package:good_manager/presentation/pages/documents/sort_documents_dialog.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../app/widgets/selected_store_view.dart';
@@ -22,11 +27,14 @@ class DocumentsPage extends StatefulWidget {
 }
 
 class DocumentPageState extends State<DocumentsPage> {
+  final TextEditingController searchTextController = TextEditingController();
+
   @override
   void initState() {
     context.read<DocumentsCubit>().initState();
     super.initState();
   }
+
   Widget _buildAllDocumentView(DocumentsState state) {
     return getAllBody(state);
   }
@@ -55,65 +63,62 @@ class DocumentPageState extends State<DocumentsPage> {
   Widget _buildOutgoingDocumentView(BuildContext context, DocumentsState state) => Stack(
         children: [_buildOutgoingEmptyView(context, state), _buildOutgoingListView(state)],
       );
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<DocumentsCubit, DocumentsState>(builder: (context, state) =>
-        DefaultTabController(
+    return BlocConsumer<DocumentsCubit, DocumentsState>(
+        builder: (context, state) => DefaultTabController(
             length: 3,
             child: Builder(builder: (BuildContext context) {
               return Scaffold(
                   drawer: CustomNavigationDrawer(selectedIndex: 2, storeName: storage.getSelectedStoreName()),
                   appBar: _buildAppBar(state),
-                  body: TabBarView(
-                        children: [
-                          _buildAllDocumentView(state),
-                          _buildIncomingDocumentView(context, state),
-                          _buildOutgoingDocumentView(context, state),
-                        ]
-                    )
-                  ,
-                  floatingActionButton:  FloatingActionButton(
+                  body: TabBarView(children: [
+                    _buildAllDocumentView(state),
+                    _buildIncomingDocumentView(context, state),
+                    _buildOutgoingDocumentView(context, state),
+                  ]),
+                  floatingActionButton: FloatingActionButton(
                     onPressed: () => onAddDocument(DefaultTabController.of(context).index),
                     child: Icon(Icons.add),
                     backgroundColor: Colors.blue,
                   ));
-
-            }))
-        , listener: (context, state){
-          if (state.state is OpenHelpPageState){
-            String code = storage.getLanguageCode();
+            })),
+        listenWhen: (state1, state2) => state1.state != state2.state,
+        listener: (context, state) async {
+          if (state.state is OpenHelpPageState) {
             Navigator.of(context).pushNamed(Pages.help, arguments: {
               "title": AppLocalizations.of(context)!.documents_title,
-              "content": HelpUtils.getMarkdownData(code, HelpType.DOCUMENTS)
+              "content": MDProviderFactory.get().getHelpText(HelpType.DOCUMENTS)
             });
-          }else if (state.state is OpenSortDialogListState){
-
+          } else if (state.state is OpenSortDialogListState) {
+            DocumentsSetting? settings = await showDialog(
+                context: context,
+                builder: (_) => SortDocumentsDialog(state.settings),
+                barrierDismissible: true);
+            if (settings != null){
+              context.read<DocumentsCubit>().setSettings(settings);
+            }
           }
         });
   }
+
   void _onAddDocumentWithType(DocumentType type) async {
-    int storeId =   storage.getSelectedStoreId();
+    int storeId = storage.getSelectedStoreId();
     Document item = Document();
     item.storeId = storeId;
     item.type = type;
     item.name = AppLocalizations.of(context)!.document_name_no + storage.getAutoDocumentNo(storeId).toString();
-
-    var result = await Navigator.of(context)
-        .pushNamed(Pages.save_document, arguments: {'item': item});
-    /*if (result != null) {
-      allDocuments.add(result);
-      refreshItems();
-    }*/
-
+    var result = await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+    context.read<DocumentsCubit>().loadItems();
   }
-  void onAddDocument(int index) async{
+
+  void onAddDocument(int index) async {
     switch (index) {
       case 0:
-        DocumentType? type = await showDialog(
-            context: context,
-            builder: (_) => AddDocumentDialogWidget(),
-            barrierDismissible: true);
-        if (type != null){
+        DocumentType? type =
+            await showDialog(context: context, builder: (_) => AddDocumentDialogWidget(), barrierDismissible: true);
+        if (type != null) {
           _onAddDocumentWithType(type);
         }
         break;
@@ -128,59 +133,30 @@ class DocumentPageState extends State<DocumentsPage> {
 
   PreferredSize _buildAppBar(DocumentsState state) {
     return PreferredSize(
-        preferredSize:Size.fromHeight(58.0 + 20 + 58.0 + (state.showSearchBar ? 65 : 0)),
-        child: AppBar(
-          actions: [_buildSearchMenu(state), _buildSortMenu(state), helpMenu],
-          title: Text(AppLocalizations.of(context)!.documents_title),
-          bottom: PreferredSize(preferredSize: Size.fromHeight(20 + 58 + (state.showSearchBar ? 65 : 0)), child: Column(children: [
-            SelectedStoreView(),
-            Visibility(child: _buildSearchBar(context, state), visible: state.showSearchBar),
-            TabBar(
-              indicatorColor: Colors.white,
-              tabs: [
-                Tab(
-                    text:
-                    AppLocalizations.of(context)!.document_list_tab_all),
-                Tab(
-                    text: AppLocalizations.of(context)!
-                        .document_list_tab_incoming),
-                Tab(
-                    text: AppLocalizations.of(context)!
-                        .document_list_tab_outgoing),
-              ],
-            )
-
-          ],),),
+      preferredSize: Size.fromHeight(58.0 + 20 + 58.0 + (state.showSearchBar ? 65 : 0)),
+      child: AppBar(
+        actions: [_buildSearchMenu(state), _buildSortMenu(state), helpMenu],
+        title: Text(AppLocalizations.of(context)!.documents_title),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(20 + 58 + (state.showSearchBar ? 65 : 0)),
+          child: Column(
+            children: [
+              SelectedStoreView(),
+              Visibility(child: _buildSearchBar(context, state), visible: state.showSearchBar),
+              TabBar(
+                indicatorColor: Colors.white,
+                tabs: [
+                  Tab(text: AppLocalizations.of(context)!.document_list_tab_all),
+                  Tab(text: AppLocalizations.of(context)!.document_list_tab_incoming),
+                  Tab(text: AppLocalizations.of(context)!.document_list_tab_outgoing),
+                ],
+              )
+            ],
+          ),
         ),
+      ),
     );
   }
-
-  /*Widget get appBar => AppBar(
-    title: Text(AppLocalizations.of(context)!.documents_title),
-        bottom: PreferredSize(
-            preferredSize: Size.fromHeight(showSearchView ? (74.0 + 65.0) : 74),
-            child: Column(
-              children: [
-                SelectedStoreView(),
-                Visibility(child: _buildSearchBar(context, data), visible: showSearchView),
-                TabBar(
-                  indicatorColor: Colors.white,
-                  tabs: [
-                    Tab(
-                        text:
-                            AppLocalizations.of(context)!.document_list_tab_all),
-                    Tab(
-                        text: AppLocalizations.of(context)!
-                            .document_list_tab_incoming),
-                    Tab(
-                        text: AppLocalizations.of(context)!
-                            .document_list_tab_outgoing),
-                  ],
-                )
-              ],
-            )),
-        actions: [searchMenu, sortMenu, helpMenu],
-      );*/
 
   Widget _buildAllEmptyView(DocumentsState state) => Visibility(
       visible: state.items.isEmpty,
@@ -240,9 +216,13 @@ class DocumentPageState extends State<DocumentsPage> {
       visible: state.items.isNotEmpty,
       child: ListView.separated(
           itemBuilder: (BuildContext context, index) {
-            Document item = state.items[index];
-            return DocumentItemRow(true, item, (item) => onPressedDocument(item),
-                (item) => onLongPressedDocument(item));
+            DocumentUI item = state.items[index];
+            if (item.type == DocumentUIType.data) {
+              return DocumentItemRow(
+                  true, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
+            } else {
+              return DocumentDateRow(item.dateText);
+            }
           },
           separatorBuilder: (context, index) {
             return Divider();
@@ -253,10 +233,14 @@ class DocumentPageState extends State<DocumentsPage> {
       visible: state.incomingItems.isNotEmpty,
       child: ListView.separated(
           itemBuilder: (BuildContext context, index) {
-            Document item = state.incomingItems[index];
-            return DocumentItemRow(false, item, (item) => onPressedDocument(item),
-                (item) => onLongPressedDocument(item));
-          },
+            DocumentUI item = state.incomingItems[index];
+            if (item.type == DocumentUIType.data) {
+              return DocumentItemRow(
+                  true, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
+            } else {
+              return DocumentDateRow(item.dateText);
+            }
+            },
           separatorBuilder: (context, index) {
             return Divider();
           },
@@ -266,10 +250,14 @@ class DocumentPageState extends State<DocumentsPage> {
       visible: state.outgoingItems.isNotEmpty,
       child: ListView.separated(
           itemBuilder: (BuildContext context, index) {
-            Document item = state.outgoingItems[index];
-            return DocumentItemRow(false, item, (item) => onPressedDocument(item),
-                (item) => onLongPressedDocument(item));
-          },
+            DocumentUI item = state.outgoingItems[index];
+            if (item.type == DocumentUIType.data) {
+              return DocumentItemRow(
+                  true, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
+            } else {
+              return DocumentDateRow(item.dateText);
+            }
+            },
           separatorBuilder: (context, index) {
             return Divider();
           },
@@ -278,15 +266,15 @@ class DocumentPageState extends State<DocumentsPage> {
   Widget _buildSearchMenu(DocumentsState state) => Padding(
         padding: EdgeInsets.only(right: 20.0),
         child: GestureDetector(
-          child: Icon(
-            UIConstants.searchMenuIconData,
-            size: 26,
-            color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor,
-          ),
-          onTap: () {
-            context.read<DocumentsCubit>().toggleSearchBar();
-          },
-        ),
+            child: Icon(
+              UIConstants.searchMenuIconData,
+              size: 26,
+              color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor,
+            ),
+            onTap: (){
+              searchTextController.text = "";
+              context.read<DocumentsCubit>().onSearchMenuClicked();
+            }),
       );
 
   Widget _buildSortMenu(DocumentsState state) {
@@ -300,7 +288,7 @@ class DocumentPageState extends State<DocumentsPage> {
               ? UIConstants.highlightMenuColor
               : UIConstants.normalMenuColor,
         ),
-        onTap: context.read<DocumentsCubit>().onShowSortDialog,
+        onTap: context.read<DocumentsCubit>().onMenuSortClicked,
       ),
     );
   }
@@ -312,7 +300,7 @@ class DocumentPageState extends State<DocumentsPage> {
             UIConstants.helpMenuIconData,
             size: 26,
           ),
-          onTap: context.read<DocumentsCubit>().onOpenHelpPage,
+          onTap: context.read<DocumentsCubit>().onMenuHelpClicked,
         ),
       );
 
@@ -323,14 +311,16 @@ class DocumentPageState extends State<DocumentsPage> {
             title: TextField(
               decoration: InputDecoration(
                   hintText: state.settings.searchDocumentsType.getText(context), border: InputBorder.none),
-              onChanged: context.read<DocumentsCubit>().onSearchChanged,
-              //controller: controller.searchTextController,
+              onChanged: context.read<DocumentsCubit>().onSearchTextChanged,
+              controller: searchTextController,
             ),
             trailing: Visibility(
               child: IconButton(
-                icon: Icon(UIConstants.cancelIconData),
-                onPressed: context.read<DocumentsCubit>().resetSearchText,
-              ),
+                  icon: Icon(UIConstants.cancelIconData),
+                  onPressed: () {
+                    searchTextController.text = "";
+                    context.read<DocumentsCubit>().resetSearchText();
+                  }),
               visible: state.textSearch.isNotEmpty,
             ),
           ),
@@ -338,30 +328,24 @@ class DocumentPageState extends State<DocumentsPage> {
         PopupMenuButton<SearchDocumentsType>(
           itemBuilder: (BuildContext a) => <PopupMenuEntry<SearchDocumentsType>>[
             PopupMenuItem<SearchDocumentsType>(
-                value: SearchDocumentsType.byName,
-                child: Text(AppLocalizations.of(context)!.search_documents_type_by_name)),
+                value: SearchDocumentsType.byName, child: Text(AppLocalizations.of(context)!.search_by_name)),
             PopupMenuItem<SearchDocumentsType>(
                 value: SearchDocumentsType.byDescription,
-                child: Text(AppLocalizations.of(context)!.search_documents_type_by_description)),
+                child: Text(AppLocalizations.of(context)!.search_by_description)),
             PopupMenuItem<SearchDocumentsType>(
                 value: SearchDocumentsType.byCustomerSupplier,
-                child: Text(AppLocalizations.of(context)!.search_documents_type_by_customer_supplier)),
+                child: Text(AppLocalizations.of(context)!.search_by_customer_supplier)),
           ],
           onSelected: context.read<DocumentsCubit>().setSearchDocumentsType,
         )
       ]);
 
-  void onPressedDocument(Document item) async{
-    var result = await Navigator.of(context)
-        .pushNamed(Pages.save_document, arguments: {'item': item});
-    /*if (result != null) {
-      int index = allDocuments.indexWhere((element) => element.id == item.id);
-      allDocuments[index] = result;
-      refreshItems();
-    }*/
+  void onPressedDocument(Document item) async {
+    var result = await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
     context.read<DocumentsCubit>().loadItems();
   }
-  void onLongPressedDocument(Document item){
+
+  void onLongPressedDocument(Document item) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -380,24 +364,21 @@ class DocumentPageState extends State<DocumentsPage> {
         },
         barrierDismissible: true);
   }
+
   void showDeleteDocumentConfirm(Document document) {
     showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (BuildContext mContext) {
           return AlertDialog(
-            title: Text(
-                AppLocalizations.of(context)!.notification_dialog_title),
-            content: Text(sprintf(
-                AppLocalizations.of(context)!.message_confirm_delete,
-                [document.name])),
+            title: Text(AppLocalizations.of(context)!.notification_dialog_title),
+            content: Text(sprintf(AppLocalizations.of(context)!.message_confirm_delete, [document.name])),
             actions: [
               TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(AppLocalizations.of(context)!.action_cancel)),
+                  onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.action_cancel)),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  //presenter.delete(document.id);
+                  context.read<DocumentsCubit>().delete(document.id!);
                 },
                 child: Text(AppLocalizations.of(context)!.action_ok),
               )

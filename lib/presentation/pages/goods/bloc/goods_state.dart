@@ -13,7 +13,6 @@ class GoodsState with _$GoodsState {
     required GoodsSetting settings,
     @Default(false) bool showSearchBar,
     @Default(false) bool isSelection,
-    int? documentId,
-    DocumentType? documentType
+    Document? document
   }) = _Initial;
 }

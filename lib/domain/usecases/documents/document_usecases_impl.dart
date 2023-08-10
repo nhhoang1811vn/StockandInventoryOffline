@@ -18,8 +18,7 @@ class DocumentUseCasesImpl implements DocumentUseCases{
 
   @override
   Future<bool> delete(int id) {
-    // TODO: implement delete
-    throw UnimplementedError();
+    return repository.delete(id);
   }
 
   @override

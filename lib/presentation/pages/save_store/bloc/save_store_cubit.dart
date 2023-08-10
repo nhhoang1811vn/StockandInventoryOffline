@@ -18,7 +18,7 @@ class SaveStoreCubit extends Cubit<SaveStoreState> {
 
   void init(Store item){
     SaveStoreState initState;
-      if (item.id == -1){
+      if (item.id == null){
         initState = state.copyWith(item: item);
       }else{
         initState = state.copyWith(item: item,
@@ -44,11 +44,10 @@ class SaveStoreCubit extends Cubit<SaveStoreState> {
     final validate = Formz.validate([state.name]);
     if (validate){
       try{
-        //emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
         Store item = state.item!;
         item.name = state.name.value;
         item.description = state.description;
-        if (item.id == -1){
+        if (item.id == null){
           await useCase.insert(item);
         }else{
           await useCase.update(item);

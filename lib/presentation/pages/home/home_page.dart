@@ -42,6 +42,7 @@ class HomePageState extends State<HomePage> {
           }*/
         },
         builder: (context, state) =>  Scaffold(
+          resizeToAvoidBottomInset: false,
             drawer: CustomNavigationDrawer(selectedIndex: 0, storeName: storage.getSelectedStoreName()),
             appBar: AppBar(title: Text(AppLocalizations.of(context)!.home_title)),
             body: _buildBody(state),
@@ -230,12 +231,14 @@ class HomePageState extends State<HomePage> {
           )),
     ));
   }
-  void openSaveIncomingDocument(){
+  void openSaveIncomingDocument() async{
+    int storeId = storage.getSelectedStoreId();
     Document item = Document();
-    item.storeId = storage.getSelectedStoreId();
+    item.storeId = storeId;
     item.type = DocumentType.incoming;
+    item.name = AppLocalizations.of(context)!.document_name_no + storage.getAutoDocumentNo(storeId).toString();
+    var result = await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
 
-    Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
   }
 
   Widget _buildOutgoingDocument() {
@@ -256,18 +259,19 @@ class HomePageState extends State<HomePage> {
           )),
     ));
   }
-  void openSaveOutgoingDocument(){
+  void openSaveOutgoingDocument() async{
+    int storeId = storage.getSelectedStoreId();
     Document item = Document();
-    item.storeId = storage.getSelectedStoreId();
+    item.storeId = storeId;
     item.type = DocumentType.outgoing;
-
-    Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+    item.name = AppLocalizations.of(context)!.document_name_no + storage.getAutoDocumentNo(storeId).toString();
+    var result = await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
   }
 
   Widget _buildCustomers(HomeState state) {
     return Card(
         child: InkWell(
-      onTap: context.read<HomeCubit>().openCustomers,
+      onTap: openCustomers,
       child: Padding(
           padding: EdgeInsets.all(4),
           child: Column(
@@ -317,7 +321,13 @@ class HomePageState extends State<HomePage> {
     ));
   }
   void openSuppliers(){
-    Navigator.of(context).pushReplacementNamed(Pages.supplier_list, arguments: {'isSelection': false});
+    Navigator.of(context).pushReplacementNamed(Pages.supplier_list, arguments: {});
+  }
+  void openCustomers(){
+    Navigator.of(context).pushReplacementNamed(Pages.customer_list);
+  }
+  void openReport(){
+
   }
 
   Widget _buildExpenses(HomeState state) {
@@ -349,7 +359,7 @@ class HomePageState extends State<HomePage> {
   Widget _buildReport(HomeState state) {
     return Card(
         child: InkWell(
-      onTap:  context.read<HomeCubit>().openReport,
+      onTap: openReport,
       child: Padding(
           padding: EdgeInsets.all(4),
           child: Column(

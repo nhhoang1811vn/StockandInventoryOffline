@@ -16,13 +16,13 @@ class SaveGroupCubit extends Cubit<SaveGroupState>{
   SaveGroupCubit({required this.useCase}) : super(SaveGroupState.initial(state: InitialState()));
   void init(Group item){
     SaveGroupState initState;
-    if (item.id == -1){
+    if (item.id == null){
       initState = state.copyWith(item: item);
     }else{
       initState = state.copyWith(item: item,
           name: NameInput.dirty(value: item.name),
           description: item.description,
-          barCode: item.barCode,
+          barCode: item.barCode??'',
           files: item.files
       );
     }
@@ -32,18 +32,27 @@ class SaveGroupCubit extends Cubit<SaveGroupState>{
   void onSaveClicked() async{
     final validate = Formz.validate([state.name]);
     if (validate){
-      //emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-      Group item = state.item!;
-      item.name = state.name.value;
-      item.description = state.description;
-      item.barCode = state.barCode;
-      item.files = state.files;
-      if (item.id == -1){
-        await useCase.insert(item);
-      }else{
-        await useCase.update(item);
+      try{
+        Group item = state.item!;
+        item.name = state.name.value;
+        item.description = state.description;
+        if (state.barCode.trim().isNotEmpty){
+          item.barCode = state.barCode.trim();
+        }
+        item.files = state.files;
+        if (item.id == null){
+          await useCase.insert(item);
+        }else{
+          await useCase.update(item);
+        }
+        emit(state.copyWith(state: SaveItemSuccessful()));
+      }catch(e){
+        if (e.toString().contains("UNIQUE constraint failed: Groups.barCode")){
+          emit(state.copyWith(state: SaveItemSameBarcodeError()));
+        }else{
+          emit(state.copyWith(state: SaveItemError(e.toString())));
+        }
       }
-      emit(state.copyWith(state: SaveItemSuccessful()));
     }else{
       emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));
     }
@@ -60,5 +69,8 @@ class SaveGroupCubit extends Cubit<SaveGroupState>{
   }
   void onImagesChanged(List<String> value){
     emit(state.copyWith(files: value));
+  }
+  void onBarcodeScannerPressed(){
+    emit(state.copyWith(state: OpenBarcodeScannerPageState()));
   }
 }

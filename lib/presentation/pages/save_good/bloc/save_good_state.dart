@@ -8,7 +8,9 @@ class SaveGoodState with _$SaveGoodState {
     @Default('') String description,
     @Default('') String barCode,
     @Default([]) List<String> files,
-    @Default(0) int quantity,
-    Good? item
+    int? quantity,
+    Good? item,
+    Document? document,
+    DocumentTransaction? transaction
   }) = _Initial;
 }

@@ -10,8 +10,10 @@ import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/goods_setting.dart';
 import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/entities/search_goods_type.dart';
+import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/sort_goods_dialog.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../app/main.dart';
@@ -26,9 +28,9 @@ import 'group_item_row.dart';
 
 class GoodsPage extends StatefulWidget {
   final bool isSelection;
-  final int? documentId;
-  final DocumentType? documentType;
-  GoodsPage({required this.isSelection, this.documentId, this.documentType});
+  final Document? document;
+
+  GoodsPage({required this.isSelection, this.document});
 
   @override
   GoodsPageState createState() => GoodsPageState();
@@ -40,10 +42,7 @@ class GoodsPageState extends State<GoodsPage> {
   @override
   void initState() {
     super.initState();
-    //if (widget.isSelection){
-    //  searchTextFocusNode.requestFocus();
-    //}
-    context.read<GoodsCubit>().initState(widget.isSelection, widget.documentId, widget.documentType);
+    context.read<GoodsCubit>().initState(widget.isSelection, widget.document);
   }
   Widget _buildBody(BuildContext context, GoodsState state) {
     if (state.state is LoadingState) {
@@ -203,7 +202,6 @@ class GoodsPageState extends State<GoodsPage> {
           child: Card(
             child: ListTile(
               title: TextField(
-                //focusNode: searchTextFocusNode,
                 controller: searchTextController,
                 decoration: InputDecoration(
                     hintText: context.read<GoodsCubit>().getSearchTextHint(context),
@@ -229,7 +227,7 @@ class GoodsPageState extends State<GoodsPage> {
                       UIConstants.searchBarcodeIconPath,
                       width: 24,
                     ),
-                    onPressed: context.read<GoodsCubit>().onSearchBarCode,
+                    onPressed: context.read<GoodsCubit>().onSearchBarcodeClicked,
                   )
                 ],
               ),
@@ -281,7 +279,7 @@ class GoodsPageState extends State<GoodsPage> {
         builder: (_) => InputQuantityGoodDialog(good),
         barrierDismissible: true);
     if (quantity != null){
-      context.read<GoodsCubit>().addTransaction(good, quantity);
+      context.read<GoodsCubit>().saveDocumentThenAddTransaction(good, quantity);
     }
   }
   void onLongPressedGood(Good item){
@@ -346,7 +344,7 @@ class GoodsPageState extends State<GoodsPage> {
                   child: Text(AppLocalizations.of(context)!.action_cancel)),
               TextButton(
                 onPressed: () async{
-                  await context.read<GoodsCubit>().deleteGood(item.id);
+                  await context.read<GoodsCubit>().deleteGood(item.id!);
                   Navigator.pop(context);
                 },
                 child: Text(AppLocalizations.of(context)!.action_ok),
@@ -408,18 +406,18 @@ class GoodsPageState extends State<GoodsPage> {
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async{
           if (state.state is OpenSortDialogListState){
-            GoodsSetting settings = await showDialog(
+            GoodsSetting? settings = await showDialog(
                 context: context,
                 builder: (_) => SortGoodsDialog(state.settings),
                 barrierDismissible: true);
-            context.read<GoodsCubit>().setSettings(settings);
+            if (settings != null){
+              context.read<GoodsCubit>().setSettings(settings);
+            }
           }
           else if (state.state is OpenHelpPageState){
-            ///TODO
-            //String code = await appDataManager.sharedPrefsHelper.getLanguageCode();
             Navigator.of(context).pushNamed(Pages.help, arguments: {
               "title": AppLocalizations.of(context)?.goods_title,
-              "content": HelpUtils.getMarkdownData("vi", HelpType.GOODS)
+              "content": MDProviderFactory.get().getHelpText(HelpType.GOODS)
             });
           }else if (state.state is OpenSaveGoodPageState){
             final currentState = state.state as OpenSaveGoodPageState;
@@ -440,6 +438,20 @@ class GoodsPageState extends State<GoodsPage> {
             context.read<GoodsCubit>().updateQuantity(currentState.goodId, currentState.quantity);
           }else if (state.state is InsertTransactionFailedState){
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.insert_transaction_fail));
+          }else if (state.state is OpenBarcodeScannerToSearchState){
+            //open bar code scanner to fill search text box
+            var result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SimpleBarcodeScannerPage(),
+                ));
+            if (result != "-1"){
+              searchTextController.text = result;
+              context.read<GoodsCubit>().onSearchTextChanged(result);
+            }else{
+              ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+
+            }
           }
         },
         builder: (context, state) =>  Scaffold(
@@ -451,7 +463,7 @@ class GoodsPageState extends State<GoodsPage> {
             floatingActionButton: SpeedDial(
               icon: Icons.add,
               activeIcon: Icons.close,
-              buttonSize: 56.0,
+              //buttonSize: 56.0,
               visible: true,
               closeManually: false,
               renderOverlay: false,
@@ -464,13 +476,19 @@ class GoodsPageState extends State<GoodsPage> {
               shape: CircleBorder(),
               children: [
                 SpeedDialChild(
-                    child: Icon(FontAwesomeIcons.solidFolder,color: Colors.orange),
+                    child: Image.asset(
+                      UIConstants.folderIconPath,
+                      width: 24,
+                    ),
                     backgroundColor: Colors.white,
                     onTap: context.read<GoodsCubit>().onAddGroup,
                     label: AppLocalizations.of(context)!.folder
                 ),
                 SpeedDialChild(
-                    child: Icon(FontAwesomeIcons.box,color: Colors.orange,),
+                    child: Image.asset(
+                      UIConstants.goodIconPath,
+                      width: 24,
+                    ),
                     backgroundColor: Colors.white,
                     onTap: context.read<GoodsCubit>().onAddGood,
                     label: AppLocalizations.of(context)!.good)

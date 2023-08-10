@@ -1,9 +1,14 @@
 import 'package:good_manager/domain/entities/transaction.dart';
 
-import 'base_repository.dart';
+abstract class DocumentTransactionRepository {
+  Future<int> insert(DocumentTransaction item);
+  Future<bool> update(DocumentTransaction item);
+  Future<List<DocumentTransaction>> getAll();
+  Future<DocumentTransaction> get(int id);
+  Future<bool> delete(int id);
 
-abstract class DocumentTransactionRepository
-    extends BaseRepository<DocumentTransaction> {
+
+
   Future<void> deleteByDocumentId(int documentId);
 
   Future<void> deleteByGoodId(int goodId);

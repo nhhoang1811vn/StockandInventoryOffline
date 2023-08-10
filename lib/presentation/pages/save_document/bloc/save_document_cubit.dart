@@ -1,102 +1,139 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/data/storage.dart';
+import 'package:good_manager/domain/entities/batch_mode_scan.dart';
+import 'package:good_manager/domain/entities/save_document_setting.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
+import 'package:good_manager/presentation/pages/save_document/sort/sort_by_barcode_document_transaction.dart';
+import 'package:good_manager/presentation/pages/save_document/sort/sort_by_quantity_document_transaction.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../domain/entities/document.dart';
+import '../../../../domain/entities/good.dart';
 import '../../../../domain/entities/models/name.dart';
+import '../../../../domain/entities/sort_by_number.dart';
+import '../../../../domain/entities/sort_by_text.dart';
 import '../../../../domain/entities/transaction.dart';
+import '../../../../domain/usecases/goods/goods_usercases.dart';
+import '../sort/sort_by_created_date_document_transaction.dart';
+import '../sort/sort_by_name_document_transaction.dart';
+import '../sort/sort_transaction.dart';
 
 part 'save_document_cubit.freezed.dart';
 part 'save_document_state.dart';
 
 @injectable
 class SaveDocumentCubit extends Cubit<SaveDocumentState> {
+  final Storage storage;
   final DocumentUseCases useCase;
-  SaveDocumentCubit({required this.useCase}) : super(SaveDocumentState.initial(state: InitialState()));
+  final GoodsUseCases goodUseCases;
 
-  void init(Document item){
-      SaveDocumentState initState = state.copyWith(item: item,
-          id: item.id,
-          name: NameInput.dirty(value: item.name),
-          description: item.description,
-          date: item.date,
-          personId: item.personId,
-          personName: item.personName
-      );
-      emit(initState);
-      if (item.id != -1){
-        loadTransactions();
-      }
+  SaveDocumentCubit({required this.useCase, required this.goodUseCases, required this.storage})
+      : super(SaveDocumentState.initial(state: InitialState(), setting: storage.getSaveDocumentSetting()));
+
+  void init(Document item) {
+    SaveDocumentState initState = state.copyWith(
+        item: item,
+        name: NameInput.dirty(value: item.name),
+        description: item.description,
+        date: item.date,
+        personId: item.personId,
+        personName: item.personName);
+    emit(initState);
+    if (item.id != null) {
+      loadTransactions();
+    }
   }
 
   Future<bool> onWillPop() async {
     return true;
   }
-  void nameChanged(String value){
+
+  void nameChanged(String value) {
     final name = NameInput.dirty(value: value);
     emit(state.copyWith(name: name));
   }
-  void descriptionChanged(String value){
+
+  void descriptionChanged(String value) {
     emit(state.copyWith(description: value));
   }
+
   void dateChanged(DateTime date) {
     emit(state.copyWith(date: date));
   }
-  Future<bool> save() async{
+
+  Future<bool> save() async {
     final validate = Formz.validate([state.name]);
-    if (validate){
+    if (validate) {
       Document item = state.item!;
       item.name = state.name.value;
       item.description = state.description;
       item.date = state.date!;
       item.personId = state.personId;
-      if (state.id == -1){
+      if (item.id == null) {
         int id = await useCase.insert(item);
-        emit(state.copyWith(id: id));
-      }else{
-        item.id = state.id;
+        item.id = id;
+      } else {
         await useCase.update(item);
       }
       emit(state.copyWith(item: item));
       return true;
-    }else{
-      emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));
+    } else {
+      emit(state.copyWith(name: NameInput.dirty(value: state.name.value)));
       return false;
     }
   }
-  void onAddGoodClicked() async{
-    bool result = await save();
-    if (result){
-      emit(state.copyWith(state: OpenGoodListState()));
-    }
+
+  void onAddGoodClicked() async {
+    emit(state.copyWith(state: OpenGoodListState()));
   }
-  void onSaveMenuClicked() async{
+
+  void onSaveMenuClicked() async {
     bool result = await save();
-    if (result){
+    if (result) {
       emit(state.copyWith(state: SaveDocumentSuccessfulState(state.item!)));
     }
   }
-  void onSearchMenuClicked() {
 
+  void onSearchMenuClicked() {
+    emit(state.copyWith(showSearchBar: !state.showSearchBar));
+    resetSearch();
+  }
+
+  void resetSearch() {
+    emit(state.copyWith(textSearch: ""));
+    filter();
   }
 
   onPersonClicked() {
     emit(state.copyWith(state: OpenPersonListState()));
   }
-  void onPersonChanged(int id){
+
+  void onPersonChanged(int id) {
     emit(state.copyWith(personId: id));
+  }
+  void onPersonNameChanged(String name){
+    emit(state.copyWith(personName: name));
   }
 
   void loadTransactions() async {
-    List<DocumentTransaction> transactions = await useCase.getTransactionsByDocumentId(state.id);
-    emit(state.copyWith(transactions: transactions));
+    if (state.item?.id != null){
+      List<DocumentTransaction> transactions = await useCase.getTransactionsByDocumentId(state.item!.id!);
+      int totalQuantity = 0;
+      transactions.forEach((element) {
+        totalQuantity += element.quantity;
+      });
+      emit(state.copyWith(allTransactions: transactions, totalQuantity: totalQuantity));
+      sort();
+      filter();
+    }
   }
-  void deleteTransaction(DocumentTransaction item) async{
+
+  void deleteTransaction(DocumentTransaction item) async {
     bool result = await useCase.deleteTransaction(item.id);
-    if (result){
+    if (result) {
       loadTransactions();
     }
   }
@@ -104,8 +141,145 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   void onPressedTransaction(DocumentTransaction transaction) {
     emit(state.copyWith(state: OpenSaveGoodState(transaction)));
   }
+  void resetSearchText() {
+    emit(state.copyWith(textSearch: ""));
+    filter();
+  }
+  void onSearchTextChanged(String newValue) {
+    emit(state.copyWith(textSearch: newValue));
+    filter();
+  }
 
-  void updateTransaction(DocumentTransaction transaction) async {
-    final result = await useCase.updateTransaction(transaction);
+  void filter() {
+    List<DocumentTransaction> transactions =
+        state.allTransactions.where((element) => filterTransaction(element)).toList();
+    emit(state.copyWith(transactions: transactions));
+  }
+
+  bool filterTransaction(DocumentTransaction item) {
+    if (state.textSearch.trim().isEmpty) {
+      return true;
+    }
+    return item.good.name.contains(state.textSearch) ||
+        item.good.description.contains(state.textSearch) ||
+        (item.good.barCode != null && item.good.barCode!.contains(state.textSearch));
+  }
+
+  void onSortByMenuClicked() {
+    emit(state.copyWith(state: OpenSortDialogListState()));
+  }
+
+  void onBatchScanMenuClicked() {
+    emit(state.copyWith(state: OpenBarcodeScannerPageState()));
+  }
+
+  void onHelpMenuClicked() {
+    emit(state.copyWith(state: OpenHelpPageState()));
+  }
+
+  void setSettings(SaveDocumentSetting setting) {
+    storage.setSaveDocumentSetting(setting);
+    emit(state.copyWith(setting: setting));
+    sort();
+    filter();
+  }
+
+  void sort() {
+    List<SortTransaction> options = getSortOptions();
+    List<DocumentTransaction> items = [];
+    items.addAll(state.allTransactions);
+    items.sort((item1, item2) {
+      int compare = 0;
+      for (final option in options) {
+        compare = option.getResult(item1, item2);
+        if (compare != 0) break;
+      }
+      return compare;
+    });
+    emit(state.copyWith(allTransactions: items));
+  }
+
+  List<SortTransaction> getSortOptions() {
+    List<SortTransaction> options = [];
+    switch (state.setting.sortByName) {
+      case SortByText.a_to_z:
+        {
+          options.add(SortByNameAToZDocumentTransaction());
+          break;
+        }
+      case SortByText.z_to_a:
+        {
+          options.add(SortByNameZToADocumentTransaction());
+          break;
+        }
+      case SortByText.no_sort:
+        break;
+    }
+    switch (state.setting.sortByBarcode) {
+      case SortByNumber.ascending:
+        {
+          options.add(SortByBarCodeAscendingDocumentTransaction());
+          break;
+        }
+      case SortByNumber.descending:
+        {
+          options.add(SortByBarCodeDescendingDocumentTransaction());
+          break;
+        }
+      case SortByNumber.no_sort:
+        break;
+    }
+    switch (state.setting.sortByQuantity) {
+      case SortByNumber.ascending:
+        {
+          options.add(SortByQuantityAscendingDocumentTransaction());
+          break;
+        }
+      case SortByNumber.descending:
+        {
+          options.add(SortByQuantityDescendingDocumentTransaction());
+          break;
+        }
+      case SortByNumber.no_sort:
+        break;
+    }
+    if (options.isEmpty){
+      options.add(SortByCreatedDateDocumentTransaction());
+    }
+    return options;
+  }
+  void updateDocument(Document item){
+    emit(state.copyWith(item: item));
+  }
+  void findGood(String barcode) async{
+    try{
+      Good good = await goodUseCases.getGoodsByBarCode(barcode);
+      if (storage.getBatchModeScan() == BatchModeScan.MANUAL){
+        emit(state.copyWith(state: OpenInputQuantityDialogState(good)));
+      }else{
+        saveThenAddTransaction(good, 1);
+        onBatchScanMenuClicked();
+      }
+
+    }catch(e){
+      emit(state.copyWith(state: OpenSaveGoodPageWithBarcodeState(barcode)));
+    }
+  }
+
+  void saveThenAddTransaction(Good good, int quantity) async{
+    bool result = await save();
+    if (result){
+      DocumentTransaction transaction = DocumentTransaction();
+      transaction.documentId = state.item!.id!;
+      transaction.goodId = good.id!;
+      transaction.quantity = quantity;
+      transaction.type = state.item!.type;
+      transaction.storeId = storage.getSelectedStoreId();
+      int transactionId = await useCase.insertTransaction(transaction);
+      loadTransactions();
+    }
+  }
+  void onSearchBarcodeClicked(){
+    emit(state.copyWith(state: OpenBarcodeScannerToSearchState()));
   }
 }

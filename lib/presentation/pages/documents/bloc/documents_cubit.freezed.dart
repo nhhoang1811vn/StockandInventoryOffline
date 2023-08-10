@@ -17,9 +17,13 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$DocumentsState {
   BaseState get state => throw _privateConstructorUsedError;
-  List<Document> get items => throw _privateConstructorUsedError;
-  List<Document> get incomingItems => throw _privateConstructorUsedError;
-  List<Document> get outgoingItems => throw _privateConstructorUsedError;
+  List<Document> get allDocuments => throw _privateConstructorUsedError;
+  List<Document> get documents => throw _privateConstructorUsedError;
+  List<Document> get incomingDocuments => throw _privateConstructorUsedError;
+  List<Document> get outgoingDocuments => throw _privateConstructorUsedError;
+  List<DocumentUI> get items => throw _privateConstructorUsedError;
+  List<DocumentUI> get incomingItems => throw _privateConstructorUsedError;
+  List<DocumentUI> get outgoingItems => throw _privateConstructorUsedError;
   String get textSearch => throw _privateConstructorUsedError;
   DocumentsSetting get settings => throw _privateConstructorUsedError;
   bool get showSearchBar => throw _privateConstructorUsedError;
@@ -27,9 +31,13 @@ mixin _$DocumentsState {
   TResult when<TResult extends Object?>({
     required TResult Function(
             BaseState state,
-            List<Document> items,
-            List<Document> incomingItems,
-            List<Document> outgoingItems,
+            List<Document> allDocuments,
+            List<Document> documents,
+            List<Document> incomingDocuments,
+            List<Document> outgoingDocuments,
+            List<DocumentUI> items,
+            List<DocumentUI> incomingItems,
+            List<DocumentUI> outgoingItems,
             String textSearch,
             DocumentsSetting settings,
             bool showSearchBar)
@@ -40,9 +48,13 @@ mixin _$DocumentsState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
             BaseState state,
-            List<Document> items,
-            List<Document> incomingItems,
-            List<Document> outgoingItems,
+            List<Document> allDocuments,
+            List<Document> documents,
+            List<Document> incomingDocuments,
+            List<Document> outgoingDocuments,
+            List<DocumentUI> items,
+            List<DocumentUI> incomingItems,
+            List<DocumentUI> outgoingItems,
             String textSearch,
             DocumentsSetting settings,
             bool showSearchBar)?
@@ -53,9 +65,13 @@ mixin _$DocumentsState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
             BaseState state,
-            List<Document> items,
-            List<Document> incomingItems,
-            List<Document> outgoingItems,
+            List<Document> allDocuments,
+            List<Document> documents,
+            List<Document> incomingDocuments,
+            List<Document> outgoingDocuments,
+            List<DocumentUI> items,
+            List<DocumentUI> incomingItems,
+            List<DocumentUI> outgoingItems,
             String textSearch,
             DocumentsSetting settings,
             bool showSearchBar)?
@@ -93,9 +109,13 @@ abstract class $DocumentsStateCopyWith<$Res> {
   @useResult
   $Res call(
       {BaseState state,
-      List<Document> items,
-      List<Document> incomingItems,
-      List<Document> outgoingItems,
+      List<Document> allDocuments,
+      List<Document> documents,
+      List<Document> incomingDocuments,
+      List<Document> outgoingDocuments,
+      List<DocumentUI> items,
+      List<DocumentUI> incomingItems,
+      List<DocumentUI> outgoingItems,
       String textSearch,
       DocumentsSetting settings,
       bool showSearchBar});
@@ -117,6 +137,10 @@ class _$DocumentsStateCopyWithImpl<$Res, $Val extends DocumentsState>
   @override
   $Res call({
     Object? state = null,
+    Object? allDocuments = null,
+    Object? documents = null,
+    Object? incomingDocuments = null,
+    Object? outgoingDocuments = null,
     Object? items = null,
     Object? incomingItems = null,
     Object? outgoingItems = null,
@@ -129,18 +153,34 @@ class _$DocumentsStateCopyWithImpl<$Res, $Val extends DocumentsState>
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
               as BaseState,
+      allDocuments: null == allDocuments
+          ? _value.allDocuments
+          : allDocuments // ignore: cast_nullable_to_non_nullable
+              as List<Document>,
+      documents: null == documents
+          ? _value.documents
+          : documents // ignore: cast_nullable_to_non_nullable
+              as List<Document>,
+      incomingDocuments: null == incomingDocuments
+          ? _value.incomingDocuments
+          : incomingDocuments // ignore: cast_nullable_to_non_nullable
+              as List<Document>,
+      outgoingDocuments: null == outgoingDocuments
+          ? _value.outgoingDocuments
+          : outgoingDocuments // ignore: cast_nullable_to_non_nullable
+              as List<Document>,
       items: null == items
           ? _value.items
           : items // ignore: cast_nullable_to_non_nullable
-              as List<Document>,
+              as List<DocumentUI>,
       incomingItems: null == incomingItems
           ? _value.incomingItems
           : incomingItems // ignore: cast_nullable_to_non_nullable
-              as List<Document>,
+              as List<DocumentUI>,
       outgoingItems: null == outgoingItems
           ? _value.outgoingItems
           : outgoingItems // ignore: cast_nullable_to_non_nullable
-              as List<Document>,
+              as List<DocumentUI>,
       textSearch: null == textSearch
           ? _value.textSearch
           : textSearch // ignore: cast_nullable_to_non_nullable
@@ -175,9 +215,13 @@ abstract class _$$_InitialCopyWith<$Res>
   @useResult
   $Res call(
       {BaseState state,
-      List<Document> items,
-      List<Document> incomingItems,
-      List<Document> outgoingItems,
+      List<Document> allDocuments,
+      List<Document> documents,
+      List<Document> incomingDocuments,
+      List<Document> outgoingDocuments,
+      List<DocumentUI> items,
+      List<DocumentUI> incomingItems,
+      List<DocumentUI> outgoingItems,
       String textSearch,
       DocumentsSetting settings,
       bool showSearchBar});
@@ -197,6 +241,10 @@ class __$$_InitialCopyWithImpl<$Res>
   @override
   $Res call({
     Object? state = null,
+    Object? allDocuments = null,
+    Object? documents = null,
+    Object? incomingDocuments = null,
+    Object? outgoingDocuments = null,
     Object? items = null,
     Object? incomingItems = null,
     Object? outgoingItems = null,
@@ -209,18 +257,34 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
               as BaseState,
+      allDocuments: null == allDocuments
+          ? _value._allDocuments
+          : allDocuments // ignore: cast_nullable_to_non_nullable
+              as List<Document>,
+      documents: null == documents
+          ? _value._documents
+          : documents // ignore: cast_nullable_to_non_nullable
+              as List<Document>,
+      incomingDocuments: null == incomingDocuments
+          ? _value._incomingDocuments
+          : incomingDocuments // ignore: cast_nullable_to_non_nullable
+              as List<Document>,
+      outgoingDocuments: null == outgoingDocuments
+          ? _value._outgoingDocuments
+          : outgoingDocuments // ignore: cast_nullable_to_non_nullable
+              as List<Document>,
       items: null == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
-              as List<Document>,
+              as List<DocumentUI>,
       incomingItems: null == incomingItems
           ? _value._incomingItems
           : incomingItems // ignore: cast_nullable_to_non_nullable
-              as List<Document>,
+              as List<DocumentUI>,
       outgoingItems: null == outgoingItems
           ? _value._outgoingItems
           : outgoingItems // ignore: cast_nullable_to_non_nullable
-              as List<Document>,
+              as List<DocumentUI>,
       textSearch: null == textSearch
           ? _value.textSearch
           : textSearch // ignore: cast_nullable_to_non_nullable
@@ -242,40 +306,86 @@ class __$$_InitialCopyWithImpl<$Res>
 class _$_Initial implements _Initial {
   const _$_Initial(
       {required this.state,
-      final List<Document> items = const [],
-      final List<Document> incomingItems = const [],
-      final List<Document> outgoingItems = const [],
+      final List<Document> allDocuments = const [],
+      final List<Document> documents = const [],
+      final List<Document> incomingDocuments = const [],
+      final List<Document> outgoingDocuments = const [],
+      final List<DocumentUI> items = const [],
+      final List<DocumentUI> incomingItems = const [],
+      final List<DocumentUI> outgoingItems = const [],
       this.textSearch = '',
       required this.settings,
       this.showSearchBar = false})
-      : _items = items,
+      : _allDocuments = allDocuments,
+        _documents = documents,
+        _incomingDocuments = incomingDocuments,
+        _outgoingDocuments = outgoingDocuments,
+        _items = items,
         _incomingItems = incomingItems,
         _outgoingItems = outgoingItems;
 
   @override
   final BaseState state;
-  final List<Document> _items;
+  final List<Document> _allDocuments;
   @override
   @JsonKey()
-  List<Document> get items {
+  List<Document> get allDocuments {
+    if (_allDocuments is EqualUnmodifiableListView) return _allDocuments;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_allDocuments);
+  }
+
+  final List<Document> _documents;
+  @override
+  @JsonKey()
+  List<Document> get documents {
+    if (_documents is EqualUnmodifiableListView) return _documents;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_documents);
+  }
+
+  final List<Document> _incomingDocuments;
+  @override
+  @JsonKey()
+  List<Document> get incomingDocuments {
+    if (_incomingDocuments is EqualUnmodifiableListView)
+      return _incomingDocuments;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_incomingDocuments);
+  }
+
+  final List<Document> _outgoingDocuments;
+  @override
+  @JsonKey()
+  List<Document> get outgoingDocuments {
+    if (_outgoingDocuments is EqualUnmodifiableListView)
+      return _outgoingDocuments;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_outgoingDocuments);
+  }
+
+  final List<DocumentUI> _items;
+  @override
+  @JsonKey()
+  List<DocumentUI> get items {
     if (_items is EqualUnmodifiableListView) return _items;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_items);
   }
 
-  final List<Document> _incomingItems;
+  final List<DocumentUI> _incomingItems;
   @override
   @JsonKey()
-  List<Document> get incomingItems {
+  List<DocumentUI> get incomingItems {
     if (_incomingItems is EqualUnmodifiableListView) return _incomingItems;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_incomingItems);
   }
 
-  final List<Document> _outgoingItems;
+  final List<DocumentUI> _outgoingItems;
   @override
   @JsonKey()
-  List<Document> get outgoingItems {
+  List<DocumentUI> get outgoingItems {
     if (_outgoingItems is EqualUnmodifiableListView) return _outgoingItems;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_outgoingItems);
@@ -292,7 +402,7 @@ class _$_Initial implements _Initial {
 
   @override
   String toString() {
-    return 'DocumentsState.initial(state: $state, items: $items, incomingItems: $incomingItems, outgoingItems: $outgoingItems, textSearch: $textSearch, settings: $settings, showSearchBar: $showSearchBar)';
+    return 'DocumentsState.initial(state: $state, allDocuments: $allDocuments, documents: $documents, incomingDocuments: $incomingDocuments, outgoingDocuments: $outgoingDocuments, items: $items, incomingItems: $incomingItems, outgoingItems: $outgoingItems, textSearch: $textSearch, settings: $settings, showSearchBar: $showSearchBar)';
   }
 
   @override
@@ -301,6 +411,14 @@ class _$_Initial implements _Initial {
         (other.runtimeType == runtimeType &&
             other is _$_Initial &&
             (identical(other.state, state) || other.state == state) &&
+            const DeepCollectionEquality()
+                .equals(other._allDocuments, _allDocuments) &&
+            const DeepCollectionEquality()
+                .equals(other._documents, _documents) &&
+            const DeepCollectionEquality()
+                .equals(other._incomingDocuments, _incomingDocuments) &&
+            const DeepCollectionEquality()
+                .equals(other._outgoingDocuments, _outgoingDocuments) &&
             const DeepCollectionEquality().equals(other._items, _items) &&
             const DeepCollectionEquality()
                 .equals(other._incomingItems, _incomingItems) &&
@@ -318,6 +436,10 @@ class _$_Initial implements _Initial {
   int get hashCode => Object.hash(
       runtimeType,
       state,
+      const DeepCollectionEquality().hash(_allDocuments),
+      const DeepCollectionEquality().hash(_documents),
+      const DeepCollectionEquality().hash(_incomingDocuments),
+      const DeepCollectionEquality().hash(_outgoingDocuments),
       const DeepCollectionEquality().hash(_items),
       const DeepCollectionEquality().hash(_incomingItems),
       const DeepCollectionEquality().hash(_outgoingItems),
@@ -336,16 +458,30 @@ class _$_Initial implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function(
             BaseState state,
-            List<Document> items,
-            List<Document> incomingItems,
-            List<Document> outgoingItems,
+            List<Document> allDocuments,
+            List<Document> documents,
+            List<Document> incomingDocuments,
+            List<Document> outgoingDocuments,
+            List<DocumentUI> items,
+            List<DocumentUI> incomingItems,
+            List<DocumentUI> outgoingItems,
             String textSearch,
             DocumentsSetting settings,
             bool showSearchBar)
         initial,
   }) {
-    return initial(state, items, incomingItems, outgoingItems, textSearch,
-        settings, showSearchBar);
+    return initial(
+        state,
+        allDocuments,
+        documents,
+        incomingDocuments,
+        outgoingDocuments,
+        items,
+        incomingItems,
+        outgoingItems,
+        textSearch,
+        settings,
+        showSearchBar);
   }
 
   @override
@@ -353,16 +489,30 @@ class _$_Initial implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
             BaseState state,
-            List<Document> items,
-            List<Document> incomingItems,
-            List<Document> outgoingItems,
+            List<Document> allDocuments,
+            List<Document> documents,
+            List<Document> incomingDocuments,
+            List<Document> outgoingDocuments,
+            List<DocumentUI> items,
+            List<DocumentUI> incomingItems,
+            List<DocumentUI> outgoingItems,
             String textSearch,
             DocumentsSetting settings,
             bool showSearchBar)?
         initial,
   }) {
-    return initial?.call(state, items, incomingItems, outgoingItems, textSearch,
-        settings, showSearchBar);
+    return initial?.call(
+        state,
+        allDocuments,
+        documents,
+        incomingDocuments,
+        outgoingDocuments,
+        items,
+        incomingItems,
+        outgoingItems,
+        textSearch,
+        settings,
+        showSearchBar);
   }
 
   @override
@@ -370,9 +520,13 @@ class _$_Initial implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
             BaseState state,
-            List<Document> items,
-            List<Document> incomingItems,
-            List<Document> outgoingItems,
+            List<Document> allDocuments,
+            List<Document> documents,
+            List<Document> incomingDocuments,
+            List<Document> outgoingDocuments,
+            List<DocumentUI> items,
+            List<DocumentUI> incomingItems,
+            List<DocumentUI> outgoingItems,
             String textSearch,
             DocumentsSetting settings,
             bool showSearchBar)?
@@ -380,8 +534,18 @@ class _$_Initial implements _Initial {
     required TResult orElse(),
   }) {
     if (initial != null) {
-      return initial(state, items, incomingItems, outgoingItems, textSearch,
-          settings, showSearchBar);
+      return initial(
+          state,
+          allDocuments,
+          documents,
+          incomingDocuments,
+          outgoingDocuments,
+          items,
+          incomingItems,
+          outgoingItems,
+          textSearch,
+          settings,
+          showSearchBar);
     }
     return orElse();
   }
@@ -418,9 +582,13 @@ class _$_Initial implements _Initial {
 abstract class _Initial implements DocumentsState {
   const factory _Initial(
       {required final BaseState state,
-      final List<Document> items,
-      final List<Document> incomingItems,
-      final List<Document> outgoingItems,
+      final List<Document> allDocuments,
+      final List<Document> documents,
+      final List<Document> incomingDocuments,
+      final List<Document> outgoingDocuments,
+      final List<DocumentUI> items,
+      final List<DocumentUI> incomingItems,
+      final List<DocumentUI> outgoingItems,
       final String textSearch,
       required final DocumentsSetting settings,
       final bool showSearchBar}) = _$_Initial;
@@ -428,11 +596,19 @@ abstract class _Initial implements DocumentsState {
   @override
   BaseState get state;
   @override
-  List<Document> get items;
+  List<Document> get allDocuments;
   @override
-  List<Document> get incomingItems;
+  List<Document> get documents;
   @override
-  List<Document> get outgoingItems;
+  List<Document> get incomingDocuments;
+  @override
+  List<Document> get outgoingDocuments;
+  @override
+  List<DocumentUI> get items;
+  @override
+  List<DocumentUI> get incomingItems;
+  @override
+  List<DocumentUI> get outgoingItems;
   @override
   String get textSearch;
   @override

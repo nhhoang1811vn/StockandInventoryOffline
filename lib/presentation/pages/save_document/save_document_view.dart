@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/app/main.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/good.dart';
+import 'package:good_manager/domain/entities/save_document_setting.dart';
+import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
+import '../../../domain/entities/supplier.dart';
+import '../../widgets/snackbar_widgets.dart';
+import '../base/base_state.dart';
+import '../goods/add_quantity_good_dialog.dart';
+import '../help_content.dart';
+import '../pages.dart';
 import 'components/save_document_form.dart';
-enum OverflowItemMenu { batchscan, sortby, help }
+import 'components/sort_save_document_dialog.dart';
+enum OverflowItemMenu { search, sortby, help }
 
 class SaveDocumentPage extends StatelessWidget {
   final Document item;
@@ -16,46 +28,162 @@ class SaveDocumentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<SaveDocumentCubit>().init(item);
-    return Scaffold(
-        appBar: _buildAppBar(context),
-        body: Column(children: [
-          SelectedStoreView(),
-          Expanded(child: SaveDocumentForm(item: item))
-        ],),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.read<SaveDocumentCubit>().onAddGoodClicked(),
-        label: Text(AppLocalizations.of(context)!.save_document_add_goods),
-        backgroundColor: Colors.blue,
-      ),
+    return BlocConsumer<SaveDocumentCubit, SaveDocumentState>(
+        listener: (context, state) async {
+          if (state.state is SaveDocumentFailedState) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(state.exceptionError));
+          } else if (state.state is SaveDocumentSuccessfulState) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
+            Navigator.of(context).pop();
+          } else if (state.state is OpenPersonListState) {
+            if (state.item?.type == DocumentType.incoming){
+              final result = await Navigator.of(context).pushNamed(Pages.supplier_list, arguments: {"isSelection": true});
+              if (result != null) {
+                Supplier supplier = result as Supplier;
+                //personNameController.text = supplier.name;
+                context.read<SaveDocumentCubit>().onPersonNameChanged(supplier.name);
+                context.read<SaveDocumentCubit>().onPersonChanged(supplier.id!);
+              }
+            }else{
+              //todo
+            }
+
+          }else if (state.state is OpenGoodListState) {
+            final result = await Navigator.of(context).pushNamed(Pages.good_list,
+                arguments: {"isSelection": true, "document": state.item});
+            context.read<SaveDocumentCubit>().loadTransactions();
+          } else if (state.state is OpenSaveGoodState) {
+            final finalState = state.state as OpenSaveGoodState;
+            final transaction = finalState.item;
+            final result = await Navigator.of(context)
+                .pushNamed(Pages.save_good, arguments: {
+                  "item": transaction.good,
+                  "document": state.item,
+                  "transaction": transaction,
+                  "quantity": transaction.quantity});
+            if (result != null) {
+              context.read<SaveDocumentCubit>().loadTransactions();
+            }
+          }else if (state.state is OpenBarcodeScannerPageState){
+            var result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SimpleBarcodeScannerPage(),
+                ));
+            if (result != "-1"){
+              context.read<SaveDocumentCubit>().findGood(result);
+            }
+          }else if (state.state is OpenHelpPageState){
+            Navigator.of(context).pushNamed(Pages.help, arguments: {
+              "title": AppLocalizations.of(context)?.documents_title,
+              "content": MDProviderFactory.get().getHelpText(HelpType.DOCUMENTS)
+            });
+          }else if (state.state is OpenSortDialogListState){
+            SaveDocumentSetting? setting = await showDialog(
+                context: context,
+                builder: (_) => SortSaveDocumentDialog(state.setting),
+                barrierDismissible: true);
+            if (setting != null){
+              context.read<SaveDocumentCubit>().setSettings(setting);
+            }
+          }else if (state.state is OpenSaveGoodPageWithBarcodeState){
+            final finalState = state.state as OpenSaveGoodPageWithBarcodeState;
+            final barcode = finalState.barcode;
+            final good = Good();
+            good.name = barcode;
+            good.barCode = barcode;
+            good.storeId = storage.getSelectedStoreId();
+
+            final result = await Navigator.of(context)
+                .pushNamed(Pages.save_good, arguments: {
+                  "item": good,
+                  "document": state.item,
+                  "quantity": 1
+                });
+
+            if (result != null) {
+              Map data = result as Map<dynamic, dynamic>;
+              Document document = data['document'] as Document;
+              context.read<SaveDocumentCubit>().updateDocument(document);
+              context.read<SaveDocumentCubit>().loadTransactions();
+              context.read<SaveDocumentCubit>().onBatchScanMenuClicked();
+            }
+          }else if (state.state is OpenInputQuantityDialogState){
+            final finalState = state.state as OpenInputQuantityDialogState;
+            final good = finalState.good;
+            int? quantity = await showDialog(
+                context: context,
+                builder: (_) => InputQuantityGoodDialog(good),
+                barrierDismissible: true);
+            if (quantity != null){
+              context.read<SaveDocumentCubit>().saveThenAddTransaction(good, quantity);
+              context.read<SaveDocumentCubit>().onBatchScanMenuClicked();
+            }
+          }else if (state.state is OpenBarcodeScannerToSearchState){
+            //open bar code scanner to fill search text box
+            var result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SimpleBarcodeScannerPage(),
+                ));
+            if (result != "-1"){
+              //searchTextController.text = result;
+              context.read<SaveDocumentCubit>().onSearchTextChanged(result);
+            }else{
+              ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+
+            }
+          }
+        },
+        listenWhen: (state1, state2) => state1.state != state2.state,
+        builder: (context, state) =>
+            Scaffold(
+              resizeToAvoidBottomInset: false,
+              appBar: _buildAppBar(context, state),
+              body: Column(children: [
+                SelectedStoreView(),
+                Expanded(child: SaveDocumentForm(item: item, state: state,))
+              ],),
+              floatingActionButton: FloatingActionButton(
+                child: Icon(Icons.add),
+                onPressed: () => context.read<SaveDocumentCubit>().onAddGoodClicked(),
+                backgroundColor: Colors.blue,
+              ),
+            )
     );
   }
-  PreferredSize _buildAppBar(BuildContext context){
+  PreferredSize _buildAppBar(BuildContext context, SaveDocumentState state){
     return PreferredSize(preferredSize : Size.fromHeight(UIConstants.appBarHeight), child: AppBar(
         title: Text(item.type == DocumentType.incoming? AppLocalizations.of(context)!.save_document_incoming_title :AppLocalizations.of(context)!.save_document_outgoing_title),
         actions: <Widget>[
-          _buildSearchMenu(context),
-          _buildBarcodeScannerMenu(context),
           _buildSaveMenu(context),
+          _buildBatchScanMenu(context),
+          PopupMenuButton<OverflowItemMenu>(itemBuilder: (context) => [
+            PopupMenuItem<OverflowItemMenu>(value: OverflowItemMenu.search, child: Text(AppLocalizations.of(context)!.action_search)),
+            PopupMenuItem<OverflowItemMenu>(value: OverflowItemMenu.sortby, child: Text(AppLocalizations.of(context)!.action_sort_by)),
+            //PopupMenuItem<OverflowItemMenu>(value: OverflowItemMenu.batchscan, child: Text(AppLocalizations.of(context)!.action_batch_scan)),
+            PopupMenuItem<OverflowItemMenu>(value: OverflowItemMenu.help, child: Text(AppLocalizations.of(context)!.action_help)),
+          ],
+            onSelected: (item) => handleClick(context,item),
+          )
 
         ]));
   }
-  Widget _buildSearchMenu(BuildContext context){
-    return InkWell(
-      onTap: () => context.read<SaveDocumentCubit>().onSearchMenuClicked(),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Icon(UIConstants.searchMenuIconData),
-      ),
-    );
-  }
-  Widget _buildBarcodeScannerMenu(BuildContext context){
-    return InkWell(
-      onTap: () => context.read<SaveDocumentCubit>().onSearchMenuClicked(),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Icon(UIConstants.barcodeScannerMenuIconData),
-      ),
-    );
+  void handleClick(BuildContext context, OverflowItemMenu item){
+    switch (item) {
+      case OverflowItemMenu.search:
+        context.read<SaveDocumentCubit>().onSearchMenuClicked();
+        //search
+        break;
+      case OverflowItemMenu.sortby:
+        context.read<SaveDocumentCubit>().onSortByMenuClicked();
+        //sort by
+        break;
+      case OverflowItemMenu.help:
+        context.read<SaveDocumentCubit>().onHelpMenuClicked();
+        break;
+        //help
+    }
   }
   Widget _buildSaveMenu(BuildContext context){
     return InkWell(
@@ -63,6 +191,15 @@ class SaveDocumentPage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Icon(Icons.check),
+      ),
+    );
+  }
+  Widget _buildBatchScanMenu(BuildContext context){
+    return InkWell(
+      onTap: () => context.read<SaveDocumentCubit>().onBatchScanMenuClicked(),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Icon(Icons.barcode_reader),
       ),
     );
   }

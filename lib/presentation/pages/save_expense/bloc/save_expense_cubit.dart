@@ -19,7 +19,7 @@ class SaveExpenseCubit extends Cubit<SaveExpenseState> {
 
   void init(Expense item) {
     SaveExpenseState initState;
-    if (item.id == -1) {
+    if (item.id == null) {
       initState = state.copyWith(item: item, date: DateTime.now());
     } else {
       initState = state.copyWith(item: item,
@@ -51,7 +51,7 @@ class SaveExpenseCubit extends Cubit<SaveExpenseState> {
       item.description = state.description;
       item.date = state.date!;
       item.amount = state.amount;
-      if (item.id == -1){
+      if (item.id == null){
         await useCase.insert(item);
       }else{
         await useCase.update(item);

@@ -6,6 +6,7 @@ import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/suppliers_setting.dart';
+import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/custom_navigation_drawer.dart';
 import 'package:good_manager/presentation/pages/suppliers/widgets/supplier_item_row.dart';
 import 'package:sprintf/sprintf.dart';
@@ -42,11 +43,14 @@ class SuppliersPageState extends State<SuppliersPage> {
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async{
           if (state.state is OpenSortDialogListState){
-            SuppliersSetting settings = await showDialog(
+            SuppliersSetting? settings = await showDialog(
                 context: context,
                 builder: (_) => SortSupplierDialog(state.settings),
                 barrierDismissible: true);
-            context.read<SuppliersCubit>().setSettings(settings);
+            if (settings != null){
+              context.read<SuppliersCubit>().setSettings(settings);
+            }
+
           }
           else if (state.state is OpenSaveSupplierPageState){
             final currentState = state.state as OpenSaveSupplierPageState;
@@ -58,7 +62,7 @@ class SuppliersPageState extends State<SuppliersPage> {
           else if (state.state is OpenHelpPageState){
             Navigator.of(context).pushNamed(Pages.help, arguments: {
               "title": AppLocalizations.of(context)?.suppliers_title,
-              "content": HelpUtils.getMarkdownData("vi", HelpType.SUPPLIER_AND_CUSTOMER)
+              "content": MDProviderFactory.get().getHelpText(HelpType.SUPPLIER_AND_CUSTOMER)
             });
           }
 
@@ -216,7 +220,7 @@ class SuppliersPageState extends State<SuppliersPage> {
                   child: Text(AppLocalizations.of(context)!.action_cancel)),
               TextButton(
                 onPressed: () async{
-                  await context.read<SuppliersCubit>().delete(item.id);
+                  await context.read<SuppliersCubit>().delete(item.id!);
                   Navigator.pop(context);
                 },
                 child: Text(AppLocalizations.of(context)!.action_ok),

@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/main.dart';
 
 import '../custom_navigation_drawer.dart';
+import '../pages.dart';
 import 'components/change_languages_dialog.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -30,7 +31,7 @@ class SettingsPage extends StatelessWidget {
               leading: Icon(Icons.language),
               title: Text(
                   AppLocalizations.of(context)!.menu_item_barcode_scanner_title),
-              onTap: onBarcodeScannerPressed,
+              onTap: () => onBarcodeScannerPressed(context),
             )
 
           ],
@@ -48,7 +49,7 @@ class SettingsPage extends StatelessWidget {
             }),
         barrierDismissible: true);
   }
-  void onBarcodeScannerPressed(){
-    //Navigator.of(getContext()).pushNamed(Pages.barcode_scanner);
+  void onBarcodeScannerPressed(BuildContext context){
+    Navigator.of(context).pushNamed(Pages.barcode_scanner);
   }
 }

@@ -12,6 +12,6 @@ class DocumentsSetting with _$DocumentsSetting {
     required SearchDocumentsType searchDocumentsType}) = _DocumentsSetting;
 
   factory DocumentsSetting.fromJson(Map<String, Object?> json) => _$DocumentsSettingFromJson(json);
-  factory DocumentsSetting.getDefault() => DocumentsSetting(sortByDate: SortByNumber.descending,searchDocumentsType: SearchDocumentsType.byName);
+  factory DocumentsSetting.getDefault() => DocumentsSetting(sortByDate: SortByNumber.no_sort,searchDocumentsType: SearchDocumentsType.byName);
 
 }

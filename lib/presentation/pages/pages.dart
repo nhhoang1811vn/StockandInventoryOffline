@@ -22,6 +22,7 @@ class Pages {
   static const String save_expense = "/save_expense";
 
   static const String help = '/help';
+  static const String helps = '/helps';
 
   static const String take_picture = '/take_picture';
   static const String settings = "/settings";

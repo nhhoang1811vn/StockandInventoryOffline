@@ -1,13 +1,19 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/domain/entities/search_documents_type.dart';
+import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
+import 'package:good_manager/presentation/pages/documents/document_ui.dart';
 import 'package:injectable/injectable.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../data/storage.dart';
+import '../../base/base_sort_items.dart';
 import '../../base/base_state.dart';
+import '../sort/sort_by_date_documents.dart';
 
 part 'documents_cubit.freezed.dart';
 part 'documents_state.dart';
@@ -24,215 +30,134 @@ class DocumentsCubit extends Cubit<DocumentsState> {
   void loadItems() async{
     int storeId = storage.getSelectedStoreId();
     List<Document> items = await useCase.getAllByStoreId(storeId);
-
-    List<Document> incomingItems = items
-        .where((element) => element.type == DocumentType.incoming)
-        .toList();
-    List<Document> outgoingItems = items
-        .where((element) => element.type == DocumentType.outgoing)
-        .toList();
-
-    emit(state.copyWith(items: items, incomingItems: incomingItems, outgoingItems: outgoingItems));
-  }
-
-  //TextEditingController searchTextController;
-  //bool isLoading = true;
-  //List<Document> allDocuments = [];
-  //List<Document> items = [];
-  //List<Document> incomingItems = [];
-  //List<Document> outgoingItems = [];
-  //DocumentsPresenter presenter;
-
-  //bool showSearchBar = false;
-  //String _textSearch = "";
-  //DocumentSettings _settings;
-
-  //String get textSearch => _textSearch;
-  /*@override
-  void initListeners() {
-    presenter.getDocumentsOnNext = (documents) {
-      isLoading = false;
-      this.allDocuments = documents;
-      refreshItems();
-    };
-    presenter.getDocumentsOnError = (e) {
-      showErrorToast(e.toString());
-      isLoading = false;
-      refreshUI();
-    };
-
-    presenter.deleteDocumentOnComplete = () {
-      int index = allDocuments
-          .indexWhere((element) => element.id == presenter.deletedId);
-      allDocuments.removeAt(index);
-      refreshItems();
-    };
-    presenter.deleteDocumentOnError = (e) {
-      if (e.toString().startsWith("error quantity")){
-        var goodName = e.toString().split(",")[1];
-        showErrorToast(sprintf(AppLocalizations.of(getContext()).message_error_negative_quantity_save_document, [goodName]));
-      }else{
-        showErrorToast(e.toString());
-      }
-    };
-    presenter.getDocumentSettingsOnNext = (settings) {
-      _settings = settings;
-      retrieveDocuments();
-    };
-    presenter.getDocumentSettingsOnError = (e) {
-      showErrorToast(e.message.toString());
-    };
-    presenter.setDocumentSettingsOnComplete = () {};
-    presenter.setDocumentSettingsOnError = (e) {
-      showErrorToast(e.message.toString());
-    };
-  }*/
-
-  void refreshItems() {
-    /*sort();
+    emit(state.copyWith(allDocuments: items));
+    sort();
     filter();
-    refreshUI();*/
   }
 
-  void reloadIncomingOutgoingItems() {
-    /*incomingItems = items
-        .where((element) => element.type == DocumentType.incoming)
-        .toList();
-    outgoingItems = items
-        .where((element) => element.type == DocumentType.outgoing)
-        .toList();*/
-  }
-
-  void toggleSearchBar() {
-    emit(state.copyWith(showSearchBar: !state.showSearchBar));
-    /*showSearchBar = !showSearchBar;
-    resetSearchText();*/
+  void onSearchMenuClicked() {
+    emit(state.copyWith(showSearchBar: !state.showSearchBar, textSearch: ""));
+    filter();
   }
 
   void resetSearchText() {
-    /*searchTextController.text = "";
-    onSearchChanged("");*/
-  }
-
-  void onSearchChanged(String val) {
-    /*_textSearch = val;
+    emit(state.copyWith(textSearch: ""));
     filter();
-    refreshUI();*/
   }
 
-  void sort() {
-    /*List<SortItems<Document>> sortOptions = [];
-    switch (_settings.sortByName) {
-      case SortByText.a_to_z:
-        {
-          sortOptions.add(SortByNameAToZ<Document>());
-          break;
-        }
-      case SortByText.z_to_a:
-        {
-          sortOptions.add(SortByNameZToA<Document>());
-          break;
-        }
-      default:
-        {}
-    }
-    switch (_settings.sortByDate) {
+  void onSearchTextChanged(String val) {
+    emit(state.copyWith(textSearch: val));
+    filter();
+  }
+  void sort(){
+    List<Document> items = sortDocuments();
+    emit(state.copyWith(allDocuments: items));
+  }
+
+  List<Document> sortDocuments() {
+    List<SortItems> options = [];
+    switch (state.settings.sortByDate) {
       case SortByNumber.ascending:
         {
-          sortOptions.add(SortByDateAscendingDocument());
+          options.add(SortByDateAscendingDocument());
           break;
         }
       case SortByNumber.descending:
         {
-          sortOptions.add(SortByDateDescendingDocument());
+          options.add(SortByDateDescendingDocument());
           break;
         }
       default:
         {}
     }
-    switch (_settings.sortByQuantity) {
-      case SortByNumber.ascending:
-        {
-          sortOptions.add(SortByQuantityAscendingDocument());
-          break;
-        }
-      case SortByNumber.descending:
-        {
-          sortOptions.add(SortByQuantityDescendingDocument());
-          break;
-        }
-      default:
-        {}
+
+    if (options.isEmpty) {
+      options.add(SortByCreatedDate());
     }
-    if (sortOptions.isEmpty) {
-      sortOptions.add(SortByCreatedDate());
-    }
-    allDocuments.sort((item1, item2) {
+    List<Document> items = [];
+    items.addAll(state.allDocuments);
+    items.sort((item1, item2) {
       int compare = 0;
-      for (final option in sortOptions) {
+      for (final option in options) {
         compare = option.getResult(item1, item2);
         if (compare != 0) break;
       }
       return compare;
-    });*/
+    });
+    return items;
+  }
+  List<DocumentUI> getDocumentUIs(List<Document> data){
+    List<DocumentUI> results = [];
+    Set<String> set = {};
+    for (var i = 0; i< data.length;i++){
+      String dateText = Config.dateFormat.format(data[i].date);
+      if (!set.contains(dateText)){
+        results.add(DocumentUI(DocumentUIType.date, dateText, null));
+        set.add(dateText);
+      }
+      results.add(DocumentUI(DocumentUIType.data, "", data[i]));
+    }
+    return results;
   }
   void filter() {
-    /*items = allDocuments.where((element) => filterDocument(element)).toList();
-    reloadIncomingOutgoingItems();*/
+    List<Document> documents = state.allDocuments.where((element) => filterDocument(element)).toList();
+    List<Document> incomingDocuments = documents
+        .where((element) => element.type == DocumentType.incoming)
+        .toList();
+    List<Document> outgoingDocuments = documents
+        .where((element) => element.type == DocumentType.outgoing)
+        .toList();
+    emit(state.copyWith(documents: documents,
+        items: getDocumentUIs(documents),
+        incomingDocuments: incomingDocuments,
+        incomingItems: getDocumentUIs(incomingDocuments),
+        outgoingDocuments: outgoingDocuments,
+        outgoingItems: getDocumentUIs(outgoingDocuments)
+    ));
   }
 
   bool filterDocument(Document document) {
-    return false;
-    /*if (_textSearch.trim().isEmpty) {
+    if (state.textSearch.trim().isEmpty) {
       return true;
     }
-    switch (_settings.searchDocumentsType) {
+    switch (state.settings.searchDocumentsType) {
       case SearchDocumentsType.byName:
-        return document.name.contains(_textSearch);
-        break;
+        return document.name.contains(state.textSearch);
       case SearchDocumentsType.byDescription:
-        return document.description.contains(_textSearch);
-        break;
-      default:
-        if (document.supplierName != null &&
-            document.supplierName.contains(_textSearch)) {
-          return true;
-        }
-        if (document.customerName != null &&
-            document.customerName.contains(_textSearch)) {
-          return true;
-        }
-        return false;
-    }*/
+        return document.description.contains(state.textSearch);
+      case SearchDocumentsType.byCustomerSupplier:
+        return (document.personName != null && document.personName!.contains(state.textSearch));
+    }
   }
 
-  void onShowSortDialog() async {
-    /*showDialog(
-        context: getContext(),
-        builder: (_) => SortDocumentsDialog(_settings, () {
-              presenter.setSettings(_settings);
-              refreshItems();
-            }),
-        barrierDismissible: true);*/
+  void onMenuSortClicked(){
+    emit(state.copyWith(state: OpenSortDialogListState()));
   }
 
   bool hasSortOptions() {
-    /*if (state.settings.sortByName != SortByText.no_sort ||
-        state.settings.sortByDate != SortByNumber.no_sort ||
-        state.settings.sortByQuantity != SortByNumber.no_sort) {
+    if (state.settings.sortByDate != SortByNumber.no_sort) {
       return true;
     }
-    return false;*/
-    return true;
+    return false;
   }
 
-  void onOpenHelpPage() async{
+  void onMenuHelpClicked(){
     emit(state.copyWith(state: OpenHelpPageState()));
   }
   void setSearchDocumentsType(SearchDocumentsType type) {
-    /*_settings.searchDocumentsType = type;
-    presenter.setSettings(_settings);
-
-    resetSearchText();*/
+    DocumentsSetting settings = state.settings.copyWith(searchDocumentsType: type);
+    storage.setDocumentsSetting(settings);
+    emit(state.copyWith(settings: settings));
+    filter();
+  }
+  void delete(int id) async{
+    await useCase.delete(id);
+    loadItems();
+  }
+  void setSettings(DocumentsSetting settings) {
+    storage.setDocumentsSetting(settings);
+    emit(state.copyWith(settings: settings));
+    sort();
+    filter();
   }
 }

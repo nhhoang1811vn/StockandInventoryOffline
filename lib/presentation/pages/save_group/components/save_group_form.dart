@@ -7,24 +7,44 @@ import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../../../../presentation/widgets/snackbar_widgets.dart';
+import '../../../widgets/circle_button_widget.dart';
 import '../../../widgets/images_preview/images_preview_view.dart';
 
 class SaveGroupForm extends StatelessWidget {
   final Group item;
+  final barcodeTextController = TextEditingController();
 
-  const SaveGroupForm({Key? key, required this.item}) : super(key: key);
+  SaveGroupForm({Key? key, required this.item}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    barcodeTextController.text = item.barCode??'';
     return BlocConsumer<SaveGroupCubit, SaveGroupState>(
-        listener: (context, state) {
+        listenWhen: (state1, state2){
+          return state1.state != state2.state;
+        },
+        listener: (context, state) async{
           if (state.state is SaveItemError) {
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
-          } else if (state.state is SaveItemSuccessful) {
+          } else if (state.state is SaveItemSameBarcodeError){
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.error_same_barcode));
+          }
+          else if (state.state is SaveItemSuccessful) {
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
             Navigator.of(context).pop(state.item);
+          } else if (state.state is OpenBarcodeScannerPageState){
+            var result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SimpleBarcodeScannerPage(),
+                ));
+            if (result != "-1"){
+              barcodeTextController.text = result;
+              context.read<SaveGroupCubit>().barCodeChanged(result);
+            }
           }
         },
         builder: (context, state) =>
@@ -75,26 +95,15 @@ class SaveGroupForm extends StatelessWidget {
       children: [
         Expanded(
           child: AppTextField(
+              controller: barcodeTextController,
               labelText: AppLocalizations.of(context)!.field_bar_code,
-              initialValue: state.barCode,
               onChanged: (value) => context.read<SaveGroupCubit> ().barCodeChanged(value),
               keyboardType: TextInputType.number),
         ),
         Align(
             alignment: Alignment.centerRight,
-            child: MaterialButton(
-              minWidth: 24,
-              //onPressed: controller.onInputBarCodePressed,
-              color: Colors.blue,
-              textColor: Colors.white,
-              child: Icon(
-                Icons.barcode_reader,
-                size: 24,
-              ),
-              padding: EdgeInsets.all(8),
-              shape: CircleBorder(),
-              onPressed: () {},
-            ))
+            child: CircleButton(Icons.barcode_reader, context.read<SaveGroupCubit>().onBarcodeScannerPressed))
+
       ],
     );
   }

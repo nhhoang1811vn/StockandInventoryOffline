@@ -19,7 +19,7 @@ class SaveSupplierCubit extends Cubit<SaveSupplierState> {
 
   void init(Supplier item){
       SaveSupplierState initState;
-      if (item.id == -1){
+      if (item.id == null){
         initState = state.copyWith(item: item);
       }else{
         initState = state.copyWith(item: item,
@@ -75,7 +75,7 @@ class SaveSupplierCubit extends Cubit<SaveSupplierState> {
         item.phone = state.phone;
         item.taxID = state.taxID;
         item.bankDetail = state.bankDetails;
-        if (item.id == -1){
+        if (item.id == null){
           await useCase.insert(item);
         }else{
           await useCase.update(item);

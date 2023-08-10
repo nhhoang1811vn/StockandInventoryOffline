@@ -48,6 +48,7 @@ class DBHelper {
 
   void _onCreate(Database db, int version) async {
     // When creating the db, create the table
+
     await db.execute(
         "CREATE TABLE $STORES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER)");
     await db.execute(
@@ -64,18 +65,19 @@ class DBHelper {
             "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id))");
 
     await db.execute(
-        "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, directory TEXT, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
+        "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, directory TEXT, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
     await db.execute(
-        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, directory TEXT, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
+        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, directory TEXT, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
 
     await db.execute(
-        "CREATE TABLE $DOCUMENT_TRANSACTIONS_TABLE_NAME(id INTEGER PRIMARY KEY,documentId INTEGER NOT NULL, goodId INTEGER NOT NULL,storeId INTEGER NOT NULL, quantity INTEGER, documentType INTEGER, " +
+        "CREATE TABLE $DOCUMENT_TRANSACTIONS_TABLE_NAME(id INTEGER PRIMARY KEY,createdDate INTEGER, updatedDate INTEGER, documentId INTEGER NOT NULL, goodId INTEGER NOT NULL,storeId INTEGER NOT NULL, quantity INTEGER, documentType INTEGER, " +
             "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE, " +
             "FOREIGN KEY(goodId) REFERENCES $GOODS_TABLE_NAME(id) ON DELETE CASCADE, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)");
   }
+
 
 
   ///STORE
@@ -124,7 +126,7 @@ class DBHelper {
     var dbClient = await db;
     item.updatedDate = DateTime.now();
     int res = await dbClient.update(STORES_TABLE_NAME, item.toMap(),
-        where: "id = ?", whereArgs: <int>[item.id]);
+        where: "id = ?", whereArgs: <int>[item.id!]);
     return res == 1;
   }
 
@@ -183,7 +185,7 @@ class DBHelper {
   Future<bool> updateSupplier(Supplier item) async {
     var dbClient = await db;
     int res = await dbClient.update(SUPPLIERS_TABLE_NAME, item.toMap(),
-        where: "id = ?", whereArgs: <int>[item.id]);
+        where: "id = ?", whereArgs: <int>[item.id!]);
     return res == 1;
   }
 
@@ -221,7 +223,7 @@ class DBHelper {
     List<Customer> customers = [];
     for (int i = 0; i < list.length; i++) {
       Customer customer = Customer.map(list[i]);
-      customer.numberDocument = await getCountDocumentByCustomerId(customer.id);
+      customer.numberDocument = await getCountDocumentByCustomerId(customer.id!);
       customers.add(customer);
     }
     return customers;
@@ -258,7 +260,7 @@ class DBHelper {
     var dbClient = await db;
     item.updatedDate = DateTime.now();
     int res = await dbClient.update(CUSTOMERS_TABLE_NAME, item.toMap(),
-        where: "id = ?", whereArgs: <int>[item.id]);
+        where: "id = ?", whereArgs: <int>[item.id!]);
     return res == 1;
   }
 
@@ -293,7 +295,7 @@ class DBHelper {
     item.updatedDate = DateTime.now();
     var dbClient = await db;
     int res = await dbClient.update(GROUPS_TABLE_NAME, item.toMap(),
-        where: "id = ?", whereArgs: <int>[item.id]);
+        where: "id = ?", whereArgs: <int>[item.id!]);
     return res > 0;
   }
 
@@ -345,8 +347,6 @@ class DBHelper {
 
   Future<int> insertGood(Good item) async {
     var dbClient = await db;
-    //item.createdDate = DateTime.now();
-    //item.updatedDate = DateTime.now();
     int res = await dbClient.insert(GOODS_TABLE_NAME, item.toMap());
     return res;
   }
@@ -355,7 +355,7 @@ class DBHelper {
     var dbClient = await db;
     //item.updatedDate = DateTime.now();
     int res = await dbClient.update(GOODS_TABLE_NAME, item.toMap(),
-        where: "id = ?", whereArgs: <int>[item.id]);
+        where: "id = ?", whereArgs: <int>[item.id!]);
     return res > 0;
   }
   Future<List<Good>> getGoods(String storeId) async {
@@ -367,8 +367,8 @@ class DBHelper {
     List<Good> goods = [];
     for (int i = 0; i < list.length; i++) {
       var good = Good.map(list[i]);
-      int incomingQuantity = await getSumQuantityByGoodId(DocumentType.incoming, good.id);
-      int outgoingQuantity = await getSumQuantityByGoodId(DocumentType.outgoing, good.id);
+      int incomingQuantity = await getSumQuantityByGoodId(DocumentType.incoming, good.id!);
+      int outgoingQuantity = await getSumQuantityByGoodId(DocumentType.outgoing, good.id!);
       good.quantity = incomingQuantity - outgoingQuantity;
       goods.add(good);
     }
@@ -384,9 +384,9 @@ class DBHelper {
     for (int i = 0; i < list.length; i++) {
       var good = Good.map(list[i]);
       int incomingQuantity =
-      await getSumQuantityByGoodId(DocumentType.incoming, good.id);
+      await getSumQuantityByGoodId(DocumentType.incoming, good.id!);
       int outgoingQuantity =
-      await getSumQuantityByGoodId(DocumentType.outgoing, good.id);
+      await getSumQuantityByGoodId(DocumentType.outgoing, good.id!);
       good.quantity = incomingQuantity - outgoingQuantity;
       goods.add(good);
     }
@@ -402,9 +402,9 @@ class DBHelper {
     if (list.length > 0) {
       var good = Good.map(list[0]);
       int incomingQuantity =
-          await getSumQuantityByGoodId(DocumentType.incoming, good.id);
+          await getSumQuantityByGoodId(DocumentType.incoming, good.id!);
       int outgoingQuantity =
-          await getSumQuantityByGoodId(DocumentType.outgoing, good.id);
+          await getSumQuantityByGoodId(DocumentType.outgoing, good.id!);
       good.quantity = incomingQuantity - outgoingQuantity;
       return good;
     } else {
@@ -414,6 +414,7 @@ class DBHelper {
 
   Future<bool> deleteGood(int id) async {
     var dbClient = await db;
+    dbClient.execute("PRAGMA foreign_keys = ON;");
     int res = await dbClient
         .rawDelete('DELETE FROM $GOODS_TABLE_NAME WHERE id = ?', [id]);
     return res > 0;
@@ -449,7 +450,7 @@ class DBHelper {
     List<Document> documents = [];
     for (int i = 0; i < list.length; i++) {
       var document = Document.map(list[i]);
-      document.quantity = await getQuantityByDocumentId(document.id);
+      document.quantity = await getQuantityByDocumentId(document.id!);
       if (document.type == DocumentType.incoming) {
         if (document.personId != null) {
           document.personName = (await getSupplier(document.personId))?.name;
@@ -586,7 +587,7 @@ class DBHelper {
   Future<bool> updateExpense(Expense item) async {
     var dbClient = await db;
     int res = await dbClient.update(EXPENSES_TABLE_NAME, item.toMap(),
-        where: "id = ?", whereArgs: <int>[item.id]);
+        where: "id = ?", whereArgs: <int>[item.id!]);
     return res == 1;
   }
   Future<int> insertDocument(Document item) async {
@@ -597,7 +598,7 @@ class DBHelper {
   Future<bool> updateDocument(Document item) async {
     var dbClient = await db;
     int res = await dbClient.update(DOCUMENTS_TABLE_NAME, item.toMap(),
-        where: "id = ?", whereArgs: <int>[item.id]);
+        where: "id = ?", whereArgs: <int>[item.id!]);
     return res == 1;
   }
   /*Future<int> insertDocument(Document document, List<DocumentTransaction> transactions) async{
@@ -681,9 +682,16 @@ class DBHelper {
       return res > 0;
     });
   }*/
-  Future<bool> deleteDocument(int id) async{
-    //var storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+  Future<bool> deleteDocument2(int id) async{
     var dbClient = await db;
+    dbClient.execute("PRAGMA foreign_keys = ON;");
+    int res = await dbClient
+        .rawDelete('DELETE FROM $DOCUMENTS_TABLE_NAME WHERE id = ?', [id]);
+    return res > 0;
+  }
+  Future<bool> deleteDocument(int id) async{
+    var dbClient = await db;
+    dbClient.execute("PRAGMA foreign_keys = ON;");
     return dbClient.transaction((txn) async{
       //delete transactions
       await txn.rawDelete(

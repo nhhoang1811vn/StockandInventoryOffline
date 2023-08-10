@@ -11,11 +11,11 @@ extension SearchDocumentsTypeExtension on SearchDocumentsType{
   String getText(BuildContext context){
     switch(this){
       case SearchDocumentsType.byName:
-        return AppLocalizations.of(context)!.search_documents_type_by_name;
+        return AppLocalizations.of(context)!.search_by_name;
       case SearchDocumentsType.byDescription:
-        return AppLocalizations.of(context)!.search_documents_type_by_description;
+        return AppLocalizations.of(context)!.search_by_description;
       case SearchDocumentsType.byCustomerSupplier:
-        return AppLocalizations.of(context)!.search_documents_type_by_customer_supplier;
+        return AppLocalizations.of(context)!.search_by_customer_supplier;
     }
   }
 }

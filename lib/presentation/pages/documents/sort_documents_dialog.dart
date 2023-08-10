@@ -13,15 +13,10 @@ class SortDocumentsDialog extends StatefulWidget {
 }
 
 class SortDocumentsDialogState extends State<SortDocumentsDialog> {
-  //late SortByText _sortByName;
   late SortByNumber _sortByDate;
-  //late SortByNumber _sortByQuantity;
-
   @override
   void initState() {
-    //_sortByName = widget.settings.sortByName;
     _sortByDate = widget.settings.sortByDate;
-    //_sortByQuantity = widget.settings.sortByQuantity;
     super.initState();
   }
 
@@ -35,21 +30,11 @@ class SortDocumentsDialogState extends State<SortDocumentsDialog> {
             Wrap(
               runSpacing: 0,
               children: [
-                /*Text(AppLocalizations.of(context)!.field_name),
-                Divider(),
-                getSortByNameRadioListTile(SortByText.no_sort),
-                getSortByNameRadioListTile(SortByText.a_to_z),
-                getSortByNameRadioListTile(SortByText.z_to_a),*/
                 Text(AppLocalizations.of(context)!.field_date),
                 Divider(),
                 getSortByDateRadioListTile(SortByNumber.no_sort),
                 getSortByDateRadioListTile(SortByNumber.ascending),
                 getSortByDateRadioListTile(SortByNumber.descending),
-                /*Text(AppLocalizations.of(context)!.field_quantity),
-                Divider(),
-                getSortByQuantityRadioListTile(SortByNumber.no_sort),
-                getSortByQuantityRadioListTile(SortByNumber.ascending),
-                getSortByQuantityRadioListTile(SortByNumber.descending)*/
               ],
             )
           ],
@@ -59,12 +44,6 @@ class SortDocumentsDialogState extends State<SortDocumentsDialog> {
         TextButton(
           child: Text(AppLocalizations.of(context)!.action_ok),
           onPressed: () async {
-            /*widget.settings.sortByName = _sortByName;
-            widget.settings.sortByDate = _sortByDate;
-            widget.settings.sortByQuantity = _sortByQuantity;
-            widget.onValueChange();
-            Navigator.of(context).pop();*/
-
             DocumentsSetting result = widget.settings.copyWith(sortByDate: _sortByDate);
             Navigator.of(context).pop(result);
           },
@@ -72,23 +51,6 @@ class SortDocumentsDialogState extends State<SortDocumentsDialog> {
       ],
     );
   }
-
-  /*RadioListTile<SortByText> getSortByNameRadioListTile(SortByText value) {
-    return RadioListTile<SortByText>(
-      title: Text(
-        value.getText(context),
-        style: TextStyle(fontSize: 14),
-      ),
-      value: value,
-      groupValue: _sortByName,
-      onChanged: (SortByText? value) {
-        setState(() {
-          _sortByName = value!;
-        });
-      },
-      dense: true,
-    );
-  }*/
 
   RadioListTile<SortByNumber> getSortByDateRadioListTile(SortByNumber value) {
     return RadioListTile<SortByNumber>(
@@ -103,20 +65,4 @@ class SortDocumentsDialogState extends State<SortDocumentsDialog> {
         },
         dense: true);
   }
-
-  /*RadioListTile<SortByNumber> getSortByQuantityRadioListTile(
-      SortByNumber value) {
-    return RadioListTile<SortByNumber>(
-      title: Text(value.getText(context),
-          style: TextStyle(fontSize: 14)),
-      value: value,
-      groupValue: _sortByQuantity,
-      onChanged: (SortByNumber? value) {
-        setState(() {
-          _sortByQuantity = value!;
-        });
-      },
-      dense: true,
-    );
-  }*/
 }

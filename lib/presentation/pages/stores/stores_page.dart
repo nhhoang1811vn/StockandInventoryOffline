@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/domain/entities/store.dart';
+import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
 import 'package:good_manager/presentation/pages/stores/components/sort_store_dialog.dart';
 import 'package:sprintf/sprintf.dart';
@@ -61,7 +62,7 @@ class StoresPageState extends State<StoresPage> {
           else if (state.state is OpenHelpPageState){
             Navigator.of(context).pushNamed(Pages.help, arguments: {
               "title": AppLocalizations.of(context)?.stores_title,
-              "content": HelpUtils.getMarkdownData("vi", HelpType.STORE)
+              "content": MDProviderFactory.get().getHelpText(HelpType.STORE)
             });
           }
         },
@@ -211,7 +212,7 @@ class StoresPageState extends State<StoresPage> {
                   child: Text(AppLocalizations.of(context)!.action_cancel)),
               TextButton(
                 onPressed: () async{
-                  await context.read<StoresCubit>().delete(item.id);
+                  await context.read<StoresCubit>().delete(item.id!);
                   Navigator.pop(context);
                 },
                 child: Text(AppLocalizations.of(context)!.action_ok),

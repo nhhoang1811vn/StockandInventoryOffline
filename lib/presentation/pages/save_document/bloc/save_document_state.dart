@@ -3,7 +3,6 @@ part of 'save_document_cubit.dart';
 class SaveDocumentState with _$SaveDocumentState {
   const factory SaveDocumentState.initial({
     required BaseState state,
-    @Default(-1) int id,
     @Default(NameInput.pure()) NameInput name,
     @Default('') String description,
     DateTime? date,
@@ -11,7 +10,12 @@ class SaveDocumentState with _$SaveDocumentState {
     Document? item,
     int? personId,
     String? personName,
-    @Default([]) List<DocumentTransaction> transactions
+    required SaveDocumentSetting setting,
+    @Default([]) List<DocumentTransaction> allTransactions,
+    @Default([]) List<DocumentTransaction> transactions,
+    @Default(false) bool showSearchBar,
+    @Default('') String textSearch,
+    @Default(0) int totalQuantity
   }) = _Initial;
 }
 

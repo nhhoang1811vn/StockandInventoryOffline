@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:good_manager/domain/entities/batch_mode_scan.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/domain/entities/expenses_setting.dart';
 import 'package:good_manager/domain/entities/goods_setting.dart';
+import 'package:good_manager/domain/entities/save_document_setting.dart';
 import 'package:good_manager/domain/entities/stores_setting.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,20 +16,19 @@ class Storage{
   late SharedPreferences prefs;
   Future<void> init() async{
     prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey(StorageKeys.SuppliersSetting)){
+    if (!prefs.containsKey(StorageKeys.InitSettings)){
       setSuppliersSetting(SuppliersSetting.getDefault());
-    }
-    if (!prefs.containsKey(StorageKeys.GoodsSetting)){
       setGoodsSetting(GoodsSetting.getDefault());
-    }
-    if (!prefs.containsKey(StorageKeys.ExpensesSetting)){
       setExpensesSetting(ExpensesSetting.getDefault());
-    }
-    if (!prefs.containsKey(StorageKeys.DocumentsSetting)){
       setDocumentsSetting(DocumentsSetting.getDefault());
-    }
-    if (!prefs.containsKey(StorageKeys.StoresSetting)){
+      setSaveDocumentSetting(SaveDocumentSetting.getDefault());
       setStoresSetting(StoresSetting.getDefault());
+
+      prefs.setInt(StorageKeys.BarcodeScannerBatchScanMode, BatchModeScan.MANUAL.value);
+      prefs.setBool(StorageKeys.BarcodeScannerEnableBeep, true);
+      prefs.setBool(StorageKeys.BarcodeScannerEnableVibrate, true);
+
+      prefs.setBool(StorageKeys.InitSettings, true);
     }
   }
   int getSelectedStoreId() {
@@ -109,8 +110,47 @@ class Storage{
       prefs.setInt(StorageKeys.AutoDocumentName + storeId.toString(), value + 1);
     }
   }
+
+  void setBarcodeScannerEnableBeep(bool value) {
+    prefs.setBool(StorageKeys.BarcodeScannerEnableBeep, value);
+  }
+  bool getBarcodeScannerEnableBeep(){
+    return prefs.getBool(StorageKeys.BarcodeScannerEnableBeep)!;
+  }
+  void setBarcodeScannerEnableVibrate(bool value) {
+    prefs.setBool(StorageKeys.BarcodeScannerEnableVibrate, value);
+  }
+  bool getBarcodeScannerEnableVibrate(){
+    return prefs.getBool(StorageKeys.BarcodeScannerEnableVibrate)!;
+  }
+  BatchModeScan getBatchModeScan(){
+    int value = prefs.getInt(StorageKeys.BarcodeScannerBatchScanMode)!;
+    if (value == BatchModeScan.MANUAL.value){
+      return BatchModeScan.MANUAL;
+    }else{
+      return BatchModeScan.AUTO;
+    }
+  }
+  void setBatchModeScan(BatchModeScan mode){
+    prefs.setInt(StorageKeys.BarcodeScannerBatchScanMode, mode.value);
+  }
+
+  //save document settings
+  void setSaveDocumentSetting(SaveDocumentSetting settings){
+    prefs.setString(StorageKeys.SaveDocumentSetting, jsonEncode(settings.toJson()));
+  }
+  SaveDocumentSetting getSaveDocumentSetting(){
+    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.SaveDocumentSetting)!);
+    return SaveDocumentSetting.fromJson(json);
+  }
 }
 class StorageKeys{
+  static const String InitSettings = "InitSettings";
+  //settings
+  static const String BarcodeScannerBatchScanMode = "BarcodeScannerBatchScanMode";
+  static const String BarcodeScannerEnableBeep = "BarcodeScannerEnableBeep";
+  static const String BarcodeScannerEnableVibrate = "BarcodeScannerEnableVibrate";
+
   static const String SelectedStoreId = "SelectedStoreId";
   static const String SelectedStoreName = "SelectedStoreName";
   static const String FirstTime = "FirstTime";
@@ -121,6 +161,7 @@ class StorageKeys{
   static const String GoodsSetting = "GoodsSetting";
   static const String ExpensesSetting = "ExpensesSetting";
   static const String DocumentsSetting = "DocumentsSetting";
+  static const String SaveDocumentSetting = "SaveDocumentSetting";
 
   static const String AutoDocumentName = "AutoDocumentName";
 }

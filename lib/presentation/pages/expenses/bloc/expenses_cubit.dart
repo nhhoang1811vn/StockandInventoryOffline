@@ -29,12 +29,10 @@ class ExpensesCubit extends Cubit<ExpensesState> {
   void searchTextChanged(String value){
     emit(state.copyWith(textSearch: value));
     filter();
-    sort();
   }
   void resetSearchText(){
     emit(state.copyWith(textSearch: ""));
     filter();
-    sort();
   }
   void onShowSearchBarMenuClicked(){
     emit(state.copyWith(showSearchBar: !state.showSearchBar));
@@ -58,8 +56,8 @@ class ExpensesCubit extends Cubit<ExpensesState> {
     final storeId = storage.getSelectedStoreId();
     List<Expense> allItems = await useCase.getAllByStoreId(storeId);
     emit(state.copyWith(allItems: allItems));
-    filter();
     sort();
+    filter();
   }
   void filter(){
     List<Expense> items = state.allItems.where((element) => filterExpense(element)).toList();
@@ -73,7 +71,7 @@ class ExpensesCubit extends Cubit<ExpensesState> {
   }
   void sort(){
     List<Expense> items = sortExpense();
-    emit(state.copyWith(items: items));
+    emit(state.copyWith(allItems: items));
   }
   List<Expense> sortExpense(){
     List<SortItems<Expense>> options = [];
@@ -95,7 +93,7 @@ class ExpensesCubit extends Cubit<ExpensesState> {
       options.add(SortByCreatedDate());
     }
     List<Expense> items = [];
-    items.addAll(state.items);
+    items.addAll(state.allItems);
     items.sort((item1, item2) {
       int compare = 0;
       for (final option in options) {

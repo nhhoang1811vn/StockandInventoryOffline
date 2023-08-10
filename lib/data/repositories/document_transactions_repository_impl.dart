@@ -57,11 +57,14 @@ class DocumentTransactionRepositoryImpl implements DocumentTransactionRepository
 
   @override
   Future<int> insert(DocumentTransaction item) {
+    item.createdDate = DateTime.now();
+    item.updatedDate = DateTime.now();
     return db.insertTransaction(item);
   }
 
   @override
   Future<bool> update(DocumentTransaction item) {
+    item.updatedDate = DateTime.now();
     return db.updateTransaction(item);
   }
 }
