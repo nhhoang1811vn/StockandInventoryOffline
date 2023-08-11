@@ -23,10 +23,10 @@ class GoodsRepositoryImpl implements GoodsRepository {
     item.updatedDate = DateTime.now();
     return db.updateGood(item);
   }
-
-  Future<List<Good>> getGoodsByDirectory(String directory){
+  @override
+  Future<List<Good>> getGoodsByGroupId(int? groupId) {
     int storeId = storage.getSelectedStoreId();
-    return db.getGoodsByDirectory(storeId, directory);
+    return db.getGoodsByGroupId(storeId,groupId);
   }
 
   @override

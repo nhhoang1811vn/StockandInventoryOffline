@@ -5,7 +5,7 @@ import 'package:good_manager/domain/entities/base_model.dart';
 class Group extends BaseModel {
   String? barCode;
   late int storeId;
-  String directory = "/";
+  int? groupId;
   List<String> files = [];
 
   Group();
@@ -13,7 +13,7 @@ class Group extends BaseModel {
     super.map(obj);
     this.barCode = obj["barCode"];
     this.storeId = obj["storeId"];
-    this.directory = obj["directory"];
+    this.groupId = obj["groupId"];
     this.files = (jsonDecode(obj["files"]) as List<dynamic>).cast<String>();
   }
 
@@ -21,7 +21,7 @@ class Group extends BaseModel {
     var map = super.toMap();
     map["barCode"] = barCode;
     map["storeId"] = storeId;
-    map["directory"] = directory;
+    map["groupId"] = groupId;
     map["files"] = jsonEncode(files);
     return map;
   }

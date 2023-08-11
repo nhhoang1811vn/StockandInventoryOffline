@@ -12,18 +12,20 @@ class GroupsRepositoryImpl implements GroupsRepository {
 
   @override
   Future<int> insert(Group item) {
+    item.createdDate = DateTime.now();
+    item.updatedDate = DateTime.now();
     return db.insertGroup(item);
   }
 
   @override
   Future<bool> update(Group item) {
+    item.updatedDate = DateTime.now();
     return db.updateGroup(item);
   }
 
   @override
   Future<bool> delete(int id) {
-    // TODO: implement delete
-    throw UnimplementedError();
+    return db.deleteGroup(id);
   }
 
   @override
@@ -43,11 +45,10 @@ class GroupsRepositoryImpl implements GroupsRepository {
     // TODO: implement getCount
     throw UnimplementedError();
   }
-
   @override
-  Future<List<Group>> getGroupsByDirectory(String directory) {
+  Future<List<Group>> getGroupsByGroupId(int? groupId) {
     int storeId = storage.getSelectedStoreId();
-    return db.getGroupsByDirectory(storeId, directory);
+    return db.getGroupsByGroupId(storeId, groupId);
   }
   @override
   Future<List<Group>> getAllByStoreId(int storeId) {

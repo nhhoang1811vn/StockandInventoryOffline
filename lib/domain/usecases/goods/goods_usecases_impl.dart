@@ -22,22 +22,15 @@ class GoodsUseCaseImpl implements GoodsUseCases{
   }
   @override
   Future<bool> delete(int id) async{
-    try {
-      //final deleteTransactionsResult = await documentTransactionRepository.deleteByGoodId(id);
-      final deleteGoodResult = await repository.delete(id);
-      //return Future.value(deleteTransactionsResult && deleteGoodResult);
-      return Future.value(true);
-    } catch (e) {
-      return Future.error("");
-    }
+    return repository.delete(id);
   }
   @override
   Future<Good> getGoodsByBarCode(String barCode) {
     return repository.getGoodByBarcode(barCode);
   }
   @override
-  Future<List<Good>> getGoodsByDirectory(String directory) {
-    return repository.getGoodsByDirectory(directory);
+  Future<List<Good>> getGoodsByGroupId(int? groupId) {
+    return repository.getGoodsByGroupId(groupId);
   }
 
   @override

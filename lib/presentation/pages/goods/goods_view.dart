@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/app/utils/constants.dart';
 import 'package:good_manager/app/widgets/selected_store_view.dart';
 import 'package:good_manager/domain/entities/document.dart';
@@ -310,21 +309,24 @@ class GoodsPageState extends State<GoodsPage> {
         },
         barrierDismissible: true);
   }
-  int getGroupId(Good item){
-    if (item.directory == "/"){
-      return -1;
-    }else{
-      return int.parse(item.directory.split("/").last);
+
+  void openSelectGroupForGood(Good item) async{
+    final result = await Navigator.of(context).pushNamed(Pages.select_group, arguments: {"groupId": item.groupId});
+    if (result != null){
+      Map<dynamic, dynamic> map = result as Map<dynamic, dynamic>;
+      int? selectedGroupId = map["groupId"];
+      if (item.groupId != selectedGroupId){
+        context.read<GoodsCubit>().moveGoodToGroup(item, selectedGroupId);
+      }
     }
   }
-  void openSelectGroupForGood(Good item) async{
-    int groupId = getGroupId(item);
-    final result = await Navigator.of(context).pushNamed(Pages.select_group, arguments: {"groupId": groupId});
+  void openSelectGroupForGroup(Group item) async{
+    final result = await Navigator.of(context).pushNamed(Pages.select_group, arguments: {"groupId": item.groupId, "id": item.id});
     if (result != null){
-      Group group = result as Group;
-      if (group.id != groupId){
-        //user has select another group
-        context.read<GoodsCubit>().moveGoodToGroup(item, group);
+      Map<dynamic, dynamic> map = result as Map<dynamic, dynamic>;
+      int? selectedGroupId = map["groupId"];
+      if (item.groupId != selectedGroupId){
+        context.read<GoodsCubit>().moveGroupToGroup(item, selectedGroupId);
       }
     }
   }
@@ -367,7 +369,7 @@ class GoodsPageState extends State<GoodsPage> {
                 padding: EdgeInsets.all(16.0),
                 onPressed: () {
                   Navigator.pop(context);
-                  //openSelectGroupForGroup(group);
+                  openSelectGroupForGroup(item);
                 },
                 child: Text(
                     AppLocalizations.of(context)!.action_move_to_group),
@@ -381,7 +383,6 @@ class GoodsPageState extends State<GoodsPage> {
                   if (result != null) {
                     context.read<GoodsCubit>().loadItems();
                   }
-                  //onEditGroup(group);
                 },
                 child:
                 Text(AppLocalizations.of(context)!.action_edit_group),
@@ -390,7 +391,7 @@ class GoodsPageState extends State<GoodsPage> {
                 padding: EdgeInsets.all(16.0),
                 onPressed: () {
                   Navigator.pop(context);
-                  showInfoToast("under development");
+                  context.read<GoodsCubit>().deleteGroup(item.id!);
                 },
                 child:
                 Text(AppLocalizations.of(context)!.action_delete),

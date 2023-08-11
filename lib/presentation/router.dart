@@ -136,7 +136,6 @@ class AppRouter {
               item: args['item'],
             ));*/
       case Pages.helps:
-        Map<dynamic, dynamic> args = settings.arguments as Map;
         return _buildRoute(settings, HelpsPage());
       case Pages.help:
         Map<dynamic, dynamic> args = settings.arguments as Map;
@@ -163,6 +162,7 @@ class AppRouter {
             builder: (_) => BlocProvider(
                   create: (context) => getIt<SelectGroupCubit>(),
                   child: SelectGroupPage(
+                    args["id"],
                     args["groupId"],
                   ),
                 ));

@@ -3,7 +3,8 @@ part of 'select_group_cubit.dart';
 class SelectGroupState with _$SelectGroupState {
   const factory SelectGroupState.initial({
     required BaseState state,
-    @Default(0) int selectedIndex,
-    @Default([]) List<Group> items
+    int? selectedGroupId,
+    Map<int, Group>? items,
+    Map<int,dynamic>? treeMap
   }) = _Initial;
 }

@@ -65,11 +65,13 @@ class DBHelper {
             "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id))");
 
     await db.execute(
-        "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, directory TEXT, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
-            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
+        "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
+            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id)," + ""
+            "FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)");
     await db.execute(
-        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, directory TEXT, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
-            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
+        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
+            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id)," +
+            "FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)");
 
     await db.execute(
         "CREATE TABLE $DOCUMENT_TRANSACTIONS_TABLE_NAME(id INTEGER PRIMARY KEY,createdDate INTEGER, updatedDate INTEGER, documentId INTEGER NOT NULL, goodId INTEGER NOT NULL,storeId INTEGER NOT NULL, quantity INTEGER, documentType INTEGER, " +
@@ -284,15 +286,12 @@ class DBHelper {
 
   //GROUP
   Future<int> insertGroup(Group item) async {
-    item.createdDate = DateTime.now();
-    item.updatedDate = DateTime.now();
     var dbClient = await db;
     int res = await dbClient.insert(GROUPS_TABLE_NAME, item.toMap());
     return res;
   }
 
   Future<bool> updateGroup(Group item) async {
-    item.updatedDate = DateTime.now();
     var dbClient = await db;
     int res = await dbClient.update(GROUPS_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id!]);
@@ -310,12 +309,18 @@ class DBHelper {
     }
     return groups;
   }
-
-  Future<List<Group>> getGroupsByDirectory(int storeId,String directory) async {
+  Future<List<Group>> getGroupsByGroupId(int storeId,int? groupId) async {
     var dbClient = await db;
-    List<Map> list = await dbClient.rawQuery(
-        'SELECT * FROM $GROUPS_TABLE_NAME WHERE storeId = ? AND directory = ?',
-        [storeId, directory]);
+    List<Map> list = [];
+    if (groupId == null){
+      list = await dbClient.rawQuery(
+          'SELECT * FROM $GROUPS_TABLE_NAME WHERE storeId = ? AND groupId IS NULL',
+          [storeId]);
+    }else{
+      list = await dbClient.rawQuery(
+          'SELECT * FROM $GROUPS_TABLE_NAME WHERE storeId = ? AND groupId = ?',
+          [storeId, groupId]);
+    }
     List<Group> groups = [];
     for (int i = 0; i < list.length; i++) {
       var group = Group.map(list[i]);
@@ -323,6 +328,7 @@ class DBHelper {
     }
     return groups;
   }
+
 
   //GOOD
   Future<int> getCountGood(int storeId) async {
@@ -374,12 +380,18 @@ class DBHelper {
     }
     return goods;
   }
-  Future<List<Good>> getGoodsByDirectory(int storeId,String directory) async {
+  Future<List<Good>> getGoodsByGroupId(int storeId,int? groupId) async {
     var dbClient = await db;
-    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
-    List<Map> list = await dbClient.rawQuery(
-        'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ? AND directory = ?',
-        [storeId, directory]);
+    List<Map> list = [];
+    if (groupId == null){
+      list = await dbClient.rawQuery(
+          'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ? AND groupId IS NULL',
+          [storeId]);
+    }else{
+      list = await dbClient.rawQuery(
+          'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ? AND groupId = ?',
+          [storeId, groupId]);
+    }
     List<Good> goods = [];
     for (int i = 0; i < list.length; i++) {
       var good = Good.map(list[i]);
@@ -417,6 +429,13 @@ class DBHelper {
     dbClient.execute("PRAGMA foreign_keys = ON;");
     int res = await dbClient
         .rawDelete('DELETE FROM $GOODS_TABLE_NAME WHERE id = ?', [id]);
+    return res > 0;
+  }
+  Future<bool> deleteGroup(int id) async {
+    var dbClient = await db;
+    dbClient.execute("PRAGMA foreign_keys = ON;");
+    int res = await dbClient
+        .rawDelete('DELETE FROM $GROUPS_TABLE_NAME WHERE id = ?', [id]);
     return res > 0;
   }
 

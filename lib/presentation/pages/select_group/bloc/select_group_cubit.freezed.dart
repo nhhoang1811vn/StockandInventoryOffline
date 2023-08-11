@@ -17,24 +17,27 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$SelectGroupState {
   BaseState get state => throw _privateConstructorUsedError;
-  int get selectedIndex => throw _privateConstructorUsedError;
-  List<Group> get items => throw _privateConstructorUsedError;
+  int? get selectedGroupId => throw _privateConstructorUsedError;
+  Map<int, Group>? get items => throw _privateConstructorUsedError;
+  Map<int, dynamic>? get treeMap => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            BaseState state, int selectedIndex, List<Group> items)
+    required TResult Function(BaseState state, int? selectedGroupId,
+            Map<int, Group>? items, Map<int, dynamic>? treeMap)
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(BaseState state, int selectedIndex, List<Group> items)?
+    TResult? Function(BaseState state, int? selectedGroupId,
+            Map<int, Group>? items, Map<int, dynamic>? treeMap)?
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(BaseState state, int selectedIndex, List<Group> items)?
+    TResult Function(BaseState state, int? selectedGroupId,
+            Map<int, Group>? items, Map<int, dynamic>? treeMap)?
         initial,
     required TResult orElse(),
   }) =>
@@ -67,7 +70,11 @@ abstract class $SelectGroupStateCopyWith<$Res> {
           SelectGroupState value, $Res Function(SelectGroupState) then) =
       _$SelectGroupStateCopyWithImpl<$Res, SelectGroupState>;
   @useResult
-  $Res call({BaseState state, int selectedIndex, List<Group> items});
+  $Res call(
+      {BaseState state,
+      int? selectedGroupId,
+      Map<int, Group>? items,
+      Map<int, dynamic>? treeMap});
 }
 
 /// @nodoc
@@ -84,22 +91,27 @@ class _$SelectGroupStateCopyWithImpl<$Res, $Val extends SelectGroupState>
   @override
   $Res call({
     Object? state = null,
-    Object? selectedIndex = null,
-    Object? items = null,
+    Object? selectedGroupId = freezed,
+    Object? items = freezed,
+    Object? treeMap = freezed,
   }) {
     return _then(_value.copyWith(
       state: null == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
               as BaseState,
-      selectedIndex: null == selectedIndex
-          ? _value.selectedIndex
-          : selectedIndex // ignore: cast_nullable_to_non_nullable
-              as int,
-      items: null == items
+      selectedGroupId: freezed == selectedGroupId
+          ? _value.selectedGroupId
+          : selectedGroupId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      items: freezed == items
           ? _value.items
           : items // ignore: cast_nullable_to_non_nullable
-              as List<Group>,
+              as Map<int, Group>?,
+      treeMap: freezed == treeMap
+          ? _value.treeMap
+          : treeMap // ignore: cast_nullable_to_non_nullable
+              as Map<int, dynamic>?,
     ) as $Val);
   }
 }
@@ -112,7 +124,11 @@ abstract class _$$_InitialCopyWith<$Res>
       __$$_InitialCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({BaseState state, int selectedIndex, List<Group> items});
+  $Res call(
+      {BaseState state,
+      int? selectedGroupId,
+      Map<int, Group>? items,
+      Map<int, dynamic>? treeMap});
 }
 
 /// @nodoc
@@ -126,22 +142,27 @@ class __$$_InitialCopyWithImpl<$Res>
   @override
   $Res call({
     Object? state = null,
-    Object? selectedIndex = null,
-    Object? items = null,
+    Object? selectedGroupId = freezed,
+    Object? items = freezed,
+    Object? treeMap = freezed,
   }) {
     return _then(_$_Initial(
       state: null == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
               as BaseState,
-      selectedIndex: null == selectedIndex
-          ? _value.selectedIndex
-          : selectedIndex // ignore: cast_nullable_to_non_nullable
-              as int,
-      items: null == items
+      selectedGroupId: freezed == selectedGroupId
+          ? _value.selectedGroupId
+          : selectedGroupId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      items: freezed == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
-              as List<Group>,
+              as Map<int, Group>?,
+      treeMap: freezed == treeMap
+          ? _value._treeMap
+          : treeMap // ignore: cast_nullable_to_non_nullable
+              as Map<int, dynamic>?,
     ));
   }
 }
@@ -151,27 +172,39 @@ class __$$_InitialCopyWithImpl<$Res>
 class _$_Initial implements _Initial {
   const _$_Initial(
       {required this.state,
-      this.selectedIndex = 0,
-      final List<Group> items = const []})
-      : _items = items;
+      this.selectedGroupId,
+      final Map<int, Group>? items,
+      final Map<int, dynamic>? treeMap})
+      : _items = items,
+        _treeMap = treeMap;
 
   @override
   final BaseState state;
   @override
-  @JsonKey()
-  final int selectedIndex;
-  final List<Group> _items;
+  final int? selectedGroupId;
+  final Map<int, Group>? _items;
   @override
-  @JsonKey()
-  List<Group> get items {
-    if (_items is EqualUnmodifiableListView) return _items;
+  Map<int, Group>? get items {
+    final value = _items;
+    if (value == null) return null;
+    if (_items is EqualUnmodifiableMapView) return _items;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_items);
+    return EqualUnmodifiableMapView(value);
+  }
+
+  final Map<int, dynamic>? _treeMap;
+  @override
+  Map<int, dynamic>? get treeMap {
+    final value = _treeMap;
+    if (value == null) return null;
+    if (_treeMap is EqualUnmodifiableMapView) return _treeMap;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
   }
 
   @override
   String toString() {
-    return 'SelectGroupState.initial(state: $state, selectedIndex: $selectedIndex, items: $items)';
+    return 'SelectGroupState.initial(state: $state, selectedGroupId: $selectedGroupId, items: $items, treeMap: $treeMap)';
   }
 
   @override
@@ -180,14 +213,19 @@ class _$_Initial implements _Initial {
         (other.runtimeType == runtimeType &&
             other is _$_Initial &&
             (identical(other.state, state) || other.state == state) &&
-            (identical(other.selectedIndex, selectedIndex) ||
-                other.selectedIndex == selectedIndex) &&
-            const DeepCollectionEquality().equals(other._items, _items));
+            (identical(other.selectedGroupId, selectedGroupId) ||
+                other.selectedGroupId == selectedGroupId) &&
+            const DeepCollectionEquality().equals(other._items, _items) &&
+            const DeepCollectionEquality().equals(other._treeMap, _treeMap));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, state, selectedIndex,
-      const DeepCollectionEquality().hash(_items));
+  int get hashCode => Object.hash(
+      runtimeType,
+      state,
+      selectedGroupId,
+      const DeepCollectionEquality().hash(_items),
+      const DeepCollectionEquality().hash(_treeMap));
 
   @JsonKey(ignore: true)
   @override
@@ -198,31 +236,33 @@ class _$_Initial implements _Initial {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            BaseState state, int selectedIndex, List<Group> items)
+    required TResult Function(BaseState state, int? selectedGroupId,
+            Map<int, Group>? items, Map<int, dynamic>? treeMap)
         initial,
   }) {
-    return initial(state, selectedIndex, items);
+    return initial(state, selectedGroupId, items, treeMap);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(BaseState state, int selectedIndex, List<Group> items)?
+    TResult? Function(BaseState state, int? selectedGroupId,
+            Map<int, Group>? items, Map<int, dynamic>? treeMap)?
         initial,
   }) {
-    return initial?.call(state, selectedIndex, items);
+    return initial?.call(state, selectedGroupId, items, treeMap);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(BaseState state, int selectedIndex, List<Group> items)?
+    TResult Function(BaseState state, int? selectedGroupId,
+            Map<int, Group>? items, Map<int, dynamic>? treeMap)?
         initial,
     required TResult orElse(),
   }) {
     if (initial != null) {
-      return initial(state, selectedIndex, items);
+      return initial(state, selectedGroupId, items, treeMap);
     }
     return orElse();
   }
@@ -259,15 +299,18 @@ class _$_Initial implements _Initial {
 abstract class _Initial implements SelectGroupState {
   const factory _Initial(
       {required final BaseState state,
-      final int selectedIndex,
-      final List<Group> items}) = _$_Initial;
+      final int? selectedGroupId,
+      final Map<int, Group>? items,
+      final Map<int, dynamic>? treeMap}) = _$_Initial;
 
   @override
   BaseState get state;
   @override
-  int get selectedIndex;
+  int? get selectedGroupId;
   @override
-  List<Group> get items;
+  Map<int, Group>? get items;
+  @override
+  Map<int, dynamic>? get treeMap;
   @override
   @JsonKey(ignore: true)
   _$$_InitialCopyWith<_$_Initial> get copyWith =>

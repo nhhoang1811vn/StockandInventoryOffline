@@ -59,33 +59,20 @@ class GoodsCubit extends Cubit<GoodsState> {
   }
   void onAddGood(){
     Good item = Good();
-    item.directory = getDirectory();
+    item.groupId = getSelectedGroupId();
     item.storeId = storage.getSelectedStoreId();
 
     emit(state.copyWith(state: OpenSaveGoodPageState(item)));
   }
-  String getDirectory(){
-    String result = "";
-    state.selectedGroups.forEach((element) {
-      result += "/" + element.id.toString();
-    });
-    if (result.isEmpty){
-      result = "/";
+  int? getSelectedGroupId(){
+    if (state.selectedGroups.isEmpty){
+      return null;
     }
-    return result;
+    return state.selectedGroups.last.id;
   }
   void onAddGroup() async {
-    /*Group item = Group();
-    item.directory = getDirectory();
-    item.storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
-
-    final result = await Navigator.of(getContext())
-        .pushNamed(Pages.save_group, arguments: {"item": item});
-    if (result != null) {
-      loadData();
-    }*/
     Group item = Group();
-    item.directory = getDirectory();
+    item.groupId = getSelectedGroupId();
     item.storeId = storage.getSelectedStoreId();
 
     emit(state.copyWith(state: AddGroupState(item)));
@@ -138,9 +125,9 @@ class GoodsCubit extends Cubit<GoodsState> {
   }
 
   void loadItems() async{
-    String directory = getDirectory();
-    List<Group> allGroups = await groupsUseCase.getGroupsByDirectory(directory);
-    List<Good> allGoods = await goodsUseCase.getGoodsByDirectory(directory);
+    int? groupId = getSelectedGroupId();
+    List<Group> allGroups = await groupsUseCase.getGroupsByGroupId(groupId);
+    List<Good> allGoods = await goodsUseCase.getGoodsByGroupId(groupId);
     emit(state.copyWith(allGroups: allGroups, allGoods: allGoods));
     sort();
     filter();
@@ -263,9 +250,10 @@ class GoodsCubit extends Cubit<GoodsState> {
     await goodsUseCase.delete(id);
     loadItems();
   }
-  /*Future<bool> deleteGroup(int id) async{
-    return await groupsUseCase.delete(id);
-  }*/
+  deleteGroup(int id) async {
+    await groupsUseCase.delete(id);
+    loadItems();
+  }
   List<Group> filterGroups(){
     List<Group> results = state.allGroups.where((element) => filterGroup(element)).toList();
     return results;
@@ -325,15 +313,14 @@ class GoodsCubit extends Cubit<GoodsState> {
     }
   }
 
-  void moveGoodToGroup(Good item, Group group) {
-    if (group.id == null){
-      item.directory = "/";
-    } else if (group.directory == "/"){
-      item.directory = "/" + group.id.toString();
-    }else{
-      item.directory = group.directory + "/" + group.id.toString();
-    }
+  void moveGoodToGroup(Good item, int? groupId) {
+    item.groupId = groupId;
     goodsUseCase.update(item);
+    loadItems();
+  }
+  void moveGroupToGroup(Group item, int? groupId){
+    item.groupId = groupId;
+    groupsUseCase.update(item);
     loadItems();
   }
   void saveDocumentThenAddTransaction(Good good, int quantity) async{

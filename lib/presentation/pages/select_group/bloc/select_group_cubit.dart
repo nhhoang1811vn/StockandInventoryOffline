@@ -18,25 +18,39 @@ class SelectGroupCubit extends Cubit<SelectGroupState> {
     required this.groupsUseCase
   }) : super(SelectGroupState.initial(state: InitialState()));
 
-  void onSaveClicked(){
-
+  select(int? id) {
+    emit(state.copyWith(selectedGroupId: id));
   }
 
-  select(int index) {
-    emit(state.copyWith(selectedIndex: index));
-  }
-
-  void init(int groupId) async{
+  void init(int? id,int? groupId) async{
     int storeId = storage.getSelectedStoreId();
-    List<Group> items = [];
-    Group emptyGroup = Group();
-    emptyGroup.name = "No Group";
-    items.add(emptyGroup);
-
     List<Group> groups = await groupsUseCase.getAllByStoreId(storeId);
-    items.addAll(groups);
-
-    int selectedIndex = items.indexWhere((element) => element.id == groupId);
-    emit(state.copyWith(selectedIndex: selectedIndex, items: items));
+    Map<int, Group> items = {};
+    Group rootGroup = Group();
+    rootGroup.name = "No Group";
+    items[-1] = rootGroup;
+    for (Group group in groups){
+      items[group.id!] = group;
+    }
+    if (id != null){
+      //moving group, remove itself from the list
+      items.remove(id);
+    }
+    emit(state.copyWith(selectedGroupId: groupId,items: items));
+    Map<int,dynamic> map = run(null);
+    emit(state.copyWith(treeMap: map));
+  }
+  Map<int,dynamic> run(int? groupId){
+    Map<int,dynamic> map = Map();
+    state.items?.forEach((key, value) {
+      if (value.groupId == groupId){
+        if (value.id == null){
+          map[-1] = null;
+        }else{
+          map[value.id!] = run(value.id);
+        }
+      }
+    });
+    return map;
   }
 }

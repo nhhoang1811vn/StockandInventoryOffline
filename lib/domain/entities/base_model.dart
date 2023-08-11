@@ -1,5 +1,5 @@
 class BaseModel {
-  int? id = null;
+  int? id;
   String name = "";
   String description = "";
   late DateTime createdDate;

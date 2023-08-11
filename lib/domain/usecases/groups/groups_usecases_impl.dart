@@ -17,8 +17,8 @@ class GroupsUseCaseImpl implements GroupsUseCases{
     return repository.update(item);
   }
   @override
-  Future<List<Group>> getGroupsByDirectory(String directory) {
-    return repository.getGroupsByDirectory(directory);
+  Future<List<Group>> getGroupsByGroupId(int? groupId) {
+    return repository.getGroupsByGroupId(groupId);
   }
   @override
   Future<bool> delete(int id) {
