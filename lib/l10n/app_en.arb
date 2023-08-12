@@ -92,7 +92,7 @@
   "in_stock_text": "In Stock: %d",
   "menu_item_invite_friend_header": "Invite friends",
   "send_mail_invite_friend_subject": "Invitation using App",
-  "send_mail_invite_friend_content": "This is a good application, I use it everyday and recommend it for you.",
+  "send_mail_invite_friend_content": "This is a good application, I use it everyday and recommend it for you. \nDownload link: https://play.google.com/store/apps/details?id=com.ssteam.good_manager",
   "menu_item_write_review_header": "Write a review",
   "menu_item_write_review_description": "Share your review to everyone",
   "menu_item_feedback_header": "Feedback",

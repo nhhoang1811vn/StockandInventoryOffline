@@ -27,7 +27,7 @@ class SaveExpenseForm extends StatelessWidget {
       value: double.parse(amountController.text),
 
       onChanged: (key, value, expression) {
-        amountController.text = value.toString();
+        amountController.text = Config.expenseAmountFormat.format(value);
         context.read<SaveExpenseCubit>().amountChanged(double.parse(amountController.text));
       },
       theme: const CalculatorThemeData(
@@ -47,7 +47,7 @@ class SaveExpenseForm extends StatelessWidget {
   Widget build(BuildContext context) {
 
     dateController.text = Config.dateFormat.format(item.date);
-    amountController.text = item.amount.toString();
+    amountController.text = Config.expenseAmountFormat.format(item.amount);
 
     return BlocConsumer<SaveExpenseCubit, SaveExpenseState>(
         listener: (context, state) {
@@ -100,7 +100,6 @@ class SaveExpenseForm extends StatelessWidget {
                               child: AppTextField(
                             controller: amountController,
                             labelText: AppLocalizations.of(context)!.field_amount,
-                            //initialValue: state.amount.toString(),
                             onChanged: (value) => context.read<SaveExpenseCubit>().amountChanged(double.parse(value)),
                             keyboardType: TextInputType.number,
                           )),

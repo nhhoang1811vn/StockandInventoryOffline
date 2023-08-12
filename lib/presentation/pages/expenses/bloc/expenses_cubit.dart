@@ -108,6 +108,7 @@ class ExpensesCubit extends Cubit<ExpensesState> {
     storage.setExpensesSetting(settings);
     emit(state.copyWith(settings: settings));
     sort();
+    filter();
   }
   delete(int id) async{
     await useCase.delete(id);

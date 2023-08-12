@@ -7,20 +7,17 @@ class AppColors{
   static Color primaryColor = Colors.blue;
   static const Color secondaryColor = Colors.black54;
   static Color greyColor = Color(0xFFF3F3F3);
-  //static Color secondaryColor = Color(0x8A000000);
 }
-class IntAppColors{
-  //static const int secondaryColor = ;
-  //static const int whiteColor = 0xFFFFFFFF;
-}
+
 class Config {
   static String supportEmail = "nhhoang1811vn@gmail.com";
-  static String dateTimeFormat = "yyyy-MM-dd";
-  static String displayDateTimeFormat = "dd/MM/yyyy";
+  //static String dateTimeFormat = "yyyy-MM-dd";
+  //static String displayDateTimeFormat = "dd/MM/yyyy";
   static DateTime minTime = DateTime(1900, 1, 1);
   static DateTime maxTime = DateTime(2101, 1, 1);
 
   static DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+  static NumberFormat expenseAmountFormat = NumberFormat("0.##");
 }
 
 class UIConstants {

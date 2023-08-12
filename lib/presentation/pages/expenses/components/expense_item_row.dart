@@ -18,7 +18,7 @@ class ExpenseItemRow extends StatelessWidget{
     return ListTile(
       title: Text(item.name, style: AppStyle.getTitleListTitleStyle()),
       subtitle: Text(Config.dateFormat.format(item.date), style: AppStyle.getSubTitleListTitleStyle(),),
-      trailing: item.amount > 0 ? getPositiveAmount(item.amount) : getNegativeAmount(item.amount),
+      trailing: item.amount > 0 ? getPositiveAmount(Config.expenseAmountFormat.format(item.amount)) : getNegativeAmount(Config.expenseAmountFormat.format(item.amount)),
       onTap:() => onPressed(item),
       onLongPress: () => onLongPressed(item),
     );

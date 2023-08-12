@@ -349,7 +349,7 @@ class HomePageState extends State<HomePage> {
               Text(AppLocalizations.of(context)!.expenses_title, style: AppStyle.getHomeMenuTitleStyle()),
               SizedBox(height: 4,),
               Text(
-                state.sumExpense.toString(),
+                Config.expenseAmountFormat.format(state.sumExpense),
                 style: bodyStyle,
               ),
             ],

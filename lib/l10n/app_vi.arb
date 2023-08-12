@@ -91,7 +91,7 @@
   "in_stock_text": "Số lượng trong kho: %d",
   "menu_item_invite_friend_header": "Mời bạn bè",
   "send_mail_invite_friend_subject": "Lời mời sử dụng ứng dụng",
-  "send_mail_invite_friend_content": "Đây là ứng dụng rất tuyệt vời mà mình sử dụng thường xuyên để quản lý kho, mình muốn giới thiệu nó cho bạn",
+  "send_mail_invite_friend_content": "Đây là ứng dụng rất tuyệt vời mà mình sử dụng thường xuyên để quản lý kho, mình muốn giới thiệu nó cho bạn. \nĐường dẫn: https://play.google.com/store/apps/details?id=com.ssteam.good_manager",
   "menu_item_write_review_header": "Viết đánh giá",
   "menu_item_write_review_description": "Chia sẻ cảm nghĩ về ứng dụng của bạn với mọi người",
   "menu_item_feedback_header": "Gửi phản hồi",
