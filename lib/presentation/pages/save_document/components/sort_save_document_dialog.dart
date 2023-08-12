@@ -4,6 +4,8 @@ import 'package:good_manager/domain/entities/save_document_setting.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
 
+import '../../../style_size.dart';
+
 class SortSaveDocumentDialog extends StatefulWidget {
   final SaveDocumentSetting setting;
 
@@ -73,7 +75,7 @@ class SortSaveDocumentDialogState extends State<SortSaveDocumentDialog> {
 
   RadioListTile<SortByText> getRadioListTileSortByName(SortByText value) {
     return RadioListTile<SortByText>(
-      title: Text(value.getText(context)),
+      title: Text(value.getText(context), style: TextStyle(fontSize: TextSize.medium)),
       value: value,
       groupValue: _sortByName,
       onChanged: (SortByText? value) {
@@ -88,7 +90,7 @@ class SortSaveDocumentDialogState extends State<SortSaveDocumentDialog> {
   RadioListTile<SortByNumber> getRadioListTileSortByBarCode(
       SortByNumber value) {
     return RadioListTile<SortByNumber>(
-      title: Text(value.getText(context)),
+      title: Text(value.getText(context), style: TextStyle(fontSize: TextSize.medium)),
       value: value,
       groupValue: _sortByBarCode,
       onChanged: (SortByNumber? value) {
@@ -103,7 +105,7 @@ class SortSaveDocumentDialogState extends State<SortSaveDocumentDialog> {
   RadioListTile<SortByNumber> getRadioListTileSortByQuantity(
       SortByNumber value) {
     return RadioListTile<SortByNumber>(
-      title: Text(value.getText(context)),
+      title: Text(value.getText(context), style: TextStyle(fontSize: TextSize.medium)),
       value: value,
       groupValue: _sortByQuantity,
       onChanged: (SortByNumber? value) {

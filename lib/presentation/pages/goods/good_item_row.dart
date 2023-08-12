@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/presentation/app_style.dart';
+import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/domain/entities/good.dart';
 
 class GoodItemRow extends StatelessWidget {
@@ -17,13 +18,10 @@ class GoodItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const titleStyle = TextStyle(
-        color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 16);
-    const bodyStyle = TextStyle(fontSize: 14);
     return ListTile(
         title: Text(
           item.name,
-          style: titleStyle,
+          style: AppStyle.getTitleListTitleStyle(),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,24 +30,21 @@ class GoodItemRow extends StatelessWidget {
               visible: item.description.isNotEmpty,
               child: Text(
                 item.description,
-                style: bodyStyle,
+                style: AppStyle.getSubTitleListTitleStyle(),
               ),
             ),
             if (item.barCode != null)
               Row(children: [
-                Image.asset(
-                  UIConstants.barcodeIconPath,
-                  width: 24,
-                ),
+                Icon(UIConstants.barcodeIconData, size: 24,color: UIConstants.primaryColor),
                 SizedBox(
                   width: 8,
                 ),
-                Text(item.barCode!, style: bodyStyle)
+                Text(item.barCode!, style: AppStyle.getSubTitleListTitleStyle())
               ])
           ],
         ),
         trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-          Text(quantity.toString(), style: TextStyle(fontSize: 16)),
+          Text(quantity.toString(), style: AppStyle.getTrailingListTitleStyle()),
         ]),
         leading: item.files.isNotEmpty
             ? getAvatarWidget(item.files.first)
@@ -69,8 +64,5 @@ class GoodItemRow extends StatelessWidget {
                 image: FileImage(File(path)), fit: BoxFit.fill)));
   }
 
-  Widget get emptyAvatarWidget => Image.asset(
-        UIConstants.goodIconPath,
-        width: 36,
-      );
+  Widget get emptyAvatarWidget => Icon(UIConstants.goodIconData, size: 32,color: UIConstants.primaryColor);
 }

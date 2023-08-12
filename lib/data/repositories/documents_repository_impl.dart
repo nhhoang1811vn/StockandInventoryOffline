@@ -4,6 +4,7 @@ import 'package:good_manager/domain/repositories/document_repositories.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../domain/entities/document.dart';
+import '../../presentation/main.dart';
 
 @Injectable(as: DocumentRepository)
 class DocumentRepositoryImpl implements DocumentRepository {
@@ -36,6 +37,11 @@ class DocumentRepositoryImpl implements DocumentRepository {
   @override
   Future<List<Document>> getAllByStoreId(int storeId) {
     return db.getDocuments(storeId);
+  }
+  @override
+  Future<List<Document>> getInRange(DateTime start, DateTime end) {
+    int storeId = storage.getSelectedStoreId();
+    return db.getDocumentsInRange(storeId, start, end);
   }
 
   @override

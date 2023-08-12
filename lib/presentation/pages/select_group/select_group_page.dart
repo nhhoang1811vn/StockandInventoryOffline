@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
-import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/presentation/app_style.dart';
+import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 
-import '../../../app/widgets/selected_store_view.dart';
+import '../../widgets/selected_store_view.dart';
 
 class SelectGroupPage extends StatelessWidget {
   final int? id;
@@ -62,36 +63,39 @@ class SelectGroupPage extends StatelessWidget {
           .toList();
     return [];
   }
-
-  Widget _buildGroupRow(BuildContext context, SelectGroupState state, Group? item) {
-    return InkWell(
+  Widget _buildGroupRow(BuildContext context, SelectGroupState state, Group? item){
+    return Expanded(child: InkWell(
         onTap: () => context.read<SelectGroupCubit>().select(item?.id),
         child: Container(
-          //width: double.infinity,
-          width: MediaQuery.of(context).size.width,
-          color: item?.id == state.selectedGroupId ? Colors.tealAccent : Colors.white,
+          padding: EdgeInsets.all(8),
+          decoration: item?.id == state.selectedGroupId ? BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [
+                  Colors.blue,
+                  Colors.white,
+                ],
+              )
+          ): null,
           child: Row(
-            //crossAxisAlignment: CrossAxisAlignment.stretch,
-            //mainAxisSize: MainAxisSize.max,
             children: [
-              Image.asset(
-                UIConstants.folderIconPath,
-                width: 24,
-              ),
+              Icon(UIConstants.groupIconData, size: 24, color: UIConstants.primaryColor,),
               SizedBox(
                 width: 16,
               ),
               Column(
                 children: [
-                  Text(item?.name ?? ''),
+                  Text(item?.name ?? '', style: AppStyle.getTitleListTitleStyle(),),
                   SizedBox(
                     height: 8,
                   ),
-                  Text(item?.description ?? ''),
+                  Text(item?.description ?? '',style: AppStyle.getSubTitleListTitleStyle()),
                 ],
               )
             ],
           ),
-        ));
+        )));
   }
+
 }

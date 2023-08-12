@@ -15,7 +15,7 @@ class Pages {
   static const String save_supplier = '/save_supplier';
 
   static const String customer_list = '/customer_list';
-  //static const String save_customer = '/save_customer';
+  static const String save_customer = '/save_customer';
 
 
   static const String expenses = "/expenses";
@@ -29,4 +29,6 @@ class Pages {
 
   static const String select_group = '/select_group';
   static const String barcode_scanner = "/barcode_scanner";
+  static const String report = "/report";
+  static const String report_detail = "/report_detail";
 }

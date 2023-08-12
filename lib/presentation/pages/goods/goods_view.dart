@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/app/widgets/selected_store_view.dart';
+import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/style_size.dart';
+import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/goods_setting.dart';
@@ -15,7 +16,8 @@ import 'package:good_manager/presentation/pages/goods/widgets/sort_goods_dialog.
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../../../app/main.dart';
+import '../../app_style.dart';
+import '../../main.dart';
 import '../../widgets/snackbar_widgets.dart';
 import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';
@@ -70,35 +72,26 @@ class GoodsPageState extends State<GoodsPage> {
       Visibility(
           visible: state.selectedGroups.isNotEmpty,
           child: Container(
-            height: 40,
-            padding: EdgeInsets.only(left: 16.0),
+            height: 50,
+            padding: EdgeInsets.only(left: 16.0, right: 16.0),
             color: Colors.blue,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: state.selectedGroups.length,
               itemBuilder: (context, index) {
-                if (index == 0) {
                   return Row(children: [
+                    if (index == 0)
                     GestureDetector(
-                        child: Icon(Icons.home, color: Colors.white),
+                        child: Icon(Icons.home, color: Colors.white, size: 30,),
                         onTap: () => context.read<GoodsCubit>().onSelectedGroupTapped(-1)),
                     GestureDetector(
                         child: Row(children: [
-                          Icon(Icons.navigate_next, color: Colors.white),
+                          Icon(Icons.navigate_next, color: Colors.white, size: 30),
                           Text(state.selectedGroups[index].name,
-                              style: TextStyle(color: Colors.white))
+                              style: TextStyle(color: Colors.white, fontSize: TextSize.medium))
                         ]),
-                        onTap: () => context.read<GoodsCubit>().onSelectedGroupTapped(0))
+                        onTap: () => context.read<GoodsCubit>().onSelectedGroupTapped(index))
                   ]);
-                } else {
-                  return GestureDetector(
-                      child: Row(children: [
-                        Icon(Icons.navigate_next, color: Colors.white),
-                        Text(state.selectedGroups[index].name,
-                            style: TextStyle(color: Colors.white))
-                      ]),
-                      onTap: () => context.read<GoodsCubit>().onSelectedGroupTapped(index));
-                }
               },
             ),
           ),
@@ -108,16 +101,13 @@ class GoodsPageState extends State<GoodsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(
-              height: 60,
-              width: 60,
-              child: Image.asset(
-                UIConstants.goodIconPath,
-              )),
+          Icon(UIConstants.goodIconData, size: 60, color: UIConstants.primaryColor,),
           Padding(
               padding: EdgeInsets.only(top: 16),
-              child: Text(AppLocalizations.of(context)!.empty_goods,
-                  textAlign: TextAlign.center))
+              child: Text(
+                  AppLocalizations.of(context)!.empty_goods,
+                  textAlign: TextAlign.center,
+                  style: AppStyle.getEmptyTextStyle()))
         ],
       );
 
@@ -449,9 +439,6 @@ class GoodsPageState extends State<GoodsPage> {
             if (result != "-1"){
               searchTextController.text = result;
               context.read<GoodsCubit>().onSearchTextChanged(result);
-            }else{
-              ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
-
             }
           }
         },
@@ -477,19 +464,13 @@ class GoodsPageState extends State<GoodsPage> {
               shape: CircleBorder(),
               children: [
                 SpeedDialChild(
-                    child: Image.asset(
-                      UIConstants.folderIconPath,
-                      width: 24,
-                    ),
+                    child: Icon(UIConstants.groupIconData, size: 20, color: UIConstants.primaryColor,),
                     backgroundColor: Colors.white,
                     onTap: context.read<GoodsCubit>().onAddGroup,
                     label: AppLocalizations.of(context)!.folder
                 ),
                 SpeedDialChild(
-                    child: Image.asset(
-                      UIConstants.goodIconPath,
-                      width: 24,
-                    ),
+                    child: Icon(UIConstants.goodIconData, size: 20, color: UIConstants.primaryColor),
                     backgroundColor: Colors.white,
                     onTap: context.read<GoodsCubit>().onAddGood,
                     label: AppLocalizations.of(context)!.good)

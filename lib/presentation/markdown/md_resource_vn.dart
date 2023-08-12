@@ -1,4 +1,7 @@
 class MarkdownResourceVN{
+ static const String donationText = """
+ ## Momo cho SDT của mình nhé. 0975 997 203
+  """;
   static const String helpStores = """
  ### Bạn có thể luu trữ các sản phẩm theo cửa hàng (nhà kho, cửa tiệm).
  ### Mỗi cửa hàng giữ số lượng Sản phẩm riêng. Mỗi giao dich giao hàng cũng liên kết tới một cửa hàng cụ thể.

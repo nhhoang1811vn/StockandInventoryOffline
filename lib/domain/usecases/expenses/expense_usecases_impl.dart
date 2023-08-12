@@ -38,4 +38,9 @@ class ExpenseUseCasesImpl implements ExpenseUseCases{
   Future<double> getSum(int storeId) {
     return repository.getSum(storeId);
   }
+  @override
+  Future<List<Expense>> getExpensesInRange(DateTime start, DateTime end) {
+    return repository.getInRange(start,end);
+
+  }
 }

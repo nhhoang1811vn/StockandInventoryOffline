@@ -47,36 +47,37 @@ class DBHelper {
   }
 
   void _onCreate(Database db, int version) async {
-    // When creating the db, create the table
-
     await db.execute(
         "CREATE TABLE $STORES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER)");
     await db.execute(
-        "CREATE TABLE $EXPENSES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, date INTEGER, amount REAL,storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
+        "CREATE TABLE $EXPENSES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, date INTEGER, amount REAL,storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
+            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)");
     await db.execute(
-        "CREATE TABLE $SUPPLIERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT, storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
+        "CREATE TABLE $SUPPLIERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT, storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
+            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)");
     await db.execute(
-        "CREATE TABLE $CUSTOMERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT, storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id))");
+        "CREATE TABLE $CUSTOMERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT, storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
+            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)");
 
     await db.execute(
         "CREATE TABLE $DOCUMENTS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, date INTEGER, type INTEGER, storeId INTEGER ,supplierId INTEGER, customerId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
-            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id)," +
+            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE," +
             "FOREIGN KEY(supplierId) REFERENCES $SUPPLIERS_TABLE_NAME(id)," +
             "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id))");
 
     await db.execute(
         "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
-            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id)," + ""
+            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE," + ""
             "FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)");
     await db.execute(
         "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
-            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id)," +
+            "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE," +
             "FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)");
 
     await db.execute(
         "CREATE TABLE $DOCUMENT_TRANSACTIONS_TABLE_NAME(id INTEGER PRIMARY KEY,createdDate INTEGER, updatedDate INTEGER, documentId INTEGER NOT NULL, goodId INTEGER NOT NULL,storeId INTEGER NOT NULL, quantity INTEGER, documentType INTEGER, " +
             "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE, " +
-            "FOREIGN KEY(goodId) REFERENCES $GOODS_TABLE_NAME(id) ON DELETE CASCADE, " +
+            "FOREIGN KEY(goodId) REFERENCES $GOODS_TABLE_NAME(id) ON DELETE CASCADE," +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)");
   }
 
@@ -118,7 +119,7 @@ class DBHelper {
 
   Future<bool> deleteStore(int id) async {
     var dbClient = await db;
-
+    dbClient.execute("PRAGMA foreign_keys = ON;");
     int res = await dbClient
         .rawDelete('DELETE FROM $STORES_TABLE_NAME WHERE id = ?', [id]);
     return res > 0;
@@ -156,16 +157,6 @@ class DBHelper {
       suppliers.add(supplier);
     }
     return suppliers;
-  }*/
-
-  /*Future<int> getCountSupplier() async {
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
-    var dbClient = await db;
-    var result = await dbClient.rawQuery(
-        "SELECT COUNT(*) FROM $SUPPLIERS_TABLE_NAME WHERE storeId = ?",
-        [storeId]);
-    int? count = Sqflite.firstIntValue(result);
-    return count == null ? 0 : count;
   }*/
 
   Future<int> getCountDocumentBySupplierId(int supplierId) async {
@@ -218,29 +209,25 @@ class DBHelper {
   }
 
   //CUSTOMER
-  Future<List<Customer>> getCustomers() async {
+  Future<List<Customer>> getCustomers(int storeId) async {
     var dbClient = await db;
-    List<Map> list =
-        await dbClient.rawQuery('SELECT * FROM $CUSTOMERS_TABLE_NAME');
+    List<Map> list = await dbClient.rawQuery('SELECT * FROM $CUSTOMERS_TABLE_NAME WHERE storeId = ?', [storeId]);
     List<Customer> customers = [];
     for (int i = 0; i < list.length; i++) {
       Customer customer = Customer.map(list[i]);
-      customer.numberDocument = await getCountDocumentByCustomerId(customer.id!);
+      //customer.numberDocument = await getCountDocumentByCustomerId(customer.id!);
       customers.add(customer);
     }
     return customers;
   }
-
-  /*Future<int> getCountCustomer() async {
-    int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
+  Future<int> getCountCustomer(int storeId) async {
     var dbClient = await db;
     var result = await dbClient.rawQuery(
-        "SELECT COUNT(*) FROM $CUSTOMERS_TABLE_NAME WHERE storeId = ?",
-        [storeId]);
+        "SELECT COUNT(*) FROM $CUSTOMERS_TABLE_NAME WHERE storeId = ?", [storeId]);
 
     int? count = Sqflite.firstIntValue(result);
     return count == null ? 0 : count;
-  }*/
+  }
 
   Future<int> getCountDocumentByCustomerId(int customerId) async {
     var dbClient = await db;
@@ -466,6 +453,29 @@ class DBHelper {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $DOCUMENTS_TABLE_NAME where storeId = ?', [storeId]);
+    List<Document> documents = [];
+    for (int i = 0; i < list.length; i++) {
+      var document = Document.map(list[i]);
+      document.quantity = await getQuantityByDocumentId(document.id!);
+      if (document.type == DocumentType.incoming) {
+        if (document.personId != null) {
+          document.personName = (await getSupplier(document.personId))?.name;
+        }
+      } else if (document.type == DocumentType.outgoing) {
+        if (document.personId != null) {
+          document.personName = (await getCustomer(document.personId))?.name;
+        }
+      }
+      documents.add(document);
+    }
+    return documents;
+  }
+  Future<List<Document>> getDocumentsInRange(int storeId, DateTime start, DateTime end) async {
+    var dbClient = await db;
+    int startInt = start.millisecondsSinceEpoch;
+    int endInt = end.millisecondsSinceEpoch;
+    List<Map> list = await dbClient.rawQuery(
+        'SELECT * FROM $DOCUMENTS_TABLE_NAME where storeId = ? AND date BETWEEN ? AND ?', [storeId, startInt, endInt]);
     List<Document> documents = [];
     for (int i = 0; i < list.length; i++) {
       var document = Document.map(list[i]);
@@ -747,5 +757,19 @@ class DBHelper {
       }*/
       return res > 0;
     });
+  }
+
+  Future<List<Expense>> getExpensesInRange(int storeId, DateTime start, DateTime end) async{
+    var dbClient = await db;
+    int startInt = start.millisecondsSinceEpoch;
+    int endInt = end.millisecondsSinceEpoch;
+    List<Map> list = await dbClient.rawQuery(
+        'SELECT * FROM $EXPENSES_TABLE_NAME where storeId = ? AND date BETWEEN ? AND ?', [storeId, startInt, endInt]);
+    List<Expense> items = [];
+    for (int i = 0; i < list.length; i++) {
+      Expense item = Expense.map(list[i]);
+      items.add(item);
+    }
+    return items;
   }
 }

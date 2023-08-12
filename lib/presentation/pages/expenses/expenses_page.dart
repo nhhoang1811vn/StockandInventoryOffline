@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/app/widgets/selected_store_view.dart';
+import 'package:good_manager/presentation/app_style.dart';
+import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/entities/expenses_setting.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
@@ -11,7 +12,7 @@ import 'package:good_manager/presentation/pages/expenses/components/expense_item
 import 'package:good_manager/presentation/pages/expenses/components/sort_expenses_dialog.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../../../app/main.dart';
+import '../../main.dart';
 import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';
 import '../help_content.dart';
@@ -143,15 +144,14 @@ class ExpensesPageState extends State<ExpensesPage> {
 
   Widget get emptyView =>
       Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        SizedBox(
-            height: 60,
-            width: 60,
-            child: Image.asset(
-              UIConstants.expenseIconPath,
-            )),
+        Icon(UIConstants.expenseIconData, size: 60, color: AppColors.primaryColor,),
         Padding(
             padding: EdgeInsets.only(top: 16),
-            child: Text(AppLocalizations.of(context)!.empty_expense, textAlign: TextAlign.center))
+            child: Text(
+                AppLocalizations.of(context)!.empty_expense,
+                textAlign: TextAlign.center,
+                style: AppStyle.getEmptyTextStyle(),
+            ))
       ]);
 
   Widget _buildListView(ExpensesState data) => ListView.separated(

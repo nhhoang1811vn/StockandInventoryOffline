@@ -1,3 +1,4 @@
+import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/entities/group.dart';
@@ -38,6 +39,12 @@ class OpenSaveSupplierPageState extends BaseState{
   late Supplier item;
   OpenSaveSupplierPageState(this.item);
 }
+//customer
+class OpenSaveCustomerPageState extends BaseState{
+  late Customer item;
+  OpenSaveCustomerPageState(this.item);
+}
+
 //Expenses
 class OpenSaveExpensePageState extends BaseState{
   late Expense item;

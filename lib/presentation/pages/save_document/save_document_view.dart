@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/main.dart';
-import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/app/widgets/selected_store_view.dart';
+import 'package:good_manager/domain/entities/customer.dart';
+import 'package:good_manager/presentation/main.dart';
+import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/save_document_setting.dart';
@@ -39,13 +40,17 @@ class SaveDocumentPage extends StatelessWidget {
             if (state.item?.type == DocumentType.incoming){
               final result = await Navigator.of(context).pushNamed(Pages.supplier_list, arguments: {"isSelection": true});
               if (result != null) {
-                Supplier supplier = result as Supplier;
-                //personNameController.text = supplier.name;
-                context.read<SaveDocumentCubit>().onPersonNameChanged(supplier.name);
-                context.read<SaveDocumentCubit>().onPersonChanged(supplier.id!);
+                Supplier item = result as Supplier;
+                context.read<SaveDocumentCubit>().onPersonNameChanged(item.name);
+                context.read<SaveDocumentCubit>().onPersonChanged(item.id!);
               }
             }else{
-              //todo
+              final result = await Navigator.of(context).pushNamed(Pages.customer_list, arguments: {"isSelection": true});
+              if (result != null) {
+                Customer item = result as Customer;
+                context.read<SaveDocumentCubit>().onPersonNameChanged(item.name);
+                context.read<SaveDocumentCubit>().onPersonChanged(item.id!);
+              }
             }
 
           }else if (state.state is OpenGoodListState) {

@@ -25,4 +25,8 @@ class MDProviderIpmVN extends MDProvider{
   String getWhatNews() {
     return MarkdownResourceVN.whatNews;
   }
+  @override
+  String getDonationText() {
+    return MarkdownResourceVN.donationText;
+  }
 }

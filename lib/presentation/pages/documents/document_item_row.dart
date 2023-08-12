@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/presentation/app_style.dart';
+import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:intl/intl.dart';
 
@@ -25,17 +26,17 @@ class DocumentItemRow extends StatelessWidget {
       title: Transform.translate(
         offset: Offset(-32, 0),
         child: Text(getTitleText(context, item.type, item.name),
-            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
+            style: AppStyle.getTitleListTitleStyle()),
       ),
       subtitle: Transform.translate(
         offset: Offset(-32, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(Config.dateFormat.format(item.date)),
-          item.personName != null ? Text(item.personName!) : Container(),
-          item.description.isNotEmpty ? Text(item.description) : Container()
+          Text(Config.dateFormat.format(item.date), style: AppStyle.getSubTitleListTitleStyle()),
+          item.personName != null ? Text(item.personName!, style: AppStyle.getSubTitleListTitleStyle(),) : Container(),
+          item.description.isNotEmpty ? Text(item.description, style: AppStyle.getSubTitleListTitleStyle()) : Container()
         ]),
       ),
-      trailing: Text(item.quantity.toString()),
+      trailing: Text(item.quantity.toString(), style: AppStyle.getTrailingListTitleStyle()),
       onTap: () => onDocumentTapped(item),
       onLongPress: () => onDocumentLongPressed(item),
     );

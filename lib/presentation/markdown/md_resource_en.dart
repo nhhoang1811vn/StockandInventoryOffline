@@ -1,4 +1,7 @@
 class MarkdownResourceEN{
+ static const String donationText = """
+ ## Momo my phone number 0975 997 203
+  """;
  static const String whatNews = """
  ## Version 1.0.0
  

@@ -54,6 +54,9 @@
   "field_date": "Date",
   "field_amount": "Amount",
   "field_images": "Images",
+  "field_document_type": "Type",
+  "field_person_name": "Customer/Supplier",
+  "field_total": "Total",
   "home_menu_item_goods": "Goods",
   "home_menu_item_documents": "Documents",
   "home_menu_item_more": "More",
@@ -96,7 +99,8 @@
   "menu_item_feedback_description": "Share your feedback to improve the app",
   "menu_item_community_header": "Community",
   "menu_item_community_description": "Join our app community",
-  "menu_item_whats_new_header": "What's new",
+      "menu_item_donation": "Buy me a coffee",
+    "menu_item_whats_new_header": "What's new",
   "menu_item_whats_new_description": "What's new information",
   "on_boarding_title_1": "Stores Manage",
   "on_boarding_content_1": "You can create a lot of stores to manage your goods and tracking their information. eg: Fruit Store, Vegetable Stores....",
@@ -159,6 +163,13 @@
   "action_search": "Search",
   "action_sort_by": "Sort by",
   "action_batch_scan": "Batch scan",
-  "action_help": "Help"
-
+  "action_help": "Help",
+  "report_type_expenses": "Expenses",
+  "report_type_list_of_documents": "List of documents",
+  "select_date_range": "Select date range",
+  "report_type_current_month": "Current month",
+  "report_type_last_30_days": "Last 30 days",
+  "report_type_last_90_days": "Last 90 days",
+  "report_type_current_year": "Current year",
+  "report_detail_header": "From %s to %s store %s"
 }

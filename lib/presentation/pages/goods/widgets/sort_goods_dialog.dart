@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/goods_setting.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
+import 'package:good_manager/presentation/style_size.dart';
 
 class SortGoodsDialog extends StatefulWidget {
   final GoodsSetting settings;
@@ -70,7 +71,7 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
 
   RadioListTile<SortByText> getRadioListTileSortByName(SortByText value) {
     return RadioListTile<SortByText>(
-      title: Text(value.getText(context)),
+      title: Text(value.getText(context), style: TextStyle(fontSize: TextSize.medium),),
       value: value,
       groupValue: _sortByName,
       onChanged: (SortByText? value) {
@@ -85,7 +86,7 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
   RadioListTile<SortByNumber> getRadioListTileSortByBarCode(
       SortByNumber value) {
     return RadioListTile<SortByNumber>(
-      title: Text(value.getText(context)),
+      title: Text(value.getText(context), style: TextStyle(fontSize: TextSize.medium)),
       value: value,
       groupValue: _sortByBarCode,
       onChanged: (SortByNumber? value) {
@@ -100,7 +101,7 @@ class SortGoodsDialogState extends State<SortGoodsDialog> {
   RadioListTile<SortByNumber> getRadioListTileSortByQuantity(
       SortByNumber value) {
     return RadioListTile<SortByNumber>(
-      title: Text(value.getText(context)),
+      title: Text(value.getText(context), style: TextStyle(fontSize: TextSize.medium)),
       value: value,
       groupValue: _sortByQuantity,
       onChanged: (SortByNumber? value) {

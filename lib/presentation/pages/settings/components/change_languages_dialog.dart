@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../style_size.dart';
+
 enum EnumLanguage { ENGLISH, VIETNAMESE }
 
 class ChangeLanguagesDialog extends StatefulWidget {
@@ -72,7 +74,7 @@ class ChangeLanguagesDialogState extends State<ChangeLanguagesDialog> {
   RadioListTile<EnumLanguage> getRadioListTile(
       EnumLanguage value, String text) {
     return RadioListTile<EnumLanguage>(
-      title: Text(text),
+      title: Text(text, style: TextStyle(fontSize: TextSize.medium)),
       value: value,
       groupValue: _language,
       onChanged: (EnumLanguage? value) {

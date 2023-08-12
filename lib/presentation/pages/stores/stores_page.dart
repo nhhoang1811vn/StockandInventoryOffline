@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
 import 'package:good_manager/presentation/pages/stores/components/sort_store_dialog.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../../../app/main.dart';
+import '../../app_style.dart';
+import '../../main.dart';
 import '../../../domain/entities/stores_setting.dart';
 import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';
@@ -143,16 +144,12 @@ class StoresPageState extends State<StoresPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(
-            height: 60,
-            width: 60,
-            child: Image.asset(
-              UIConstants.storeIconPath,
-            )),
+        Icon(UIConstants.storeIconData, size: 60,color: AppColors.primaryColor),
         Padding(
             padding: EdgeInsets.only(top: 16),
             child: Text(AppLocalizations.of(context)!.empty_stores,
-                textAlign: TextAlign.center))
+                textAlign: TextAlign.center,
+                style: AppStyle.getEmptyTextStyle()))
       ]);
 
   Widget _buildListView(StoresState data) {

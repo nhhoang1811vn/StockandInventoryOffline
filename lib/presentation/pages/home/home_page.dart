@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/main.dart';
-import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/app/widgets/selected_store_view.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:good_manager/presentation/app_style.dart';
+import 'package:good_manager/presentation/main.dart';
+import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/style_size.dart';
+import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -19,8 +22,8 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  static const titleStyle = TextStyle(color: Colors.blue, fontSize: 16);
-  static const bodyStyle = TextStyle(fontSize: 16);
+  //static const titleStyle = TextStyle(color: Colors.blue, fontSize: 16);
+  static const bodyStyle = TextStyle(fontSize: TextSize.large);
   @override
   void initState() {
     super.initState();
@@ -50,7 +53,8 @@ class HomePageState extends State<HomePage> {
   }
 
   double height = 150;
-  double iconSize = 40;
+  double iconSize = 26;
+  Color iconColor = UIConstants.primaryColor;
 
   Widget _buildBody(HomeState state) {
     final state1 = state.state;
@@ -176,11 +180,10 @@ class HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                UIConstants.goodIconPath,
-                width: iconSize,
-              ),
-              Text(AppLocalizations.of(context)!.goods_title, style: titleStyle),
+              Icon(UIConstants.goodIconData, size: iconSize, color: iconColor),
+              SizedBox(height: 4,),
+              Text(AppLocalizations.of(context)!.goods_title, style: AppStyle.getHomeMenuTitleStyle()),
+              SizedBox(height: 4,),
               Text(sprintf("%d/%d", [state.countGood, state.quantityGood]), style: bodyStyle),
             ],
           )),
@@ -199,11 +202,10 @@ class HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                UIConstants.documentIconPath,
-                width: iconSize,
-              ),
-              Text(AppLocalizations.of(context)!.documents_title, style: titleStyle),
+              Icon(UIConstants.documentIconData, size: iconSize, color: iconColor),
+              SizedBox(height: 4,),
+              Text(AppLocalizations.of(context)!.documents_title, style: AppStyle.getHomeMenuTitleStyle()),
+              SizedBox(height: 4,),
               Text(state.countDocument.toString(), style: bodyStyle),
             ],
           )),
@@ -222,11 +224,16 @@ class HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                "images/add_incoming_document.png",
-                width: iconSize,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(UIConstants.goodIconData, size: iconSize, color: iconColor,),
+                  SizedBox(width: 8,),
+                  Icon(FontAwesomeIcons.plus, size: 16.0,color: iconColor)
+                ],
               ),
-              Text(AppLocalizations.of(context)!.incoming_goods, style: titleStyle)
+              SizedBox(height: 4,),
+              Text(AppLocalizations.of(context)!.incoming_goods, style: AppStyle.getHomeMenuTitleStyle())
             ],
           )),
     ));
@@ -250,11 +257,16 @@ class HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                "images/add_outgoing_document.png",
-                width: iconSize,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(UIConstants.goodIconData, size: iconSize, color: iconColor,),
+                  SizedBox(width: 8,),
+                  Icon(FontAwesomeIcons.minus, size: 16.0,color: iconColor)
+                ],
               ),
-              Text(AppLocalizations.of(context)!.outgoing_goods, style: titleStyle)
+              SizedBox(height: 4,),
+              Text(AppLocalizations.of(context)!.outgoing_goods, style: AppStyle.getHomeMenuTitleStyle())
             ],
           )),
     ));
@@ -277,23 +289,18 @@ class HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                "images/customer.png",
-                width: iconSize,
-              ),
+              Icon(UIConstants.customerIconData, size: iconSize,color: iconColor),
+              SizedBox(height: 4,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(AppLocalizations.of(context)!.customers_title, style: titleStyle),
+                  Text(AppLocalizations.of(context)!.customers_title, style: AppStyle.getHomeMenuTitleStyle()),
                   Text(sprintf("(%d)", [state.countCustomer]), style: bodyStyle)
                 ],
               )
             ],
           )),
     ));
-  }
-  void openCustomer(){
-    //Navigator.of(context).pushNamed(Pages.customer_list, arguments: {'isSelection': false});
   }
 
   Widget _buildSuppliers(HomeState state) {
@@ -305,14 +312,12 @@ class HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                "images/supplier.png",
-                width: iconSize,
-              ),
+              Icon(UIConstants.supplierIconData, size: iconSize,color: iconColor),
+              SizedBox(height: 4,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(AppLocalizations.of(context)!.suppliers_title, style: titleStyle),
+                  Text(AppLocalizations.of(context)!.suppliers_title, style: AppStyle.getHomeMenuTitleStyle()),
                   Text(sprintf("(%d)", [state.countSupplier]), style: bodyStyle),
                 ],
               )
@@ -321,13 +326,13 @@ class HomePageState extends State<HomePage> {
     ));
   }
   void openSuppliers(){
-    Navigator.of(context).pushReplacementNamed(Pages.supplier_list, arguments: {});
+    Navigator.of(context).pushNamed(Pages.supplier_list);
   }
   void openCustomers(){
-    Navigator.of(context).pushReplacementNamed(Pages.customer_list);
+    Navigator.of(context).pushNamed(Pages.customer_list);
   }
   void openReport(){
-
+    Navigator.of(context).pushNamed(Pages.report);
   }
 
   Widget _buildExpenses(HomeState state) {
@@ -339,11 +344,10 @@ class HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                UIConstants.expenseIconPath,
-                width: iconSize,
-              ),
-              Text(AppLocalizations.of(context)!.expenses_title, style: titleStyle),
+              Icon(UIConstants.expenseIconData, size: iconSize,color: iconColor),
+              SizedBox(height: 4,),
+              Text(AppLocalizations.of(context)!.expenses_title, style: AppStyle.getHomeMenuTitleStyle()),
+              SizedBox(height: 4,),
               Text(
                 state.sumExpense.toString(),
                 style: bodyStyle,
@@ -353,7 +357,7 @@ class HomePageState extends State<HomePage> {
     ));
   }
   void openExpenses(){
-    Navigator.of(context).pushReplacementNamed(Pages.expenses);
+    Navigator.of(context).pushNamed(Pages.expenses);
   }
 
   Widget _buildReport(HomeState state) {
@@ -365,11 +369,9 @@ class HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                UIConstants.reportIconPath,
-                width: iconSize,
-              ),
-              Text(AppLocalizations.of(context)!.report_title, style: titleStyle),
+              Icon(UIConstants.reportIconData, size: iconSize, color: iconColor),
+              SizedBox(height: 4,),
+              Text(AppLocalizations.of(context)!.report_title,style: AppStyle.getHomeMenuTitleStyle()),
             ],
           )),
     ));

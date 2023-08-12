@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
+import 'package:good_manager/presentation/app_style.dart';
 enum SupplierItemMenu { sendEmail, sendSMS, phoneCall }
 class SupplierItemRow extends StatelessWidget{
   final Supplier item;
@@ -18,12 +19,12 @@ class SupplierItemRow extends StatelessWidget{
       leading: CircleAvatar(
         child: Text('${item.name[0].toUpperCase()}'),
       ),
-      title: Text(item.name),
+      title: Text(item.name, style: AppStyle.getTitleListTitleStyle(),),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           item.description.isNotEmpty
-              ? Text(item.description)
+              ? Text(item.description, style: AppStyle.getSubTitleListTitleStyle())
               : Container(),
           //item.numberDocument > 0
           //    ? Text(item.numberDocument.toString() + "GD")

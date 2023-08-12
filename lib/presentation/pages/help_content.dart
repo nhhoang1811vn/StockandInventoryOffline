@@ -22,8 +22,6 @@ extension HelpTypeExtension on HelpType{
 
       case HelpType.EXPENSE:
         return AppLocalizations.of(context)!.expenses_title;
-
-
     }
   }
 }

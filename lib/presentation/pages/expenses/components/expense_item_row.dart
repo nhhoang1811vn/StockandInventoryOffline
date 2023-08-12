@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/expense.dart';
+import 'package:good_manager/presentation/app_style.dart';
+import 'package:good_manager/presentation/style_size.dart';
 
-import '../../../../app/utils/constants.dart';
+import '../../../constants.dart';
 
 
 class ExpenseItemRow extends StatelessWidget{
@@ -14,8 +16,8 @@ class ExpenseItemRow extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(item.name),
-      subtitle: Text(Config.dateFormat.format(item.date)),
+      title: Text(item.name, style: AppStyle.getTitleListTitleStyle()),
+      subtitle: Text(Config.dateFormat.format(item.date), style: AppStyle.getSubTitleListTitleStyle(),),
       trailing: item.amount > 0 ? getPositiveAmount(item.amount) : getNegativeAmount(item.amount),
       onTap:() => onPressed(item),
       onLongPress: () => onLongPressed(item),
@@ -24,14 +26,14 @@ class ExpenseItemRow extends StatelessWidget{
   Widget getPositiveAmount(amount) {
     return Text(
       "+ $amount",
-      style: TextStyle(color: Colors.green),
+      style: TextStyle(color: Colors.green, fontSize: TextSize.large),
     );
   }
 
   Widget getNegativeAmount(amount) {
     return Text(
       amount.toString(),
-      style: TextStyle(color: Colors.red),
+      style: TextStyle(color: Colors.red,fontSize: TextSize.large),
     );
   }
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/main.dart';
-import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/app/widgets/selected_store_view.dart';
+import 'package:good_manager/presentation/main.dart';
+import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/suppliers_setting.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
@@ -12,6 +12,7 @@ import 'package:good_manager/presentation/pages/suppliers/widgets/supplier_item_
 import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../app_style.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
@@ -81,7 +82,7 @@ class SuppliersPageState extends State<SuppliersPage> {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight), child:  AppBar(
         title: new Text(widget.isSelection?AppLocalizations.of(context)!.suppliers_select_title:AppLocalizations.of(context)!.suppliers_title),
-        actions: [_buildSearchMenu(data), sortMenu, helpMenu]),
+        actions: [_buildSearchMenu(data), _buildSortMenu(), _buildHelpMenu()]),
     );
   }
 
@@ -145,16 +146,12 @@ class SuppliersPageState extends State<SuppliersPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(
-                height: 60,
-                width: 60,
-                child: Image.asset(
-                  UIConstants.supplierIconPath,
-                )),
+            Icon(UIConstants.supplierIconData, size: 60,color: AppColors.primaryColor),
             Padding(
                 padding: EdgeInsets.only(top: 16),
                 child: Text(AppLocalizations.of(context)!.empty_suppliers,
-                    textAlign: TextAlign.center))
+                    textAlign: TextAlign.center,
+                    style: AppStyle.getEmptyTextStyle()))
           ]);
 
   Widget _buildListView(SuppliersState data) {
@@ -230,53 +227,43 @@ class SuppliersPageState extends State<SuppliersPage> {
         });
   }
 
+  Widget _buildSearchMenu(SuppliersState state){
+    return InkWell(
+      child: Padding(padding: EdgeInsets.all(8.0), child: Icon(
+        UIConstants.searchMenuIconData,
+        size: 26,
+        color: state.showSearchBar
+            ? UIConstants.highlightMenuColor
+            : UIConstants.normalMenuColor,
+      ),),
+      onTap: (){
+        searchTextController.text = "";
+        if (!state.showSearchBar){
+          searchTextFocusNode.requestFocus();
+        }
+        context.read<SuppliersCubit>().onShowSearchBarMenuClicked();
+      },
+    );
+  }
 
-  Widget _buildSearchMenu(SuppliersState state) => Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          child: GestureDetector(
-            child: Icon(
-              UIConstants.searchMenuIconData,
-              size: 26,
-              color: state.showSearchBar
-                  ? UIConstants.highlightMenuColor
-                  : UIConstants.normalMenuColor,
-            ),
-            onTap: (){
-              searchTextController.text = "";
-              if (!state.showSearchBar){
-                searchTextFocusNode.requestFocus();
-              }
-              context.read<SuppliersCubit>().onShowSearchBarMenuClicked();
-            } ,
-          ),
-        );
-
-
-  Widget get sortMenu => Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          child: GestureDetector(
-            child: Icon(
-              UIConstants.sortMenuIconData,
-              size: 26,
-              color: context.read<SuppliersCubit>().hasSortOptions()
-                  ? UIConstants.highlightMenuColor
-                  : UIConstants.normalMenuColor,
-            ),
-            onTap: context.read<SuppliersCubit>().onSortMenuClicked,
-          ),
-        );
-
-
-  Widget get helpMenu => Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          child: GestureDetector(
-            child: Icon(
-              UIConstants.helpMenuIconData,
-              size: 26,
-            ),
-            onTap: context.read<SuppliersCubit>().onHelpMenuClick,
-          ),
-        );
+  Widget _buildSortMenu(){
+    return InkWell(child: Padding(padding: EdgeInsets.all(8.0), child: Icon(
+      UIConstants.sortMenuIconData,
+      size: 26,
+      color: context.read<SuppliersCubit>().hasSortOptions()
+          ? UIConstants.highlightMenuColor
+          : UIConstants.normalMenuColor,
+    )),onTap: context.read<SuppliersCubit>().onSortMenuClicked);
+  }
+  Widget _buildHelpMenu(){
+    return InkWell(
+      child: Padding(padding: EdgeInsets.all(8.0), child: Icon(
+        UIConstants.helpMenuIconData,
+        size: 26,
+      )),
+      onTap: context.read<SuppliersCubit>().onHelpMenuClick,
+    );
+  }
   Future<void> _launchUrl(String value) async {
     Uri url = Uri.parse(value);
     if (!await launchUrl(url)) {

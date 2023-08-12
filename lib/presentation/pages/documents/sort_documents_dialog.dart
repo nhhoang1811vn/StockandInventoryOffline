@@ -3,6 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
 
+import '../../style_size.dart';
+
 class SortDocumentsDialog extends StatefulWidget {
   final DocumentsSetting settings;
 
@@ -55,7 +57,7 @@ class SortDocumentsDialogState extends State<SortDocumentsDialog> {
   RadioListTile<SortByNumber> getSortByDateRadioListTile(SortByNumber value) {
     return RadioListTile<SortByNumber>(
         title: Text(value.getText(context),
-            style: TextStyle(fontSize: 14)),
+            style: TextStyle(fontSize: TextSize.medium)),
         value: value,
         groupValue: _sortByDate,
         onChanged: (SortByNumber? value) {

@@ -9,6 +9,7 @@ import 'package:good_manager/domain/entities/stores_setting.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../domain/entities/customers_setting.dart';
 import '../domain/entities/suppliers_setting.dart';
 
 @singleton
@@ -18,6 +19,7 @@ class Storage{
     prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey(StorageKeys.InitSettings)){
       setSuppliersSetting(SuppliersSetting.getDefault());
+      setCustomersSetting(CustomersSetting.getDefault());
       setGoodsSetting(GoodsSetting.getDefault());
       setExpensesSetting(ExpensesSetting.getDefault());
       setDocumentsSetting(DocumentsSetting.getDefault());
@@ -63,6 +65,14 @@ class Storage{
     Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.SuppliersSetting)!);
     return SuppliersSetting.fromJson(json);
   }
+  void setCustomersSetting(CustomersSetting settings){
+    prefs.setString(StorageKeys.CustomersSetting, jsonEncode(settings.toJson()));
+  }
+  CustomersSetting getCustomersSetting() {
+    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.CustomersSetting)!);
+    return CustomersSetting.fromJson(json);
+  }
+
 
   void setGoodsSetting(GoodsSetting settings){
     prefs.setString(StorageKeys.GoodsSetting, jsonEncode(settings.toJson()));
@@ -158,6 +168,7 @@ class StorageKeys{
 
   static const String StoresSetting = "StoresSetting";
   static const String SuppliersSetting = "SuppliersSetting";
+  static const String CustomersSetting = "CustomersSetting";
   static const String GoodsSetting = "GoodsSetting";
   static const String ExpensesSetting = "ExpensesSetting";
   static const String DocumentsSetting = "DocumentsSetting";

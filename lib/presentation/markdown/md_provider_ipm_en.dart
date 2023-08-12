@@ -25,4 +25,8 @@ class MDProviderIpmEN extends MDProvider{
   String getWhatNews() {
     return MarkdownResourceEN.whatNews;
   }
+  @override
+  String getDonationText() {
+    return MarkdownResourceEN.donationText;
+  }
 }

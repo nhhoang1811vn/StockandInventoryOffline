@@ -1,6 +1,7 @@
 import 'package:good_manager/db/db_helper.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/repositories/expense_repositories.dart';
+import 'package:good_manager/presentation/main.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: ExpenseRepository)
@@ -51,5 +52,10 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
   @override
   Future<double> getSum(int storeId) {
     return db.getSumExpense(storeId);
+  }
+  @override
+  Future<List<Expense>> getInRange(DateTime start, DateTime end) {
+    int storeId = storage.getSelectedStoreId();
+    return db.getExpensesInRange(storeId, start,end);
   }
 }

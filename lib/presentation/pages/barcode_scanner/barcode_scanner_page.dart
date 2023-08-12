@@ -5,7 +5,7 @@ import 'package:good_manager/domain/entities/batch_mode_scan.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/change_batch_mode_scan_dialog.dart';
 
-import '../../../app/utils/constants.dart';
+import '../../constants.dart';
 
 class BarcodeScannerPage extends StatelessWidget {
   BarcodeScannerPage({Key? key}) : super(key: key);

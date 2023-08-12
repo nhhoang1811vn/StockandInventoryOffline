@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/main.dart';
-import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/presentation/main.dart';
+import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/domain/entities/search_documents_type.dart';
@@ -13,7 +13,8 @@ import 'package:good_manager/presentation/pages/documents/document_ui.dart';
 import 'package:good_manager/presentation/pages/documents/sort_documents_dialog.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../../../app/widgets/selected_store_view.dart';
+import '../../app_style.dart';
+import '../../widgets/selected_store_view.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
@@ -164,15 +165,12 @@ class DocumentPageState extends State<DocumentsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(
-              height: 60,
-              width: 60,
-              child: Image.asset(
-                UIConstants.documentIconPath,
-              )),
+          Icon(UIConstants.documentIconData, size: 60, color: AppColors.primaryColor),
           Padding(
               padding: EdgeInsets.only(top: 16),
-              child: Text(AppLocalizations.of(context)!.empty_document, textAlign: TextAlign.center))
+              child: Text(AppLocalizations.of(context)!.empty_document,
+                  textAlign: TextAlign.center,
+                  style: AppStyle.getEmptyTextStyle()))
         ],
       ));
 
@@ -182,15 +180,10 @@ class DocumentPageState extends State<DocumentsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(
-              height: 60,
-              width: 60,
-              child: Image.asset(
-                UIConstants.documentIconPath,
-              )),
+          Icon(UIConstants.documentIconData, size: 60, color: AppColors.primaryColor),
           Padding(
               padding: EdgeInsets.only(top: 16),
-              child: Text(AppLocalizations.of(context)!.empty_incoming_document, textAlign: TextAlign.center))
+              child: Text(AppLocalizations.of(context)!.empty_incoming_document, textAlign: TextAlign.center,style: AppStyle.getEmptyTextStyle()))
         ],
       ));
 
@@ -200,15 +193,10 @@ class DocumentPageState extends State<DocumentsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(
-              height: 60,
-              width: 60,
-              child: Image.asset(
-                UIConstants.documentIconPath,
-              )),
+          Icon(UIConstants.documentIconData, size: 60, color: AppColors.primaryColor),
           Padding(
               padding: EdgeInsets.only(top: 16),
-              child: Text(AppLocalizations.of(context)!.empty_outgoing_document, textAlign: TextAlign.center))
+              child: Text(AppLocalizations.of(context)!.empty_outgoing_document, textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle()))
         ],
       ));
 

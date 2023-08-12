@@ -12,11 +12,11 @@ class HelpsPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: Text(AppLocalizations.of(context)!.help_title)),
         body: ListView.separated(
-            padding: const EdgeInsets.all(8),
             itemCount: HelpType.values.length,
             itemBuilder: (BuildContext context, int index) {
               HelpType type = HelpType.values[index];
               return ListTile(
+                visualDensity: VisualDensity(vertical: -3), // to compact
                 title: Text(type.getTitle(context),),
                 onTap: (){
                   Navigator.of(context).pushNamed(Pages.help, arguments: {

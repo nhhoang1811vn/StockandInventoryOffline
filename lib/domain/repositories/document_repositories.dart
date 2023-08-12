@@ -10,4 +10,5 @@ abstract class DocumentRepository
   Future<int> getCount(int storeId);
 
   Future<List<Document>> getAllByStoreId(int storeId);
+  Future<List<Document>> getInRange(DateTime start, DateTime end);
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:formz/formz.dart';
-import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/common/helpers/injection.container.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
@@ -43,19 +43,19 @@ class OnBoardingPage extends StatelessWidget {
         PageViewModel(
           title: AppLocalizations.of(context)!.on_boarding_title_1,
           body: AppLocalizations.of(context)!.on_boarding_content_1,
-          image: _buildImage(UIConstants.storeIconPath),
+          image: Icon(UIConstants.storeIconData, size: 60, color: AppColors.primaryColor,),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: AppLocalizations.of(context)!.on_boarding_title_2,
           body: AppLocalizations.of(context)!.on_boarding_content_2,
-          image: _buildImage(UIConstants.goodIconPath),
+          image: Icon(UIConstants.goodIconData, size: 60 , color: AppColors.primaryColor),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: AppLocalizations.of(context)!.on_boarding_title_3,
           body: AppLocalizations.of(context)!.on_boarding_content_3,
-          image: _buildImage(UIConstants.documentIconPath),
+          image: Icon(UIConstants.documentIconData, size: 60, color: AppColors.primaryColor),
           decoration: pageDecoration,
         ),
         PageViewModel(
@@ -72,7 +72,7 @@ class OnBoardingPage extends StatelessWidget {
               ),
             ],
           ),
-          image: _buildImage(UIConstants.storeIconPath),
+          image: Icon(UIConstants.storeIconData, size: 60, color: AppColors.primaryColor),
           decoration: pageDecoration,
         ),
       ],

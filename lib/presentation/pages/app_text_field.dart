@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../app/utils/constants.dart';
+import '../constants.dart';
 
 class AppTextField extends StatelessWidget{
   final String labelText;
@@ -11,7 +11,7 @@ class AppTextField extends StatelessWidget{
   final TextInputType keyboardType;
   final String? error;
   final TextEditingController? controller;
-  int color;
+  Color color;
   AppTextField({
     Key? key,
     required this.labelText,
@@ -22,18 +22,18 @@ class AppTextField extends StatelessWidget{
     this.controller,
     required this.keyboardType,
     this.error,
-    this.color = IntAppColors.secondaryColor
+    this.color = AppColors.secondaryColor
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     UnderlineInputBorder border =
-    UnderlineInputBorder(borderSide: BorderSide(color: Color(this.color), width: 1));
+    UnderlineInputBorder(borderSide: BorderSide(color: color, width: 1));
     UnderlineInputBorder errorBorder =
     const UnderlineInputBorder(borderSide: BorderSide(color: Colors.redAccent, width: 1));
 
     return TextFormField(
-      cursorColor: Color(color),
+      cursorColor: color,
       onTap: onTapped,
       controller: controller,
       initialValue: initialValue,
@@ -46,14 +46,14 @@ class AppTextField extends StatelessWidget{
         focusedErrorBorder: errorBorder,
         labelText: labelText,
         errorText: error,
-        labelStyle: TextStyle(fontSize: 18, color: Color(color))
+        labelStyle: TextStyle(fontSize: 18, color: color)
       ),
       autocorrect: false,
       textInputAction: TextInputAction.done,
       maxLines: 1,
       onChanged: onChanged,
       readOnly: readOnly!,
-      style: TextStyle(fontSize: 18, color: Color(color)),
+      style: TextStyle(fontSize: 18, color: color),
     );
   }
 }

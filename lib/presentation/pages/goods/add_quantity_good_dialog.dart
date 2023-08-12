@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
-import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
 import 'package:sprintf/sprintf.dart';

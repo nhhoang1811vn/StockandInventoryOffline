@@ -1,4 +1,4 @@
-import 'package:good_manager/app/main.dart';
+import 'package:good_manager/presentation/main.dart';
 import 'package:good_manager/db/db_helper.dart';
 import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/repositories/groups_repositories.dart';

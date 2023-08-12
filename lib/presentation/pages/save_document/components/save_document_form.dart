@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
 
+import '../../../app_style.dart';
 import '../../goods/good_item_row.dart';
 
 class SaveDocumentForm extends StatelessWidget {
@@ -29,15 +30,13 @@ class SaveDocumentForm extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(
-            height: 60,
-            width: 60,
-            child: Image.asset(
-              UIConstants.goodIconPath,
-            )),
+        Icon(UIConstants.goodIconData, size: 60, color: AppColors.primaryColor),
         Padding(
             padding: EdgeInsets.only(top: 16),
-            child: Text(AppLocalizations.of(context)!.empty_goods, textAlign: TextAlign.center))
+            child: Text(
+                AppLocalizations.of(context)!.empty_goods,
+                textAlign: TextAlign.center,
+                style: AppStyle.getEmptyTextStyle()))
       ],
     );
   }
@@ -163,7 +162,7 @@ class SaveDocumentForm extends StatelessWidget {
                     children: [
                       Expanded(
                         child: AppTextField(
-                            color: IntAppColors.whiteColor,
+                            color: Colors.white,
                             labelText: AppLocalizations.of(context)!.field_name,
                             initialValue: state.name.value,
                             onChanged: (value) => context.read<SaveDocumentCubit>().nameChanged(value),
@@ -175,7 +174,7 @@ class SaveDocumentForm extends StatelessWidget {
                       ),
                       Expanded(
                           child: AppTextField(
-                        color: IntAppColors.whiteColor,
+                        color: Colors.white,
                         controller: dateController,
                         labelText: AppLocalizations.of(context)!.field_date,
                         keyboardType: TextInputType.datetime,
@@ -185,7 +184,6 @@ class SaveDocumentForm extends StatelessWidget {
                               showTitleActions: true,
                               minTime: Config.minTime,
                               maxTime: Config.maxTime, onChanged: (date) {
-                            print('change $date');
                           }, onConfirm: (date) {
                             context.read<SaveDocumentCubit>().dateChanged(date);
                             dateController.text = Config.dateFormat.format(date);
@@ -195,7 +193,7 @@ class SaveDocumentForm extends StatelessWidget {
                     ],
                   ),
                   AppTextField(
-                    color: IntAppColors.whiteColor,
+                    color: Colors.white,
                     controller: personNameController,
                     labelText: state.item?.type == DocumentType.incoming
                         ? AppLocalizations.of(context)!.field_supplier
@@ -205,7 +203,7 @@ class SaveDocumentForm extends StatelessWidget {
                     onTapped: () => {context.read<SaveDocumentCubit>().onPersonClicked()},
                   ),
                   AppTextField(
-                      color: IntAppColors.whiteColor,
+                      color: Colors.white,
                       labelText: AppLocalizations.of(context)!.field_desc,
                       initialValue: state.description,
                       onChanged: (value) => context.read<SaveDocumentCubit>().descriptionChanged(value),

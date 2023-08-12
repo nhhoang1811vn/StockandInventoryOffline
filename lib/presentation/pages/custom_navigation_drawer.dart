@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/app/main.dart';
-import 'package:good_manager/app/utils/constants.dart';
-import 'package:good_manager/app/widgets/select_message_type_dialog.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:good_manager/presentation/main.dart';
+import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/widgets/select_message_type_dialog.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/settings/settings_page.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../style_size.dart';
 
 class CustomNavigationDrawer extends StatefulWidget {
   const CustomNavigationDrawer({Key? key, required this.selectedIndex, required this.storeName})
@@ -68,8 +71,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                           selectedIndex: widget.selectedIndex,
                           text: AppLocalizations.of(context)!.report_title,
                           onTap: () {
-                            //updateState(5);
-                            //Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context) => Report()));
+                            Navigator.of(context).pushReplacementNamed(Pages.report);
                           }),
                       Divider(),
                       AppDrawerTile(
@@ -77,15 +79,14 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                           selectedIndex: widget.selectedIndex,
                           text: AppLocalizations.of(context)!.suppliers_title,
                           onTap: () {
-                            //updateState(5);
-                            Navigator.of(context).pushReplacementNamed(Pages.supplier_list, arguments: {"isSelection": false});
+                            Navigator.of(context).pushReplacementNamed(Pages.supplier_list);
                           }),
                       AppDrawerTile(
                           index: 6,
                           selectedIndex: widget.selectedIndex,
                           text: AppLocalizations.of(context)!.customers_title,
                           onTap: () {
-                            //Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context) => CustomersPage(isSelection: false)));
+                            Navigator.of(context).pushReplacementNamed(Pages.customer_list);
                           }),
                       AppDrawerTile(
                           index: 7,
@@ -102,39 +103,40 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                           text: AppLocalizations.of(context)!.settings_title,
                           onTap: () {
                             //updateState(5);
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context) => SettingsPage()));
+                            Navigator.of(context).pushReplacementNamed(Pages.settings);
                           }),
                       ListTile(
-                        leading: Image.asset(UIConstants.invitationIconPath,
-                            width: UIConstants.drawerMenuSize),
+                        leading: Icon(FontAwesomeIcons.paperPlane, size: UIConstants.drawerMenuSize),
                         title: Text(AppLocalizations.of(context)!
                             .menu_item_invite_friend_header),
                         //subtitle: Text(AppLocalizations.of(context)!.menu_item_invite_friend_description),
                         onTap: () => onInviteFriend(context),
                       ),
                       ListTile(
-                        leading: Image.asset(UIConstants.helpIconPath,
-                            width: UIConstants.drawerMenuSize),
+                        leading: Icon(FontAwesomeIcons.circleQuestion, size: UIConstants.drawerMenuSize),
                         title: Text(AppLocalizations.of(context)!
                             .question_or_suggestion_title),
                         onTap: () => onSelectMessageType(context),
                       ),
                       ListTile(
-                        leading: Image.asset(UIConstants.helpIconPath,
-                            width: UIConstants.drawerMenuSize),
+                        leading: Icon(FontAwesomeIcons.circleInfo, size: UIConstants.drawerMenuSize),
                         title: Text(AppLocalizations.of(context)!.help_title),
                         onTap: () => onHelp(context),
                       ),
                       ListTile(
-                        leading: Image.asset(UIConstants.communityIconPath,
-                            width: UIConstants.drawerMenuSize),
+                        leading: Icon(FontAwesomeIcons.comments, size: UIConstants.drawerMenuSize),
                         title: Text(AppLocalizations.of(context)!
                             .menu_item_community_header),
                         onTap: () => onCommunity(context),
                       ),
                       ListTile(
-                        leading: Image.asset(UIConstants.whatsnewIconPath,
-                            width: UIConstants.drawerMenuSize),
+                        leading: Icon(Icons.coffee, size: UIConstants.drawerMenuSize),
+                        title: Text(AppLocalizations.of(context)!
+                            .menu_item_donation),
+                        onTap: () => onDonation(context),
+                      ),
+                      ListTile(
+                        leading: Icon(FontAwesomeIcons.flag, size: UIConstants.drawerMenuSize),
                         title:
                             Text(AppLocalizations.of(context)!.whats_new_title),
                         onTap: () => onWhatsNew(context),
@@ -155,19 +157,19 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
         child: Column(children: [
           Container(color: UIConstants.primaryColor, padding: EdgeInsets.all(16.0), child: Row(
             children: [
-              Image.asset(UIConstants.appIconPath, width: 40),
-              SizedBox(width: 8.0),
+              Icon(UIConstants.goodIconData, size: 36,color: Colors.white,),
+              SizedBox(width: 20.0),
               Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "AppViet Quản Lý Kho",
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        UIConstants.appName,
+                        style: TextStyle(fontSize: TextSize.large, color: Colors.white),
                       ),
-                      SizedBox(height: 8.0),
-                      Text("Ver 1.0.0",
-                          style: TextStyle(fontSize: 14, color: Colors.white)),
+                      SizedBox(height: 4.0),
+                      Text(UIConstants.appVersion,
+                          style: TextStyle(fontSize: TextSize.large, color: Colors.white)),
                     ],
                   ))
             ],
@@ -196,9 +198,10 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
         //report
       }else if (widget.selectedIndex == 5){
         //supplier
-        Navigator.of(context).pushReplacementNamed(Pages.supplier_list, arguments: {"isSelection" : false});
+        Navigator.of(context).pushReplacementNamed(Pages.supplier_list);
       }else if (widget.selectedIndex == 6){
         //customer
+        Navigator.of(context).pushReplacementNamed(Pages.customer_list);
       }else if (widget.selectedIndex == 7){
         //store
       }
@@ -281,7 +284,6 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
           <String, String>{'subject': subject, 'body': ""}),
     );
     launchUrl(emailLaunchUri);
-    //launch(emailLaunchUri.toString());
   }
 
   void onWhatsNew(BuildContext context) async {
@@ -309,6 +311,12 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
       await launch(fallbackUrl, forceSafariVC: false, forceWebView: false);
     }
   }
+  void onDonation(BuildContext context){
+    Navigator.of(context).pushNamed(Pages.help, arguments: {
+      "title": AppLocalizations.of(context)!.menu_item_donation,
+      "content": MDProviderFactory.get().getDonationText()
+    });
+  }
 }
 
 class AppDrawerTile extends StatelessWidget {
@@ -328,8 +336,7 @@ class AppDrawerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Image.asset(Defaults.drawerItemIcon[index],
-          width: UIConstants.drawerMenuSize),
+      leading: Icon(Defaults.drawerItemIcon[index], size: UIConstants.drawerMenuSize,),// Image.asset(Defaults.drawerItemIcon[index],),
       onTap: onTap,
       selected: selectedIndex == index,
       title: Text(
@@ -342,14 +349,14 @@ class AppDrawerTile extends StatelessWidget {
 
 class Defaults {
   static final drawerItemIcon = [
-    UIConstants.homeIconPath,
-    UIConstants.goodIconPath,
-    UIConstants.documentIconPath,
-    UIConstants.expenseIconPath,
-    UIConstants.reportIconPath,
-    UIConstants.supplierIconPath,
-    UIConstants.customerIconPath,
-    UIConstants.storeIconPath,
-    UIConstants.settingsIconPath,
+    UIConstants.homeIconData,
+    UIConstants.goodIconData,
+    UIConstants.documentIconData,
+    UIConstants.expenseIconData,
+    UIConstants.reportIconData,
+    UIConstants.supplierIconData,
+    UIConstants.customerIconData,
+    UIConstants.storeIconData,
+    UIConstants.settingIconData
   ];
 }

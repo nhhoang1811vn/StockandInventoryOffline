@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/app/utils/constants.dart';
+import 'package:good_manager/presentation/app_style.dart';
+import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/domain/entities/group.dart';
 
 class GroupItemRow extends StatelessWidget {
@@ -14,8 +15,7 @@ class GroupItemRow extends StatelessWidget {
     return ListTile(
         title: Text(
           item.name,
-          style: TextStyle(
-              color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 16),
+          style: AppStyle.getTitleListTitleStyle(),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,27 +24,21 @@ class GroupItemRow extends StatelessWidget {
               visible: item.description.isNotEmpty,
               child: Text(
                 item.description,
-                style: TextStyle(fontSize: 14),
+                style: AppStyle.getSubTitleListTitleStyle(),
               ),
             ),
             if (item.barCode != null)
               Row(children: [
-                Image.asset(
-                  UIConstants.barcodeIconPath,
-                  width: 24,
-                ),
+                Icon(UIConstants.barcodeIconData, size: 24, color: UIConstants.primaryColor),
                 SizedBox(
                   width: 8,
                 ),
-                Text(item.barCode!, style: TextStyle(fontSize: 14))
+                Text(item.barCode!, style: AppStyle.getSubTitleListTitleStyle(),)
               ])
           ],
         ),
         //trailing: Text(item.quality.toString()),
-        leading: Image.asset(
-          UIConstants.folderIconPath,
-          width: 24,
-        ),
+        leading: Icon(UIConstants.groupIconData, size: 32, color: UIConstants.primaryColor,),
         onTap: () => onGroupTapped(item),
         onLongPress: () => onGroupLongPressed(item));
   }
