@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/presentation/main.dart';
 import 'package:good_manager/common/helpers/injection.container.dart';
+import 'package:good_manager/presentation/main.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/barcode_scanner_page.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart';
 import 'package:good_manager/presentation/pages/customers/bloc/bloc.dart';
 import 'package:good_manager/presentation/pages/customers/customers_page.dart';
 import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.dart';
-
 import 'package:good_manager/presentation/pages/documents/documents_view.dart';
 import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart';
 import 'package:good_manager/presentation/pages/expenses/expenses_page.dart';

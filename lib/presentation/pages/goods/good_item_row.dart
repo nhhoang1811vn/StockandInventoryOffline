@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/presentation/app_style.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/domain/entities/good.dart';
 
 class GoodItemRow extends StatelessWidget {
   final Good item;

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:good_manager/presentation/main.dart';
-import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/widgets/select_message_type_dialog.dart';
 import 'package:good_manager/domain/entities/store.dart';
+import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/main.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
-import 'package:good_manager/presentation/pages/settings/settings_page.dart';
+import 'package:good_manager/presentation/widgets/select_message_type_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../style_size.dart';

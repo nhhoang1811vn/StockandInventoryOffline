@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
@@ -12,7 +12,7 @@ import '../../../../data/storage.dart';
 import '../../../../domain/entities/document.dart';
 import '../../../../domain/usecases/documents/document_usecases.dart';
 import '../../base/base_state.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 part 'report_detail_cubit.freezed.dart';
 part 'report_detail_state.dart';
 

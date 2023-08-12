@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/domain/entities/store.dart';
+import 'package:good_manager/presentation/constants.dart';
 
 import '../../../app_style.dart';
 

@@ -6,7 +6,6 @@ import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/save_customer/components/save_customer_form.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
-
 import 'bloc/save_customer_cubit.dart';
 
 class SaveCustomerPage extends StatelessWidget {

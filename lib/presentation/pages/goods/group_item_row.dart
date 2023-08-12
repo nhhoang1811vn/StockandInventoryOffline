@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/presentation/app_style.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/domain/entities/group.dart';
 
 class GroupItemRow extends StatelessWidget {
   final Group item;
