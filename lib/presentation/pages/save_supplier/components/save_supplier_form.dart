@@ -56,8 +56,7 @@ class SaveSupplierForm extends StatelessWidget {
                         labelText: AppLocalizations.of(context)!.field_email,
                         initialValue: item?.email,
                         onChanged: (value) => context.read<SaveSupplierCubit>().emailChanged(value),
-                        keyboardType: TextInputType.emailAddress,
-                        error: state.email.displayError?.text(),
+                        keyboardType: TextInputType.emailAddress
                       ),
                       AppTextField(
                           labelText: AppLocalizations.of(context)!.field_phone,

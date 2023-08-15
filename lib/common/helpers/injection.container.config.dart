@@ -150,8 +150,10 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i26.SelectGroupCubit(groupsUseCase: gh<_i21.GroupsUseCases>()));
     gh.singleton<_i27.Storage>(_i27.Storage());
     gh.factory<_i28.StoresRepository>(() => _i29.StoresRepositoryImpl());
-    gh.factory<_i30.StoresUseCase>(
-        () => _i31.StoresUseCaseImpl(repository: gh<_i28.StoresRepository>()));
+    gh.factory<_i30.StoresUseCase>(() => _i31.StoresUseCaseImpl(
+          repository: gh<_i28.StoresRepository>(),
+          storage: gh<_i27.Storage>(),
+        ));
     gh.factory<_i32.SuppliersRepository>(() => _i33.SuppliersRepositoryImpl());
     gh.factory<_i34.SuppliersUseCase>(() =>
         _i35.SuppliersUseCaseImpl(repository: gh<_i32.SuppliersRepository>()));

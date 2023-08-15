@@ -117,7 +117,11 @@ class StoresCubit extends Cubit<StoresState> {
   }
 
   delete(int id) async{
-    await useCase.delete(id);
-    loadItems();
+    bool result = await useCase.delete(id);
+    if (result == false){
+      emit(state.copyWith(state: DeleteItemError()));
+    }else{
+      loadItems();
+    }
   }
 }

@@ -6,6 +6,7 @@ import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
 import 'package:good_manager/presentation/pages/stores/components/sort_store_dialog.dart';
+import 'package:good_manager/presentation/widgets/snackbar_widgets.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../domain/entities/stores_setting.dart';
@@ -65,6 +66,8 @@ class StoresPageState extends State<StoresPage> {
               "title": AppLocalizations.of(context)?.stores_title,
               "content": MDProviderFactory.get().getHelpText(HelpType.STORE)
             });
+          }else if(state.state is DeleteItemError){
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.delete_store_error));
           }
         },
         builder: (context, state) =>  Scaffold(

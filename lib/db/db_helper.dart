@@ -62,8 +62,8 @@ class DBHelper {
     await db.execute(
         "CREATE TABLE $DOCUMENTS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, date INTEGER, type INTEGER, storeId INTEGER ,supplierId INTEGER, customerId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE," +
-            "FOREIGN KEY(supplierId) REFERENCES $SUPPLIERS_TABLE_NAME(id)," +
-            "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id))");
+            "FOREIGN KEY(supplierId) REFERENCES $SUPPLIERS_TABLE_NAME(id) ON DELETE SET NULL," +
+            "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id) ON DELETE SET NULL)");
 
     await db.execute(
         "CREATE TABLE $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
@@ -316,6 +316,15 @@ class DBHelper {
     return groups;
   }
 
+  //STORES
+  Future<int> getCountStore() async {
+    var dbClient = await db;
+    var result = await dbClient.rawQuery(
+        "SELECT COUNT(*) FROM $STORES_TABLE_NAME");
+
+    int? count = Sqflite.firstIntValue(result);
+    return count == null ? 0 : count;
+  }
 
   //GOOD
   Future<int> getCountGood(int storeId) async {

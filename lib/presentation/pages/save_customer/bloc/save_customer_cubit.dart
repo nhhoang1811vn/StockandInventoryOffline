@@ -26,7 +26,7 @@ class SaveCustomerCubit extends Cubit<SaveCustomerState> {
             name: NameInput.dirty(value: item.name),
             description: item.description,
             address: item.address,
-            email: Email.dirty(value: item.email),
+            email: item.email,
             phone: item.phone,
             taxID: item.taxID,
             bankDetails: item.bankDetail
@@ -49,8 +49,8 @@ class SaveCustomerCubit extends Cubit<SaveCustomerState> {
     emit(state.copyWith(address: value));
   }
   void emailChanged(String value){
-    final email = Email.dirty(value: value);
-    emit(state.copyWith(email: email));
+    //final email = Email.dirty(value: value);
+    emit(state.copyWith(email: value));
   }
   void phoneChanged(String value){
     emit(state.copyWith(phone: value));
@@ -71,7 +71,7 @@ class SaveCustomerCubit extends Cubit<SaveCustomerState> {
         item.name = state.name.value;
         item.description = state.description;
         item.address = state.address;
-        item.email = state.email.value;
+        item.email = state.email;
         item.phone = state.phone;
         item.taxID = state.taxID;
         item.bankDetail = state.bankDetails;

@@ -53,9 +53,9 @@ class SaveStoreCubit extends Cubit<SaveStoreState> {
           await useCase.insert(item);
         }else{
           await useCase.update(item);
-          if (item.id == storage.getSelectedStoreId()){
-            storage.setSelectedStoreName(item.name);
-          }
+          //if (item.id == storage.getSelectedStoreId()){
+          //  storage.setSelectedStoreName(item.name);
+          //}
         }
         emit(state.copyWith(state: SaveItemSuccessful(), item: item));
       } catch(error){

@@ -27,7 +27,7 @@ class StoresRepositoryImpl implements StoresRepository {
 
   @override
   Future<int> getCount() {
-    throw UnimplementedError();
+    return db.getCountStore();
   }
 
   @override
@@ -38,5 +38,11 @@ class StoresRepositoryImpl implements StoresRepository {
   @override
   Future<bool> update(Store item) {
     return db.updateStore(item);
+  }
+
+  @override
+  Future<Store> getFirstStore() async{
+    List<Store> stores = await db.getStores();
+    return Future.value(stores.first);
   }
 }

@@ -20,7 +20,7 @@ mixin _$SaveSupplierState {
   NameInput get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get address => throw _privateConstructorUsedError;
-  Email get email => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
   String get taxID => throw _privateConstructorUsedError;
   String get bankDetails => throw _privateConstructorUsedError;
@@ -33,7 +33,7 @@ mixin _$SaveSupplierState {
             NameInput name,
             String description,
             String address,
-            Email email,
+            String email,
             String phone,
             String taxID,
             String bankDetails,
@@ -49,7 +49,7 @@ mixin _$SaveSupplierState {
             NameInput name,
             String description,
             String address,
-            Email email,
+            String email,
             String phone,
             String taxID,
             String bankDetails,
@@ -65,7 +65,7 @@ mixin _$SaveSupplierState {
             NameInput name,
             String description,
             String address,
-            Email email,
+            String email,
             String phone,
             String taxID,
             String bankDetails,
@@ -108,7 +108,7 @@ abstract class $SaveSupplierStateCopyWith<$Res> {
       NameInput name,
       String description,
       String address,
-      Email email,
+      String email,
       String phone,
       String taxID,
       String bankDetails,
@@ -160,7 +160,7 @@ class _$SaveSupplierStateCopyWithImpl<$Res, $Val extends SaveSupplierState>
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
-              as Email,
+              as String,
       phone: null == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
@@ -198,7 +198,7 @@ abstract class _$$_InitialCopyWith<$Res>
       NameInput name,
       String description,
       String address,
-      Email email,
+      String email,
       String phone,
       String taxID,
       String bankDetails,
@@ -247,7 +247,7 @@ class __$$_InitialCopyWithImpl<$Res>
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
-              as Email,
+              as String,
       phone: null == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
@@ -280,7 +280,7 @@ class _$_Initial implements _Initial {
       this.name = const NameInput.pure(),
       this.description = '',
       this.address = '',
-      this.email = const Email.pure(),
+      this.email = '',
       this.phone = '',
       this.taxID = '',
       this.bankDetails = '',
@@ -300,7 +300,7 @@ class _$_Initial implements _Initial {
   final String address;
   @override
   @JsonKey()
-  final Email email;
+  final String email;
   @override
   @JsonKey()
   final String phone;
@@ -359,7 +359,7 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             String address,
-            Email email,
+            String email,
             String phone,
             String taxID,
             String bankDetails,
@@ -379,7 +379,7 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             String address,
-            Email email,
+            String email,
             String phone,
             String taxID,
             String bankDetails,
@@ -399,7 +399,7 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             String address,
-            Email email,
+            String email,
             String phone,
             String taxID,
             String bankDetails,
@@ -450,7 +450,7 @@ abstract class _Initial implements SaveSupplierState {
       final NameInput name,
       final String description,
       final String address,
-      final Email email,
+      final String email,
       final String phone,
       final String taxID,
       final String bankDetails,
@@ -466,7 +466,7 @@ abstract class _Initial implements SaveSupplierState {
   @override
   String get address;
   @override
-  Email get email;
+  String get email;
   @override
   String get phone;
   @override

@@ -7,7 +7,7 @@ class SaveCustomerState with _$SaveCustomerState {
     @Default(NameInput.pure()) NameInput name,
     @Default('') String description,
     @Default('') String address,
-    @Default(Email.pure()) Email email,
+    @Default('') String email,
     @Default('') String phone,
     @Default('') String taxID,
     @Default('') String bankDetails,

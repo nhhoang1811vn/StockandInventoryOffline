@@ -96,6 +96,9 @@ class SaveItemError extends BaseState{
 class SaveItemSameBarcodeError extends BaseState{
 
 }
+class DeleteItemError extends BaseState{
+
+}
 class OpenSaveGoodPageWithBarcodeState extends BaseState{
   late String barcode;
   OpenSaveGoodPageWithBarcodeState(this.barcode);
