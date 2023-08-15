@@ -4,7 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../domain/entities/models/email.dart';
 import '../../../../domain/entities/models/name.dart';
 import '../../../../domain/usecases/suppliers/suppliers_usecases.dart';
 import '../../base/base_state.dart';

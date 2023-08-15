@@ -5,7 +5,6 @@ import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/usecases/customers/customers_usecases.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../domain/entities/models/email.dart';
 import '../../../../domain/entities/models/name.dart';
 import '../../base/base_state.dart';
 
