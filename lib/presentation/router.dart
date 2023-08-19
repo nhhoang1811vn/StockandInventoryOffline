@@ -17,6 +17,8 @@ import 'package:good_manager/presentation/pages/help/helps_page_dart.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/pages/home/home_page.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
+import 'package:good_manager/presentation/pages/payment/bloc/payments_cubit.dart';
+import 'package:good_manager/presentation/pages/payment/payments_page.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/report_page.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
@@ -31,6 +33,8 @@ import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.d
 import 'package:good_manager/presentation/pages/save_good/save_good_view.dart';
 import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
 import 'package:good_manager/presentation/pages/save_group/save_group_view.dart';
+import 'package:good_manager/presentation/pages/save_payment/bloc/save_payment_cubit.dart';
+import 'package:good_manager/presentation/pages/save_payment/save_payment_page.dart';
 import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit.dart';
 import 'package:good_manager/presentation/pages/save_store/save_store_page.dart';
 import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart';
@@ -84,6 +88,22 @@ class AppRouter {
                   create: (context) => getIt<SaveDocumentCubit>(),
                   child: SaveDocumentPage(args["item"]),
                 ));
+      case Pages.payment_list:
+        Map<dynamic, dynamic> args = settings.arguments as Map;
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<PaymentsCubit>(),
+              child: PaymentsPage(args["documentId"]),
+            ));
+      case Pages.save_payment:
+        Map<dynamic, dynamic> args = settings.arguments as Map;
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<SavePaymentCubit>(),
+              child: SavePaymentPage(
+                  args["item"]
+              ),
+            ));
       case Pages.good_list:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
@@ -102,8 +122,7 @@ class AppRouter {
                   child: SaveGoodPage(
                       item: args['item'],
                       document: args['document'],
-                      transaction: args['transaction'],
-                      quantity: args['quantity']),
+                      transaction: args['transaction']),
                 ));
       case Pages.save_group:
         Map<dynamic, dynamic> args = settings.arguments as Map;

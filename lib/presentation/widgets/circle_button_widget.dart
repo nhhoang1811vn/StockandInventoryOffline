@@ -8,7 +8,8 @@ class CircleButton extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      minWidth: 25,
+      minWidth: 40,
+      height: 40,
       onPressed: onPressed,
       color: Colors.blue,
       textColor: Colors.white,

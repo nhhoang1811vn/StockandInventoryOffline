@@ -5,8 +5,7 @@ import 'package:good_manager/presentation/style_size.dart';
 
 import '../../../constants.dart';
 
-
-class ExpenseItemRow extends StatelessWidget{
+class ExpenseItemRow extends StatelessWidget {
   final Expense item;
   final void Function(Expense item) onPressed;
   final void Function(Expense item) onLongPressed;
@@ -17,24 +16,14 @@ class ExpenseItemRow extends StatelessWidget{
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(item.name, style: AppStyle.getTitleListTitleStyle()),
-      subtitle: Text(Config.dateFormat.format(item.date), style: AppStyle.getSubTitleListTitleStyle(),),
-      trailing: item.amount > 0 ? getPositiveAmount(Config.expenseAmountFormat.format(item.amount)) : getNegativeAmount(Config.expenseAmountFormat.format(item.amount)),
-      onTap:() => onPressed(item),
+      subtitle: Text(
+        Config.dateFormat.format(item.date),
+        style: AppStyle.getSubTitleListTitleStyle(),
+      ),
+      trailing: Text(Config.currencyFormat.format(item.amount),
+          style: AppStyle.getTrailingListTitleStyle()),
+      onTap: () => onPressed(item),
       onLongPress: () => onLongPressed(item),
     );
   }
-  Widget getPositiveAmount(amount) {
-    return Text(
-      "+ $amount",
-      style: TextStyle(color: Colors.green, fontSize: TextSize.large),
-    );
-  }
-
-  Widget getNegativeAmount(amount) {
-    return Text(
-      amount.toString(),
-      style: TextStyle(color: Colors.red,fontSize: TextSize.large),
-    );
-  }
-
 }

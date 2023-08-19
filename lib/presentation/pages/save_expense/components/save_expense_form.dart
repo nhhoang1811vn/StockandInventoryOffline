@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
@@ -11,43 +10,22 @@ import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_expense/bloc/save_expense_cubit.dart';
 import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../presentation/widgets/snackbar_widgets.dart';
+import '../../../utils.dart';
+import '../../currency_app_text_field.dart';
 
 class SaveExpenseForm extends StatelessWidget {
   final Expense item;
   final TextEditingController dateController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
 
-
   SaveExpenseForm({Key? key, required this.item}) : super(key: key);
-
-  void showCalculatorPopup(BuildContext context){
-    var calc = SimpleCalculator(
-      value: double.parse(amountController.text),
-
-      onChanged: (key, value, expression) {
-        amountController.text = Config.expenseAmountFormat.format(value);
-        context.read<SaveExpenseCubit>().amountChanged(double.parse(amountController.text));
-      },
-      theme: const CalculatorThemeData(
-        displayColor: Colors.white,
-        displayStyle: const TextStyle(fontSize: 20, color: Colors.blue),
-      ),
-    );
-    showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        builder: (BuildContext context) {
-          return SizedBox(height: MediaQuery.of(context).size.height * 0.75, child: calc);
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
-
     dateController.text = Config.dateFormat.format(item.date);
-    amountController.text = Config.expenseAmountFormat.format(item.amount);
+    amountController.text = Config.simpleCurrencyFormat.format(item.amount);
 
     return BlocConsumer<SaveExpenseCubit, SaveExpenseState>(
         listener: (context, state) {
@@ -97,13 +75,16 @@ class SaveExpenseForm extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                              child: AppTextField(
-                            controller: amountController,
-                            labelText: AppLocalizations.of(context)!.field_amount,
-                            onChanged: (value) => context.read<SaveExpenseCubit>().amountChanged(double.parse(value)),
-                            keyboardType: TextInputType.number,
-                          )),
-                          CircleButton(UIConstants.calculatorIconData, () => showCalculatorPopup(context))
+                            child: CurrencyAppTextField(
+                              labelText: AppLocalizations.of(context)!.field_amount,
+                              controller: amountController,
+                              onChanged: context.read<SaveExpenseCubit>().onAmountChanged,
+                            )),
+                          CircleButton(UIConstants.calculatorIconData, () => Utils.showCalculatorPopup(context, state.amount,(p0){
+                            NumberFormat format = new NumberFormat("0.#");
+                            context.read<SaveExpenseCubit>().onAmountChanged(format.format(p0));
+                            amountController.text = Config.simpleCurrencyFormat.format(p0);
+                          }))
                         ],
                       )
                     ],

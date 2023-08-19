@@ -20,25 +20,25 @@ mixin _$ReportDetailState {
   ReportType? get type => throw _privateConstructorUsedError;
   DateTime? get start => throw _privateConstructorUsedError;
   DateTime? get end => throw _privateConstructorUsedError;
-  List<List<dynamic>> get data => throw _privateConstructorUsedError;
+  List<List<String>> get data => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(BaseState state, ReportType? type,
-            DateTime? start, DateTime? end, List<List<dynamic>> data)
+            DateTime? start, DateTime? end, List<List<String>> data)
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseState state, ReportType? type, DateTime? start,
-            DateTime? end, List<List<dynamic>> data)?
+            DateTime? end, List<List<String>> data)?
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseState state, ReportType? type, DateTime? start,
-            DateTime? end, List<List<dynamic>> data)?
+            DateTime? end, List<List<String>> data)?
         initial,
     required TResult orElse(),
   }) =>
@@ -76,7 +76,7 @@ abstract class $ReportDetailStateCopyWith<$Res> {
       ReportType? type,
       DateTime? start,
       DateTime? end,
-      List<List<dynamic>> data});
+      List<List<String>> data});
 }
 
 /// @nodoc
@@ -118,7 +118,7 @@ class _$ReportDetailStateCopyWithImpl<$Res, $Val extends ReportDetailState>
       data: null == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
-              as List<List<dynamic>>,
+              as List<List<String>>,
     ) as $Val);
   }
 }
@@ -136,7 +136,7 @@ abstract class _$$_InitialCopyWith<$Res>
       ReportType? type,
       DateTime? start,
       DateTime? end,
-      List<List<dynamic>> data});
+      List<List<String>> data});
 }
 
 /// @nodoc
@@ -175,7 +175,7 @@ class __$$_InitialCopyWithImpl<$Res>
       data: null == data
           ? _value._data
           : data // ignore: cast_nullable_to_non_nullable
-              as List<List<dynamic>>,
+              as List<List<String>>,
     ));
   }
 }
@@ -188,7 +188,7 @@ class _$_Initial implements _Initial {
       this.type,
       this.start,
       this.end,
-      final List<List<dynamic>> data = const []})
+      final List<List<String>> data = const []})
       : _data = data;
 
   @override
@@ -199,10 +199,10 @@ class _$_Initial implements _Initial {
   final DateTime? start;
   @override
   final DateTime? end;
-  final List<List<dynamic>> _data;
+  final List<List<String>> _data;
   @override
   @JsonKey()
-  List<List<dynamic>> get data {
+  List<List<String>> get data {
     if (_data is EqualUnmodifiableListView) return _data;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_data);
@@ -239,7 +239,7 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(BaseState state, ReportType? type,
-            DateTime? start, DateTime? end, List<List<dynamic>> data)
+            DateTime? start, DateTime? end, List<List<String>> data)
         initial,
   }) {
     return initial(state, type, start, end, data);
@@ -249,7 +249,7 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseState state, ReportType? type, DateTime? start,
-            DateTime? end, List<List<dynamic>> data)?
+            DateTime? end, List<List<String>> data)?
         initial,
   }) {
     return initial?.call(state, type, start, end, data);
@@ -259,7 +259,7 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseState state, ReportType? type, DateTime? start,
-            DateTime? end, List<List<dynamic>> data)?
+            DateTime? end, List<List<String>> data)?
         initial,
     required TResult orElse(),
   }) {
@@ -304,7 +304,7 @@ abstract class _Initial implements ReportDetailState {
       final ReportType? type,
       final DateTime? start,
       final DateTime? end,
-      final List<List<dynamic>> data}) = _$_Initial;
+      final List<List<String>> data}) = _$_Initial;
 
   @override
   BaseState get state;
@@ -315,7 +315,7 @@ abstract class _Initial implements ReportDetailState {
   @override
   DateTime? get end;
   @override
-  List<List<dynamic>> get data;
+  List<List<String>> get data;
   @override
   @JsonKey(ignore: true)
   _$$_InitialCopyWith<_$_Initial> get copyWith =>

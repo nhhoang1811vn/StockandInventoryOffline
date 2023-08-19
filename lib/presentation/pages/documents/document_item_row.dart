@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/payment_status.dart';
 import 'package:good_manager/presentation/app_style.dart';
 import 'package:good_manager/presentation/constants.dart';
 
@@ -10,44 +12,78 @@ class DocumentItemRow extends StatelessWidget {
   void Function(Document document) onDocumentTapped;
   void Function(Document document) onDocumentLongPressed;
 
-  DocumentItemRow(this.showAll, this.item, this.onDocumentTapped,
-      this.onDocumentLongPressed);
+  DocumentItemRow(this.showAll, this.item, this.onDocumentTapped, this.onDocumentLongPressed);
 
   @override
   Widget build(BuildContext context) {
-    //DateFormat format = DateFormat("dd/MM/yyyy");
-    return ListTile(
-      leading: Container(
-        width: 8,
-        height: 200,
-        color: getIndicatorColor(item.type),
-      ),
-      title: Transform.translate(
-        offset: Offset(-32, 0),
-        child: Text(getTitleText(context, item.type, item.name),
-            style: AppStyle.getTitleListTitleStyle()),
-      ),
-      subtitle: Transform.translate(
-        offset: Offset(-32, 0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(Config.dateFormat.format(item.date), style: AppStyle.getSubTitleListTitleStyle()),
-          item.personName != null ? Text(item.personName!, style: AppStyle.getSubTitleListTitleStyle(),) : Container(),
-          item.description.isNotEmpty ? Text(item.description, style: AppStyle.getSubTitleListTitleStyle()) : Container()
-        ]),
-      ),
-      trailing: Text(item.quantity.toString(), style: AppStyle.getTrailingListTitleStyle()),
-      onTap: () => onDocumentTapped(item),
-      onLongPress: () => onDocumentLongPressed(item),
-    );
+    return InkWell(
+        onTap: () => onDocumentTapped(item),
+        onLongPress: () => onDocumentLongPressed(item),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(16, 8 , 16 , 8),
+          child: Column(
+            children: [
+              Align(alignment: Alignment.centerRight, child: _buildPaymentStatusWidget()),
+              IntrinsicHeight(
+                  child: Row(
+                //crossAxisAlignment: CrossAxisAlignment.center,
+                //mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 10,
+                    color: getIndicatorColor(item.type),
+                    //child: Column(),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.name,
+                        style: AppStyle.getTitleListTitleStyle(),
+                      ),
+                      //SizedBox(height: 4),
+                      Text(Config.dateFormat.format(item.date), style: AppStyle.getSubTitleListTitleStyle()),
+                      //SizedBox(height: 4),
+                      item.personName != null ? Text(item.personName!, style: AppStyle.getSubTitleListTitleStyle(),) : Container(),
+                      item.description.isNotEmpty ? Text(item.description, style: AppStyle.getSubTitleListTitleStyle()) : Container()
+                    ],
+                  )),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(item.quantity.toString(), style: AppStyle.getTrailingListTitleStyle()),
+                      Text(Config.currencyFormat.format(item.amount))
+                    ],
+                  )
+
+                ],
+              ))
+            ],
+          ),
+        ));
+  }
+
+  Widget _buildPaymentStatusWidget() {
+    switch (item.paymentStatus) {
+      case PaymentStatus.UNPAID:
+        return Icon(UIConstants.paymentIconData,size: 24, color: Palette.red);
+      case PaymentStatus.PARTIAL:
+        return Icon(UIConstants.paymentIconData,size: 24, color: Palette.yellow);
+      case PaymentStatus.PAID:
+        return Icon(UIConstants.paymentIconData,size: 24, color: Palette.green);
+    }
   }
 
   String getTitleText(BuildContext context, DocumentType type, String name) {
     if (showAll) {
       switch (type) {
         case DocumentType.incoming:
-          return "${AppLocalizations.of(context)!.document_list_incoming_name} $name";
+          return "${AppLocalizations.of(context)!.incoming_document_text} $name";
         case DocumentType.outgoing:
-          return "${AppLocalizations.of(context)!.document_list_outgoing_name} $name";
+          return "${AppLocalizations.of(context)!.outgoing_document_text} $name";
         default:
           return "";
       }

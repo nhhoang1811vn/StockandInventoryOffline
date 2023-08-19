@@ -18,12 +18,12 @@ import 'package:sprintf/sprintf.dart';
 
 import '../../app_style.dart';
 import '../../main.dart';
+import '../../widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
 import '../../widgets/snackbar_widgets.dart';
 import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';
 import '../help_content.dart';
 import '../pages.dart';
-import 'add_quantity_good_dialog.dart';
 import 'good_item_row.dart';
 import 'group_item_row.dart';
 
@@ -253,7 +253,7 @@ class GoodsPageState extends State<GoodsPage> {
   }
   void onPressedGood(Good item) async{
     if (widget.isSelection){
-      showAddQuantityDialog(item);
+      showAddQuantityAndPriceDialog(item, widget.document!.type);
     }else{
       final result = await Navigator.of(context)
           .pushNamed(Pages.save_good, arguments: {"item": item, "enableAddTransactions": true});
@@ -262,13 +262,15 @@ class GoodsPageState extends State<GoodsPage> {
       }
     }
   }
-  void showAddQuantityDialog(Good good) async{
-    int? quantity = await showDialog(
+  void showAddQuantityAndPriceDialog(Good good, DocumentType type) async{
+    Map<dynamic, dynamic>? result = await showDialog(
         context: context,
-        builder: (_) => InputQuantityGoodDialog(good),
+        builder: (_) => AddQuantityAndPriceWidget(good, type),
         barrierDismissible: true);
-    if (quantity != null){
-      context.read<GoodsCubit>().saveDocumentThenAddTransaction(good, quantity);
+    if (result != null){
+      int quantity = result["quantity"] ?? 0;
+      double price = result["price"] ?? 0.0;
+      context.read<GoodsCubit>().addTransaction(good.id!, quantity, price);
     }
   }
   void onLongPressedGood(Good item){
@@ -472,8 +474,8 @@ class GoodsPageState extends State<GoodsPage> {
                 SpeedDialChild(
                     child: Icon(UIConstants.goodIconData, size: 20, color: UIConstants.primaryColor),
                     backgroundColor: Colors.white,
-                    onTap: context.read<GoodsCubit>().onAddGood,
-                    label: AppLocalizations.of(context)!.good)
+                    onTap: context.read<GoodsCubit>().onAddGood),
+                  //  label: AppLocalizations.of(context)!.good)
               ],
             )
         ));

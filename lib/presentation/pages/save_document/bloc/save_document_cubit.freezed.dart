@@ -32,6 +32,9 @@ mixin _$SaveDocumentState {
   bool get showSearchBar => throw _privateConstructorUsedError;
   String get textSearch => throw _privateConstructorUsedError;
   int get totalQuantity => throw _privateConstructorUsedError;
+  double get totalAmount => throw _privateConstructorUsedError;
+  PaymentStatus? get paymentStatus => throw _privateConstructorUsedError;
+  List<Payment> get payments => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
@@ -48,7 +51,10 @@ mixin _$SaveDocumentState {
             List<DocumentTransaction> transactions,
             bool showSearchBar,
             String textSearch,
-            int totalQuantity)
+            int totalQuantity,
+            double totalAmount,
+            PaymentStatus? paymentStatus,
+            List<Payment> payments)
         initial,
   }) =>
       throw _privateConstructorUsedError;
@@ -68,7 +74,10 @@ mixin _$SaveDocumentState {
             List<DocumentTransaction> transactions,
             bool showSearchBar,
             String textSearch,
-            int totalQuantity)?
+            int totalQuantity,
+            double totalAmount,
+            PaymentStatus? paymentStatus,
+            List<Payment> payments)?
         initial,
   }) =>
       throw _privateConstructorUsedError;
@@ -88,7 +97,10 @@ mixin _$SaveDocumentState {
             List<DocumentTransaction> transactions,
             bool showSearchBar,
             String textSearch,
-            int totalQuantity)?
+            int totalQuantity,
+            double totalAmount,
+            PaymentStatus? paymentStatus,
+            List<Payment> payments)?
         initial,
     required TResult orElse(),
   }) =>
@@ -135,7 +147,10 @@ abstract class $SaveDocumentStateCopyWith<$Res> {
       List<DocumentTransaction> transactions,
       bool showSearchBar,
       String textSearch,
-      int totalQuantity});
+      int totalQuantity,
+      double totalAmount,
+      PaymentStatus? paymentStatus,
+      List<Payment> payments});
 
   $SaveDocumentSettingCopyWith<$Res> get setting;
 }
@@ -167,6 +182,9 @@ class _$SaveDocumentStateCopyWithImpl<$Res, $Val extends SaveDocumentState>
     Object? showSearchBar = null,
     Object? textSearch = null,
     Object? totalQuantity = null,
+    Object? totalAmount = null,
+    Object? paymentStatus = freezed,
+    Object? payments = null,
   }) {
     return _then(_value.copyWith(
       state: null == state
@@ -225,6 +243,18 @@ class _$SaveDocumentStateCopyWithImpl<$Res, $Val extends SaveDocumentState>
           ? _value.totalQuantity
           : totalQuantity // ignore: cast_nullable_to_non_nullable
               as int,
+      totalAmount: null == totalAmount
+          ? _value.totalAmount
+          : totalAmount // ignore: cast_nullable_to_non_nullable
+              as double,
+      paymentStatus: freezed == paymentStatus
+          ? _value.paymentStatus
+          : paymentStatus // ignore: cast_nullable_to_non_nullable
+              as PaymentStatus?,
+      payments: null == payments
+          ? _value.payments
+          : payments // ignore: cast_nullable_to_non_nullable
+              as List<Payment>,
     ) as $Val);
   }
 
@@ -259,7 +289,10 @@ abstract class _$$_InitialCopyWith<$Res>
       List<DocumentTransaction> transactions,
       bool showSearchBar,
       String textSearch,
-      int totalQuantity});
+      int totalQuantity,
+      double totalAmount,
+      PaymentStatus? paymentStatus,
+      List<Payment> payments});
 
   @override
   $SaveDocumentSettingCopyWith<$Res> get setting;
@@ -289,6 +322,9 @@ class __$$_InitialCopyWithImpl<$Res>
     Object? showSearchBar = null,
     Object? textSearch = null,
     Object? totalQuantity = null,
+    Object? totalAmount = null,
+    Object? paymentStatus = freezed,
+    Object? payments = null,
   }) {
     return _then(_$_Initial(
       state: null == state
@@ -347,6 +383,18 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.totalQuantity
           : totalQuantity // ignore: cast_nullable_to_non_nullable
               as int,
+      totalAmount: null == totalAmount
+          ? _value.totalAmount
+          : totalAmount // ignore: cast_nullable_to_non_nullable
+              as double,
+      paymentStatus: freezed == paymentStatus
+          ? _value.paymentStatus
+          : paymentStatus // ignore: cast_nullable_to_non_nullable
+              as PaymentStatus?,
+      payments: null == payments
+          ? _value._payments
+          : payments // ignore: cast_nullable_to_non_nullable
+              as List<Payment>,
     ));
   }
 }
@@ -368,9 +416,13 @@ class _$_Initial implements _Initial {
       final List<DocumentTransaction> transactions = const [],
       this.showSearchBar = false,
       this.textSearch = '',
-      this.totalQuantity = 0})
+      this.totalQuantity = 0,
+      this.totalAmount = 0,
+      this.paymentStatus,
+      final List<Payment> payments = const []})
       : _allTransactions = allTransactions,
-        _transactions = transactions;
+        _transactions = transactions,
+        _payments = payments;
 
   @override
   final BaseState state;
@@ -420,10 +472,23 @@ class _$_Initial implements _Initial {
   @override
   @JsonKey()
   final int totalQuantity;
+  @override
+  @JsonKey()
+  final double totalAmount;
+  @override
+  final PaymentStatus? paymentStatus;
+  final List<Payment> _payments;
+  @override
+  @JsonKey()
+  List<Payment> get payments {
+    if (_payments is EqualUnmodifiableListView) return _payments;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_payments);
+  }
 
   @override
   String toString() {
-    return 'SaveDocumentState.initial(state: $state, name: $name, description: $description, date: $date, exceptionError: $exceptionError, item: $item, personId: $personId, personName: $personName, setting: $setting, allTransactions: $allTransactions, transactions: $transactions, showSearchBar: $showSearchBar, textSearch: $textSearch, totalQuantity: $totalQuantity)';
+    return 'SaveDocumentState.initial(state: $state, name: $name, description: $description, date: $date, exceptionError: $exceptionError, item: $item, personId: $personId, personName: $personName, setting: $setting, allTransactions: $allTransactions, transactions: $transactions, showSearchBar: $showSearchBar, textSearch: $textSearch, totalQuantity: $totalQuantity, totalAmount: $totalAmount, paymentStatus: $paymentStatus, payments: $payments)';
   }
 
   @override
@@ -453,7 +518,12 @@ class _$_Initial implements _Initial {
             (identical(other.textSearch, textSearch) ||
                 other.textSearch == textSearch) &&
             (identical(other.totalQuantity, totalQuantity) ||
-                other.totalQuantity == totalQuantity));
+                other.totalQuantity == totalQuantity) &&
+            (identical(other.totalAmount, totalAmount) ||
+                other.totalAmount == totalAmount) &&
+            (identical(other.paymentStatus, paymentStatus) ||
+                other.paymentStatus == paymentStatus) &&
+            const DeepCollectionEquality().equals(other._payments, _payments));
   }
 
   @override
@@ -472,7 +542,10 @@ class _$_Initial implements _Initial {
       const DeepCollectionEquality().hash(_transactions),
       showSearchBar,
       textSearch,
-      totalQuantity);
+      totalQuantity,
+      totalAmount,
+      paymentStatus,
+      const DeepCollectionEquality().hash(_payments));
 
   @JsonKey(ignore: true)
   @override
@@ -497,7 +570,10 @@ class _$_Initial implements _Initial {
             List<DocumentTransaction> transactions,
             bool showSearchBar,
             String textSearch,
-            int totalQuantity)
+            int totalQuantity,
+            double totalAmount,
+            PaymentStatus? paymentStatus,
+            List<Payment> payments)
         initial,
   }) {
     return initial(
@@ -514,7 +590,10 @@ class _$_Initial implements _Initial {
         transactions,
         showSearchBar,
         textSearch,
-        totalQuantity);
+        totalQuantity,
+        totalAmount,
+        paymentStatus,
+        payments);
   }
 
   @override
@@ -534,7 +613,10 @@ class _$_Initial implements _Initial {
             List<DocumentTransaction> transactions,
             bool showSearchBar,
             String textSearch,
-            int totalQuantity)?
+            int totalQuantity,
+            double totalAmount,
+            PaymentStatus? paymentStatus,
+            List<Payment> payments)?
         initial,
   }) {
     return initial?.call(
@@ -551,7 +633,10 @@ class _$_Initial implements _Initial {
         transactions,
         showSearchBar,
         textSearch,
-        totalQuantity);
+        totalQuantity,
+        totalAmount,
+        paymentStatus,
+        payments);
   }
 
   @override
@@ -571,7 +656,10 @@ class _$_Initial implements _Initial {
             List<DocumentTransaction> transactions,
             bool showSearchBar,
             String textSearch,
-            int totalQuantity)?
+            int totalQuantity,
+            double totalAmount,
+            PaymentStatus? paymentStatus,
+            List<Payment> payments)?
         initial,
     required TResult orElse(),
   }) {
@@ -590,7 +678,10 @@ class _$_Initial implements _Initial {
           transactions,
           showSearchBar,
           textSearch,
-          totalQuantity);
+          totalQuantity,
+          totalAmount,
+          paymentStatus,
+          payments);
     }
     return orElse();
   }
@@ -639,7 +730,10 @@ abstract class _Initial implements SaveDocumentState {
       final List<DocumentTransaction> transactions,
       final bool showSearchBar,
       final String textSearch,
-      final int totalQuantity}) = _$_Initial;
+      final int totalQuantity,
+      final double totalAmount,
+      final PaymentStatus? paymentStatus,
+      final List<Payment> payments}) = _$_Initial;
 
   @override
   BaseState get state;
@@ -669,6 +763,12 @@ abstract class _Initial implements SaveDocumentState {
   String get textSearch;
   @override
   int get totalQuantity;
+  @override
+  double get totalAmount;
+  @override
+  PaymentStatus? get paymentStatus;
+  @override
+  List<Payment> get payments;
   @override
   @JsonKey(ignore: true)
   _$$_InitialCopyWith<_$_Initial> get copyWith =>

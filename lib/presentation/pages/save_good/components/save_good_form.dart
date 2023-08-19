@@ -1,35 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
+import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.dart';
+import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
+import 'package:intl/intl.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../../../../domain/entities/good.dart';
 import '../../../../presentation/widgets/snackbar_widgets.dart';
 import '../../../widgets/images_preview/images_preview_view.dart';
+import '../../currency_app_text_field.dart';
 
 class SaveGoodForm extends StatelessWidget {
   final Good item;
-  final int? quantity;
-
+  final DocumentTransaction? transaction;
   final quantityTextController = TextEditingController();
+  final priceTextController = TextEditingController();
   final barcodeTextController = TextEditingController();
 
-  SaveGoodForm({Key? key, required this.item, required this.quantity}) : super(key: key);
+  SaveGoodForm({Key? key, required this.item, required this.transaction}) : super(key: key);
 
-  void showCalculatorPopup(BuildContext context){
+  /*void showCalculatorPopup(BuildContext context,double value, Function(double) callback) async {
     var calc = SimpleCalculator(
-      value: double.parse(quantityTextController.text),
+      value: value,
       onChanged: (key, value, expression) {
-        quantityTextController.text = value!.toInt().toString();
-        context.read<SaveGoodCubit>().quantityChanged(quantityTextController.text);
+        if (value != null){
+          callback(value);
+        }
       },
       theme: const CalculatorThemeData(
         displayColor: Colors.white,
@@ -42,32 +49,44 @@ class SaveGoodForm extends StatelessWidget {
         builder: (BuildContext context) {
           return SizedBox(height: MediaQuery.of(context).size.height * 0.75, child: calc);
         });
-  }
+  }*/
+
   @override
   Widget build(BuildContext context) {
-    quantityTextController.text = quantity.toString();
-    barcodeTextController.text = item.barCode??'';
+    quantityTextController.text = transaction?.quantity.toString() ?? '';
+    priceTextController.text = Config.simpleCurrencyFormat.format(transaction?.price ?? 0.0); // transaction.pric
+    barcodeTextController.text = item.barCode ?? '';
     return BlocConsumer<SaveGoodCubit, SaveGoodState>(
-      listenWhen: (state1, state2){
-        return state1.state != state2.state;
-      },
-        listener: (context, state) async{
+        listenWhen: (state1, state2) {
+          return state1.state != state2.state;
+        },
+        listener: (context, state) async {
           if (state.state is SaveItemError) {
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
-          } else if (state.state is SaveItemSameBarcodeError){
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.error_same_barcode));
+          } else if (state.state is SaveItemSameBarcodeError) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.error_same_barcode));
           } else if (state.state is SaveItemSuccessful) {
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
-            Navigator.of(context).pop({"item": state.item, "quantity": state.quantity, "document": state.document});
+            Navigator.of(context).pop({"item": state.item, "document": state.document});
           } else if (state.state is OpenCalculatorToInputQuantityState) {
-            showCalculatorPopup(context);
-          } else if (state.state is OpenBarcodeScannerPageState){
+            Utils.showCalculatorPopup(context, state.transaction!.quantity.toDouble(), (p0){
+              context.read<SaveGoodCubit>().quantityChanged(p0.toInt().toString());
+              quantityTextController.text = p0.toInt().toString();
+            });
+          } else if (state.state is OpenCalculatorToInputPriceState){
+            Utils.showCalculatorPopup(context, state.transaction!.price, (p0){
+              NumberFormat format = new NumberFormat("0.#");
+              context.read<SaveGoodCubit>().onPriceChanged(format.format(p0));
+              priceTextController.text = Config.simpleCurrencyFormat.format(p0);
+            });
+          }else if (state.state is OpenBarcodeScannerPageState) {
             var result = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const SimpleBarcodeScannerPage(),
                 ));
-            if (result != "-1"){
+            if (result != "-1") {
               barcodeTextController.text = result;
               context.read<SaveGoodCubit>().barCodeChanged(result);
             }
@@ -91,9 +110,14 @@ class SaveGoodForm extends StatelessWidget {
                       onChanged: (value) => context.read<SaveGoodCubit>().descriptionChanged(value),
                       keyboardType: TextInputType.name),
                   _buildBarCode(context, state),
-                  if (quantity != null)
+                  if (transaction != null)
                     Column(
-                      children: [SizedBox(height: 12), _buildQuantity(context, state)],
+                      children: [
+                        SizedBox(height: 12),
+                        _buildQuantity(context, state),
+                        SizedBox(height: 12),
+                        _buildPrice(context, state)
+                      ],
                     ),
                   SizedBox(height: 12),
                   Align(
@@ -136,11 +160,31 @@ class SaveGoodForm extends StatelessWidget {
           keyboardType: TextInputType.number,
           onChanged: (value) => context.read<SaveGoodCubit>().quantityChanged(value),
           controller: quantityTextController,
+          inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
         )),
         Align(
             alignment: Alignment.centerRight,
             child:
-                CircleButton(FontAwesomeIcons.calculator, context.read<SaveGoodCubit>().onModifyQuantityButtonPressed))
+                CircleButton(FontAwesomeIcons.calculator, context.read<SaveGoodCubit>().onQuantityCalculatorPressed))
+      ],
+    );
+  }
+
+  Widget _buildPrice(BuildContext context, SaveGoodState state) {
+    return Row(
+      children: [
+        Expanded(
+          child: CurrencyAppTextField(
+            labelText: transaction?.type == DocumentType.incoming
+                ? AppLocalizations.of(context)!.field_purchase_price
+                : AppLocalizations.of(context)!.field_sale_price,
+            controller: priceTextController,
+            onChanged: context.read<SaveGoodCubit>().onPriceChanged,
+          )),
+        Align(
+            alignment: Alignment.centerRight,
+            child:
+                CircleButton(FontAwesomeIcons.calculator, context.read<SaveGoodCubit>().onPriceCalculatorPressed))
       ],
     );
   }

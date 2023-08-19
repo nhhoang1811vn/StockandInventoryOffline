@@ -26,9 +26,9 @@ class CustomerItemRow extends StatelessWidget{
           item.description.isNotEmpty
               ? Text(item.description, style: AppStyle.getSubTitleListTitleStyle(),)
               : Container(),
-          //item.numberDocument > 0
-          //    ? Text(item.numberDocument.toString() + "GD")
-          //   : Container()
+          item.numberDocument > 0
+              ? Text(item.numberDocument.toString() + " " + AppLocalizations.of(context)!.documents_title, style: AppStyle.getSubTitleListTitleStyle())
+             : Container()
         ],
       ),
       onTap: () => onPressed(item),

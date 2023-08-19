@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/main.dart';
 
 import '../custom_navigation_drawer.dart';
@@ -25,10 +26,11 @@ class SettingsPage extends StatelessWidget {
               subtitle:
               Text(AppLocalizations.of(context)!.menu_item_language_desc),
               onTap: (){ showSelectLanguageDialog(context);},
-            )
+            ),
+            Divider()
             ,
             ListTile(
-              leading: Icon(Icons.language),
+              leading: Icon(UIConstants.barcodeIconData),
               title: Text(
                   AppLocalizations.of(context)!.menu_item_barcode_scanner_title),
               onTap: () => onBarcodeScannerPressed(context),

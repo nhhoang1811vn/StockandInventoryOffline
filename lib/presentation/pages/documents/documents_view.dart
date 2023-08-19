@@ -147,9 +147,9 @@ class DocumentPageState extends State<DocumentsPage> {
               TabBar(
                 indicatorColor: Colors.white,
                 tabs: [
-                  Tab(text: AppLocalizations.of(context)!.document_list_tab_all),
-                  Tab(text: AppLocalizations.of(context)!.document_list_tab_incoming),
-                  Tab(text: AppLocalizations.of(context)!.document_list_tab_outgoing),
+                  Tab(text: AppLocalizations.of(context)!.document_list_tab_all.toUpperCase()),
+                  Tab(text: AppLocalizations.of(context)!.incoming_document_text.toUpperCase()),
+                  Tab(text: AppLocalizations.of(context)!.outgoing_document_text.toUpperCase()),
                 ],
               )
             ],
@@ -224,7 +224,7 @@ class DocumentPageState extends State<DocumentsPage> {
             DocumentUI item = state.incomingItems[index];
             if (item.type == DocumentUIType.data) {
               return DocumentItemRow(
-                  true, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
+                  false, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
             } else {
               return DocumentDateRow(item.dateText);
             }
@@ -241,7 +241,7 @@ class DocumentPageState extends State<DocumentsPage> {
             DocumentUI item = state.outgoingItems[index];
             if (item.type == DocumentUIType.data) {
               return DocumentItemRow(
-                  true, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
+                  false, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
             } else {
               return DocumentDateRow(item.dateText);
             }

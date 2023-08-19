@@ -323,28 +323,29 @@ class GoodsCubit extends Cubit<GoodsState> {
     groupsUseCase.update(item);
     loadItems();
   }
-  void saveDocumentThenAddTransaction(Good good, int quantity) async{
-    bool result = await saveDocument();
-    if (result){
+  void addTransaction(int goodId, int quantity, double price) async{
+    //bool result = await saveDocument();
+    //if (result){
       DocumentTransaction transaction = DocumentTransaction();
       transaction.documentId = state.document!.id!;
-      transaction.goodId = good.id!;
+      transaction.goodId = goodId;
       transaction.quantity = quantity;
+      transaction.price = price;
       transaction.type = state.document!.type;
       transaction.storeId = storage.getSelectedStoreId();
       int transactionId = await documentsUseCases.insertTransaction(transaction);
       if (transactionId > 0){
         if (transaction.type == DocumentType.incoming){
-          emit(state.copyWith(state: InsertTransactionSuccessState(good.id!, quantity)));
+          emit(state.copyWith(state: InsertTransactionSuccessState(goodId, quantity)));
         }else{
-          emit(state.copyWith(state: InsertTransactionSuccessState(good.id!, -quantity)));
+          emit(state.copyWith(state: InsertTransactionSuccessState(goodId, -quantity)));
         }
       }else{
         emit(state.copyWith(state: InsertTransactionFailedState()));
       }
-    }
+    //}
   }
-  Future<bool> saveDocument() async{
+  /*Future<bool> saveDocument() async{
       Document item = state.document!;
       if (item.id == null) {
         int id = await documentsUseCases.insert(item);
@@ -354,7 +355,7 @@ class GoodsCubit extends Cubit<GoodsState> {
       }
       emit(state.copyWith(document: item));
       return true;
-  }
+  }*/
 
   void updateQuantity(int goodId, int quantity) {
     List<Good> goods = [];

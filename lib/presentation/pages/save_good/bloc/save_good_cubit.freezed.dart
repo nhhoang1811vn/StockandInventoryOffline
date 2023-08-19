@@ -20,8 +20,8 @@ mixin _$SaveGoodState {
   NameInput get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get barCode => throw _privateConstructorUsedError;
-  List<String> get files => throw _privateConstructorUsedError;
-  int? get quantity => throw _privateConstructorUsedError;
+  List<String> get files => throw _privateConstructorUsedError; //int? quantity,
+//double? price,
   Good? get item => throw _privateConstructorUsedError;
   Document? get document => throw _privateConstructorUsedError;
   DocumentTransaction? get transaction => throw _privateConstructorUsedError;
@@ -33,7 +33,6 @@ mixin _$SaveGoodState {
             String description,
             String barCode,
             List<String> files,
-            int? quantity,
             Good? item,
             Document? document,
             DocumentTransaction? transaction)
@@ -48,7 +47,6 @@ mixin _$SaveGoodState {
             String description,
             String barCode,
             List<String> files,
-            int? quantity,
             Good? item,
             Document? document,
             DocumentTransaction? transaction)?
@@ -63,7 +61,6 @@ mixin _$SaveGoodState {
             String description,
             String barCode,
             List<String> files,
-            int? quantity,
             Good? item,
             Document? document,
             DocumentTransaction? transaction)?
@@ -105,7 +102,6 @@ abstract class $SaveGoodStateCopyWith<$Res> {
       String description,
       String barCode,
       List<String> files,
-      int? quantity,
       Good? item,
       Document? document,
       DocumentTransaction? transaction});
@@ -129,7 +125,6 @@ class _$SaveGoodStateCopyWithImpl<$Res, $Val extends SaveGoodState>
     Object? description = null,
     Object? barCode = null,
     Object? files = null,
-    Object? quantity = freezed,
     Object? item = freezed,
     Object? document = freezed,
     Object? transaction = freezed,
@@ -155,10 +150,6 @@ class _$SaveGoodStateCopyWithImpl<$Res, $Val extends SaveGoodState>
           ? _value.files
           : files // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      quantity: freezed == quantity
-          ? _value.quantity
-          : quantity // ignore: cast_nullable_to_non_nullable
-              as int?,
       item: freezed == item
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
@@ -189,7 +180,6 @@ abstract class _$$_InitialCopyWith<$Res>
       String description,
       String barCode,
       List<String> files,
-      int? quantity,
       Good? item,
       Document? document,
       DocumentTransaction? transaction});
@@ -210,7 +200,6 @@ class __$$_InitialCopyWithImpl<$Res>
     Object? description = null,
     Object? barCode = null,
     Object? files = null,
-    Object? quantity = freezed,
     Object? item = freezed,
     Object? document = freezed,
     Object? transaction = freezed,
@@ -236,10 +225,6 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value._files
           : files // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      quantity: freezed == quantity
-          ? _value.quantity
-          : quantity // ignore: cast_nullable_to_non_nullable
-              as int?,
       item: freezed == item
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
@@ -265,7 +250,6 @@ class _$_Initial implements _Initial {
       this.description = '',
       this.barCode = '',
       final List<String> files = const [],
-      this.quantity,
       this.item,
       this.document,
       this.transaction})
@@ -291,8 +275,8 @@ class _$_Initial implements _Initial {
     return EqualUnmodifiableListView(_files);
   }
 
-  @override
-  final int? quantity;
+//int? quantity,
+//double? price,
   @override
   final Good? item;
   @override
@@ -302,7 +286,7 @@ class _$_Initial implements _Initial {
 
   @override
   String toString() {
-    return 'SaveGoodState.initial(state: $state, name: $name, description: $description, barCode: $barCode, files: $files, quantity: $quantity, item: $item, document: $document, transaction: $transaction)';
+    return 'SaveGoodState.initial(state: $state, name: $name, description: $description, barCode: $barCode, files: $files, item: $item, document: $document, transaction: $transaction)';
   }
 
   @override
@@ -316,8 +300,6 @@ class _$_Initial implements _Initial {
                 other.description == description) &&
             (identical(other.barCode, barCode) || other.barCode == barCode) &&
             const DeepCollectionEquality().equals(other._files, _files) &&
-            (identical(other.quantity, quantity) ||
-                other.quantity == quantity) &&
             (identical(other.item, item) || other.item == item) &&
             (identical(other.document, document) ||
                 other.document == document) &&
@@ -333,7 +315,6 @@ class _$_Initial implements _Initial {
       description,
       barCode,
       const DeepCollectionEquality().hash(_files),
-      quantity,
       item,
       document,
       transaction);
@@ -353,14 +334,13 @@ class _$_Initial implements _Initial {
             String description,
             String barCode,
             List<String> files,
-            int? quantity,
             Good? item,
             Document? document,
             DocumentTransaction? transaction)
         initial,
   }) {
-    return initial(state, name, description, barCode, files, quantity, item,
-        document, transaction);
+    return initial(
+        state, name, description, barCode, files, item, document, transaction);
   }
 
   @override
@@ -372,14 +352,13 @@ class _$_Initial implements _Initial {
             String description,
             String barCode,
             List<String> files,
-            int? quantity,
             Good? item,
             Document? document,
             DocumentTransaction? transaction)?
         initial,
   }) {
-    return initial?.call(state, name, description, barCode, files, quantity,
-        item, document, transaction);
+    return initial?.call(
+        state, name, description, barCode, files, item, document, transaction);
   }
 
   @override
@@ -391,7 +370,6 @@ class _$_Initial implements _Initial {
             String description,
             String barCode,
             List<String> files,
-            int? quantity,
             Good? item,
             Document? document,
             DocumentTransaction? transaction)?
@@ -399,8 +377,8 @@ class _$_Initial implements _Initial {
     required TResult orElse(),
   }) {
     if (initial != null) {
-      return initial(state, name, description, barCode, files, quantity, item,
-          document, transaction);
+      return initial(state, name, description, barCode, files, item, document,
+          transaction);
     }
     return orElse();
   }
@@ -441,7 +419,6 @@ abstract class _Initial implements SaveGoodState {
       final String description,
       final String barCode,
       final List<String> files,
-      final int? quantity,
       final Good? item,
       final Document? document,
       final DocumentTransaction? transaction}) = _$_Initial;
@@ -456,9 +433,8 @@ abstract class _Initial implements SaveGoodState {
   String get barCode;
   @override
   List<String> get files;
-  @override
-  int? get quantity;
-  @override
+  @override //int? quantity,
+//double? price,
   Good? get item;
   @override
   Document? get document;

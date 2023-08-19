@@ -45,11 +45,8 @@ class MarkdownResourceVN{
  
  """;
   static const String helpExpenses = """
- ### Dòng tiền là số tiền hiện có của cửa hàng đó. 
- ### Mỗi cửa hàng đều mất chi phí để vận hành chúng (tiền điện, tiền nước, tiền nhân viên), bạn có thể tạo ra các lệnh dòng tiền âm, để theo dõi chúng.
- ### Khi nhập hàng thì chủ cửa hàng cũng mất 1 luợng tiền, lúc này bạn cũng có thể tạo ra lệnh dòng tiền âm, để theo dõi.
- ### Khi xuất hàng thì bạn tạo ra các lệnh dòng tiền dương, để theo dõi. 
- ### Như vậy, với bất kì điều gì làm số tiền trong kho thay đổi, bạn có thể tạo các lệnh tương úng. Chúng ta sẽ tổng kết được, doanh thu của cửa hàng mỗi tháng, lời lỗ ra sao :D 
+ ### Mỗi cửa hàng đều mất chi phí để vận hành chúng (tiền điện, tiền nước, tiền nhân viên).
+ ### Chúng tôi đã tạo ra chức năng đơn giản này để theo dõi các chi tiêu của bạn cho một cửa hàng. 
  """;
   static const String whatNews = """
  ## Phiên bản 1.0.0

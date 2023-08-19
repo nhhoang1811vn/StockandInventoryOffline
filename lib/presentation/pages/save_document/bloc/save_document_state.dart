@@ -15,7 +15,10 @@ class SaveDocumentState with _$SaveDocumentState {
     @Default([]) List<DocumentTransaction> transactions,
     @Default(false) bool showSearchBar,
     @Default('') String textSearch,
-    @Default(0) int totalQuantity
+    @Default(0) int totalQuantity,
+    @Default(0) double totalAmount,
+    PaymentStatus? paymentStatus,
+    @Default([]) List<Payment> payments
   }) = _Initial;
 }
 

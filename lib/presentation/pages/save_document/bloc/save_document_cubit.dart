@@ -2,9 +2,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/data/storage.dart';
+import 'package:good_manager/db/db_helper.dart';
 import 'package:good_manager/domain/entities/batch_mode_scan.dart';
+import 'package:good_manager/domain/entities/payment_status.dart';
 import 'package:good_manager/domain/entities/save_document_setting.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
+import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_document/sort/sort_by_barcode_document_transaction.dart';
 import 'package:good_manager/presentation/pages/save_document/sort/sort_by_quantity_document_transaction.dart';
@@ -13,6 +16,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../domain/entities/document.dart';
 import '../../../../domain/entities/good.dart';
 import '../../../../domain/entities/models/name.dart';
+import '../../../../domain/entities/payment.dart';
 import '../../../../domain/entities/sort_by_number.dart';
 import '../../../../domain/entities/sort_by_text.dart';
 import '../../../../domain/entities/transaction.dart';
@@ -28,9 +32,10 @@ part 'save_document_state.dart';
 class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   final Storage storage;
   final DocumentUseCases useCase;
+  final PaymentUseCases paymentUseCase;
   final GoodsUseCases goodUseCases;
 
-  SaveDocumentCubit({required this.useCase, required this.goodUseCases, required this.storage})
+  SaveDocumentCubit({required this.useCase, required this.paymentUseCase, required this.goodUseCases, required this.storage})
       : super(SaveDocumentState.initial(state: InitialState(), setting: storage.getSaveDocumentSetting()));
 
   void init(Document item) {
@@ -40,9 +45,12 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
         description: item.description,
         date: item.date,
         personId: item.personId,
-        personName: item.personName);
+        personName: item.personName,
+        paymentStatus: item.paymentStatus
+    );
     emit(initState);
     if (item.id != null) {
+      loadPayments();
       loadTransactions();
     }
   }
@@ -72,6 +80,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
       item.description = state.description;
       item.date = state.date!;
       item.personId = state.personId;
+      item.paymentStatus = state.paymentStatus!;
       if (item.id == null) {
         int id = await useCase.insert(item);
         item.id = id;
@@ -87,7 +96,10 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   }
 
   void onAddGoodClicked() async {
-    emit(state.copyWith(state: OpenGoodListState()));
+    final result = await save();
+    if (result){
+      emit(state.copyWith(state: OpenGoodListState()));
+    }
   }
 
   void onSaveMenuClicked() async {
@@ -117,22 +129,56 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   void onPersonNameChanged(String name){
     emit(state.copyWith(personName: name));
   }
-
+  void loadPayments() async{
+    List<Payment> payments = await paymentUseCase.getByDocumentId(state.item!.id!);
+    emit(state.copyWith(payments: payments));
+  }
+  void loadPaymentsAndCheck() async{
+    List<Payment> payments = await paymentUseCase.getByDocumentId(state.item!.id!);
+    emit(state.copyWith(payments: payments));
+    if (payments.isNotEmpty){
+      verifyPaymentStatusButton();
+    }
+  }
+  void verifyPaymentStatusButton(){
+    double totalPayment = getTotalPayments(state.payments);
+    double totalAmount = state.totalAmount;
+    if (totalPayment < totalAmount){
+      emit(state.copyWith(paymentStatus: PaymentStatus.PARTIAL));
+    }else{
+      emit(state.copyWith(paymentStatus: PaymentStatus.PAID));
+    }
+    save();
+  }
+  double getTotalPayments(List<Payment> payments){
+    double total = 0.0;
+    payments.forEach((element) {
+      total += element.amount;
+    });
+    return total;
+  }
   void loadTransactions() async {
     if (state.item?.id != null){
       List<DocumentTransaction> transactions = await useCase.getTransactionsByDocumentId(state.item!.id!);
       int totalQuantity = 0;
+      double totalAmount = 0.0;
       transactions.forEach((element) {
         totalQuantity += element.quantity;
+        totalAmount += (element.quantity * element.price);
       });
-      emit(state.copyWith(allTransactions: transactions, totalQuantity: totalQuantity));
+      emit(state.copyWith(allTransactions: transactions, totalQuantity: totalQuantity, totalAmount: totalAmount));
       sort();
       filter();
+
+      //total amount has changed, correct payment status button if there is any exist payment record
+      if (state.payments.isNotEmpty){
+        verifyPaymentStatusButton();
+      }
     }
   }
 
   void deleteTransaction(DocumentTransaction item) async {
-    bool result = await useCase.deleteTransaction(item.id);
+    bool result = await useCase.deleteTransaction(item.id!);
     if (result) {
       loadTransactions();
     }
@@ -257,7 +303,8 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
       if (storage.getBatchModeScan() == BatchModeScan.MANUAL){
         emit(state.copyWith(state: OpenInputQuantityDialogState(good)));
       }else{
-        saveThenAddTransaction(good, 1);
+        //todo price 0.0 here, should average price
+        saveThenAddTransaction(good, 1, 0.0);
         onBatchScanMenuClicked();
       }
 
@@ -266,13 +313,14 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
     }
   }
 
-  void saveThenAddTransaction(Good good, int quantity) async{
+  void saveThenAddTransaction(Good good, int quantity, double price) async{
     bool result = await save();
     if (result){
       DocumentTransaction transaction = DocumentTransaction();
       transaction.documentId = state.item!.id!;
       transaction.goodId = good.id!;
       transaction.quantity = quantity;
+      transaction.price = price;
       transaction.type = state.item!.type;
       transaction.storeId = storage.getSelectedStoreId();
       int transactionId = await useCase.insertTransaction(transaction);
@@ -281,5 +329,16 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   }
   void onSearchBarcodeClicked(){
     emit(state.copyWith(state: OpenBarcodeScannerToSearchState()));
+  }
+
+  onPaymentStatusChanged(PaymentStatus status) {
+    emit(state.copyWith(paymentStatus: status));
+  }
+  void onPaymentStatusButtonPressed() async{
+    if (state.payments.isNotEmpty){
+      emit(state.copyWith(state: OpenPaymentListPageState()));
+    }else{
+      emit(state.copyWith(state: OpenChangePaymentDialogState()));
+    }
   }
 }

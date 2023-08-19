@@ -7,6 +7,7 @@ import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../domain/entities/models/name.dart';
+import '../../../constants.dart';
 
 part 'save_expense_cubit.freezed.dart';
 part 'save_expense_state.dart';
@@ -37,9 +38,16 @@ class SaveExpenseCubit extends Cubit<SaveExpenseState> {
   void descriptionChanged(String value){
     emit(state.copyWith(description: value));
   }
-  void amountChanged(double value){
-    emit(state.copyWith(amount: value));
+  void onAmountChanged(String value){
+    if (value.isNotEmpty){
+      num numValue = Config.simpleCurrencyFormat.parse(value);
+      double amount = numValue.toDouble();
+      emit(state.copyWith(amount: amount));
+    }else{
+      emit(state.copyWith(amount: 0));
+    }
   }
+
   void dateChanged(DateTime date) {
     emit(state.copyWith(date: date));
   }

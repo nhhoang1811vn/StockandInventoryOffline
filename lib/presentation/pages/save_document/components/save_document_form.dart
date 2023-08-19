@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
+import 'package:good_manager/domain/entities/payment_status.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
+import 'package:good_manager/presentation/style_size.dart';
 
 import '../../../app_style.dart';
 import '../../goods/good_item_row.dart';
+import 'document_transaction_item_row.dart';
 
 class SaveDocumentForm extends StatelessWidget {
   final Document item;
@@ -23,7 +28,7 @@ class SaveDocumentForm extends StatelessWidget {
 
   Widget _buildEmptyTransaction(BuildContext context) {
     dateController.text = Config.dateFormat.format(state.item!.date);
-    personNameController.text = state.personName??'';
+    personNameController.text = state.personName ?? '';
     searchTextController.text = state.textSearch;
     searchTextController.selection = TextSelection.fromPosition(TextPosition(offset: state.textSearch.length));
     return Column(
@@ -33,10 +38,8 @@ class SaveDocumentForm extends StatelessWidget {
         Icon(UIConstants.goodIconData, size: 60, color: AppColors.primaryColor),
         Padding(
             padding: EdgeInsets.only(top: 16),
-            child: Text(
-                AppLocalizations.of(context)!.empty_goods,
-                textAlign: TextAlign.center,
-                style: AppStyle.getEmptyTextStyle()))
+            child: Text(AppLocalizations.of(context)!.empty_goods,
+                textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle()))
       ],
     );
   }
@@ -45,9 +48,8 @@ class SaveDocumentForm extends StatelessWidget {
     return ListView.separated(
         itemBuilder: (BuildContext context, index) {
           var transaction = state.transactions[index];
-          return GoodItemRow(
-              transaction.good,
-              transaction.quantity,
+          return DocumentTransactionItemRow(
+              transaction,
               (item) => context.read<SaveDocumentCubit>().onPressedTransaction(transaction),
               (item) => onLongPressedTransaction(context, transaction));
         },
@@ -183,13 +185,25 @@ class SaveDocumentForm extends StatelessWidget {
                           DatePicker.showDatePicker(context,
                               showTitleActions: true,
                               minTime: Config.minTime,
-                              maxTime: Config.maxTime, onChanged: (date) {
-                          }, onConfirm: (date) {
+                              maxTime: Config.maxTime,
+                              onChanged: (date) {}, onConfirm: (date) {
                             context.read<SaveDocumentCubit>().dateChanged(date);
                             dateController.text = Config.dateFormat.format(date);
                           }, currentTime: state.date, locale: LocaleType.vi)
                         },
                       )),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      InkWell(
+                          onTap: () => context.read<SaveDocumentCubit>().onPaymentStatusButtonPressed(),
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 48,
+                            width: 48,
+                            decoration: BoxDecoration(  shape: BoxShape.circle,color: getPaymentStatusColor(), border: Border.all(color: Colors.white)),
+                            child: Icon(UIConstants.paymentIconData, color: Palette.white, size: 24),
+                          ))
                     ],
                   ),
                   AppTextField(
@@ -231,20 +245,38 @@ class SaveDocumentForm extends StatelessWidget {
         Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              height: 20,
+              height: 32,
               color: Colors.blue,
-              child: IntrinsicHeight(child:  Row(
+              child: IntrinsicHeight(
+                  child: Row(
                 children: [
                   SizedBox(width: 16),
-                  Text(state.transactions.length.toString(), style: TextStyle(color: Colors.white)),
+                  Text(state.transactions.length.toString(), style: TextStyle(color: Colors.white, fontSize: TextSize.medium)),
                   SizedBox(width: 16),
                   VerticalDivider(width: 2, color: Colors.white),
                   SizedBox(width: 16),
-                  Text(state.totalQuantity.toString(), style: TextStyle(color: Colors.white)),
+                  Text(state.totalQuantity.toString(), style: TextStyle(color: Colors.white, fontSize: TextSize.medium)),
+                  SizedBox(width: 16),
+                  VerticalDivider(width: 2, color: Colors.white),
+                  SizedBox(width: 16),
+                  Text(Config.currencyFormat.format(state.totalAmount), style: TextStyle(color: Colors.white, fontSize: TextSize.medium)),
                 ],
               )),
             ))
       ],
     );
+  }
+
+  Color getPaymentStatusColor() {
+    switch (state.paymentStatus) {
+      case PaymentStatus.UNPAID:
+        return Palette.red;
+      case PaymentStatus.PARTIAL:
+        return Palette.yellow;
+      case PaymentStatus.PAID:
+        return Palette.green;
+      default:
+        return Palette.blue;
+    }
   }
 }

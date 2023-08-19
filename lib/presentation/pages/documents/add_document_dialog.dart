@@ -19,10 +19,10 @@ class AddDocumentDialogWidgetState extends State<AddDocumentDialogWidget> {
             Column(
               children: [
                 getRadioListTile(
-                    AppLocalizations.of(context)!.document_list_incoming_name,
+                    AppLocalizations.of(context)!.incoming_document_text,
                     DocumentType.incoming),
                 getRadioListTile(
-                    AppLocalizations.of(context)!.document_list_outgoing_name,
+                    AppLocalizations.of(context)!.outgoing_document_text,
                     DocumentType.outgoing),
               ],
             )

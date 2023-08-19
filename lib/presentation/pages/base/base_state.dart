@@ -2,6 +2,7 @@ import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/entities/group.dart';
+import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 
@@ -50,13 +51,22 @@ class OpenSaveExpensePageState extends BaseState{
   late Expense item;
   OpenSaveExpensePageState(this.item);
 }
+//Payments
+class OpenSavePaymentPageState extends BaseState{
+  late Payment item;
+  OpenSavePaymentPageState(this.item);
+}
 //Document
+class OpenChangePaymentDialogState extends BaseState{
+
+}
+class OpenPaymentListPageState extends BaseState{
+
+}
 class OpenPersonListState extends BaseState{
 
 }
-class OpenCustomerListState extends BaseState{
 
-}
 class OpenGoodListState extends BaseState{
 
 }
@@ -80,6 +90,9 @@ class OpenSaveStorePageState extends BaseState{
 
 
 class OpenCalculatorToInputQuantityState extends BaseState{
+
+}
+class OpenCalculatorToInputPriceState extends BaseState{
 
 }
 class OpenBarcodeScannerPageState extends BaseState{

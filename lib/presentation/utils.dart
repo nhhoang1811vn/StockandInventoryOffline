@@ -1,3 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
+import 'package:good_manager/presentation/constants.dart';
+import 'package:intl/intl.dart';
+
 class Utils{
   static bool sameFiles(List<String> files1, List<String> files2){
     if (files1.length != files2.length){
@@ -9,5 +15,25 @@ class Utils{
       }
     }
     return true;
+  }
+  static void showCalculatorPopup(BuildContext context,double value, Function(double) callback) async {
+    var calc = SimpleCalculator(
+      value: value,
+      onChanged: (key, value, expression) {
+        if (value != null){
+          callback(value);
+        }
+      },
+      theme: const CalculatorThemeData(
+        displayColor: Colors.white,
+        displayStyle: const TextStyle(fontSize: 20, color: Colors.blue),
+      ),
+    );
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext context) {
+          return SizedBox(height: MediaQuery.of(context).size.height * 0.75, child: calc);
+        });
   }
 }

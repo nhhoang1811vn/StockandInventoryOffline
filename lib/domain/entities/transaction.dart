@@ -2,10 +2,11 @@ import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 
 class DocumentTransaction{
-  int id = -1;
+  int? id;
   late int documentId;
   late int goodId;
   late int quantity;
+  late double price;
   late DocumentType type;
   late int storeId;
   late Good good;
@@ -21,6 +22,7 @@ class DocumentTransaction{
     this.documentId = obj["documentId"];
     this.goodId = obj["goodId"];
     this.quantity = obj["quantity"];
+    this.price = obj["price"];
     DocumentType.values.forEach((element) {
       if (obj["documentType"] == element.index) {
         this.type = element;
@@ -35,6 +37,7 @@ class DocumentTransaction{
     map["documentId"] = documentId;
     map["goodId"] = goodId;
     map["quantity"] = quantity;
+    map["price"] = price;
     map["documentType"] = type.index;
     map["storeId"] = storeId;
 

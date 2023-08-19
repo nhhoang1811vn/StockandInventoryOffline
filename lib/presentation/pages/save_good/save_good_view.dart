@@ -15,23 +15,22 @@ class SaveGoodPage extends StatelessWidget {
   final Good item;
   final Document? document;
   final DocumentTransaction? transaction;
-  final int? quantity;
 
   SaveGoodPage({
     required this.item,
     this.document,
-    this.transaction,
-    this.quantity});
+    this.transaction
+  });
 
 
   @override
   Widget build(BuildContext context) {
-    context.read<SaveGoodCubit>().init(item, document,transaction, quantity);
+    context.read<SaveGoodCubit>().init(item, document,transaction);
     return Scaffold(
         appBar: _buildAppBar(context),
         body: Column(children: [
           SelectedStoreView(),
-          Expanded(child: SaveGoodForm(item: item, quantity: quantity))
+          Expanded(child: SaveGoodForm(item: item, transaction: transaction))
         ])
     );
   }

@@ -4,21 +4,24 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
+import 'package:good_manager/domain/entities/payment_status.dart';
 import 'package:good_manager/domain/entities/save_document_setting.dart';
+import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/main.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
+import 'package:good_manager/presentation/widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../../../domain/entities/supplier.dart';
 import '../../widgets/snackbar_widgets.dart';
 import '../base/base_state.dart';
-import '../goods/add_quantity_good_dialog.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'components/save_document_form.dart';
+import 'components/select_payment_status_dialog.dart';
 import 'components/sort_save_document_dialog.dart';
 enum OverflowItemMenu { search, sortby, help }
 
@@ -64,8 +67,7 @@ class SaveDocumentPage extends StatelessWidget {
                 .pushNamed(Pages.save_good, arguments: {
                   "item": transaction.good,
                   "document": state.item,
-                  "transaction": transaction,
-                  "quantity": transaction.quantity});
+                  "transaction": transaction});
             if (result != null) {
               context.read<SaveDocumentCubit>().loadTransactions();
             }
@@ -99,11 +101,17 @@ class SaveDocumentPage extends StatelessWidget {
             good.barCode = barcode;
             good.storeId = storage.getSelectedStoreId();
 
+            DocumentTransaction transaction = DocumentTransaction();
+            transaction.quantity = 1;
+            transaction.price = 0.0;
+            transaction.type = item.type;
+            transaction.storeId = storage.getSelectedStoreId();
+
             final result = await Navigator.of(context)
                 .pushNamed(Pages.save_good, arguments: {
                   "item": good,
                   "document": state.item,
-                  "quantity": 1
+                  "transaction": transaction
                 });
 
             if (result != null) {
@@ -116,14 +124,15 @@ class SaveDocumentPage extends StatelessWidget {
           }else if (state.state is OpenInputQuantityDialogState){
             final finalState = state.state as OpenInputQuantityDialogState;
             final good = finalState.good;
-            int? quantity = await showDialog(
+            Map<dynamic, dynamic> result = await showDialog(
                 context: context,
-                builder: (_) => InputQuantityGoodDialog(good),
+                builder: (_) => AddQuantityAndPriceWidget(good, item.type),
                 barrierDismissible: true);
-            if (quantity != null){
-              context.read<SaveDocumentCubit>().saveThenAddTransaction(good, quantity);
-              context.read<SaveDocumentCubit>().onBatchScanMenuClicked();
-            }
+            int quantity = result["quantity"] ?? 0;
+            double price = result["price"] ?? 0.0;
+            context.read<SaveDocumentCubit>().saveThenAddTransaction(good, quantity, price);
+            context.read<SaveDocumentCubit>().onBatchScanMenuClicked();
+
           }else if (state.state is OpenBarcodeScannerToSearchState){
             //open bar code scanner to fill search text box
             var result = await Navigator.push(
@@ -138,6 +147,27 @@ class SaveDocumentPage extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
 
             }
+          }else if (state.state is OpenChangePaymentDialogState){
+            PaymentStatus? status = await showDialog(
+                context: context,
+                builder: (_) => SelectPaymentStatusDialog(state.paymentStatus!),
+                barrierDismissible: true);
+            if (status != null){
+              if (status == PaymentStatus.PAID || status == PaymentStatus.UNPAID){
+                context.read<SaveDocumentCubit>().onPaymentStatusChanged(status);
+                context.read<SaveDocumentCubit>().save();
+              }else{
+                final saveResult = await context.read<SaveDocumentCubit>().save();
+                if (saveResult){
+                  final result = await Navigator.of(context).pushNamed(Pages.payment_list, arguments: {"documentId": state.item!.id!});
+                  context.read<SaveDocumentCubit>().loadPaymentsAndCheck();
+                }
+              }
+
+            }
+          }else if (state.state is OpenPaymentListPageState){
+            final result = await Navigator.of(context).pushNamed(Pages.payment_list, arguments: {"documentId": state.item!.id!});
+            context.read<SaveDocumentCubit>().loadPaymentsAndCheck();
           }
         },
         listenWhen: (state1, state2) => state1.state != state2.state,
@@ -159,14 +189,13 @@ class SaveDocumentPage extends StatelessWidget {
   }
   PreferredSize _buildAppBar(BuildContext context, SaveDocumentState state){
     return PreferredSize(preferredSize : Size.fromHeight(UIConstants.appBarHeight), child: AppBar(
-        title: Text(item.type == DocumentType.incoming? AppLocalizations.of(context)!.save_document_incoming_title :AppLocalizations.of(context)!.save_document_outgoing_title),
+        title: Text(item.type == DocumentType.incoming? AppLocalizations.of(context)!.incoming_document_text:AppLocalizations.of(context)!.outgoing_document_text),
         actions: <Widget>[
           _buildSaveMenu(context),
           _buildBatchScanMenu(context),
           PopupMenuButton<OverflowItemMenu>(itemBuilder: (context) => [
             PopupMenuItem<OverflowItemMenu>(value: OverflowItemMenu.search, child: Text(AppLocalizations.of(context)!.action_search)),
             PopupMenuItem<OverflowItemMenu>(value: OverflowItemMenu.sortby, child: Text(AppLocalizations.of(context)!.action_sort_by)),
-            //PopupMenuItem<OverflowItemMenu>(value: OverflowItemMenu.batchscan, child: Text(AppLocalizations.of(context)!.action_batch_scan)),
             PopupMenuItem<OverflowItemMenu>(value: OverflowItemMenu.help, child: Text(AppLocalizations.of(context)!.action_help)),
           ],
             onSelected: (item) => handleClick(context,item),

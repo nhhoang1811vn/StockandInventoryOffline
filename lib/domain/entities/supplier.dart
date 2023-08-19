@@ -6,7 +6,7 @@ class Supplier extends BaseModel {
   String taxID = "";
   String bankDetail = "";
   late int storeId;
-  //int numberDocument = 0;
+  int numberDocument = 0;
 
   Supplier();
 

@@ -20,7 +20,7 @@ class DocumentRepositoryImpl implements DocumentRepository {
 
   @override
   Future<bool> delete(int id) {
-    return db.deleteDocument2(id);
+    return db.deleteDocument(id);
   }
 
   @override

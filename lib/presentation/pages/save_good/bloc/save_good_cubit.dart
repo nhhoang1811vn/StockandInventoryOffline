@@ -10,6 +10,7 @@ import '../../../../data/storage.dart';
 import '../../../../domain/entities/models/name.dart';
 import '../../../../domain/entities/transaction.dart';
 import '../../../../domain/usecases/documents/document_usecases.dart';
+import '../../../constants.dart';
 import '../../base/base_state.dart';
 
 part 'save_good_cubit.freezed.dart';
@@ -21,7 +22,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
   final DocumentUseCases documentsUseCases;
   final Storage storage;
   SaveGoodCubit({required this.useCase, required this.documentsUseCases, required this.storage}) : super(SaveGoodState.initial(state: InitialState()));
-  void init(Good item, Document? document,DocumentTransaction? transaction, int? quantity){
+  void init(Good item, Document? document,DocumentTransaction? transaction){
     SaveGoodState initState = state.copyWith(
         item: item,
         document: document,
@@ -30,7 +31,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
         barCode: item.barCode??'',
         files: item.files,
         transaction: transaction,
-        quantity: quantity
+        //quantity: quantity
     );
     emit(initState);
   }
@@ -51,7 +52,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
           await useCase.update(item);
         }
         //insert document and insert transaction
-        if (state.quantity != null && state.document != null){
+        if (state.document != null){
           //insert document
           Document document = state.document!;
           if (document.id == null){
@@ -61,20 +62,12 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
             await documentsUseCases.update(document);
           }
           //insert transaction
-          if (state.transaction != null){
-            //update
-            DocumentTransaction transaction = state.transaction!;
-            transaction.quantity = state.quantity!;
+          if (state.transaction!.id != null){
             await documentsUseCases.updateTransaction(state.transaction!);
           }else{
-            //insert
-            DocumentTransaction transaction = DocumentTransaction();
+            DocumentTransaction transaction = state.transaction!;
             transaction.documentId = document.id!;
             transaction.goodId = item.id!;
-            transaction.quantity = state.quantity!;
-            transaction.type = state.document!.type;
-            transaction.storeId = storage.getSelectedStoreId();
-
             await documentsUseCases.insertTransaction(transaction);
           }
           emit(state.copyWith(state: SaveItemSuccessful(), document: document));
@@ -106,14 +99,32 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
   void onImagesChanged(List<String> value){
     emit(state.copyWith(files: value));
   }
-  void onModifyQuantityButtonPressed(){
+  void onQuantityCalculatorPressed(){
     emit(state.copyWith(state: OpenCalculatorToInputQuantityState()));
+  }
+  void onPriceCalculatorPressed(){
+    emit(state.copyWith(state: OpenCalculatorToInputPriceState()));
   }
   void onBarcodeScannerPressed(){
     emit(state.copyWith(state: OpenBarcodeScannerPageState()));
   }
 
   void quantityChanged(String value) {
-    emit(state.copyWith(quantity: int.parse(value)));
+    if (value.isNotEmpty){
+      DocumentTransaction current = state.transaction!;
+      current.quantity = int.tryParse(value) ?? 0;
+      emit(state.copyWith(transaction: current));
+    }
+  }
+  void onPriceChanged(String value){
+    DocumentTransaction current = state.transaction!;
+    if (value.isNotEmpty){
+      num numValue = Config.simpleCurrencyFormat.parse(value);
+      double price = numValue.toDouble();
+      current.price = price;
+    }else{
+      current.price = 0;
+    }
+    emit(state.copyWith(transaction: current));
   }
 }
