@@ -5,7 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/db/db_helper.dart';
 import 'package:good_manager/domain/entities/expense.dart';
+import 'package:good_manager/domain/entities/payment_status.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/domain/usecases/expenses/expense_usercases.dart';
 import 'package:good_manager/presentation/constants.dart';
@@ -62,9 +64,10 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         break;
       case ReportType.LIST_OF_DOCUMENT:
         List<Document> items = await documentUseCases.getInRange(state.start!, state.end!);
-        data.add([AppLocalizations.of(context)!.field_date, AppLocalizations.of(context)!.field_name, AppLocalizations.of(context)!.field_document_type, AppLocalizations.of(context)!.field_person_name, AppLocalizations.of(context)!.field_quantity, AppLocalizations.of(context)!.field_amount]);
-        double quantityTotal = 0;
-        double amountTotal = 0.0;
+        data.add([AppLocalizations.of(context)!.field_date, AppLocalizations.of(context)!.field_name, AppLocalizations.of(context)!.field_document_type, AppLocalizations.of(context)!.field_person_name, AppLocalizations.of(context)!.field_quantity, AppLocalizations.of(context)!.field_cost,AppLocalizations.of(context)!.field_revenue]);
+        int quantityTotal = 0;
+        double costTotal = 0.0;
+        double revenueTotal = 0.0;
         for (Document item in items){
           List<String> row = [];
           row.add(Config.dateFormat.format(item.date));
@@ -72,11 +75,17 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
           row.add(item.type.getTitle(context));
           row.add(item.personName ?? '');
           row.add(item.quantity.toString());
-          row.add(Config.currencyFormat.format(item.amount));
+          if (item.type == DocumentType.incoming){
+            row.add(Config.currencyFormat.format(item.amount));
+            row.add("");
+            costTotal += item.amount;
+          }else{
+            row.add("");
+            row.add(Config.currencyFormat.format(item.amount));
+            revenueTotal += item.amount;
+          }
           data.add(row);
-
           quantityTotal += item.quantity;
-          amountTotal += item.amount;
         }
         if (items.isNotEmpty){
           List<String> totalRow = [];
@@ -85,13 +94,114 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
           totalRow.add("");
           totalRow.add("");
           totalRow.add(quantityTotal.toString());
-          totalRow.add(Config.currencyFormat.format(amountTotal));
+          totalRow.add(Config.currencyFormat.format(costTotal));
+          totalRow.add(Config.currencyFormat.format(revenueTotal));
           data.add(totalRow);
         }
         break;
+      case ReportType.DEBTS_BY_SUPPLIER:
+        data = await getDataDebtBySupplier(context);
+        break;
+      case ReportType.DEBTS_BY_CUSTOMER:
+        data = await getDataDebtByCustomer(context);
+        break;
+
       default:
     }
     emit(state.copyWith(data: data));
+  }
+  Future<List<List<String>>> getDataDebtBySupplier(BuildContext context) async{
+    List<List<String>> rows = [];
+    //header
+    rows.add([
+      AppLocalizations.of(context)!.field_supplier,
+      AppLocalizations.of(context)!.field_document_no,
+      AppLocalizations.of(context)!.field_date,
+      AppLocalizations.of(context)!.field_amount,
+      AppLocalizations.of(context)!.field_paid,
+      AppLocalizations.of(context)!.field_remaining,
+    ]);
+
+    var dbHelper = DBHelper();
+
+    String query = "SELECT S.id as supplierId, S.name as supplierName,D.id, D.name as documentName, D.date, SUM(T.quantity*T.price) as amount, R.amount as payment FROM ${DBHelper.DOCUMENTS_TABLE_NAME} D ";
+    query += "INNER JOIN ${DBHelper.SUPPLIERS_TABLE_NAME} S ON D.supplierId = S.id ";
+    query += "LEFT JOIN ${DBHelper.DOCUMENT_TRANSACTIONS_TABLE_NAME} T ON D.id = T.documentId ";
+    query += "LEFT JOIN (SELECT documentId,SUM(amount) as amount FROM ${DBHelper.PAYMENTS_TABLE_NAME} GROUP BY documentId) as R ON D.id = R.documentId ";
+    query += "WHERE D.storeId = ? AND D.paymentStatus != ? AND D.date BETWEEN ? AND ?";
+    query += "GROUP BY D.id ";
+    query += "ORDER BY S.name, D.date DESC";
+
+
+    var result = await dbHelper.rawQuery(query, [storage.getSelectedStoreId(), PaymentStatus.PAID.index, state.start!.millisecondsSinceEpoch, state.end!.millisecondsSinceEpoch]);
+    double totalAmount = 0.0;
+    double totalPayment = 0.0;
+    double totalRemain = 0.0;
+
+    for (Map<dynamic, dynamic> map in result){
+      double amount = map["amount"]??0.0;
+      double payment = map["payment"]??0.0;
+      double remain = amount - payment;
+      totalAmount += amount;
+      totalPayment += payment;
+      totalRemain += remain;
+
+
+      rows.add([map["supplierName"], map["documentName"], getDateTimeText(map["date"]), getDoubleText(amount), getDoubleText(payment),getDoubleText(remain) ]);
+    }
+    rows.add([AppLocalizations.of(context)!.field_total, "", "", getDoubleText(totalAmount), getDoubleText(totalPayment), getDoubleText(totalRemain)]);
+    return rows;
+  }
+
+
+  Future<List<List<String>>> getDataDebtByCustomer(BuildContext context) async{
+    List<List<String>> rows = [];
+    //header
+    rows.add([
+      AppLocalizations.of(context)!.field_customer,
+      AppLocalizations.of(context)!.field_document_no,
+      AppLocalizations.of(context)!.field_date,
+      AppLocalizations.of(context)!.field_amount,
+      AppLocalizations.of(context)!.field_paid,
+      AppLocalizations.of(context)!.field_remaining,
+    ]);
+
+    var dbHelper = DBHelper();
+
+    String query = "SELECT C.name as customerName,D.id, D.name as documentName, D.date, SUM(T.quantity*T.price) as amount, R.amount as payment FROM ${DBHelper.DOCUMENTS_TABLE_NAME} D ";
+    query += "INNER JOIN ${DBHelper.CUSTOMERS_TABLE_NAME} C ON D.customerId = C.id ";
+    query += "LEFT JOIN ${DBHelper.DOCUMENT_TRANSACTIONS_TABLE_NAME} T ON D.id = T.documentId ";
+    query += "LEFT JOIN (SELECT documentId,SUM(amount) as amount FROM ${DBHelper.PAYMENTS_TABLE_NAME} GROUP BY documentId) as R ON D.id = R.documentId ";
+    query += "WHERE D.storeId = ? AND D.paymentStatus != ? AND D.date BETWEEN ? AND ?";
+    query += "GROUP BY D.id ";
+    query += "ORDER BY C.name, D.date DESC";
+
+
+    var result = await dbHelper.rawQuery(query, [storage.getSelectedStoreId(), PaymentStatus.PAID.index, state.start!.millisecondsSinceEpoch, state.end!.millisecondsSinceEpoch]);
+    double totalAmount = 0.0;
+    double totalPayment = 0.0;
+    double totalRemain = 0.0;
+
+    for (Map<dynamic, dynamic> map in result){
+      double amount = map["amount"]??0.0;
+      double payment = map["payment"]??0.0;
+      double remain = amount - payment;
+      totalAmount += amount;
+      totalPayment += payment;
+      totalRemain += remain;
+      rows.add([map["customerName"], map["documentName"], getDateTimeText(map["date"]), getDoubleText(amount), getDoubleText(payment),getDoubleText(remain) ]);
+    }
+    rows.add([AppLocalizations.of(context)!.field_total, "", "", getDoubleText(totalAmount), getDoubleText(totalPayment), getDoubleText(totalRemain)]);
+    return rows;
+  }
+
+
+  String getDateTimeText(int date){
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
+    return Config.dateFormat.format(dateTime);
+  }
+  String getDoubleText(double? input){
+    return Config.currencyFormat.format(input);
   }
   Future<String?> getDownloadPath() async {
     Directory? directory;

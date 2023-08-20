@@ -7,5 +7,5 @@ part 'expenses_setting.g.dart';
 class ExpensesSetting with _$ExpensesSetting{
   factory ExpensesSetting({required SortByNumber sortByDate}) = _ExpensesSetting;
   factory ExpensesSetting.fromJson(Map<String, Object?> json) => _$ExpensesSettingFromJson(json);
-  factory ExpensesSetting.getDefault() => ExpensesSetting(sortByDate: SortByNumber.no_sort);
+  factory ExpensesSetting.getDefault() => ExpensesSetting(sortByDate: SortByNumber.descending);
 }

@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/data/storage.dart';
-import 'package:good_manager/db/db_helper.dart';
 import 'package:good_manager/domain/entities/batch_mode_scan.dart';
 import 'package:good_manager/domain/entities/payment_status.dart';
 import 'package:good_manager/domain/entities/save_document_setting.dart';
@@ -303,8 +302,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
       if (storage.getBatchModeScan() == BatchModeScan.MANUAL){
         emit(state.copyWith(state: OpenInputQuantityDialogState(good)));
       }else{
-        //todo price 0.0 here, should average price
-        saveThenAddTransaction(good, 1, 0.0);
+        saveThenAddTransaction(good, 1, state.item!.type == DocumentType.incoming ? good.purchasePrice : good.salePrice);
         onBatchScanMenuClicked();
       }
 

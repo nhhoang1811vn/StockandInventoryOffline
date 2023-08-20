@@ -95,6 +95,12 @@ class OpenCalculatorToInputQuantityState extends BaseState{
 class OpenCalculatorToInputPriceState extends BaseState{
 
 }
+class OpenCalculatorToInputPurchasePriceState extends BaseState{
+
+}
+class OpenCalculatorToInputSalePriceState extends BaseState{
+
+}
 class OpenBarcodeScannerPageState extends BaseState{
 
 }

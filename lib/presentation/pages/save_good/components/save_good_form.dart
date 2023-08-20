@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
@@ -28,34 +27,18 @@ class SaveGoodForm extends StatelessWidget {
   final priceTextController = TextEditingController();
   final barcodeTextController = TextEditingController();
 
-  SaveGoodForm({Key? key, required this.item, required this.transaction}) : super(key: key);
+  final purchasePriceTextController = TextEditingController();
+  final salePriceTextController = TextEditingController();
 
-  /*void showCalculatorPopup(BuildContext context,double value, Function(double) callback) async {
-    var calc = SimpleCalculator(
-      value: value,
-      onChanged: (key, value, expression) {
-        if (value != null){
-          callback(value);
-        }
-      },
-      theme: const CalculatorThemeData(
-        displayColor: Colors.white,
-        displayStyle: const TextStyle(fontSize: 20, color: Colors.blue),
-      ),
-    );
-    showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        builder: (BuildContext context) {
-          return SizedBox(height: MediaQuery.of(context).size.height * 0.75, child: calc);
-        });
-  }*/
+  SaveGoodForm({Key? key, required this.item, required this.transaction}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     quantityTextController.text = transaction?.quantity.toString() ?? '';
     priceTextController.text = Config.simpleCurrencyFormat.format(transaction?.price ?? 0.0); // transaction.pric
     barcodeTextController.text = item.barCode ?? '';
+    purchasePriceTextController.text = Config.simpleCurrencyFormat.format(item.purchasePrice);
+    salePriceTextController.text = Config.simpleCurrencyFormat.format(item.salePrice);
     return BlocConsumer<SaveGoodCubit, SaveGoodState>(
         listenWhen: (state1, state2) {
           return state1.state != state2.state;
@@ -80,7 +63,20 @@ class SaveGoodForm extends StatelessWidget {
               context.read<SaveGoodCubit>().onPriceChanged(format.format(p0));
               priceTextController.text = Config.simpleCurrencyFormat.format(p0);
             });
-          }else if (state.state is OpenBarcodeScannerPageState) {
+          } else if (state.state is OpenCalculatorToInputPurchasePriceState){
+            Utils.showCalculatorPopup(context, state.purchasePrice, (p0){
+              NumberFormat format = new NumberFormat("0.#");
+              context.read<SaveGoodCubit>().onPurchasePriceChanged(format.format(p0));
+              purchasePriceTextController.text = Config.simpleCurrencyFormat.format(p0);
+            });
+          }else if (state.state is OpenCalculatorToInputSalePriceState){
+            Utils.showCalculatorPopup(context, state.salePrice, (p0){
+              NumberFormat format = new NumberFormat("0.#");
+              context.read<SaveGoodCubit>().onSalePriceChanged(format.format(p0));
+              salePriceTextController.text = Config.simpleCurrencyFormat.format(p0);
+            });
+          }
+          else if (state.state is OpenBarcodeScannerPageState) {
             var result = await Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -110,15 +106,17 @@ class SaveGoodForm extends StatelessWidget {
                       onChanged: (value) => context.read<SaveGoodCubit>().descriptionChanged(value),
                       keyboardType: TextInputType.name),
                   _buildBarCode(context, state),
+                  SizedBox(height: 12),
+                  if (transaction == null)
+                    Row(children: [
+                      Expanded(child:  _buildPurchasePrice(context, state)),
+                      Expanded(child:  _buildSalePrice(context, state))
+                    ],),
                   if (transaction != null)
-                    Column(
-                      children: [
-                        SizedBox(height: 12),
-                        _buildQuantity(context, state),
-                        SizedBox(height: 12),
-                        _buildPrice(context, state)
-                      ],
-                    ),
+                    Row(children: [
+                      Expanded(child:  _buildQuantity(context, state),),
+                      Expanded(child:  _buildPrice(context, state))
+                    ],),
                   SizedBox(height: 12),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -181,10 +179,33 @@ class SaveGoodForm extends StatelessWidget {
             controller: priceTextController,
             onChanged: context.read<SaveGoodCubit>().onPriceChanged,
           )),
-        Align(
-            alignment: Alignment.centerRight,
-            child:
-                CircleButton(FontAwesomeIcons.calculator, context.read<SaveGoodCubit>().onPriceCalculatorPressed))
+        CircleButton(FontAwesomeIcons.calculator, context.read<SaveGoodCubit>().onPriceCalculatorPressed)
+      ],
+    );
+  }
+  Widget _buildPurchasePrice(BuildContext context, SaveGoodState state) {
+    return Row(
+      children: [
+        Expanded(
+            child: CurrencyAppTextField(
+              labelText: AppLocalizations.of(context)!.field_purchase_price,
+              controller: purchasePriceTextController,
+              onChanged: context.read<SaveGoodCubit>().onPurchasePriceChanged,
+            )),
+            CircleButton(FontAwesomeIcons.calculator, context.read<SaveGoodCubit>().onPurchasePriceCalculatorPressed)
+      ],
+    );
+  }
+  Widget _buildSalePrice(BuildContext context, SaveGoodState state) {
+    return Row(
+      children: [
+        Expanded(
+            child: CurrencyAppTextField(
+              labelText: AppLocalizations.of(context)!.field_sale_price,
+              controller: salePriceTextController,
+              onChanged: context.read<SaveGoodCubit>().onSalePriceChanged,
+            )),
+        CircleButton(FontAwesomeIcons.calculator, context.read<SaveGoodCubit>().onSalePriceCalculatorPressed)
       ],
     );
   }

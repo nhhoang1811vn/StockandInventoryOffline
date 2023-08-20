@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
-import 'package:good_manager/presentation/constants.dart';
-import 'package:intl/intl.dart';
 
 class Utils{
   static bool sameFiles(List<String> files1, List<String> files2){

@@ -20,8 +20,9 @@ mixin _$SaveGoodState {
   NameInput get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get barCode => throw _privateConstructorUsedError;
-  List<String> get files => throw _privateConstructorUsedError; //int? quantity,
-//double? price,
+  double get purchasePrice => throw _privateConstructorUsedError;
+  double get salePrice => throw _privateConstructorUsedError;
+  List<String> get files => throw _privateConstructorUsedError;
   Good? get item => throw _privateConstructorUsedError;
   Document? get document => throw _privateConstructorUsedError;
   DocumentTransaction? get transaction => throw _privateConstructorUsedError;
@@ -32,6 +33,8 @@ mixin _$SaveGoodState {
             NameInput name,
             String description,
             String barCode,
+            double purchasePrice,
+            double salePrice,
             List<String> files,
             Good? item,
             Document? document,
@@ -46,6 +49,8 @@ mixin _$SaveGoodState {
             NameInput name,
             String description,
             String barCode,
+            double purchasePrice,
+            double salePrice,
             List<String> files,
             Good? item,
             Document? document,
@@ -60,6 +65,8 @@ mixin _$SaveGoodState {
             NameInput name,
             String description,
             String barCode,
+            double purchasePrice,
+            double salePrice,
             List<String> files,
             Good? item,
             Document? document,
@@ -101,6 +108,8 @@ abstract class $SaveGoodStateCopyWith<$Res> {
       NameInput name,
       String description,
       String barCode,
+      double purchasePrice,
+      double salePrice,
       List<String> files,
       Good? item,
       Document? document,
@@ -124,6 +133,8 @@ class _$SaveGoodStateCopyWithImpl<$Res, $Val extends SaveGoodState>
     Object? name = null,
     Object? description = null,
     Object? barCode = null,
+    Object? purchasePrice = null,
+    Object? salePrice = null,
     Object? files = null,
     Object? item = freezed,
     Object? document = freezed,
@@ -146,6 +157,14 @@ class _$SaveGoodStateCopyWithImpl<$Res, $Val extends SaveGoodState>
           ? _value.barCode
           : barCode // ignore: cast_nullable_to_non_nullable
               as String,
+      purchasePrice: null == purchasePrice
+          ? _value.purchasePrice
+          : purchasePrice // ignore: cast_nullable_to_non_nullable
+              as double,
+      salePrice: null == salePrice
+          ? _value.salePrice
+          : salePrice // ignore: cast_nullable_to_non_nullable
+              as double,
       files: null == files
           ? _value.files
           : files // ignore: cast_nullable_to_non_nullable
@@ -179,6 +198,8 @@ abstract class _$$_InitialCopyWith<$Res>
       NameInput name,
       String description,
       String barCode,
+      double purchasePrice,
+      double salePrice,
       List<String> files,
       Good? item,
       Document? document,
@@ -199,6 +220,8 @@ class __$$_InitialCopyWithImpl<$Res>
     Object? name = null,
     Object? description = null,
     Object? barCode = null,
+    Object? purchasePrice = null,
+    Object? salePrice = null,
     Object? files = null,
     Object? item = freezed,
     Object? document = freezed,
@@ -221,6 +244,14 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.barCode
           : barCode // ignore: cast_nullable_to_non_nullable
               as String,
+      purchasePrice: null == purchasePrice
+          ? _value.purchasePrice
+          : purchasePrice // ignore: cast_nullable_to_non_nullable
+              as double,
+      salePrice: null == salePrice
+          ? _value.salePrice
+          : salePrice // ignore: cast_nullable_to_non_nullable
+              as double,
       files: null == files
           ? _value._files
           : files // ignore: cast_nullable_to_non_nullable
@@ -249,6 +280,8 @@ class _$_Initial implements _Initial {
       this.name = const NameInput.pure(),
       this.description = '',
       this.barCode = '',
+      this.purchasePrice = 0,
+      this.salePrice = 0,
       final List<String> files = const [],
       this.item,
       this.document,
@@ -266,6 +299,12 @@ class _$_Initial implements _Initial {
   @override
   @JsonKey()
   final String barCode;
+  @override
+  @JsonKey()
+  final double purchasePrice;
+  @override
+  @JsonKey()
+  final double salePrice;
   final List<String> _files;
   @override
   @JsonKey()
@@ -275,8 +314,6 @@ class _$_Initial implements _Initial {
     return EqualUnmodifiableListView(_files);
   }
 
-//int? quantity,
-//double? price,
   @override
   final Good? item;
   @override
@@ -286,7 +323,7 @@ class _$_Initial implements _Initial {
 
   @override
   String toString() {
-    return 'SaveGoodState.initial(state: $state, name: $name, description: $description, barCode: $barCode, files: $files, item: $item, document: $document, transaction: $transaction)';
+    return 'SaveGoodState.initial(state: $state, name: $name, description: $description, barCode: $barCode, purchasePrice: $purchasePrice, salePrice: $salePrice, files: $files, item: $item, document: $document, transaction: $transaction)';
   }
 
   @override
@@ -299,6 +336,10 @@ class _$_Initial implements _Initial {
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.barCode, barCode) || other.barCode == barCode) &&
+            (identical(other.purchasePrice, purchasePrice) ||
+                other.purchasePrice == purchasePrice) &&
+            (identical(other.salePrice, salePrice) ||
+                other.salePrice == salePrice) &&
             const DeepCollectionEquality().equals(other._files, _files) &&
             (identical(other.item, item) || other.item == item) &&
             (identical(other.document, document) ||
@@ -314,6 +355,8 @@ class _$_Initial implements _Initial {
       name,
       description,
       barCode,
+      purchasePrice,
+      salePrice,
       const DeepCollectionEquality().hash(_files),
       item,
       document,
@@ -333,14 +376,16 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             String barCode,
+            double purchasePrice,
+            double salePrice,
             List<String> files,
             Good? item,
             Document? document,
             DocumentTransaction? transaction)
         initial,
   }) {
-    return initial(
-        state, name, description, barCode, files, item, document, transaction);
+    return initial(state, name, description, barCode, purchasePrice, salePrice,
+        files, item, document, transaction);
   }
 
   @override
@@ -351,14 +396,16 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             String barCode,
+            double purchasePrice,
+            double salePrice,
             List<String> files,
             Good? item,
             Document? document,
             DocumentTransaction? transaction)?
         initial,
   }) {
-    return initial?.call(
-        state, name, description, barCode, files, item, document, transaction);
+    return initial?.call(state, name, description, barCode, purchasePrice,
+        salePrice, files, item, document, transaction);
   }
 
   @override
@@ -369,6 +416,8 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             String barCode,
+            double purchasePrice,
+            double salePrice,
             List<String> files,
             Good? item,
             Document? document,
@@ -377,8 +426,8 @@ class _$_Initial implements _Initial {
     required TResult orElse(),
   }) {
     if (initial != null) {
-      return initial(state, name, description, barCode, files, item, document,
-          transaction);
+      return initial(state, name, description, barCode, purchasePrice,
+          salePrice, files, item, document, transaction);
     }
     return orElse();
   }
@@ -418,6 +467,8 @@ abstract class _Initial implements SaveGoodState {
       final NameInput name,
       final String description,
       final String barCode,
+      final double purchasePrice,
+      final double salePrice,
       final List<String> files,
       final Good? item,
       final Document? document,
@@ -432,9 +483,12 @@ abstract class _Initial implements SaveGoodState {
   @override
   String get barCode;
   @override
+  double get purchasePrice;
+  @override
+  double get salePrice;
+  @override
   List<String> get files;
-  @override //int? quantity,
-//double? price,
+  @override
   Good? get item;
   @override
   Document? get document;

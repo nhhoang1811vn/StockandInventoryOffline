@@ -40,11 +40,13 @@ class GoodsPage extends StatefulWidget {
 class GoodsPageState extends State<GoodsPage> {
   final TextEditingController searchTextController = TextEditingController();
   final FocusNode searchTextFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
     context.read<GoodsCubit>().initState(widget.isSelection, widget.document);
   }
+
   Widget _buildBody(BuildContext context, GoodsState state) {
     if (state.state is LoadingState) {
       return _buildLoading();
@@ -54,102 +56,98 @@ class GoodsPageState extends State<GoodsPage> {
       _buildSelectedGroupView(state),
       _buildSearchBar(context, state),
       Expanded(
-            child: Stack(children: [
-          Visibility(
-            child: emptyView,
-            visible: (state.goods.isEmpty && state.groups.isEmpty),
-          ),
-          Visibility(
-            child: _buildListView(state),
-            visible: !(state.goods.isEmpty && state.groups.isEmpty),
-          )
-        ]))
+          child: Stack(children: [
+        Visibility(
+          child: emptyView,
+          visible: (state.goods.isEmpty && state.groups.isEmpty),
+        ),
+        Visibility(
+          child: _buildListView(state),
+          visible: !(state.goods.isEmpty && state.groups.isEmpty),
+        )
+      ]))
     ];
     return Column(children: children);
   }
 
-  Widget _buildSelectedGroupView(GoodsState state) =>
-      Visibility(
-          visible: state.selectedGroups.isNotEmpty,
-          child: Container(
-            height: 50,
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            color: Colors.blue,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: state.selectedGroups.length,
-              itemBuilder: (context, index) {
-                  return Row(children: [
-                    if (index == 0)
-                    GestureDetector(
-                        child: Icon(Icons.home, color: Colors.white, size: 30,),
-                        onTap: () => context.read<GoodsCubit>().onSelectedGroupTapped(-1)),
-                    GestureDetector(
-                        child: Row(children: [
-                          Icon(Icons.navigate_next, color: Colors.white, size: 30),
-                          Text(state.selectedGroups[index].name,
-                              style: TextStyle(color: Colors.white, fontSize: TextSize.medium))
-                        ]),
-                        onTap: () => context.read<GoodsCubit>().onSelectedGroupTapped(index))
-                  ]);
-              },
-            ),
+  Widget _buildSelectedGroupView(GoodsState state) => Visibility(
+        visible: state.selectedGroups.isNotEmpty,
+        child: Container(
+          height: 50,
+          padding: EdgeInsets.only(left: 16.0, right: 16.0),
+          color: Colors.blue,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: state.selectedGroups.length,
+            itemBuilder: (context, index) {
+              return Row(children: [
+                if (index == 0)
+                  GestureDetector(
+                      child: Icon(
+                        Icons.home,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                      onTap: () => context.read<GoodsCubit>().onSelectedGroupTapped(-1)),
+                GestureDetector(
+                    child: Row(children: [
+                      Icon(Icons.navigate_next, color: Colors.white, size: 30),
+                      Text(state.selectedGroups[index].name,
+                          style: TextStyle(color: Colors.white, fontSize: TextSize.medium))
+                    ]),
+                    onTap: () => context.read<GoodsCubit>().onSelectedGroupTapped(index))
+              ]);
+            },
           ),
-        );
+        ),
+      );
 
   Widget get emptyView => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Icon(UIConstants.goodIconData, size: 60, color: UIConstants.primaryColor,),
+          Icon(
+            UIConstants.goodIconData,
+            size: 60,
+            color: UIConstants.primaryColor,
+          ),
           Padding(
               padding: EdgeInsets.only(top: 16),
-              child: Text(
-                  AppLocalizations.of(context)!.empty_goods,
-                  textAlign: TextAlign.center,
-                  style: AppStyle.getEmptyTextStyle()))
+              child: Text(AppLocalizations.of(context)!.empty_goods,
+                  textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle()))
         ],
       );
 
   Widget _buildListView(GoodsState state) {
-      return ListView.separated(
-          itemBuilder: (BuildContext context, index) {
-            if (index < state.groups.length) {
-              var group = state.groups[index];
-              return GroupItemRow(
-                  group,
-                  (item) => onPressedGroup(group),
-                  (item) => onLongPressedGroup(group));
-            } else {
-              var good = state.goods[index - state.groups.length];
-              return GoodItemRow(
-                  good,
-                  good.quantity,
-                  (item) => onPressedGood(good),
-                  (item) => onLongPressedGood(good),
-                  state.isSelection);
-            }
-          },
-          separatorBuilder: (context, index) {
-            return Divider();
-          },
-          itemCount: state.groups.length + state.goods.length);
+    return ListView.separated(
+        itemBuilder: (BuildContext context, index) {
+          if (index < state.groups.length) {
+            var group = state.groups[index];
+            return GroupItemRow(group, (item) => onPressedGroup(group), (item) => onLongPressedGroup(group));
+          } else {
+            var good = state.goods[index - state.groups.length];
+            return GoodItemRow(good, good.quantity, (item) => onPressedGood(good), (item) => onLongPressedGood(good),
+                state.isSelection);
+          }
+        },
+        separatorBuilder: (context, index) {
+          return Divider();
+        },
+        itemCount: state.groups.length + state.goods.length);
   }
 
-  Widget _buildSearchMenu(GoodsState state){
+  Widget _buildSearchMenu(GoodsState state) {
     return Padding(
       padding: EdgeInsets.only(right: 20.0),
       child: GestureDetector(
         child: Icon(
           UIConstants.searchMenuIconData,
           size: 26,
-          color: state.showSearchBar
-              ? UIConstants.highlightMenuColor
-              : UIConstants.normalMenuColor,
+          color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor,
         ),
-        onTap: (){
+        onTap: () {
           searchTextController.text = "";
-          if (!state.showSearchBar){
+          if (!state.showSearchBar) {
             searchTextFocusNode.requestFocus();
           }
           context.read<GoodsCubit>().onShowSearchBarMenuClicked();
@@ -157,7 +155,8 @@ class GoodsPageState extends State<GoodsPage> {
       ),
     );
   }
-  Widget _buildSortMenu(GoodsState state){
+
+  Widget _buildSortMenu(GoodsState state) {
     return Padding(
       padding: EdgeInsets.only(right: 20.0),
       child: GestureDetector(
@@ -172,29 +171,28 @@ class GoodsPageState extends State<GoodsPage> {
       ),
     );
   }
-  Widget get helpMenu =>
-       Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          child: GestureDetector(
-            onTap: context.read<GoodsCubit>().onHelpMenuClicked,
-            child: Icon(
-              UIConstants.helpMenuIconData,
-              size: 26,
-            ),
+
+  Widget get helpMenu => Padding(
+        padding: EdgeInsets.only(right: 20.0),
+        child: GestureDetector(
+          onTap: context.read<GoodsCubit>().onHelpMenuClicked,
+          child: Icon(
+            UIConstants.helpMenuIconData,
+            size: 26,
           ),
-        );
+        ),
+      );
 
-
-  Widget _buildSearchBar(BuildContext context,GoodsState state){
-    return Visibility(child: Row(children: [
-      Expanded(
-          child: Card(
+  Widget _buildSearchBar(BuildContext context, GoodsState state) {
+    return Visibility(
+        child: Row(children: [
+          Expanded(
+              child: Card(
             child: ListTile(
               title: TextField(
                 controller: searchTextController,
                 decoration: InputDecoration(
-                    hintText: context.read<GoodsCubit>().getSearchTextHint(context),
-                    border: InputBorder.none),
+                    hintText: context.read<GoodsCubit>().getSearchTextHint(context), border: InputBorder.none),
                 onChanged: context.read<GoodsCubit>().onSearchTextChanged,
                 //controller: controller.searchTextController,
               ),
@@ -204,7 +202,7 @@ class GoodsPageState extends State<GoodsPage> {
                   Visibility(
                     child: IconButton(
                       icon: Icon(UIConstants.cancelIconData),
-                      onPressed: (){
+                      onPressed: () {
                         searchTextController.text = "";
                         context.read<GoodsCubit>().resetSearchText();
                       },
@@ -222,28 +220,22 @@ class GoodsPageState extends State<GoodsPage> {
               ),
             ),
           )),
-      PopupMenuButton<SearchGoodsType>(
-        itemBuilder: (BuildContext a) => <PopupMenuEntry<SearchGoodsType>>[
-          PopupMenuItem<SearchGoodsType>(
-              value: SearchGoodsType.byName,
-              child: Text(
-                  AppLocalizations.of(context)!.search_by_name)),
-          PopupMenuItem<SearchGoodsType>(
-              value: SearchGoodsType.byDescription,
-              child: Text(AppLocalizations.of(context)!
-                  .search_by_description)),
-          PopupMenuItem<SearchGoodsType>(
-              value: SearchGoodsType.byBarcode,
-              child: Text(AppLocalizations.of(context)!
-                  .search_by_barcode)),
-          PopupMenuItem<SearchGoodsType>(
-              value: SearchGoodsType.everywhere,
-              child: Text(AppLocalizations.of(context)!
-                  .search_by_everywhere)),
-        ],
-        onSelected: context.read<GoodsCubit>().setSearchGoodsType,
-      )
-    ]), visible: state.showSearchBar);
+          PopupMenuButton<SearchGoodsType>(
+            itemBuilder: (BuildContext a) => <PopupMenuEntry<SearchGoodsType>>[
+              PopupMenuItem<SearchGoodsType>(
+                  value: SearchGoodsType.byName, child: Text(AppLocalizations.of(context)!.search_by_name)),
+              PopupMenuItem<SearchGoodsType>(
+                  value: SearchGoodsType.byDescription,
+                  child: Text(AppLocalizations.of(context)!.search_by_description)),
+              PopupMenuItem<SearchGoodsType>(
+                  value: SearchGoodsType.byBarcode, child: Text(AppLocalizations.of(context)!.search_by_barcode)),
+              PopupMenuItem<SearchGoodsType>(
+                  value: SearchGoodsType.everywhere, child: Text(AppLocalizations.of(context)!.search_by_everywhere)),
+            ],
+            onSelected: context.read<GoodsCubit>().setSearchGoodsType,
+          )
+        ]),
+        visible: state.showSearchBar);
   }
 
   Widget _buildLoading() {
@@ -251,10 +243,11 @@ class GoodsPageState extends State<GoodsPage> {
       child: CircularProgressIndicator(),
     );
   }
-  void onPressedGood(Good item) async{
-    if (widget.isSelection){
+
+  void onPressedGood(Good item) async {
+    if (widget.isSelection) {
       showAddQuantityAndPriceDialog(item, widget.document!.type);
-    }else{
+    } else {
       final result = await Navigator.of(context)
           .pushNamed(Pages.save_good, arguments: {"item": item, "enableAddTransactions": true});
       if (result != null) {
@@ -262,18 +255,18 @@ class GoodsPageState extends State<GoodsPage> {
       }
     }
   }
-  void showAddQuantityAndPriceDialog(Good good, DocumentType type) async{
+
+  void showAddQuantityAndPriceDialog(Good good, DocumentType type) async {
     Map<dynamic, dynamic>? result = await showDialog(
-        context: context,
-        builder: (_) => AddQuantityAndPriceWidget(good, type),
-        barrierDismissible: true);
-    if (result != null){
+        context: context, builder: (_) => AddQuantityAndPriceWidget(good, type), barrierDismissible: true);
+    if (result != null) {
       int quantity = result["quantity"] ?? 0;
       double price = result["price"] ?? 0.0;
       context.read<GoodsCubit>().addTransaction(good.id!, quantity, price);
     }
   }
-  void onLongPressedGood(Good item){
+
+  void onLongPressedGood(Good item) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -285,8 +278,7 @@ class GoodsPageState extends State<GoodsPage> {
                   Navigator.pop(context);
                   openSelectGroupForGood(item);
                 },
-                child: Text(
-                    AppLocalizations.of(context)!.action_move_to_group),
+                child: Text(AppLocalizations.of(context)!.action_move_to_group),
               ),
               SimpleDialogOption(
                 padding: EdgeInsets.all(16.0),
@@ -302,42 +294,41 @@ class GoodsPageState extends State<GoodsPage> {
         barrierDismissible: true);
   }
 
-  void openSelectGroupForGood(Good item) async{
+  void openSelectGroupForGood(Good item) async {
     final result = await Navigator.of(context).pushNamed(Pages.select_group, arguments: {"groupId": item.groupId});
-    if (result != null){
+    if (result != null) {
       Map<dynamic, dynamic> map = result as Map<dynamic, dynamic>;
       int? selectedGroupId = map["groupId"];
-      if (item.groupId != selectedGroupId){
+      if (item.groupId != selectedGroupId) {
         context.read<GoodsCubit>().moveGoodToGroup(item, selectedGroupId);
       }
     }
   }
-  void openSelectGroupForGroup(Group item) async{
-    final result = await Navigator.of(context).pushNamed(Pages.select_group, arguments: {"groupId": item.groupId, "id": item.id});
-    if (result != null){
+
+  void openSelectGroupForGroup(Group item) async {
+    final result =
+        await Navigator.of(context).pushNamed(Pages.select_group, arguments: {"groupId": item.groupId, "id": item.id});
+    if (result != null) {
       Map<dynamic, dynamic> map = result as Map<dynamic, dynamic>;
       int? selectedGroupId = map["groupId"];
-      if (item.groupId != selectedGroupId){
+      if (item.groupId != selectedGroupId) {
         context.read<GoodsCubit>().moveGroupToGroup(item, selectedGroupId);
       }
     }
   }
-  void showDeleteGoodConfirmPopup(Good item) async{
+
+  void showDeleteGoodConfirmPopup(Good item) async {
     showDialog(
         context: context,
         builder: (BuildContext mContext) {
           return AlertDialog(
-            title: Text(
-                AppLocalizations.of(context)!.notification_dialog_title),
-            content: Text(sprintf(
-                AppLocalizations.of(context)!.message_confirm_delete,
-                [item.name])),
+            title: Text(AppLocalizations.of(context)!.notification_dialog_title),
+            content: Text(sprintf(AppLocalizations.of(context)!.message_confirm_delete, [item.name])),
             actions: [
               TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(AppLocalizations.of(context)!.action_cancel)),
+                  onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.action_cancel)),
               TextButton(
-                onPressed: () async{
+                onPressed: () async {
                   await context.read<GoodsCubit>().deleteGood(item.id!);
                   Navigator.pop(context);
                 },
@@ -348,10 +339,11 @@ class GoodsPageState extends State<GoodsPage> {
         });
   }
 
-  void onPressedGroup(Group item){
+  void onPressedGroup(Group item) {
     context.read<GoodsCubit>().onGroupTapped(item);
   }
-  void onLongPressedGroup(Group item){
+
+  void onLongPressedGroup(Group item) {
     showDialog(
         context: context,
         builder: (BuildContext a) {
@@ -363,21 +355,18 @@ class GoodsPageState extends State<GoodsPage> {
                   Navigator.pop(context);
                   openSelectGroupForGroup(item);
                 },
-                child: Text(
-                    AppLocalizations.of(context)!.action_move_to_group),
+                child: Text(AppLocalizations.of(context)!.action_move_to_group),
               ),
               SimpleDialogOption(
                 padding: EdgeInsets.all(16.0),
-                onPressed: () async{
+                onPressed: () async {
                   Navigator.pop(context);
-                  final result = await Navigator.of(context)
-                      .pushNamed(Pages.save_group, arguments: {"item": item});
+                  final result = await Navigator.of(context).pushNamed(Pages.save_group, arguments: {"item": item});
                   if (result != null) {
                     context.read<GoodsCubit>().loadItems();
                   }
                 },
-                child:
-                Text(AppLocalizations.of(context)!.action_edit_group),
+                child: Text(AppLocalizations.of(context)!.action_edit_group),
               ),
               SimpleDialogOption(
                 padding: EdgeInsets.all(16.0),
@@ -385,71 +374,73 @@ class GoodsPageState extends State<GoodsPage> {
                   Navigator.pop(context);
                   context.read<GoodsCubit>().deleteGroup(item.id!);
                 },
-                child:
-                Text(AppLocalizations.of(context)!.action_delete),
+                child: Text(AppLocalizations.of(context)!.action_delete),
               ),
             ],
           );
         },
         barrierDismissible: true);
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<GoodsCubit, GoodsState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
-        listener: (context, state) async{
-          if (state.state is OpenSortDialogListState){
+        listener: (context, state) async {
+          if (state.state is OpenSortDialogListState) {
             GoodsSetting? settings = await showDialog(
-                context: context,
-                builder: (_) => SortGoodsDialog(state.settings),
-                barrierDismissible: true);
-            if (settings != null){
+                context: context, builder: (_) => SortGoodsDialog(state.settings), barrierDismissible: true);
+            if (settings != null) {
               context.read<GoodsCubit>().setSettings(settings);
             }
-          }
-          else if (state.state is OpenHelpPageState){
+          } else if (state.state is OpenHelpPageState) {
             Navigator.of(context).pushNamed(Pages.help, arguments: {
               "title": AppLocalizations.of(context)?.goods_title,
               "content": MDProviderFactory.get().getHelpText(HelpType.GOODS)
             });
-          }else if (state.state is OpenSaveGoodPageState){
+          } else if (state.state is OpenSaveGoodPageState) {
             final currentState = state.state as OpenSaveGoodPageState;
             final result = await Navigator.of(context)
                 .pushNamed(Pages.save_good, arguments: {"item": currentState.item, "enableAddTransactions": true});
-            if (result != null){
+            if (result != null) {
               context.read<GoodsCubit>().loadItems();
             }
-          }else if (state.state is AddGroupState){
+          } else if (state.state is AddGroupState) {
             final currentState = state.state as AddGroupState;
-            final result = await Navigator.of(context).pushNamed(Pages.save_group, arguments: {"item" : currentState.item});
-            if (result != null){
+            final result =
+                await Navigator.of(context).pushNamed(Pages.save_group, arguments: {"item": currentState.item});
+            if (result != null) {
               context.read<GoodsCubit>().loadItems();
             }
-          }else if (state.state is InsertTransactionSuccessState){
+          } else if (state.state is InsertTransactionSuccessState) {
             final currentState = state.state as InsertTransactionSuccessState;
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccessWithText(AppLocalizations.of(context)!.insert_transaction_success));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(snackBarWhenSuccessWithText(AppLocalizations.of(context)!.insert_transaction_success));
             context.read<GoodsCubit>().updateQuantity(currentState.goodId, currentState.quantity);
-          }else if (state.state is InsertTransactionFailedState){
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.insert_transaction_fail));
-          }else if (state.state is OpenBarcodeScannerToSearchState){
+          } else if (state.state is InsertTransactionFailedState) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.insert_transaction_fail));
+          } else if (state.state is OpenBarcodeScannerToSearchState) {
             //open bar code scanner to fill search text box
             var result = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const SimpleBarcodeScannerPage(),
                 ));
-            if (result != "-1"){
+            if (result != "-1") {
               searchTextController.text = result;
               context.read<GoodsCubit>().onSearchTextChanged(result);
             }
           }
         },
-        builder: (context, state) =>  Scaffold(
-            drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 1, storeName: storage.getSelectedStoreName()),
+        builder: (context, state) => Scaffold(
+            drawer: widget.isSelection
+                ? null
+                : CustomNavigationDrawer(selectedIndex: 1, storeName: storage.getSelectedStoreName()),
             appBar: new AppBar(
                 title: new Text(AppLocalizations.of(context)!.goods_title),
                 actions: [_buildSearchMenu(state), _buildSortMenu(state), helpMenu]),
-            body: _buildBody(context,state),
+            body: _buildBody(context, state),
             floatingActionButton: SpeedDial(
               icon: Icons.add,
               activeIcon: Icons.close,
@@ -466,18 +457,25 @@ class GoodsPageState extends State<GoodsPage> {
               shape: CircleBorder(),
               children: [
                 SpeedDialChild(
-                    child: Icon(UIConstants.groupIconData, size: 20, color: UIConstants.primaryColor,),
+                    child: Icon(
+                      UIConstants.groupIconData,
+                      size: 20,
+                      color: UIConstants.primaryColor,
+                    ),
                     backgroundColor: Colors.white,
                     onTap: context.read<GoodsCubit>().onAddGroup,
-                    label: AppLocalizations.of(context)!.folder
-                ),
+                    label: AppLocalizations.of(context)!.folder),
                 SpeedDialChild(
+                  child: SizedBox(
+                    width: 48,
+                    height: 48,
                     child: Icon(UIConstants.goodIconData, size: 20, color: UIConstants.primaryColor),
-                    backgroundColor: Colors.white,
-                    onTap: context.read<GoodsCubit>().onAddGood),
-                  //  label: AppLocalizations.of(context)!.good)
+                  ),
+                  backgroundColor: Colors.white,
+                  onTap: context.read<GoodsCubit>().onAddGood,
+                  label: AppLocalizations.of(context)!.good,
+                )
               ],
-            )
-        ));
+            )));
   }
 }

@@ -1,10 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
+
 import '../../../../domain/entities/payment.dart';
+import '../../../constants.dart';
 
 part 'save_payment_cubit.freezed.dart';
 part 'save_payment_state.dart';
@@ -30,11 +31,16 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
   void descriptionChanged(String value){
     emit(state.copyWith(description: value));
   }
-  void amountChanged(String value){
+  void onAmountChanged(String value){
     if (value.isNotEmpty){
-      emit(state.copyWith(amount: double.parse(value)));
+      num amountNum = Config.currencyFormat.parse(value);
+      double amount = amountNum.toDouble();
+      emit(state.copyWith(amount: amount));
+    }else{
+      emit(state.copyWith(amount: 0));
     }
   }
+
   void dateChanged(DateTime date) {
     emit(state.copyWith(date: date));
   }

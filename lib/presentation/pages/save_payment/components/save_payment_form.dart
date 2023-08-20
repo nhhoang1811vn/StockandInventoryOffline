@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_payment/bloc/save_payment_cubit.dart';
 import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../presentation/widgets/snackbar_widgets.dart';
+import '../../../utils.dart';
+import '../../currency_app_text_field.dart';
 
 class SavePaymentForm extends StatelessWidget {
   final Payment item;
@@ -18,26 +20,6 @@ class SavePaymentForm extends StatelessWidget {
   final TextEditingController amountController = TextEditingController();
 
   SavePaymentForm({Key? key, required this.item}) : super(key: key);
-
-  void showCalculatorPopup(BuildContext context) {
-    var calc = SimpleCalculator(
-      value: double.parse(amountController.text),
-      onChanged: (key, value, expression) {
-        amountController.text = Config.simpleCurrencyFormat.format(value);
-        context.read<SavePaymentCubit>().amountChanged(amountController.text);
-      },
-      theme: const CalculatorThemeData(
-        displayColor: Colors.white,
-        displayStyle: const TextStyle(fontSize: 20, color: Colors.blue),
-      ),
-    );
-    showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        builder: (BuildContext context) {
-          return SizedBox(height: MediaQuery.of(context).size.height * 0.75, child: calc);
-        });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,13 +63,18 @@ class SavePaymentForm extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                              child: AppTextField(
-                            controller: amountController,
-                            labelText: AppLocalizations.of(context)!.field_amount,
-                            onChanged: (value) => context.read<SavePaymentCubit>().amountChanged(value),
-                            keyboardType: TextInputType.numberWithOptions(signed: false,decimal: true),
-                          )),
-                          CircleButton(UIConstants.calculatorIconData, () => showCalculatorPopup(context))
+                            child: CurrencyAppTextField(
+                              labelText: AppLocalizations.of(context)!.field_amount,
+                              controller: amountController,
+                              onChanged: context.read<SavePaymentCubit>().onAmountChanged,
+                            )),
+                          CircleButton(UIConstants.calculatorIconData, () {
+                            Utils.showCalculatorPopup(context, state.amount,(p0){
+                              NumberFormat format = new NumberFormat("0.#");
+                              context.read<SavePaymentCubit>().onAmountChanged(format.format(p0));
+                              amountController.text = Config.simpleCurrencyFormat.format(p0);
+                            });
+                          })
                         ],
                       ),
                       AppTextField(

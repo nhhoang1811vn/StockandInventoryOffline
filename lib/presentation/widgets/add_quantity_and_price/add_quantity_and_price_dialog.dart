@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
@@ -15,7 +14,6 @@ import 'package:sprintf/sprintf.dart';
 import '../../../domain/entities/document.dart';
 import '../../pages/app_text_field.dart';
 import '../../pages/currency_app_text_field.dart';
-import '../../pages/currency_input_formatter.dart';
 import '../../utils.dart';
 
 class AddQuantityAndPriceWidget extends StatefulWidget {
@@ -35,34 +33,13 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
 
   AddQuantityAndPriceCubit cubit = AddQuantityAndPriceCubit();
 
-  AddQuantityAndPriceWidgetState() {
-    quantityTextController.text = "1";
-  }
-
-  /*void showCalculatorPopup(BuildContext context,double value, Function(double) callback) async {
-    var calc = SimpleCalculator(
-      value: value,
-      onChanged: (key, value, expression) {
-        if (value != null){
-          callback(value);
-        }
-      },
-      theme: const CalculatorThemeData(
-        displayColor: Colors.white,
-        displayStyle: const TextStyle(fontSize: 20, color: Colors.blue),
-      ),
-    );
-    showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        builder: (BuildContext context) {
-          return SizedBox(height: MediaQuery.of(context).size.height * 0.75, child: calc);
-        });
-  }*/
-
   @override
   Widget build(BuildContext context) {
-    cubit.initState();
+    double price = (widget.type == DocumentType.incoming ? widget.good.purchasePrice : widget.good.salePrice);
+    int quantity = 1;
+    cubit.initState(quantity, price);
+    quantityTextController.text = quantity.toString();
+    priceTextController.text = Config.simpleCurrencyFormat.format(price);
     return BlocProvider(create: (_) => cubit, child: _buildBody(context));
   }
   Widget _buildBody(BuildContext context) {

@@ -1,4 +1,3 @@
-import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/usecases/base/items_usecases.dart';
 

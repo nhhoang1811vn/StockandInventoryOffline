@@ -6,7 +6,6 @@ import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/save_payment/components/save_payment_form.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
-import '../../../domain/entities/document.dart';
 import 'bloc/save_payment_cubit.dart';
 
 

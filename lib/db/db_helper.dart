@@ -73,7 +73,7 @@ class DBHelper {
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE," + ""
             "FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)");
     await db.execute(
-        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
+        "CREATE TABLE $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, purchasePrice REAL, salePrice REAL,  storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE," +
             "FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)");
 
@@ -698,7 +698,7 @@ class DBHelper {
   Future<List<Payment>> getPaymentByDocumentId(int documentId) async{
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
-        'SELECT * FROM $PAYMENTS_TABLE_NAME where documentId = ?', [documentId]);
+        'SELECT * FROM $PAYMENTS_TABLE_NAME where documentId = ? ORDER BY date DESC', [documentId]);
 
     List<Payment> items = [];
     for (int i = 0; i < list.length; i++) {
@@ -706,5 +706,9 @@ class DBHelper {
       items.add(item);
     }
     return items;
+  }
+  Future<List<Map>> rawQuery(String query,List<Object?>? arguments) async{
+    var dbClient = await db;
+    return await dbClient.rawQuery(query, arguments);
   }
 }

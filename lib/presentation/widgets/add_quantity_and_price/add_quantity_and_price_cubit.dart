@@ -35,8 +35,8 @@ class AddQuantityAndPriceCubit extends Cubit<AddQuantityAndPriceState> {
     }
   }
 
-  void initState() {
-    emit(state.copyWith(quantity: 1));
+  void initState(int quantity, double price) {
+    emit(state.copyWith(quantity: quantity, price: price, amount: quantity*price));
   }
   void onQuantityCalculatorPressed(){
     emit(state.copyWith(state: OpenCalculatorToInputQuantityState()));

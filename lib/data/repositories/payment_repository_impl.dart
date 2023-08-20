@@ -1,9 +1,6 @@
 import 'package:good_manager/db/db_helper.dart';
-import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/entities/payment.dart';
-import 'package:good_manager/domain/repositories/expense_repositories.dart';
 import 'package:good_manager/domain/repositories/payment_repositories.dart';
-import 'package:good_manager/presentation/main.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: PaymentRepository)

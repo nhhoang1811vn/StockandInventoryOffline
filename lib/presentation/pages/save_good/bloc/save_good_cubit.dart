@@ -29,9 +29,10 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
         name: (item.name.isNotEmpty)?NameInput.dirty(value: item.name):NameInput.pure(),
         description: item.description,
         barCode: item.barCode??'',
+        purchasePrice: item.purchasePrice,
+        salePrice: item.salePrice,
         files: item.files,
-        transaction: transaction,
-        //quantity: quantity
+        transaction: transaction
     );
     emit(initState);
   }
@@ -45,6 +46,8 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
         if (state.barCode.trim().isNotEmpty){
           item.barCode = state.barCode.trim();
         }
+        item.purchasePrice = state.purchasePrice!;
+        item.salePrice = state.salePrice!;
         item.files = state.files;
         if (item.id == null){
           item.id = await useCase.insert(item);
@@ -105,6 +108,12 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
   void onPriceCalculatorPressed(){
     emit(state.copyWith(state: OpenCalculatorToInputPriceState()));
   }
+  void onPurchasePriceCalculatorPressed(){
+    emit(state.copyWith(state: OpenCalculatorToInputPurchasePriceState()));
+  }
+  void onSalePriceCalculatorPressed(){
+    emit(state.copyWith(state: OpenCalculatorToInputSalePriceState()));
+  }
   void onBarcodeScannerPressed(){
     emit(state.copyWith(state: OpenBarcodeScannerPageState()));
   }
@@ -126,5 +135,23 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
       current.price = 0;
     }
     emit(state.copyWith(transaction: current));
+  }
+  void onPurchasePriceChanged(String value){
+    if (value.isNotEmpty){
+      num numValue = Config.simpleCurrencyFormat.parse(value);
+      double price = numValue.toDouble();
+      emit(state.copyWith(purchasePrice: price));
+    }else{
+      emit(state.copyWith(purchasePrice: 0));
+    }
+  }
+  void onSalePriceChanged(String value){
+    if (value.isNotEmpty){
+      num numValue = Config.simpleCurrencyFormat.parse(value);
+      double price = numValue.toDouble();
+      emit(state.copyWith(salePrice: price));
+    }else{
+      emit(state.copyWith(salePrice: 0));
+    }
   }
 }

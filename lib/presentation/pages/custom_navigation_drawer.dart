@@ -194,6 +194,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
       }else if (widget.selectedIndex == 3){
         Navigator.of(context).pushReplacementNamed(Pages.expenses);
       }else if (widget.selectedIndex == 4){
+        Navigator.of(context).pushReplacementNamed(Pages.report);
         //report
       }else if (widget.selectedIndex == 5){
         //supplier

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/payment_status.dart';
@@ -14,7 +12,6 @@ import 'package:good_manager/presentation/pages/save_document/bloc/save_document
 import 'package:good_manager/presentation/style_size.dart';
 
 import '../../../app_style.dart';
-import '../../goods/good_item_row.dart';
 import 'document_transaction_item_row.dart';
 
 class SaveDocumentForm extends StatelessWidget {
@@ -27,10 +24,6 @@ class SaveDocumentForm extends StatelessWidget {
   final TextEditingController dateController = TextEditingController();
 
   Widget _buildEmptyTransaction(BuildContext context) {
-    dateController.text = Config.dateFormat.format(state.item!.date);
-    personNameController.text = state.personName ?? '';
-    searchTextController.text = state.textSearch;
-    searchTextController.selection = TextSelection.fromPosition(TextPosition(offset: state.textSearch.length));
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -110,7 +103,7 @@ class SaveDocumentForm extends StatelessWidget {
             title: TextField(
               //focusNode: searchTextFocusNode,
               controller: searchTextController,
-              decoration: InputDecoration(hintText: "Search...", border: InputBorder.none),
+              decoration: InputDecoration(hintText: "Tìm kiếm...", border: InputBorder.none),
               onChanged: context.read<SaveDocumentCubit>().onSearchTextChanged,
             ),
             trailing: Row(
@@ -142,6 +135,11 @@ class SaveDocumentForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    dateController.text = Config.dateFormat.format(state.date!);
+    personNameController.text = state.personName ?? '';
+    searchTextController.text = state.textSearch;
+    searchTextController.selection = TextSelection.fromPosition(TextPosition(offset: state.textSearch.length));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -165,7 +163,7 @@ class SaveDocumentForm extends StatelessWidget {
                       Expanded(
                         child: AppTextField(
                             color: Colors.white,
-                            labelText: AppLocalizations.of(context)!.field_name,
+                            labelText: AppLocalizations.of(context)!.field_document_no,
                             initialValue: state.name.value,
                             onChanged: (value) => context.read<SaveDocumentCubit>().nameChanged(value),
                             keyboardType: TextInputType.name,

@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:intl/intl.dart';
 
 class CurrencyInputFormatter extends TextInputFormatter {
 

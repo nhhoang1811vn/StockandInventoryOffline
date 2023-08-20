@@ -1,11 +1,8 @@
 
 import 'dart:async';
 
-import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/entities/payment.dart';
-import 'package:good_manager/domain/repositories/expense_repositories.dart';
 import 'package:good_manager/domain/repositories/payment_repositories.dart';
-import 'package:good_manager/domain/usecases/expenses/expense_usercases.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
 import 'package:injectable/injectable.dart';
 

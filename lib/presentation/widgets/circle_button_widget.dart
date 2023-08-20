@@ -15,7 +15,7 @@ class CircleButton extends StatelessWidget{
       textColor: Colors.white,
       child: Icon(
         icon,
-        size: 25,
+        size: 24,
       ),
       shape: CircleBorder(),
     );

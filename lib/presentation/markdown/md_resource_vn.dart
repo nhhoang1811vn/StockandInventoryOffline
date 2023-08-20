@@ -3,45 +3,45 @@ class MarkdownResourceVN{
  ## Momo cho SDT của mình nhé. 0975 997 203
   """;
   static const String helpStores = """
- ### Bạn có thể luu trữ các sản phẩm theo cửa hàng (nhà kho, cửa tiệm).
- ### Mỗi cửa hàng giữ số lượng Sản phẩm riêng. Mỗi giao dich giao hàng cũng liên kết tới một cửa hàng cụ thể.
- ### Ở Trang chủ bạn có thể chọn cửa hàng mà bạn muốn thao tác, theo dõi. 
- ### Bạn có thể thêm cửa hàng ở menu "Cửa hàng" trong menu chính "Khác".
+ ### Bạn có thể luu trữ các Hàng Hoá theo cửa hàng (nhà kho, cửa tiệm).
+ ### Mỗi cửa hàng giữ số lượng Hàng Hoá riêng. Mỗi Hoá Đơn giao hàng cũng liên kết tới một cửa hàng cụ thể.
+ ### Ở "MENU TRÁI", bạn có thể chọn cửa hàng mà bạn muốn thao tác, theo dõi. 
+ ### Bạn có thể thêm cửa hàng ở menu "MENU TRÁI: Cửa Hàng"
  """;
   static const String helpSupplierCustomers = """
  ### Bạn có thể lưu trữ danh sách các Khách Hàng(KH), Nhà Cung Cấp(NCC). Điền thông tin của họ bằng tay hoặc import từ danh bạ.
  
- ### Nhấn trường Nhà Cung Cấp khi chỉnh sửa Giao Dich để chọn Nhà Cung Cấp cho loại Giao Dịch Nhập.
+ ### Nhấn trường Nhà Cung Cấp khi chỉnh sửa Hoá Đơn để chọn Nhà Cung Cấp cho loại Hoá Đơn Nhập.
  
- ### Nhấn trường Khách Hàng khi chỉnh sửa Giao Dich để chọn Khách Hàng cho loại Giao Dịch Xuất.
+ ### Nhấn trường Khách Hàng khi chỉnh sửa Hoá Đơn để chọn Khách Hàng cho loại Hoá Đơn Xuất.
  
  ### Nhấn giữ ở một Nhà Cung Cấp hoặc một Khách Hàng để:
- - ### Xem các Giao Dịch của NCC/KH.
+ - ### Xem các Hoá Đơn của NCC/KH.
  - ### Xoá NCC/KH.
 
  """;
   static const String helpGoods = """
- ### Màn hình Sản Phẩm chứa các Sản phẩm, mặt hàng trong cửa hàng của bạn, bao gồm cả thông tin số lượng tồn kho của sản phẩm. 
- ### Khi tạo các Giao Dịch, bạn sẽ chọn các sản phẩm từ danh sách này. Hơn nữa, nếu một sản phẩm có mã vạch, thì nó có thể được chọn trong giao dich một cách nhanh chóng bằng việc quét mã vạch đó với camera. Số lượng tồn kho không thể chỉnh sửa, mà được tính toán thông qua các dữ liệu trong các giao dich.
+ ### Màn hình "Hàng Hoá" chứa các Hàng Hoá, mặt hàng trong cửa hàng của bạn, bao gồm cả thông tin số lượng tồn kho của từng Hàng Hoá. 
+ ### Khi tạo các "Hoá Đơn", Bạn sẽ chọn các "Hàng hoá" từ danh sách này. Ngoài ra, nếu một "Hàng Hoá" có mã vạch, thì nó có thể được thêm vào "Hoá Đơn" một cách nhanh chóng bằng việc quét mã vạch đó với camera. Số lượng tồn kho không thể chỉnh sửa, mà được tính toán thông qua các dữ liệu trong các "Hoá Đơn".
  
- - ### Trong quá trình nhập thông tin sản phẩm, bạn có thể dùng camera để quét mã vạch bằng cách nhấn nút bên cạnh trường mã vạch.
- - ### Để xoá sản phẩm thì hãy nhấn giữ trên sản phẩm đó.
- - ### Để tìm kiếm, sắp xếp, thì sử dụng các nút ở trên thanh công cụ
+ - ### Trong quá trình nhập thông tin "Hàng Hoá", bạn có thể dùng camera để quét mã vạch bằng cách nhấn nút bên cạnh trường mã vạch.
+ - ### Để xoá Hàng Hoá thì hãy nhấn giữ trên "Hàng Hoá" đó.
+ - ### Để tìm kiếm, sắp xếp, thì sử dụng các nút ở trên thanh công cụ.
  
- ### Bạn có thể tạo SP mới trong quá trình tạo Giao Dịch.
+ ### Bạn có thể tạo "Hàng Hoá" mới trong quá trình tạo "Hoá Đơn".
  """;
   static const String helpDocuments = """
-### Có 2 loại giao dịch:
+### Có 2 loại "Hoá Đơn":
 
-- ### Nhập - Bạn tạo loại giao dịch này khi mà bạn nhập các sản phẩm/ hàng hoá về cửa hàng của mình (ví dụ, bạn mua sản phẩm từ NCC nào đó). Số lượng của những sản phẩm trong giao dịch này sẽ tự động tăng lên trong kho của bạn. 
-- ### Xuất - Bạn tạo loại giao dịch này khi mà bạn xuất các sản phẩm từ cửa hàng của mình (ví dụ, bạn bán sản phẩm cho Khách hàng nào đó). Số lượng của những sản phẩm trong giao dịch này sẽ tự động trừ đi trong kho của bạn.
+- ### NHẬP - Bạn tạo loại "Hoá Đơn" này khi mà bạn mua các "Hàng Hoá" về "Cửa Hàng". Số lượng của những "Hàng Hoá" trong "Hoá Đơn" này sẽ tự động tăng lên trong "Cửa Hàng" của bạn. 
+- ### XUẤT - Bạn tạo loại "Hoá Đơn" này khi mà bạn bán các "Hàng Hoá" từ "Cửa Hàng". Số lượng của những "Hàng Hoá" trong "Hoá Đơn" này sẽ tự động trừ đi trong "Cửa Hàng" của bạn.
  
-### Bạn có thể thêm sản phẩm trong giao dịch bằng cách chọn chúng trong danh sách các sản phẩm, hoặc quét mã vạch của sản phẩm.
-### Cụ thể hơn, ứng dụng cung cấp chế độ "quét 1 trùm". Trong chế độ này bạn có thể liên tục quét mã vach của sản phẩm và số lượng của chúng sẽ được tăng thêm 1 sau mỗi lần quét, hoặc bạn nhập bằng tay số lượng SP sau mỗi lần quét. 
-### Để mà xoá các giao dịch, hoặc các sản phẩm trong giao dịch thì nhấn giữ chúng (để hiên tuỳ chọn).
-### Xoá các giao dịch thì dẫn đến sự thay đổi số lượng SP trong cửa hàng. Các giao dịch có thể được xoá chỉ khi nó là giao dịch cuối cùng, vì việc xoá các giao dịch trước sẽ gây ra lỗi trong việc tính toán số lượng SP.
+### Bạn có thể thêm "Hàng Hoá" trong "Hoá Đơn" bằng cách chọn chúng trong danh sách các hàng hoá, hoặc quét mã vạch của hàng hoá.
+### Cụ thể hơn, ứng dụng cung cấp chế độ "quét 1 trùm". Trong chế độ này bạn có thể liên tục quét mã vach của Hàng Hoá và số lượng của chúng sẽ được tăng thêm 1 sau mỗi lần quét, hoặc bạn nhập bằng tay số lượng SP sau mỗi lần quét. 
+### Để mà xoá các "Hoá Đơn", hoặc các Hàng Hoá trong Hoá Đơn thì nhấn giữ chúng (để hiên tuỳ chọn).
+### Xoá các Hoá Đơn thì dẫn đến sự thay đổi số lượng SP trong cửa hàng. Các Hoá Đơn có thể được xoá chỉ khi nó là Hoá Đơn cuối cùng, vì việc xoá các Hoá Đơn trước sẽ gây ra lỗi trong việc tính toán số lượng SP.
 
-### Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các giao dịch. 
+### Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Hoá Đơn. 
  
  """;
   static const String helpExpenses = """

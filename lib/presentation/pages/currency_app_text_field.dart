@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 
-import '../constants.dart';
 import 'currency_input_formatter.dart';
 
 class CurrencyAppTextField extends StatelessWidget{
@@ -79,7 +78,7 @@ class CurrencyAppTextField extends StatelessWidget{
         controller: controller,
         onChanged: onChanged,
         readOnly: readOnly!,
-        suffixText: "VND",
+        suffixText: "đ",
         keyboardType: TextInputType.number,
         inputFormatter: [
           FilteringTextInputFormatter.allow(RegExp("[0-9]")),

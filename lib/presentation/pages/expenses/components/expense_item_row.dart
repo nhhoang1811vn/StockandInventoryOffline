@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/presentation/app_style.dart';
-import 'package:good_manager/presentation/style_size.dart';
 
 import '../../../constants.dart';
 

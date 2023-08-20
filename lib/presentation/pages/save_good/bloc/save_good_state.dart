@@ -7,9 +7,9 @@ class SaveGoodState with _$SaveGoodState {
     @Default(NameInput.pure()) NameInput name,
     @Default('') String description,
     @Default('') String barCode,
+    @Default(0) double purchasePrice,
+    @Default(0) double salePrice,
     @Default([]) List<String> files,
-    //int? quantity,
-    //double? price,
     Good? item,
     Document? document,
     DocumentTransaction? transaction
