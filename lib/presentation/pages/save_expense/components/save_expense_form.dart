@@ -24,7 +24,7 @@ class SaveExpenseForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     dateController.text = Config.dateFormat.format(item.date);
-    amountController.text = Config.simpleCurrencyFormat.format(item.amount);
+    amountController.text = item.amount == null ? "" : Config.simpleCurrencyFormat.format(item.amount);
 
     return BlocConsumer<SaveExpenseCubit, SaveExpenseState>(
         listener: (context, state) {

@@ -31,7 +31,7 @@ class PaymentsCubit extends Cubit<PaymentsState> {
     List<DocumentTransaction> transactions = await documentUseCases.getTransactionsByDocumentId(state.documentId!);
     double invoiced = 0.0;
     for (DocumentTransaction transaction in transactions){
-      invoiced += transaction.quantity * transaction.price;
+      invoiced += transaction.quantity * (transaction.price??0.0);
     }
     emit(state.copyWith(invoiced: invoiced));
   }
@@ -48,7 +48,7 @@ class PaymentsCubit extends Cubit<PaymentsState> {
     List<Payment> payments = await useCase.getByDocumentId(state.documentId!);
     double paid = 0.0;
     for (Payment payment in payments){
-      paid += payment.amount;
+      paid += payment.amount??0;
     }
     emit(state.copyWith(items: payments, paid: paid));
   }

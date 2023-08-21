@@ -6,7 +6,7 @@ class SavePaymentState with _$SavePaymentState {
     required BaseState state,
     @Default('') String description,
     DateTime? date,
-    @Default(0) double amount,
+    double? amount,
     @Default('') String exceptionError,
     Payment? item
   }) = _Initial;

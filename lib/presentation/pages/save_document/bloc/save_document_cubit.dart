@@ -152,7 +152,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   double getTotalPayments(List<Payment> payments){
     double total = 0.0;
     payments.forEach((element) {
-      total += element.amount;
+      total += element.amount??0;
     });
     return total;
   }
@@ -163,7 +163,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
       double totalAmount = 0.0;
       transactions.forEach((element) {
         totalQuantity += element.quantity;
-        totalAmount += (element.quantity * element.price);
+        totalAmount += (element.quantity * (element.price ?? 0.0));
       });
       emit(state.copyWith(allTransactions: transactions, totalQuantity: totalQuantity, totalAmount: totalAmount));
       sort();
@@ -311,7 +311,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
     }
   }
 
-  void saveThenAddTransaction(Good good, int quantity, double price) async{
+  void saveThenAddTransaction(Good good, int quantity, double? price) async{
     bool result = await save();
     if (result){
       DocumentTransaction transaction = DocumentTransaction();

@@ -13,6 +13,10 @@ class GoodsState with _$GoodsState {
     required GoodsSetting settings,
     @Default(false) bool showSearchBar,
     @Default(false) bool isSelection,
-    Document? document
+    Document? document,
+
+    @Default(0) int quantityTotal,
+    @Default(0) double purchasePriceTotal,
+    @Default(0) double salePriceTotal,
   }) = _Initial;
 }

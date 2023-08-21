@@ -65,7 +65,7 @@ class DocumentTransactionItemRow extends StatelessWidget {
     );
   }
   Widget _buildBottom(){
-    return Align(alignment: Alignment.centerRight, child: Text("${Config.currencyFormat.format(item.price)} / ${Config.currencyFormat.format(item.price * item.quantity)}"),);
+    return Align(alignment: Alignment.centerRight, child: Text("${Config.currencyFormat.format(item.price??0)} / ${Config.currencyFormat.format(item.price??0.0 * item.quantity)}"),);
   }
 
   Widget getAvatarWidget(String path) {

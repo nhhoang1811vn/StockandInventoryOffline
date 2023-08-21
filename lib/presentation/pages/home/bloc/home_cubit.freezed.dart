@@ -17,8 +17,8 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$HomeState {
   BaseState get state => throw _privateConstructorUsedError;
-  int get countGood => throw _privateConstructorUsedError;
-  int get quantityGood => throw _privateConstructorUsedError;
+  int get quantityTotal => throw _privateConstructorUsedError;
+  double get purchasePriceTotal => throw _privateConstructorUsedError;
   int get countDocument => throw _privateConstructorUsedError;
   int get countSupplier => throw _privateConstructorUsedError;
   int get countCustomer => throw _privateConstructorUsedError;
@@ -27,8 +27,8 @@ mixin _$HomeState {
   TResult when<TResult extends Object?>({
     required TResult Function(
             BaseState state,
-            int countGood,
-            int quantityGood,
+            int quantityTotal,
+            double purchasePriceTotal,
             int countDocument,
             int countSupplier,
             int countCustomer,
@@ -40,8 +40,8 @@ mixin _$HomeState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
             BaseState state,
-            int countGood,
-            int quantityGood,
+            int quantityTotal,
+            double purchasePriceTotal,
             int countDocument,
             int countSupplier,
             int countCustomer,
@@ -53,8 +53,8 @@ mixin _$HomeState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
             BaseState state,
-            int countGood,
-            int quantityGood,
+            int quantityTotal,
+            double purchasePriceTotal,
             int countDocument,
             int countSupplier,
             int countCustomer,
@@ -92,8 +92,8 @@ abstract class $HomeStateCopyWith<$Res> {
   @useResult
   $Res call(
       {BaseState state,
-      int countGood,
-      int quantityGood,
+      int quantityTotal,
+      double purchasePriceTotal,
       int countDocument,
       int countSupplier,
       int countCustomer,
@@ -114,8 +114,8 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
   @override
   $Res call({
     Object? state = null,
-    Object? countGood = null,
-    Object? quantityGood = null,
+    Object? quantityTotal = null,
+    Object? purchasePriceTotal = null,
     Object? countDocument = null,
     Object? countSupplier = null,
     Object? countCustomer = null,
@@ -126,14 +126,14 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
               as BaseState,
-      countGood: null == countGood
-          ? _value.countGood
-          : countGood // ignore: cast_nullable_to_non_nullable
+      quantityTotal: null == quantityTotal
+          ? _value.quantityTotal
+          : quantityTotal // ignore: cast_nullable_to_non_nullable
               as int,
-      quantityGood: null == quantityGood
-          ? _value.quantityGood
-          : quantityGood // ignore: cast_nullable_to_non_nullable
-              as int,
+      purchasePriceTotal: null == purchasePriceTotal
+          ? _value.purchasePriceTotal
+          : purchasePriceTotal // ignore: cast_nullable_to_non_nullable
+              as double,
       countDocument: null == countDocument
           ? _value.countDocument
           : countDocument // ignore: cast_nullable_to_non_nullable
@@ -163,8 +163,8 @@ abstract class _$$_InitialCopyWith<$Res> implements $HomeStateCopyWith<$Res> {
   @useResult
   $Res call(
       {BaseState state,
-      int countGood,
-      int quantityGood,
+      int quantityTotal,
+      double purchasePriceTotal,
       int countDocument,
       int countSupplier,
       int countCustomer,
@@ -182,8 +182,8 @@ class __$$_InitialCopyWithImpl<$Res>
   @override
   $Res call({
     Object? state = null,
-    Object? countGood = null,
-    Object? quantityGood = null,
+    Object? quantityTotal = null,
+    Object? purchasePriceTotal = null,
     Object? countDocument = null,
     Object? countSupplier = null,
     Object? countCustomer = null,
@@ -194,14 +194,14 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
               as BaseState,
-      countGood: null == countGood
-          ? _value.countGood
-          : countGood // ignore: cast_nullable_to_non_nullable
+      quantityTotal: null == quantityTotal
+          ? _value.quantityTotal
+          : quantityTotal // ignore: cast_nullable_to_non_nullable
               as int,
-      quantityGood: null == quantityGood
-          ? _value.quantityGood
-          : quantityGood // ignore: cast_nullable_to_non_nullable
-              as int,
+      purchasePriceTotal: null == purchasePriceTotal
+          ? _value.purchasePriceTotal
+          : purchasePriceTotal // ignore: cast_nullable_to_non_nullable
+              as double,
       countDocument: null == countDocument
           ? _value.countDocument
           : countDocument // ignore: cast_nullable_to_non_nullable
@@ -227,8 +227,8 @@ class __$$_InitialCopyWithImpl<$Res>
 class _$_Initial implements _Initial {
   const _$_Initial(
       {required this.state,
-      this.countGood = 0,
-      this.quantityGood = 0,
+      this.quantityTotal = 0,
+      this.purchasePriceTotal = 0,
       this.countDocument = 0,
       this.countSupplier = 0,
       this.countCustomer = 0,
@@ -238,10 +238,10 @@ class _$_Initial implements _Initial {
   final BaseState state;
   @override
   @JsonKey()
-  final int countGood;
+  final int quantityTotal;
   @override
   @JsonKey()
-  final int quantityGood;
+  final double purchasePriceTotal;
   @override
   @JsonKey()
   final int countDocument;
@@ -257,7 +257,7 @@ class _$_Initial implements _Initial {
 
   @override
   String toString() {
-    return 'HomeState.initial(state: $state, countGood: $countGood, quantityGood: $quantityGood, countDocument: $countDocument, countSupplier: $countSupplier, countCustomer: $countCustomer, sumExpense: $sumExpense)';
+    return 'HomeState.initial(state: $state, quantityTotal: $quantityTotal, purchasePriceTotal: $purchasePriceTotal, countDocument: $countDocument, countSupplier: $countSupplier, countCustomer: $countCustomer, sumExpense: $sumExpense)';
   }
 
   @override
@@ -266,10 +266,10 @@ class _$_Initial implements _Initial {
         (other.runtimeType == runtimeType &&
             other is _$_Initial &&
             (identical(other.state, state) || other.state == state) &&
-            (identical(other.countGood, countGood) ||
-                other.countGood == countGood) &&
-            (identical(other.quantityGood, quantityGood) ||
-                other.quantityGood == quantityGood) &&
+            (identical(other.quantityTotal, quantityTotal) ||
+                other.quantityTotal == quantityTotal) &&
+            (identical(other.purchasePriceTotal, purchasePriceTotal) ||
+                other.purchasePriceTotal == purchasePriceTotal) &&
             (identical(other.countDocument, countDocument) ||
                 other.countDocument == countDocument) &&
             (identical(other.countSupplier, countSupplier) ||
@@ -281,8 +281,15 @@ class _$_Initial implements _Initial {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, state, countGood, quantityGood,
-      countDocument, countSupplier, countCustomer, sumExpense);
+  int get hashCode => Object.hash(
+      runtimeType,
+      state,
+      quantityTotal,
+      purchasePriceTotal,
+      countDocument,
+      countSupplier,
+      countCustomer,
+      sumExpense);
 
   @JsonKey(ignore: true)
   @override
@@ -295,16 +302,16 @@ class _$_Initial implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function(
             BaseState state,
-            int countGood,
-            int quantityGood,
+            int quantityTotal,
+            double purchasePriceTotal,
             int countDocument,
             int countSupplier,
             int countCustomer,
             double sumExpense)
         initial,
   }) {
-    return initial(state, countGood, quantityGood, countDocument, countSupplier,
-        countCustomer, sumExpense);
+    return initial(state, quantityTotal, purchasePriceTotal, countDocument,
+        countSupplier, countCustomer, sumExpense);
   }
 
   @override
@@ -312,16 +319,16 @@ class _$_Initial implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
             BaseState state,
-            int countGood,
-            int quantityGood,
+            int quantityTotal,
+            double purchasePriceTotal,
             int countDocument,
             int countSupplier,
             int countCustomer,
             double sumExpense)?
         initial,
   }) {
-    return initial?.call(state, countGood, quantityGood, countDocument,
-        countSupplier, countCustomer, sumExpense);
+    return initial?.call(state, quantityTotal, purchasePriceTotal,
+        countDocument, countSupplier, countCustomer, sumExpense);
   }
 
   @override
@@ -329,8 +336,8 @@ class _$_Initial implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
             BaseState state,
-            int countGood,
-            int quantityGood,
+            int quantityTotal,
+            double purchasePriceTotal,
             int countDocument,
             int countSupplier,
             int countCustomer,
@@ -339,7 +346,7 @@ class _$_Initial implements _Initial {
     required TResult orElse(),
   }) {
     if (initial != null) {
-      return initial(state, countGood, quantityGood, countDocument,
+      return initial(state, quantityTotal, purchasePriceTotal, countDocument,
           countSupplier, countCustomer, sumExpense);
     }
     return orElse();
@@ -377,8 +384,8 @@ class _$_Initial implements _Initial {
 abstract class _Initial implements HomeState {
   const factory _Initial(
       {required final BaseState state,
-      final int countGood,
-      final int quantityGood,
+      final int quantityTotal,
+      final double purchasePriceTotal,
       final int countDocument,
       final int countSupplier,
       final int countCustomer,
@@ -387,9 +394,9 @@ abstract class _Initial implements HomeState {
   @override
   BaseState get state;
   @override
-  int get countGood;
+  int get quantityTotal;
   @override
-  int get quantityGood;
+  double get purchasePriceTotal;
   @override
   int get countDocument;
   @override

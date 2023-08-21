@@ -27,6 +27,9 @@ mixin _$GoodsState {
   bool get showSearchBar => throw _privateConstructorUsedError;
   bool get isSelection => throw _privateConstructorUsedError;
   Document? get document => throw _privateConstructorUsedError;
+  int get quantityTotal => throw _privateConstructorUsedError;
+  double get purchasePriceTotal => throw _privateConstructorUsedError;
+  double get salePriceTotal => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
@@ -40,7 +43,10 @@ mixin _$GoodsState {
             GoodsSetting settings,
             bool showSearchBar,
             bool isSelection,
-            Document? document)
+            Document? document,
+            int quantityTotal,
+            double purchasePriceTotal,
+            double salePriceTotal)
         initial,
   }) =>
       throw _privateConstructorUsedError;
@@ -57,7 +63,10 @@ mixin _$GoodsState {
             GoodsSetting settings,
             bool showSearchBar,
             bool isSelection,
-            Document? document)?
+            Document? document,
+            int quantityTotal,
+            double purchasePriceTotal,
+            double salePriceTotal)?
         initial,
   }) =>
       throw _privateConstructorUsedError;
@@ -74,7 +83,10 @@ mixin _$GoodsState {
             GoodsSetting settings,
             bool showSearchBar,
             bool isSelection,
-            Document? document)?
+            Document? document,
+            int quantityTotal,
+            double purchasePriceTotal,
+            double salePriceTotal)?
         initial,
     required TResult orElse(),
   }) =>
@@ -118,7 +130,10 @@ abstract class $GoodsStateCopyWith<$Res> {
       GoodsSetting settings,
       bool showSearchBar,
       bool isSelection,
-      Document? document});
+      Document? document,
+      int quantityTotal,
+      double purchasePriceTotal,
+      double salePriceTotal});
 
   $GoodsSettingCopyWith<$Res> get settings;
 }
@@ -147,6 +162,9 @@ class _$GoodsStateCopyWithImpl<$Res, $Val extends GoodsState>
     Object? showSearchBar = null,
     Object? isSelection = null,
     Object? document = freezed,
+    Object? quantityTotal = null,
+    Object? purchasePriceTotal = null,
+    Object? salePriceTotal = null,
   }) {
     return _then(_value.copyWith(
       state: null == state
@@ -193,6 +211,18 @@ class _$GoodsStateCopyWithImpl<$Res, $Val extends GoodsState>
           ? _value.document
           : document // ignore: cast_nullable_to_non_nullable
               as Document?,
+      quantityTotal: null == quantityTotal
+          ? _value.quantityTotal
+          : quantityTotal // ignore: cast_nullable_to_non_nullable
+              as int,
+      purchasePriceTotal: null == purchasePriceTotal
+          ? _value.purchasePriceTotal
+          : purchasePriceTotal // ignore: cast_nullable_to_non_nullable
+              as double,
+      salePriceTotal: null == salePriceTotal
+          ? _value.salePriceTotal
+          : salePriceTotal // ignore: cast_nullable_to_non_nullable
+              as double,
     ) as $Val);
   }
 
@@ -223,7 +253,10 @@ abstract class _$$_InitialCopyWith<$Res> implements $GoodsStateCopyWith<$Res> {
       GoodsSetting settings,
       bool showSearchBar,
       bool isSelection,
-      Document? document});
+      Document? document,
+      int quantityTotal,
+      double purchasePriceTotal,
+      double salePriceTotal});
 
   @override
   $GoodsSettingCopyWith<$Res> get settings;
@@ -250,6 +283,9 @@ class __$$_InitialCopyWithImpl<$Res>
     Object? showSearchBar = null,
     Object? isSelection = null,
     Object? document = freezed,
+    Object? quantityTotal = null,
+    Object? purchasePriceTotal = null,
+    Object? salePriceTotal = null,
   }) {
     return _then(_$_Initial(
       state: null == state
@@ -296,6 +332,18 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.document
           : document // ignore: cast_nullable_to_non_nullable
               as Document?,
+      quantityTotal: null == quantityTotal
+          ? _value.quantityTotal
+          : quantityTotal // ignore: cast_nullable_to_non_nullable
+              as int,
+      purchasePriceTotal: null == purchasePriceTotal
+          ? _value.purchasePriceTotal
+          : purchasePriceTotal // ignore: cast_nullable_to_non_nullable
+              as double,
+      salePriceTotal: null == salePriceTotal
+          ? _value.salePriceTotal
+          : salePriceTotal // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
@@ -314,7 +362,10 @@ class _$_Initial implements _Initial {
       required this.settings,
       this.showSearchBar = false,
       this.isSelection = false,
-      this.document})
+      this.document,
+      this.quantityTotal = 0,
+      this.purchasePriceTotal = 0,
+      this.salePriceTotal = 0})
       : _allGoods = allGoods,
         _allGroups = allGroups,
         _goods = goods,
@@ -381,10 +432,19 @@ class _$_Initial implements _Initial {
   final bool isSelection;
   @override
   final Document? document;
+  @override
+  @JsonKey()
+  final int quantityTotal;
+  @override
+  @JsonKey()
+  final double purchasePriceTotal;
+  @override
+  @JsonKey()
+  final double salePriceTotal;
 
   @override
   String toString() {
-    return 'GoodsState.initial(state: $state, allGoods: $allGoods, allGroups: $allGroups, goods: $goods, groups: $groups, textSearch: $textSearch, selectedGroups: $selectedGroups, settings: $settings, showSearchBar: $showSearchBar, isSelection: $isSelection, document: $document)';
+    return 'GoodsState.initial(state: $state, allGoods: $allGoods, allGroups: $allGroups, goods: $goods, groups: $groups, textSearch: $textSearch, selectedGroups: $selectedGroups, settings: $settings, showSearchBar: $showSearchBar, isSelection: $isSelection, document: $document, quantityTotal: $quantityTotal, purchasePriceTotal: $purchasePriceTotal, salePriceTotal: $salePriceTotal)';
   }
 
   @override
@@ -409,7 +469,13 @@ class _$_Initial implements _Initial {
             (identical(other.isSelection, isSelection) ||
                 other.isSelection == isSelection) &&
             (identical(other.document, document) ||
-                other.document == document));
+                other.document == document) &&
+            (identical(other.quantityTotal, quantityTotal) ||
+                other.quantityTotal == quantityTotal) &&
+            (identical(other.purchasePriceTotal, purchasePriceTotal) ||
+                other.purchasePriceTotal == purchasePriceTotal) &&
+            (identical(other.salePriceTotal, salePriceTotal) ||
+                other.salePriceTotal == salePriceTotal));
   }
 
   @override
@@ -425,7 +491,10 @@ class _$_Initial implements _Initial {
       settings,
       showSearchBar,
       isSelection,
-      document);
+      document,
+      quantityTotal,
+      purchasePriceTotal,
+      salePriceTotal);
 
   @JsonKey(ignore: true)
   @override
@@ -447,11 +516,27 @@ class _$_Initial implements _Initial {
             GoodsSetting settings,
             bool showSearchBar,
             bool isSelection,
-            Document? document)
+            Document? document,
+            int quantityTotal,
+            double purchasePriceTotal,
+            double salePriceTotal)
         initial,
   }) {
-    return initial(state, allGoods, allGroups, goods, groups, textSearch,
-        selectedGroups, settings, showSearchBar, isSelection, document);
+    return initial(
+        state,
+        allGoods,
+        allGroups,
+        goods,
+        groups,
+        textSearch,
+        selectedGroups,
+        settings,
+        showSearchBar,
+        isSelection,
+        document,
+        quantityTotal,
+        purchasePriceTotal,
+        salePriceTotal);
   }
 
   @override
@@ -468,11 +553,27 @@ class _$_Initial implements _Initial {
             GoodsSetting settings,
             bool showSearchBar,
             bool isSelection,
-            Document? document)?
+            Document? document,
+            int quantityTotal,
+            double purchasePriceTotal,
+            double salePriceTotal)?
         initial,
   }) {
-    return initial?.call(state, allGoods, allGroups, goods, groups, textSearch,
-        selectedGroups, settings, showSearchBar, isSelection, document);
+    return initial?.call(
+        state,
+        allGoods,
+        allGroups,
+        goods,
+        groups,
+        textSearch,
+        selectedGroups,
+        settings,
+        showSearchBar,
+        isSelection,
+        document,
+        quantityTotal,
+        purchasePriceTotal,
+        salePriceTotal);
   }
 
   @override
@@ -489,13 +590,29 @@ class _$_Initial implements _Initial {
             GoodsSetting settings,
             bool showSearchBar,
             bool isSelection,
-            Document? document)?
+            Document? document,
+            int quantityTotal,
+            double purchasePriceTotal,
+            double salePriceTotal)?
         initial,
     required TResult orElse(),
   }) {
     if (initial != null) {
-      return initial(state, allGoods, allGroups, goods, groups, textSearch,
-          selectedGroups, settings, showSearchBar, isSelection, document);
+      return initial(
+          state,
+          allGoods,
+          allGroups,
+          goods,
+          groups,
+          textSearch,
+          selectedGroups,
+          settings,
+          showSearchBar,
+          isSelection,
+          document,
+          quantityTotal,
+          purchasePriceTotal,
+          salePriceTotal);
     }
     return orElse();
   }
@@ -541,7 +658,10 @@ abstract class _Initial implements GoodsState {
       required final GoodsSetting settings,
       final bool showSearchBar,
       final bool isSelection,
-      final Document? document}) = _$_Initial;
+      final Document? document,
+      final int quantityTotal,
+      final double purchasePriceTotal,
+      final double salePriceTotal}) = _$_Initial;
 
   @override
   BaseState get state;
@@ -565,6 +685,12 @@ abstract class _Initial implements GoodsState {
   bool get isSelection;
   @override
   Document? get document;
+  @override
+  int get quantityTotal;
+  @override
+  double get purchasePriceTotal;
+  @override
+  double get salePriceTotal;
   @override
   @JsonKey(ignore: true)
   _$$_InitialCopyWith<_$_Initial> get copyWith =>

@@ -6,7 +6,7 @@ class DocumentTransaction{
   late int documentId;
   late int goodId;
   late int quantity;
-  late double price;
+  double? price;
   late DocumentType type;
   late int storeId;
   late Good good;

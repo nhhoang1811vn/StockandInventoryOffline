@@ -2,7 +2,7 @@ import 'package:good_manager/domain/entities/base_model.dart';
 
 class Payment extends BaseModel {
   DateTime date = DateTime.now();
-  double amount = 0.0;
+  double? amount;
   late int documentId;
 
   Payment();

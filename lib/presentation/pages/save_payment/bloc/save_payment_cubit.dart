@@ -37,7 +37,7 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
       double amount = amountNum.toDouble();
       emit(state.copyWith(amount: amount));
     }else{
-      emit(state.copyWith(amount: 0));
+      emit(state.copyWith(amount: null));
     }
   }
 

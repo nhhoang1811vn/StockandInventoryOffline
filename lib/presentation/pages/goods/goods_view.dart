@@ -65,9 +65,31 @@ class GoodsPageState extends State<GoodsPage> {
           child: _buildListView(state),
           visible: !(state.goods.isEmpty && state.groups.isEmpty),
         )
-      ]))
+      ])),
+      Align(
+        alignment: Alignment.bottomLeft,
+        child: _buildSummaryInfoWidget(state),
+      )
     ];
     return Column(children: children);
+  }
+
+  Widget _buildSummaryInfoWidget(GoodsState state) {
+    return Container(
+        height: 32,
+        color: Colors.blue,
+        child: IntrinsicHeight(
+            child: Row(
+          children: [
+            SizedBox(width: 16),
+            Text("${AppLocalizations.of(context)!.field_quantity_short_form}:  ${state.quantityTotal.toString()}", style: TextStyle(color: Colors.white)),
+            SizedBox(width: 16),
+            VerticalDivider(width: 2, color: Colors.white),
+            SizedBox(width: 16),
+            Text("${AppLocalizations.of(context)!.field_total_short_form}: ${Config.currencyFormat.format(state.purchasePriceTotal)}/${Config.currencyFormat.format(state.salePriceTotal)}",
+                style: TextStyle(color: Colors.white))
+          ],
+        )));
   }
 
   Widget _buildSelectedGroupView(GoodsState state) => Visibility(

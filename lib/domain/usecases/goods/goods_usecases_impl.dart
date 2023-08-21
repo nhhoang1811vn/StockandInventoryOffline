@@ -39,6 +39,10 @@ class GoodsUseCaseImpl implements GoodsUseCases{
     throw UnimplementedError();
   }
   @override
+  Future<List<Good>> getAllByStoreId(int storeId) {
+    return repository.getAllByStoreId(storeId);
+  }
+  @override
   Future<int> getCount(int storeId) {
     return repository.getCount(storeId);
   }

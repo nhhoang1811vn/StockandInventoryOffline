@@ -20,8 +20,8 @@ mixin _$SaveGoodState {
   NameInput get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get barCode => throw _privateConstructorUsedError;
-  double get purchasePrice => throw _privateConstructorUsedError;
-  double get salePrice => throw _privateConstructorUsedError;
+  double? get purchasePrice => throw _privateConstructorUsedError;
+  double? get salePrice => throw _privateConstructorUsedError;
   List<String> get files => throw _privateConstructorUsedError;
   Good? get item => throw _privateConstructorUsedError;
   Document? get document => throw _privateConstructorUsedError;
@@ -33,8 +33,8 @@ mixin _$SaveGoodState {
             NameInput name,
             String description,
             String barCode,
-            double purchasePrice,
-            double salePrice,
+            double? purchasePrice,
+            double? salePrice,
             List<String> files,
             Good? item,
             Document? document,
@@ -49,8 +49,8 @@ mixin _$SaveGoodState {
             NameInput name,
             String description,
             String barCode,
-            double purchasePrice,
-            double salePrice,
+            double? purchasePrice,
+            double? salePrice,
             List<String> files,
             Good? item,
             Document? document,
@@ -65,8 +65,8 @@ mixin _$SaveGoodState {
             NameInput name,
             String description,
             String barCode,
-            double purchasePrice,
-            double salePrice,
+            double? purchasePrice,
+            double? salePrice,
             List<String> files,
             Good? item,
             Document? document,
@@ -108,8 +108,8 @@ abstract class $SaveGoodStateCopyWith<$Res> {
       NameInput name,
       String description,
       String barCode,
-      double purchasePrice,
-      double salePrice,
+      double? purchasePrice,
+      double? salePrice,
       List<String> files,
       Good? item,
       Document? document,
@@ -133,8 +133,8 @@ class _$SaveGoodStateCopyWithImpl<$Res, $Val extends SaveGoodState>
     Object? name = null,
     Object? description = null,
     Object? barCode = null,
-    Object? purchasePrice = null,
-    Object? salePrice = null,
+    Object? purchasePrice = freezed,
+    Object? salePrice = freezed,
     Object? files = null,
     Object? item = freezed,
     Object? document = freezed,
@@ -157,14 +157,14 @@ class _$SaveGoodStateCopyWithImpl<$Res, $Val extends SaveGoodState>
           ? _value.barCode
           : barCode // ignore: cast_nullable_to_non_nullable
               as String,
-      purchasePrice: null == purchasePrice
+      purchasePrice: freezed == purchasePrice
           ? _value.purchasePrice
           : purchasePrice // ignore: cast_nullable_to_non_nullable
-              as double,
-      salePrice: null == salePrice
+              as double?,
+      salePrice: freezed == salePrice
           ? _value.salePrice
           : salePrice // ignore: cast_nullable_to_non_nullable
-              as double,
+              as double?,
       files: null == files
           ? _value.files
           : files // ignore: cast_nullable_to_non_nullable
@@ -198,8 +198,8 @@ abstract class _$$_InitialCopyWith<$Res>
       NameInput name,
       String description,
       String barCode,
-      double purchasePrice,
-      double salePrice,
+      double? purchasePrice,
+      double? salePrice,
       List<String> files,
       Good? item,
       Document? document,
@@ -220,8 +220,8 @@ class __$$_InitialCopyWithImpl<$Res>
     Object? name = null,
     Object? description = null,
     Object? barCode = null,
-    Object? purchasePrice = null,
-    Object? salePrice = null,
+    Object? purchasePrice = freezed,
+    Object? salePrice = freezed,
     Object? files = null,
     Object? item = freezed,
     Object? document = freezed,
@@ -244,14 +244,14 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.barCode
           : barCode // ignore: cast_nullable_to_non_nullable
               as String,
-      purchasePrice: null == purchasePrice
+      purchasePrice: freezed == purchasePrice
           ? _value.purchasePrice
           : purchasePrice // ignore: cast_nullable_to_non_nullable
-              as double,
-      salePrice: null == salePrice
+              as double?,
+      salePrice: freezed == salePrice
           ? _value.salePrice
           : salePrice // ignore: cast_nullable_to_non_nullable
-              as double,
+              as double?,
       files: null == files
           ? _value._files
           : files // ignore: cast_nullable_to_non_nullable
@@ -280,8 +280,8 @@ class _$_Initial implements _Initial {
       this.name = const NameInput.pure(),
       this.description = '',
       this.barCode = '',
-      this.purchasePrice = 0,
-      this.salePrice = 0,
+      this.purchasePrice,
+      this.salePrice,
       final List<String> files = const [],
       this.item,
       this.document,
@@ -300,11 +300,9 @@ class _$_Initial implements _Initial {
   @JsonKey()
   final String barCode;
   @override
-  @JsonKey()
-  final double purchasePrice;
+  final double? purchasePrice;
   @override
-  @JsonKey()
-  final double salePrice;
+  final double? salePrice;
   final List<String> _files;
   @override
   @JsonKey()
@@ -376,8 +374,8 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             String barCode,
-            double purchasePrice,
-            double salePrice,
+            double? purchasePrice,
+            double? salePrice,
             List<String> files,
             Good? item,
             Document? document,
@@ -396,8 +394,8 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             String barCode,
-            double purchasePrice,
-            double salePrice,
+            double? purchasePrice,
+            double? salePrice,
             List<String> files,
             Good? item,
             Document? document,
@@ -416,8 +414,8 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             String barCode,
-            double purchasePrice,
-            double salePrice,
+            double? purchasePrice,
+            double? salePrice,
             List<String> files,
             Good? item,
             Document? document,
@@ -467,8 +465,8 @@ abstract class _Initial implements SaveGoodState {
       final NameInput name,
       final String description,
       final String barCode,
-      final double purchasePrice,
-      final double salePrice,
+      final double? purchasePrice,
+      final double? salePrice,
       final List<String> files,
       final Good? item,
       final Document? document,
@@ -483,9 +481,9 @@ abstract class _Initial implements SaveGoodState {
   @override
   String get barCode;
   @override
-  double get purchasePrice;
+  double? get purchasePrice;
   @override
-  double get salePrice;
+  double? get salePrice;
   @override
   List<String> get files;
   @override

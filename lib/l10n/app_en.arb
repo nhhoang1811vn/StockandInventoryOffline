@@ -41,6 +41,8 @@
   "field_desc": "Description",
   "field_bar_code": "Barcode",
   "field_quantity": "Quantity",
+  "field_quantity_short_form": "Quan",
+  "field_total_short_form": "Total",
   "field_address": "Address",
   "field_email": "E-mail",
   "field_phone": "Phone",

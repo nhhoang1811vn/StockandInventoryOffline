@@ -6,4 +6,5 @@ abstract class GoodsRepository
   Future<List<Good>> getGoodsByGroupId(int? groupId);
   Future<Good> getGoodByBarcode(String barcode);
   Future<int> getCount(int storeId);
+  Future<List<Good>> getAllByStoreId(int storeId);
 }

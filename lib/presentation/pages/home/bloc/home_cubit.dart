@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../data/storage.dart';
+import '../../../../domain/entities/good.dart';
 import '../../../../domain/usecases/customers/customers_usecases.dart';
 import '../../../../domain/usecases/documents/document_usecases.dart';
 import '../../../../domain/usecases/expenses/expense_usercases.dart';
@@ -32,13 +33,22 @@ class HomeCubit extends Cubit<HomeState> {
 
   void initState() async{
       int storeId = storage.getSelectedStoreId();
-      int countGood = await goodsUseCases.getCount(storeId);
+      List<Good> goods = await goodsUseCases.getAllByStoreId(storeId);
       int countDocument = await documentsUseCases.getCount(storeId);
       int countSupplier = await supplierUseCases.getCount(storeId);
       int countCustomer = await customerUseCase.getCount(storeId);
       double sumExpense = await expenseUseCases.getSum(storeId);
+
+      int quantityTotal = 0;
+      double purchasePriceTotal = 0.0;
+      for (Good good in goods){
+        quantityTotal += good.quantity;
+        purchasePriceTotal += good.quantity * (good.purchasePrice ?? 0.0);
+      }
+
       emit(state.copyWith(
-          countGood: countGood,
+          quantityTotal: quantityTotal,
+          purchasePriceTotal:purchasePriceTotal,
           countDocument: countDocument,
           countSupplier: countSupplier,
           countCustomer: countCustomer,

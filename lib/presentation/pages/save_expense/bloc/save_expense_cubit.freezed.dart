@@ -20,7 +20,7 @@ mixin _$SaveExpenseState {
   NameInput get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   DateTime? get date => throw _privateConstructorUsedError;
-  double get amount => throw _privateConstructorUsedError;
+  double? get amount => throw _privateConstructorUsedError;
   String get exceptionError => throw _privateConstructorUsedError;
   Expense? get item => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -30,7 +30,7 @@ mixin _$SaveExpenseState {
             NameInput name,
             String description,
             DateTime? date,
-            double amount,
+            double? amount,
             String exceptionError,
             Expense? item)
         initial,
@@ -43,7 +43,7 @@ mixin _$SaveExpenseState {
             NameInput name,
             String description,
             DateTime? date,
-            double amount,
+            double? amount,
             String exceptionError,
             Expense? item)?
         initial,
@@ -56,7 +56,7 @@ mixin _$SaveExpenseState {
             NameInput name,
             String description,
             DateTime? date,
-            double amount,
+            double? amount,
             String exceptionError,
             Expense? item)?
         initial,
@@ -96,7 +96,7 @@ abstract class $SaveExpenseStateCopyWith<$Res> {
       NameInput name,
       String description,
       DateTime? date,
-      double amount,
+      double? amount,
       String exceptionError,
       Expense? item});
 }
@@ -118,7 +118,7 @@ class _$SaveExpenseStateCopyWithImpl<$Res, $Val extends SaveExpenseState>
     Object? name = null,
     Object? description = null,
     Object? date = freezed,
-    Object? amount = null,
+    Object? amount = freezed,
     Object? exceptionError = null,
     Object? item = freezed,
   }) {
@@ -139,10 +139,10 @@ class _$SaveExpenseStateCopyWithImpl<$Res, $Val extends SaveExpenseState>
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      amount: null == amount
+      amount: freezed == amount
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
-              as double,
+              as double?,
       exceptionError: null == exceptionError
           ? _value.exceptionError
           : exceptionError // ignore: cast_nullable_to_non_nullable
@@ -168,7 +168,7 @@ abstract class _$$_InitialCopyWith<$Res>
       NameInput name,
       String description,
       DateTime? date,
-      double amount,
+      double? amount,
       String exceptionError,
       Expense? item});
 }
@@ -187,7 +187,7 @@ class __$$_InitialCopyWithImpl<$Res>
     Object? name = null,
     Object? description = null,
     Object? date = freezed,
-    Object? amount = null,
+    Object? amount = freezed,
     Object? exceptionError = null,
     Object? item = freezed,
   }) {
@@ -208,10 +208,10 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      amount: null == amount
+      amount: freezed == amount
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
-              as double,
+              as double?,
       exceptionError: null == exceptionError
           ? _value.exceptionError
           : exceptionError // ignore: cast_nullable_to_non_nullable
@@ -232,7 +232,7 @@ class _$_Initial implements _Initial {
       this.name = const NameInput.pure(),
       this.description = '',
       this.date,
-      this.amount = 0,
+      this.amount,
       this.exceptionError = '',
       this.item});
 
@@ -247,8 +247,7 @@ class _$_Initial implements _Initial {
   @override
   final DateTime? date;
   @override
-  @JsonKey()
-  final double amount;
+  final double? amount;
   @override
   @JsonKey()
   final String exceptionError;
@@ -294,7 +293,7 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             DateTime? date,
-            double amount,
+            double? amount,
             String exceptionError,
             Expense? item)
         initial,
@@ -311,7 +310,7 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             DateTime? date,
-            double amount,
+            double? amount,
             String exceptionError,
             Expense? item)?
         initial,
@@ -328,7 +327,7 @@ class _$_Initial implements _Initial {
             NameInput name,
             String description,
             DateTime? date,
-            double amount,
+            double? amount,
             String exceptionError,
             Expense? item)?
         initial,
@@ -376,7 +375,7 @@ abstract class _Initial implements SaveExpenseState {
       final NameInput name,
       final String description,
       final DateTime? date,
-      final double amount,
+      final double? amount,
       final String exceptionError,
       final Expense? item}) = _$_Initial;
 
@@ -389,7 +388,7 @@ abstract class _Initial implements SaveExpenseState {
   @override
   DateTime? get date;
   @override
-  double get amount;
+  double? get amount;
   @override
   String get exceptionError;
   @override

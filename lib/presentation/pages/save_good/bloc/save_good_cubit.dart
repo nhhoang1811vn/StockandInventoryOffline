@@ -46,8 +46,10 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
         if (state.barCode.trim().isNotEmpty){
           item.barCode = state.barCode.trim();
         }
-        item.purchasePrice = state.purchasePrice!;
-        item.salePrice = state.salePrice!;
+        if (state.transaction == null){
+          item.purchasePrice = state.purchasePrice;
+          item.salePrice = state.salePrice;
+        }
         item.files = state.files;
         if (item.id == null){
           item.id = await useCase.insert(item);
@@ -132,7 +134,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
       double price = numValue.toDouble();
       current.price = price;
     }else{
-      current.price = 0;
+      current.price = null;
     }
     emit(state.copyWith(transaction: current));
   }
@@ -142,7 +144,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
       double price = numValue.toDouble();
       emit(state.copyWith(purchasePrice: price));
     }else{
-      emit(state.copyWith(purchasePrice: 0));
+      emit(state.copyWith(purchasePrice: null));
     }
   }
   void onSalePriceChanged(String value){
@@ -151,7 +153,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
       double price = numValue.toDouble();
       emit(state.copyWith(salePrice: price));
     }else{
-      emit(state.copyWith(salePrice: 0));
+      emit(state.copyWith(salePrice: null));
     }
   }
 }

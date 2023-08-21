@@ -12,6 +12,7 @@ import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/domain/usecases/expenses/expense_usercases.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:injectable/injectable.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -52,7 +53,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
           row.add(Config.currencyFormat.format(item.amount));
           data.add(row);
 
-          total += item.amount;
+          total += item.amount??0;
         }
         if (items.isNotEmpty){
           List<String> totalRow = [];
@@ -221,19 +222,24 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
   }
   onExportExcelFileMenuClicked() async{
     //runtime permission
-    Map<Permission, PermissionStatus> status = await [Permission.storage].request();
+    var status = await Permission.storage.request();
     //convert data to csv
     String csv = const ListToCsvConverter().convert(state.data);
     //convert csv to file
     String? downloadDir = await getDownloadPath();
+
+    String folder = downloadDir! + "/AppViet_QuanLyKho";
+    Directory directory = Directory(folder);
+    if (!directory.existsSync()){
+      directory.create();
+    }
     String extension = ".csv";
     DateTime _now = DateTime.now();
-    String timestamp = "${_now.hour}_${_now.minute}_${_now.second}";
-    String filePath = downloadDir! + "/export_" + timestamp + extension;
+    String timestamp = "${_now.day}_${_now.month}_${_now.year}_${_now.hour}_${_now.minute}_${_now.second}";
+    String filePath = folder + "/export_" + timestamp + extension;
     File f = File(filePath);
     await f.writeAsString(csv);
     print(filePath);
     showInfoToast(filePath);
-    //OpenFile.open(filePath);
   }
 }

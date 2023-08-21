@@ -24,8 +24,11 @@ class Palette {
 }
 class AppColors{
   static Color primaryColor = Colors.blue;
-  static const Color secondaryColor = Colors.black54;
-  static Color greyColor = Color(0xFFF3F3F3);
+  //static const Color secondaryColor = Colors.black;
+  static const Color secondaryColor = Color(0xFF292929);
+  //static Color greyColor = Color(0xFFF3F3F3);
+
+  static Color greyColor = Color(0xFFB7B7B7);
 }
 
 class Config {

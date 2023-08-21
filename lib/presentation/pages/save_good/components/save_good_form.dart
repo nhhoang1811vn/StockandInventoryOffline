@@ -35,10 +35,23 @@ class SaveGoodForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     quantityTextController.text = transaction?.quantity.toString() ?? '';
-    priceTextController.text = Config.simpleCurrencyFormat.format(transaction?.price ?? 0.0); // transaction.pric
+    //priceTextController.text = Config.simpleCurrencyFormat.format(transaction?.price ?? 0.0); // transaction.pric
     barcodeTextController.text = item.barCode ?? '';
-    purchasePriceTextController.text = Config.simpleCurrencyFormat.format(item.purchasePrice);
-    salePriceTextController.text = Config.simpleCurrencyFormat.format(item.salePrice);
+    if (transaction?.price != null){
+      priceTextController.text = Config.simpleCurrencyFormat.format(transaction?.price);
+    }else{
+      priceTextController.text = "";
+    }
+    if (item.purchasePrice != null){
+      purchasePriceTextController.text = Config.simpleCurrencyFormat.format(item.purchasePrice);
+    }else{
+      purchasePriceTextController.text = "";
+    }
+    if (item.salePrice != null){
+      salePriceTextController.text = Config.simpleCurrencyFormat.format(item.salePrice);
+    }else{
+      salePriceTextController.text = "";
+    }
     return BlocConsumer<SaveGoodCubit, SaveGoodState>(
         listenWhen: (state1, state2) {
           return state1.state != state2.state;

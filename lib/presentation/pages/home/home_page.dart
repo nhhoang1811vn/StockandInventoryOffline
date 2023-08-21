@@ -20,9 +20,7 @@ class HomePage extends StatefulWidget {
   @override
   HomePageState createState() => HomePageState();
 }
-
-class HomePageState extends State<HomePage> {
-  //static const titleStyle = TextStyle(color: Colors.blue, fontSize: 16);
+class HomePageState extends State<HomePage>{
   static const bodyStyle = TextStyle(fontSize: TextSize.large);
   @override
   void initState() {
@@ -34,15 +32,6 @@ class HomePageState extends State<HomePage> {
     return BlocConsumer<HomeCubit, HomeState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async{
-          /*if (state.state is OpenGoodsState){
-            Navigator.of(context).pushNamed(Pages.good_list, arguments: {'isSelection': false});
-          } else if (state.state is OpenSuppliersState){
-            Navigator.of(context).pushNamed(Pages.supplier_list, arguments: {'isSelection': false});
-          }else if (state.state is OpenCustomersState){
-            Navigator.of(context).pushNamed(Pages.customer_list, arguments: {'isSelection': false});
-          }else if (state.state is OpenExpensesState){
-            Navigator.of(context).pushNamed(Pages.expenses);
-          }*/
         },
         builder: (context, state) =>  Scaffold(
           resizeToAvoidBottomInset: false,
@@ -184,13 +173,15 @@ class HomePageState extends State<HomePage> {
               SizedBox(height: 4,),
               Text(AppLocalizations.of(context)!.goods_title, style: AppStyle.getHomeMenuTitleStyle()),
               SizedBox(height: 4,),
-              Text(sprintf("%d/%d", [state.countGood, state.quantityGood]), style: bodyStyle),
+              Text("${state.quantityTotal}/${Config.currencyFormat.format(state.purchasePriceTotal)}", style: bodyStyle),
             ],
           )),
     ));
   }
   void openGoods(){
-    Navigator.of(context).pushNamed(Pages.good_list, arguments: {'isSelection': false});
+    Navigator.of(context).pushNamed(Pages.good_list, arguments: {'isSelection': false}).then((value) =>
+        context.read<HomeCubit>().initState()
+    );
   }
 
   Widget _buildDocuments(HomeState state) {
@@ -212,7 +203,9 @@ class HomePageState extends State<HomePage> {
     ));
   }
   void openDocuments(){
-    Navigator.of(context).pushNamed(Pages.document_list);
+    Navigator.of(context).pushNamed(Pages.document_list).then((value) =>
+        context.read<HomeCubit>().initState()
+    );
   }
 
   Widget _buildIncomingDocument() {
@@ -244,8 +237,9 @@ class HomePageState extends State<HomePage> {
     item.storeId = storeId;
     item.type = DocumentType.incoming;
     item.name = AppLocalizations.of(context)!.document_name_no + storage.getAutoDocumentNo(storeId).toString();
-    var result = await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
-
+    Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item}).then((value) =>
+      context.read<HomeCubit>().initState()
+    );
   }
 
   Widget _buildOutgoingDocument() {
@@ -277,7 +271,9 @@ class HomePageState extends State<HomePage> {
     item.storeId = storeId;
     item.type = DocumentType.outgoing;
     item.name = AppLocalizations.of(context)!.document_name_no + storage.getAutoDocumentNo(storeId).toString();
-    var result = await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+    Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item}).then((value) =>
+        context.read<HomeCubit>().initState()
+    );
   }
 
   Widget _buildCustomers(HomeState state) {
@@ -326,10 +322,14 @@ class HomePageState extends State<HomePage> {
     ));
   }
   void openSuppliers(){
-    Navigator.of(context).pushNamed(Pages.supplier_list);
+    Navigator.of(context).pushNamed(Pages.supplier_list).then((value) =>
+        context.read<HomeCubit>().initState()
+    );;
   }
   void openCustomers(){
-    Navigator.of(context).pushNamed(Pages.customer_list);
+    Navigator.of(context).pushNamed(Pages.customer_list).then((value) =>
+        context.read<HomeCubit>().initState()
+    );;
   }
   void openReport(){
     Navigator.of(context).pushNamed(Pages.report);
@@ -357,7 +357,9 @@ class HomePageState extends State<HomePage> {
     ));
   }
   void openExpenses(){
-    Navigator.of(context).pushNamed(Pages.expenses);
+    Navigator.of(context).pushNamed(Pages.expenses).then((value) =>
+        context.read<HomeCubit>().initState()
+    );
   }
 
   Widget _buildReport(HomeState state) {

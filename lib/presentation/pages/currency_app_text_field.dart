@@ -8,7 +8,7 @@ class CurrencyAppTextField extends StatelessWidget{
   final String labelText;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
-  bool? readOnly = false;
+  final bool readOnly;
   /*String? initialValue;
   final ValueChanged<String>? onChanged;
   final GestureTapCallback? onTapped;
@@ -74,6 +74,7 @@ class CurrencyAppTextField extends StatelessWidget{
       style: TextStyle(fontSize: 18, color: color),
     );*/
     return AppTextField(
+        hintText: "0",
         labelText: labelText,
         controller: controller,
         onChanged: onChanged,

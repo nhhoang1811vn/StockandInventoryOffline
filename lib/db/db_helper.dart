@@ -355,9 +355,8 @@ class DBHelper {
         where: "id = ?", whereArgs: <int>[item.id!]);
     return res > 0;
   }
-  Future<List<Good>> getGoods(String storeId) async {
+  Future<List<Good>> getGoods(int storeId) async {
     var dbClient = await db;
-    //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     List<Map> list = await dbClient.rawQuery(
         'SELECT * FROM $GOODS_TABLE_NAME WHERE storeId = ?',
         [storeId]);

@@ -19,27 +19,32 @@ mixin _$SavePaymentState {
   BaseState get state => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   DateTime? get date => throw _privateConstructorUsedError;
-  double get amount => throw _privateConstructorUsedError;
+  double? get amount => throw _privateConstructorUsedError;
   String get exceptionError => throw _privateConstructorUsedError;
   Payment? get item => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(BaseState state, String description,
-            DateTime? date, double amount, String exceptionError, Payment? item)
+    required TResult Function(
+            BaseState state,
+            String description,
+            DateTime? date,
+            double? amount,
+            String exceptionError,
+            Payment? item)
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseState state, String description, DateTime? date,
-            double amount, String exceptionError, Payment? item)?
+            double? amount, String exceptionError, Payment? item)?
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseState state, String description, DateTime? date,
-            double amount, String exceptionError, Payment? item)?
+            double? amount, String exceptionError, Payment? item)?
         initial,
     required TResult orElse(),
   }) =>
@@ -76,7 +81,7 @@ abstract class $SavePaymentStateCopyWith<$Res> {
       {BaseState state,
       String description,
       DateTime? date,
-      double amount,
+      double? amount,
       String exceptionError,
       Payment? item});
 }
@@ -97,7 +102,7 @@ class _$SavePaymentStateCopyWithImpl<$Res, $Val extends SavePaymentState>
     Object? state = null,
     Object? description = null,
     Object? date = freezed,
-    Object? amount = null,
+    Object? amount = freezed,
     Object? exceptionError = null,
     Object? item = freezed,
   }) {
@@ -114,10 +119,10 @@ class _$SavePaymentStateCopyWithImpl<$Res, $Val extends SavePaymentState>
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      amount: null == amount
+      amount: freezed == amount
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
-              as double,
+              as double?,
       exceptionError: null == exceptionError
           ? _value.exceptionError
           : exceptionError // ignore: cast_nullable_to_non_nullable
@@ -142,7 +147,7 @@ abstract class _$$_InitialCopyWith<$Res>
       {BaseState state,
       String description,
       DateTime? date,
-      double amount,
+      double? amount,
       String exceptionError,
       Payment? item});
 }
@@ -160,7 +165,7 @@ class __$$_InitialCopyWithImpl<$Res>
     Object? state = null,
     Object? description = null,
     Object? date = freezed,
-    Object? amount = null,
+    Object? amount = freezed,
     Object? exceptionError = null,
     Object? item = freezed,
   }) {
@@ -177,10 +182,10 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      amount: null == amount
+      amount: freezed == amount
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
-              as double,
+              as double?,
       exceptionError: null == exceptionError
           ? _value.exceptionError
           : exceptionError // ignore: cast_nullable_to_non_nullable
@@ -200,7 +205,7 @@ class _$_Initial implements _Initial {
       {required this.state,
       this.description = '',
       this.date,
-      this.amount = 0,
+      this.amount,
       this.exceptionError = '',
       this.item});
 
@@ -212,8 +217,7 @@ class _$_Initial implements _Initial {
   @override
   final DateTime? date;
   @override
-  @JsonKey()
-  final double amount;
+  final double? amount;
   @override
   @JsonKey()
   final String exceptionError;
@@ -253,8 +257,13 @@ class _$_Initial implements _Initial {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(BaseState state, String description,
-            DateTime? date, double amount, String exceptionError, Payment? item)
+    required TResult Function(
+            BaseState state,
+            String description,
+            DateTime? date,
+            double? amount,
+            String exceptionError,
+            Payment? item)
         initial,
   }) {
     return initial(state, description, date, amount, exceptionError, item);
@@ -264,7 +273,7 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseState state, String description, DateTime? date,
-            double amount, String exceptionError, Payment? item)?
+            double? amount, String exceptionError, Payment? item)?
         initial,
   }) {
     return initial?.call(
@@ -275,7 +284,7 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseState state, String description, DateTime? date,
-            double amount, String exceptionError, Payment? item)?
+            double? amount, String exceptionError, Payment? item)?
         initial,
     required TResult orElse(),
   }) {
@@ -319,7 +328,7 @@ abstract class _Initial implements SavePaymentState {
       {required final BaseState state,
       final String description,
       final DateTime? date,
-      final double amount,
+      final double? amount,
       final String exceptionError,
       final Payment? item}) = _$_Initial;
 
@@ -330,7 +339,7 @@ abstract class _Initial implements SavePaymentState {
   @override
   DateTime? get date;
   @override
-  double get amount;
+  double? get amount;
   @override
   String get exceptionError;
   @override

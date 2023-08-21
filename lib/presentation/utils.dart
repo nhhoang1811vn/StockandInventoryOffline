@@ -13,9 +13,9 @@ class Utils{
     }
     return true;
   }
-  static void showCalculatorPopup(BuildContext context,double value, Function(double) callback) async {
+  static void showCalculatorPopup(BuildContext context,double? value, Function(double) callback) async {
     var calc = SimpleCalculator(
-      value: value,
+      value: value ?? 0,
       onChanged: (key, value, expression) {
         if (value != null){
           callback(value);

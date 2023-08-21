@@ -69,49 +69,12 @@ class GoodItemRow extends StatelessWidget {
     return  Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Text(Config.currencyFormat.format(item.purchasePrice), style: TextStyle(color: Palette.red)),
+        Text(Config.currencyFormat.format(item.purchasePrice??0), style: TextStyle(color: Palette.red)),
         Text("/"),
-        Text(Config.currencyFormat.format(item.salePrice), style: TextStyle(color: Palette.green))
+        Text(Config.currencyFormat.format(item.salePrice??0), style: TextStyle(color: Palette.green))
       ],
     );
   }
-
-  /*@override
-  Widget build(BuildContext context) {
-    return ListTile(
-        title: Text(
-          item.name,
-          style: AppStyle.getTitleListTitleStyle(),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Visibility(
-              visible: item.description.isNotEmpty,
-              child: Text(
-                item.description,
-                style: AppStyle.getSubTitleListTitleStyle(),
-              ),
-            ),
-            if (item.barCode != null)
-              Row(children: [
-                Icon(UIConstants.barcodeIconData, size: 24,color: UIConstants.primaryColor),
-                SizedBox(
-                  width: 8,
-                ),
-                Text(item.barCode!, style: AppStyle.getSubTitleListTitleStyle())
-              ])
-          ],
-        ),
-        trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-          Text(quantity.toString(), style: AppStyle.getTrailingListTitleStyle()),
-        ]),
-        leading: item.files.isNotEmpty
-            ? getAvatarWidget(item.files.first)
-            : emptyAvatarWidget,
-        onTap: () => onGoodTapped(item),
-        onLongPress: () => onGoodLongPressed(item));
-  }*/
 
   Widget getAvatarWidget(String path) {
     return Container(

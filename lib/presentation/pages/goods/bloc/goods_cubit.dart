@@ -135,7 +135,16 @@ class GoodsCubit extends Cubit<GoodsState> {
   void filter(){
     List<Group> groups = filterGroups();
     List<Good> goods = filterGoods();
-    emit(state.copyWith(groups: groups, goods: goods));
+
+    int quantityTotal = 0;
+    double purchasePriceTotal = 0.0;
+    double salePriceTotal = 0.0;
+    goods.forEach((element) {
+      quantityTotal += element.quantity;
+      purchasePriceTotal += (element.quantity * (element.purchasePrice ?? 0.0));
+      salePriceTotal += (element.quantity * (element.salePrice?? 0.0));
+    });
+    emit(state.copyWith(groups: groups, goods: goods,quantityTotal: quantityTotal,purchasePriceTotal: purchasePriceTotal,salePriceTotal: salePriceTotal));
   }
   void sort(){
     List<Group> groups = sortGroups();

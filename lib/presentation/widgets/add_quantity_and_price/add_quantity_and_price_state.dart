@@ -5,7 +5,7 @@ class AddQuantityAndPriceState with _$AddQuantityAndPriceState {
   const factory AddQuantityAndPriceState.initial({
     required BaseState state,
     @Default(1) int quantity,
-    @Default(0.0) double price,
-    @Default(0.0) double amount
+    double? price,
+    double? amount
   }) = _Initial;
 }

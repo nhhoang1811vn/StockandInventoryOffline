@@ -37,7 +37,6 @@ class MyAppState extends State<MyApp> {
   String? _languageCode;
   final AppRouter _router;
   bool? firstTime;
-  //Storage storage = getIt<Storage>();
 
   MyAppState() : _router = AppRouter() {
     firstTime = storage.getFirstTime();
@@ -79,7 +78,6 @@ class MyAppState extends State<MyApp> {
           primarySwatch: Colors.blue,
           inputDecorationTheme: InputDecorationTheme(
             isDense: true,
-            //contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
           )
         ),
         home: firstTime! ? OnBoardingPage() : _homePage(),

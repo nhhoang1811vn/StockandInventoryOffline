@@ -7,7 +7,7 @@ class SaveExpenseState with _$SaveExpenseState {
     @Default(NameInput.pure()) NameInput name,
     @Default('') String description,
     DateTime? date,
-    @Default(0) double amount,
+    double? amount,
     @Default('') String exceptionError,
     Expense? item
   }) = _Initial;

@@ -19,7 +19,7 @@ class ExpenseItemRow extends StatelessWidget {
         Config.dateFormat.format(item.date),
         style: AppStyle.getSubTitleListTitleStyle(),
       ),
-      trailing: Text(Config.currencyFormat.format(item.amount),
+      trailing: Text(Config.currencyFormat.format(item.amount??0),
           style: AppStyle.getTrailingListTitleStyle()),
       onTap: () => onPressed(item),
       onLongPress: () => onLongPressed(item),

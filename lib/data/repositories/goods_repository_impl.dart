@@ -38,6 +38,10 @@ class GoodsRepositoryImpl implements GoodsRepository {
   Future<List<Good>> getAll() {
     throw UnimplementedError();
   }
+  @override
+  Future<List<Good>> getAllByStoreId(int storeId) {
+    return db.getGoods(storeId);
+  }
 
   @override
   Future<int> getCount(int storeId) {

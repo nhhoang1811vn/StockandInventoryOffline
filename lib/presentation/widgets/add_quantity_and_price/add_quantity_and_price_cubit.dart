@@ -16,11 +16,14 @@ class AddQuantityAndPriceCubit extends Cubit<AddQuantityAndPriceState> {
   void onQuantityChanged(String value){
     int? quantity = int.tryParse(value);
     if (quantity != null){
-      double amount = quantity * state.price;
-      emit(state.copyWith(quantity: quantity, amount: amount));
+      double? amount = state.price;
+      if (state.price != null){
+        emit(state.copyWith(quantity: quantity, amount: state.price! * quantity));
+      }else{
+        emit(state.copyWith(quantity: quantity));
+      }
     }else{
-      double amount = 0 * state.price;
-      emit(state.copyWith(quantity: 0, amount: amount));
+      emit(state.copyWith(quantity: 0, amount: null));
     }
 
   }
@@ -31,12 +34,17 @@ class AddQuantityAndPriceCubit extends Cubit<AddQuantityAndPriceState> {
       double amount = state.quantity * price;
       emit(state.copyWith(price: price, amount: amount));
     }else{
-      emit(state.copyWith(price: 0, amount: 0));
+      emit(state.copyWith(price: null, amount: null));
     }
   }
 
-  void initState(int quantity, double price) {
-    emit(state.copyWith(quantity: quantity, price: price, amount: quantity*price));
+  void initState(int quantity, double? price) {
+    if (price != null){
+      emit(state.copyWith(quantity: quantity, price: price, amount: quantity*price));
+    }else{
+      emit(state.copyWith(quantity: quantity, price: price));
+    }
+
   }
   void onQuantityCalculatorPressed(){
     emit(state.copyWith(state: OpenCalculatorToInputQuantityState()));

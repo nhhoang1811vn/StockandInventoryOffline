@@ -7,14 +7,12 @@ class Good extends BaseModel {
   late int storeId;
   int? groupId;
 
-  double purchasePrice = 0;
-  double salePrice = 0;
+  double? purchasePrice;
+  double? salePrice;
   List<String> files = [];
 
   //todo take care quantity here, it mapping manual
   int quantity = 0;
-  //int pendingQuantity = 0;
-
   Good();
 
   Good.map(dynamic obj) {

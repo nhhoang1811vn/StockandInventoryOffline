@@ -44,7 +44,7 @@ class SaveExpenseCubit extends Cubit<SaveExpenseState> {
       double amount = numValue.toDouble();
       emit(state.copyWith(amount: amount));
     }else{
-      emit(state.copyWith(amount: 0));
+      emit(state.copyWith(amount: null));
     }
   }
 

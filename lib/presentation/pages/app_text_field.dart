@@ -5,6 +5,7 @@ import '../constants.dart';
 
 class AppTextField extends StatelessWidget{
   final String labelText;
+  final String hintText;
   String? initialValue;
   final ValueChanged<String>? onChanged;
   final GestureTapCallback? onTapped;
@@ -18,6 +19,7 @@ class AppTextField extends StatelessWidget{
   AppTextField({
     Key? key,
     required this.labelText,
+    this.hintText = "",
     this.initialValue,
     this.onChanged,
     this.onTapped,
@@ -45,6 +47,7 @@ class AppTextField extends StatelessWidget{
       keyboardType: keyboardType,
       decoration: InputDecoration(
         border: border,
+
         suffixText: suffixText,
         disabledBorder: border,
         enabledBorder: border,
@@ -52,7 +55,9 @@ class AppTextField extends StatelessWidget{
         focusedErrorBorder: errorBorder,
         labelText: labelText,
         errorText: error,
-        labelStyle: TextStyle(fontSize: 18, color: color)
+        labelStyle: TextStyle(fontSize: 18, color: color),
+        hintText: hintText,
+        hintStyle: TextStyle(fontSize: 18, color: AppColors.greyColor)
       ),
       autocorrect: false,
       textInputAction: TextInputAction.done,

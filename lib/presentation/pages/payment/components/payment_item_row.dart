@@ -16,7 +16,7 @@ class PaymentItemRow extends StatelessWidget {
     return ListTile(
       title: Text(Config.dateFormat.format(item.date), style: AppStyle.getTitleListTitleStyle()),
       subtitle: Text(item.description, style: AppStyle.getSubTitleListTitleStyle(),),
-      trailing: Text(Config.currencyFormat.format(item.amount),
+      trailing: Text(Config.currencyFormat.format(item.amount??0),
           style: AppStyle.getTrailingListTitleStyle()),
       onTap: () => onPressed(item),
       onLongPress: () => onLongPressed(item),

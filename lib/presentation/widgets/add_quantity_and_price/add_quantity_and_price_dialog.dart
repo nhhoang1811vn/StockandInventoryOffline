@@ -35,11 +35,15 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
 
   @override
   Widget build(BuildContext context) {
-    double price = (widget.type == DocumentType.incoming ? widget.good.purchasePrice : widget.good.salePrice);
+    double? price = (widget.type == DocumentType.incoming ? widget.good.purchasePrice : widget.good.salePrice);
     int quantity = 1;
     cubit.initState(quantity, price);
     quantityTextController.text = quantity.toString();
-    priceTextController.text = Config.simpleCurrencyFormat.format(price);
+    if (price != null){
+      priceTextController.text = Config.simpleCurrencyFormat.format(price);
+    }else{
+      priceTextController.text = "";
+    }
     return BlocProvider(create: (_) => cubit, child: _buildBody(context));
   }
   Widget _buildBody(BuildContext context) {
@@ -132,7 +136,12 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
   }
 
   Widget _buildAmount(BuildContext context, AddQuantityAndPriceState state) {
-    amountTextController.text = Config.simpleCurrencyFormat.format(state.amount);
+    if (state.amount != null){
+      amountTextController.text = Config.simpleCurrencyFormat.format(state.amount);
+    }else{
+      amountTextController.text = "";
+    }
+
     return Row(
       children: [
         Expanded(

@@ -24,8 +24,11 @@ class SavePaymentForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     dateController.text = Config.dateFormat.format(item.date);
-    amountController.text = Config.simpleCurrencyFormat.format(item.amount);
-
+    if (item.amount != null){
+      amountController.text = Config.simpleCurrencyFormat.format(item.amount);
+    }else{
+      amountController.text = "";
+    }
     return BlocConsumer<SavePaymentCubit, SavePaymentState>(
         listener: (context, state) {
           if (state.state is SaveItemError) {
