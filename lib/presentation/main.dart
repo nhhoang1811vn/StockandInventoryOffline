@@ -74,6 +74,7 @@ class MyAppState extends State<MyApp> {
       );
     } else {
       return MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
           inputDecorationTheme: InputDecorationTheme(
