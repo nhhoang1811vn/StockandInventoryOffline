@@ -166,7 +166,7 @@ class StoresPageState extends State<StoresPage> {
           });
         },
         separatorBuilder: (context, index) {
-          return Divider();
+          return Divider(color: Colors.grey[500]);
         },
         itemCount: data.items.length);
   }

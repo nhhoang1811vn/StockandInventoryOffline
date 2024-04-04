@@ -42,11 +42,38 @@ class DBHelper {
 
   DBHelper.internal();
 
+  Map<int, List<String>> migrationScripts = {
+    //version 2 alter quantity from INT to REAL
+    2: [
+      //create temp table
+      "CREATE TABLE Temp(id INTEGER PRIMARY KEY,createdDate INTEGER, updatedDate INTEGER, documentId INTEGER NOT NULL, goodId INTEGER NOT NULL,storeId INTEGER NOT NULL, quantity REAL, price REAL,documentType INTEGER, " +
+          "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE, " +
+          "FOREIGN KEY(goodId) REFERENCES $GOODS_TABLE_NAME(id) ON DELETE CASCADE," +
+          "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
+      //copy data
+      "INSERT INTO Temp(id, createdDate, updatedDate, documentId, goodId, storeId, quantity, price, documentType) " +
+          "SELECT id, createdDate, updatedDate, documentId, goodId, storeId, quantity, price, documentType FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME",
+      //remove
+      "DROP TABLE $DOCUMENT_TRANSACTIONS_TABLE_NAME",
+      //rename
+      "ALTER TABLE Temp RENAME TO $DOCUMENT_TRANSACTIONS_TABLE_NAME"
+    ],
+  };
+
   initDb() async {
     io.Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, "main.db");
-    var theDb = await openDatabase(path, version: 1, onCreate: _onCreate);
+    //var theDb = await openDatabase(path, version: 1, onCreate: _onCreate, onUpgrade: _onUpgrade);
+    var theDb = await openDatabase(path, version: 2, onCreate: _onCreate, onUpgrade: _onUpgrade);
     return theDb;
+  }
+  void _onUpgrade(Database db, int oldVersion, int newVersion) async{
+    for (int i = oldVersion + 1; i <= newVersion; i++) {
+      var scripts = migrationScripts[i]!;
+      for (int j = 0; j< scripts.length; j++){
+        await db.execute(scripts[j]);
+      }
+    }
   }
 
   void _onCreate(Database db, int version) async {
@@ -78,7 +105,7 @@ class DBHelper {
             "FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)");
 
     await db.execute(
-        "CREATE TABLE $DOCUMENT_TRANSACTIONS_TABLE_NAME(id INTEGER PRIMARY KEY,createdDate INTEGER, updatedDate INTEGER, documentId INTEGER NOT NULL, goodId INTEGER NOT NULL,storeId INTEGER NOT NULL, quantity INTEGER, price REAL,documentType INTEGER, " +
+        "CREATE TABLE $DOCUMENT_TRANSACTIONS_TABLE_NAME(id INTEGER PRIMARY KEY,createdDate INTEGER, updatedDate INTEGER, documentId INTEGER NOT NULL, goodId INTEGER NOT NULL,storeId INTEGER NOT NULL, quantity REAL, price REAL,documentType INTEGER, " +
             "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE, " +
             "FOREIGN KEY(goodId) REFERENCES $GOODS_TABLE_NAME(id) ON DELETE CASCADE," +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)");
@@ -363,8 +390,8 @@ class DBHelper {
     List<Good> goods = [];
     for (int i = 0; i < list.length; i++) {
       var good = Good.map(list[i]);
-      int incomingQuantity = await getSumQuantityByGoodId(DocumentType.incoming, good.id!);
-      int outgoingQuantity = await getSumQuantityByGoodId(DocumentType.outgoing, good.id!);
+      double incomingQuantity = await getSumQuantityByGoodId(DocumentType.incoming, good.id!);
+      double outgoingQuantity = await getSumQuantityByGoodId(DocumentType.outgoing, good.id!);
       good.quantity = incomingQuantity - outgoingQuantity;
       goods.add(good);
     }
@@ -385,9 +412,9 @@ class DBHelper {
     List<Good> goods = [];
     for (int i = 0; i < list.length; i++) {
       var good = Good.map(list[i]);
-      int incomingQuantity =
+      double incomingQuantity =
       await getSumQuantityByGoodId(DocumentType.incoming, good.id!);
-      int outgoingQuantity =
+      double outgoingQuantity =
       await getSumQuantityByGoodId(DocumentType.outgoing, good.id!);
       good.quantity = incomingQuantity - outgoingQuantity;
       goods.add(good);
@@ -403,9 +430,9 @@ class DBHelper {
         [barcode]);
     if (list.length > 0) {
       var good = Good.map(list[0]);
-      int incomingQuantity =
+      double incomingQuantity =
           await getSumQuantityByGoodId(DocumentType.incoming, good.id!);
-      int outgoingQuantity =
+      double outgoingQuantity =
           await getSumQuantityByGoodId(DocumentType.outgoing, good.id!);
       good.quantity = incomingQuantity - outgoingQuantity;
       return good;
@@ -576,7 +603,7 @@ class DBHelper {
     return res == 1;
   }
 
-  Future<int> getSumQuantity(String storeId,DocumentType type) async {
+  /*Future<int> getSumQuantity(String storeId,DocumentType type) async {
     //int storeId = await appDataManager.sharedPrefsHelper.getSelectedStoreId();
     var dbClient = await db;
     var result = await dbClient.rawQuery(
@@ -586,14 +613,21 @@ class DBHelper {
     //return value == null ? 0 : value;
     int? count = Sqflite.firstIntValue(result);
     return count == null ? 0 : count;
-  }
-  Future<int> getSumQuantityByGoodId(DocumentType type, int goodId) async {
+  }*/
+  Future<double> getSumQuantityByGoodId(DocumentType type, int goodId) async {
     var dbClient = await db;
     var result = await dbClient.rawQuery(
         'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE goodId = ? AND documentType = ?',
         [goodId, type.index]);
-    int? count = Sqflite.firstIntValue(result);
-    return count == null ? 0 : count;
+    //resul
+    var a = result[0]["SUM(quantity)"];
+    if (a == null){
+      return 0.0;
+    }else{
+      double value = double.parse(a.toString());
+      return value;
+    }
+
   }
 
   //EXPENSES

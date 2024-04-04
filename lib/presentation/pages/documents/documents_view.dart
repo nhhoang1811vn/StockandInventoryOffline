@@ -213,7 +213,7 @@ class DocumentPageState extends State<DocumentsPage> {
             }
           },
           separatorBuilder: (context, index) {
-            return Divider();
+            return Divider(color: Colors.grey[500]);
           },
           itemCount: state.items.length));
 
@@ -230,7 +230,7 @@ class DocumentPageState extends State<DocumentsPage> {
             }
             },
           separatorBuilder: (context, index) {
-            return Divider();
+            return Divider(color: Colors.grey[500]);
           },
           itemCount: state.incomingItems.length));
 
@@ -247,7 +247,7 @@ class DocumentPageState extends State<DocumentsPage> {
             }
             },
           separatorBuilder: (context, index) {
-            return Divider();
+            return Divider(color: Colors.grey[500]);
           },
           itemCount: state.outgoingItems.length));
 

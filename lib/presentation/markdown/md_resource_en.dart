@@ -1,8 +1,13 @@
 class MarkdownResourceEN{
  static const String donationText = """
- ## Momo my phone number 0975 997 203
+ ## Momo my phone number 0975 997 20x
   """;
  static const String whatNews = """
+  ## Version 1.0.1 - April 4
+ 
+ ### Modified Table Transaction.Quantity from INT to REAL.
+ ### Updated Sound And Vibration when a barcode scanned
+ 
  ## Version 1.0.0
  
  ### First Release.

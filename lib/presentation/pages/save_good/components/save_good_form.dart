@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -96,6 +95,7 @@ class SaveGoodForm extends StatelessWidget {
                   builder: (context) => const SimpleBarcodeScannerPage(),
                 ));
             if (result != "-1") {
+              Utils.handleABarcodeFound();
               barcodeTextController.text = result;
               context.read<SaveGoodCubit>().barCodeChanged(result);
             }
@@ -171,7 +171,7 @@ class SaveGoodForm extends StatelessWidget {
           keyboardType: TextInputType.number,
           onChanged: (value) => context.read<SaveGoodCubit>().quantityChanged(value),
           controller: quantityTextController,
-          inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+          //inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
         )),
         Align(
             alignment: Alignment.centerRight,

@@ -29,7 +29,7 @@ class AddGroupState extends BaseState{
 }
 class InsertTransactionSuccessState extends BaseState{
   late int goodId;
-  late int quantity;
+  late double quantity;
   InsertTransactionSuccessState(this.goodId, this.quantity);
 }
 class InsertTransactionFailedState extends BaseState{

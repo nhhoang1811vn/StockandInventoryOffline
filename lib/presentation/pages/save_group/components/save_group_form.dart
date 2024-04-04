@@ -10,6 +10,7 @@ import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../../../../presentation/widgets/snackbar_widgets.dart';
+import '../../../utils.dart';
 import '../../../widgets/circle_button_widget.dart';
 import '../../../widgets/images_preview/images_preview_view.dart';
 
@@ -42,6 +43,7 @@ class SaveGroupForm extends StatelessWidget {
                   builder: (context) => const SimpleBarcodeScannerPage(),
                 ));
             if (result != "-1"){
+              Utils.handleABarcodeFound();
               barcodeTextController.text = result;
               context.read<SaveGroupCubit>().barCodeChanged(result);
             }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/presentation/constants.dart';
 
 class DocumentDateRow extends StatelessWidget {
   final String text;
@@ -8,6 +7,13 @@ class DocumentDateRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text(text, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16.0),), color: AppColors.greyColor, padding: EdgeInsets.fromLTRB(16.0, 4.0, 0.0, 4.0),);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+            padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+            child: Text(text, style: TextStyle(color: Colors.blue[700], fontWeight: FontWeight.bold, fontSize: 16.0))),
+      ],
+    );
   }
 }

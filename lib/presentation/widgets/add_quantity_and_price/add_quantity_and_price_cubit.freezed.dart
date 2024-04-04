@@ -17,27 +17,27 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$AddQuantityAndPriceState {
   BaseState get state => throw _privateConstructorUsedError;
-  int get quantity => throw _privateConstructorUsedError;
+  double? get quantity => throw _privateConstructorUsedError;
   double? get price => throw _privateConstructorUsedError;
   double? get amount => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
-            BaseState state, int quantity, double? price, double? amount)
+            BaseState state, double? quantity, double? price, double? amount)
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
-            BaseState state, int quantity, double? price, double? amount)?
+            BaseState state, double? quantity, double? price, double? amount)?
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
-            BaseState state, int quantity, double? price, double? amount)?
+            BaseState state, double? quantity, double? price, double? amount)?
         initial,
     required TResult orElse(),
   }) =>
@@ -70,7 +70,7 @@ abstract class $AddQuantityAndPriceStateCopyWith<$Res> {
           $Res Function(AddQuantityAndPriceState) then) =
       _$AddQuantityAndPriceStateCopyWithImpl<$Res, AddQuantityAndPriceState>;
   @useResult
-  $Res call({BaseState state, int quantity, double? price, double? amount});
+  $Res call({BaseState state, double? quantity, double? price, double? amount});
 }
 
 /// @nodoc
@@ -88,7 +88,7 @@ class _$AddQuantityAndPriceStateCopyWithImpl<$Res,
   @override
   $Res call({
     Object? state = null,
-    Object? quantity = null,
+    Object? quantity = freezed,
     Object? price = freezed,
     Object? amount = freezed,
   }) {
@@ -97,10 +97,10 @@ class _$AddQuantityAndPriceStateCopyWithImpl<$Res,
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
               as BaseState,
-      quantity: null == quantity
+      quantity: freezed == quantity
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double?,
       price: freezed == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
@@ -121,7 +121,7 @@ abstract class _$$_InitialCopyWith<$Res>
       __$$_InitialCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({BaseState state, int quantity, double? price, double? amount});
+  $Res call({BaseState state, double? quantity, double? price, double? amount});
 }
 
 /// @nodoc
@@ -135,7 +135,7 @@ class __$$_InitialCopyWithImpl<$Res>
   @override
   $Res call({
     Object? state = null,
-    Object? quantity = null,
+    Object? quantity = freezed,
     Object? price = freezed,
     Object? amount = freezed,
   }) {
@@ -144,10 +144,10 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
               as BaseState,
-      quantity: null == quantity
+      quantity: freezed == quantity
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double?,
       price: freezed == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
@@ -164,13 +164,12 @@ class __$$_InitialCopyWithImpl<$Res>
 
 class _$_Initial implements _Initial {
   const _$_Initial(
-      {required this.state, this.quantity = 1, this.price, this.amount});
+      {required this.state, this.quantity, this.price, this.amount});
 
   @override
   final BaseState state;
   @override
-  @JsonKey()
-  final int quantity;
+  final double? quantity;
   @override
   final double? price;
   @override
@@ -206,7 +205,7 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
-            BaseState state, int quantity, double? price, double? amount)
+            BaseState state, double? quantity, double? price, double? amount)
         initial,
   }) {
     return initial(state, quantity, price, amount);
@@ -216,7 +215,7 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
-            BaseState state, int quantity, double? price, double? amount)?
+            BaseState state, double? quantity, double? price, double? amount)?
         initial,
   }) {
     return initial?.call(state, quantity, price, amount);
@@ -226,7 +225,7 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
-            BaseState state, int quantity, double? price, double? amount)?
+            BaseState state, double? quantity, double? price, double? amount)?
         initial,
     required TResult orElse(),
   }) {
@@ -268,14 +267,14 @@ class _$_Initial implements _Initial {
 abstract class _Initial implements AddQuantityAndPriceState {
   const factory _Initial(
       {required final BaseState state,
-      final int quantity,
+      final double? quantity,
       final double? price,
       final double? amount}) = _$_Initial;
 
   @override
   BaseState get state;
   @override
-  int get quantity;
+  double? get quantity;
   @override
   double? get price;
   @override

@@ -27,7 +27,7 @@ mixin _$GoodsState {
   bool get showSearchBar => throw _privateConstructorUsedError;
   bool get isSelection => throw _privateConstructorUsedError;
   Document? get document => throw _privateConstructorUsedError;
-  int get quantityTotal => throw _privateConstructorUsedError;
+  double get quantityTotal => throw _privateConstructorUsedError;
   double get purchasePriceTotal => throw _privateConstructorUsedError;
   double get salePriceTotal => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -44,7 +44,7 @@ mixin _$GoodsState {
             bool showSearchBar,
             bool isSelection,
             Document? document,
-            int quantityTotal,
+            double quantityTotal,
             double purchasePriceTotal,
             double salePriceTotal)
         initial,
@@ -64,7 +64,7 @@ mixin _$GoodsState {
             bool showSearchBar,
             bool isSelection,
             Document? document,
-            int quantityTotal,
+            double quantityTotal,
             double purchasePriceTotal,
             double salePriceTotal)?
         initial,
@@ -84,7 +84,7 @@ mixin _$GoodsState {
             bool showSearchBar,
             bool isSelection,
             Document? document,
-            int quantityTotal,
+            double quantityTotal,
             double purchasePriceTotal,
             double salePriceTotal)?
         initial,
@@ -131,7 +131,7 @@ abstract class $GoodsStateCopyWith<$Res> {
       bool showSearchBar,
       bool isSelection,
       Document? document,
-      int quantityTotal,
+      double quantityTotal,
       double purchasePriceTotal,
       double salePriceTotal});
 
@@ -214,7 +214,7 @@ class _$GoodsStateCopyWithImpl<$Res, $Val extends GoodsState>
       quantityTotal: null == quantityTotal
           ? _value.quantityTotal
           : quantityTotal // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       purchasePriceTotal: null == purchasePriceTotal
           ? _value.purchasePriceTotal
           : purchasePriceTotal // ignore: cast_nullable_to_non_nullable
@@ -254,7 +254,7 @@ abstract class _$$_InitialCopyWith<$Res> implements $GoodsStateCopyWith<$Res> {
       bool showSearchBar,
       bool isSelection,
       Document? document,
-      int quantityTotal,
+      double quantityTotal,
       double purchasePriceTotal,
       double salePriceTotal});
 
@@ -335,7 +335,7 @@ class __$$_InitialCopyWithImpl<$Res>
       quantityTotal: null == quantityTotal
           ? _value.quantityTotal
           : quantityTotal // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       purchasePriceTotal: null == purchasePriceTotal
           ? _value.purchasePriceTotal
           : purchasePriceTotal // ignore: cast_nullable_to_non_nullable
@@ -434,7 +434,7 @@ class _$_Initial implements _Initial {
   final Document? document;
   @override
   @JsonKey()
-  final int quantityTotal;
+  final double quantityTotal;
   @override
   @JsonKey()
   final double purchasePriceTotal;
@@ -517,7 +517,7 @@ class _$_Initial implements _Initial {
             bool showSearchBar,
             bool isSelection,
             Document? document,
-            int quantityTotal,
+            double quantityTotal,
             double purchasePriceTotal,
             double salePriceTotal)
         initial,
@@ -554,7 +554,7 @@ class _$_Initial implements _Initial {
             bool showSearchBar,
             bool isSelection,
             Document? document,
-            int quantityTotal,
+            double quantityTotal,
             double purchasePriceTotal,
             double salePriceTotal)?
         initial,
@@ -591,7 +591,7 @@ class _$_Initial implements _Initial {
             bool showSearchBar,
             bool isSelection,
             Document? document,
-            int quantityTotal,
+            double quantityTotal,
             double purchasePriceTotal,
             double salePriceTotal)?
         initial,
@@ -659,7 +659,7 @@ abstract class _Initial implements GoodsState {
       final bool showSearchBar,
       final bool isSelection,
       final Document? document,
-      final int quantityTotal,
+      final double quantityTotal,
       final double purchasePriceTotal,
       final double salePriceTotal}) = _$_Initial;
 
@@ -686,7 +686,7 @@ abstract class _Initial implements GoodsState {
   @override
   Document? get document;
   @override
-  int get quantityTotal;
+  double get quantityTotal;
   @override
   double get purchasePriceTotal;
   @override

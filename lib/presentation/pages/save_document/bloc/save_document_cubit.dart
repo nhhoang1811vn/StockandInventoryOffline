@@ -159,7 +159,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   void loadTransactions() async {
     if (state.item?.id != null){
       List<DocumentTransaction> transactions = await useCase.getTransactionsByDocumentId(state.item!.id!);
-      int totalQuantity = 0;
+      double totalQuantity = 0;
       double totalAmount = 0.0;
       transactions.forEach((element) {
         totalQuantity += element.quantity;
@@ -311,7 +311,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
     }
   }
 
-  void saveThenAddTransaction(Good good, int quantity, double? price) async{
+  void saveThenAddTransaction(Good good, double quantity, double? price) async{
     bool result = await save();
     if (result){
       DocumentTransaction transaction = DocumentTransaction();

@@ -31,7 +31,7 @@ mixin _$SaveDocumentState {
       throw _privateConstructorUsedError;
   bool get showSearchBar => throw _privateConstructorUsedError;
   String get textSearch => throw _privateConstructorUsedError;
-  int get totalQuantity => throw _privateConstructorUsedError;
+  double get totalQuantity => throw _privateConstructorUsedError;
   double get totalAmount => throw _privateConstructorUsedError;
   PaymentStatus? get paymentStatus => throw _privateConstructorUsedError;
   List<Payment> get payments => throw _privateConstructorUsedError;
@@ -51,7 +51,7 @@ mixin _$SaveDocumentState {
             List<DocumentTransaction> transactions,
             bool showSearchBar,
             String textSearch,
-            int totalQuantity,
+            double totalQuantity,
             double totalAmount,
             PaymentStatus? paymentStatus,
             List<Payment> payments)
@@ -74,7 +74,7 @@ mixin _$SaveDocumentState {
             List<DocumentTransaction> transactions,
             bool showSearchBar,
             String textSearch,
-            int totalQuantity,
+            double totalQuantity,
             double totalAmount,
             PaymentStatus? paymentStatus,
             List<Payment> payments)?
@@ -97,7 +97,7 @@ mixin _$SaveDocumentState {
             List<DocumentTransaction> transactions,
             bool showSearchBar,
             String textSearch,
-            int totalQuantity,
+            double totalQuantity,
             double totalAmount,
             PaymentStatus? paymentStatus,
             List<Payment> payments)?
@@ -147,7 +147,7 @@ abstract class $SaveDocumentStateCopyWith<$Res> {
       List<DocumentTransaction> transactions,
       bool showSearchBar,
       String textSearch,
-      int totalQuantity,
+      double totalQuantity,
       double totalAmount,
       PaymentStatus? paymentStatus,
       List<Payment> payments});
@@ -242,7 +242,7 @@ class _$SaveDocumentStateCopyWithImpl<$Res, $Val extends SaveDocumentState>
       totalQuantity: null == totalQuantity
           ? _value.totalQuantity
           : totalQuantity // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       totalAmount: null == totalAmount
           ? _value.totalAmount
           : totalAmount // ignore: cast_nullable_to_non_nullable
@@ -289,7 +289,7 @@ abstract class _$$_InitialCopyWith<$Res>
       List<DocumentTransaction> transactions,
       bool showSearchBar,
       String textSearch,
-      int totalQuantity,
+      double totalQuantity,
       double totalAmount,
       PaymentStatus? paymentStatus,
       List<Payment> payments});
@@ -382,7 +382,7 @@ class __$$_InitialCopyWithImpl<$Res>
       totalQuantity: null == totalQuantity
           ? _value.totalQuantity
           : totalQuantity // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       totalAmount: null == totalAmount
           ? _value.totalAmount
           : totalAmount // ignore: cast_nullable_to_non_nullable
@@ -471,7 +471,7 @@ class _$_Initial implements _Initial {
   final String textSearch;
   @override
   @JsonKey()
-  final int totalQuantity;
+  final double totalQuantity;
   @override
   @JsonKey()
   final double totalAmount;
@@ -570,7 +570,7 @@ class _$_Initial implements _Initial {
             List<DocumentTransaction> transactions,
             bool showSearchBar,
             String textSearch,
-            int totalQuantity,
+            double totalQuantity,
             double totalAmount,
             PaymentStatus? paymentStatus,
             List<Payment> payments)
@@ -613,7 +613,7 @@ class _$_Initial implements _Initial {
             List<DocumentTransaction> transactions,
             bool showSearchBar,
             String textSearch,
-            int totalQuantity,
+            double totalQuantity,
             double totalAmount,
             PaymentStatus? paymentStatus,
             List<Payment> payments)?
@@ -656,7 +656,7 @@ class _$_Initial implements _Initial {
             List<DocumentTransaction> transactions,
             bool showSearchBar,
             String textSearch,
-            int totalQuantity,
+            double totalQuantity,
             double totalAmount,
             PaymentStatus? paymentStatus,
             List<Payment> payments)?
@@ -730,7 +730,7 @@ abstract class _Initial implements SaveDocumentState {
       final List<DocumentTransaction> transactions,
       final bool showSearchBar,
       final String textSearch,
-      final int totalQuantity,
+      final double totalQuantity,
       final double totalAmount,
       final PaymentStatus? paymentStatus,
       final List<Payment> payments}) = _$_Initial;
@@ -762,7 +762,7 @@ abstract class _Initial implements SaveDocumentState {
   @override
   String get textSearch;
   @override
-  int get totalQuantity;
+  double get totalQuantity;
   @override
   double get totalAmount;
   @override

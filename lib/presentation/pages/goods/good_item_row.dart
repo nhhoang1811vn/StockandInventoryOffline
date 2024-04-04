@@ -7,7 +7,7 @@ import 'package:good_manager/presentation/constants.dart';
 
 class GoodItemRow extends StatelessWidget {
   final Good item;
-  final int quantity;
+  final double quantity;
   final void Function(Good good) onGoodTapped;
   final void Function(Good good) onGoodLongPressed;
   final bool isSelection;

@@ -39,7 +39,7 @@ class HomeCubit extends Cubit<HomeState> {
       int countCustomer = await customerUseCase.getCount(storeId);
       double sumExpense = await expenseUseCases.getSum(storeId);
 
-      int quantityTotal = 0;
+      double quantityTotal = 0;
       double purchasePriceTotal = 0.0;
       for (Good good in goods){
         quantityTotal += good.quantity;

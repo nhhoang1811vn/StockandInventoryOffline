@@ -12,6 +12,7 @@ import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/sort_goods_dialog.dart';
 import 'package:good_manager/presentation/style_size.dart';
+import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:sprintf/sprintf.dart';
@@ -153,7 +154,7 @@ class GoodsPageState extends State<GoodsPage> {
           }
         },
         separatorBuilder: (context, index) {
-          return Divider();
+          return Divider(color: Colors.grey[500]);
         },
         itemCount: state.groups.length + state.goods.length);
   }
@@ -267,6 +268,7 @@ class GoodsPageState extends State<GoodsPage> {
   }
 
   void onPressedGood(Good item) async {
+    //AudioPlayer().play(AssetSource('audio/beep.mp3'));
     if (widget.isSelection) {
       showAddQuantityAndPriceDialog(item, widget.document!.type);
     } else {
@@ -282,7 +284,8 @@ class GoodsPageState extends State<GoodsPage> {
     Map<dynamic, dynamic>? result = await showDialog(
         context: context, builder: (_) => AddQuantityAndPriceWidget(good, type), barrierDismissible: true);
     if (result != null) {
-      int quantity = result["quantity"] ?? 0;
+      //int quantity = result["quantity"] ?? 0;
+      double quantity = result["quantity"] ?? 0.0;
       double price = result["price"] ?? 0.0;
       context.read<GoodsCubit>().addTransaction(good.id!, quantity, price);
     }
@@ -450,6 +453,7 @@ class GoodsPageState extends State<GoodsPage> {
                   builder: (context) => const SimpleBarcodeScannerPage(),
                 ));
             if (result != "-1") {
+              Utils.handleABarcodeFound();
               searchTextController.text = result;
               context.read<GoodsCubit>().onSearchTextChanged(result);
             }
@@ -460,7 +464,7 @@ class GoodsPageState extends State<GoodsPage> {
                 ? null
                 : CustomNavigationDrawer(selectedIndex: 1, storeName: storage.getSelectedStoreName()),
             appBar: new AppBar(
-                title: new Text(AppLocalizations.of(context)!.goods_title),
+                title: new Text(widget.isSelection ? AppLocalizations.of(context)!.goods_select_title : AppLocalizations.of(context)!.goods_title),
                 actions: [_buildSearchMenu(state), _buildSortMenu(state), helpMenu]),
             body: _buildBody(context, state),
             floatingActionButton: SpeedDial(

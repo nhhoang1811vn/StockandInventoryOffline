@@ -123,7 +123,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
   void quantityChanged(String value) {
     if (value.isNotEmpty){
       DocumentTransaction current = state.transaction!;
-      current.quantity = int.tryParse(value) ?? 0;
+      current.quantity = double.tryParse(value) ?? 0;
       emit(state.copyWith(transaction: current));
     }
   }

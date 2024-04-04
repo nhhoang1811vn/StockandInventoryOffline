@@ -47,7 +47,7 @@ class SaveDocumentForm extends StatelessWidget {
               (item) => onLongPressedTransaction(context, transaction));
         },
         separatorBuilder: (context, index) {
-          return Divider();
+          return Divider(color: Colors.grey[500]);
         },
         itemCount: state.transactions.length);
   }

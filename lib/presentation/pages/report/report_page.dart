@@ -57,7 +57,7 @@ class ReportPage extends StatelessWidget {
         );
       },
       separatorBuilder: (context, index) {
-        return Divider();
+        return Divider(color: Colors.grey[500]);
       },
     );
   }
