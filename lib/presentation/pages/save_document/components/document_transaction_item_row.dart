@@ -65,9 +65,18 @@ class DocumentTransactionItemRow extends StatelessWidget {
     );
   }
   Widget _buildBottom(){
-    return Align(alignment: Alignment.centerRight, child: Text("${Config.currencyFormat.format(item.price??0)} / ${Config.currencyFormat.format(item.price??0.0 * item.quantity)}"),);
+    //var price = 0.0;
+    var leftValue = "";
+    var rightValue = "";
+    if (item.price == null){
+      leftValue = Config.currencyFormat.format(0.0);
+      rightValue = Config.currencyFormat.format(0.0);
+    }else{
+      leftValue = Config.currencyFormat.format(item.price!);
+      rightValue = Config.currencyFormat.format(item.price!* item.quantity);
+    }
+    return Align(alignment: Alignment.centerRight, child: Text("$leftValue / $rightValue"));
   }
-
   Widget getAvatarWidget(String path) {
     return Container(
         width: 50,

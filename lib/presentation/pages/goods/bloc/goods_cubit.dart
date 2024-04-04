@@ -136,7 +136,7 @@ class GoodsCubit extends Cubit<GoodsState> {
     List<Group> groups = filterGroups();
     List<Good> goods = filterGoods();
 
-    int quantityTotal = 0;
+    double quantityTotal = 0;
     double purchasePriceTotal = 0.0;
     double salePriceTotal = 0.0;
     goods.forEach((element) {
@@ -332,9 +332,7 @@ class GoodsCubit extends Cubit<GoodsState> {
     groupsUseCase.update(item);
     loadItems();
   }
-  void addTransaction(int goodId, int quantity, double price) async{
-    //bool result = await saveDocument();
-    //if (result){
+  void addTransaction(int goodId, double quantity, double price) async{
       DocumentTransaction transaction = DocumentTransaction();
       transaction.documentId = state.document!.id!;
       transaction.goodId = goodId;
@@ -352,21 +350,9 @@ class GoodsCubit extends Cubit<GoodsState> {
       }else{
         emit(state.copyWith(state: InsertTransactionFailedState()));
       }
-    //}
   }
-  /*Future<bool> saveDocument() async{
-      Document item = state.document!;
-      if (item.id == null) {
-        int id = await documentsUseCases.insert(item);
-        item.id = id;
-      } else {
-        await documentsUseCases.update(item);
-      }
-      emit(state.copyWith(document: item));
-      return true;
-  }*/
 
-  void updateQuantity(int goodId, int quantity) {
+  void updateQuantity(int goodId, double quantity) {
     List<Good> goods = [];
     goods.addAll(state.allGoods);
     for (Good item in goods){

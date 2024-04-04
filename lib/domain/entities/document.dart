@@ -26,7 +26,7 @@ class Document extends BaseModel {
 
 
   String? personName;
-  int quantity = 0;
+  double quantity = 0.0;
   double amount = 0.0;
   Document();
 
@@ -53,7 +53,7 @@ class Document extends BaseModel {
       this.personName = obj["customerName"];
     }
     this.storeId = obj["storeId"];
-    this.quantity = obj["quantity"]??0;
+    this.quantity = obj["quantity"]??0.0;
     this.amount = obj["amount"]??0.0;
   }
 

@@ -15,7 +15,7 @@ class GoodsState with _$GoodsState {
     @Default(false) bool isSelection,
     Document? document,
 
-    @Default(0) int quantityTotal,
+    @Default(0) double quantityTotal,
     @Default(0) double purchasePriceTotal,
     @Default(0) double salePriceTotal,
   }) = _Initial;

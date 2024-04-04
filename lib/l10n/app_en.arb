@@ -1,6 +1,7 @@
 {
   "home_title": "Home",
   "goods_title": "Goods",
+  "goods_select_title": "Select A Good",
   "expenses_title": "Expenses",
   "empty_goods": "No goods",
   "good": "Good",
@@ -94,7 +95,7 @@
   "sort_by_option_z_to_a_text": "Z to A",
   "sort_by_option_ascending_text": "Ascending",
   "sort_by_option_descending_text": "Descending",
-  "in_stock_text": "In Stock: %d",
+  "in_stock_text": "In Stock: %s",
   "menu_item_invite_friend_header": "Invite friends",
   "send_mail_invite_friend_subject": "Invitation using App",
   "send_mail_invite_friend_content": "This is a good application, I use it everyday and recommend it for you. \nDownload link: https://play.google.com/store/apps/details?id=com.ssteam.good_manager",

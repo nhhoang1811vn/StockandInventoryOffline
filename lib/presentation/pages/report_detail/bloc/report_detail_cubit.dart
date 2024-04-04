@@ -12,7 +12,6 @@ import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/domain/usecases/expenses/expense_usercases.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:injectable/injectable.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -86,7 +85,8 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
             revenueTotal += item.amount;
           }
           data.add(row);
-          quantityTotal += item.quantity;
+          //todo
+          //quantityTotal += item.quantity;
         }
         if (items.isNotEmpty){
           List<String> totalRow = [];

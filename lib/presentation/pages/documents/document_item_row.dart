@@ -15,10 +15,12 @@ class DocumentItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-        onTap: () => onDocumentTapped(item),
-        onLongPress: () => onDocumentLongPressed(item),
-        child: Container(
+    return
+      //margin: EdgeInsets.only(top: 16.0,left: 16.0, right: 16.0),
+         InkWell(
+          onTap: () => onDocumentTapped(item),
+          onLongPress: () => onDocumentLongPressed(item)
+        ,child:  Container(
           padding: EdgeInsets.fromLTRB(16, 8 , 16 , 8),
           child: Column(
             children: [

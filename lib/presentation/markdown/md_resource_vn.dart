@@ -1,6 +1,6 @@
 class MarkdownResourceVN{
  static const String donationText = """
- ## Momo cho SDT của mình nhé. 0975 997 203
+ ## Momo cho SDT của mình nhé. 0975 997 20x
   """;
   static const String helpStores = """
  ### Bạn có thể luu trữ các Hàng Hoá theo cửa hàng (nhà kho, cửa tiệm).
@@ -49,6 +49,9 @@ class MarkdownResourceVN{
  ### Chúng tôi đã tạo ra chức năng đơn giản này để theo dõi các chi tiêu của bạn cho một cửa hàng. 
  """;
   static const String whatNews = """
+ ## Phiên bản 1.0.1 04/04/2024
+ ### Cho phép nhập số THỰC ở trường số lượng.
+ ### Cập nhât chức năng rung và âm thanh khi quét mã vạch. 
  ## Phiên bản 1.0.0
  
  ### Lần đầu tiên ra mắt chưa có gì để nói cả :), mọi người chọn nút trợ giúp ở từng màn hình để hiểu rõ nhé.

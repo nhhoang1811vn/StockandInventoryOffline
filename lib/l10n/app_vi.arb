@@ -1,6 +1,7 @@
 {
   "home_title": "Menu chính",
   "goods_title": "Hàng hoá",
+  "goods_select_title": "Chọn 1 Hàng Hoá",
   "expenses_title": "Chi tiêu",
   "empty_goods": "Chưa có hàng hoá",
   "good": "Hàng hoá",
@@ -93,7 +94,7 @@
   "sort_by_option_z_to_a_text": "Từ Z đến A",
   "sort_by_option_ascending_text": "Tăng dần",
   "sort_by_option_descending_text": "Giảm dần",
-  "in_stock_text": "Tồn kho: %d",
+  "in_stock_text": "Tồn kho: %s",
   "menu_item_invite_friend_header": "Mời bạn bè",
   "send_mail_invite_friend_subject": "Lời mời sử dụng ứng dụng",
   "send_mail_invite_friend_content": "Đây là ứng dụng rất tuyệt vời mà mình sử dụng thường xuyên để quản lý kho, mình muốn giới thiệu nó cho bạn. \nĐường dẫn: https://play.google.com/store/apps/details?id=com.ssteam.good_manager",

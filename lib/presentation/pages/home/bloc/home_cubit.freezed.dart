@@ -17,7 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$HomeState {
   BaseState get state => throw _privateConstructorUsedError;
-  int get quantityTotal => throw _privateConstructorUsedError;
+  double get quantityTotal => throw _privateConstructorUsedError;
   double get purchasePriceTotal => throw _privateConstructorUsedError;
   int get countDocument => throw _privateConstructorUsedError;
   int get countSupplier => throw _privateConstructorUsedError;
@@ -27,7 +27,7 @@ mixin _$HomeState {
   TResult when<TResult extends Object?>({
     required TResult Function(
             BaseState state,
-            int quantityTotal,
+            double quantityTotal,
             double purchasePriceTotal,
             int countDocument,
             int countSupplier,
@@ -40,7 +40,7 @@ mixin _$HomeState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
             BaseState state,
-            int quantityTotal,
+            double quantityTotal,
             double purchasePriceTotal,
             int countDocument,
             int countSupplier,
@@ -53,7 +53,7 @@ mixin _$HomeState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
             BaseState state,
-            int quantityTotal,
+            double quantityTotal,
             double purchasePriceTotal,
             int countDocument,
             int countSupplier,
@@ -92,7 +92,7 @@ abstract class $HomeStateCopyWith<$Res> {
   @useResult
   $Res call(
       {BaseState state,
-      int quantityTotal,
+      double quantityTotal,
       double purchasePriceTotal,
       int countDocument,
       int countSupplier,
@@ -129,7 +129,7 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
       quantityTotal: null == quantityTotal
           ? _value.quantityTotal
           : quantityTotal // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       purchasePriceTotal: null == purchasePriceTotal
           ? _value.purchasePriceTotal
           : purchasePriceTotal // ignore: cast_nullable_to_non_nullable
@@ -163,7 +163,7 @@ abstract class _$$_InitialCopyWith<$Res> implements $HomeStateCopyWith<$Res> {
   @useResult
   $Res call(
       {BaseState state,
-      int quantityTotal,
+      double quantityTotal,
       double purchasePriceTotal,
       int countDocument,
       int countSupplier,
@@ -197,7 +197,7 @@ class __$$_InitialCopyWithImpl<$Res>
       quantityTotal: null == quantityTotal
           ? _value.quantityTotal
           : quantityTotal // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       purchasePriceTotal: null == purchasePriceTotal
           ? _value.purchasePriceTotal
           : purchasePriceTotal // ignore: cast_nullable_to_non_nullable
@@ -238,7 +238,7 @@ class _$_Initial implements _Initial {
   final BaseState state;
   @override
   @JsonKey()
-  final int quantityTotal;
+  final double quantityTotal;
   @override
   @JsonKey()
   final double purchasePriceTotal;
@@ -302,7 +302,7 @@ class _$_Initial implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function(
             BaseState state,
-            int quantityTotal,
+            double quantityTotal,
             double purchasePriceTotal,
             int countDocument,
             int countSupplier,
@@ -319,7 +319,7 @@ class _$_Initial implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
             BaseState state,
-            int quantityTotal,
+            double quantityTotal,
             double purchasePriceTotal,
             int countDocument,
             int countSupplier,
@@ -336,7 +336,7 @@ class _$_Initial implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
             BaseState state,
-            int quantityTotal,
+            double quantityTotal,
             double purchasePriceTotal,
             int countDocument,
             int countSupplier,
@@ -384,7 +384,7 @@ class _$_Initial implements _Initial {
 abstract class _Initial implements HomeState {
   const factory _Initial(
       {required final BaseState state,
-      final int quantityTotal,
+      final double quantityTotal,
       final double purchasePriceTotal,
       final int countDocument,
       final int countSupplier,
@@ -394,7 +394,7 @@ abstract class _Initial implements HomeState {
   @override
   BaseState get state;
   @override
-  int get quantityTotal;
+  double get quantityTotal;
   @override
   double get purchasePriceTotal;
   @override

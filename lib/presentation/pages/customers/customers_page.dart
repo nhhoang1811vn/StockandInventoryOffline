@@ -171,7 +171,7 @@ class CustomersPageState extends State<CustomersPage> {
             });
           },
           separatorBuilder: (context, index) {
-            return Divider();
+            return Divider(color: Colors.grey[500]);
           },
           itemCount: data.items.length);
   }

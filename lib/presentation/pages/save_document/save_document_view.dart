@@ -11,6 +11,7 @@ import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/main.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
+import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
@@ -78,6 +79,7 @@ class SaveDocumentPage extends StatelessWidget {
                   builder: (context) => const SimpleBarcodeScannerPage(),
                 ));
             if (result != "-1"){
+              Utils.handleABarcodeFound();
               context.read<SaveDocumentCubit>().findGood(result);
             }
           }else if (state.state is OpenHelpPageState){
@@ -128,7 +130,7 @@ class SaveDocumentPage extends StatelessWidget {
                 context: context,
                 builder: (_) => AddQuantityAndPriceWidget(good, item.type),
                 barrierDismissible: true);
-            int quantity = result["quantity"] ?? 0;
+            double quantity = result["quantity"] ?? 0;
             double price = result["price"] ?? 0.0;
             context.read<SaveDocumentCubit>().saveThenAddTransaction(good, quantity, price);
             context.read<SaveDocumentCubit>().onBatchScanMenuClicked();
@@ -141,6 +143,7 @@ class SaveDocumentPage extends StatelessWidget {
                   builder: (context) => const SimpleBarcodeScannerPage(),
                 ));
             if (result != "-1"){
+              Utils.handleABarcodeFound();
               //searchTextController.text = result;
               context.read<SaveDocumentCubit>().onSearchTextChanged(result);
             }else{

@@ -81,7 +81,7 @@ class UIConstants {
   static const TextStyle fieldHintStyle =
       TextStyle(fontWeight: FontWeight.w300, color: Colors.black);
   static const String appName = "AppViet Quản Lý Kho";
-  static const String appVersion = "1.0.0";
+  static const String appVersion = "1.0.1";
   static const double progressBarOpacity = 0.6;
   static const Color progressBarColor = Colors.black;
   static Color primaryColor = Colors.blue[600]!;

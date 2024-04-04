@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/good.dart';
@@ -36,7 +35,7 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
   @override
   Widget build(BuildContext context) {
     double? price = (widget.type == DocumentType.incoming ? widget.good.purchasePrice : widget.good.salePrice);
-    int quantity = 1;
+    double quantity = 1.0;
     cubit.initState(quantity, price);
     quantityTextController.text = quantity.toString();
     if (price != null){
@@ -53,9 +52,9 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
         },
         listener: (context, state) async {
           if (state.state is OpenCalculatorToInputQuantityState){
-            Utils.showCalculatorPopup(context, state.quantity.toDouble(), (p0){
-              cubit.onQuantityChanged(p0.toInt().toString());
-              quantityTextController.text = p0.toInt().toString();
+            Utils.showCalculatorPopup(context, state.quantity, (p0){
+              cubit.onQuantityChanged(p0.toString());
+              quantityTextController.text = p0.toString();
             });
           }else if (state.state is OpenCalculatorToInputPriceState){
             Utils.showCalculatorPopup(context, state.price,(p0){
@@ -95,6 +94,7 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
                   child: Text(AppLocalizations.of(context)!.action_ok),
                   onPressed: () async {
                     Navigator.of(context).pop({"quantity": state.quantity, "price": state.price});
+                    //Navigator.of(context).pop({"quantity": 1, "price": state.price});
                   },
                 ),
               ],
@@ -109,7 +109,7 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
             controller: quantityTextController,
             labelText: AppLocalizations.of(context)!.field_quantity,
             keyboardType: TextInputType.number,
-            inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+            //inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
             onChanged: context.read<AddQuantityAndPriceCubit>().onQuantityChanged,
           ),
         ),

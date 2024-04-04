@@ -12,7 +12,7 @@ class Good extends BaseModel {
   List<String> files = [];
 
   //todo take care quantity here, it mapping manual
-  int quantity = 0;
+  double quantity = 0;
   Good();
 
   Good.map(dynamic obj) {
