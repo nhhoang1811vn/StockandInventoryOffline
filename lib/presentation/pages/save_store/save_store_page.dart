@@ -25,13 +25,9 @@ class SaveStorePage extends StatelessWidget {
     return PreferredSize(preferredSize : Size.fromHeight(UIConstants.appBarHeight), child: AppBar(
         title: Text(AppLocalizations.of(context)!.save_store_title),
         actions: <Widget>[
-          InkWell(
-            onTap: () => context.read<SaveStoreCubit>().onSaveClicked(),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.check),
-            ),
-          )
+          IconButton(onPressed: (){
+            context.read<SaveStoreCubit>().onSaveClicked();
+          }, icon:  Icon(Icons.check))
         ]));
   }
 }

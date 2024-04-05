@@ -103,7 +103,7 @@
   "menu_item_feedback_header": "Gửi phản hồi",
   "menu_item_feedback_description": "Chia sẻ phản hồi để cải thiện ứng dụng",
   "menu_item_community_header": "Cộng đồng",
-  "menu_item_donation": "Ủng hộ cafe",
+  "menu_item_donation": "Ủng hộ",
   "menu_item_community_description": "Tham gia cộng đồng ứng dụng để theo dõi tin tức",
   "menu_item_whats_new_header": "Thông tin cập nhật mới",
   "menu_item_whats_new_description": "Các thay đổi của ứng dụng",
@@ -184,5 +184,9 @@
   "payment_due_pending": "Cần trả/còn nợ",
   "payment_paid": "Đã trả",
   "empty_payment": "Chưa có thanh toán",
-  "save_payment_title": "Lưu thanh toán"
+  "save_payment_title": "Lưu thanh toán",
+  "menu_back_up": "Sao lưu dữ liệu",
+  "menu_restore": "Phục hồi dữ liệu",
+  "backup_successful" : "Sao lưu dữ liệu thành công",
+  "restore_successful": "Phục hồi dữ liệu thành công"
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/payment_status.dart';
-import 'package:good_manager/presentation/app_style.dart';
 import 'package:good_manager/presentation/constants.dart';
 
 class DocumentItemRow extends StatelessWidget {
@@ -42,20 +41,30 @@ class DocumentItemRow extends StatelessWidget {
                     children: [
                       Text(
                         item.name,
-                        style: AppStyle.getTitleListTitleStyle(),
+                        style:
+                          Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                       ),
                       //SizedBox(height: 4),
-                      Text(Config.dateFormat.format(item.date), style: AppStyle.getSubTitleListTitleStyle()),
+                      Text(Config.dateFormat.format(item.date), style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Theme.of(context).colorScheme.onBackground)),
                       //SizedBox(height: 4),
-                      item.personName != null ? Text(item.personName!, style: AppStyle.getSubTitleListTitleStyle(),) : Container(),
-                      item.description.isNotEmpty ? Text(item.description, style: AppStyle.getSubTitleListTitleStyle()) : Container()
+                      item.personName != null ? Text(item.personName!, style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Theme.of(context).colorScheme.onBackground),) : Container(),
+                      item.description.isNotEmpty ? Text(item.description, style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Theme.of(context).colorScheme.onBackground)) : Container()
                     ],
                   )),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(item.quantity.toString(), style: AppStyle.getTrailingListTitleStyle()),
+                      Text(item.quantity.toString(), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground)),
                       Text(Config.currencyFormat.format(item.amount))
                     ],
                   )

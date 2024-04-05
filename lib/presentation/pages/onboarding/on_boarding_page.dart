@@ -22,13 +22,17 @@ class OnBoardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context){
-    const bodyStyle = TextStyle(fontSize: 19.0);
-    const pageDecoration = const PageDecoration(
-      titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
+    const bodyStyle = TextStyle(fontSize: 18.0);
+    const pageDecoration =  PageDecoration(
+      imagePadding : EdgeInsets.only(bottom: 48.0),
+
+      titlePadding: EdgeInsets.only(bottom: 20.0, top: 120.0),
+      //pageMargin: EdgeInsets.only(bottom: 48.0),
+      //pageMargin:  EdgeInsets.only(bottom: 0.0),
+      titleTextStyle: TextStyle(fontSize: 26.0, fontWeight: FontWeight.w700),
       bodyTextStyle: bodyStyle,
-      descriptionPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-      pageColor: Colors.white,
-      imagePadding: EdgeInsets.zero,
+      pageColor: Colors.blue,
+      //imagePadding: EdgeInsets.zero,
     );
     return BlocProvider(create: (context) => cubit, child: BlocConsumer<OnBoardingCubit, OnBoardingState>(listener: (context, state){
       if (state.status.isFailure) {
@@ -43,22 +47,57 @@ class OnBoardingPage extends StatelessWidget {
         PageViewModel(
           title: AppLocalizations.of(context)!.on_boarding_title_1,
           body: AppLocalizations.of(context)!.on_boarding_content_1,
-          image: Icon(UIConstants.storeIconData, size: 60, color: AppColors.primaryColor,),
+          image: Container(width: 150.0,
+              height: 150.0,
+              padding: EdgeInsets.all(32.0),
+              decoration: BoxDecoration(
+                border: Border.all(width: 2, color: Colors.white),
+            shape: BoxShape.circle,
+          ),child: Image.asset(
+            "images/onboarding_store.png",
+          )),
+          //image: Image.asset(name)
+          //image: Icon(UIConstants.storeIconData, size: 60, color: AppColors.primaryColor,),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: AppLocalizations.of(context)!.on_boarding_title_2,
           body: AppLocalizations.of(context)!.on_boarding_content_2,
-          image: Icon(UIConstants.goodIconData, size: 60 , color: AppColors.primaryColor),
+          image: Container(width: 150.0,
+              height: 150.0,
+              padding: EdgeInsets.all(32.0),
+              decoration: BoxDecoration(
+                border: Border.all(width: 2, color: Colors.white),
+                shape: BoxShape.circle,
+              ),child: Image.asset(
+                "images/onboarding_good.png",
+              )),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: AppLocalizations.of(context)!.on_boarding_title_3,
           body: AppLocalizations.of(context)!.on_boarding_content_3,
-          image: Icon(UIConstants.documentIconData, size: 60, color: AppColors.primaryColor),
+          image: Container(width: 150.0,
+              height: 150.0,
+              padding: EdgeInsets.all(32.0),
+              decoration: BoxDecoration(
+                border: Border.all(width: 2, color: Colors.white),
+                shape: BoxShape.circle,
+              ),child: Image.asset(
+                "images/onboarding_document.png",
+              )),
           decoration: pageDecoration,
         ),
         PageViewModel(
+            image: Container(width: 150.0,
+                height: 150.0,
+                padding: EdgeInsets.all(32.0),
+                decoration: BoxDecoration(
+                  border: Border.all(width: 2, color: Colors.white),
+                  shape: BoxShape.circle,
+                ),child: Image.asset(
+                  "images/onboarding_store.png",
+                )),
           title: AppLocalizations.of(context)!.on_boarding_title_4,
           bodyWidget: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -72,14 +111,14 @@ class OnBoardingPage extends StatelessWidget {
               ),
             ],
           ),
-          image: Icon(UIConstants.storeIconData, size: 60, color: AppColors.primaryColor),
+          //image: Icon(UIConstants.storeIconData, size: 60, color: AppColors.primaryColor),
           decoration: pageDecoration,
         ),
       ],
       onDone: () => context.read<OnBoardingCubit>().onAddStore(),
       //onSkip: () => _onIntroEnd(context), // You can override onSkip callback
       showSkipButton: true,
-      skipFlex: 0,
+      //skipFlex: 0,
       nextFlex: 0,
       skip: Text(AppLocalizations.of(context)!.action_skip),
       next: const Icon(Icons.arrow_forward),

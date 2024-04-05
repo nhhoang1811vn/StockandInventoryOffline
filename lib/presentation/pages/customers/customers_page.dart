@@ -226,43 +226,24 @@ class CustomersPageState extends State<CustomersPage> {
           );
         });
   }
-
-  Widget _buildSearchMenu(CustomersState state){
-    return InkWell(
-      child: Padding(padding: EdgeInsets.all(8.0), child: Icon(
-        UIConstants.searchMenuIconData,
-        size: 26,
-        color: state.showSearchBar
-            ? UIConstants.highlightMenuColor
-            : UIConstants.normalMenuColor,
-      ),),
-      onTap: (){
-        searchTextController.text = "";
-        if (!state.showSearchBar){
-          searchTextFocusNode.requestFocus();
-        }
-        context.read<CustomersCubit>().onShowSearchBarMenuClicked();
-      },
-    );
+  Widget _buildSearchMenu(CustomersState state) {
+    return IconButton(onPressed: () {
+      searchTextController.text = "";
+      if (!state.showSearchBar) {
+        searchTextFocusNode.requestFocus();
+      }
+      context.read<CustomersCubit>().onShowSearchBarMenuClicked();
+    }, icon: Icon(Icons.search, color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
   }
-
-  Widget _buildSortMenu(){
-    return InkWell(child: Padding(padding: EdgeInsets.all(8.0), child: Icon(
-      UIConstants.sortMenuIconData,
-      size: 26,
-      color: context.read<CustomersCubit>().hasSortOptions()
-          ? UIConstants.highlightMenuColor
-          : UIConstants.normalMenuColor,
-    )),onTap: context.read<CustomersCubit>().onSortMenuClicked);
+  Widget _buildSortMenu() {
+    return IconButton(onPressed: (){
+      context.read<CustomersCubit>().onSortMenuClicked();
+    }, icon: Icon(Icons.sort, color: context.read<CustomersCubit>().hasSortOptions() ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor ));
   }
   Widget _buildHelpMenu(){
-    return InkWell(
-      child: Padding(padding: EdgeInsets.all(8.0), child: Icon(
-        UIConstants.helpMenuIconData,
-        size: 26,
-      )),
-      onTap: context.read<CustomersCubit>().onHelpMenuClick,
-    );
+    return IconButton(onPressed: (){
+      context.read<CustomersCubit>().onHelpMenuClick();
+    }, icon: Icon(Icons.help));
   }
   Future<void> _launchUrl(String value) async {
     Uri url = Uri.parse(value);

@@ -12,7 +12,6 @@ import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import '../../../../presentation/widgets/snackbar_widgets.dart';
 import '../../../utils.dart';
 import '../../../widgets/circle_button_widget.dart';
-import '../../../widgets/images_preview/images_preview_view.dart';
 
 class SaveGroupForm extends StatelessWidget {
   final Group item;
@@ -71,7 +70,7 @@ class SaveGroupForm extends StatelessWidget {
                               onChanged: (value) => context.read<SaveGroupCubit>().descriptionChanged(value),
                               keyboardType: TextInputType.name),
                           _buildBarCode(context, state),
-                          SizedBox(height: 12),
+                          /*SizedBox(height: 12),
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -79,11 +78,11 @@ class SaveGroupForm extends StatelessWidget {
                               style: TextStyle(color: AppColors.secondaryColor, fontSize: 16),
                             ),
                           ),
-                          SizedBox(height: 12),
+                          SizedBox(height: 12),*/
 
-                          ImagesPreviewView(state.files, false, context
+                          /*ImagesPreviewView(state.files, false, context
                               .read<SaveGroupCubit>()
-                              .onImagesChanged)
+                              .onImagesChanged)*/
 
                         ],
                       ),

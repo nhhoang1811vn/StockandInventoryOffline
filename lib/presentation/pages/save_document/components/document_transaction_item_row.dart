@@ -1,8 +1,7 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
-import 'package:good_manager/presentation/app_style.dart';
 import 'package:good_manager/presentation/constants.dart';
 
 class DocumentTransactionItemRow extends StatelessWidget {
@@ -23,7 +22,7 @@ class DocumentTransactionItemRow extends StatelessWidget {
       child: Padding(padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0), child: Row(children: [
         _buildLeadingWidget(),
         SizedBox(width: 8,),
-        Expanded(child: _buildWidget())
+        Expanded(child: _buildWidget(context))
       ],),),);
   }
   Widget _buildLeadingWidget(){
@@ -31,17 +30,18 @@ class DocumentTransactionItemRow extends StatelessWidget {
         ? getAvatarWidget(item.good.files.first)
         : _buildEmptyAvatarWidget();
   }
-  Widget _buildWidget(){
+  Widget _buildWidget(BuildContext context){
     return Column(children: [
-      _buildTop(),
+      _buildTop(context),
       _buildBottom()
     ],);
   }
-  Widget _buildTop(){
+  Widget _buildTop(BuildContext context){
     return Row(
       children: [
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
-          Text(item.good.name, style: AppStyle.getTitleListTitleStyle()),
+          Text(item.good.name, style:
+          Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
           SizedBox(height: 4),
           if (item.good.barCode != null)
             Row(children: [
@@ -49,18 +49,24 @@ class DocumentTransactionItemRow extends StatelessWidget {
               SizedBox(
                 width: 8,
               ),
-              Text(item.good.barCode!, style: AppStyle.getSubTitleListTitleStyle())
+              Text(item.good.barCode!, style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Theme.of(context).colorScheme.onBackground))
             ]),
           if (item.good.description.isNotEmpty)
             Column(children: [
               SizedBox(height: 4,),
-              Text(item.good.description, style: AppStyle.getSubTitleListTitleStyle())
+              Text(item.good.description, style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Theme.of(context).colorScheme.onBackground))
             ],)
 
 
         ]),),
 
-        Text(item.quantity.toString(), style: AppStyle.getTrailingListTitleStyle(),)
+        Text(item.quantity.toString(), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground),)
       ],
     );
   }
@@ -77,15 +83,16 @@ class DocumentTransactionItemRow extends StatelessWidget {
     }
     return Align(alignment: Alignment.centerRight, child: Text("$leftValue / $rightValue"));
   }
-  Widget getAvatarWidget(String path) {
-    return Container(
+  Widget getAvatarWidget(Uint8List bytes) {
+    return SizedBox(width: 48, height: 48, child: Image.memory(bytes));
+    /*return Container(
         width: 50,
         height: 50,
         alignment: Alignment.center,
         decoration: new BoxDecoration(
             shape: BoxShape.circle,
-            image: DecorationImage(
-                image: FileImage(File(path)), fit: BoxFit.fill)));
+          image: DecorationImage(image: FileImage(File(path)), fit: BoxFit.fill)
+        ));*/
   }
   Widget _buildEmptyAvatarWidget(){
     return SizedBox(width: 48, height: 48, child: Icon(UIConstants.goodIconData, size: 32,color: UIConstants.primaryColor));

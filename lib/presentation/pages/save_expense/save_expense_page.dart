@@ -26,13 +26,9 @@ class SaveExpensePage extends StatelessWidget {
     return PreferredSize(preferredSize : Size.fromHeight(UIConstants.appBarHeight), child: AppBar(
         title: Text(AppLocalizations.of(context)!.save_expense_title),
         actions: <Widget>[
-          InkWell(
-            onTap: () => context.read<SaveExpenseCubit>().onSaveClicked(),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.check),
-            ),
-          )
+          IconButton(onPressed: (){
+            context.read<SaveExpenseCubit>().onSaveClicked();
+          }, icon: Icon(Icons.check))
         ]));
   }
 }

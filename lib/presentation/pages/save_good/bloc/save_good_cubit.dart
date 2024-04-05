@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -101,7 +103,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
   void barCodeChanged(String value){
     emit(state.copyWith(barCode: value));
   }
-  void onImagesChanged(List<String> value){
+  void onImagesChanged(List<Uint8List> value){
     emit(state.copyWith(files: value));
   }
   void onQuantityCalculatorPressed(){

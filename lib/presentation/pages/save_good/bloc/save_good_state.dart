@@ -9,7 +9,7 @@ class SaveGoodState with _$SaveGoodState {
     @Default('') String barCode,
     double? purchasePrice,
     double? salePrice,
-    @Default([]) List<String> files,
+    @Default([]) List<Uint8List> files,
     Good? item,
     Document? document,
     DocumentTransaction? transaction
