@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/group.dart';
-import 'package:good_manager/presentation/app_style.dart';
 import 'package:good_manager/presentation/constants.dart';
 
 class GroupItemRow extends StatelessWidget {
@@ -15,7 +14,8 @@ class GroupItemRow extends StatelessWidget {
     return ListTile(
         title: Text(
           item.name,
-          style: AppStyle.getTitleListTitleStyle(),
+            style:
+            Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,7 +24,10 @@ class GroupItemRow extends StatelessWidget {
               visible: item.description.isNotEmpty,
               child: Text(
                 item.description,
-                style: AppStyle.getSubTitleListTitleStyle(),
+                style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Theme.of(context).colorScheme.onBackground),
               ),
             ),
             if (item.barCode != null)
@@ -33,7 +36,10 @@ class GroupItemRow extends StatelessWidget {
                 SizedBox(
                   width: 8,
                 ),
-                Text(item.barCode!, style: AppStyle.getSubTitleListTitleStyle(),)
+                Text(item.barCode!, style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Theme.of(context).colorScheme.onBackground),)
               ])
           ],
         ),

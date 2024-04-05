@@ -22,7 +22,7 @@ mixin _$SaveGoodState {
   String get barCode => throw _privateConstructorUsedError;
   double? get purchasePrice => throw _privateConstructorUsedError;
   double? get salePrice => throw _privateConstructorUsedError;
-  List<String> get files => throw _privateConstructorUsedError;
+  List<Uint8List> get files => throw _privateConstructorUsedError;
   Good? get item => throw _privateConstructorUsedError;
   Document? get document => throw _privateConstructorUsedError;
   DocumentTransaction? get transaction => throw _privateConstructorUsedError;
@@ -35,7 +35,7 @@ mixin _$SaveGoodState {
             String barCode,
             double? purchasePrice,
             double? salePrice,
-            List<String> files,
+            List<Uint8List> files,
             Good? item,
             Document? document,
             DocumentTransaction? transaction)
@@ -51,7 +51,7 @@ mixin _$SaveGoodState {
             String barCode,
             double? purchasePrice,
             double? salePrice,
-            List<String> files,
+            List<Uint8List> files,
             Good? item,
             Document? document,
             DocumentTransaction? transaction)?
@@ -67,7 +67,7 @@ mixin _$SaveGoodState {
             String barCode,
             double? purchasePrice,
             double? salePrice,
-            List<String> files,
+            List<Uint8List> files,
             Good? item,
             Document? document,
             DocumentTransaction? transaction)?
@@ -110,7 +110,7 @@ abstract class $SaveGoodStateCopyWith<$Res> {
       String barCode,
       double? purchasePrice,
       double? salePrice,
-      List<String> files,
+      List<Uint8List> files,
       Good? item,
       Document? document,
       DocumentTransaction? transaction});
@@ -168,7 +168,7 @@ class _$SaveGoodStateCopyWithImpl<$Res, $Val extends SaveGoodState>
       files: null == files
           ? _value.files
           : files // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<Uint8List>,
       item: freezed == item
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
@@ -200,7 +200,7 @@ abstract class _$$_InitialCopyWith<$Res>
       String barCode,
       double? purchasePrice,
       double? salePrice,
-      List<String> files,
+      List<Uint8List> files,
       Good? item,
       Document? document,
       DocumentTransaction? transaction});
@@ -255,7 +255,7 @@ class __$$_InitialCopyWithImpl<$Res>
       files: null == files
           ? _value._files
           : files // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<Uint8List>,
       item: freezed == item
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
@@ -282,7 +282,7 @@ class _$_Initial implements _Initial {
       this.barCode = '',
       this.purchasePrice,
       this.salePrice,
-      final List<String> files = const [],
+      final List<Uint8List> files = const [],
       this.item,
       this.document,
       this.transaction})
@@ -303,10 +303,10 @@ class _$_Initial implements _Initial {
   final double? purchasePrice;
   @override
   final double? salePrice;
-  final List<String> _files;
+  final List<Uint8List> _files;
   @override
   @JsonKey()
-  List<String> get files {
+  List<Uint8List> get files {
     if (_files is EqualUnmodifiableListView) return _files;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_files);
@@ -376,7 +376,7 @@ class _$_Initial implements _Initial {
             String barCode,
             double? purchasePrice,
             double? salePrice,
-            List<String> files,
+            List<Uint8List> files,
             Good? item,
             Document? document,
             DocumentTransaction? transaction)
@@ -396,7 +396,7 @@ class _$_Initial implements _Initial {
             String barCode,
             double? purchasePrice,
             double? salePrice,
-            List<String> files,
+            List<Uint8List> files,
             Good? item,
             Document? document,
             DocumentTransaction? transaction)?
@@ -416,7 +416,7 @@ class _$_Initial implements _Initial {
             String barCode,
             double? purchasePrice,
             double? salePrice,
-            List<String> files,
+            List<Uint8List> files,
             Good? item,
             Document? document,
             DocumentTransaction? transaction)?
@@ -467,7 +467,7 @@ abstract class _Initial implements SaveGoodState {
       final String barCode,
       final double? purchasePrice,
       final double? salePrice,
-      final List<String> files,
+      final List<Uint8List> files,
       final Good? item,
       final Document? document,
       final DocumentTransaction? transaction}) = _$_Initial;
@@ -485,7 +485,7 @@ abstract class _Initial implements SaveGoodState {
   @override
   double? get salePrice;
   @override
-  List<String> get files;
+  List<Uint8List> get files;
   @override
   Good? get item;
   @override

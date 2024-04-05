@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
-import 'package:good_manager/presentation/app_style.dart';
 enum SupplierItemMenu { sendEmail, sendSMS, phoneCall }
 class SupplierItemRow extends StatelessWidget{
   final Supplier item;
@@ -19,15 +18,22 @@ class SupplierItemRow extends StatelessWidget{
       leading: CircleAvatar(
         child: Text('${item.name[0].toUpperCase()}'),
       ),
-      title: Text(item.name, style: AppStyle.getTitleListTitleStyle(),),
+      title: Text(item.name, style:
+      Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           item.description.isNotEmpty
-              ? Text(item.description, style: AppStyle.getSubTitleListTitleStyle())
+              ? Text(item.description, style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Theme.of(context).colorScheme.onBackground))
               : Container(),
           item.numberDocument > 0
-              ? Text(item.numberDocument.toString()+ " " + AppLocalizations.of(context)!.documents_title, style: AppStyle.getSubTitleListTitleStyle())
+              ? Text(item.numberDocument.toString()+ " " + AppLocalizations.of(context)!.documents_title, style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Theme.of(context).colorScheme.onBackground))
              : Container()
         ],
       ),

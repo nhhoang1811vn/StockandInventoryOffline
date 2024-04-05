@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -13,7 +16,7 @@ class ImagesPreviewCubit extends Cubit<ImagesPreviewData> {
   }
 
   void onDeleteItem(){
-    List<String> items =  [];
+    List<Uint8List> items =  [];
     items.addAll(state.items);
     items.removeAt(state.selectedPosition);
 
@@ -30,11 +33,13 @@ class ImagesPreviewCubit extends Cubit<ImagesPreviewData> {
   void onAddPhotoPressed() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.image);
     if (result != null) {
-      List<String> items = [];
+      List<Uint8List> items = [];
       items.addAll(state.items);
-      for (String? item in result.paths){
-        if (item != null){
-          items.add(item);
+      for (String? path in result.paths){
+        if (path != null){
+          File file = File(path);
+          items.add(file.readAsBytesSync());
+
         }
       }
       emit(state.copyWith(state : DataChangedState(),items: items));
@@ -55,14 +60,16 @@ class ImagesPreviewCubit extends Cubit<ImagesPreviewData> {
     int newPosition = state.selectedPosition - 1;
     emit(state.copyWith(state: TransitionPageViewState(), selectedPosition: newPosition));
   }
-  void onAddPhoto(String result) {
-    List<String> items = [];
+  void onAddPhoto(String path) {
+    List<Uint8List> items = [];
     items.addAll(state.items);
-    items.add(result);
+
+    File file = File(path);
+    items.add(file.readAsBytesSync());
     emit(state.copyWith(state: DataChangedState(),items: items));
   }
 
-  void initState(List<String> items) {
+  void initState(List<Uint8List> items) {
     emit(state.copyWith(items: items));
   }
 }

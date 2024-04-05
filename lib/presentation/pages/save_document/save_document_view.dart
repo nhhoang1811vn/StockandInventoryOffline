@@ -185,7 +185,6 @@ class SaveDocumentPage extends StatelessWidget {
               floatingActionButton: FloatingActionButton(
                 child: Icon(Icons.add),
                 onPressed: () => context.read<SaveDocumentCubit>().onAddGoodClicked(),
-                backgroundColor: Colors.blue,
               ),
             )
     );
@@ -223,21 +222,13 @@ class SaveDocumentPage extends StatelessWidget {
     }
   }
   Widget _buildSaveMenu(BuildContext context){
-    return InkWell(
-      onTap: () => context.read<SaveDocumentCubit>().onSaveMenuClicked(),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Icon(Icons.check),
-      ),
-    );
+    return IconButton(onPressed: (){
+      context.read<SaveDocumentCubit>().onSaveMenuClicked();
+    }, icon: Icon(Icons.check));
   }
   Widget _buildBatchScanMenu(BuildContext context){
-    return InkWell(
-      onTap: () => context.read<SaveDocumentCubit>().onBatchScanMenuClicked(),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Icon(Icons.barcode_reader),
-      ),
-    );
+    return IconButton(onPressed: (){
+      context.read<SaveDocumentCubit>().onBatchScanMenuClicked();
+    }, icon: Icon(Icons.barcode_reader));
   }
 }

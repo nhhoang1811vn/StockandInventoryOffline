@@ -81,8 +81,7 @@ class DocumentPageState extends State<DocumentsPage> {
                   ]),
                   floatingActionButton: FloatingActionButton(
                     onPressed: () => onAddDocument(DefaultTabController.of(context).index),
-                    child: Icon(Icons.add),
-                    backgroundColor: Colors.blue,
+                    child: Icon(Icons.add)
                   ));
             })),
         listenWhen: (state1, state2) => state1.state != state2.state,
@@ -136,7 +135,7 @@ class DocumentPageState extends State<DocumentsPage> {
     return PreferredSize(
       preferredSize: Size.fromHeight(58.0 + 20 + 58.0 + (state.showSearchBar ? 65 : 0)),
       child: AppBar(
-        actions: [_buildSearchMenu(state), _buildSortMenu(state), helpMenu],
+        actions: [_buildSearchMenu(state), _buildSortMenu(), _buildHelpMenu()],
         title: Text(AppLocalizations.of(context)!.documents_title),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(20 + 58 + (state.showSearchBar ? 65 : 0)),
@@ -145,7 +144,7 @@ class DocumentPageState extends State<DocumentsPage> {
               SelectedStoreView(),
               Visibility(child: _buildSearchBar(context, state), visible: state.showSearchBar),
               TabBar(
-                indicatorColor: Colors.white,
+                indicatorColor: Theme.of(context).colorScheme.onPrimary,
                 tabs: [
                   Tab(text: AppLocalizations.of(context)!.document_list_tab_all.toUpperCase()),
                   Tab(text: AppLocalizations.of(context)!.incoming_document_text.toUpperCase()),
@@ -250,47 +249,25 @@ class DocumentPageState extends State<DocumentsPage> {
             return Divider(color: Colors.grey[500]);
           },
           itemCount: state.outgoingItems.length));
-
-  Widget _buildSearchMenu(DocumentsState state) => Padding(
-        padding: EdgeInsets.only(right: 20.0),
-        child: GestureDetector(
-            child: Icon(
-              UIConstants.searchMenuIconData,
-              size: 26,
-              color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor,
-            ),
-            onTap: (){
-              searchTextController.text = "";
-              context.read<DocumentsCubit>().onSearchMenuClicked();
-            }),
-      );
-
-  Widget _buildSortMenu(DocumentsState state) {
-    return Padding(
-      padding: EdgeInsets.only(right: 20.0),
-      child: GestureDetector(
-        child: Icon(
-          UIConstants.sortMenuIconData,
-          size: 26,
-          color: context.read<DocumentsCubit>().hasSortOptions()
-              ? UIConstants.highlightMenuColor
-              : UIConstants.normalMenuColor,
-        ),
-        onTap: context.read<DocumentsCubit>().onMenuSortClicked,
-      ),
-    );
+  Widget _buildSearchMenu(DocumentsState state){
+    return IconButton(onPressed: (){
+      searchTextController.text = "";
+      context.read<DocumentsCubit>().onSearchMenuClicked();
+    }, icon: Icon(Icons.search, color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
+  }
+  Widget _buildSortMenu(){
+    return IconButton(onPressed: (){
+      context.read<DocumentsCubit>().onMenuSortClicked();
+    }, icon: Icon(Icons.sort, color: context.read<DocumentsCubit>().hasSortOptions() ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
+  }
+  Widget _buildHelpMenu(){
+    return IconButton(onPressed: (){
+      context.read<DocumentsCubit>().onMenuHelpClicked();
+    }, icon: Icon(Icons.help));
   }
 
-  Widget get helpMenu => Padding(
-        padding: EdgeInsets.only(right: 20.0),
-        child: GestureDetector(
-          child: Icon(
-            UIConstants.helpMenuIconData,
-            size: 26,
-          ),
-          onTap: context.read<DocumentsCubit>().onMenuHelpClicked,
-        ),
-      );
+
+
 
   Widget _buildSearchBar(BuildContext context, DocumentsState state) => Row(children: [
         Expanded(

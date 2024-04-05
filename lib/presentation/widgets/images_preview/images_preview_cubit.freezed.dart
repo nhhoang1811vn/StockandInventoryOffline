@@ -18,25 +18,25 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$ImagesPreviewData {
   ImagesPreviewState get state => throw _privateConstructorUsedError;
   int get selectedPosition => throw _privateConstructorUsedError;
-  List<String> get items => throw _privateConstructorUsedError;
+  List<Uint8List> get items => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            ImagesPreviewState state, int selectedPosition, List<String> items)
+    required TResult Function(ImagesPreviewState state, int selectedPosition,
+            List<Uint8List> items)
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            ImagesPreviewState state, int selectedPosition, List<String> items)?
+    TResult? Function(ImagesPreviewState state, int selectedPosition,
+            List<Uint8List> items)?
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            ImagesPreviewState state, int selectedPosition, List<String> items)?
+    TResult Function(ImagesPreviewState state, int selectedPosition,
+            List<Uint8List> items)?
         initial,
     required TResult orElse(),
   }) =>
@@ -70,7 +70,7 @@ abstract class $ImagesPreviewDataCopyWith<$Res> {
       _$ImagesPreviewDataCopyWithImpl<$Res, ImagesPreviewData>;
   @useResult
   $Res call(
-      {ImagesPreviewState state, int selectedPosition, List<String> items});
+      {ImagesPreviewState state, int selectedPosition, List<Uint8List> items});
 }
 
 /// @nodoc
@@ -102,7 +102,7 @@ class _$ImagesPreviewDataCopyWithImpl<$Res, $Val extends ImagesPreviewData>
       items: null == items
           ? _value.items
           : items // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<Uint8List>,
     ) as $Val);
   }
 }
@@ -116,7 +116,7 @@ abstract class _$$_InitialCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {ImagesPreviewState state, int selectedPosition, List<String> items});
+      {ImagesPreviewState state, int selectedPosition, List<Uint8List> items});
 }
 
 /// @nodoc
@@ -145,7 +145,7 @@ class __$$_InitialCopyWithImpl<$Res>
       items: null == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<Uint8List>,
     ));
   }
 }
@@ -156,7 +156,7 @@ class _$_Initial implements _Initial {
   const _$_Initial(
       {required this.state,
       this.selectedPosition = 0,
-      final List<String> items = const []})
+      final List<Uint8List> items = const []})
       : _items = items;
 
   @override
@@ -164,10 +164,10 @@ class _$_Initial implements _Initial {
   @override
   @JsonKey()
   final int selectedPosition;
-  final List<String> _items;
+  final List<Uint8List> _items;
   @override
   @JsonKey()
-  List<String> get items {
+  List<Uint8List> get items {
     if (_items is EqualUnmodifiableListView) return _items;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_items);
@@ -202,8 +202,8 @@ class _$_Initial implements _Initial {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            ImagesPreviewState state, int selectedPosition, List<String> items)
+    required TResult Function(ImagesPreviewState state, int selectedPosition,
+            List<Uint8List> items)
         initial,
   }) {
     return initial(state, selectedPosition, items);
@@ -212,8 +212,8 @@ class _$_Initial implements _Initial {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            ImagesPreviewState state, int selectedPosition, List<String> items)?
+    TResult? Function(ImagesPreviewState state, int selectedPosition,
+            List<Uint8List> items)?
         initial,
   }) {
     return initial?.call(state, selectedPosition, items);
@@ -222,8 +222,8 @@ class _$_Initial implements _Initial {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            ImagesPreviewState state, int selectedPosition, List<String> items)?
+    TResult Function(ImagesPreviewState state, int selectedPosition,
+            List<Uint8List> items)?
         initial,
     required TResult orElse(),
   }) {
@@ -266,14 +266,14 @@ abstract class _Initial implements ImagesPreviewData {
   const factory _Initial(
       {required final ImagesPreviewState state,
       final int selectedPosition,
-      final List<String> items}) = _$_Initial;
+      final List<Uint8List> items}) = _$_Initial;
 
   @override
   ImagesPreviewState get state;
   @override
   int get selectedPosition;
   @override
-  List<String> get items;
+  List<Uint8List> get items;
   @override
   @JsonKey(ignore: true)
   _$$_InitialCopyWith<_$_Initial> get copyWith =>

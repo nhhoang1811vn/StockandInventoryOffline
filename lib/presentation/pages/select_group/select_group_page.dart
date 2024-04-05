@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 import 'package:good_manager/domain/entities/group.dart';
-import 'package:good_manager/presentation/app_style.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 
@@ -33,13 +32,9 @@ class SelectGroupPage extends StatelessWidget {
     return PreferredSize(
         preferredSize: Size.fromHeight(UIConstants.appBarHeight),
         child: AppBar(title: Text(AppLocalizations.of(context)!.select_group_title), actions: <Widget>[
-          InkWell(
-            onTap: () => Navigator.of(context).pop({"groupId":state.selectedGroupId}),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.check),
-            ),
-          )
+          IconButton(onPressed: (){
+    Navigator.of(context).pop({"groupId":state.selectedGroupId});
+    }, icon: Icon(Icons.check))
         ]));
   }
 
@@ -86,11 +81,15 @@ class SelectGroupPage extends StatelessWidget {
               ),
               Column(
                 children: [
-                  Text(item?.name ?? '', style: AppStyle.getTitleListTitleStyle(),),
+                  Text(item?.name ?? '', style:
+                  Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
                   SizedBox(
                     height: 8,
                   ),
-                  Text(item?.description ?? '',style: AppStyle.getSubTitleListTitleStyle()),
+                  Text(item?.description ?? '',style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Theme.of(context).colorScheme.onBackground)),
                 ],
               )
             ],

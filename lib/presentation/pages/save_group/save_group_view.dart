@@ -26,13 +26,9 @@ class SaveGroupPage extends StatelessWidget {
     return PreferredSize(preferredSize : Size.fromHeight(UIConstants.appBarHeight), child: AppBar(
         title: Text(AppLocalizations.of(context)!.save_group_title),
         actions: <Widget>[
-          InkWell(
-            onTap: context.read<SaveGroupCubit>().onSaveClicked,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.check),
-            ),
-          )
+          IconButton(onPressed: (){
+            context.read<SaveGroupCubit>().onSaveClicked();
+          }, icon: Icon(Icons.check))
         ]));
   }
 }

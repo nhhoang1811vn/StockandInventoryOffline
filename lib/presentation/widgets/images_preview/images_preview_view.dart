@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,9 +10,9 @@ import '../../pages/pages.dart';
 import 'images_preview_cubit.dart';
 
 class ImagesPreviewView extends StatefulWidget {
-  final List<String> items;
+  final List<Uint8List> items;
   final bool multipleImages;
-  final void Function(List<String>) onDataChanged;
+  final void Function(List<Uint8List>) onDataChanged;
 
   ImagesPreviewView(this.items, this.multipleImages, this.onDataChanged) : super();
 
@@ -176,10 +176,13 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
     ));
   }
 
-  Widget createPage(String path) {
+  /*Widget createPage(String path) {
     return Container(
         alignment: Alignment.center,
         decoration: new BoxDecoration(image: DecorationImage(image: FileImage(File(path)), fit: BoxFit.contain)));
+  }*/
+  Widget createPage(Uint8List bytes){
+    return Image.memory(bytes);
   }
 
   Widget _buildTopView(ImagesPreviewData data) {
@@ -203,14 +206,16 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
                   itemBuilder: (context, position) {
                     return GestureDetector(
                         onTap: () => cubit.onListViewItemPressed(position),
-                        child: Container(
+                        child:
+                        Container(
                             margin: EdgeInsets.only(left: 4, right: 4),
                             width: 80,
                             alignment: Alignment.center,
+                            child: Image.memory(data.items[position]),
                             decoration: BoxDecoration(
                                 border: position == data.selectedPosition ? Border.all(color: AppColors.primaryColor, width: 2) : null,
-                                image: DecorationImage(
-                                    image: FileImage(File(data.items[position])), fit: BoxFit.contain))));
+                                ))
+                    );
                   },
                   itemCount: data.items.length,
                   scrollDirection: Axis.horizontal,

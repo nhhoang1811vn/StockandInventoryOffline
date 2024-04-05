@@ -4,6 +4,6 @@ class ImagesPreviewData with _$ImagesPreviewData {
   const factory ImagesPreviewData.initial({
     required ImagesPreviewState state,
     @Default(0) int selectedPosition,
-      @Default([]) List<String> items
+      @Default([]) List<Uint8List> items
   }) = _Initial;
 }

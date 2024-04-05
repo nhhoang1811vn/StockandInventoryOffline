@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:good_manager/domain/entities/base_model.dart';
 
@@ -9,7 +9,8 @@ class Good extends BaseModel {
 
   double? purchasePrice;
   double? salePrice;
-  List<String> files = [];
+  //List<String> files = [];
+  List<Uint8List> files = [];
 
   //todo take care quantity here, it mapping manual
   double quantity = 0;
@@ -22,7 +23,7 @@ class Good extends BaseModel {
     this.salePrice = obj["salePrice"];
     this.storeId = obj["storeId"];
     this.groupId = obj["groupId"];
-    this.files = (jsonDecode(obj["files"]) as List<dynamic>).cast<String>();
+    //this.files = (jsonDecode(obj["files"]) as List<dynamic>).cast<String>();
   }
 
   Map<String, dynamic> toMap() {
@@ -32,7 +33,7 @@ class Good extends BaseModel {
     map["salePrice"] = salePrice;
     map["storeId"] = storeId;
     map["groupId"] = groupId;
-    map["files"] = jsonEncode(files);
+    //map["files"] = jsonEncode(files);
     return map;
   }
 }

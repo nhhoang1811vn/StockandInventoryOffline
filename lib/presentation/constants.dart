@@ -80,15 +80,13 @@ class UIConstants {
 
   static const TextStyle fieldHintStyle =
       TextStyle(fontWeight: FontWeight.w300, color: Colors.black);
-  static const String appName = "AppViet Quản Lý Kho";
-  static const String appVersion = "1.0.1";
   static const double progressBarOpacity = 0.6;
   static const Color progressBarColor = Colors.black;
   static Color primaryColor = Colors.blue[600]!;
   static Color primaryDarkColor = Colors.blue[800]!;
 
-  static Color normalMenuColor = Colors.white;
-  static Color highlightMenuColor = Colors.orange[600]!;
+  static Color normalMenuColor = Colors.black;
+  static Color highlightMenuColor = Colors.blue[700]!;
 }
 
 void showInfoToast(msg) {

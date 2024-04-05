@@ -28,13 +28,9 @@ class SavePaymentPage extends StatelessWidget {
     return PreferredSize(preferredSize : Size.fromHeight(UIConstants.appBarHeight), child: AppBar(
         title: Text(AppLocalizations.of(context)!.save_payment_title),
         actions: <Widget>[
-          InkWell(
-            onTap: () => context.read<SavePaymentCubit>().onSaveClicked(),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.check),
-            ),
-          )
+          IconButton(onPressed: (){
+            context.read<SavePaymentCubit>().onSaveClicked();
+          }, icon: Icon(Icons.check))
         ]));
   }
 }

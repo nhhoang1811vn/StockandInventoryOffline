@@ -84,7 +84,7 @@ class StoresPageState extends State<StoresPage> {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight), child:  AppBar(
         title: new Text(widget.isSelection?AppLocalizations.of(context)!.stores_select_title:AppLocalizations.of(context)!.stores_title),
-        actions: [_buildSearchMenu(data), sortMenu, helpMenu]),
+        actions: [_buildSearchMenu(data), _buildSortMenu(), _buildHelpMenu()]),
     );
   }
 
@@ -221,52 +221,23 @@ class StoresPageState extends State<StoresPage> {
           );
         });
   }
-
-
-  Widget _buildSearchMenu(StoresState state) => Padding(
-    padding: EdgeInsets.only(right: 20.0),
-    child: GestureDetector(
-      child: Icon(
-        UIConstants.searchMenuIconData,
-        size: 26,
-        color: state.showSearchBar
-            ? UIConstants.highlightMenuColor
-            : UIConstants.normalMenuColor,
-      ),
-      onTap: (){
-        searchTextController.text = "";
-        if (!state.showSearchBar){
-          searchTextFocusNode.requestFocus();
-        }
-        context.read<StoresCubit>().onShowSearchBarMenuClicked();
-      } ,
-    ),
-  );
-
-
-  Widget get sortMenu => Padding(
-    padding: EdgeInsets.only(right: 20.0),
-    child: GestureDetector(
-      child: Icon(
-        UIConstants.sortMenuIconData,
-        size: 26,
-        color: context.read<StoresCubit>().hasSortOptions()
-            ? UIConstants.highlightMenuColor
-            : UIConstants.normalMenuColor,
-      ),
-      onTap: context.read<StoresCubit>().onSortMenuClicked,
-    ),
-  );
-
-
-  Widget get helpMenu => Padding(
-    padding: EdgeInsets.only(right: 20.0),
-    child: GestureDetector(
-      child: Icon(
-        UIConstants.helpMenuIconData,
-        size: 26,
-      ),
-      onTap: context.read<StoresCubit>().onHelpMenuClick,
-    ),
-  );
+  Widget _buildSearchMenu(StoresState state) {
+    return IconButton(onPressed: () {
+      searchTextController.text = "";
+      if (!state.showSearchBar) {
+        searchTextFocusNode.requestFocus();
+      }
+      context.read<StoresCubit>().onShowSearchBarMenuClicked();
+    }, icon: Icon(Icons.search, color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
+  }
+  Widget _buildSortMenu() {
+    return IconButton(onPressed: (){
+      context.read<StoresCubit>().onSortMenuClicked();
+    }, icon: Icon(Icons.sort, color: context.read<StoresCubit>().hasSortOptions() ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor ));
+  }
+  Widget _buildHelpMenu(){
+    return IconButton(onPressed: (){
+      context.read<StoresCubit>().onHelpMenuClick();
+    }, icon: Icon(Icons.help));
+  }
 }

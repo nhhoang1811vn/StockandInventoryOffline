@@ -27,13 +27,9 @@ class SaveSupplierPage extends StatelessWidget {
     return PreferredSize(preferredSize : Size.fromHeight(UIConstants.appBarHeight), child: AppBar(
         title: Text(AppLocalizations.of(context)!.save_supplier_title),
         actions: <Widget>[
-          InkWell(
-            onTap: () => context.read<SaveSupplierCubit>().onSaveClicked(),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.check),
-            ),
-          )
+          IconButton(onPressed: (){
+            context.read<SaveSupplierCubit>().onSaveClicked();
+          }, icon: Icon(Icons.check))
         ]));
   }
 }

@@ -160,51 +160,25 @@ class GoodsPageState extends State<GoodsPage> {
   }
 
   Widget _buildSearchMenu(GoodsState state) {
-    return Padding(
-      padding: EdgeInsets.only(right: 20.0),
-      child: GestureDetector(
-        child: Icon(
-          UIConstants.searchMenuIconData,
-          size: 26,
-          color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor,
-        ),
-        onTap: () {
-          searchTextController.text = "";
-          if (!state.showSearchBar) {
-            searchTextFocusNode.requestFocus();
-          }
-          context.read<GoodsCubit>().onShowSearchBarMenuClicked();
-        },
-      ),
-    );
+    return IconButton(onPressed: () {
+      searchTextController.text = "";
+      if (!state.showSearchBar) {
+        searchTextFocusNode.requestFocus();
+      }
+      context.read<GoodsCubit>().onShowSearchBarMenuClicked();
+    }, icon: Icon(Icons.search, color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
   }
 
   Widget _buildSortMenu(GoodsState state) {
-    return Padding(
-      padding: EdgeInsets.only(right: 20.0),
-      child: GestureDetector(
-        child: Icon(
-          UIConstants.sortMenuIconData,
-          size: 26,
-          color: context.read<GoodsCubit>().hasSortOptions()
-              ? UIConstants.highlightMenuColor
-              : UIConstants.normalMenuColor,
-        ),
-        onTap: context.read<GoodsCubit>().onSortMenuClicked,
-      ),
-    );
+    return IconButton(onPressed: (){
+      context.read<GoodsCubit>().onSortMenuClicked();
+    }, icon: Icon(Icons.sort, color: context.read<GoodsCubit>().hasSortOptions() ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor ));
   }
-
-  Widget get helpMenu => Padding(
-        padding: EdgeInsets.only(right: 20.0),
-        child: GestureDetector(
-          onTap: context.read<GoodsCubit>().onHelpMenuClicked,
-          child: Icon(
-            UIConstants.helpMenuIconData,
-            size: 26,
-          ),
-        ),
-      );
+  Widget _buildHelpMenu() {
+    return IconButton(onPressed: (){
+      context.read<GoodsCubit>().onHelpMenuClicked();
+    }, icon: Icon(Icons.help));
+  }
 
   Widget _buildSearchBar(BuildContext context, GoodsState state) {
     return Visibility(
@@ -233,6 +207,7 @@ class GoodsPageState extends State<GoodsPage> {
                     visible: state.textSearch.isNotEmpty,
                   ),
                   IconButton(
+                    //icon: Icon(Icons.barcode_reader),
                     icon: Image.asset(
                       UIConstants.searchBarcodeIconPath,
                       width: 24,
@@ -465,7 +440,7 @@ class GoodsPageState extends State<GoodsPage> {
                 : CustomNavigationDrawer(selectedIndex: 1, storeName: storage.getSelectedStoreName()),
             appBar: new AppBar(
                 title: new Text(widget.isSelection ? AppLocalizations.of(context)!.goods_select_title : AppLocalizations.of(context)!.goods_title),
-                actions: [_buildSearchMenu(state), _buildSortMenu(state), helpMenu]),
+                actions: [_buildSearchMenu(state), _buildSortMenu(state), _buildHelpMenu()]),
             body: _buildBody(context, state),
             floatingActionButton: SpeedDial(
               icon: Icons.add,

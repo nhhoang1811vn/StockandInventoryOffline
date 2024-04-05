@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io' as io;
+import 'dart:typed_data';
 
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/expense.dart';
@@ -34,6 +36,8 @@ class DBHelper {
   static const String EXPENSES_TABLE_NAME = "Expenses";
   static const String PAYMENTS_TABLE_NAME = "Payments";
 
+  static const String MEDIA_TABLE_NAME = "Medias";
+
   Future<Database> get db async {
     if (_db != null) return _db!;
     _db = await initDb();
@@ -56,7 +60,10 @@ class DBHelper {
       //remove
       "DROP TABLE $DOCUMENT_TRANSACTIONS_TABLE_NAME",
       //rename
-      "ALTER TABLE Temp RENAME TO $DOCUMENT_TRANSACTIONS_TABLE_NAME"
+      "ALTER TABLE Temp RENAME TO $DOCUMENT_TRANSACTIONS_TABLE_NAME",
+
+      "CREATE TABLE $MEDIA_TABLE_NAME(id INTEGER PRIMARY KEY, goodId INTEGER NOT NULL, media BLOB, "
+          "FOREIGN KEY(goodId) REFERENCES $GOODS_TABLE_NAME(id) ON DELETE CASCADE)"
     ],
   };
 
@@ -113,6 +120,11 @@ class DBHelper {
     await db.execute(
       "CREATE TABLE $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, documentId INTEGER NOT NULL, " +
       "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE)"
+    );
+
+    await db.execute(
+      "CREATE TABLE $MEDIA_TABLE_NAME(id INTEGER PRIMARY KEY, goodId INTEGER NOT NULL, media BLOB, "
+          "FOREIGN KEY(goodId) REFERENCES $GOODS_TABLE_NAME(id) ON DELETE CASCADE)"
     );
   }
 
@@ -371,17 +383,40 @@ class DBHelper {
 
   Future<int> insertGood(Good item) async {
     var dbClient = await db;
-    int res = await dbClient.insert(GOODS_TABLE_NAME, item.toMap());
-    return res;
+    int goodId = await dbClient.insert(GOODS_TABLE_NAME, item.toMap());
+    await insertMedia(goodId, item.files);
+    return goodId;
   }
 
   Future<bool> updateGood(Good item) async {
     var dbClient = await db;
-    //item.updatedDate = DateTime.now();
     int res = await dbClient.update(GOODS_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id!]);
+    await insertMedia(item.id!, item.files);
     return res > 0;
   }
+  Future<void> insertMedia(int goodId, List<Uint8List> files) async{
+    var dbClient = await db;
+    await dbClient
+        .rawDelete('DELETE FROM $MEDIA_TABLE_NAME WHERE goodId = ?', [goodId]);
+    for (int i = 0; i<files.length;i++){
+      var map = new Map<String, dynamic>();
+      map["goodId"] = goodId;
+      map["media"] = await compress(files[i]);
+      await dbClient.insert(MEDIA_TABLE_NAME, map);
+    }
+  }
+  Future<Uint8List> compress(Uint8List list) async {
+    var result = await FlutterImageCompress.compressWithList(
+      list,
+      minHeight: 500,
+      minWidth: 500,
+      quality: 80
+    );
+    return result;
+  }
+
+
   Future<List<Good>> getGoods(int storeId) async {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
@@ -390,12 +425,27 @@ class DBHelper {
     List<Good> goods = [];
     for (int i = 0; i < list.length; i++) {
       var good = Good.map(list[i]);
+      good.files = await getFiles(good.id!);
       double incomingQuantity = await getSumQuantityByGoodId(DocumentType.incoming, good.id!);
       double outgoingQuantity = await getSumQuantityByGoodId(DocumentType.outgoing, good.id!);
       good.quantity = incomingQuantity - outgoingQuantity;
       goods.add(good);
     }
     return goods;
+  }
+  Future<List<Uint8List>> getFiles(int goodId) async{
+    var dbClient = await db;
+    List<Map> list = await dbClient.rawQuery(
+        'SELECT * FROM $MEDIA_TABLE_NAME WHERE goodId = ?',
+        [goodId]);
+    List<Uint8List> medias = [];
+    for (int i = 0; i < list.length; i++) {
+      if (list[i]["media"] != null){
+        medias.add(list[i]["media"]);
+      }
+
+    }
+    return medias;
   }
   Future<List<Good>> getGoodsByGroupId(int storeId,int? groupId) async {
     var dbClient = await db;
@@ -412,6 +462,7 @@ class DBHelper {
     List<Good> goods = [];
     for (int i = 0; i < list.length; i++) {
       var good = Good.map(list[i]);
+      good.files = await getFiles(good.id!);
       double incomingQuantity =
       await getSumQuantityByGoodId(DocumentType.incoming, good.id!);
       double outgoingQuantity =

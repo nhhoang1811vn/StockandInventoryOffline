@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -40,52 +41,32 @@ class ExpensesPageState extends State<ExpensesPage> {
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
           title: new Text(AppLocalizations.of(context)!.expenses_title),
-          actions: [_buildSearchMenu(state), _buildSortMenu(state), helpMenu]),
+          actions: [_buildSearchMenu(state), _buildSortMenu(), _buildHelpMenu()]),
     );
   }
-
-  Widget _buildSearchMenu(ExpensesState state) => Padding(
-        padding: EdgeInsets.only(right: 20.0),
-        child: GestureDetector(
-          child: Icon(
-            UIConstants.searchMenuIconData,
-            size: 26,
-            color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor,
-          ),
-          onTap: () {
-            searchTextController.text = "";
-            if (!state.showSearchBar){
-              searchTextFocusNode.requestFocus();
-            }
-            context.read<ExpensesCubit>().onShowSearchBarMenuClicked();
-          },
-        ),
-      );
-
-  Widget _buildSortMenu(ExpensesState data) => Padding(
-        padding: EdgeInsets.only(right: 20.0),
-        child: GestureDetector(
-          child: Icon(
-            UIConstants.sortMenuIconData,
-            size: 26,
-            color: context.read<ExpensesCubit>().hasSortOptions()
-                ? UIConstants.highlightMenuColor
-                : UIConstants.normalMenuColor,
-          ),
-          onTap: context.read<ExpensesCubit>().onSortMenuClicked,
-        ),
-      );
-
-  Widget get helpMenu => Padding(
-        padding: EdgeInsets.only(right: 20.0),
-        child: GestureDetector(
-          child: Icon(
-            UIConstants.helpMenuIconData,
-            size: 26,
-          ),
-          onTap: context.read<ExpensesCubit>().onHelpMenuClick,
-        ),
-      );
+  Widget _buildSearchMenu(ExpensesState state){
+    return IconButton(onPressed: (){
+      searchTextController.text = "";
+      if (!state.showSearchBar){
+        searchTextFocusNode.requestFocus();
+      }
+      context.read<ExpensesCubit>().onShowSearchBarMenuClicked();
+    }, icon: Icon(Icons.search, color: state.showSearchBar
+        ? UIConstants.highlightMenuColor
+        : UIConstants.normalMenuColor ,));
+  }
+  Widget _buildSortMenu(){
+    return IconButton(onPressed: (){
+      context.read<ExpensesCubit>().onSortMenuClicked();
+    }, icon: Icon(Icons.sort, color: context.read<ExpensesCubit>().hasSortOptions()
+        ? UIConstants.highlightMenuColor
+        : UIConstants.normalMenuColor));
+  }
+  Widget _buildHelpMenu(){
+    return IconButton(onPressed: (){
+      context.read<ExpensesCubit>().onHelpMenuClick();
+    }, icon: Icon(Icons.help));
+  }
 
   Widget _buildLoading() {
     return const Center(

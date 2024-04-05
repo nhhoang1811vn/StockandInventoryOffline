@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/payment.dart';
-import 'package:good_manager/presentation/app_style.dart';
 
 import '../../../constants.dart';
 
@@ -14,10 +13,14 @@ class PaymentItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(Config.dateFormat.format(item.date), style: AppStyle.getTitleListTitleStyle()),
-      subtitle: Text(item.description, style: AppStyle.getSubTitleListTitleStyle(),),
+      title: Text(Config.dateFormat.format(item.date), style:
+      Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+      subtitle: Text(item.description, style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Theme.of(context).colorScheme.onBackground),),
       trailing: Text(Config.currencyFormat.format(item.amount??0),
-          style: AppStyle.getTrailingListTitleStyle()),
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground)),
       onTap: () => onPressed(item),
       onLongPress: () => onLongPressed(item),
     );
