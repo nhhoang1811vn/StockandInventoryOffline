@@ -51,47 +51,47 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onPrimary,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _packageInfo.appName,
-                  //UIConstants.appName,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                ),
-                Text(_packageInfo.version, style: TextStyle(fontSize: TextSize.large, color: Colors.white)),
-                SizedBox(height: 8),
-                Text("Cửa hàng đang theo dõi", style: TextStyle(fontSize: TextSize.large, color: Colors.white)),
-                SizedBox(height: 4),
-                GestureDetector(
-                    child: Container(
-                        color: UIConstants.primaryDarkColor,
-                        padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                                child: Text(
-                                  widget.storeName,
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                            Icon(
-                              Icons.expand_circle_down_sharp,
-                              color: Colors.white,
-                            )
-                          ],
-                        )),
-                    onTap: () => onChangeStore(context))
+           Container(
+             padding: EdgeInsets.only(top: 48),
+            color: Theme.of(context).colorScheme.onPrimary,
+             child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
 
-              ],
-            ),
-          ),
+                children: [
+                  Padding(padding: EdgeInsets.only(left: 16.0, right: 16.0), child:
+                  Text(
+                    _packageInfo.appName + " (${_packageInfo.version})",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                  )),
+                  SizedBox(height: 8),
+                  Padding(padding: EdgeInsets.only(left: 16.0, right: 16.0), child:
+                  Text("Cửa hàng đang theo dõi", style: TextStyle(fontSize: 16, color: Colors.white))),
+                  SizedBox(height: 8),
+                  GestureDetector(
+                      child: Container(
+                          color: UIConstants.primaryDarkColor,
+                          padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  child: Text(
+                                    widget.storeName,
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                              Icon(
+                                Icons.expand_circle_down_sharp,
+                                color: Colors.white,
+                              )
+                            ],
+                          )),
+                      onTap: () => onChangeStore(context))
+
+                ],
+              ),
+           ),
           AppDrawerTile(
               index: 0,
               selectedIndex: widget.selectedIndex,
