@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/presentation/main.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -42,34 +43,81 @@ class ReportDetailPage extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildExportExcelFileMenu(BuildContext context, ReportDetailState state) {
     return IconButton(
         onPressed: () async{
-          String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-          if (selectedDirectory != null) {
-            String csv = const ListToCsvConverter().convert(state.data);
-            String filePath = "$selectedDirectory/${getExportPdfFileName(context, state)}.csv";
-            File file = File(filePath);
-            await file.writeAsString(csv);
+          String fileName = '${getExportPdfFileName(context, state)}.csv';
+          if (Platform.isWindows) {
+            String? outputFile = await FilePicker.platform.saveFile(
+                dialogTitle: 'Please select an output file:',
+                fileName: fileName,
+                allowedExtensions: ["csv"]
+            );
+            if (outputFile != null) {
+              await saveCSVFile(context, state, outputFile);
+            }
+          }else{
+            String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+            if (selectedDirectory != null) {
 
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Lưu tệp CSV tại: ${file.path}'),
-            ));
+              String outputFile = "$selectedDirectory/$fileName";
+              await saveCSVFile(context, state, outputFile);
+            }
           }
         },
         icon: FaIcon(FontAwesomeIcons.fileCsv));
   }
-
-  Widget _buildPDFMenu(BuildContext buildContext, ReportDetailState state) {
+  Future<void> saveCSVFile(BuildContext context, ReportDetailState state, String outputFile) async{
+    try{
+      String csv = const ListToCsvConverter().convert(state.data);
+      //String filePath = "$destinationPath/${getExportPdfFileName(context, state)}.csv";
+      File file = File(outputFile);
+      await file.writeAsString(csv);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Lưu tệp CSV tại: ${file.path}'),
+      ));
+    }catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Lưu tệp CSV lỗi ${e.toString()}'),
+      ));
+    }
+  }
+  Future<void> savePDFFile(BuildContext context, ReportDetailState state, String outputFile) async{
+    try{
+      final pdf = pw.Document();
+      final font = await PdfGoogleFonts.robotoRegular();
+      pdf.addPage(pw.Page(build: (pw.Context pwContext) => _buildPDFContent(context,state, font)));
+      final File file = File(outputFile);
+      await file.writeAsBytes(await pdf.save());
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Lưu tệp PDF tại: ${file.path}'),
+      ));
+    }catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Lưu tệp PDF lỗi ${e.toString()}'),
+      ));
+    }
+  }
+  Widget _buildPDFMenu(BuildContext context, ReportDetailState state) {
     return IconButton(
         onPressed: () async {
-          String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-          if (selectedDirectory != null) {
-            final pdf = pw.Document();
-            final font = await PdfGoogleFonts.robotoRegular();
-            pdf.addPage(pw.Page(build: (pw.Context context) => _buildPDFContent(buildContext,state, font)));
-            saveFile(buildContext, pdf, selectedDirectory, getExportPdfFileName(buildContext,state));
+          String fileName = '${getExportPdfFileName(context, state)}.pdf';
+          if (Platform.isWindows) {
+            String? outputFile = await FilePicker.platform.saveFile(
+                dialogTitle: 'Please select an output file:',
+                fileName: fileName,
+                allowedExtensions: ["pdf"]
+            );
+
+            if (outputFile != null) {
+              await savePDFFile(context, state, outputFile);
+            }
+          }else{
+            String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+            if (selectedDirectory != null) {
+              String outputFile = "$selectedDirectory/$fileName";
+              await savePDFFile(context, state, outputFile);
+            }
           }
         },
         icon: FaIcon(FontAwesomeIcons.filePdf));
@@ -104,16 +152,6 @@ class ReportDetailPage extends StatelessWidget {
                         ]))
           ])
     ]);
-  }
-
-  Future<void> saveFile(context, document, String path, String name) async {
-    //final Directory dir = await getApplicationDocumentsDirectory();
-    final File file = File('${path}/$name.pdf');
-
-    await file.writeAsBytes(await document.save());
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Lưu tệp PDF tại: ${file.path}'),
-    ));
   }
 
   List<Widget> _buildFirstColumn(ReportDetailState state) {

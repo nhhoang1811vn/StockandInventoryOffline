@@ -87,14 +87,10 @@ class SettingsPage extends StatelessWidget {
     }
     return directory?.path;
   }
-  void backup(BuildContext context, String folderPath) async{
+  Future<void> backup(BuildContext context, String filePath) async{
     try{
-      //var documentsDirectory = await getApplicationDocumentsDirectory();
-      //String dbPath = join(documentsDirectory.path, "main.db");
       String dbPath = await PathUtils().getDatabasePath();
       File source = File(dbPath);
-      //String? copyTo = await getDownloadPath();
-      //Directory copyTo = Directory("storage/emulated/0/Download");
       if (Platform.isAndroid) {
         DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
         AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
@@ -116,12 +112,9 @@ class SettingsPage extends StatelessWidget {
           await Permission.storage.request();
         }
       }
-      final dateFormat = new DateFormat('dd-MM-yyyy-HH-mm');
-        final timeStamp = dateFormat.format(DateTime.now());
-        String newPath = "${folderPath}/appviet_goodmanager_database_$timeStamp.db";
-        await source.copy(newPath);
+        await source.copy(filePath);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context)!.backup_successful + " " +newPath),
+          content: Text(AppLocalizations.of(context)!.backup_successful + " " +filePath),
         ));
     }catch (e){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -130,15 +123,22 @@ class SettingsPage extends StatelessWidget {
     }
   }
   void onBackUpPressed(BuildContext context) async{
-    if (Platform.isWindows){
-      Directory appDocDir = await getApplicationDocumentsDirectory();
-      backup(context, appDocDir.path);
+    final dateFormat = new DateFormat('dd-MM-yyyy-HH-mm');
+    final timeStamp = dateFormat.format(DateTime.now());
+    String fileName = "appviet_goodmanager_database_$timeStamp.db";
+    if (Platform.isWindows) {
+      String? outputFile = await FilePicker.platform.saveFile(
+        dialogTitle: 'Please select an output file:',
+        fileName: fileName
+      );
+      if (outputFile != null) {
+        await backup(context, outputFile);
+      }
     }else{
       String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
       if (selectedDirectory != null) {
-        backup(context, selectedDirectory);
-      }else{
-        // User canceled the picker
+        String outputFile = selectedDirectory  + fileName;
+        await backup(context, outputFile);
       }
     }
   }
@@ -154,6 +154,10 @@ class SettingsPage extends StatelessWidget {
     try{
       File source = File(filePath);
       String dbPath = await PathUtils().getDatabasePath();
+      //File file = File(dbPath);
+      //if (await file.exists()){
+     //   await file.delete();
+      //}
       await source.copy(dbPath);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(AppLocalizations.of(context)!.restore_successful),
