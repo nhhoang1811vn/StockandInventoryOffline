@@ -67,7 +67,7 @@ class MyAppState extends State<MyApp> {
   }
   ThemeData _buildTheme(brightness) {
     var baseTheme = ThemeData(brightness: brightness,
-      /*textTheme: TextTheme(
+      textTheme: TextTheme(
           displayLarge: TextStyle(),
           titleLarge: TextStyle(),
           titleMedium: TextStyle(
@@ -80,7 +80,7 @@ class MyAppState extends State<MyApp> {
           displaySmall: TextStyle(
               fontSize: 12.0
           )
-      ),*/
+      ),
         colorScheme: ColorScheme.fromSeed(
           onBackground: Colors.black,
           onPrimary: Colors.blue.shade700,
