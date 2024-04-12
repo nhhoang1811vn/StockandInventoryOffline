@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io' as io;
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:good_manager/common/path_utils.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/expense.dart';
@@ -14,9 +16,10 @@ import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../domain/entities/payment.dart';
-
+import 'package:path/path.dart' as p;
 class DBHelper {
   static final DBHelper _instance = DBHelper.internal();
 
@@ -40,7 +43,11 @@ class DBHelper {
 
   Future<Database> get db async {
     if (_db != null) return _db!;
-    _db = await initDb();
+    if (Platform.isWindows) {
+      _db = await initDBWindow();
+    }else{
+      _db = await initDb();
+    }
     return _db!;
   }
 
@@ -68,11 +75,24 @@ class DBHelper {
   };
 
   initDb() async {
-    io.Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, "main.db");
-    //var theDb = await openDatabase(path, version: 1, onCreate: _onCreate, onUpgrade: _onUpgrade);
+    //final io.Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    //String path = join(documentsDirectory.path, "main.db");
+    String path = await PathUtils().getDatabasePath();
     var theDb = await openDatabase(path, version: 2, onCreate: _onCreate, onUpgrade: _onUpgrade);
     return theDb;
+  }
+  initDBWindow() async{
+    sqfliteFfiInit();
+    var databaseFactory = databaseFactoryFfi;
+    //final io.Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    //String path = join(documentsDirectory.path,"AppViet_GoodManager", "main.db");
+    String path = await PathUtils().getDatabasePath();
+    var db = await databaseFactory.openDatabase(
+      path,
+    );
+    _onCreate(db, 1);
+    _onUpgrade(db, 1, 2);
+    return db;
   }
   void _onUpgrade(Database db, int oldVersion, int newVersion) async{
     for (int i = oldVersion + 1; i <= newVersion; i++) {
@@ -402,7 +422,11 @@ class DBHelper {
     for (int i = 0; i<files.length;i++){
       var map = new Map<String, dynamic>();
       map["goodId"] = goodId;
-      map["media"] = await compress(files[i]);
+      if (Platform.isWindows){
+        map["media"] = files[i];
+      }else{
+        map["media"] = await compress(files[i]);
+      }
       await dbClient.insert(MEDIA_TABLE_NAME, map);
     }
   }
