@@ -7,6 +7,7 @@ import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/pages/home/home_page.dart';
 import 'package:good_manager/presentation/pages/onboarding/on_boarding_page.dart';
 import 'package:good_manager/presentation/router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../common/helpers/injection.container.dart';
 
@@ -64,6 +65,50 @@ class MyAppState extends State<MyApp> {
       create: (context) => getIt<HomeCubit>(),
       child:  HomePage(),);
   }
+  ThemeData _buildTheme(brightness) {
+    var baseTheme = ThemeData(brightness: brightness,
+      /*textTheme: TextTheme(
+          displayLarge: TextStyle(),
+          titleLarge: TextStyle(),
+          titleMedium: TextStyle(
+              fontSize: 17.0
+          ),
+          bodyMedium: TextStyle(
+              fontSize: 15.0
+          ),
+          bodySmall: TextStyle(),
+          displaySmall: TextStyle(
+              fontSize: 12.0
+          )
+      ),*/
+        colorScheme: ColorScheme.fromSeed(
+          onBackground: Colors.black,
+          onPrimary: Colors.blue.shade700,
+          seedColor: Colors.blue.shade700,
+          brightness: Brightness.light,
+
+          //brightness: Brightness.dark,
+
+        ),
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: AppBarTheme(
+          //titleTextStyle: TextStyle(fontSize: ),
+          //backgroundColor: Colors.white,
+            iconTheme: IconThemeData(
+                color: Colors.black
+            )
+        ),
+        //useMaterial3: false,
+        primaryColor: Colors.blue,
+        primarySwatch: Colors.blue,
+        inputDecorationTheme: InputDecorationTheme(
+          isDense: true,
+        ));
+
+    return baseTheme.copyWith(
+      textTheme: GoogleFonts.robotoTextTheme(baseTheme.textTheme),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     if (_languageCode == null || firstTime == null) {
@@ -75,45 +120,8 @@ class MyAppState extends State<MyApp> {
     } else {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
-
-        theme: ThemeData(
-          textTheme: TextTheme(
-            displayLarge: TextStyle(),
-            titleLarge: TextStyle(),
-            titleMedium: TextStyle(
-              fontSize: 17.0
-            ),
-            bodyMedium: TextStyle(
-              fontSize: 15.0
-            ),
-            bodySmall: TextStyle(),
-            displaySmall: TextStyle(
-                fontSize: 12.0
-            )
-          ),
-          colorScheme: ColorScheme.fromSeed(
-              onBackground: Colors.black,
-              onPrimary: Colors.blue.shade700,
-              seedColor: Colors.blue.shade700,
-            brightness: Brightness.light,
-
-              //brightness: Brightness.dark,
-
-          ),
-          scaffoldBackgroundColor: Colors.white,
-          appBarTheme: AppBarTheme(
-            //backgroundColor: Colors.white,
-            iconTheme: IconThemeData(
-              color: Colors.black
-            )
-          ),
-            //useMaterial3: false,
-            primaryColor: Colors.blue,
-          primarySwatch: Colors.blue,
-          inputDecorationTheme: InputDecorationTheme(
-            isDense: true,
-          )
-        ),
+        theme: _buildTheme(Brightness.light),
+        //theme: ThemeData(),
         home: firstTime! ? OnBoardingPage() : _homePage(),
         onGenerateRoute: _router.getRoute,
         navigatorObservers: [_router.routeObserver],
