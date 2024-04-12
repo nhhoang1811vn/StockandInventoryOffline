@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 enum ReportType{
+  LIST_OF_GOODS,
   EXPENSES,
   LIST_OF_DOCUMENT,
   DEBTS_BY_SUPPLIER,
@@ -9,6 +10,8 @@ enum ReportType{
 extension ReportTypeExtension on ReportType{
   String getTitle(BuildContext context){
     switch(this){
+      case ReportType.LIST_OF_GOODS:
+        return AppLocalizations.of(context)!.report_type_goods;
       case ReportType.EXPENSES:
         return AppLocalizations.of(context)!.report_type_expenses;
       case ReportType.LIST_OF_DOCUMENT:

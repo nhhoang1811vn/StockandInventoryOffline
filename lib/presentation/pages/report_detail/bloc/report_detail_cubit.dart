@@ -7,8 +7,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/db/db_helper.dart';
 import 'package:good_manager/domain/entities/expense.dart';
+import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/payment_status.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
+import 'package:good_manager/domain/repositories/document_transaction_repositories.dart';
 import 'package:good_manager/domain/usecases/expenses/expense_usercases.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:injectable/injectable.dart';
@@ -18,6 +20,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../../data/storage.dart';
 import '../../../../domain/entities/document.dart';
 import '../../../../domain/usecases/documents/document_usecases.dart';
+import '../../../../domain/usecases/goods/goods_usercases.dart';
 import '../../base/base_state.dart';
 
 part 'report_detail_cubit.freezed.dart';
@@ -26,21 +29,79 @@ part 'report_detail_state.dart';
 @injectable
 class ReportDetailCubit extends Cubit<ReportDetailState> {
   final Storage storage;
+  final GoodsUseCases goodsUseCase;
   final ExpenseUseCases expenseUseCase;
   final DocumentUseCases documentUseCases;
+  final DocumentTransactionRepository documentTransactionRepository;
   ReportDetailCubit({
     required this.storage,
+    required this.goodsUseCase,
     required this.expenseUseCase,
-    required this.documentUseCases
+    required this.documentUseCases,
+    required this.documentTransactionRepository
   }) : super(ReportDetailState.initial(state: InitialState()));
 
   void init(BuildContext context, ReportType type, DateTime start, DateTime end){
     emit(state.copyWith(type: type, start: start, end: end));
     load(context);
   }
+  Future<double> getQuantity(int goodId, List<Document> documents) async{
+    double incoming = 0.0;
+    double outgoing = 0.0;
+    for (Document document in documents){
+      incoming += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(DocumentType.incoming, goodId, document.id!);
+      outgoing += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(DocumentType.outgoing, goodId, document.id!);
+    }
+    return incoming - outgoing;
+  }
+  DateTime getPrevousHour(DateTime date){
+    return DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch - 60*60*1000);//- 60 mins
+  }
   void load(BuildContext context) async{
     List<List<String>> data = [];
     switch(state.type){
+      case ReportType.LIST_OF_GOODS:
+        data.add(["Tên", "Ban đầu (SL)", "Nhập vào (SL)", "Bán ra (SL)", "Cuối Kỳ (SL)"]);
+        int storeId = storage.getSelectedStoreId();
+        List<Good> goods = await goodsUseCase.getAllByStoreId(storeId);
+
+        List<Document> documentsPrePeriod = await documentUseCases.getInRange(DateTime.fromMillisecondsSinceEpoch(0), getPrevousHour(state.start!));
+        List<Document> documentsInPeriod = await documentUseCases.getInRange(state.start!, state.end!);
+        double totalStartPeriodStock = 0.0;
+        double totalIncoming = 0.0;
+        double totalOutgoing = 0.0;
+        double totalEndPeriodStock = 0.0;
+        for (Good good in goods){
+          double incoming = 0.0;
+          double outgoing = 0.0;
+          for (Document document in documentsInPeriod){
+            incoming += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(DocumentType.incoming, good.id!, document.id!);
+            outgoing += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(DocumentType.outgoing, good.id!, document.id!);
+          }
+          double startPeriodStock = await getQuantity(good.id!, documentsPrePeriod);
+          double endPeriodStock = startPeriodStock + incoming - outgoing;
+          List<String> row = [];
+          row.add(good.name);
+          row.add(startPeriodStock.toString());
+          row.add(incoming.toString());
+          row.add(outgoing.toString());
+          row.add(endPeriodStock.toString());
+          if (startPeriodStock == 0.0 && incoming == 0.0 && outgoing == 0.0){
+
+          }else{
+            data.add(row);
+            totalStartPeriodStock += startPeriodStock;
+            totalIncoming += incoming;
+            totalOutgoing += outgoing;
+            totalEndPeriodStock += endPeriodStock;
+          }
+        }
+        if (data.length > 1){
+          //add total row
+          data.add([AppLocalizations.of(context)!.field_total, totalStartPeriodStock.toString(), totalIncoming.toString(), totalOutgoing.toString(), totalEndPeriodStock.toString()]);
+        }
+
+        break;
       case ReportType.EXPENSES:
         List<Expense> items = await expenseUseCase.getExpensesInRange(state.start!, state.end!);
         data.add([AppLocalizations.of(context)!.field_date, AppLocalizations.of(context)!.field_name, AppLocalizations.of(context)!.field_amount]);
@@ -106,8 +167,8 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       case ReportType.DEBTS_BY_CUSTOMER:
         data = await getDataDebtByCustomer(context);
         break;
-
       default:
+        break;
     }
     emit(state.copyWith(data: data));
   }

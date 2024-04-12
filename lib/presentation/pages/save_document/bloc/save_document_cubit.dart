@@ -70,14 +70,16 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   void dateChanged(DateTime date) {
     emit(state.copyWith(date: date));
   }
-
+  DateTime getDateOnly(DateTime dateTime){
+    return DateTime(dateTime.year, dateTime.month, dateTime.day);
+  }
   Future<bool> save() async {
     final validate = Formz.validate([state.name]);
     if (validate) {
       Document item = state.item!;
       item.name = state.name.value;
       item.description = state.description;
-      item.date = state.date!;
+      item.date = getDateOnly(state.date!);
       item.personId = state.personId;
       item.paymentStatus = state.paymentStatus!;
       if (item.id == null) {

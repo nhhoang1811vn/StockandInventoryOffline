@@ -73,6 +73,7 @@ dependencies:
   open_file: ^3.3.2
   package_info_plus: ^6.0.0
   device_info_plus: ^10.0.1
+  flutter_to_pdf: ^0.2.0
 
 
 dev_dependencies:

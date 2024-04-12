@@ -165,6 +165,7 @@
   "action_sort_by": "Sắp xếp",
   "action_batch_scan": "Quét mã vạch liên tục",
   "action_help": "Trợ giúp",
+  "report_type_goods": "Danh sách hàng hoá",
   "report_type_expenses": "Chi tiêu",
   "report_type_list_of_documents": "Danh sách hoá đơn",
   "report_type_debt_by_supplier": "Công nợ theo nhà cung cấp",
