@@ -678,7 +678,19 @@ class DBHelper {
       double value = double.parse(a.toString());
       return value;
     }
-
+  }
+  Future<double> getSumQuantityByGoodIdAndDocumentId(DocumentType type, int goodId, int documentId) async {
+    var dbClient = await db;
+    var result = await dbClient.rawQuery(
+        'SELECT SUM(quantity) FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE goodId = ? AND documentId = ? AND documentType = ?',
+        [goodId, documentId ,type.index]);
+    var a = result[0]["SUM(quantity)"];
+    if (a == null){
+      return 0.0;
+    }else{
+      double value = double.parse(a.toString());
+      return value;
+    }
   }
 
   //EXPENSES

@@ -3,6 +3,8 @@ import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/domain/repositories/document_transaction_repositories.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../domain/entities/document.dart';
+
 @Injectable(as: DocumentTransactionRepository)
 class DocumentTransactionRepositoryImpl implements DocumentTransactionRepository {
   DocumentTransactionRepositoryImpl();
@@ -37,17 +39,13 @@ class DocumentTransactionRepositoryImpl implements DocumentTransactionRepository
     // TODO: implement getAll
     throw UnimplementedError();
   }
-
   @override
-  Future<int> getSumQuantity() {
-    // TODO: implement getSumQuantity
-    throw UnimplementedError();
+  Future<double> getSumQuantityByGoodIdAndByDocumentId(DocumentType type, int goodId, int documentId) {
+    return db.getSumQuantityByGoodIdAndDocumentId(type, goodId, documentId);
   }
-
   @override
-  Future<int> getSumQuantityByGoodId(int goodId) {
-    // TODO: implement getSumQuantityByGoodId
-    throw UnimplementedError();
+  Future<double> getSumQuantityByGoodId(DocumentType type, int goodId) {
+    return db.getSumQuantityByGoodId(type, goodId);
   }
 
   @override

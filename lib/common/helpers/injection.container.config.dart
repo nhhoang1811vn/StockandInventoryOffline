@@ -226,8 +226,11 @@ extension GetItInjectableX on _i1.GetIt {
         ));
     gh.factory<_i53.ReportDetailCubit>(() => _i53.ReportDetailCubit(
           storage: gh<_i33.Storage>(),
+          goodsUseCase: gh<_i18.GoodsUseCases>(),
           expenseUseCase: gh<_i14.ExpenseUseCases>(),
           documentUseCases: gh<_i44.DocumentUseCases>(),
+          documentTransactionRepository:
+              gh<_i10.DocumentTransactionRepository>(),
         ));
     gh.factory<_i54.SaveDocumentCubit>(() => _i54.SaveDocumentCubit(
           useCase: gh<_i44.DocumentUseCases>(),

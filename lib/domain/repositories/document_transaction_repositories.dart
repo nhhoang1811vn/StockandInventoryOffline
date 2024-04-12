@@ -1,5 +1,7 @@
 import 'package:good_manager/domain/entities/transaction.dart';
 
+import '../entities/document.dart';
+
 abstract class DocumentTransactionRepository {
   Future<int> insert(DocumentTransaction item);
   Future<bool> update(DocumentTransaction item);
@@ -15,6 +17,6 @@ abstract class DocumentTransactionRepository {
 
   Future<List<DocumentTransaction>> getTransactions(int documentId);
 
-  Future<int> getSumQuantity();
-  Future<int> getSumQuantityByGoodId(int goodId);
+  Future<double> getSumQuantityByGoodIdAndByDocumentId(DocumentType type, int goodId, int documentId);
+  Future<double> getSumQuantityByGoodId(DocumentType type, int goodId);
 }

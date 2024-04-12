@@ -166,6 +166,7 @@
   "action_sort_by": "Sort by",
   "action_batch_scan": "Batch scan",
   "action_help": "Help",
+  "report_type_goods": "List of Goods",
   "report_type_expenses": "Expenses",
   "report_type_list_of_documents": "List of documents",
   "report_type_debt_by_supplier": "Debt of Supplier",
