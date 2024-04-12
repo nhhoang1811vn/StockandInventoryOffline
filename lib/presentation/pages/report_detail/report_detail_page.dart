@@ -1,22 +1,22 @@
-
 import 'dart:io';
 
+import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_to_pdf/export_delegate.dart';
-import 'package:flutter_to_pdf/export_frame.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/presentation/main.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+
+import 'package:printing/printing.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../constants.dart';
+
+import 'package:pdf/widgets.dart' as pw;
 
 class ReportDetailPage extends StatelessWidget {
   final ReportType type;
@@ -25,18 +25,12 @@ class ReportDetailPage extends StatelessWidget {
 
   ReportDetailPage(this.type, this.start, this.end);
 
-  // create instance of ExportDelegate
-  final ExportDelegate exportDelegate = ExportDelegate();
-
   @override
   Widget build(BuildContext context) {
     context.read<ReportDetailCubit>().init(context, type, start, end);
 
     return BlocConsumer<ReportDetailCubit, ReportDetailState>(
-        builder: (context, state) => Scaffold(appBar: _buildAppBar(context, state), body:
-        ExportFrame(frameId: "content",
-            exportDelegate: exportDelegate,
-            child: _buildBody2(context, state))),
+        builder: (context, state) => Scaffold(appBar: _buildAppBar(context, state), body: _buildBody(context, state)),
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async {});
   }
@@ -46,36 +40,81 @@ class ReportDetailPage extends StatelessWidget {
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
         title: new Text(type.getTitle(context)),
-        actions: [_buildExportExcelFileMenu(context), _buildPDFMenu(context, state)],
+        actions: [_buildExportExcelFileMenu(context, state), _buildPDFMenu(context, state)],
       ),
     );
   }
 
-  Widget _buildExportExcelFileMenu(BuildContext context) {
-    return IconButton(
-        onPressed: () {
-          context.read<ReportDetailCubit>().onExportExcelFileMenuClicked();
-        },
-        icon: Icon(Icons.file_open_outlined));
-  }
-  Widget _buildPDFMenu(BuildContext context, ReportDetailState state) {
+  Widget _buildExportExcelFileMenu(BuildContext context, ReportDetailState state) {
     return IconButton(
         onPressed: () async{
           String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
           if (selectedDirectory != null) {
-            final pdf = await exportDelegate.exportToPdfDocument('content');
-            saveFile(context,pdf,selectedDirectory,'output');
+            String csv = const ListToCsvConverter().convert(state.data);
+            String filePath = "$selectedDirectory/${getExportPdfFileName(context, state)}.csv";
+            File file = File(filePath);
+            await file.writeAsString(csv);
+
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Lưu tệp CSV tại: ${file.path}'),
+            ));
           }
         },
-        icon: Icon(Icons.picture_as_pdf));
+        icon: FaIcon(FontAwesomeIcons.fileCsv));
   }
-  Future<void> saveFile(context,document,String path, String name) async {
+
+  Widget _buildPDFMenu(BuildContext buildContext, ReportDetailState state) {
+    return IconButton(
+        onPressed: () async {
+          String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+          if (selectedDirectory != null) {
+            final pdf = pw.Document();
+            final font = await PdfGoogleFonts.robotoRegular();
+            pdf.addPage(pw.Page(build: (pw.Context context) => _buildPDFContent(buildContext,state, font)));
+            saveFile(buildContext, pdf, selectedDirectory, getExportPdfFileName(buildContext,state));
+          }
+        },
+        icon: FaIcon(FontAwesomeIcons.filePdf));
+  }
+  String getExportPdfFileName(BuildContext context,ReportDetailState state){
+    String name = state.type!.getTitle(context).replaceAll(" ", "");
+    return name;
+  }
+
+  pw.Widget _buildPDFContent(BuildContext context,ReportDetailState state, pw.Font font) {
+    return pw.Column(children: [
+      pw.Text(sprintf(AppLocalizations.of(context)!.report_detail_header, [
+        Config.dateFormat.format(state.start!),
+        Config.dateFormat.format(state.end!),
+        storage.getSelectedStoreName()
+      ]), style: pw.TextStyle(font: font)),
+      pw.SizedBox(height: 16.0),
+      pw.Table(
+          border: pw.TableBorder.all(color: PdfColors.grey),
+          defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
+          children: [
+            ...List.generate(
+                state.data.length,
+                (indexI) => pw.TableRow(
+                        decoration: pw.BoxDecoration(color: indexI == 0 ? PdfColors.blue : PdfColors.white),
+                        children: [
+                          ...List.generate(
+                              state.data[indexI].length,
+                              (indexJ) => pw.Padding(
+                                  padding: pw.EdgeInsets.all(8.0),
+                                  child: pw.Text(state.data[indexI][indexJ], style: pw.TextStyle(font: font, color: indexI == 0 ? PdfColors.white : PdfColors.black))))
+                        ]))
+          ])
+    ]);
+  }
+
+  Future<void> saveFile(context, document, String path, String name) async {
     //final Directory dir = await getApplicationDocumentsDirectory();
     final File file = File('${path}/$name.pdf');
 
     await file.writeAsBytes(await document.save());
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Saved exported PDF at: ${file.path}'),
+      content: Text('Lưu tệp PDF tại: ${file.path}'),
     ));
   }
 
@@ -102,7 +141,7 @@ class ReportDetailPage extends StatelessWidget {
       for (int i = 1; i < value.length; i++) {
         if (key == 0 || key == state.data.length - 1) {
           rows.add(_buildHighlightCell(value[i]));
-        }else{
+        } else {
           rows.add(_buildNormalCell(value[i], flag));
         }
       }
@@ -111,24 +150,28 @@ class ReportDetailPage extends StatelessWidget {
     });
     return results;
   }
-  Widget _buildHighlightCell(String value){
+
+  Widget _buildHighlightCell(String value) {
     return _buildCell(value, UIConstants.primaryDarkColor, Colors.white, FontWeight.w600);
   }
-  Widget _buildNormalCell(String value, bool type){
-    if (type){
+
+  Widget _buildNormalCell(String value, bool type) {
+    if (type) {
       return _buildNormalCellType1(value);
-    }else{
+    } else {
       return _buildNormalCellType2(value);
     }
   }
-  Widget _buildNormalCellType1(String value){
+
+  Widget _buildNormalCellType1(String value) {
     return _buildCell(value, Colors.grey.shade200, Colors.black, FontWeight.w400);
   }
-  Widget _buildNormalCellType2(String value){
+
+  Widget _buildNormalCellType2(String value) {
     return _buildCell(value, Colors.white, Colors.black, FontWeight.w400);
   }
 
-  Widget _buildCell(String value, Color backgroundColor, Color textColor, FontWeight fontWeight){
+  Widget _buildCell(String value, Color backgroundColor, Color textColor, FontWeight fontWeight) {
     return Container(
       alignment: Alignment.center,
       width: 120.0,
@@ -142,40 +185,38 @@ class ReportDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBody2(BuildContext context, ReportDetailState state) {
+  Widget _buildBody(BuildContext context, ReportDetailState state) {
     return Container(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-
-      children: [
-        Text(sprintf(AppLocalizations.of(context)!.report_detail_header, [
-          Config.dateFormat.format(state.start!),
-          Config.dateFormat.format(state.end!),
-          storage.getSelectedStoreName()
-        ])),
-        SizedBox(
-          height: 16,
-        ),
-        SingleChildScrollView(
-
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(sprintf(AppLocalizations.of(context)!.report_detail_header, [
+              Config.dateFormat.format(state.start!),
+              Config.dateFormat.format(state.end!),
+              storage.getSelectedStoreName()
+            ])),
+            SizedBox(
+              height: 16,
+            ),
+            SingleChildScrollView(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: _buildFirstColumn(state),
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _buildFirstColumn(state),
+                  ),
+                  Flexible(
+                      child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: _buildRows(state),
+                          )))
+                ],
               ),
-              Flexible(
-                  child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: _buildRows(state),
-                      )))
-            ],
-          ),
-        )
-      ],
-    ));
+            )
+          ],
+        ));
   }
 }

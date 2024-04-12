@@ -8,6 +8,7 @@ import 'package:good_manager/presentation/main.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/style_size.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../domain/entities/document.dart';
@@ -171,7 +172,9 @@ class HomePageState extends State<HomePage>{
             children: [
               Icon(UIConstants.goodIconData, size: iconSize, color: iconColor),
               SizedBox(height: 4,),
-              Text(AppLocalizations.of(context)!.goods_title, style: AppStyle.getHomeMenuTitleStyle()),
+              Text(AppLocalizations.of(context)!.goods_title,
+                  style: AppStyle.getHomeMenuTitleStyle()
+                ),
               SizedBox(height: 4,),
               Text("${state.quantityTotal}/${Config.currencyFormat.format(state.purchasePriceTotal)}", style: bodyStyle),
             ],
