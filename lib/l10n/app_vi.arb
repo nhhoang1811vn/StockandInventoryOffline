@@ -188,5 +188,6 @@
   "menu_back_up": "Sao lưu dữ liệu",
   "menu_restore": "Phục hồi dữ liệu",
   "backup_successful" : "Sao lưu dữ liệu thành công",
+  "backup_error": "Sao lưu dữ liệu thất bại!!",
   "restore_successful": "Phục hồi dữ liệu thành công"
 }

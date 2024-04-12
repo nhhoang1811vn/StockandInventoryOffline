@@ -190,5 +190,6 @@
   "menu_back_up": "Back up data",
   "menu_restore": "Restore data",
   "backup_successful" : "Back up data successful",
+  "backup_error": "Back up data failed!!",
   "restore_successful": "Restore data successful"
 }

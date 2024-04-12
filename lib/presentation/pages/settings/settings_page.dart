@@ -4,6 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/common/path_utils.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/main.dart';
 import 'package:intl/intl.dart';
@@ -87,21 +88,28 @@ class SettingsPage extends StatelessWidget {
     }
     return directory?.path;
   }
-  void onBackUpPressed(BuildContext context) async{
+  void backup(BuildContext context, String folderPath) async{
     try{
-      var documentsDirectory = await getApplicationDocumentsDirectory();
-      String dbPath = join(documentsDirectory.path, "main.db");
+      //var documentsDirectory = await getApplicationDocumentsDirectory();
+      //String dbPath = join(documentsDirectory.path, "main.db");
+      String dbPath = await PathUtils().getDatabasePath();
       File source = File(dbPath);
-      String? copyTo = await getDownloadPath();
+      //String? copyTo = await getDownloadPath();
       //Directory copyTo = Directory("storage/emulated/0/Download");
-      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-
-      if (Platform.isAndroid && androidInfo.version.sdkInt > 29) {
-        var status = await Permission.manageExternalStorage.status;
-        if (!status.isGranted) {
-          //openAppSettings();
-          await Permission.manageExternalStorage.request();
+      if (Platform.isAndroid) {
+        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        if (androidInfo.version.sdkInt > 29){
+          var status = await Permission.manageExternalStorage.status;
+          if (!status.isGranted) {
+            //openAppSettings();
+            await Permission.manageExternalStorage.request();
+          }
+        }else{
+          var status = await Permission.storage.status;
+          if (!status.isGranted) {
+            await Permission.storage.request();
+          }
         }
       }else{
         var status = await Permission.storage.status;
@@ -109,32 +117,52 @@ class SettingsPage extends StatelessWidget {
           await Permission.storage.request();
         }
       }
-      final dateFormat = new DateFormat('yyyy-MM-dd');
-      final timeStamp = dateFormat.format(DateTime.now());
-      String newPath = "${copyTo}/good_manager_backup_database_$timeStamp.db";
-      await source.copy(newPath);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.of(context)!.backup_successful + " " +newPath),
-      ));
+      final dateFormat = new DateFormat('dd-MM-yyyy-HH-mm');
+        final timeStamp = dateFormat.format(DateTime.now());
+        String newPath = "${folderPath}/appviet_goodmanager_database_$timeStamp.db";
+        await source.copy(newPath);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context)!.backup_successful + " " +newPath),
+        ));
     }catch (e){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Back up error: $e"),
+        content: Text(AppLocalizations.of(context)!.backup_error + " " + e.toString()),
       ));
     }
   }
+  void onBackUpPressed(BuildContext context) async{
+    if (Platform.isWindows){
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      backup(context, appDocDir.path);
+    }else{
+      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+      if (selectedDirectory != null) {
+        backup(context, selectedDirectory);
+      }else{
+        // User canceled the picker
+      }
+    }
+  }
   void onRestorePressed(BuildContext context) async{
-    var documentsDirectory = await getApplicationDocumentsDirectory();
-    String dbPath = join(documentsDirectory.path, "main.db");
-
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
-      File source = File(result.files.single.path!);
+      restore(context, result.files.single.path!);
+    } else {
+      // User canceled the picker
+    }
+  }
+  void restore(BuildContext context, String filePath) async{
+    try{
+      File source = File(filePath);
+      String dbPath = await PathUtils().getDatabasePath();
       await source.copy(dbPath);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(AppLocalizations.of(context)!.restore_successful),
       ));
-    } else {
-      // User canceled the picker
+    }catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("restore error: " + e.toString()),
+      ));
     }
   }
 }
