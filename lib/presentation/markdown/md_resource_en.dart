@@ -27,6 +27,13 @@ With gratitude,
 AppViet Team
   """;
  static const String whatNews = """
+  Version 1.0.2 - April 12
+ 
+  * Support for window platform. 
+  * Added Report - List of Good. 
+  * Added Report - Export PDF, CSV.  
+  * Added Setting - Backup, Restore. 
+ 
   Version 1.0.1 - April 4
  
   * Modified Table Transaction.Quantity from INT to REAL.

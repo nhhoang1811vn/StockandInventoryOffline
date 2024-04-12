@@ -1,6 +1,7 @@
+import 'dart:io' as io;
+
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:io' as io;
 
 class PathUtils{
   static final PathUtils _singleton = PathUtils._internal();

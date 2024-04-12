@@ -10,13 +10,11 @@ import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/presentation/main.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
 import 'package:pdf/pdf.dart';
-
+import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../constants.dart';
-
-import 'package:pdf/widgets.dart' as pw;
 
 class ReportDetailPage extends StatelessWidget {
   final ReportType type;

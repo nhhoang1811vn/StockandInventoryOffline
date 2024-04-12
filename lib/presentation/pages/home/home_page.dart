@@ -8,7 +8,6 @@ import 'package:good_manager/presentation/main.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/style_size.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../domain/entities/document.dart';

@@ -81,6 +81,13 @@ Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Ho
  Chúng tôi đã tạo ra chức năng đơn giản này để theo dõi các chi tiêu của bạn cho một cửa hàng. 
  """;
   static const String whatNews = """
+  Phiên bản 1.0.2 - 12/04/2024
+ 
+  * Hỗ trợ nền tảng Window. 
+  * Thêm thống kê - Danh sách hàng hóa. 
+  * Thêm thống kê - Xuất PDF,CSV tệp.  
+  * Thêm cài đặt - sao lưu, phục hồi. 
+  
  Phiên bản 1.0.1 04/04/2024
  
  * Cho phép nhập số THỰC ở trường số lượng.

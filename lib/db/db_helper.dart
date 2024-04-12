@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io' as io;
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -13,13 +12,10 @@ import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../domain/entities/payment.dart';
-import 'package:path/path.dart' as p;
 class DBHelper {
   static final DBHelper _instance = DBHelper.internal();
 
