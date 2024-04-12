@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -60,14 +61,17 @@ class ReportDetailPage extends StatelessWidget {
   Widget _buildPDFMenu(BuildContext context, ReportDetailState state) {
     return IconButton(
         onPressed: () async{
-          final pdf = await exportDelegate.exportToPdfDocument('content');
-          saveFile(context,pdf, 'output');
+          String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+          if (selectedDirectory != null) {
+            final pdf = await exportDelegate.exportToPdfDocument('content');
+            saveFile(context,pdf,selectedDirectory,'output');
+          }
         },
         icon: Icon(Icons.picture_as_pdf));
   }
-  Future<void> saveFile(context,document, String name) async {
-    final Directory dir = await getApplicationDocumentsDirectory();
-    final File file = File('${dir.path}/$name.pdf');
+  Future<void> saveFile(context,document,String path, String name) async {
+    //final Directory dir = await getApplicationDocumentsDirectory();
+    final File file = File('${path}/$name.pdf');
 
     await file.writeAsBytes(await document.save());
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
