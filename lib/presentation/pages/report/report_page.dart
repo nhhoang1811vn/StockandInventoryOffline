@@ -62,36 +62,18 @@ class ReportPage extends StatelessWidget {
     );
   }
   void onReportTypeClicked(BuildContext context, ReportType reportType) async{
-    ReportDateRangeType? type = await showSelectDateRangeDialog(context, ReportDateRangeType.CURRENT_MONTH);
-    if (type != null){
-      DateTime now = DateTime.now();
-      DateTime tmr = DateTime(now.year, now.month, now.day + 1);
-      DateTime start;
-      DateTime end;
-      switch(type){
-        case ReportDateRangeType.CURRENT_MONTH:
-          start = DateTime(now.year, now.month, 1);
-          end = DateTime(now.year, now.month + 1, 0);
-          break;
-        case ReportDateRangeType.LAST_30_DAYS:
-          start = DateTime(now.year, now.month, now.day - 30);
-          end = tmr.subtract(Duration(seconds: 1));
-          break;
-        case ReportDateRangeType.LAST_90_DAYS:
-          start = DateTime(now.year, now.month, now.day - 90);
-          end = tmr.subtract(Duration(seconds: 1));
-          break;
-        case ReportDateRangeType.CURRENT_YEAR:
-          start = DateTime(now.year, 1, 1);
-          end = DateTime(now.year, 12, 31);
-          break;
-      }
+    Map? result = await showSelectDateRangeDialog(context, ReportDateRangeType.CURRENT_MONTH);
+    if (result == null){
+
+    }else{
+      DateTime start = result["start"];
+      DateTime end = result["end"];
       Navigator.of(context).pushNamed(Pages.report_detail, arguments: {'type': reportType, 'start': start, 'end': end});
     }
   }
 
-  Future<ReportDateRangeType?> showSelectDateRangeDialog(BuildContext context, ReportDateRangeType type) async {
-    ReportDateRangeType? result = await showDialog(context: context, builder: (_) => SelectDateRangeDialog(type), barrierDismissible: true);
+  Future<Map?> showSelectDateRangeDialog(BuildContext context, ReportDateRangeType type) async {
+    Map? result = await showDialog(context: context, builder: (_) => SelectDateRangeDialog(type), barrierDismissible: false);
     return result;
   }
 }

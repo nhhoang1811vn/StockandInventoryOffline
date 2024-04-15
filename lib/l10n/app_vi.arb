@@ -175,6 +175,7 @@
     "report_type_last_30_days": "30 ngày trước",
     "report_type_last_90_days": "90 ngày trước",
     "report_type_current_year": "Năm hiện tại",
+    "report_type_custom": "Tự Chọn",
     "report_detail_header": "Từ ngày %s đến ngày %s cửa hàng %s",
     "select_payment_status": "Chọn trạng thái thanh toán",
   "payment_status_unpaid": "Chưa trả",

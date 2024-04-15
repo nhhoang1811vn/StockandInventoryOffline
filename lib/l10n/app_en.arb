@@ -176,6 +176,7 @@
   "report_type_last_30_days": "Last 30 days",
   "report_type_last_90_days": "Last 90 days",
   "report_type_current_year": "Current year",
+  "report_type_custom": "Custom",
   "report_detail_header": "From %s to %s store %s",
   "select_payment_status": "Select payment status",
   "payment_status_unpaid": "Unpaid",

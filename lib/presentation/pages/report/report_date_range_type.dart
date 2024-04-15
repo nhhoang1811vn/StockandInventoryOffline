@@ -5,7 +5,8 @@ enum ReportDateRangeType{
   CURRENT_MONTH,
   LAST_30_DAYS,
   LAST_90_DAYS,
-  CURRENT_YEAR
+  CURRENT_YEAR,
+  CUSTOM
 }
 extension ReportDateRangeTypeExtension on ReportDateRangeType{
   String getText(BuildContext context){
@@ -18,6 +19,8 @@ extension ReportDateRangeTypeExtension on ReportDateRangeType{
         return AppLocalizations.of(context)!.report_type_last_90_days;
       case ReportDateRangeType.CURRENT_YEAR:
         return AppLocalizations.of(context)!.report_type_current_year;
+      case ReportDateRangeType.CUSTOM:
+        return AppLocalizations.of(context)!.report_type_custom;
     }
   }
 }

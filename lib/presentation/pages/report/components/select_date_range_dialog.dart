@@ -16,6 +16,8 @@ class SelectDateRangeDialog extends StatefulWidget {
 class SelectDateRangeDialogState extends State<SelectDateRangeDialog> {
   late ReportDateRangeType _type;
 
+  DateTimeRange dateRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
+
   @override
   void initState() {
     _type = widget.type;
@@ -24,6 +26,8 @@ class SelectDateRangeDialogState extends State<SelectDateRangeDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final start = dateRange.start;
+    final end = dateRange.end;
     return AlertDialog(
       title: Text(AppLocalizations.of(context)!.notification_dialog_title),
       content: SingleChildScrollView(
@@ -36,6 +40,18 @@ class SelectDateRangeDialogState extends State<SelectDateRangeDialog> {
                 Divider(color: Colors.grey),
                 for (var type in ReportDateRangeType.values)...[
                   getRadioListTileDateRange(type)
+                ],
+                if (_type == ReportDateRangeType.CUSTOM)
+                  ...[
+                  Divider(color: Colors.grey),
+                  Row(children: [
+                    Expanded(child: ElevatedButton(child: Text('${start
+                        .day}/${start.month}/${start.year}'),
+                        onPressed: pickDateRange)),
+                    SizedBox(width: 8.0,),
+                    Expanded(child: ElevatedButton(child: Text('${end.day}/${end
+                        .month}/${end.year}'), onPressed: pickDateRange)),
+                  ],)
                 ]
               ],
             )
@@ -43,14 +59,62 @@ class SelectDateRangeDialogState extends State<SelectDateRangeDialog> {
         ),
       ),
       actions: <Widget>[
+    TextButton(
+    child: Text(AppLocalizations.of(context)!.action_cancel),
+    onPressed: (){
+      Navigator.of(context).pop();
+    },
+    ),
         TextButton(
           child: Text(AppLocalizations.of(context)!.action_ok),
           onPressed: () async {
-            Navigator.of(context).pop(_type);
+            var result = Map();
+            //result["type"] =  _type;
+            DateTime mStart;
+            DateTime mEnd;
+            DateTime now = DateTime.now();
+            DateTime tmr = DateTime(now.year, now.month, now.day + 1);
+
+            switch(_type){
+              case ReportDateRangeType.CURRENT_MONTH:
+                mStart = DateTime(now.year, now.month, 1);
+                mEnd = DateTime(now.year, now.month + 1, 0);
+                break;
+              case ReportDateRangeType.LAST_30_DAYS:
+                mStart = DateTime(now.year, now.month, now.day - 30);
+                mEnd = tmr.subtract(Duration(seconds: 1));
+                break;
+              case ReportDateRangeType.LAST_90_DAYS:
+                mStart = DateTime(now.year, now.month, now.day - 90);
+                mEnd = tmr.subtract(Duration(seconds: 1));
+                break;
+              case ReportDateRangeType.CURRENT_YEAR:
+                mStart = DateTime(now.year, 1, 1);
+                mEnd = DateTime(now.year, 12, 31);
+                break;
+              case ReportDateRangeType.CUSTOM:
+                mStart = start;
+                mEnd = end;
+            }
+            result["start"] = mStart;
+            result["end"] = mEnd;
+            Navigator.of(context).pop(result);
           },
         ),
       ],
     );
+  }
+  Future pickDateRange() async{
+    DateTimeRange? result = await showDateRangePicker(context: context,
+        initialDateRange: dateRange,
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2100));
+
+    if (result != null){
+      setState(() {
+        dateRange = result;
+      });
+    }
   }
 
   RadioListTile<ReportDateRangeType> getRadioListTileDateRange(ReportDateRangeType value) {

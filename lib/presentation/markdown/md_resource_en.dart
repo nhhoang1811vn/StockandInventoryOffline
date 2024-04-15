@@ -27,6 +27,11 @@ With gratitude,
 AppViet Team
   """;
  static const String whatNews = """
+ Version 1.0.3 - April 15
+ 
+  * Added Report - Select Range Date 
+  * Fixed bug on Select Group page    
+ 
   Version 1.0.2 - April 12
  
   * Support for window platform. 

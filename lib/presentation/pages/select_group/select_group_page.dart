@@ -14,35 +14,44 @@ class SelectGroupPage extends StatelessWidget {
 
   //if id is not null, meaning moving group
   //if id is null, meaning moving good
-  SelectGroupPage(this.id,this.groupId) : super();
+  SelectGroupPage(this.id, this.groupId) : super();
 
-  final TreeController _treeController = TreeController(allNodesExpanded: false);
+  final TreeController _treeController =
+      TreeController(allNodesExpanded: false);
 
   @override
   Widget build(BuildContext context) {
-    context.read<SelectGroupCubit>().init(id,groupId);
+    context.read<SelectGroupCubit>().init(id, groupId);
     return BlocConsumer<SelectGroupCubit, SelectGroupState>(
         builder: (context, state) => Scaffold(
             appBar: _buildAppBar(context, state),
-            body: Column(children: [SelectedStoreView(), Expanded(child: buildTree(context, state))])),
+            body: Column(children: [
+              SelectedStoreView(),
+              Expanded(child: SingleChildScrollView(child: buildTree(context, state)))
+            ])),
         listener: (context, state) => {});
   }
 
   PreferredSize _buildAppBar(BuildContext context, SelectGroupState state) {
     return PreferredSize(
         preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-        child: AppBar(title: Text(AppLocalizations.of(context)!.select_group_title), actions: <Widget>[
-          IconButton(onPressed: (){
-    Navigator.of(context).pop({"groupId":state.selectedGroupId});
-    }, icon: Icon(Icons.check))
-        ]));
+        child: AppBar(
+            title: Text(AppLocalizations.of(context)!.select_group_title),
+            actions: <Widget>[
+              IconButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pop({"groupId": state.selectedGroupId});
+                  },
+                  icon: Icon(Icons.check))
+            ]));
   }
 
   /// Builds tree or error message out of the entered content.
   Widget buildTree(BuildContext context, SelectGroupState state) {
     try {
       return TreeView(
-        nodes: toTreeNodes(context,state, state.treeMap, state.items),
+        nodes: toTreeNodes(context, state, state.treeMap, state.items),
         treeController: _treeController,
       );
     } on FormatException catch (e) {
@@ -50,51 +59,71 @@ class SelectGroupPage extends StatelessWidget {
     }
   }
 
-  List<TreeNode> toTreeNodes(BuildContext context,SelectGroupState state, Map<int, dynamic>? map, Map<int, Group>? data) {
+  List<TreeNode> toTreeNodes(BuildContext context, SelectGroupState state,
+      Map<int, dynamic>? map, Map<int, Group>? data) {
     if (map != null)
       return map.keys
-          .map(
-              (k) => TreeNode(content: _buildGroupRow(context,state, data?[k]), children: toTreeNodes(context, state, map[k], data)))
+          .map((k) => TreeNode(
+              content: _buildGroupRow(context, state, data?[k]),
+              children: toTreeNodes(context, state, map[k], data)))
           .toList();
     return [];
   }
-  Widget _buildGroupRow(BuildContext context, SelectGroupState state, Group? item){
-    return Expanded(child: InkWell(
-        onTap: () => context.read<SelectGroupCubit>().select(item?.id),
-        child: Container(
-          padding: EdgeInsets.all(8),
-          decoration: item?.id == state.selectedGroupId ? BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Colors.blue,
-                  Colors.white,
-                ],
-              )
-          ): null,
-          child: Row(
-            children: [
-              Icon(UIConstants.groupIconData, size: 24, color: UIConstants.primaryColor,),
-              SizedBox(
-                width: 16,
-              ),
-              Column(
-                children: [
-                  Text(item?.name ?? '', style:
-                  Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(item?.description ?? '',style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onBackground)),
-                ],
-              )
-            ],
-          ),
-        )));
-  }
 
+  Widget _buildGroupRow(
+      BuildContext context, SelectGroupState state, Group? item) {
+    return Expanded(
+        child: InkWell(
+            onTap: () => context.read<SelectGroupCubit>().select(item?.id),
+            child: Container(
+              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+              decoration: item?.id == state.selectedGroupId
+                  ? BoxDecoration(
+                      gradient: LinearGradient(
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft,
+                      colors: [
+                        Colors.blue,
+                        Colors.white,
+                      ],
+                    ))
+                  : null,
+              child: Row(
+                children: [
+                  Icon(
+                    UIConstants.groupIconData,
+                    size: 24,
+                    color: UIConstants.primaryColor,
+                  ),
+                  SizedBox(
+                    width: 16,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(item?.name ?? '',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary)),
+                      if (item?.description != '')...[
+
+                        Text(item?.description ?? '',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onBackground)),
+                      ]
+
+                    ],
+                  )
+                ],
+              ),
+            )));
+  }
 }
