@@ -9,7 +9,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -224,35 +223,38 @@ class ReportDetailPage extends StatelessWidget {
   Widget _buildBody(BuildContext context, ReportDetailState state) {
     return Container(
         padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(sprintf(AppLocalizations.of(context)!.report_detail_header, [
-              Config.dateFormat.format(state.start!),
-              Config.dateFormat.format(state.end!),
-              storage.getSelectedStoreName()
-            ])),
-            SizedBox(
-              height: 16,
-            ),
-            SingleChildScrollView(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: _buildFirstColumn(state),
-                  ),
-                  Flexible(
-                      child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: _buildRows(state),
-                          )))
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(sprintf(AppLocalizations.of(context)!.report_detail_header, [
+                Config.dateFormat.format(state.start!),
+                Config.dateFormat.format(state.end!),
+                storage.getSelectedStoreName()
+              ])),
+              SizedBox(
+                height: 16,
               ),
-            )
-          ],
+              
+              SingleChildScrollView(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: _buildFirstColumn(state),
+                    ),
+                    Flexible(
+                        child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: _buildRows(state),
+                            )))
+                  ],
+                ),
+              )
+            ],
+          ),
         ));
   }
 }

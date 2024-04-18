@@ -81,6 +81,10 @@ Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Ho
  Chúng tôi đã tạo ra chức năng đơn giản này để theo dõi các chi tiêu của bạn cho một cửa hàng. 
  """;
   static const String whatNews = """
+  Phiên bản 1.0.4 - 18/04/2024
+ 
+  * Sửa lỗi không thể cuộn xuống được ở màn hình Thống Kê chi tiết. 
+  
   Phiên bản 1.0.3 - 15/04/2024
  
   * Thêm thống kê - tự chọn ngày. 

@@ -27,6 +27,10 @@ With gratitude,
 AppViet Team
   """;
  static const String whatNews = """
+  Version 1.0.4 - April 18
+ 
+  * Fixed bug could not scroll vertically on Report Detail Page. 
+ 
  Version 1.0.3 - April 15
  
   * Added Report - Select Range Date 

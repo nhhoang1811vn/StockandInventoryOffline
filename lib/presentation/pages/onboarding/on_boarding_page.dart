@@ -30,7 +30,6 @@ class OnBoardingPage extends StatelessWidget {
       //pageMargin:  EdgeInsets.only(bottom: 0.0),
       titleTextStyle: TextStyle(fontSize: 26.0, fontWeight: FontWeight.w700),
       bodyTextStyle: bodyStyle,
-      pageColor: Colors.blue,
       //imagePadding: EdgeInsets.zero,
     );
     return BlocProvider(create: (context) => cubit, child: BlocConsumer<OnBoardingCubit, OnBoardingState>(listener: (context, state){
@@ -50,7 +49,7 @@ class OnBoardingPage extends StatelessWidget {
               height: 150.0,
               padding: EdgeInsets.all(32.0),
               decoration: BoxDecoration(
-                border: Border.all(width: 2, color: Colors.white),
+                border: Border.all(width: 2, color: Colors.blue),
             shape: BoxShape.circle,
           ),child: Image.asset(
             "images/onboarding_store.png",
@@ -66,7 +65,7 @@ class OnBoardingPage extends StatelessWidget {
               height: 150.0,
               padding: EdgeInsets.all(32.0),
               decoration: BoxDecoration(
-                border: Border.all(width: 2, color: Colors.white),
+                border: Border.all(width: 2, color: Colors.blue),
                 shape: BoxShape.circle,
               ),child: Image.asset(
                 "images/onboarding_good.png",
@@ -80,7 +79,7 @@ class OnBoardingPage extends StatelessWidget {
               height: 150.0,
               padding: EdgeInsets.all(32.0),
               decoration: BoxDecoration(
-                border: Border.all(width: 2, color: Colors.white),
+                border: Border.all(width: 2, color: Colors.blue),
                 shape: BoxShape.circle,
               ),child: Image.asset(
                 "images/onboarding_document.png",
@@ -92,7 +91,7 @@ class OnBoardingPage extends StatelessWidget {
                 height: 150.0,
                 padding: EdgeInsets.all(32.0),
                 decoration: BoxDecoration(
-                  border: Border.all(width: 2, color: Colors.white),
+                  border: Border.all(width: 2, color: Colors.blue),
                   shape: BoxShape.circle,
                 ),child: Image.asset(
                   "images/onboarding_store.png",
@@ -103,10 +102,14 @@ class OnBoardingPage extends StatelessWidget {
             children: [
               Text(AppLocalizations.of(context)!.on_boarding_header_4,
                   style: bodyStyle),
-              TextField(
-                onChanged: context.read<OnBoardingCubit>().nameChanged,
+              TextFormField(
+                textAlign: TextAlign.center,
                 decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.field_name),
+                  hintText: "Cửa hàng chính",
+                ),
+                onChanged: context.read<OnBoardingCubit>().nameChanged,
+                //decoration: InputDecoration(
+                //    labelText: AppLocalizations.of(context)!.field_name),
               ),
             ],
           ),
