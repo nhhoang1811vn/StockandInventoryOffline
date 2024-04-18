@@ -3,7 +3,8 @@ import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/repositories/goods_repositories.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../presentation/main.dart';
+import '../../main.dart';
+
 
 @Injectable(as: GoodsRepository)
 class GoodsRepositoryImpl implements GoodsRepository {

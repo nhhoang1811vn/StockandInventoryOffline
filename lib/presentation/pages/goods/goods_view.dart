@@ -17,8 +17,8 @@ import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:sprintf/sprintf.dart';
 
+import '../../../main.dart';
 import '../../app_style.dart';
-import '../../main.dart';
 import '../../widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
 import '../../widgets/snackbar_widgets.dart';
 import '../base/base_state.dart';
@@ -443,6 +443,7 @@ class GoodsPageState extends State<GoodsPage> {
                 actions: [_buildSearchMenu(state), _buildSortMenu(state), _buildHelpMenu()]),
             body: _buildBody(context, state),
             floatingActionButton: SpeedDial(
+
               icon: Icons.add,
               activeIcon: Icons.close,
               //buttonSize: 56.0,
@@ -456,6 +457,7 @@ class GoodsPageState extends State<GoodsPage> {
               foregroundColor: Colors.white,
               elevation: 8.0,
               shape: CircleBorder(),
+              //shape: RoundedRectangleBorder( borderRadius: BorderRadius.all(Radius.circular(8.0))),
               children: [
                 SpeedDialChild(
                     child: Icon(

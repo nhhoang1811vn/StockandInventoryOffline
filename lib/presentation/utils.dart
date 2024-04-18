@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_beep/flutter_beep.dart';
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
-import 'package:good_manager/presentation/main.dart';
+import 'package:good_manager/main.dart';
 import 'package:vibration/vibration.dart';
 
 

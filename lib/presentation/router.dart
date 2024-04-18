@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/common/helpers/injection.container.dart';
-import 'package:good_manager/presentation/main.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/barcode_scanner_page.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart';
 import 'package:good_manager/presentation/pages/customers/bloc/bloc.dart';
@@ -47,6 +46,8 @@ import 'package:good_manager/presentation/pages/stores/stores_page.dart';
 import 'package:good_manager/presentation/pages/suppliers/bloc/bloc.dart';
 import 'package:good_manager/presentation/pages/suppliers/suppliers_page.dart';
 import 'package:good_manager/presentation/pages/take_picture_screen.dart';
+
+import '../main.dart';
 
 class AppRouter {
   final RouteObserver<PageRoute> routeObserver;

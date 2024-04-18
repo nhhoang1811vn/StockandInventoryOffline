@@ -4,7 +4,8 @@ import 'package:good_manager/domain/repositories/document_repositories.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../domain/entities/document.dart';
-import '../../presentation/main.dart';
+import '../../main.dart';
+
 
 @Injectable(as: DocumentRepository)
 class DocumentRepositoryImpl implements DocumentRepository {

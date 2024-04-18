@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/common/path_utils.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/main.dart';
+import 'package:good_manager/main.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';

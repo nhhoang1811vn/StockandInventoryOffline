@@ -85,10 +85,7 @@ class MyAppState extends State<MyApp> {
           onBackground: Colors.black,
           onPrimary: Colors.blue.shade700,
           seedColor: Colors.blue.shade700,
-          brightness: Brightness.light,
-
-          //brightness: Brightness.dark,
-
+          brightness: Brightness.light
         ),
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: AppBarTheme(

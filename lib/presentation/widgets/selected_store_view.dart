@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/presentation/main.dart';
+import 'package:good_manager/main.dart';
 
 import '../constants.dart';
 

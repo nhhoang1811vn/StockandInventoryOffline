@@ -10,8 +10,8 @@ import 'package:good_manager/presentation/widgets/snackbar_widgets.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../domain/entities/stores_setting.dart';
+import '../../../main.dart';
 import '../../app_style.dart';
-import '../../main.dart';
 import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';
 import '../help_content.dart';

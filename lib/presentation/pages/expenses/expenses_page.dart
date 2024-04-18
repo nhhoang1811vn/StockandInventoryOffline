@@ -12,7 +12,7 @@ import 'package:good_manager/presentation/pages/expenses/components/sort_expense
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../../main.dart';
+import '../../../main.dart';
 import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';
 import '../help_content.dart';

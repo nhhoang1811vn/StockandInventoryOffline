@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/main.dart';
+import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/widgets/select_message_type_dialog.dart';
