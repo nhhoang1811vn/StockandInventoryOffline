@@ -58,6 +58,10 @@ android {
         targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a","arm64-v8a"
+        }
     }
     signingConfigs {
         release {
@@ -75,6 +79,7 @@ android {
 
     buildTypes {
         release {
+            //minifyEnabled true
             signingConfig signingConfigs.release
         }
     }
