@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "617423800641",
+    "project_id": "quanlykho-4818e",
+    "storage_bucket": "quanlykho-4818e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617423800641:android:21a71b46dd02d0e05839c0",
+        "android_client_info": {
+          "package_name": "com.ssteam.good_manager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCixmrqF34P7kKbZWOEtBbj6PCuHzAmWS0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

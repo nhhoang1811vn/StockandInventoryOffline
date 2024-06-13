@@ -4,6 +4,9 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   camera_windows
+  desktop_webview_auth
+  firebase_auth
+  firebase_core
   permission_handler_windows
   printing
   url_launcher_windows
