@@ -52,7 +52,7 @@ class OnBoardingPage extends StatelessWidget {
                 border: Border.all(width: 2, color: Colors.blue),
             shape: BoxShape.circle,
           ),child: Image.asset(
-            "images/onboarding_store.png",
+            "assets/images/onboarding_store.png",
           )),
           //image: Image.asset(name)
           //image: Icon(UIConstants.storeIconData, size: 60, color: AppColors.primaryColor,),
@@ -68,7 +68,7 @@ class OnBoardingPage extends StatelessWidget {
                 border: Border.all(width: 2, color: Colors.blue),
                 shape: BoxShape.circle,
               ),child: Image.asset(
-                "images/onboarding_good.png",
+                "assets/images/onboarding_good.png",
               )),
           decoration: pageDecoration,
         ),
@@ -82,7 +82,7 @@ class OnBoardingPage extends StatelessWidget {
                 border: Border.all(width: 2, color: Colors.blue),
                 shape: BoxShape.circle,
               ),child: Image.asset(
-                "images/onboarding_document.png",
+                "assets/images/onboarding_document.png",
               )),
           decoration: pageDecoration,
         ),
@@ -94,7 +94,7 @@ class OnBoardingPage extends StatelessWidget {
                   border: Border.all(width: 2, color: Colors.blue),
                   shape: BoxShape.circle,
                 ),child: Image.asset(
-                  "images/onboarding_store.png",
+                  "assets/images/onboarding_store.png",
                 )),
           title: AppLocalizations.of(context)!.on_boarding_title_4,
           bodyWidget: Column(

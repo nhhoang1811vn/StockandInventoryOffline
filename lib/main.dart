@@ -1,13 +1,10 @@
 import 'package:camera/camera.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/auth_gate.dart';
 import 'package:good_manager/data/storage.dart';
-import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
-import 'package:good_manager/presentation/pages/home/home_page.dart';
-import 'package:good_manager/presentation/pages/onboarding/on_boarding_page.dart';
 import 'package:good_manager/presentation/router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -43,12 +40,9 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
   String? _languageCode;
   final AppRouter _router;
-  bool? firstTime;
 
   MyAppState() : _router = AppRouter() {
-    firstTime = storage.getFirstTime();
-    _languageCode = "vi";
-    //_languageCode = storage.getLanguageCode();
+    _languageCode = storage.getLanguageCode();
   }
   Locale locale(String languageCode) {
     Locale _temp;
@@ -92,8 +86,6 @@ class MyAppState extends State<MyApp> {
         ),
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: AppBarTheme(
-          //titleTextStyle: TextStyle(fontSize: ),
-          //backgroundColor: Colors.white,
             iconTheme: IconThemeData(
                 color: Colors.black
             )
@@ -111,24 +103,21 @@ class MyAppState extends State<MyApp> {
   }
   @override
   Widget build(BuildContext context) {
-    if (_languageCode == null || firstTime == null) {
+    if (_languageCode == null) {
       return Container(
         child: Center(
           child: CircularProgressIndicator(),
         ),
       );
     } else {
+      final user = FirebaseAuth.instance.currentUser;
       return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: _buildTheme(Brightness.light),
-
-        //theme: ThemeData(),
         home: AuthGate(),
-        //home: firstTime! ? OnBoardingPage() : _homePage(),
         onGenerateRoute: _router.getRoute,
         navigatorObservers: [_router.routeObserver],
-        //locale: locale(_languageCode!),
-        locale: const Locale('vi'),
+        locale: locale(_languageCode!),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       );

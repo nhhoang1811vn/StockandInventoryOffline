@@ -188,8 +188,29 @@
   "empty_payment": "Chưa có thanh toán",
   "save_payment_title": "Lưu thanh toán",
   "menu_back_up": "Sao lưu dữ liệu",
+  "menu_back_up_desc": "Xuất tệp database ra điện thoại",
   "menu_restore": "Phục hồi dữ liệu",
+  "menu_restore_desc": "Chọn tệp database từ điện thoại",
   "backup_successful" : "Sao lưu dữ liệu thành công",
   "backup_error": "Sao lưu dữ liệu thất bại!!",
-  "restore_successful": "Phục hồi dữ liệu thành công"
+
+
+  "menu_push_data_to_cloud": "Lưu dữ liệu trên cloud",
+
+  "login": "ĐĂNG NHẬP",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "forgot_your_password": "Quên mật khẩu ?",
+    "or_sign_in_with": "hoặc đăng nhập bằng",
+    "dont_have_an_account_yet": "Chưa có tài khoản ?",
+    "sign_up_text": "Đăng ký",
+  "sign_up": "ĐĂNG KÝ",
+  "name" : "Tên",
+  "reset_password": "ĐẶT LẠI MẬT KHẨU",
+  "email_not_verified_title": "Email chưa xác nhận",
+  "email_not_verified_desc" : "Hãy kiểm tra hòm thư của bạn",
+  "sign_up_successful" : "Đăng ký thành công",
+  "reset_password_successful": "Cài lại mật khẩu thành công",
+  "cloud_file_no_updated": "Chưa được cập nhật",
+   "signout_message": "Bạn có chắc muốn đăng xuất không ?"
 }

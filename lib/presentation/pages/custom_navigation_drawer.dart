@@ -1,22 +1,28 @@
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/dialog_utils.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/widgets/select_message_type_dialog.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../common/path_utils.dart';
 import '../style_size.dart';
 
 class CustomNavigationDrawer extends StatefulWidget {
   const CustomNavigationDrawer({Key? key, required this.selectedIndex, required this.storeName}) : super(key: key);
   final int selectedIndex;
   final String storeName;
-
 
   @override
   CustomNavigationDrawerState createState() {
@@ -33,64 +39,114 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
     buildSignature: 'Unknown',
     installerStore: 'Unknown',
   );
+  var _storeName = "";
+
   @override
   void initState() {
     super.initState();
     _initPackageInfo();
+    _storeName = widget.storeName;
   }
+
   Future<void> _initPackageInfo() async {
     final info = await PackageInfo.fromPlatform();
     setState(() {
       _packageInfo = info;
     });
   }
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-           Container(
-             padding: EdgeInsets.only(top: 48),
+          Container(
+            padding: EdgeInsets.only(top: 48),
             color: Theme.of(context).colorScheme.onPrimary,
-             child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-
-                children: [
-                  Padding(padding: EdgeInsets.only(left: 16.0, right: 16.0), child:
-                  Text(
-                    _packageInfo.appName + " (${_packageInfo.version})",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  )),
-                  SizedBox(height: 8),
-                  Padding(padding: EdgeInsets.only(left: 16.0, right: 16.0), child:
-                  Text("Cửa hàng đang theo dõi", style: TextStyle(fontSize: 16, color: Colors.white))),
-                  SizedBox(height: 8),
-                  GestureDetector(
-                      child: Container(
-                          color: UIConstants.primaryDarkColor,
-                          padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-                          child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                    padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                  child: Text(
-                                    widget.storeName,
-                                    style: TextStyle(color: Colors.white),
-                                  )),
-                              Icon(
-                                Icons.expand_circle_down_sharp,
+                            Text(
+                              "Hello ${FirebaseAuth.instance.currentUser?.displayName}",
+                              style: TextStyle(
                                 color: Colors.white,
-                              )
-                            ],
-                          )),
-                      onTap: () => onChangeStore(context))
+                                fontSize: 18,
+                              ),
+                            ),
+                            Text(
+                              "${FirebaseAuth.instance.currentUser?.email}",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],),
+                          Spacer(),
+                          IconButton(onPressed: (){
+                            DialogUtils.showCustomDialog(context,
+                                title: AppLocalizations.of(context)!.notification_dialog_title,
+                                message: AppLocalizations.of(context)!.signout_message,
+                                okBtnFunction: () async{
+                                  String dbPath = await PathUtils().getDatabasePath();
+                                  File file = File(dbPath);
+                                  final storageRef = FirebaseStorage.instance.ref();
+                                  String? email = FirebaseAuth.instance.currentUser?.email;
+                                  final ref = storageRef.child("$email/database.db");
+                                  try {
+                                    await ref.putFile(file);
+                                  } on FirebaseException catch (e) {
+                                  }
+                                  FirebaseAuth.instance.signOut();
+                                  Navigator.of(context).pushNamedAndRemoveUntil(Pages.signIn, (route) => false);
+                                },
+                                cancelBtnText: AppLocalizations.of(context)!.action_cancel,
 
-                ],
-              ),
-           ),
+                            );
+                            }, icon: Icon(Icons.logout, color: Colors.white))
+                        ],),
+
+                        Text(
+                          _packageInfo.appName + " (${_packageInfo.version})",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                    Text("Cửa hàng đang chọn", style: TextStyle(fontSize: 14, color: Colors.white))
+                      ],
+                    )),
+                SizedBox(height: 8),
+                GestureDetector(
+                    child: Container(
+                        color: UIConstants.primaryDarkColor,
+                        padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: Text(
+                              _storeName,
+                              style: TextStyle(color: Colors.white),
+                            )),
+                            Icon(
+                              Icons.expand_circle_down_sharp,
+                              color: Colors.white,
+                            )
+                          ],
+                        )),
+                    onTap: () => onChangeStore(context))
+              ],
+            ),
+          ),
           AppDrawerTile(
               index: 0,
               selectedIndex: widget.selectedIndex,
@@ -163,7 +219,6 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
           ListTile(
             leading: Icon(FontAwesomeIcons.paperPlane, size: UIConstants.drawerMenuSize),
             title: Text(AppLocalizations.of(context)!.menu_item_invite_friend_header),
-            //subtitle: Text(AppLocalizations.of(context)!.menu_item_invite_friend_description),
             onTap: () => onInviteFriend(context),
           ),
           ListTile(
@@ -195,58 +250,6 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
       ),
     );
   }
-
-  Widget buildHeader(BuildContext context) => Container(
-      color: UIConstants.primaryColor,
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      child: Column(
-        children: [
-          Container(
-              color: UIConstants.primaryColor,
-              padding: EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  Icon(
-                    UIConstants.goodIconData,
-                    size: 36,
-                    color: Colors.white,
-                  ),
-                  SizedBox(width: 20.0),
-                  Expanded(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _packageInfo.appName,
-                        style: TextStyle(fontSize: TextSize.large, color: Colors.white),
-                      ),
-                      SizedBox(height: 4.0),
-                      Text(_packageInfo.version, style: TextStyle(fontSize: TextSize.large, color: Colors.white)),
-                    ],
-                  ))
-                ],
-              )),
-          GestureDetector(
-              child: Container(
-                  color: UIConstants.primaryDarkColor,
-                  padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: Text(
-                        widget.storeName,
-                        style: TextStyle(color: Colors.white),
-                      )),
-                      Icon(
-                        Icons.expand_circle_down_sharp,
-                        color: UIConstants.highlightMenuColor,
-                      )
-                    ],
-                  )),
-              onTap: () => onChangeStore(context))
-        ],
-      ));
-
   void onChangeStore(BuildContext context) async {
     final result = await Navigator.of(context).pushNamed(Pages.store_list, arguments: {"isSelection": true});
     if (result != null) {
@@ -274,7 +277,15 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
         Navigator.of(context).pushReplacementNamed(Pages.customer_list);
       } else if (widget.selectedIndex == 7) {
         //store
+        setState(() {
+          _storeName = store.name;
+        });
+      } else {
+        setState(() {
+          _storeName = store.name;
+        });
       }
+
     }
   }
 
@@ -395,8 +406,8 @@ class AppDrawerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 8.0, right: 8.0),
-      decoration:  (selectedIndex == index)? BoxDecoration(color: Colors.blue.shade100, borderRadius: BorderRadius.all(Radius.circular(48))) : null,
+      //margin: EdgeInsets.only(left: 8.0, right: 8.0),
+      decoration: (selectedIndex == index) ? BoxDecoration(color: Colors.blue.shade100) : null,
       child: ListTile(
         leading: Icon(
           Defaults.drawerItemIcon[index],

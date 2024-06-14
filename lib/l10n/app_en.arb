@@ -190,8 +190,29 @@
 
   "save_payment_title": "Save payment",
   "menu_back_up": "Back up data",
+  "menu_back_up_desc": "Export database file to the phone",
   "menu_restore": "Restore data",
+  "menu_restore_desc": "Import database file",
   "backup_successful" : "Back up data successful",
   "backup_error": "Back up data failed!!",
-  "restore_successful": "Restore data successful"
+
+
+  "menu_push_data_to_cloud": "Save the data to cloud",
+  "login": "LOGIN",
+  "email": "Email",
+  "password": "Password",
+  "forgot_your_password": "Forgot your password ?",
+  "or_sign_in_with": "or Sign in with",
+  "dont_have_an_account_yet": "Don't have an account yet ?",
+  "sign_up_text": "Sign up",
+
+  "sign_up": "SIGN UP",
+  "name" : "Name",
+  "reset_password": "RESET PASSWORD",
+  "email_not_verified_title": "Email Not Verified",
+  "email_not_verified_desc" : "Please check your email and verify your email.",
+  "sign_up_successful" : "Sign up success",
+  "reset_password_successful": "Reset password Success",
+  "cloud_file_no_updated": "Not updated yet",
+  "signout_message": "Are you sure want to log out ?"
 }

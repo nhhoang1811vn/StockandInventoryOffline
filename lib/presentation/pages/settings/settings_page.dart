@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/common/path_utils.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/widgets/snackbar_widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -14,10 +17,22 @@ import 'package:permission_handler/permission_handler.dart';
 import '../custom_navigation_drawer.dart';
 import '../pages.dart';
 import 'components/change_languages_dialog.dart';
-
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget{
   SettingsPage({Key? key}) : super(key: key);
+  @override
+  State<StatefulWidget> createState() {
+    return SettingsPageState();
+  }
+}
 
+class SettingsPageState extends State<SettingsPage> {
+  //SettingsPage({Key? key}) : super(key: key);
+  var cloudFileUpdatedTime = "";
+  @override
+  void initState() {
+    super.initState();
+    loadCloudFileUpdatedTime();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,17 +61,51 @@ class SettingsPage extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.backup),
               title: Text(AppLocalizations.of(context)!.menu_back_up),
+              subtitle: Text(AppLocalizations.of(context)!.menu_back_up_desc),
               onTap: () => onBackUpPressed(context),
             ),
             Divider(color: Colors.grey[500]),
             ListTile(
               leading: Icon(Icons.restore),
               title: Text(AppLocalizations.of(context)!.menu_restore),
+              subtitle: Text(AppLocalizations.of(context)!.menu_restore_desc),
               onTap: () => onRestorePressed(context),
             ),
-
+            Divider(color: Colors.grey[500]),
+            ListTile(
+              leading: Icon(Icons.cloud),
+              title: Text(AppLocalizations.of(context)!.menu_push_data_to_cloud),
+              subtitle: cloudFileUpdatedTime.isEmpty?Text(AppLocalizations.of(context)!.cloud_file_no_updated):Text(cloudFileUpdatedTime),
+              onTap: () => onCloudPressed(context),
+            ),
           ],
         ));
+  }
+  void loadCloudFileUpdatedTime() async{
+    final storageRef = FirebaseStorage.instance.ref();
+    String? email = FirebaseAuth.instance.currentUser?.email;
+    if (email != null){
+      try{
+        final ref = storageRef.child("$email/database.db");
+        final downloadUrl = await ref.getDownloadURL();
+        ref.getMetadata().then((value) => setState(() {
+          cloudFileUpdatedTime = DateFormat('dd-MM-yyyy HH:mm').format(value.updated!);
+        }));
+      }on FirebaseException catch (e) {
+        setState(() {
+          cloudFileUpdatedTime = "";
+        });
+      }catch(e){
+        setState(() {
+          cloudFileUpdatedTime = "";
+        });
+      }
+    }else{
+      setState(() {
+        cloudFileUpdatedTime = "";
+      });
+    }
+
   }
   void showSelectLanguageDialog(BuildContext context) async {
     String currentCode = storage.getLanguageCode();
@@ -159,13 +208,27 @@ class SettingsPage extends StatelessWidget {
      //   await file.delete();
       //}
       await source.copy(dbPath);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.of(context)!.restore_successful),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
     }catch(e){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("restore error: " + e.toString()),
       ));
     }
   }
+  void onCloudPressed(BuildContext context) async{
+    //upload
+    String dbPath = await PathUtils().getDatabasePath();
+    File file = File(dbPath);
+    final storageRef = FirebaseStorage.instance.ref();
+    String? email = FirebaseAuth.instance.currentUser?.email;
+    final ref = storageRef.child("$email/database.db");
+    try {
+      await ref.putFile(file);
+      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
+      loadCloudFileUpdatedTime();
+    } on FirebaseException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+    }
+  }
 }
+

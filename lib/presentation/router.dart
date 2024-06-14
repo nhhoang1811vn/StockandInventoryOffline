@@ -9,12 +9,17 @@ import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.d
 import 'package:good_manager/presentation/pages/documents/documents_view.dart';
 import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart';
 import 'package:good_manager/presentation/pages/expenses/expenses_page.dart';
+import 'package:good_manager/presentation/pages/forgotpassword/forgot_password_page.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/goods_view.dart';
 import 'package:good_manager/presentation/pages/help/help_page_dart.dart';
 import 'package:good_manager/presentation/pages/help/helps_page_dart.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/pages/home/home_page.dart';
+import 'package:good_manager/presentation/pages/login/auth_cubit.dart';
+import 'package:good_manager/presentation/pages/login/login_page.dart';
+import 'package:good_manager/presentation/pages/onboarding/bloc/on_boarding_cubit.dart';
+import 'package:good_manager/presentation/pages/onboarding/on_boarding_page.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/payment/bloc/payments_cubit.dart';
 import 'package:good_manager/presentation/pages/payment/payments_page.dart';
@@ -41,6 +46,7 @@ import 'package:good_manager/presentation/pages/save_supplier/save_supplier_page
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 import 'package:good_manager/presentation/pages/select_group/select_group_page.dart';
 import 'package:good_manager/presentation/pages/settings/settings_page.dart';
+import 'package:good_manager/presentation/pages/signup/signup_page.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
 import 'package:good_manager/presentation/pages/stores/stores_page.dart';
 import 'package:good_manager/presentation/pages/suppliers/bloc/bloc.dart';
@@ -209,7 +215,18 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (_) =>
                 BlocProvider(create: (context) => getIt<BarcodeScannerCubit>(), child: BarcodeScannerPage()));
-      default:
+      case Pages.signup:
+        return _buildRoute(settings, BlocProvider(create: (context) => getIt<AuthCubit>(), child: SignUpScreen()));
+
+      case Pages.signIn:
+        return _buildRoute(settings, BlocProvider(create: (context) => getIt<AuthCubit>(), child: LoginScreen()));
+
+      case Pages.forgotPassword:
+        return _buildRoute(settings, BlocProvider(create: (context) => getIt<AuthCubit>(), child: ForgotPasswordScreen()));
+      case Pages.onboarding:
+        return _buildRoute(settings, BlocProvider(create: (context) => getIt<OnBoardingCubit>(), child: OnBoardingPage()));
+
+        default:
         return _buildRoute(settings, HomePage());
     }
   }

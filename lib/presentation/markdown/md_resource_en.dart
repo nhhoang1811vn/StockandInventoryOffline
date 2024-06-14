@@ -27,29 +27,34 @@ With gratitude,
 AppViet Team
   """;
  static const String whatNews = """
-  Version 1.0.4 - April 18
+ ### Version 1.0.5 - June 14
+  * Added Login/SignUp system.
+  * User's data saved to cloud safety
+  * Fixed reported bugs. 
+ 
+ ### Version 1.0.4 - April 18
  
   * Fixed bug could not scroll vertically on Report Detail Page. 
  
- Version 1.0.3 - April 15
+ ### Version 1.0.3 - April 15
  
   * Added Report - Select Range Date 
   * Fixed bug on Select Group page    
  
-  Version 1.0.2 - April 12
+ ### Version 1.0.2 - April 12
  
   * Support for window platform. 
   * Added Report - List of Good. 
   * Added Report - Export PDF, CSV.  
   * Added Setting - Backup, Restore. 
  
-  Version 1.0.1 - April 4
+ ### Version 1.0.1 - April 4
  
   * Modified Table Transaction.Quantity from INT to REAL.
   * Added Sound and Vibration effect when a barcode scanned.
   * Updated to Material 3 Design. 
  
- Version 1.0.0
+ ### Version 1.0.0
  
   * First Release.
  """;

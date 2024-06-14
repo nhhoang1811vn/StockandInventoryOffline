@@ -12,7 +12,20 @@
           "package_name": "com.ssteam.good_manager"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "617423800641-b5a5vbl4h2qo98r84nm5nljharcuhtt9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ssteam.good_manager",
+            "certificate_hash": "f1f46b9d9fa44992a71b0bca76c66ad735757121"
+          }
+        },
+        {
+          "client_id": "617423800641-s9j7uem4h2u0751pc1im6o34e4resoi4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCixmrqF34P7kKbZWOEtBbj6PCuHzAmWS0"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "617423800641-s9j7uem4h2u0751pc1im6o34e4resoi4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "617423800641-3hg9toe6rn1ho9pqbt7mami3vmda5l33.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ssteam.goodmanagerflutter"
+              }
+            }
+          ]
         }
       }
     }
