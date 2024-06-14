@@ -77,17 +77,17 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                             Text(
-                              "Hello ${FirebaseAuth.instance.currentUser?.displayName}",
+                              "${FirebaseAuth.instance.currentUser?.displayName}",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 18,
+                                fontSize: 16,
                               ),
                             ),
                             Text(
                               "${FirebaseAuth.instance.currentUser?.email}",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 14,
+                                fontSize: 12,
                               ),
                             ),
                           ],),
@@ -119,10 +119,10 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                           _packageInfo.appName + " (${_packageInfo.version})",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 18,
+                            fontSize: 16,
                           ),
                         ),
-                    Text("Cửa hàng đang chọn", style: TextStyle(fontSize: 14, color: Colors.white))
+                    Text("Cửa hàng đang chọn", style: TextStyle(fontSize: 12, color: Colors.white))
                       ],
                     )),
                 SizedBox(height: 8),

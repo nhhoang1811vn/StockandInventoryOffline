@@ -20,7 +20,8 @@ Cảm ơn quý vị đã tham gia cuộc hành trình của chúng tôi. Cùng n
 
 Quý vị hãy quyên góp ngay bây giờ và là một trong những động lực đằng sau sự thành công của ứng dụng!
 
-[Link/Button Quyên Góp] - Gửi mail cho mình nhé: nhhoang1811vn+goodmanager@gmail.com
+https://me.momo.vn/qr/nguyen-huy-hoang-z2kUuMD7go
+
 
 Với lòng biết ơn,
 AppViet Team

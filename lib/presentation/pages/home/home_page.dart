@@ -6,8 +6,10 @@ import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/app_style.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
+import 'package:good_manager/presentation/rive_controller.dart';
 import 'package:good_manager/presentation/style_size.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
+import 'package:rive/rive.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../domain/entities/document.dart';
@@ -21,10 +23,15 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => HomePageState();
 }
 class HomePageState extends State<HomePage>{
+  final RiveAnimationControllerHelper riveHelper =
+  RiveAnimationControllerHelper();
   static const bodyStyle = TextStyle(fontSize: TextSize.large);
   @override
   void initState() {
     super.initState();
+    riveHelper.loadRiveFile('assets/animation/headless_bear.riv').then((_) {
+      setState(() {});
+    });
     context.read<HomeCubit>().initState();
   }
   @override
@@ -155,14 +162,27 @@ class HomePageState extends State<HomePage>{
                 ],
               ),
             ],
-          ))
+          )),
+      SizedBox(
+        height: MediaQuery.of(context).size.height / 5,
+        child: riveHelper.riveArtboard != null
+            ? Rive(
+          fit: BoxFit.cover,
+          artboard: riveHelper.riveArtboard!,
+        )
+            : const SizedBox.shrink(),
+      ),
+
     ];
-    return Column(children: children);
+    return SingleChildScrollView(child:  Column(children: children));
   }
 
   Widget _buildGoods(HomeState state) {
     return Card(
         child: InkWell(
+          onLongPress: (){
+            riveHelper.addSuccessController();
+          },
       onTap: openGoods,
       child: Padding(
           padding: EdgeInsets.all(4),
@@ -189,6 +209,9 @@ class HomePageState extends State<HomePage>{
   Widget _buildDocuments(HomeState state) {
     return Card(
         child: InkWell(
+          onLongPress: (){
+            riveHelper.addSuccessController();
+          },
       onTap: openDocuments,
       child: Padding(
           padding: EdgeInsets.all(4),
@@ -213,6 +236,9 @@ class HomePageState extends State<HomePage>{
   Widget _buildIncomingDocument() {
     return Card(
         child: InkWell(
+          onLongPress: (){
+            riveHelper.addSuccessController();
+          },
       onTap: openSaveIncomingDocument,
       child: Padding(
           padding: EdgeInsets.all(4),
@@ -247,6 +273,9 @@ class HomePageState extends State<HomePage>{
   Widget _buildOutgoingDocument() {
     return Card(
         child: InkWell(
+          onLongPress: (){
+            riveHelper.addFailController();
+          },
       onTap: openSaveOutgoingDocument,
       child: Padding(
           padding: EdgeInsets.all(4),
@@ -282,6 +311,9 @@ class HomePageState extends State<HomePage>{
     return Card(
         child: InkWell(
       onTap: openCustomers,
+          onLongPress: (){
+            riveHelper.addHandsDownController();
+          },
       child: Padding(
           padding: EdgeInsets.all(4),
           child: Column(
@@ -304,6 +336,9 @@ class HomePageState extends State<HomePage>{
   Widget _buildSuppliers(HomeState state) {
     return Card(
         child: InkWell(
+          onLongPress: (){
+            riveHelper.addHandsUpController();
+          },
       onTap: openSuppliers,
       child: Padding(
           padding: EdgeInsets.all(4),
@@ -340,6 +375,9 @@ class HomePageState extends State<HomePage>{
   Widget _buildExpenses(HomeState state) {
     return Card(
         child: InkWell(
+          onLongPress: (){
+            riveHelper.addFailController();
+          },
       onTap: openExpenses,
       child: Padding(
           padding: EdgeInsets.all(4),
@@ -368,6 +406,9 @@ class HomePageState extends State<HomePage>{
     return Card(
         child: InkWell(
       onTap: openReport,
+          onLongPress: (){
+            riveHelper.addFailController();
+          },
       child: Padding(
           padding: EdgeInsets.all(4),
           child: Column(

@@ -21,7 +21,7 @@ Thank you for being a part of our journey. Together, we can create something tru
 
 Donate now and be a driving force behind the app's success!
 
-Contact my email: nhhoang1811vn+goodmanager@gmail.com
+https://me.momo.vn/qr/nguyen-huy-hoang-z2kUuMD7go
 
 With gratitude,
 AppViet Team

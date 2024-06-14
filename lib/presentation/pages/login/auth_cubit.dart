@@ -114,9 +114,11 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> signInWithGoogle() async {
+    final String googleClientId = "617423800641-s9j7uem4h2u0751pc1im6o34e4resoi4.apps.googleusercontent.com";
     emit(AuthLoading());
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      await GoogleSignIn().signOut();
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(clientId: googleClientId).signIn();
       if (googleUser == null) {
         emit(AuthError('Google Sign In Failed'));
         return;
