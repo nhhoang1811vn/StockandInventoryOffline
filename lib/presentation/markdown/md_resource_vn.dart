@@ -20,7 +20,8 @@ Cảm ơn quý vị đã tham gia cuộc hành trình của chúng tôi. Cùng n
 
 Quý vị hãy quyên góp ngay bây giờ và là một trong những động lực đằng sau sự thành công của ứng dụng!
 
-[Link/Button Quyên Góp] - Gửi mail cho mình nhé: nhhoang1811vn+goodmanager@gmail.com
+https://me.momo.vn/qr/nguyen-huy-hoang-z2kUuMD7go
+
 
 Với lòng biết ơn,
 AppViet Team
@@ -81,29 +82,37 @@ Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Ho
  Chúng tôi đã tạo ra chức năng đơn giản này để theo dõi các chi tiêu của bạn cho một cửa hàng. 
  """;
   static const String whatNews = """
-  Phiên bản 1.0.4 - 18/04/2024
+  ### Phiên bản 1.0.5 - 14/06/2024
+  * Thêm hệ thống người dùng, dữ liệu của người dùng được lưu trên CLOUD. 
+  * Hệ thống tự lưu dữ liệu của người dùng lên cloud vào cuối ngày, hoặc mỗi lần người dùng đăng xuất. 
+  * Người dùng có thể đẩy dữ liệu của mình lên CLOUD trong menu cài đặt/Lưu dữ liệu trên cloud.
+  * Dữ liệu người dùng được phục hồi ở trên thiết bị mới, sau khi đăng nhập thành công tài khoản cũ.
+  * Dữ liệu người dùng được quản lý theo từng gmail.
+  * Sửa lỗi giao diện.
+  
+  ### Phiên bản 1.0.4 - 18/04/2024
  
   * Sửa lỗi không thể cuộn xuống được ở màn hình Thống Kê chi tiết. 
   
-  Phiên bản 1.0.3 - 15/04/2024
+  ### Phiên bản 1.0.3 - 15/04/2024
  
   * Thêm thống kê - tự chọn ngày. 
   * Sửa lỗi ở màn hình chọn nhóm. 
   
-  Phiên bản 1.0.2 - 12/04/2024
+  ### Phiên bản 1.0.2 - 12/04/2024
  
   * Hỗ trợ nền tảng Window. 
   * Thêm thống kê - Danh sách hàng hóa. 
   * Thêm thống kê - Xuất PDF,CSV tệp.  
   * Thêm cài đặt - sao lưu, phục hồi. 
   
- Phiên bản 1.0.1 04/04/2024
+ ### Phiên bản 1.0.1 04/04/2024
  
  * Cho phép nhập số THỰC ở trường số lượng.
  * Cập nhât chức năng rung và âm thanh khi quét mã vạch. 
  * Cập nhật lên thiết kế Material 3.
  
- Phiên bản 1.0.0
+ ### Phiên bản 1.0.0
  
  * Lần đầu tiên ra mắt chưa có gì để nói cả :), mọi người chọn nút trợ giúp ở từng màn hình để hiểu rõ nhé.
  """;

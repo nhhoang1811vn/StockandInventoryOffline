@@ -52,9 +52,9 @@ import 'package:good_manager/domain/usecases/customers/customers_usecases.dart'
 import 'package:good_manager/domain/usecases/customers/customers_usecases_impl.dart'
     as _i7;
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart'
-    as _i44;
-import 'package:good_manager/domain/usecases/documents/document_usecases_impl.dart'
     as _i45;
+import 'package:good_manager/domain/usecases/documents/document_usecases_impl.dart'
+    as _i46;
 import 'package:good_manager/domain/usecases/expenses/expense_usecases_impl.dart'
     as _i15;
 import 'package:good_manager/domain/usecases/expenses/expense_usercases.dart'
@@ -80,47 +80,48 @@ import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart'
 import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases_impl.dart'
     as _i41;
 import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart'
-    as _i42;
-import 'package:good_manager/presentation/pages/customers/bloc/customers_cubit.dart'
     as _i43;
+import 'package:good_manager/presentation/pages/customers/bloc/customers_cubit.dart'
+    as _i44;
 import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.dart'
-    as _i46;
-import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart'
     as _i47;
-import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart'
+import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart'
     as _i48;
-import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart'
+import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart'
     as _i49;
-import 'package:good_manager/presentation/pages/onboarding/bloc/on_boarding_cubit.dart'
+import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart'
     as _i50;
-import 'package:good_manager/presentation/pages/payment/bloc/payments_cubit.dart'
+import 'package:good_manager/presentation/pages/login/auth_cubit.dart' as _i42;
+import 'package:good_manager/presentation/pages/onboarding/bloc/on_boarding_cubit.dart'
     as _i51;
-import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart'
+import 'package:good_manager/presentation/pages/payment/bloc/payments_cubit.dart'
     as _i52;
-import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart'
+import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart'
     as _i53;
+import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart'
+    as _i54;
 import 'package:good_manager/presentation/pages/save_customer/bloc/save_customer_cubit.dart'
     as _i28;
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart'
-    as _i54;
+    as _i55;
 import 'package:good_manager/presentation/pages/save_expense/bloc/save_expense_cubit.dart'
     as _i29;
 import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.dart'
-    as _i55;
+    as _i56;
 import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart'
     as _i30;
 import 'package:good_manager/presentation/pages/save_payment/bloc/save_payment_cubit.dart'
     as _i31;
 import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit.dart'
-    as _i56;
-import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart'
     as _i57;
+import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart'
+    as _i58;
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart'
     as _i32;
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart'
-    as _i58;
-import 'package:good_manager/presentation/pages/suppliers/bloc/suppliers_cubit.dart'
     as _i59;
+import 'package:good_manager/presentation/pages/suppliers/bloc/suppliers_cubit.dart'
+    as _i60;
 import 'package:good_manager/presentation/widgets/add_quantity_and_price/add_quantity_and_price_cubit.dart'
     as _i3;
 import 'package:injectable/injectable.dart' as _i2;
@@ -178,82 +179,86 @@ extension GetItInjectableX on _i1.GetIt {
     gh.factory<_i38.SuppliersRepository>(() => _i39.SuppliersRepositoryImpl());
     gh.factory<_i40.SuppliersUseCase>(() =>
         _i41.SuppliersUseCaseImpl(repository: gh<_i38.SuppliersRepository>()));
-    gh.factory<_i42.BarcodeScannerCubit>(
-        () => _i42.BarcodeScannerCubit(storage: gh<_i33.Storage>()));
-    gh.factory<_i43.CustomersCubit>(() => _i43.CustomersCubit(
+    gh.factory<_i42.AuthCubit>(() => _i42.AuthCubit(
+          useCase: gh<_i36.StoresUseCase>(),
+          storage: gh<_i33.Storage>(),
+        ));
+    gh.factory<_i43.BarcodeScannerCubit>(
+        () => _i43.BarcodeScannerCubit(storage: gh<_i33.Storage>()));
+    gh.factory<_i44.CustomersCubit>(() => _i44.CustomersCubit(
           storage: gh<_i33.Storage>(),
           useCase: gh<_i6.CustomersUseCase>(),
         ));
-    gh.factory<_i44.DocumentUseCases>(() => _i45.DocumentUseCasesImpl(
+    gh.factory<_i45.DocumentUseCases>(() => _i46.DocumentUseCasesImpl(
           storage: gh<_i33.Storage>(),
           repository: gh<_i8.DocumentRepository>(),
           transactionRepository: gh<_i10.DocumentTransactionRepository>(),
         ));
-    gh.factory<_i46.DocumentsCubit>(() => _i46.DocumentsCubit(
+    gh.factory<_i47.DocumentsCubit>(() => _i47.DocumentsCubit(
           storage: gh<_i33.Storage>(),
-          useCase: gh<_i44.DocumentUseCases>(),
+          useCase: gh<_i45.DocumentUseCases>(),
         ));
-    gh.factory<_i47.ExpensesCubit>(() => _i47.ExpensesCubit(
+    gh.factory<_i48.ExpensesCubit>(() => _i48.ExpensesCubit(
           storage: gh<_i33.Storage>(),
           useCase: gh<_i14.ExpenseUseCases>(),
         ));
-    gh.factory<_i48.GoodsCubit>(() => _i48.GoodsCubit(
+    gh.factory<_i49.GoodsCubit>(() => _i49.GoodsCubit(
           storage: gh<_i33.Storage>(),
           goodsUseCase: gh<_i18.GoodsUseCases>(),
           groupsUseCase: gh<_i22.GroupsUseCases>(),
-          documentsUseCases: gh<_i44.DocumentUseCases>(),
+          documentsUseCases: gh<_i45.DocumentUseCases>(),
         ));
-    gh.factory<_i49.HomeCubit>(() => _i49.HomeCubit(
+    gh.factory<_i50.HomeCubit>(() => _i50.HomeCubit(
           storage: gh<_i33.Storage>(),
           goodsUseCases: gh<_i18.GoodsUseCases>(),
-          documentsUseCases: gh<_i44.DocumentUseCases>(),
+          documentsUseCases: gh<_i45.DocumentUseCases>(),
           supplierUseCases: gh<_i40.SuppliersUseCase>(),
           customerUseCase: gh<_i6.CustomersUseCase>(),
           expenseUseCases: gh<_i14.ExpenseUseCases>(),
         ));
-    gh.factory<_i50.OnBoardingCubit>(() => _i50.OnBoardingCubit(
+    gh.factory<_i51.OnBoardingCubit>(() => _i51.OnBoardingCubit(
           useCase: gh<_i36.StoresUseCase>(),
           storage: gh<_i33.Storage>(),
         ));
-    gh.factory<_i51.PaymentsCubit>(() => _i51.PaymentsCubit(
+    gh.factory<_i52.PaymentsCubit>(() => _i52.PaymentsCubit(
           storage: gh<_i33.Storage>(),
           useCase: gh<_i26.PaymentUseCases>(),
-          documentUseCases: gh<_i44.DocumentUseCases>(),
+          documentUseCases: gh<_i45.DocumentUseCases>(),
         ));
-    gh.factory<_i52.ReportCubit>(() => _i52.ReportCubit(
+    gh.factory<_i53.ReportCubit>(() => _i53.ReportCubit(
           storage: gh<_i33.Storage>(),
           expenseUseCase: gh<_i14.ExpenseUseCases>(),
         ));
-    gh.factory<_i53.ReportDetailCubit>(() => _i53.ReportDetailCubit(
+    gh.factory<_i54.ReportDetailCubit>(() => _i54.ReportDetailCubit(
           storage: gh<_i33.Storage>(),
           goodsUseCase: gh<_i18.GoodsUseCases>(),
           expenseUseCase: gh<_i14.ExpenseUseCases>(),
-          documentUseCases: gh<_i44.DocumentUseCases>(),
+          documentUseCases: gh<_i45.DocumentUseCases>(),
           documentTransactionRepository:
               gh<_i10.DocumentTransactionRepository>(),
         ));
-    gh.factory<_i54.SaveDocumentCubit>(() => _i54.SaveDocumentCubit(
-          useCase: gh<_i44.DocumentUseCases>(),
+    gh.factory<_i55.SaveDocumentCubit>(() => _i55.SaveDocumentCubit(
+          useCase: gh<_i45.DocumentUseCases>(),
           paymentUseCase: gh<_i26.PaymentUseCases>(),
           goodUseCases: gh<_i18.GoodsUseCases>(),
           storage: gh<_i33.Storage>(),
         ));
-    gh.factory<_i55.SaveGoodCubit>(() => _i55.SaveGoodCubit(
+    gh.factory<_i56.SaveGoodCubit>(() => _i56.SaveGoodCubit(
           useCase: gh<_i18.GoodsUseCases>(),
-          documentsUseCases: gh<_i44.DocumentUseCases>(),
+          documentsUseCases: gh<_i45.DocumentUseCases>(),
           storage: gh<_i33.Storage>(),
         ));
-    gh.factory<_i56.SaveStoreCubit>(() => _i56.SaveStoreCubit(
+    gh.factory<_i57.SaveStoreCubit>(() => _i57.SaveStoreCubit(
           useCase: gh<_i36.StoresUseCase>(),
           storage: gh<_i33.Storage>(),
         ));
-    gh.factory<_i57.SaveSupplierCubit>(
-        () => _i57.SaveSupplierCubit(useCase: gh<_i40.SuppliersUseCase>()));
-    gh.factory<_i58.StoresCubit>(() => _i58.StoresCubit(
+    gh.factory<_i58.SaveSupplierCubit>(
+        () => _i58.SaveSupplierCubit(useCase: gh<_i40.SuppliersUseCase>()));
+    gh.factory<_i59.StoresCubit>(() => _i59.StoresCubit(
           storage: gh<_i33.Storage>(),
           useCase: gh<_i36.StoresUseCase>(),
         ));
-    gh.factory<_i59.SuppliersCubit>(() => _i59.SuppliersCubit(
+    gh.factory<_i60.SuppliersCubit>(() => _i60.SuppliersCubit(
           storage: gh<_i33.Storage>(),
           useCase: gh<_i40.SuppliersUseCase>(),
         ));

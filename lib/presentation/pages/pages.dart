@@ -1,4 +1,6 @@
 class Pages {
+  static const String onboarding = 'onboarding';
+
   static const String payment_list = 'payment_list';
   static const String save_payment = 'save_payment';
   static const String home = '/home';
@@ -33,4 +35,8 @@ class Pages {
   static const String barcode_scanner = "/barcode_scanner";
   static const String report = "/report";
   static const String report_detail = "/report_detail";
+
+  static const String signup = "/signup";
+  static const String signIn = "/signIn";
+  static const String forgotPassword = "/forgotPassword";
 }
