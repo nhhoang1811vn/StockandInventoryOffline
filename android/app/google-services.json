@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "617423800641-dneula7rmcf4btp86is9k2heqi7umlm9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ssteam.good_manager",
+            "certificate_hash": "bcc10cc83b7b99dc522df9d921615a0a63f8516d"
+          }
+        },
+        {
           "client_id": "617423800641-s9j7uem4h2u0751pc1im6o34e4resoi4.apps.googleusercontent.com",
           "client_type": 3
         }

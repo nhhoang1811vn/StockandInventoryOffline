@@ -21,6 +21,8 @@ class DefaultFirebaseOptions {
         return android;
       case TargetPlatform.iOS:
         return ios;
+      case TargetPlatform.windows:
+        return windows;
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -62,7 +64,7 @@ class DefaultFirebaseOptions {
     projectId: 'quanlykho-4818e',
     storageBucket: 'quanlykho-4818e.appspot.com',
     iosBundleId: 'com.ssteam.goodmanagerflutter',
-  );
+  );*/
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyDoX0JgDmnerOQEZPnEtc9qEamxgNpoZZQ',
@@ -72,5 +74,5 @@ class DefaultFirebaseOptions {
     authDomain: 'quanlykho-4818e.firebaseapp.com',
     storageBucket: 'quanlykho-4818e.appspot.com',
     measurementId: 'G-9CKSJ18YBD',
-  );*/
+  );
 }
