@@ -27,6 +27,11 @@ With gratitude,
 AppViet Team
   """;
  static const String whatNews = """
+  ### Version 1.0.6 - July 07  
+  * Fixed reported bugs. 
+  * Added Quick create document on SaveGood page. 
+  * Added Good History page. 
+  
  ### Version 1.0.5 - June 14
   * Added Login/SignUp system.
   * User's data saved to cloud safety

@@ -30,7 +30,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "com.ssteam.goodmanagerflutter"
     compileSdk 34
-    ndkVersion "25.1.8937393"
+    //ndkVersion "25.1.8937393"
     //ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -53,9 +53,9 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
 
-        ndk {
-            abiFilters "armeabi", "armeabi-v7a","arm64-v8a"
-        }
+        //ndk {
+        //    abiFilters "armeabi", "armeabi-v7a","arm64-v8a"
+        //}
     }
     signingConfigs {
         release {
