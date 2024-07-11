@@ -12,12 +12,6 @@ import 'bloc/on_boarding_cubit.dart';
 class OnBoardingPage extends StatelessWidget {
   final introKey = GlobalKey<IntroductionScreenState>();
   final OnBoardingCubit cubit = getIt<OnBoardingCubit>();
-  Widget _buildImage(String assetName) {
-    return Align(
-      child: Image.asset(assetName, width: 150.0),
-      alignment: Alignment.bottomCenter,
-    );
-  }
 
   @override
   Widget build(BuildContext context){

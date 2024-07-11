@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CircleButton extends StatelessWidget{
-  IconData icon;
-  void Function() onPressed;
+  final IconData icon;
+  final void Function() onPressed;
 
   CircleButton(this.icon, this.onPressed);
   @override

@@ -8,8 +8,8 @@ import 'package:good_manager/presentation/utils.dart';
 class DocumentItemRow extends StatelessWidget {
   final Document item;
   final bool showAll;
-  void Function(Document document) onDocumentTapped;
-  void Function(Document document) onDocumentLongPressed;
+  final void Function(Document document) onDocumentTapped;
+  final void Function(Document document) onDocumentLongPressed;
 
   DocumentItemRow(this.showAll, this.item, this.onDocumentTapped, this.onDocumentLongPressed);
 
@@ -49,23 +49,23 @@ class DocumentItemRow extends StatelessWidget {
                       Text(Config.dateFormat.format(item.date), style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onBackground)),
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface)),
                       //SizedBox(height: 4),
                       item.personName != null ? Text(item.personName!, style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onBackground),) : Container(),
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface),) : Container(),
                       item.description.isNotEmpty ? Text(item.description, style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onBackground)) : Container()
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface)) : Container()
                     ],
                   )),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(Utils.getQuantityText(item.quantity), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground)),
+                      Text(Utils.getQuantityText(item.quantity), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                       Text(Config.currencyFormat.format(item.amount))
                     ],
                   )

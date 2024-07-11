@@ -115,7 +115,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
     final validate = Formz.validate([state.name]);
     if (validate){
       try{
-        int goodId = await insertOrUpdateGood();
+        await insertOrUpdateGood();
         emit(state.copyWith(state: OpenHistoryPageState()));
       }catch (e){
         if (e.toString().contains("UNIQUE constraint failed: Goods.barCode")){
@@ -197,7 +197,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
   onPlusQuantityButtonPressed() async{
     final validate = Formz.validate([state.name]);
     if (validate){
-      var goodId = await insertOrUpdateGood();
+      await insertOrUpdateGood();
       emit(state.copyWith(state: OpenReceiveGoodsPopupState()));
     }else{
       emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));
@@ -206,7 +206,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
   onMinusQuantityButtonPressed() async{
     final validate = Formz.validate([state.name]);
     if (validate){
-      var goodId = await insertOrUpdateGood();
+      await insertOrUpdateGood();
       emit(state.copyWith(state: OpenIssueGoodsPopupState()));
     }else{
       emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));

@@ -277,14 +277,14 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         // ignore: avoid_slow_async_io
         if (!await directory.exists()) directory = await getExternalStorageDirectory();
       }
-    } catch (err, stack) {
+    } catch (err) {
       print("Cannot get download folder path");
     }
     return directory?.path;
   }
   onExportExcelFileMenuClicked() async{
     //runtime permission
-    var status = await Permission.storage.request();
+    await Permission.storage.request();
     //convert data to csv
     String csv = const ListToCsvConverter().convert(state.data);
     //convert csv to file

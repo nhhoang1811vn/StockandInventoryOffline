@@ -246,11 +246,8 @@ class GoodsPageState extends State<GoodsPage> {
     if (widget.isSelection) {
       showAddQuantityAndPriceDialog(item, widget.document!.type);
     } else {
-      final result = await Navigator.of(context)
-          .pushNamed(Pages.save_good, arguments: {"item": item});
-      //if (result != null) {
-        context.read<GoodsCubit>().loadItems();
-      //}
+      await Navigator.of(context).pushNamed(Pages.save_good, arguments: {"item": item});
+      context.read<GoodsCubit>().loadItems();
     }
   }
 
@@ -398,11 +395,9 @@ class GoodsPageState extends State<GoodsPage> {
             });
           } else if (state.state is OpenSaveGoodPageState) {
             final currentState = state.state as OpenSaveGoodPageState;
-            final result = await Navigator.of(context)
+            await Navigator.of(context)
                 .pushNamed(Pages.save_good, arguments: {"item": currentState.item});
-            //if (result != null) {
-              context.read<GoodsCubit>().loadItems();
-            //}
+            context.read<GoodsCubit>().loadItems();
           } else if (state.state is AddGroupState) {
             final currentState = state.state as AddGroupState;
             final result =

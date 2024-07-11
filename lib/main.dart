@@ -1,5 +1,4 @@
 import 'package:camera/camera.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -79,7 +78,7 @@ class MyAppState extends State<MyApp> {
           )
       ),
         colorScheme: ColorScheme.fromSeed(
-          onBackground: Colors.black,
+          onSurface: Colors.black,
           onPrimary: Colors.blue.shade700,
           seedColor: Colors.blue.shade700,
           brightness: Brightness.light
@@ -110,7 +109,6 @@ class MyAppState extends State<MyApp> {
         ),
       );
     } else {
-      final user = FirebaseAuth.instance.currentUser;
       return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: _buildTheme(Brightness.light),

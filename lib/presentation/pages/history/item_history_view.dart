@@ -10,9 +10,9 @@ import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
 class ItemHistoryPage extends StatefulWidget {
-  int goodId;
-  DateTime? start;
-  DateTime? end;
+  final int goodId;
+  final DateTime? start;
+  final DateTime? end;
   ItemHistoryPage({
     required this.goodId,
     this.start,
@@ -72,7 +72,7 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
       itemBuilder: (BuildContext context, index) {
         GoodHistory item = data.items[index];
         return ItemHistoryRow(item, (item) async{
-            var result = await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+            await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
             context.read<ItemHistoryCubit>().loadItems();
         });
       },

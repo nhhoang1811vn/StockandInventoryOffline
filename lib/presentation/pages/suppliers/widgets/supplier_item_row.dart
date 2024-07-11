@@ -27,13 +27,13 @@ class SupplierItemRow extends StatelessWidget{
               ? Text(item.description, style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onBackground))
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface))
               : Container(),
           item.numberDocument > 0
               ? Text(item.numberDocument.toString()+ " " + AppLocalizations.of(context)!.documents_title, style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onBackground))
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface))
              : Container()
         ],
       ),

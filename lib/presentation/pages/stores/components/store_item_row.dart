@@ -21,7 +21,7 @@ class StoreItemRow extends StatelessWidget{
               ? Text(item.description,style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onBackground),)
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface),)
               : Container(),
         ],
       ),

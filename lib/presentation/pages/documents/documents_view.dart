@@ -109,7 +109,7 @@ class DocumentPageState extends State<DocumentsPage> {
     item.storeId = storeId;
     item.type = type;
     item.name = AppLocalizations.of(context)!.document_name_no + storage.getAutoDocumentNo(storeId).toString();
-    var result = await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+    await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
     context.read<DocumentsCubit>().loadItems();
   }
 
@@ -306,7 +306,7 @@ class DocumentPageState extends State<DocumentsPage> {
       ]);
 
   void onPressedDocument(Document item) async {
-    var result = await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+    await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
     context.read<DocumentsCubit>().loadItems();
   }
 

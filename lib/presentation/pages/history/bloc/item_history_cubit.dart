@@ -1,11 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good_history.dart';
 import 'package:good_manager/domain/usecases/goods/goods_history_usecases.dart';
-import 'package:good_manager/presentation/pages/base/base_sort_items.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
-import 'package:good_manager/presentation/pages/documents/sort/sort_by_date_documents.dart';
 import 'package:injectable/injectable.dart';
 
 part 'item_history_cubit.freezed.dart';

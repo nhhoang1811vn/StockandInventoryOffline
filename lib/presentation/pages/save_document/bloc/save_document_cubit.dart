@@ -323,7 +323,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
       transaction.price = price;
       transaction.type = state.item!.type;
       transaction.storeId = storage.getSelectedStoreId();
-      int transactionId = await useCase.insertTransaction(transaction);
+      await useCase.insertTransaction(transaction);
       loadTransactions();
     }
   }

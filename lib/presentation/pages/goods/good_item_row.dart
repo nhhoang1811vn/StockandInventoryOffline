@@ -63,7 +63,7 @@ class GoodItemRow extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onBackground)),
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface)),
               ]),
             if (item.description.isNotEmpty)
               Column(
@@ -75,14 +75,14 @@ class GoodItemRow extends StatelessWidget {
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium!
-                          .copyWith(color: Theme.of(context).colorScheme.onBackground)),
+                          .copyWith(color: Theme.of(context).colorScheme.onSurface)),
                 ],
               )
           ]),
         ),
         Text(Utils.getQuantityText(item.quantity),
             style:
-                Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground)),
+                Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
       ],
     );
   }

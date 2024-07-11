@@ -58,7 +58,7 @@ class SaveDocumentPage extends StatelessWidget {
             }
 
           }else if (state.state is OpenGoodListState) {
-            final result = await Navigator.of(context).pushNamed(Pages.good_list,
+            await Navigator.of(context).pushNamed(Pages.good_list,
                 arguments: {"isSelection": true, "document": state.item});
             context.read<SaveDocumentCubit>().loadTransactions();
           } else if (state.state is OpenSaveGoodState) {
@@ -162,14 +162,14 @@ class SaveDocumentPage extends StatelessWidget {
               }else{
                 final saveResult = await context.read<SaveDocumentCubit>().save();
                 if (saveResult){
-                  final result = await Navigator.of(context).pushNamed(Pages.payment_list, arguments: {"documentId": state.item!.id!});
+                  await Navigator.of(context).pushNamed(Pages.payment_list, arguments: {"documentId": state.item!.id!});
                   context.read<SaveDocumentCubit>().loadPaymentsAndCheck();
                 }
               }
 
             }
           }else if (state.state is OpenPaymentListPageState){
-            final result = await Navigator.of(context).pushNamed(Pages.payment_list, arguments: {"documentId": state.item!.id!});
+            await Navigator.of(context).pushNamed(Pages.payment_list, arguments: {"documentId": state.item!.id!});
             context.read<SaveDocumentCubit>().loadPaymentsAndCheck();
           }
         },

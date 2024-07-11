@@ -78,7 +78,7 @@ class CurrencyAppTextField extends StatelessWidget{
         labelText: labelText,
         controller: controller,
         onChanged: onChanged,
-        readOnly: readOnly!,
+        readOnly: readOnly,
         suffixText: "đ",
         keyboardType: TextInputType.number,
         inputFormatter: [

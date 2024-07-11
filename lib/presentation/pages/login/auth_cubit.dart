@@ -102,12 +102,12 @@ class AuthCubit extends Cubit<AuthState> {
       String dbPath = await PathUtils().getDatabasePath();
       final dbFile = File(dbPath);
       try{
-        final downloadUrl = await fileRef.getDownloadURL();
+        await fileRef.getDownloadURL();
         final downloadTask = fileRef.writeToFile(dbFile);
         downloadTask.snapshotEvents.listen((taskSnapshot) {
           callback(taskSnapshot.state);
         });
-      }on FirebaseException catch (e) {
+      }on FirebaseException {
         callback(TaskState.error);
       }
     }
@@ -131,7 +131,7 @@ class AuthCubit extends Cubit<AuthState> {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      final UserCredential authResult =
+      //final UserCredential authResult =
       await _auth.signInWithCredential(credential);
       /*if (authResult.additionalUserInfo!.isNewUser) {
         // Delete the user account if it is a new user to Create it automatically in Next Screen

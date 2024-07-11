@@ -27,7 +27,7 @@ class GroupItemRow extends StatelessWidget {
                 style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onBackground),
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface),
               ),
             ),
             if (item.barCode != null)
@@ -39,7 +39,7 @@ class GroupItemRow extends StatelessWidget {
                 Text(item.barCode!, style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onBackground),)
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface),)
               ])
           ],
         ),

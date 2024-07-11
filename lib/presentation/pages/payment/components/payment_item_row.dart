@@ -18,9 +18,9 @@ class PaymentItemRow extends StatelessWidget {
       subtitle: Text(item.description, style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onBackground),),
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface),),
       trailing: Text(Config.currencyFormat.format(item.amount??0),
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground)),
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
       onTap: () => onPressed(item),
       onLongPress: () => onLongPressed(item),
     );

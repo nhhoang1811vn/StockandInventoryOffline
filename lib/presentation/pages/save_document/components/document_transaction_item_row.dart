@@ -53,7 +53,7 @@ class DocumentTransactionItemRow extends StatelessWidget {
               Text(item.good.barCode!, style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onBackground))
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface))
             ]),
           if (item.good.description.isNotEmpty)
             Column(children: [
@@ -61,13 +61,13 @@ class DocumentTransactionItemRow extends StatelessWidget {
               Text(item.good.description, style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onBackground))
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface))
             ],)
 
 
         ]),),
 
-        Text(Utils.getQuantityText(item.quantity), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground),)
+        Text(Utils.getQuantityText(item.quantity), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),)
       ],
     );
   }

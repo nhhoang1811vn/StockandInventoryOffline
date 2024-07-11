@@ -102,7 +102,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                                   final ref = storageRef.child("$email/database.db");
                                   try {
                                     await ref.putFile(file);
-                                  } on FirebaseException catch (e) {
+                                  } on FirebaseException {
                                   }
                                   FirebaseAuth.instance.signOut();
                                   Navigator.of(context).pushNamedAndRemoveUntil(Pages.signIn, (route) => false);
@@ -418,19 +418,6 @@ class AppDrawerTile extends StatelessWidget {
           text,
           style: TextStyle(),
         ),
-      ),
-    );
-    return ListTile(
-      leading: Icon(
-        Defaults.drawerItemIcon[index],
-        size: UIConstants.drawerMenuSize,
-      ),
-      // Image.asset(Defaults.drawerItemIcon[index],),
-      onTap: onTap,
-      //selected: selectedIndex == index,
-      title: Text(
-        text,
-        style: TextStyle(),
       ),
     );
   }

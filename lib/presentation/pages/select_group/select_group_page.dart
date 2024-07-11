@@ -117,7 +117,7 @@ class SelectGroupPage extends StatelessWidget {
                                 .copyWith(
                                 color: Theme.of(context)
                                     .colorScheme
-                                    .onBackground)),
+                                    .onSurface)),
                       ]
 
                     ],

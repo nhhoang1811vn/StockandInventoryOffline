@@ -7,7 +7,7 @@ import 'package:good_manager/presentation/utils.dart';
 
 class ItemHistoryRow extends StatelessWidget{
   final GoodHistory item;
-  void Function(Document document) onDocumentTapped;
+  final void Function(Document document) onDocumentTapped;
   ItemHistoryRow(this.item, this.onDocumentTapped);
 
   @override
@@ -50,23 +50,23 @@ class ItemHistoryRow extends StatelessWidget{
                             Text(Config.dateFormat.format(item.document!.date), style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
-                                .copyWith(color: Theme.of(context).colorScheme.onBackground)),
+                                .copyWith(color: Theme.of(context).colorScheme.onSurface)),
                             //SizedBox(height: 4),
                             item.document!.personName != null ? Text(item.document!.personName!, style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
-                                .copyWith(color: Theme.of(context).colorScheme.onBackground),) : Container(),
+                                .copyWith(color: Theme.of(context).colorScheme.onSurface),) : Container(),
                             item.document!.description.isNotEmpty ? Text(item.document!.description, style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
-                                .copyWith(color: Theme.of(context).colorScheme.onBackground)) : Container()
+                                .copyWith(color: Theme.of(context).colorScheme.onSurface)) : Container()
                           ],
                         )),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(quantityText, style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground)),
+                        Text(quantityText, style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                         Text(Config.currencyFormat.format(item.amount))
                       ],
                     )

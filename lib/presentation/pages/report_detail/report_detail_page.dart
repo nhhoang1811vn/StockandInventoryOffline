@@ -10,7 +10,6 @@ import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
-import 'package:path/path.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -165,7 +164,7 @@ class ReportDetailPage extends StatelessWidget {
         results.add(_buildNormalCell(value.first, flag, (){
           if (state.type == ReportType.LIST_OF_GOODS){
             var goodId = state.ids[key - 1];
-            var result = Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': start, 'end': end});
+            Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': start, 'end': end});
             context.read<ReportDetailCubit>().init(context, type, start, end);
           }
            }));
