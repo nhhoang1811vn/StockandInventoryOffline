@@ -243,15 +243,14 @@ class GoodsPageState extends State<GoodsPage> {
   }
 
   void onPressedGood(Good item) async {
-    //AudioPlayer().play(AssetSource('audio/beep.mp3'));
     if (widget.isSelection) {
       showAddQuantityAndPriceDialog(item, widget.document!.type);
     } else {
       final result = await Navigator.of(context)
-          .pushNamed(Pages.save_good, arguments: {"item": item, "enableAddTransactions": true});
-      if (result != null) {
+          .pushNamed(Pages.save_good, arguments: {"item": item});
+      //if (result != null) {
         context.read<GoodsCubit>().loadItems();
-      }
+      //}
     }
   }
 
@@ -259,7 +258,6 @@ class GoodsPageState extends State<GoodsPage> {
     Map<dynamic, dynamic>? result = await showDialog(
         context: context, builder: (_) => AddQuantityAndPriceWidget(good, type), barrierDismissible: true);
     if (result != null) {
-      //int quantity = result["quantity"] ?? 0;
       double quantity = result["quantity"] ?? 0.0;
       double price = result["price"] ?? 0.0;
       context.read<GoodsCubit>().addTransaction(good.id!, quantity, price);
@@ -401,10 +399,10 @@ class GoodsPageState extends State<GoodsPage> {
           } else if (state.state is OpenSaveGoodPageState) {
             final currentState = state.state as OpenSaveGoodPageState;
             final result = await Navigator.of(context)
-                .pushNamed(Pages.save_good, arguments: {"item": currentState.item, "enableAddTransactions": true});
-            if (result != null) {
+                .pushNamed(Pages.save_good, arguments: {"item": currentState.item});
+            //if (result != null) {
               context.read<GoodsCubit>().loadItems();
-            }
+            //}
           } else if (state.state is AddGroupState) {
             final currentState = state.state as AddGroupState;
             final result =

@@ -214,5 +214,6 @@
   "sign_up_successful" : "Sign up success",
   "reset_password_successful": "Reset password Success",
   "cloud_file_no_updated": "Not updated yet",
-  "signout_message": "Are you sure want to log out ?"
+  "signout_message": "Are you sure want to log out ?",
+  "item_history_title": "Item History"
 }

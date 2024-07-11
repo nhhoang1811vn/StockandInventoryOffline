@@ -7,6 +7,7 @@ class ReportDetailState with _$ReportDetailState{
     ReportType? type,
     DateTime? start,
     DateTime? end,
-    @Default([]) List<List<String>> data
+    @Default([]) List<List<String>> data,
+    @Default([]) List<int> ids,
   }) = _Initial;
 }

@@ -7,6 +7,11 @@ import 'package:vibration/vibration.dart';
 
 
 class Utils{
+  static String getQuantityText(double num){
+    RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
+    return num.toString().replaceAll(regex, '');
+  }
+
   static void handleABarcodeFound() async{
     var enableSound = storage.getBarcodeScannerEnableBeep();
     var enableVibrate = storage.getBarcodeScannerEnableVibrate();

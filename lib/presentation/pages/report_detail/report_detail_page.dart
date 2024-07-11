@@ -8,7 +8,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/main.dart';
+import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
+import 'package:path/path.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -153,14 +155,20 @@ class ReportDetailPage extends StatelessWidget {
     ]);
   }
 
-  List<Widget> _buildFirstColumn(ReportDetailState state) {
+  List<Widget> _buildFirstColumn(BuildContext context,ReportDetailState state) {
     List<Widget> results = [];
     bool flag = true;
     state.data.asMap().forEach((key, value) {
       if (key == 0 || key == state.data.length - 1) {
         results.add(_buildHighlightCell(value.first));
       } else {
-        results.add(_buildNormalCell(value.first, flag));
+        results.add(_buildNormalCell(value.first, flag, (){
+          if (state.type == ReportType.LIST_OF_GOODS){
+            var goodId = state.ids[key - 1];
+            var result = Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': start, 'end': end});
+            context.read<ReportDetailCubit>().init(context, type, start, end);
+          }
+           }));
         flag = !flag;
       }
     });
@@ -177,7 +185,7 @@ class ReportDetailPage extends StatelessWidget {
         if (key == 0 || key == state.data.length - 1) {
           rows.add(_buildHighlightCell(value[i]));
         } else {
-          rows.add(_buildNormalCell(value[i], flag));
+          rows.add(_buildNormalCell(value[i], flag, (){}));
         }
       }
       flag = !flag;
@@ -187,35 +195,48 @@ class ReportDetailPage extends StatelessWidget {
   }
 
   Widget _buildHighlightCell(String value) {
-    return _buildCell(value, UIConstants.primaryDarkColor, Colors.white, FontWeight.w600);
+    return _buildCell(value: value, backgroundColor: UIConstants.primaryDarkColor, textColor: Colors.white,fontWeight: FontWeight.w600);
   }
 
-  Widget _buildNormalCell(String value, bool type) {
+  Widget _buildNormalCell(String value, bool type, Function()? onPressed) {
     if (type) {
-      return _buildNormalCellType1(value);
+      return _buildNormalCellType1(value, onPressed);
     } else {
-      return _buildNormalCellType2(value);
+      return _buildNormalCellType2(value, onPressed);
     }
   }
 
-  Widget _buildNormalCellType1(String value) {
-    return _buildCell(value, Colors.grey.shade200, Colors.black, FontWeight.w400);
+  Widget _buildNormalCellType1(String value, Function()? onPressed) {
+    return _buildCell(
+        value : value,
+        backgroundColor: Colors.grey.shade200,
+        textColor: Colors.black,
+        fontWeight : FontWeight.w400,
+        onPressed: onPressed
+        );
   }
 
-  Widget _buildNormalCellType2(String value) {
-    return _buildCell(value, Colors.white, Colors.black, FontWeight.w400);
+  Widget _buildNormalCellType2(String value, Function()? onPressed) {
+    return _buildCell(
+        value : value,
+        backgroundColor: Colors.white,
+        textColor: Colors.black, fontWeight: FontWeight.w400,
+  onPressed: onPressed);
   }
 
-  Widget _buildCell(String value, Color backgroundColor, Color textColor, FontWeight fontWeight) {
-    return Container(
-      alignment: Alignment.center,
-      width: 120.0,
-      height: 30.0,
-      color: backgroundColor,
-      margin: EdgeInsets.all(1.0),
-      child: Text(
-        value,
-        style: TextStyle(color: textColor, fontWeight: fontWeight),
+  Widget _buildCell({required String value, required Color backgroundColor, required Color textColor, required FontWeight fontWeight, Function()? onPressed = null}) {
+    return InkWell(
+      onTap: onPressed,
+      child: Container(
+        alignment: Alignment.center,
+        width: 120.0,
+        height: 30.0,
+        color: backgroundColor,
+        margin: EdgeInsets.all(1.0),
+        child: Text(
+          value,
+          style: TextStyle(color: textColor, fontWeight: fontWeight),
+        ),
       ),
     );
   }
@@ -241,7 +262,7 @@ class ReportDetailPage extends StatelessWidget {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: _buildFirstColumn(state),
+                      children: _buildFirstColumn(context,state),
                     ),
                     Flexible(
                         child: SingleChildScrollView(

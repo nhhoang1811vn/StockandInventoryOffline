@@ -35,6 +35,18 @@ class InsertTransactionSuccessState extends BaseState{
 class InsertTransactionFailedState extends BaseState{
 
 }
+class OpenReceiveGoodsPopupState extends BaseState{
+
+}
+class OpenIssueGoodsPopupState extends BaseState{
+
+}
+class UpdateItemState extends BaseState{
+
+}
+class OpenHistoryPageState extends BaseState{
+
+}
 //supplier
 class OpenSaveSupplierPageState extends BaseState{
   late Supplier item;

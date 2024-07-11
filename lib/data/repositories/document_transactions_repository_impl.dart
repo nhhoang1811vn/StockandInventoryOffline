@@ -52,6 +52,10 @@ class DocumentTransactionRepositoryImpl implements DocumentTransactionRepository
   Future<List<DocumentTransaction>> getTransactions(int documentId) {
     return db.getTransactionsByDocumentId(documentId);
   }
+  @override
+  Future<List<DocumentTransaction>> getTransactionsByDocumentIdAndGoodId(int documentId, int goodId) {
+    return db.getTransactionsByDocumentIdAndGoodId(documentId, goodId);
+  }
 
   @override
   Future<int> insert(DocumentTransaction item) {

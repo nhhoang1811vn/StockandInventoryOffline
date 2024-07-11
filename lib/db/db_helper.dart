@@ -650,6 +650,23 @@ class DBHelper {
     }
     return transactions;
   }
+  Future<List<DocumentTransaction>> getTransactionsByDocumentIdAndGoodId(
+      int documentId, int goodId) async {
+    var dbClient = await db;
+    List<Map> list = await dbClient.rawQuery(
+        'SELECT * FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME where documentId = ? AND goodId = ?',
+        [documentId, goodId]);
+
+    List<DocumentTransaction> transactions = [];
+    for (int i = 0; i < list.length; i++) {
+      var transaction = DocumentTransaction.map(list[i]);
+      //var good = await findGood(transaction.goodId);
+      //good.quantity = transaction.quantity;
+      //transaction.good = good;
+      transactions.add(transaction);
+    }
+    return transactions;
+  }
 
   //TRANSACTION
   Future<int> insertTransaction(DocumentTransaction item) async {

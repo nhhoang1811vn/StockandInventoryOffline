@@ -16,6 +16,7 @@ abstract class DocumentTransactionRepository {
   Future<void> deleteByGoodId(int goodId);
 
   Future<List<DocumentTransaction>> getTransactions(int documentId);
+  Future<List<DocumentTransaction>> getTransactionsByDocumentIdAndGoodId(int documentId, int goodId);
 
   Future<double> getSumQuantityByGoodIdAndByDocumentId(DocumentType type, int goodId, int documentId);
   Future<double> getSumQuantityByGoodId(DocumentType type, int goodId);

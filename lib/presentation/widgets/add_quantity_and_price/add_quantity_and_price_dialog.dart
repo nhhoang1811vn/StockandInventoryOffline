@@ -37,7 +37,7 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
     double? price = (widget.type == DocumentType.incoming ? widget.good.purchasePrice : widget.good.salePrice);
     double quantity = 1.0;
     cubit.initState(quantity, price);
-    quantityTextController.text = quantity.toString();
+    quantityTextController.text = Utils.getQuantityText(quantity);// quantity.toString();
     if (price != null){
       priceTextController.text = Config.simpleCurrencyFormat.format(price);
     }else{

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/utils.dart';
 
 class DocumentTransactionItemRow extends StatelessWidget {
   final DocumentTransaction item;
@@ -66,7 +67,7 @@ class DocumentTransactionItemRow extends StatelessWidget {
 
         ]),),
 
-        Text(item.quantity.toString(), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground),)
+        Text(Utils.getQuantityText(item.quantity), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground),)
       ],
     );
   }
