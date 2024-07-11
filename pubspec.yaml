@@ -89,6 +89,8 @@ dependencies:
   flutter_svg: ^2.0.10+1
   flutter_offline: ^3.0.1
   gap: ^3.0.1
+  #googleapis_auth: ^1.6.0
+  desktop_webview_auth: ^0.0.15
 dev_dependencies:
   injectable_generator: ^2.1.6
   build_runner: ^2.4.6

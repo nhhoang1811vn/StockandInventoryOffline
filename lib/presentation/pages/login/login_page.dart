@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -169,7 +171,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   InkWell(
                     radius: 50,
                     onTap: () {
-                      context.read<AuthCubit>().signInWithGoogle();
+                      if (Platform.isWindows){
+                        context.read<AuthCubit>().signInWithGoogleInWindowPlatform();
+                      }else{
+                        context.read<AuthCubit>().signInWithGoogle();
+                      }
+
                     },
                     child: SvgPicture.asset(
                       'assets/svgs/google_logo.svg',

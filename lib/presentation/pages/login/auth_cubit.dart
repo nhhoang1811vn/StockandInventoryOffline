@@ -1,5 +1,6 @@
+import 'package:desktop_webview_auth/desktop_webview_auth.dart';
+import 'package:desktop_webview_auth/google.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/data/storage.dart';
@@ -9,6 +10,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
 
 part 'auth_state.dart';
+
 
 @injectable
 class AuthCubit extends Cubit<AuthState> {
@@ -44,8 +46,27 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthError(e.toString()));
     }
   }
+  Future<void> signInWithGoogleInWindowPlatform() async{
+    final googleSignInArgs = GoogleSignInArgs(
+      clientId:
+      '617423800641-s9j7uem4h2u0751pc1im6o34e4resoi4.apps.googleusercontent.com',
+      redirectUri:
+      'https://quanlykho-4818e.firebaseapp.com/__/auth/handler',
+      scope: 'email',
+    );
+    try {
+      final result = await DesktopWebviewAuth.signIn(googleSignInArgs);
 
-
+      final newCredential = GoogleAuthProvider.credential(
+        accessToken: result?.accessToken,
+        idToken: result?.idToken,
+      );
+      await _auth.signInWithCredential(newCredential);
+      emit(UserSignIn());
+    } catch (err) {
+      // something went wrong
+    }
+  }
   Future<void> signInWithGoogle() async {
     firstTimeLogin = true;
     final String googleClientId = "617423800641-s9j7uem4h2u0751pc1im6o34e4resoi4.apps.googleusercontent.com";
