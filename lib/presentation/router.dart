@@ -14,6 +14,8 @@ import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/goods_view.dart';
 import 'package:good_manager/presentation/pages/help/help_page_dart.dart';
 import 'package:good_manager/presentation/pages/help/helps_page_dart.dart';
+import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.dart';
+import 'package:good_manager/presentation/pages/history/item_history_view.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/pages/home/home_page.dart';
 import 'package:good_manager/presentation/pages/login/auth_cubit.dart';
@@ -128,9 +130,21 @@ class AppRouter {
                   create: (context) => getIt<SaveGoodCubit>(),
                   child: SaveGoodPage(
                       item: args['item'],
+                      //quickInsertDocument: args['quickInsertDocument'],
                       document: args['document'],
                       transaction: args['transaction']),
                 ));
+      case Pages.good_history:
+        Map<dynamic, dynamic> args = settings.arguments as Map;
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<ItemHistoryCubit>(),
+              child: ItemHistoryPage(
+                goodId: args['goodId'],
+                start: args['start'],
+                end: args['end'],
+              ),
+            ));
       case Pages.save_group:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(

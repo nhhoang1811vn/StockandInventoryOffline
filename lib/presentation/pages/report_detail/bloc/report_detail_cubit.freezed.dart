@@ -21,24 +21,30 @@ mixin _$ReportDetailState {
   DateTime? get start => throw _privateConstructorUsedError;
   DateTime? get end => throw _privateConstructorUsedError;
   List<List<String>> get data => throw _privateConstructorUsedError;
+  List<int> get ids => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(BaseState state, ReportType? type,
-            DateTime? start, DateTime? end, List<List<String>> data)
+    required TResult Function(
+            BaseState state,
+            ReportType? type,
+            DateTime? start,
+            DateTime? end,
+            List<List<String>> data,
+            List<int> ids)
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseState state, ReportType? type, DateTime? start,
-            DateTime? end, List<List<String>> data)?
+            DateTime? end, List<List<String>> data, List<int> ids)?
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseState state, ReportType? type, DateTime? start,
-            DateTime? end, List<List<String>> data)?
+            DateTime? end, List<List<String>> data, List<int> ids)?
         initial,
     required TResult orElse(),
   }) =>
@@ -76,7 +82,8 @@ abstract class $ReportDetailStateCopyWith<$Res> {
       ReportType? type,
       DateTime? start,
       DateTime? end,
-      List<List<String>> data});
+      List<List<String>> data,
+      List<int> ids});
 }
 
 /// @nodoc
@@ -97,6 +104,7 @@ class _$ReportDetailStateCopyWithImpl<$Res, $Val extends ReportDetailState>
     Object? start = freezed,
     Object? end = freezed,
     Object? data = null,
+    Object? ids = null,
   }) {
     return _then(_value.copyWith(
       state: null == state
@@ -119,6 +127,10 @@ class _$ReportDetailStateCopyWithImpl<$Res, $Val extends ReportDetailState>
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
               as List<List<String>>,
+      ids: null == ids
+          ? _value.ids
+          : ids // ignore: cast_nullable_to_non_nullable
+              as List<int>,
     ) as $Val);
   }
 }
@@ -136,7 +148,8 @@ abstract class _$$_InitialCopyWith<$Res>
       ReportType? type,
       DateTime? start,
       DateTime? end,
-      List<List<String>> data});
+      List<List<String>> data,
+      List<int> ids});
 }
 
 /// @nodoc
@@ -154,6 +167,7 @@ class __$$_InitialCopyWithImpl<$Res>
     Object? start = freezed,
     Object? end = freezed,
     Object? data = null,
+    Object? ids = null,
   }) {
     return _then(_$_Initial(
       state: null == state
@@ -176,6 +190,10 @@ class __$$_InitialCopyWithImpl<$Res>
           ? _value._data
           : data // ignore: cast_nullable_to_non_nullable
               as List<List<String>>,
+      ids: null == ids
+          ? _value._ids
+          : ids // ignore: cast_nullable_to_non_nullable
+              as List<int>,
     ));
   }
 }
@@ -188,8 +206,10 @@ class _$_Initial implements _Initial {
       this.type,
       this.start,
       this.end,
-      final List<List<String>> data = const []})
-      : _data = data;
+      final List<List<String>> data = const [],
+      final List<int> ids = const []})
+      : _data = data,
+        _ids = ids;
 
   @override
   final BaseState state;
@@ -208,9 +228,18 @@ class _$_Initial implements _Initial {
     return EqualUnmodifiableListView(_data);
   }
 
+  final List<int> _ids;
+  @override
+  @JsonKey()
+  List<int> get ids {
+    if (_ids is EqualUnmodifiableListView) return _ids;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_ids);
+  }
+
   @override
   String toString() {
-    return 'ReportDetailState.initial(state: $state, type: $type, start: $start, end: $end, data: $data)';
+    return 'ReportDetailState.initial(state: $state, type: $type, start: $start, end: $end, data: $data, ids: $ids)';
   }
 
   @override
@@ -222,12 +251,19 @@ class _$_Initial implements _Initial {
             (identical(other.type, type) || other.type == type) &&
             (identical(other.start, start) || other.start == start) &&
             (identical(other.end, end) || other.end == end) &&
-            const DeepCollectionEquality().equals(other._data, _data));
+            const DeepCollectionEquality().equals(other._data, _data) &&
+            const DeepCollectionEquality().equals(other._ids, _ids));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, state, type, start, end,
-      const DeepCollectionEquality().hash(_data));
+  int get hashCode => Object.hash(
+      runtimeType,
+      state,
+      type,
+      start,
+      end,
+      const DeepCollectionEquality().hash(_data),
+      const DeepCollectionEquality().hash(_ids));
 
   @JsonKey(ignore: true)
   @override
@@ -238,33 +274,38 @@ class _$_Initial implements _Initial {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(BaseState state, ReportType? type,
-            DateTime? start, DateTime? end, List<List<String>> data)
+    required TResult Function(
+            BaseState state,
+            ReportType? type,
+            DateTime? start,
+            DateTime? end,
+            List<List<String>> data,
+            List<int> ids)
         initial,
   }) {
-    return initial(state, type, start, end, data);
+    return initial(state, type, start, end, data, ids);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseState state, ReportType? type, DateTime? start,
-            DateTime? end, List<List<String>> data)?
+            DateTime? end, List<List<String>> data, List<int> ids)?
         initial,
   }) {
-    return initial?.call(state, type, start, end, data);
+    return initial?.call(state, type, start, end, data, ids);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseState state, ReportType? type, DateTime? start,
-            DateTime? end, List<List<String>> data)?
+            DateTime? end, List<List<String>> data, List<int> ids)?
         initial,
     required TResult orElse(),
   }) {
     if (initial != null) {
-      return initial(state, type, start, end, data);
+      return initial(state, type, start, end, data, ids);
     }
     return orElse();
   }
@@ -304,7 +345,8 @@ abstract class _Initial implements ReportDetailState {
       final ReportType? type,
       final DateTime? start,
       final DateTime? end,
-      final List<List<String>> data}) = _$_Initial;
+      final List<List<String>> data,
+      final List<int> ids}) = _$_Initial;
 
   @override
   BaseState get state;
@@ -316,6 +358,8 @@ abstract class _Initial implements ReportDetailState {
   DateTime? get end;
   @override
   List<List<String>> get data;
+  @override
+  List<int> get ids;
   @override
   @JsonKey(ignore: true)
   _$$_InitialCopyWith<_$_Initial> get copyWith =>

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/utils.dart';
 
 class GoodItemRow extends StatelessWidget {
   final Good item;
@@ -79,7 +80,7 @@ class GoodItemRow extends StatelessWidget {
               )
           ]),
         ),
-        Text(item.quantity.toString(),
+        Text(Utils.getQuantityText(item.quantity),
             style:
                 Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground)),
       ],

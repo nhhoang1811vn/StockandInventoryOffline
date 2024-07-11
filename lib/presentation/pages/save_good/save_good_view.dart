@@ -14,8 +14,11 @@ class SaveGoodPage extends StatelessWidget {
   final Good item;
   final Document? document;
   final DocumentTransaction? transaction;
-
-  SaveGoodPage({required this.item, this.document, this.transaction});
+  SaveGoodPage({
+    required this.item,
+    this.document,
+    this.transaction,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,11 @@ class SaveGoodPage extends StatelessWidget {
     return Scaffold(
         appBar: _buildAppBar(context),
         body: Column(
-            children: [SelectedStoreView(), Expanded(child: SaveGoodForm(item: item, transaction: transaction))]));
+            children: [
+              SelectedStoreView(),
+              Expanded(child: SaveGoodForm(
+                  item: item,
+                  transaction: transaction))]));
   }
 
   PreferredSize _buildAppBar(BuildContext context) {
@@ -34,7 +41,10 @@ class SaveGoodPage extends StatelessWidget {
               onPressed: () {
                 context.read<SaveGoodCubit>().onSaveClicked();
               },
-              icon: Icon(Icons.check))
+              icon: Icon(Icons.check)),
+          IconButton(onPressed: (){
+            context.read<SaveGoodCubit>().onHistoryClicked();
+          }, icon: Icon(Icons.history))
         ]));
   }
 }

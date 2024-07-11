@@ -100,6 +100,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
           //add total row
           data.add([AppLocalizations.of(context)!.field_total, totalStartPeriodStock.toString(), totalIncoming.toString(), totalOutgoing.toString(), totalEndPeriodStock.toString()]);
         }
+        emit(state.copyWith(ids: goods.map((e) => e.id!).toList()));
 
         break;
       case ReportType.EXPENSES:

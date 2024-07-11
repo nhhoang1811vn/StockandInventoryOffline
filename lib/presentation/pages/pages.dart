@@ -7,6 +7,7 @@ class Pages {
 
   static const String good_list = '/good_list';
   static const String save_good = '/save_good';
+  static const String good_history = "/good_history";
   static const String save_group = '/save_group';
 
   static const String document_list = "/document_list";
@@ -39,4 +40,6 @@ class Pages {
   static const String signup = "/signup";
   static const String signIn = "/signIn";
   static const String forgotPassword = "/forgotPassword";
+
+
 }

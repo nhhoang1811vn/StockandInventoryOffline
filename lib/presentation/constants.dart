@@ -74,7 +74,7 @@ class UIConstants {
   static const double screenSpace = 16.0;
 
   //static String appIconPath = "images/good.png";
-  static String searchBarcodeIconPath = "images/search_barcode.png";
+  static String searchBarcodeIconPath = "assets/images/search_barcode.png";
   //dimension
   static const double drawerMenuSize = 20.0;
 

@@ -38,26 +38,43 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
     );
     emit(initState);
   }
+  Future<int> insertOrUpdateGood() async{
+    Good item = state.item!;
+    item.name = state.name.value;
+    item.description = state.description;
+    if (state.barCode.trim().isNotEmpty){
+      item.barCode = state.barCode.trim();
+    }
+    if (state.transaction == null){
+      item.purchasePrice = state.purchasePrice;
+      item.salePrice = state.salePrice;
+    }
+    item.files = state.files;
+    if (item.id == null){
+      item.id = await useCase.insert(item);
+      emit(state.copyWith(item : item));
+    }else{
+      await useCase.update(item);
+    }
+    return item.id!;
+  }
+  Future<int> insertDocument(Document document) async{
+    int documentId = await documentsUseCases.insert(document);
+    return documentId;
+  }
+  void insertTransaction(DocumentTransaction item) async{
+    documentsUseCases.insertTransaction(item);
+  }
+  void updateQuantity(double quantity){
+    Good item = state.item!;
+    item.quantity += quantity;
+    emit(state.copyWith(state: UpdateItemState(),item : item));
+  }
   void onSaveClicked() async {
     final validate = Formz.validate([state.name]);
     if (validate){
       try{
-        Good item = state.item!;
-        item.name = state.name.value;
-        item.description = state.description;
-        if (state.barCode.trim().isNotEmpty){
-          item.barCode = state.barCode.trim();
-        }
-        if (state.transaction == null){
-          item.purchasePrice = state.purchasePrice;
-          item.salePrice = state.salePrice;
-        }
-        item.files = state.files;
-        if (item.id == null){
-          item.id = await useCase.insert(item);
-        }else{
-          await useCase.update(item);
-        }
+        var goodId = await insertOrUpdateGood();
         //insert document and insert transaction
         if (state.document != null){
           //insert document
@@ -74,7 +91,8 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
           }else{
             DocumentTransaction transaction = state.transaction!;
             transaction.documentId = document.id!;
-            transaction.goodId = item.id!;
+            //transaction.goodId = item.id!;
+            transaction.goodId = goodId;
             await documentsUseCases.insertTransaction(transaction);
           }
           emit(state.copyWith(state: SaveItemSuccessful(), document: document));
@@ -83,6 +101,23 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
         }
       }
       catch (e){
+        if (e.toString().contains("UNIQUE constraint failed: Goods.barCode")){
+          emit(state.copyWith(state: SaveItemSameBarcodeError()));
+        }else{
+          emit(state.copyWith(state: SaveItemError(e.toString())));
+        }
+      }
+    }else{
+      emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));
+    }
+  }
+  void onHistoryClicked() async{
+    final validate = Formz.validate([state.name]);
+    if (validate){
+      try{
+        int goodId = await insertOrUpdateGood();
+        emit(state.copyWith(state: OpenHistoryPageState()));
+      }catch (e){
         if (e.toString().contains("UNIQUE constraint failed: Goods.barCode")){
           emit(state.copyWith(state: SaveItemSameBarcodeError()));
         }else{
@@ -156,6 +191,25 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
       emit(state.copyWith(salePrice: price));
     }else{
       emit(state.copyWith(salePrice: null));
+    }
+  }
+
+  onPlusQuantityButtonPressed() async{
+    final validate = Formz.validate([state.name]);
+    if (validate){
+      var goodId = await insertOrUpdateGood();
+      emit(state.copyWith(state: OpenReceiveGoodsPopupState()));
+    }else{
+      emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));
+    }
+  }
+  onMinusQuantityButtonPressed() async{
+    final validate = Formz.validate([state.name]);
+    if (validate){
+      var goodId = await insertOrUpdateGood();
+      emit(state.copyWith(state: OpenIssueGoodsPopupState()));
+    }else{
+      emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));
     }
   }
 }
