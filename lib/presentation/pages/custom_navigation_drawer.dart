@@ -95,17 +95,34 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                                 title: AppLocalizations.of(context)!.notification_dialog_title,
                                 message: AppLocalizations.of(context)!.signout_message,
                                 okBtnFunction: () async{
-                                  String dbPath = await PathUtils().getDatabasePath();
-                                  File file = File(dbPath);
-                                  final storageRef = FirebaseStorage.instance.ref();
-                                  String? email = FirebaseAuth.instance.currentUser?.email;
-                                  final ref = storageRef.child("$email/database.db");
-                                  try {
-                                    await ref.putFile(file);
-                                  } on FirebaseException {
-                                  }
-                                  FirebaseAuth.instance.signOut();
-                                  Navigator.of(context).pushNamedAndRemoveUntil(Pages.signIn, (route) => false);
+                                  Navigator.of(context).pop();
+                                  DialogUtils.showCustomDialog(context,
+                                      title:  AppLocalizations.of(context)!.notification_dialog_title,
+                                      message: "Bạn có muốn đẩy dữ liệu lên cloud không?",
+                                      okBtnFunction: () async{
+                                        String dbPath = await PathUtils().getDatabasePath();
+                                        File file = File(dbPath);
+                                        final storageRef = FirebaseStorage.instance.ref();
+                                        String? email = FirebaseAuth.instance.currentUser?.email;
+                                        final ref = storageRef.child("$email/database.db");
+                                        try {
+                                          await ref.putFile(file);
+                                        } on FirebaseException {
+                                        }
+
+                                        FirebaseAuth.instance.signOut();
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pushNamedAndRemoveUntil(Pages.auth, (route) => false);
+                                      },
+                                      cancelBtnFunction: () async{
+                                        FirebaseAuth.instance.signOut();
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pushNamedAndRemoveUntil(Pages.auth, (route) => false);
+                                      },
+                                      okBtnText: AppLocalizations.of(context)!.action_ok,
+                                      cancelBtnText: AppLocalizations.of(context)!.action_cancel
+                                  );
+
                                 },
                                 cancelBtnText: AppLocalizations.of(context)!.action_cancel,
 

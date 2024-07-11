@@ -48,9 +48,9 @@ class HomePageState extends State<HomePage>{
 
   Widget _buildBody(HomeState state) {
     final state1 = state.state;
-    if (state1 is LoadingState) {
-      return _buildLoading();
-    }
+    //if (state1 is LoadingState) {
+    //  return _buildLoading();
+    //}
     return _buildContent(state);
   }
 

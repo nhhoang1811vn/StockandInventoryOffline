@@ -4,6 +4,7 @@ class Pages {
   static const String payment_list = 'payment_list';
   static const String save_payment = 'save_payment';
   static const String home = '/home';
+  static const String auth = '/auth';
 
   static const String good_list = '/good_list';
   static const String save_good = '/save_good';

@@ -60,10 +60,12 @@ class _LoginScreenState extends State<LoginScreen> {
           ProgressIndicaror.showProgressIndicator(context);
         } else if (state is AuthError) {
           Navigator.of(context).pop();
-          String title = 'Error';//AppLocalizations.of(context)!.notification_dialog_title;
+          String title = AppLocalizations.of(context)!.notification_dialog_title;
           String message = state.message;
           DialogUtils.showCustomDialog(context, title: title, message: message);
         } else if (state is UserSignIn) {
+          Navigator.of(context).pop();//dismiss loading popup
+          /*Navigator.of(context).pushNamedAndRemoveUntil(Pages.onboarding, (route) => false);
           final checkStores = await context.read<AuthCubit>().checkStore();
           if (checkStores){
             //there is store
@@ -73,17 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
             //there is no store
             //go to onboard flow to create first store
             Navigator.of(context).pushNamedAndRemoveUntil(Pages.onboarding, (route) => false);
-          }
-
-          /*riveHelper.addSuccessController();
-        await Future.delayed(const Duration(seconds: 2));
-        riveHelper.dispose();*/
-        /*
-        if (!context.mounted) return;
-        context.pushNamedAndRemoveUntil(
-          Routes.homeScreen,
-          predicate: (route) => false,
-        );*/
+          }*/
         } else if (state is UserNotVerified) {
           Navigator.of(context).pop();
           String title = AppLocalizations.of(context)!.email_not_verified_title;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:good_manager/auth_gate.dart';
 import 'package:good_manager/common/helpers/injection.container.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/barcode_scanner_page.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart';
@@ -78,6 +79,8 @@ class AppRouter {
                   create: (context) => getIt<SaveStoreCubit>(),
                   child: SaveStorePage(item: args["item"]),
                 ));
+      case Pages.auth:
+        return MaterialPageRoute(builder: (_) => AuthGate());
       case Pages.home:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
