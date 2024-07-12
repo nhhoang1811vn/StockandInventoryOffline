@@ -1,0 +1,3 @@
+class SameBarcodeException implements Exception{
+
+}

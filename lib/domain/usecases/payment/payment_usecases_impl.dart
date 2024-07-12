@@ -1,0 +1,37 @@
+
+import 'dart:async';
+
+import 'package:good_manager/domain/entities/payment.dart';
+import 'package:good_manager/domain/repositories/payment_repositories.dart';
+import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
+import 'package:injectable/injectable.dart';
+
+@Injectable(as: PaymentUseCases)
+class PaymentUseCasesImpl implements PaymentUseCases{
+  final PaymentRepository repository;
+
+  PaymentUseCasesImpl({required this.repository});
+  @override
+  Future<int> insert(Payment item) {
+    return repository.insert(item);
+  }
+  @override
+  Future<bool> update(Payment item) {
+    return repository.update(item);
+  }
+
+  @override
+  Future<bool> delete(int id) {
+    return repository.delete(id);
+  }
+
+  @override
+  Future<List<Payment>> getAll() {
+    // TODO: implement getAll
+    throw UnimplementedError();
+  }
+  @override
+  Future<List<Payment>> getByDocumentId(int documentId) {
+    return repository.getByDocumentId(documentId);
+  }
+}
