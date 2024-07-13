@@ -61,7 +61,13 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     List<List<String>> data = [];
     switch(state.type){
       case ReportType.LIST_OF_GOODS:
-        data.add(["Tên", "Ban đầu (SL)", "Nhập vào (SL)", "Bán ra (SL)", "Cuối Kỳ (SL)"]);
+        data.add([
+          AppLocalizations.of(context)!.field_bar_code,
+          AppLocalizations.of(context)!.field_name,
+          "Ban đầu (SL)",
+          "Nhập vào (SL)",
+          "Bán ra (SL)",
+          "Cuối Kỳ (SL)"]);
         int storeId = storage.getSelectedStoreId();
         List<Good> goods = await goodsUseCase.getAllByStoreId(storeId);
 
@@ -81,6 +87,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
           double startPeriodStock = await getQuantity(good.id!, documentsPrePeriod);
           double endPeriodStock = startPeriodStock + incoming - outgoing;
           List<String> row = [];
+          row.add(good.barCode ?? "");
           row.add(good.name);
           row.add(startPeriodStock.toString());
           row.add(incoming.toString());
@@ -98,10 +105,9 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         }
         if (data.length > 1){
           //add total row
-          data.add([AppLocalizations.of(context)!.field_total, totalStartPeriodStock.toString(), totalIncoming.toString(), totalOutgoing.toString(), totalEndPeriodStock.toString()]);
+          data.add([AppLocalizations.of(context)!.field_total, "", totalStartPeriodStock.toString(), totalIncoming.toString(), totalOutgoing.toString(), totalEndPeriodStock.toString()]);
         }
         emit(state.copyWith(ids: goods.map((e) => e.id!).toList()));
-
         break;
       case ReportType.EXPENSES:
         List<Expense> items = await expenseUseCase.getExpensesInRange(state.start!, state.end!);

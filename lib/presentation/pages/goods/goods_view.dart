@@ -9,6 +9,7 @@ import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/entities/search_goods_type.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/sort_goods_dialog.dart';
 import 'package:good_manager/presentation/style_size.dart';
@@ -38,7 +39,7 @@ class GoodsPage extends StatefulWidget {
   GoodsPageState createState() => GoodsPageState();
 }
 
-class GoodsPageState extends State<GoodsPage> {
+class GoodsPageState extends BaseStateWidget<GoodsPage> {
   final TextEditingController searchTextController = TextEditingController();
   final FocusNode searchTextFocusNode = FocusNode();
 
@@ -46,6 +47,10 @@ class GoodsPageState extends State<GoodsPage> {
   void initState() {
     super.initState();
     context.read<GoodsCubit>().initState(widget.isSelection, widget.document);
+  }
+  @override
+  bool hasDrawer() {
+    return !widget.isSelection;
   }
 
   Widget _buildBody(BuildContext context, GoodsState state) {
@@ -378,7 +383,7 @@ class GoodsPageState extends State<GoodsPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildWidget(BuildContext context) {
     return BlocConsumer<GoodsCubit, GoodsState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async {
@@ -428,6 +433,7 @@ class GoodsPageState extends State<GoodsPage> {
           }
         },
         builder: (context, state) => Scaffold(
+            key: ScaffoldKey,
             drawer: widget.isSelection
                 ? null
                 : CustomNavigationDrawer(selectedIndex: 1, storeName: storage.getSelectedStoreName()),

@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/common/path_utils.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/widgets/snackbar_widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -25,7 +26,7 @@ class SettingsPage extends StatefulWidget{
   }
 }
 
-class SettingsPageState extends State<SettingsPage> {
+class SettingsPageState extends BaseStateWidget<SettingsPage> {
   //SettingsPage({Key? key}) : super(key: key);
   var cloudFileUpdatedTime = "";
   @override
@@ -34,8 +35,13 @@ class SettingsPageState extends State<SettingsPage> {
     loadCloudFileUpdatedTime();
   }
   @override
-  Widget build(BuildContext context) {
+  bool hasDrawer() {
+    return true;
+  }
+  @override
+  Widget buildWidget(BuildContext context) {
     return Scaffold(
+        key: ScaffoldKey,
         drawer: CustomNavigationDrawer(selectedIndex: 8, storeName: storage.getSelectedStoreName()),
         appBar: new AppBar(
             title: new Text(AppLocalizations.of(context)!.settings_title)),

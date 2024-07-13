@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/good_history.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.dart';
 import 'package:good_manager/presentation/pages/history/widget/item_history_row.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
@@ -22,7 +23,7 @@ class ItemHistoryPage extends StatefulWidget {
   @override
   ItemHistoryPageState createState() => ItemHistoryPageState();
 }
-class ItemHistoryPageState extends State<ItemHistoryPage> {
+class ItemHistoryPageState extends BaseStateWidget<ItemHistoryPage> {
 
   @override
   void initState() {
@@ -30,7 +31,7 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
     context.read<ItemHistoryCubit>().initState(widget.goodId, widget.start, widget.end);
   }
   @override
-  Widget build(BuildContext context) {
+  Widget buildWidget(BuildContext context) {
     return BlocConsumer<ItemHistoryCubit, ItemHistoryState>(
         builder: (context, state) => Scaffold(
           appBar: _buildAppBar(),

@@ -4,14 +4,20 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/batch_mode_scan.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/change_batch_mode_scan_dialog.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 
 import '../../constants.dart';
 
-class BarcodeScannerPage extends StatelessWidget {
+class BarcodeScannerPage extends StatefulWidget {
   BarcodeScannerPage({Key? key}) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
+  State<StatefulWidget> createState() {
+    return BarcodeScannerPageState();
+  }
+}
+class BarcodeScannerPageState extends BaseStateWidget<BarcodeScannerPage> {
+  @override
+  Widget buildWidget(BuildContext context) {
     return BlocConsumer<BarcodeScannerCubit, BarcodeScannerState>(
       listener: (context, state) async {
 

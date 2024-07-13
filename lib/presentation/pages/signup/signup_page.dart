@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:good_manager/presentation/dialog_utils.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/login/auth_cubit.dart';
 import 'package:good_manager/presentation/pages/login/components/background.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
@@ -15,7 +16,7 @@ class SignUpScreen extends StatefulWidget {
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends BaseStateWidget<SignUpScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -33,7 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     BlocProvider.of<AuthCubit>(context);
   }
   @override
-  Widget build(BuildContext context) {
+  Widget buildWidget(BuildContext context) {
     return Scaffold(
       body: OfflineBuilder(
         connectivityBuilder: (

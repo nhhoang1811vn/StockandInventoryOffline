@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/main.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
 import 'package:pdf/pdf.dart';
@@ -17,17 +19,23 @@ import 'package:sprintf/sprintf.dart';
 
 import '../../constants.dart';
 
-class ReportDetailPage extends StatelessWidget {
+class ReportDetailPage extends StatefulWidget{
   final ReportType type;
   final DateTime start;
   final DateTime end;
 
   ReportDetailPage(this.type, this.start, this.end);
+  @override
+  State<StatefulWidget> createState() {
+    return ReportDetailPageState();
+  }
+}
+class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
+  static const double MIN_WIDTH_CELL = 120.0;
 
   @override
-  Widget build(BuildContext context) {
-    context.read<ReportDetailCubit>().init(context, type, start, end);
-
+  Widget buildWidget(BuildContext context) {
+    context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end);
     return BlocConsumer<ReportDetailCubit, ReportDetailState>(
         builder: (context, state) => Scaffold(appBar: _buildAppBar(context, state), body: _buildBody(context, state)),
         listenWhen: (p1, p2) => p1.state != p2.state,
@@ -38,7 +46,7 @@ class ReportDetailPage extends StatelessWidget {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
-        title: new Text(type.getTitle(context)),
+        title: new Text(widget.type.getTitle(context)),
         actions: [_buildExportExcelFileMenu(context, state), _buildPDFMenu(context, state)],
       ),
     );
@@ -70,7 +78,6 @@ class ReportDetailPage extends StatelessWidget {
   Future<void> saveCSVFile(BuildContext context, ReportDetailState state, String outputFile) async{
     try{
       String csv = const ListToCsvConverter().convert(state.data);
-      //String filePath = "$destinationPath/${getExportPdfFileName(context, state)}.csv";
       File file = File(outputFile);
       await file.writeAsString(csv);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -157,15 +164,21 @@ class ReportDetailPage extends StatelessWidget {
   List<Widget> _buildFirstColumn(BuildContext context,ReportDetailState state) {
     List<Widget> results = [];
     bool flag = true;
+
+    int columnCount = state.data.firstOrNull?.length ?? 1;
+    double cellWidth = getCellWidth(context, columnCount);
     state.data.asMap().forEach((key, value) {
       if (key == 0 || key == state.data.length - 1) {
-        results.add(_buildHighlightCell(value.first));
+        results.add(_buildHighlightCell(value: value.first, width: cellWidth));
       } else {
-        results.add(_buildNormalCell(value.first, flag, (){
+        results.add(_buildNormalCell(
+            value: value.first,
+            width: cellWidth,
+            type: flag, onPressed: (){
           if (state.type == ReportType.LIST_OF_GOODS){
             var goodId = state.ids[key - 1];
-            Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': start, 'end': end});
-            context.read<ReportDetailCubit>().init(context, type, start, end);
+            Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
+            context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end);
           }
            }));
         flag = !flag;
@@ -174,17 +187,50 @@ class ReportDetailPage extends StatelessWidget {
     return results;
   }
 
-  List<Widget> _buildRows(ReportDetailState state) {
+  List<Widget> _buildRows(BuildContext context, ReportDetailState state) {
     List<Widget> results = [];
     bool flag = false;
+    int columnCount = state.data.firstOrNull?.length ?? 1;
+    double cellWidth = getCellWidth(context, columnCount);
     state.data.asMap().forEach((key, value) {
       List<Widget> rows = [];
-
       for (int i = 1; i < value.length; i++) {
         if (key == 0 || key == state.data.length - 1) {
-          rows.add(_buildHighlightCell(value[i]));
+          rows.add(_buildHighlightCell(value: value[i], width: cellWidth));
         } else {
-          rows.add(_buildNormalCell(value[i], flag, (){}));
+          rows.add(_buildNormalCell(
+              value: value[i],
+              width: cellWidth,
+              type: flag));
+        }
+      }
+      flag = !flag;
+      results.add(Row(children: rows));
+    });
+    return results;
+  }
+  List<Widget> _buildFullRow(BuildContext context, ReportDetailState state) {
+    List<Widget> results = [];
+    bool flag = false;
+    int columnCount = state.data.firstOrNull?.length ?? 1;
+    double cellWidth = getCellWidth(context, columnCount);
+    state.data.asMap().forEach((key, value) {
+      List<Widget> rows = [];
+      for (int i = 0; i < value.length; i++) {
+        if (key == 0 || key == state.data.length - 1) {
+          rows.add(_buildHighlightCell(value: value[i], width: cellWidth));
+        } else {
+          rows.add(_buildNormalCell(
+              value: value[i],
+              width: cellWidth,
+              type: flag,
+          onPressed: (){
+            if (state.type == ReportType.LIST_OF_GOODS){
+              var goodId = state.ids[key - 1];
+              Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
+              context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end);
+            }
+          }));
         }
       }
       flag = !flag;
@@ -193,43 +239,58 @@ class ReportDetailPage extends StatelessWidget {
     return results;
   }
 
-  Widget _buildHighlightCell(String value) {
-    return _buildCell(value: value, backgroundColor: UIConstants.primaryDarkColor, textColor: Colors.white,fontWeight: FontWeight.w600);
+  Widget _buildHighlightCell({String value = "", double width = MIN_WIDTH_CELL}) {
+    return _buildCell(
+        value: value,
+        width: width,
+        backgroundColor: UIConstants.primaryDarkColor,
+        textColor: Colors.white,
+        fontWeight: FontWeight.w600);
   }
 
-  Widget _buildNormalCell(String value, bool type, Function()? onPressed) {
+  Widget _buildNormalCell({
+    String value = "",
+    bool type = true,
+    double width = MIN_WIDTH_CELL,
+    Function()? onPressed = null}) {
     if (type) {
-      return _buildNormalCellType1(value, onPressed);
+      return _buildCell(
+          value : value,
+          width: width,
+          backgroundColor: Colors.grey.shade200,
+          textColor: Colors.black,
+          fontWeight : FontWeight.w400,
+          onPressed: onPressed,
+
+      );
     } else {
-      return _buildNormalCellType2(value, onPressed);
+      return _buildCell(
+          value : value,
+          width: width,
+          backgroundColor: Colors.white,
+          textColor: Colors.black,
+          fontWeight : FontWeight.w400,
+          onPressed: onPressed,
+
+      );
     }
   }
 
-  Widget _buildNormalCellType1(String value, Function()? onPressed) {
-    return _buildCell(
-        value : value,
-        backgroundColor: Colors.grey.shade200,
-        textColor: Colors.black,
-        fontWeight : FontWeight.w400,
-        onPressed: onPressed
-        );
-  }
+  Widget _buildCell(
+      {String value = "",
+        double width = MIN_WIDTH_CELL
+        ,
+        required Color backgroundColor,
+        required Color textColor,
+        required FontWeight fontWeight,
+        Function()? onPressed = null,
 
-  Widget _buildNormalCellType2(String value, Function()? onPressed) {
-    return _buildCell(
-        value : value,
-        backgroundColor: Colors.white,
-        textColor: Colors.black, fontWeight: FontWeight.w400,
-  onPressed: onPressed);
-  }
-
-  Widget _buildCell({required String value, required Color backgroundColor, required Color textColor, required FontWeight fontWeight, Function()? onPressed = null}) {
+      }) {
     return InkWell(
       onTap: onPressed,
       child: Container(
         alignment: Alignment.center,
-        width: 120.0,
-        height: 30.0,
+        width: width,
         color: backgroundColor,
         margin: EdgeInsets.all(1.0),
         child: Text(
@@ -239,10 +300,19 @@ class ReportDetailPage extends StatelessWidget {
       ),
     );
   }
+  double getCellWidth(BuildContext context, int columnCount){
+    if (Platform.isWindows){
+      var screenWidth = MediaQuery.sizeOf(context).width - 20;
+      var cellWidth = screenWidth / columnCount;
+      var width = max(cellWidth, MIN_WIDTH_CELL);
+      return width;
+    }else{
+      return MIN_WIDTH_CELL;
+    }
+  }
 
   Widget _buildBody(BuildContext context, ReportDetailState state) {
     return Container(
-        padding: EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -254,27 +324,40 @@ class ReportDetailPage extends StatelessWidget {
               SizedBox(
                 height: 16,
               ),
-              
-              SingleChildScrollView(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: _buildFirstColumn(context,state),
-                    ),
-                    Flexible(
-                        child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: _buildRows(state),
-                            )))
-                  ],
-                ),
-              )
+              if (Platform.isWindows)
+                _buildWindowTable(context, state)
+              else
+                _buildMobileTable(context, state)
+
             ],
           ),
         ));
+  }
+  _buildMobileTable(BuildContext context, ReportDetailState state){
+    return SingleChildScrollView(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _buildFirstColumn(context,state),
+          ),
+          Flexible(
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: _buildRows(context,state)
+                  )))
+        ],
+      ),
+    );
+  }
+  _buildWindowTable(BuildContext context, ReportDetailState state){
+    return SingleChildScrollView(
+      child: Column(
+        children: _buildFullRow(context, state),
+      )
+    );
   }
 }

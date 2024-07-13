@@ -10,6 +10,7 @@ import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
@@ -25,14 +26,20 @@ import 'components/save_document_form.dart';
 import 'components/select_payment_status_dialog.dart';
 import 'components/sort_save_document_dialog.dart';
 enum OverflowItemMenu { search, sortby, help }
-
-class SaveDocumentPage extends StatelessWidget {
+class SaveDocumentPage extends StatefulWidget{
   final Document item;
-
   SaveDocumentPage(this.item) : super();
   @override
-  Widget build(BuildContext context) {
-    context.read<SaveDocumentCubit>().init(item);
+  State<StatefulWidget> createState() {
+    return SaveDocumentPageState();
+  }
+
+}
+class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
+
+  @override
+  Widget buildWidget(BuildContext context) {
+    context.read<SaveDocumentCubit>().init(widget.item);
     return BlocConsumer<SaveDocumentCubit, SaveDocumentState>(
         listener: (context, state) async {
           if (state.state is SaveDocumentFailedState) {
@@ -106,7 +113,7 @@ class SaveDocumentPage extends StatelessWidget {
             DocumentTransaction transaction = DocumentTransaction();
             transaction.quantity = 1;
             transaction.price = 0.0;
-            transaction.type = item.type;
+            transaction.type = widget.item.type;
             transaction.storeId = storage.getSelectedStoreId();
 
             final result = await Navigator.of(context)
@@ -128,7 +135,7 @@ class SaveDocumentPage extends StatelessWidget {
             final good = finalState.good;
             Map<dynamic, dynamic> result = await showDialog(
                 context: context,
-                builder: (_) => AddQuantityAndPriceWidget(good, item.type),
+                builder: (_) => AddQuantityAndPriceWidget(good, widget.item.type),
                 barrierDismissible: true);
             double quantity = result["quantity"] ?? 0;
             double price = result["price"] ?? 0.0;
@@ -180,7 +187,7 @@ class SaveDocumentPage extends StatelessWidget {
               appBar: _buildAppBar(context, state),
               body: Column(children: [
                 SelectedStoreView(),
-                Expanded(child: SaveDocumentForm(item: item, state: state,))
+                Expanded(child: SaveDocumentForm(item: widget.item, state: state,))
               ],),
               floatingActionButton: FloatingActionButton(
                 child: Icon(Icons.add),
@@ -191,7 +198,7 @@ class SaveDocumentPage extends StatelessWidget {
   }
   PreferredSize _buildAppBar(BuildContext context, SaveDocumentState state){
     return PreferredSize(preferredSize : Size.fromHeight(UIConstants.appBarHeight), child: AppBar(
-        title: Text(item.type == DocumentType.incoming? AppLocalizations.of(context)!.incoming_document_text:AppLocalizations.of(context)!.outgoing_document_text),
+        title: Text(widget.item.type == DocumentType.incoming? AppLocalizations.of(context)!.incoming_document_text:AppLocalizations.of(context)!.outgoing_document_text),
         actions: <Widget>[
           _buildSaveMenu(context),
           _buildBatchScanMenu(context),

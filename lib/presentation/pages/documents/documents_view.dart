@@ -7,6 +7,7 @@ import 'package:good_manager/domain/entities/search_documents_type.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/custom_navigation_drawer.dart';
 import 'package:good_manager/presentation/pages/documents/components/document_date_row.dart';
 import 'package:good_manager/presentation/pages/documents/document_ui.dart';
@@ -27,7 +28,7 @@ class DocumentsPage extends StatefulWidget {
   DocumentPageState createState() => DocumentPageState();
 }
 
-class DocumentPageState extends State<DocumentsPage> {
+class DocumentPageState extends BaseStateWidget<DocumentsPage> {
   final TextEditingController searchTextController = TextEditingController();
 
   @override
@@ -35,7 +36,10 @@ class DocumentPageState extends State<DocumentsPage> {
     context.read<DocumentsCubit>().initState();
     super.initState();
   }
-
+  @override
+  bool hasDrawer() {
+    return true;
+  }
   Widget _buildAllDocumentView(DocumentsState state) {
     return getAllBody(state);
   }
@@ -66,12 +70,13 @@ class DocumentPageState extends State<DocumentsPage> {
       );
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildWidget(BuildContext context) {
     return BlocConsumer<DocumentsCubit, DocumentsState>(
         builder: (context, state) => DefaultTabController(
             length: 3,
             child: Builder(builder: (BuildContext context) {
               return Scaffold(
+                  key: ScaffoldKey,
                   drawer: CustomNavigationDrawer(selectedIndex: 2, storeName: storage.getSelectedStoreName()),
                   appBar: _buildAppBar(state),
                   body: TabBarView(children: [

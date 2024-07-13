@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
 import 'package:good_manager/presentation/pages/stores/components/sort_store_dialog.dart';
 import 'package:good_manager/presentation/widgets/snackbar_widgets.dart';
@@ -29,7 +30,11 @@ class StoresPage extends StatefulWidget {
   StoresPageState createState() => StoresPageState();
 }
 
-class StoresPageState extends State<StoresPage> {
+class StoresPageState extends BaseStateWidget<StoresPage> {
+  @override
+  bool hasDrawer() {
+    return !widget.isSelection;
+  }
   final TextEditingController searchTextController = TextEditingController();
   final FocusNode searchTextFocusNode = FocusNode();
   @override
@@ -41,7 +46,7 @@ class StoresPageState extends State<StoresPage> {
     context.read<StoresCubit>().initState(widget.isSelection);
   }
   @override
-  Widget build(BuildContext context){
+  Widget buildWidget(BuildContext context){
     return BlocConsumer<StoresCubit, StoresState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async{
@@ -71,6 +76,7 @@ class StoresPageState extends State<StoresPage> {
           }
         },
         builder: (context, state) =>  Scaffold(
+          key: ScaffoldKey,
             drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 7, storeName: storage.getSelectedStoreName()),
             appBar: _buildAppBar(state),
             body: _buildBody(state),

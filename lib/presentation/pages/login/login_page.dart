@@ -1,12 +1,15 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/dialog_utils.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/login/components/background.dart';
 import 'package:good_manager/presentation/pages/login/components/do_not_have_account.dart';
 import 'package:good_manager/presentation/pages/login/components/no_internet.dart';
@@ -14,6 +17,7 @@ import 'package:good_manager/presentation/pages/login/components/sign_in_with_go
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/widgets/progress_indicaror.dart';
 
+import '../../widgets/snackbar_widgets.dart';
 import 'auth_cubit.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,12 +27,13 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends BaseStateWidget<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final bool firstTime = storage.getFirstTime();
+
   @override
-  Widget build(BuildContext context) {
+  Widget buildWidget(BuildContext context) {
     return Scaffold(
       body: OfflineBuilder(
         connectivityBuilder: (

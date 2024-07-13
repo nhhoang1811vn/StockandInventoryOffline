@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:good_manager/presentation/dialog_utils.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/login/auth_cubit.dart';
 import 'package:good_manager/presentation/pages/login/components/background.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
@@ -15,7 +16,7 @@ class ForgotPasswordScreen extends StatefulWidget {
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+class _ForgotPasswordScreenState extends BaseStateWidget<ForgotPasswordScreen> {
   final emailController = TextEditingController();
   @override
   void dispose() {
@@ -28,7 +29,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     BlocProvider.of<AuthCubit>(context);
   }
   @override
-  Widget build(BuildContext context) {
+  Widget buildWidget(BuildContext context) {
     return Scaffold(
       body: OfflineBuilder(
         connectivityBuilder: (

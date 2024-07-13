@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/presentation/app_style.dart';
 import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/style_size.dart';
 
 import '../base/base_state.dart';
@@ -20,7 +21,7 @@ class PaymentsPage extends StatefulWidget {
   PaymentsPageState createState() => PaymentsPageState();
 }
 
-class PaymentsPageState extends State<PaymentsPage> {
+class PaymentsPageState extends BaseStateWidget<PaymentsPage> {
   @override
   void initState() {
     super.initState();
@@ -164,7 +165,7 @@ class PaymentsPageState extends State<PaymentsPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildWidget(BuildContext context) {
     return BlocConsumer<PaymentsCubit, PaymentsState>(
         builder: (context, state) => Scaffold(
             appBar: _buildAppBar(),

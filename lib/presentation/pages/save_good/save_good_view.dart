@@ -4,13 +4,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
+import 'package:path/path.dart';
 
 import '../../../domain/entities/document.dart';
 import 'bloc/save_good_cubit.dart';
 import 'components/save_good_form.dart';
 
-class SaveGoodPage extends StatelessWidget {
+class SaveGoodPage extends StatefulWidget{
   final Good item;
   final Document? document;
   final DocumentTransaction? transaction;
@@ -19,9 +21,24 @@ class SaveGoodPage extends StatelessWidget {
     this.document,
     this.transaction,
   });
+  @override
+  State<StatefulWidget> createState() {
+    return SaveGoodPageState(item: item, document: document, transaction: transaction);
+  }
+}
+class SaveGoodPageState extends BaseStateWidget<SaveGoodPage> {
+  final Good item;
+  final Document? document;
+  final DocumentTransaction? transaction;
+  SaveGoodPageState({
+    required this.item,
+    this.document,
+    this.transaction,
+  });
+
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildWidget(BuildContext context) {
     context.read<SaveGoodCubit>().init(item, document, transaction);
     return Scaffold(
         appBar: _buildAppBar(context),

@@ -188,7 +188,7 @@ class SaveGoodForm extends StatelessWidget {
               controller: barcodeTextController,
               labelText: AppLocalizations.of(context)!.field_bar_code,
               onChanged: (value) => context.read<SaveGoodCubit>().barCodeChanged(value),
-              keyboardType: TextInputType.number),
+              keyboardType: TextInputType.text),
         ),
         Align(
             alignment: Alignment.centerRight,

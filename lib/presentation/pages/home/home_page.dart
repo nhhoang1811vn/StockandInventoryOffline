@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/app_style.dart';
 import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/style_size.dart';
 import 'package:good_manager/presentation/utils.dart';
@@ -21,7 +22,7 @@ class HomePage extends StatefulWidget {
   @override
   HomePageState createState() => HomePageState();
 }
-class HomePageState extends State<HomePage>{
+class HomePageState extends BaseStateWidget<HomePage>{
   static const bodyStyle = TextStyle(fontSize: TextSize.large);
   @override
   void initState() {
@@ -29,12 +30,17 @@ class HomePageState extends State<HomePage>{
     context.read<HomeCubit>().initState();
   }
   @override
-  Widget build(BuildContext context){
+  bool hasDrawer() {
+    return true;
+  }
+  @override
+  Widget buildWidget(BuildContext context){
     return BlocConsumer<HomeCubit, HomeState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async{
         },
         builder: (context, state) =>  Scaffold(
+          key: ScaffoldKey,
           resizeToAvoidBottomInset: false,
             drawer: CustomNavigationDrawer(selectedIndex: 0, storeName: storage.getSelectedStoreName()),
             appBar: AppBar(title: Text(AppLocalizations.of(context)!.home_title)),

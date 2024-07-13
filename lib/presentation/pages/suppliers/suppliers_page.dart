@@ -6,6 +6,7 @@ import 'package:good_manager/domain/entities/suppliers_setting.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/custom_navigation_drawer.dart';
 import 'package:good_manager/presentation/pages/suppliers/widgets/supplier_item_row.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
@@ -27,7 +28,7 @@ class SuppliersPage extends StatefulWidget {
   SuppliersPageState createState() => SuppliersPageState();
 }
 
-class SuppliersPageState extends State<SuppliersPage> {
+class SuppliersPageState extends BaseStateWidget<SuppliersPage> {
   final TextEditingController searchTextController = TextEditingController();
   final FocusNode searchTextFocusNode = FocusNode();
   @override
@@ -39,7 +40,11 @@ class SuppliersPageState extends State<SuppliersPage> {
     context.read<SuppliersCubit>().initState(widget.isSelection);
   }
   @override
-  Widget build(BuildContext context){
+  bool hasDrawer() {
+    return !widget.isSelection;
+  }
+  @override
+  Widget buildWidget(BuildContext context){
     return BlocConsumer<SuppliersCubit, SuppliersState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async{
@@ -68,7 +73,9 @@ class SuppliersPageState extends State<SuppliersPage> {
           }
 
         },
+
         builder: (context, state) =>  Scaffold(
+            key: ScaffoldKey,
         drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 5, storeName: storage.getSelectedStoreName(),),
         appBar: _buildAppBar(state),
         body: _buildBody(state),

@@ -6,6 +6,7 @@ import 'package:good_manager/domain/entities/expenses_setting.dart';
 import 'package:good_manager/presentation/app_style.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart';
 import 'package:good_manager/presentation/pages/expenses/components/expense_item_row.dart';
 import 'package:good_manager/presentation/pages/expenses/components/sort_expenses_dialog.dart';
@@ -25,15 +26,20 @@ class ExpensesPage extends StatefulWidget {
   ExpensesPageState createState() => ExpensesPageState();
 }
 
-class ExpensesPageState extends State<ExpensesPage> {
+class ExpensesPageState extends BaseStateWidget<ExpensesPage> {
   final FocusNode searchTextFocusNode = FocusNode();
   final TextEditingController searchTextController = TextEditingController();
 
+  @override
+  bool hasDrawer() {
+    return true;
+  }
   @override
   void initState() {
     super.initState();
     context.read<ExpensesCubit>().init();
   }
+
 
   PreferredSize _buildAppBar(ExpensesState state) {
     return PreferredSize(
@@ -200,10 +206,10 @@ class ExpensesPageState extends State<ExpensesPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildWidget(BuildContext context) {
     return BlocConsumer<ExpensesCubit, ExpensesState>(
         builder: (context, state) => Scaffold(
-            //key: globalKey,
+            key: ScaffoldKey,
             drawer: CustomNavigationDrawer(selectedIndex: 3, storeName: storage.getSelectedStoreName()),
             appBar: _buildAppBar(state),
             body: _buildBody(state),
