@@ -97,10 +97,10 @@ import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart'
     as _i63;
 import 'package:good_manager/presentation/pages/home/bloc/loading_user_data_cubit.dart'
-    as _i49;
-import 'package:good_manager/presentation/pages/login/auth_cubit.dart' as _i46;
+    as _i46;
+import 'package:good_manager/presentation/pages/login/auth_cubit.dart' as _i48;
 import 'package:good_manager/presentation/pages/onboarding/bloc/on_boarding_cubit.dart'
-    as _i47;
+    as _i49;
 import 'package:good_manager/presentation/pages/payment/bloc/payments_cubit.dart'
     as _i45;
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart'
@@ -122,7 +122,7 @@ import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit
 import 'package:good_manager/presentation/pages/save_payment/bloc/save_payment_cubit.dart'
     as _i22;
 import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit.dart'
-    as _i48;
+    as _i47;
 import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart'
     as _i42;
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart'
@@ -207,19 +207,19 @@ extension GetItInjectableX on _i1.GetIt {
           useCase: gh<_i10.PaymentUseCases>(),
           documentUseCases: gh<_i32.DocumentUseCases>(),
         ));
-    gh.factory<_i46.AuthCubit>(() => _i46.AuthCubit(
+    gh.factory<_i46.LoadingUserDataCubit>(() => _i46.LoadingUserDataCubit(
           useCase: gh<_i43.StoresUseCase>(),
           storage: gh<_i5.Storage>(),
         ));
-    gh.factory<_i47.OnBoardingCubit>(() => _i47.OnBoardingCubit(
+    gh.factory<_i47.SaveStoreCubit>(() => _i47.SaveStoreCubit(
           useCase: gh<_i43.StoresUseCase>(),
           storage: gh<_i5.Storage>(),
         ));
-    gh.factory<_i48.SaveStoreCubit>(() => _i48.SaveStoreCubit(
+    gh.factory<_i48.AuthCubit>(() => _i48.AuthCubit(
           useCase: gh<_i43.StoresUseCase>(),
           storage: gh<_i5.Storage>(),
         ));
-    gh.factory<_i49.LoadingUserDataCubit>(() => _i49.LoadingUserDataCubit(
+    gh.factory<_i49.OnBoardingCubit>(() => _i49.OnBoardingCubit(
           useCase: gh<_i43.StoresUseCase>(),
           storage: gh<_i5.Storage>(),
         ));

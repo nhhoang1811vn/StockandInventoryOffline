@@ -1,18 +1,10 @@
-import 'dart:async';
-import 'dart:io';
-import 'dart:ui';
-
 import 'package:camera/camera.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/auth_gate.dart';
 import 'package:good_manager/data/storage.dart';
-import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/router.dart';
-import 'package:good_manager/presentation/widgets/snackbar_widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../common/helpers/injection.container.dart';
@@ -64,7 +56,7 @@ class MyAppState extends State<MyApp> {
   }
   changeLanguage(String code) {
     setState(() {
-      //_languageCode = code;
+      _languageCode = code;
     });
   }
 

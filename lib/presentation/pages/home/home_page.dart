@@ -13,7 +13,6 @@ import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../domain/entities/document.dart';
-import '../base/base_state.dart';
 import '../custom_navigation_drawer.dart';
 import '../pages.dart';
 

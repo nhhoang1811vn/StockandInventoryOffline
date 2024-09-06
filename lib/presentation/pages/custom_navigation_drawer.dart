@@ -251,10 +251,15 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
             title: Text(AppLocalizations.of(context)!.menu_item_community_header),
             onTap: () => onCommunity(context),
           ),
-          ListTile(
+          /*ListTile(
             leading: Icon(Icons.coffee, size: UIConstants.drawerMenuSize),
             title: Text(AppLocalizations.of(context)!.menu_item_donation),
             onTap: () => onDonation(context),
+          ),*/
+          ListTile(
+            leading: Icon(Icons.delete, size: UIConstants.drawerMenuSize),
+            title: Text(AppLocalizations.of(context)!.menu_item_delete_account),
+            onTap: () => onDeleteAccount(),
           ),
           ListTile(
             leading: Icon(FontAwesomeIcons.flag, size: UIConstants.drawerMenuSize),
@@ -405,6 +410,20 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
       "title": AppLocalizations.of(context)!.menu_item_donation,
       "content": MDProviderFactory.get().getDonationText()
     });
+  }
+  void onDeleteAccount(){
+    DialogUtils.showCustomDialog(context, title: 'Notification', message: 'Are you sure to delete your account',cancelBtnText: "Cancel", okBtnText: "OK",cancelBtnFunction: (){
+      Navigator.of(context).pop();
+    }, okBtnFunction: (){
+      FirebaseAuth.instance.currentUser?.delete();
+      FirebaseAuth.instance.signOut();
+      showInfoToast("Your account has been deleted");
+
+      Navigator.of(context).pop();
+      Navigator.of(context).pushNamedAndRemoveUntil(Pages.auth, (route) => false);
+    });
+
+
   }
 }
 

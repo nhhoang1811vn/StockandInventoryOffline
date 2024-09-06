@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
@@ -40,7 +39,7 @@ class SaveStoreForm extends StatelessWidget {
                           initialValue: state.name.value,
                           onChanged: (value) => context.read<SaveStoreCubit>().nameChanged(value),
                           keyboardType: TextInputType.name,
-                          error: state.name.displayError?.text(context)),
+                          error: state.name.displayError?.name),
                       AppTextField(
                           labelText: AppLocalizations.of(context)!.field_desc,
                           initialValue: state.description,

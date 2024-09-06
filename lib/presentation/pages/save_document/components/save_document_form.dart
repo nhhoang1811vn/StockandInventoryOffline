@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
-import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/payment_status.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/constants.dart';
@@ -167,7 +166,7 @@ class SaveDocumentForm extends StatelessWidget {
                             initialValue: state.name.value,
                             onChanged: (value) => context.read<SaveDocumentCubit>().nameChanged(value),
                             keyboardType: TextInputType.name,
-                            error: state.name.displayError?.text(context)),
+                            error: state.name.displayError?.name),
                       ),
                       SizedBox(
                         width: 15.0,

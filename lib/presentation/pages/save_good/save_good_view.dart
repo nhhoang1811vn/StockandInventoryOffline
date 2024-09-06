@@ -6,7 +6,6 @@ import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
-import 'package:path/path.dart';
 
 import '../../../domain/entities/document.dart';
 import 'bloc/save_good_cubit.dart';

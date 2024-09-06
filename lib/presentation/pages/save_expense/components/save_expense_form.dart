@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/expense.dart';
-import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
@@ -49,7 +48,7 @@ class SaveExpenseForm extends StatelessWidget {
                           initialValue: state.name.value,
                           onChanged: (value) => context.read<SaveExpenseCubit>().nameChanged(value),
                           keyboardType: TextInputType.name,
-                          error: state.name.displayError?.text(context)),
+                          error: state.name.displayError?.name),
                       AppTextField(
                           labelText: AppLocalizations.of(context)!.field_desc,
                           initialValue: state.description,

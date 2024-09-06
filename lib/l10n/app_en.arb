@@ -106,6 +106,7 @@
   "menu_item_community_header": "Community",
   "menu_item_community_description": "Join our app community",
       "menu_item_donation": "Donation!",
+        "menu_item_delete_account": "Delete my account",
     "menu_item_whats_new_header": "What's new",
   "menu_item_whats_new_description": "What's new information",
   "on_boarding_title_1": "Stores Manage",

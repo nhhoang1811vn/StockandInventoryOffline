@@ -1,8 +1,6 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -17,7 +15,6 @@ import 'package:good_manager/presentation/pages/login/components/sign_in_with_go
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/widgets/progress_indicaror.dart';
 
-import '../../widgets/snackbar_widgets.dart';
 import 'auth_cubit.dart';
 
 class LoginScreen extends StatefulWidget {
