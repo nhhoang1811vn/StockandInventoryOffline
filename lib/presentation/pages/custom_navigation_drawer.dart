@@ -112,12 +112,16 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
 
                                         FirebaseAuth.instance.signOut();
                                         Navigator.of(context).pop();
-                                        Navigator.of(context).pushNamedAndRemoveUntil(Pages.auth, (route) => false);
-                                      },
+                                        Navigator.of(context).pushNamedAndRemoveUntil(
+                                          Pages.signIn, (route) => false,
+                                        );
+                                        },
                                       cancelBtnFunction: () async{
                                         FirebaseAuth.instance.signOut();
                                         Navigator.of(context).pop();
-                                        Navigator.of(context).pushNamedAndRemoveUntil(Pages.auth, (route) => false);
+                                        Navigator.of(context).pushNamedAndRemoveUntil(
+                                          Pages.signIn, (route) => false,
+                                        );
                                       },
                                       okBtnText: AppLocalizations.of(context)!.action_ok,
                                       cancelBtnText: AppLocalizations.of(context)!.action_cancel
@@ -251,11 +255,12 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
             title: Text(AppLocalizations.of(context)!.menu_item_community_header),
             onTap: () => onCommunity(context),
           ),
-          /*ListTile(
-            leading: Icon(Icons.coffee, size: UIConstants.drawerMenuSize),
-            title: Text(AppLocalizations.of(context)!.menu_item_donation),
-            onTap: () => onDonation(context),
-          ),*/
+          if (Platform.isAndroid)
+            ListTile(
+              leading: Icon(Icons.coffee, size: UIConstants.drawerMenuSize),
+              title: Text(AppLocalizations.of(context)!.menu_item_donation),
+              onTap: () => onDonation(context),
+            ),
           ListTile(
             leading: Icon(Icons.delete, size: UIConstants.drawerMenuSize),
             title: Text(AppLocalizations.of(context)!.menu_item_delete_account),
@@ -420,7 +425,9 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
       showInfoToast("Your account has been deleted");
 
       Navigator.of(context).pop();
-      Navigator.of(context).pushNamedAndRemoveUntil(Pages.auth, (route) => false);
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        Pages.signIn, (route) => false,
+      );
     });
 
 

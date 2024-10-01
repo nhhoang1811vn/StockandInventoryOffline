@@ -27,6 +27,9 @@ With gratitude,
 AppViet Team
   """;
  static const String whatNews = """
+  ### Version 1.0.7 - Sep 27  
+  * Fixed reported bugs. 
+  * Support iOS platform.
   ### Version 1.0.6 - July 07  
   * Fixed reported bugs. 
   * Added Quick create document on SaveGood page. 

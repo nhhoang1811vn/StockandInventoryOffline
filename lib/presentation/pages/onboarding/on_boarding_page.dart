@@ -99,7 +99,7 @@ class OnBoardingPage extends StatelessWidget {
               TextFormField(
                 textAlign: TextAlign.center,
                 decoration: InputDecoration(
-                  hintText: "Cửa hàng chính",
+                  hintText: "Main Store",
                 ),
                 onChanged: context.read<OnBoardingCubit>().nameChanged,
                 //decoration: InputDecoration(

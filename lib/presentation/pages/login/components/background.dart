@@ -13,7 +13,7 @@ class Background extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
 
     return Container(
-      width: double.infinity,
+      width: size.width,
       height: size.height,
       child: Stack(
         alignment: Alignment.center,
@@ -23,7 +23,9 @@ class Background extends StatelessWidget {
             right: 0,
             child: Image.asset(
                 "assets/images/top1.png",
-                width: size.width
+                width: size.width,
+                height: size.height/4,
+                fit: BoxFit.fill,
             ),
           ),
           Positioned(
@@ -31,15 +33,9 @@ class Background extends StatelessWidget {
             right: 0,
             child: Image.asset(
                 "assets/images/top2.png",
-                width: size.width
-            ),
-          ),
-          Positioned(
-            top: 50,
-            right: 30,
-            child: Image.asset(
-                "assets/images/main.png",
-                width: size.width * 0.35
+                width: size.width,
+                height: size.height/4,
+                fit: BoxFit.fill,
             ),
           ),
           Positioned(
@@ -47,7 +43,9 @@ class Background extends StatelessWidget {
             right: 0,
             child: Image.asset(
                 "assets/images/bottom1.png",
-                width: size.width
+              width: size.width,
+              height: size.height/4,
+              fit: BoxFit.fill,
             ),
           ),
           Positioned(
@@ -55,7 +53,9 @@ class Background extends StatelessWidget {
             right: 0,
             child: Image.asset(
                 "assets/images/bottom2.png",
-                width: size.width
+              width: size.width,
+              height: size.height/4,
+              fit: BoxFit.fill,
             ),
           ),
           child

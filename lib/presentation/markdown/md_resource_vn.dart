@@ -82,6 +82,10 @@ Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Ho
  Chúng tôi đã tạo ra chức năng đơn giản này để theo dõi các chi tiêu của bạn cho một cửa hàng. 
  """;
   static const String whatNews = """
+  ### Phiên bản 1.0.6 - 27/09/2024
+  * Sữa lỗi được báo cáo.   
+  * Hỗ trợ trên iOS.  
+  
   ### Phiên bản 1.0.6 - 11/07/2024
   * Thêm chức năng tạo Hóa đơn nhanh ở màn hình lưu hàng hóa. 
   * Thêm chức năng kiểm tra lịch sử nhập xuất của hàng hóa. 

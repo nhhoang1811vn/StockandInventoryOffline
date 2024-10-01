@@ -3,14 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/dialog_utils.dart';
 import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/login/components/background.dart';
 import 'package:good_manager/presentation/pages/login/components/do_not_have_account.dart';
-import 'package:good_manager/presentation/pages/login/components/no_internet.dart';
 import 'package:good_manager/presentation/pages/login/components/sign_in_with_google_text.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/widgets/progress_indicaror.dart';
@@ -32,19 +30,7 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
   @override
   Widget buildWidget(BuildContext context) {
     return Scaffold(
-      body: OfflineBuilder(
-        connectivityBuilder: (
-          BuildContext context,
-          ConnectivityResult connectivity,
-          Widget child,
-        ) {
-          final bool connected = connectivity != ConnectivityResult.none;
-          return connected ? _loginPage(context) : const BuildNoInternet();
-        },
-        child: const Center(
-          child: CircularProgressIndicator(),
-        ),
-      ),
+      body: _loginPage(context)
     );
   }
 
@@ -64,26 +50,23 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
           ProgressIndicaror.showProgressIndicator(context);
         } else if (state is AuthError) {
           Navigator.of(context).pop();
-          String title = AppLocalizations.of(context)!.notification_dialog_title;
+          String title =
+              AppLocalizations.of(context)!.notification_dialog_title;
           String message = state.message;
           DialogUtils.showCustomDialog(context, title: title, message: message);
-        } else if (state is UserSignIn) {
-          Navigator.of(context).pop();//dismiss loading popup
-          /*Navigator.of(context).pushNamedAndRemoveUntil(Pages.onboarding, (route) => false);
-          final checkStores = await context.read<AuthCubit>().checkStore();
-          if (checkStores){
-            //there is store
-            await context.read<AuthCubit>().updateSelectedStore();
-            Navigator.of(context).pushNamedAndRemoveUntil(Pages.home, (route) => false);
-          }else{
-            //there is no store
-            //go to onboard flow to create first store
-            Navigator.of(context).pushNamedAndRemoveUntil(Pages.onboarding, (route) => false);
-          }*/
-        } else if (state is UserNotVerified) {
+        } else if (state is UserSignInSuccessfulWithStore){
+          if (!context.mounted) return;
+          Navigator.of(context).pushNamedAndRemoveUntil(Pages.home, (route) => false);
+        } else if (state is UserSignInSuccessfulWithNoStore){
+          if (!context.mounted) return;
+          Navigator.of(context).pushNamedAndRemoveUntil(Pages.onboarding, (route) => false);
+        }
+
+        else if (state is UserNotVerified) {
           Navigator.of(context).pop();
           String title = AppLocalizations.of(context)!.email_not_verified_title;
-          String message = AppLocalizations.of(context)!.email_not_verified_desc;
+          String message =
+              AppLocalizations.of(context)!.email_not_verified_desc;
           DialogUtils.showCustomDialog(context, title: title, message: message);
         } else if (state is IsNewUser) {
           /*context.pushNamedAndRemoveUntil(
@@ -104,8 +87,11 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.symmetric(horizontal: 40),
                     child: Text(
-                        AppLocalizations.of(context)!.login,
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2661FA), fontSize: 36),
+                      AppLocalizations.of(context)!.login,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF2661FA),
+                          fontSize: 36),
                       textAlign: TextAlign.left,
                     ),
                   ),
@@ -115,7 +101,8 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 40),
                     child: TextField(
                       controller: emailController,
-                      decoration: InputDecoration(labelText: AppLocalizations.of(context)!.email),
+                      decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.email),
                     ),
                   ),
                   SizedBox(height: size.height * 0.03),
@@ -124,20 +111,21 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 40),
                     child: TextField(
                       controller: passwordController,
-                      decoration: InputDecoration(labelText: AppLocalizations.of(context)!.password,),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.password,
+                      ),
                       obscureText: true,
                     ),
                   ),
-              
                   Container(
                     alignment: Alignment.centerRight,
                     margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                     child: GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.of(context).pushNamed(Pages.forgotPassword);
                       },
                       child: Text(
-                          AppLocalizations.of(context)!.forgot_your_password,
+                        AppLocalizations.of(context)!.forgot_your_password,
                         style: TextStyle(color: Color(0XFF2661FA)),
                       ),
                     ),
@@ -148,7 +136,8 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                     child: ElevatedButton(
                       onPressed: () {
-                        context.read<AuthCubit>().signInWithEmail(emailController.text, passwordController.text);
+                        context.read<AuthCubit>().signInWithEmail(
+                            emailController.text, passwordController.text);
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.all(0),
@@ -159,38 +148,111 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
                         width: size.width,
                         decoration: new BoxDecoration(
                             borderRadius: BorderRadius.circular(80.0),
-                            gradient: new LinearGradient(
-                                colors: [Color.fromARGB(255, 255, 136, 34), Color.fromARGB(255, 255, 177, 41)])),
+                            gradient: new LinearGradient(colors: [
+                              Color.fromARGB(255, 255, 136, 34),
+                              Color.fromARGB(255, 255, 177, 41)
+                            ])),
                         child: Text(
-                            AppLocalizations.of(context)!.login,
+                          AppLocalizations.of(context)!.login,
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
                   ),
-                  Container(margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10), child: SigninWithGoogleText()),
-                  InkWell(
-                    radius: 50,
-                    onTap: () {
-                      if (Platform.isWindows){
-                        context.read<AuthCubit>().signInWithGoogleInWindowPlatform();
-                      }else{
-                        context.read<AuthCubit>().signInWithGoogle();
-                      }
-
-                    },
-                    child: SvgPicture.asset(
-                      'assets/svgs/google_logo.svg',
-                      width: 40,
-                      height: 40,
+                  Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                      child: SigninWithGoogleText()),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (Platform.isWindows) {
+                          context
+                              .read<AuthCubit>()
+                              .signInWithGoogleInWindowPlatform();
+                        } else {
+                          context.read<AuthCubit>().signInWithGoogle();
+                        }
+                        },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.all(0),
+                      ),
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 50.0,
+                        width: size.width,
+                        decoration: new BoxDecoration(
+                            borderRadius: BorderRadius.circular(80.0),
+                            color: Colors.blue,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          //crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(4),
+                              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                              child:  SvgPicture.asset(
+                              'assets/svgs/google_icon2.svg',
+                              height: 24, width: 24,
+                            )),
+                            SizedBox(width: 16),
+                            Text(
+                            "Continue with Google",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.white, fontWeight: FontWeight.bold),
+                          )],
+                        ),
+                      ),
                     ),
                   ),
                   Container(
                     alignment: Alignment.centerRight,
                     margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                    child: DoNotHaveAccountText()
-                  )
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.read<AuthCubit>().signInWithApple();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.all(0),
+                      ),
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 50.0,
+                        width: size.width,
+                        decoration: new BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(80.0),
+                          color: Colors.white,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              'assets/svgs/apple_logo.svg',
+                              height: 24, width: 24,
+                            ),
+                            SizedBox(width: 16),
+                            Text(
+                              "Continue with Apple",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.black, fontWeight: FontWeight.bold),
+                            )],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                      alignment: Alignment.centerRight,
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                      child: DoNotHaveAccountText())
                 ],
               ),
             ),
