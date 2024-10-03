@@ -18,7 +18,6 @@ class OnBoardingPage extends StatelessWidget {
     const bodyStyle = TextStyle(fontSize: 18.0);
     const pageDecoration =  PageDecoration(
       imagePadding : EdgeInsets.only(bottom: 48.0),
-
       titlePadding: EdgeInsets.only(bottom: 20.0, top: 120.0),
       //pageMargin: EdgeInsets.only(bottom: 48.0),
       //pageMargin:  EdgeInsets.only(bottom: 0.0),
@@ -28,8 +27,9 @@ class OnBoardingPage extends StatelessWidget {
     );
     return BlocProvider(create: (context) => cubit, child: BlocConsumer<OnBoardingCubit, OnBoardingState>(listener: (context, state){
       if (state.status.isFailure) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(snackBarWhenFailureWithText(state.exceptionError));
+        //ScaffoldMessenger.of(context)
+        //    .showSnackBar(snackBarWhenFailureWithText(state.exceptionError));
+        Navigator.of(context).pushReplacementNamed(Pages.home);
       } else if (state.status.isSuccess) {
         Navigator.of(context).pushReplacementNamed(Pages.home);
       }

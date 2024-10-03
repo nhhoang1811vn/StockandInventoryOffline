@@ -70,6 +70,11 @@ class DBHelper {
     ],
   };
 
+  reset(){
+    _db?.close();
+    _db = null;
+  }
+
   initDb() async {
     //final io.Directory documentsDirectory = await getApplicationDocumentsDirectory();
     //String path = join(documentsDirectory.path, "main.db");

@@ -33,6 +33,8 @@ class AuthCubit extends Cubit<AuthState> {
     });
   }
   void checkStore() async{
+    await Future.delayed(Duration(seconds: 2));
+   // useCase
     final stores = await useCase.getAll();
     if (stores.isNotEmpty){
       updateSelectedStore();
@@ -141,18 +143,24 @@ class AuthCubit extends Cubit<AuthState> {
         emit(UserNotVerified());
       }*/
     } catch (e) {
-      emit(AuthError(e.toString()));
+      if (e.toString().contains("An unknown error has occurred")){
+        //user dismiss popup
+        //skip show error popup
+        emit(AuthStopped());
+      }else{
+        emit(AuthError(e.toString()));
+      }
     }
   }
   Future<void> signInWithGoogle() async {
-    //firstTimeLogin = true;
     final String googleClientId = "617423800641-s9j7uem4h2u0751pc1im6o34e4resoi4.apps.googleusercontent.com";
     emit(AuthLoading());
     try {
       await GoogleSignIn().signOut();
       final GoogleSignInAccount? googleUser = await GoogleSignIn(clientId: googleClientId).signIn();
       if (googleUser == null) {
-        emit(AuthError('Google Sign In Failed'));
+        //emit(AuthError('Google Sign In Failed'));
+        emit(AuthStopped());
         return;
       }
       // Obtain the auth details from the request

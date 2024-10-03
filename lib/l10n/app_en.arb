@@ -76,6 +76,8 @@
   "action_delete": "Delete",
   "message_name_blank": "Name can not be blank",
   "notification_dialog_title": "Notification",
+  "question_push_data": "Would you like to save the data to Server?",
+  "title_store_selecting": "Selection store",
   "message_delete_supplier_error_having_document": "You have documents attached to the supplier, can not perform this action",
   "message_delete_customer_error_having_document": "You have documents attached to the supplier, can not perform this action",
   "action_ok": "OK",
@@ -197,11 +199,13 @@
   "backup_successful" : "Back up data successful",
   "backup_error": "Back up data failed!!",
 
-
+  "error_wrong_email_password": "Wrong email or password, please try again",
   "menu_push_data_to_cloud": "Save the data to cloud",
   "login": "LOGIN",
   "email": "Email",
+  "error_email": "Please input valid email",
   "password": "Password",
+  "error_password": "Please input valid password",
   "forgot_your_password": "Forgot your password ?",
   "or_sign_in_with": "or Sign in with",
   "dont_have_an_account_yet": "Don't have an account yet ?",

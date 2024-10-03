@@ -11,6 +11,8 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
+class AuthStopped extends AuthState {}
+
 @immutable
 abstract class AuthState {}
 

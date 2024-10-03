@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:good_manager/db/db_helper.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
@@ -13,6 +14,7 @@ import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/widgets/select_message_type_dialog.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/path_utils.dart';
@@ -98,7 +100,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                                   Navigator.of(context).pop();
                                   DialogUtils.showCustomDialog(context,
                                       title:  AppLocalizations.of(context)!.notification_dialog_title,
-                                      message: "Bạn có muốn đẩy dữ liệu lên cloud không?",
+                                      message: AppLocalizations.of(context)!.question_push_data,
                                       okBtnFunction: () async{
                                         String dbPath = await PathUtils().getDatabasePath();
                                         File file = File(dbPath);
@@ -109,7 +111,9 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                                           await ref.putFile(file);
                                         } on FirebaseException {
                                         }
-
+                                        //clear db
+                                        DBHelper dbHelper = DBHelper();
+                                        dbHelper.reset();
                                         FirebaseAuth.instance.signOut();
                                         Navigator.of(context).pop();
                                         Navigator.of(context).pushNamedAndRemoveUntil(
@@ -117,6 +121,10 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                                         );
                                         },
                                       cancelBtnFunction: () async{
+                                        //clear db
+                                        DBHelper dbHelper = DBHelper();
+                                        dbHelper.reset();
+
                                         FirebaseAuth.instance.signOut();
                                         Navigator.of(context).pop();
                                         Navigator.of(context).pushNamedAndRemoveUntil(
@@ -141,7 +149,7 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                             fontSize: 16,
                           ),
                         ),
-                    Text("Cửa hàng đang chọn", style: TextStyle(fontSize: 12, color: Colors.white))
+                    Text(AppLocalizations.of(context)!.title_store_selecting, style: TextStyle(fontSize: 12, color: Colors.white))
                       ],
                     )),
                 SizedBox(height: 8),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:good_manager/db/db_helper.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/dialog_utils.dart';
 import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
@@ -25,7 +26,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends BaseStateWidget<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final bool firstTime = storage.getFirstTime();
+  bool _emailValidate = false;
+  bool _passwordValidate = false;
+  var emailReg = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 
   @override
   Widget buildWidget(BuildContext context) {
@@ -53,7 +56,11 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
           String title =
               AppLocalizations.of(context)!.notification_dialog_title;
           String message = state.message;
-          DialogUtils.showCustomDialog(context, title: title, message: message);
+          if (message.contains("The supplied auth credential is incorrect")){
+            DialogUtils.showCustomDialog(context, title: title, message: AppLocalizations.of(context)!.error_wrong_email_password);
+          }else{
+            DialogUtils.showCustomDialog(context, title: title, message: message);
+          }
         } else if (state is UserSignInSuccessfulWithStore){
           if (!context.mounted) return;
           Navigator.of(context).pushNamedAndRemoveUntil(Pages.home, (route) => false);
@@ -61,7 +68,6 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
           if (!context.mounted) return;
           Navigator.of(context).pushNamedAndRemoveUntil(Pages.onboarding, (route) => false);
         }
-
         else if (state is UserNotVerified) {
           Navigator.of(context).pop();
           String title = AppLocalizations.of(context)!.email_not_verified_title;
@@ -74,6 +80,8 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
           predicate: (route) => false,
           arguments: [state.googleUser, state.credential],
         );*/
+        } else if (state is AuthStopped){
+          Navigator.of(context).pop();
         }
       },
       builder: (context, state) {
@@ -101,8 +109,15 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 40),
                     child: TextField(
                       controller: emailController,
+                      onChanged: (newText){
+                        setState(() {
+                          _emailValidate = false;
+                        });
+                      },
                       decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.email),
+                          labelText: AppLocalizations.of(context)!.email,
+                          errorText: _emailValidate ?  AppLocalizations.of(context)!.error_email : null
+                      ),
                     ),
                   ),
                   SizedBox(height: size.height * 0.03),
@@ -111,8 +126,14 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 40),
                     child: TextField(
                       controller: passwordController,
+                      onChanged: (newText){
+                        setState(() {
+                          _passwordValidate = false;
+                        });
+                      },
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.password,
+                          errorText: _passwordValidate ? AppLocalizations.of(context)!.error_password : null
                       ),
                       obscureText: true,
                     ),
@@ -136,8 +157,16 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                     child: ElevatedButton(
                       onPressed: () {
-                        context.read<AuthCubit>().signInWithEmail(
-                            emailController.text, passwordController.text);
+                        if (emailReg.hasMatch(emailController.text) && passwordController.text.trim().isNotEmpty){
+                          context.read<AuthCubit>().signInWithEmail(
+                              emailController.text, passwordController.text);
+                        }else{
+                          setState(() {
+                            _emailValidate = !emailReg.hasMatch(emailController.text);
+                            _passwordValidate = passwordController.text.trim().isEmpty;
+                          });
+                        }
+
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.all(0),
