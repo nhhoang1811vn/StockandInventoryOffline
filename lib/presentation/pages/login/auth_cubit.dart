@@ -58,24 +58,32 @@ class AuthCubit extends Cubit<AuthState> {
       storage.setSelectedStoreName(stores.first.name);
     }
   }
+  String getCloudFilePath(){
+    String? uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null){
+      return "$uid/database.db";
+    }else{
+      throw Exception("file not found");
+    }
+  }
   void downloadDBFile(Function(TaskState) callback) async{
-    print("downloadDBFile");
     final storageRef = FirebaseStorage.instance.ref();
-    String? email = FirebaseAuth.instance.currentUser?.email;
-    if (email != null){
-      final filePath = "$email/database.db";
+    try{
+      final filePath = getCloudFilePath();
       final fileRef = storageRef.child(filePath);
       String dbPath = await PathUtils().getDatabasePath();
       final dbFile = File(dbPath);
-      try{
-        await fileRef.getDownloadURL();
-        final downloadTask = fileRef.writeToFile(dbFile);
-        downloadTask.snapshotEvents.listen((taskSnapshot) {
-          callback(taskSnapshot.state);
-        });
-      }on FirebaseException {
-        callback(TaskState.error);
-      }
+      await fileRef.getDownloadURL();
+      final downloadTask = fileRef.writeToFile(dbFile);
+      downloadTask.snapshotEvents.listen((taskSnapshot) {
+        callback(taskSnapshot.state);
+      });
+    }
+    on FirebaseException{
+      callback(TaskState.error);
+    }
+    on Exception{
+      callback(TaskState.canceled);
     }
   }
 
@@ -133,7 +141,12 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       final appleProvider = AppleAuthProvider();
-      final userCredential = await FirebaseAuth.instance.signInWithProvider(appleProvider);
+      appleProvider.addScope('email');
+      appleProvider.addScope('name');
+      final userCredential = await _auth.signInWithProvider(appleProvider);
+      print(userCredential.credential?.accessToken);
+      print(userCredential.user?.email);
+      print(userCredential.user?.emailVerified);
       //emit(UserSignIn());
       downloadUserData();
       /*if (userCredential.user!.emailVerified) {

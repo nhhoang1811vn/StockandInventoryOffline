@@ -89,10 +89,10 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
   }
   void loadCloudFileUpdatedTime() async{
     final storageRef = FirebaseStorage.instance.ref();
-    String? email = FirebaseAuth.instance.currentUser?.email;
-    if (email != null){
+    String? uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null){
       try{
-        final ref = storageRef.child("$email/database.db");
+        final ref = storageRef.child("$uid/database.db");
         ref.getMetadata().then((value) => setState(() {
           cloudFileUpdatedTime = DateFormat('dd-MM-yyyy HH:mm').format(value.updated!);
         }));
@@ -225,15 +225,18 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
     String dbPath = await PathUtils().getDatabasePath();
     File file = File(dbPath);
     final storageRef = FirebaseStorage.instance.ref();
-    String? email = FirebaseAuth.instance.currentUser?.email;
-    final ref = storageRef.child("$email/database.db");
-    try {
-      await ref.putFile(file);
-      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
-      loadCloudFileUpdatedTime();
-    } on FirebaseException {
-      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+    String? uid = FirebaseAuth.instance.currentUser?.email;
+    if (uid != null){
+      final ref = storageRef.child("$uid/database.db");
+      try {
+        await ref.putFile(file);
+        ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
+        loadCloudFileUpdatedTime();
+      } on FirebaseException {
+        ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+      }
     }
+
   }
 }
 

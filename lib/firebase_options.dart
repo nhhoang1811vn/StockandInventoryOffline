@@ -68,7 +68,7 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.ssteam.goodmanagerflutter',
   );*/
 
-  /*static const FirebaseOptions windows = FirebaseOptions(
+  static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyDoX0JgDmnerOQEZPnEtc9qEamxgNpoZZQ',
     appId: '1:617423800641:web:d6397a33ed47f4935839c0',
     messagingSenderId: '617423800641',
@@ -76,5 +76,6 @@ class DefaultFirebaseOptions {
     authDomain: 'quanlykho-4818e.firebaseapp.com',
     storageBucket: 'quanlykho-4818e.appspot.com',
     measurementId: 'G-9CKSJ18YBD',
-  );*/
+  );
+
 }

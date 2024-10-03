@@ -26,7 +26,7 @@ void main() async {
   );
   FirebaseAuth.instance.authStateChanges().listen(
         (user) {
-      if (user == null || !user.emailVerified) {
+      if (user?.uid == null){// || !user.emailVerified) {
         initialRoute = Pages.signIn;
       } else {
         initialRoute = Pages.home;

@@ -57,6 +57,11 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    String displayName = FirebaseAuth.instance.currentUser?.displayName??"";
+    if (displayName.isEmpty){
+      displayName = FirebaseAuth.instance.currentUser?.uid ?? "";
+    }
+    String email = FirebaseAuth.instance.currentUser?.email??"";
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -72,74 +77,23 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                            Text(
-                              "${FirebaseAuth.instance.currentUser?.displayName}",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                          Text(
+                            displayName,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
                             ),
-                            Text(
-                              "${FirebaseAuth.instance.currentUser?.email}",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
+                          ),
+                          Text(
+                            email,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
                             ),
-                          ],),
-                          Spacer(),
-                          IconButton(onPressed: (){
-                            DialogUtils.showCustomDialog(context,
-                                title: AppLocalizations.of(context)!.notification_dialog_title,
-                                message: AppLocalizations.of(context)!.signout_message,
-                                okBtnFunction: () async{
-                                  Navigator.of(context).pop();
-                                  DialogUtils.showCustomDialog(context,
-                                      title:  AppLocalizations.of(context)!.notification_dialog_title,
-                                      message: AppLocalizations.of(context)!.question_push_data,
-                                      okBtnFunction: () async{
-                                        String dbPath = await PathUtils().getDatabasePath();
-                                        File file = File(dbPath);
-                                        final storageRef = FirebaseStorage.instance.ref();
-                                        String? email = FirebaseAuth.instance.currentUser?.email;
-                                        final ref = storageRef.child("$email/database.db");
-                                        try {
-                                          await ref.putFile(file);
-                                        } on FirebaseException {
-                                        }
-                                        //clear db
-                                        DBHelper dbHelper = DBHelper();
-                                        dbHelper.reset();
-                                        FirebaseAuth.instance.signOut();
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).pushNamedAndRemoveUntil(
-                                          Pages.signIn, (route) => false,
-                                        );
-                                        },
-                                      cancelBtnFunction: () async{
-                                        //clear db
-                                        DBHelper dbHelper = DBHelper();
-                                        dbHelper.reset();
-
-                                        FirebaseAuth.instance.signOut();
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).pushNamedAndRemoveUntil(
-                                          Pages.signIn, (route) => false,
-                                        );
-                                      },
-                                      okBtnText: AppLocalizations.of(context)!.action_ok,
-                                      cancelBtnText: AppLocalizations.of(context)!.action_cancel
-                                  );
-
-                                },
-                                cancelBtnText: AppLocalizations.of(context)!.action_cancel,
-
-                            );
-                            }, icon: Icon(Icons.logout, color: Colors.white))
+                          ),
                         ],),
 
                         Text(
@@ -270,15 +224,20 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
               onTap: () => onDonation(context),
             ),
           ListTile(
+            leading: Icon(FontAwesomeIcons.flag, size: UIConstants.drawerMenuSize),
+            title: Text(AppLocalizations.of(context)!.whats_new_title),
+            onTap: () => onWhatsNew(context),
+          ),
+          ListTile(
             leading: Icon(Icons.delete, size: UIConstants.drawerMenuSize),
             title: Text(AppLocalizations.of(context)!.menu_item_delete_account),
             onTap: () => onDeleteAccount(),
           ),
           ListTile(
-            leading: Icon(FontAwesomeIcons.flag, size: UIConstants.drawerMenuSize),
-            title: Text(AppLocalizations.of(context)!.whats_new_title),
-            onTap: () => onWhatsNew(context),
-          )
+            leading: Icon(Icons.logout, size: UIConstants.drawerMenuSize),
+            title: Text(AppLocalizations.of(context)!.menu_item_sign_out),
+            onTap: () => onLogoutAccount(),
+          ),
         ],
       ),
     );
@@ -437,8 +396,57 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
         Pages.signIn, (route) => false,
       );
     });
+  }
+  void onLogoutAccount(){
+    DialogUtils.showCustomDialog(context,
+      title: AppLocalizations.of(context)!.notification_dialog_title,
+      message: AppLocalizations.of(context)!.signout_message,
+      okBtnFunction: () async{
+        Navigator.of(context).pop();
+        DialogUtils.showCustomDialog(context,
+            title:  AppLocalizations.of(context)!.notification_dialog_title,
+            message: AppLocalizations.of(context)!.question_push_data,
+            okBtnFunction: () async{
+              String dbPath = await PathUtils().getDatabasePath();
+              File file = File(dbPath);
+              final storageRef = FirebaseStorage.instance.ref();
+              //String? email = FirebaseAuth.instance.currentUser?.email;
+              String? uid = FirebaseAuth.instance.currentUser?.uid;
+              if (uid != null){
+                final ref = storageRef.child("$uid/database.db");
+                try {
+                  await ref.putFile(file);
+                } on FirebaseException {
+                }
+              }
+              //clear db
+              DBHelper dbHelper = DBHelper();
+              dbHelper.reset();
+              FirebaseAuth.instance.signOut();
+              Navigator.of(context).pop();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                Pages.signIn, (route) => false,
+              );
+            },
+            cancelBtnFunction: () async{
+              //clear db
+              DBHelper dbHelper = DBHelper();
+              dbHelper.reset();
 
+              FirebaseAuth.instance.signOut();
+              Navigator.of(context).pop();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                Pages.signIn, (route) => false,
+              );
+            },
+            okBtnText: AppLocalizations.of(context)!.action_ok,
+            cancelBtnText: AppLocalizations.of(context)!.action_cancel
+        );
 
+      },
+      cancelBtnText: AppLocalizations.of(context)!.action_cancel,
+
+    );
   }
 }
 
