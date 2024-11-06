@@ -2,20 +2,20 @@ import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/data/storage.dart';
-import 'package:good_manager/presentation/pages/pages.dart';
+import 'package:good_manager/presentation/pages/login/auth_cubit.dart';
+import 'package:good_manager/presentation/pages/login/loading_data.dart';
+import 'package:good_manager/presentation/pages/login/login_page.dart';
 import 'package:good_manager/presentation/router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../common/helpers/injection.container.dart';
 import 'firebase_options.dart';
-
 late List<CameraDescription> cameras;
-
 Storage storage = getIt<Storage>();
-
-late String initialRoute;
+bool justLogin = false;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
@@ -24,16 +24,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseAuth.instance.authStateChanges().listen(
-        (user) {
-      if (user?.uid == null){// || !user.emailVerified) {
-        initialRoute = Pages.signIn;
-      } else {
-        initialRoute = Pages.home;
-      }
-    },
-  );
-
   runApp(MyApp());
 }
 
@@ -88,10 +78,20 @@ class MyAppState extends State<MyApp> {
             onSurface: Colors.black,
             onPrimary: Colors.blue.shade700,
             seedColor: Colors.blue.shade700,
-            brightness: Brightness.light),
+            brightness: Brightness.light,
+        ),
+        switchTheme: SwitchThemeData(
+          trackColor: WidgetStateProperty.resolveWith<Color?>(
+                (states) {
+              if (states.contains(WidgetState.selected)) {
+                return Colors.blue.shade300;
+              }
+              return Colors.blue.withOpacity(0.5); // Inactive track color
+            },
+          ),
+        ),
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: AppBarTheme(iconTheme: IconThemeData(color: Colors.black)),
-        //useMaterial3: false,
         primaryColor: Colors.blue,
         primarySwatch: Colors.blue,
         inputDecorationTheme: InputDecorationTheme(
@@ -106,14 +106,25 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
       return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: _buildTheme(Brightness.light),
-        initialRoute: initialRoute,
-        onGenerateRoute: _router.getRoute,
-        navigatorObservers: [_router.routeObserver],
-        locale: locale(_languageCode),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-      );
+          debugShowCheckedModeBanner: false,
+          theme: _buildTheme(Brightness.light),
+          onGenerateRoute: _router.getRoute,
+          navigatorObservers: [_router.routeObserver],
+          locale: locale(_languageCode),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: StreamBuilder(stream: FirebaseAuth.instance.authStateChanges(), builder: (context, snapshot) {
+            if (snapshot.hasData){
+              return BlocProvider(
+                create: (context) => getIt<AuthCubit>(),
+                child: LoadingData(),
+              );
+            }
+            return BlocProvider(
+              create: (context) => getIt<AuthCubit>(),
+              child: LoginScreen(),
+            ); //AuthGate();
+          })
+        );
     }
 }

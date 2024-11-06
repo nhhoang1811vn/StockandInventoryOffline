@@ -155,7 +155,7 @@ class Storage{
   }
 }
 class StorageKeys{
-  static const String InitSettings = "InitSettings";
+  static const String InitSettings = "InitSettings2";
   //settings
   static const String BarcodeScannerBatchScanMode = "BarcodeScannerBatchScanMode";
   static const String BarcodeScannerEnableBeep = "BarcodeScannerEnableBeep";

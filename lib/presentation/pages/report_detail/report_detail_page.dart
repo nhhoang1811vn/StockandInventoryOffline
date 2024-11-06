@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/main.dart';
+import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
@@ -24,7 +25,15 @@ class ReportDetailPage extends StatefulWidget{
   final DateTime start;
   final DateTime end;
 
-  ReportDetailPage(this.type, this.start, this.end);
+  final int? groupId;
+  final String? groupName;
+
+  ReportDetailPage(
+      this.type,
+      this.start,
+      this.end,
+      this.groupId,
+      this.groupName);
   @override
   State<StatefulWidget> createState() {
     return ReportDetailPageState();
@@ -32,14 +41,40 @@ class ReportDetailPage extends StatefulWidget{
 }
 class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
   static const double MIN_WIDTH_CELL = 120.0;
-
   @override
   Widget buildWidget(BuildContext context) {
-    context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end);
+    context.read<ReportDetailCubit>().init(
+        context,
+        widget.type,
+        widget.start,
+        widget.end,
+        widget.groupId,
+        widget.groupName
+    );
     return BlocConsumer<ReportDetailCubit, ReportDetailState>(
-        builder: (context, state) => Scaffold(appBar: _buildAppBar(context, state), body: _buildBody(context, state)),
+        builder: (context, state) => Stack(children: [
+          Scaffold(
+              appBar: _buildAppBar(context, state),
+              body: _buildContent(context, state)),
+          if (state.state is LoadingState)
+            _buildLoading()
+        ],),
         listenWhen: (p1, p2) => p1.state != p2.state,
-        listener: (context, state) async {});
+        listener: (context, state) async {
+        });
+  }
+  _buildLoading(){
+    return Container(
+      color: Colors.black.withOpacity(0.5), // Semi-transparent background
+      child: Center(
+      child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CircularProgressIndicator(),
+        SizedBox(height: 16),
+        Text("Loading...", style: TextStyle(color: Colors.white, fontSize: 16, decoration: TextDecoration.none, )),
+      ],
+    )));
   }
 
   PreferredSize _buildAppBar(BuildContext context, ReportDetailState state) {
@@ -178,7 +213,11 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
           if (state.type == ReportType.LIST_OF_GOODS){
             var goodId = state.ids[key - 1];
             Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
-            context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end);
+            context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
+          }else if (state.type == ReportType.LIST_OF_DOCUMENT){
+            var item = state.documents[key -1];
+            Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+            context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
           }
            }));
         flag = !flag;
@@ -201,7 +240,18 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
           rows.add(_buildNormalCell(
               value: value[i],
               width: cellWidth,
-              type: flag));
+              type: flag,
+              onPressed: (){
+                if (state.type == ReportType.LIST_OF_GOODS){
+                  var goodId = state.ids[key - 1];
+                  Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
+                  context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
+                }else if (state.type == ReportType.LIST_OF_DOCUMENT){
+                  var item = state.documents[key -1];
+                  Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+                  context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
+                }
+              }));
         }
       }
       flag = !flag;
@@ -228,7 +278,11 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
             if (state.type == ReportType.LIST_OF_GOODS){
               var goodId = state.ids[key - 1];
               Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
-              context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end);
+              context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
+            }else if (state.type == ReportType.LIST_OF_DOCUMENT){
+              var item = state.documents[key -1];
+              Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+              context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
             }
           }));
         }
@@ -310,17 +364,20 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
       return MIN_WIDTH_CELL;
     }
   }
-
-  Widget _buildBody(BuildContext context, ReportDetailState state) {
+  Widget _buildContent(BuildContext context, ReportDetailState state){
+    var text = sprintf(AppLocalizations.of(context)!.report_detail_header, [
+      Config.dateFormat.format(state.start!),
+      Config.dateFormat.format(state.end!),
+      storage.getSelectedStoreName()
+    ]);
+    if (state.groupName != null){
+      text += ", Group ${state.groupName}";
+    }
     return Container(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Text(sprintf(AppLocalizations.of(context)!.report_detail_header, [
-                Config.dateFormat.format(state.start!),
-                Config.dateFormat.format(state.end!),
-                storage.getSelectedStoreName()
-              ])),
+              Text(text),
               SizedBox(
                 height: 16,
               ),
@@ -333,6 +390,13 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
           ),
         ));
   }
+  /*Widget _buildBody(BuildContext context, ReportDetailState state) {
+    return Stack(children: [
+      _buildContent(context, state),
+      if (state.state is LoadingState)
+        _buildLoading()
+    ],);
+  }*/
   _buildMobileTable(BuildContext context, ReportDetailState state){
     return SingleChildScrollView(
       child: Row(

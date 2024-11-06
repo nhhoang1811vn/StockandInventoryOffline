@@ -24,7 +24,6 @@ class AuthCubit extends Cubit<AuthState> {
 
   void downloadUserData() async{
     downloadDBFile((state){
-      print("downloadDBFile $state");
       if (state == TaskState.success){
         checkStore();
       }else if (state == TaskState.canceled || state == TaskState.error){
@@ -34,12 +33,15 @@ class AuthCubit extends Cubit<AuthState> {
   }
   void checkStore() async{
     await Future.delayed(Duration(seconds: 2));
-   // useCase
-    final stores = await useCase.getAll();
-    if (stores.isNotEmpty){
-      updateSelectedStore();
-      emit(UserSignInSuccessfulWithStore());
-    }else{
+    try{
+      final stores = await useCase.getAll();
+      if (stores.isNotEmpty){
+        await updateSelectedStore();
+        emit(UserSignInSuccessfulWithStore());
+      }else{
+        emit(UserSignInSuccessfulWithNoStore());
+      }
+    }catch (e) {
       emit(UserSignInSuccessfulWithNoStore());
     }
   }
@@ -97,7 +99,6 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
   Future<void> signInWithEmail(String email, String password) async {
-    //firstTimeLogin = true;
     emit(AuthLoading());
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -105,8 +106,7 @@ class AuthCubit extends Cubit<AuthState> {
         password: password,
       );
       if (userCredential.user!.emailVerified) {
-        //emit(UserSignIn());
-        downloadUserData();
+
       } else {
         await _auth.signOut();
         emit(UserNotVerified());
@@ -132,7 +132,7 @@ class AuthCubit extends Cubit<AuthState> {
       );
       await _auth.signInWithCredential(newCredential);
       //emit(UserSignIn());
-      downloadUserData();
+      //downloadUserData();
     } catch (err) {
       // something went wrong
     }
@@ -148,7 +148,7 @@ class AuthCubit extends Cubit<AuthState> {
       print(userCredential.user?.email);
       print(userCredential.user?.emailVerified);
       //emit(UserSignIn());
-      downloadUserData();
+      //downloadUserData();
       /*if (userCredential.user!.emailVerified) {
         emit(UserSignIn());
       } else {
@@ -186,7 +186,7 @@ class AuthCubit extends Cubit<AuthState> {
       );
       await _auth.signInWithCredential(credential);
       //emit(UserSignIn());
-      downloadUserData();
+      //downloadUserData();
     } catch (e) {
       emit(AuthError(e.toString()));
     }

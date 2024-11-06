@@ -52,6 +52,7 @@
   "field_supplier": "Nhà cung cấp",
   "field_customer": "Khách hàng",
   "field_date": "Ngày",
+  "field_date_time": "Ngay",
   "field_amount": "Thành tiền",
   "field_paid": "Đã thanh toán",
   "field_remaining": "Còn lại",
@@ -167,6 +168,7 @@
   "error_same_barcode": "Lỗi: cùng mã vạch",
   "action_search": "Tìm kiếm",
   "action_sort_by": "Sắp xếp",
+  "action_export": "Xuất CSV",
   "action_batch_scan": "Quét mã vạch liên tục",
   "action_help": "Trợ giúp",
   "report_type_goods": "Danh sách hàng hoá",
@@ -217,5 +219,10 @@
   "reset_password_successful": "Cài lại mật khẩu thành công",
   "cloud_file_no_updated": "Chưa được cập nhật",
    "signout_message": "Bạn có chắc muốn đăng xuất không ?",
-   "item_history_title": "Lịch sử"
+   "item_history_title": "Lịch sử",
+
+     "list_settings":"Cài đặt danh sách",
+       "good_settings_hide_zero_entries": "Ẩn đối tượng không có số lượng",
+       "good_setting_show_bar_code": "Hiện mã vạch",
+       "good_setting_show_description": "Hiện mô tả"
 }

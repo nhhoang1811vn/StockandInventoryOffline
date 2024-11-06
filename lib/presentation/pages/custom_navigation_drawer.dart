@@ -14,7 +14,6 @@ import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/widgets/select_message_type_dialog.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/path_utils.dart';
@@ -390,11 +389,10 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
       FirebaseAuth.instance.currentUser?.delete();
       FirebaseAuth.instance.signOut();
       showInfoToast("Your account has been deleted");
-
-      Navigator.of(context).pop();
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        Pages.signIn, (route) => false,
-      );
+      //Navigator.of(context).pop();
+      //Navigator.of(context).pushNamedAndRemoveUntil(
+      //  Pages.signIn, (route) => false,
+      //);
     });
   }
   void onLogoutAccount(){
@@ -424,9 +422,9 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
               dbHelper.reset();
               FirebaseAuth.instance.signOut();
               Navigator.of(context).pop();
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                Pages.signIn, (route) => false,
-              );
+              //Navigator.of(context).pushNamedAndRemoveUntil(
+              //  Pages.signIn, (route) => false,
+              //);
             },
             cancelBtnFunction: () async{
               //clear db
@@ -435,9 +433,9 @@ class CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
 
               FirebaseAuth.instance.signOut();
               Navigator.of(context).pop();
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                Pages.signIn, (route) => false,
-              );
+              //Navigator.of(context).pushNamedAndRemoveUntil(
+              //  Pages.signIn, (route) => false,
+              //);
             },
             okBtnText: AppLocalizations.of(context)!.action_ok,
             cancelBtnText: AppLocalizations.of(context)!.action_cancel

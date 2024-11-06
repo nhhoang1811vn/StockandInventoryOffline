@@ -8,276 +8,277 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:get_it/get_it.dart' as _i1;
+import 'package:get_it/get_it.dart' as _i174;
 import 'package:good_manager/data/repositories/customers_repository_impl.dart'
-    as _i15;
+    as _i52;
 import 'package:good_manager/data/repositories/document_transactions_repository_impl.dart'
-    as _i27;
+    as _i987;
 import 'package:good_manager/data/repositories/documents_repository_impl.dart'
-    as _i17;
+    as _i166;
 import 'package:good_manager/data/repositories/expense_repository_impl.dart'
-    as _i24;
+    as _i587;
 import 'package:good_manager/data/repositories/goods_repository_impl.dart'
-    as _i13;
+    as _i521;
 import 'package:good_manager/data/repositories/groups_repository_impl.dart'
-    as _i21;
+    as _i795;
 import 'package:good_manager/data/repositories/payment_repository_impl.dart'
-    as _i7;
+    as _i545;
 import 'package:good_manager/data/repositories/stores_repository_impl.dart'
-    as _i9;
+    as _i903;
 import 'package:good_manager/data/repositories/suppliers_repository_impl.dart'
-    as _i19;
-import 'package:good_manager/data/storage.dart' as _i5;
+    as _i753;
+import 'package:good_manager/data/storage.dart' as _i72;
 import 'package:good_manager/domain/repositories/customer_repositories.dart'
-    as _i14;
-import 'package:good_manager/domain/repositories/document_repositories.dart'
-    as _i16;
-import 'package:good_manager/domain/repositories/document_transaction_repositories.dart'
-    as _i26;
-import 'package:good_manager/domain/repositories/expense_repositories.dart'
-    as _i23;
-import 'package:good_manager/domain/repositories/goods_repositories.dart'
-    as _i12;
-import 'package:good_manager/domain/repositories/groups_repositories.dart'
-    as _i20;
-import 'package:good_manager/domain/repositories/payment_repositories.dart'
-    as _i6;
-import 'package:good_manager/domain/repositories/stores_repositories.dart'
-    as _i8;
-import 'package:good_manager/domain/repositories/suppliers_repositories.dart'
-    as _i18;
-import 'package:good_manager/domain/usecases/customers/customers_usecases.dart'
-    as _i30;
-import 'package:good_manager/domain/usecases/customers/customers_usecases_impl.dart'
-    as _i31;
-import 'package:good_manager/domain/usecases/documents/document_usecases.dart'
-    as _i32;
-import 'package:good_manager/domain/usecases/documents/document_usecases_impl.dart'
-    as _i33;
-import 'package:good_manager/domain/usecases/expenses/expense_usecases_impl.dart'
-    as _i37;
-import 'package:good_manager/domain/usecases/expenses/expense_usercases.dart'
-    as _i36;
-import 'package:good_manager/domain/usecases/goods/goods_history_usecases.dart'
-    as _i28;
-import 'package:good_manager/domain/usecases/goods/goods_history_usecases_impl.dart'
-    as _i29;
-import 'package:good_manager/domain/usecases/goods/goods_usecases_impl.dart'
     as _i54;
-import 'package:good_manager/domain/usecases/goods/goods_usercases.dart'
-    as _i53;
-import 'package:good_manager/domain/usecases/groups/groups_usecases.dart'
-    as _i49;
-import 'package:good_manager/domain/usecases/groups/groups_usecases_impl.dart'
-    as _i50;
-import 'package:good_manager/domain/usecases/payment/payment_usecases_impl.dart'
-    as _i11;
-import 'package:good_manager/domain/usecases/payment/payment_usercases.dart'
-    as _i10;
-import 'package:good_manager/domain/usecases/stores/stores_usecases.dart'
-    as _i43;
-import 'package:good_manager/domain/usecases/stores/stores_usecases_impl.dart'
-    as _i44;
-import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart'
-    as _i39;
-import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases_impl.dart'
+import 'package:good_manager/domain/repositories/document_repositories.dart'
+    as _i811;
+import 'package:good_manager/domain/repositories/document_transaction_repositories.dart'
+    as _i769;
+import 'package:good_manager/domain/repositories/expense_repositories.dart'
+    as _i385;
+import 'package:good_manager/domain/repositories/goods_repositories.dart'
+    as _i585;
+import 'package:good_manager/domain/repositories/groups_repositories.dart'
+    as _i990;
+import 'package:good_manager/domain/repositories/payment_repositories.dart'
+    as _i309;
+import 'package:good_manager/domain/repositories/stores_repositories.dart'
+    as _i339;
+import 'package:good_manager/domain/repositories/suppliers_repositories.dart'
+    as _i435;
+import 'package:good_manager/domain/usecases/customers/customers_usecases.dart'
+    as _i236;
+import 'package:good_manager/domain/usecases/customers/customers_usecases_impl.dart'
+    as _i676;
+import 'package:good_manager/domain/usecases/documents/document_usecases.dart'
+    as _i231;
+import 'package:good_manager/domain/usecases/documents/document_usecases_impl.dart'
+    as _i1025;
+import 'package:good_manager/domain/usecases/expenses/expense_usecases_impl.dart'
+    as _i446;
+import 'package:good_manager/domain/usecases/expenses/expense_usercases.dart'
+    as _i849;
+import 'package:good_manager/domain/usecases/goods/goods_history_usecases.dart'
+    as _i137;
+import 'package:good_manager/domain/usecases/goods/goods_history_usecases_impl.dart'
+    as _i454;
+import 'package:good_manager/domain/usecases/goods/goods_usecases_impl.dart'
     as _i40;
+import 'package:good_manager/domain/usecases/goods/goods_usercases.dart'
+    as _i31;
+import 'package:good_manager/domain/usecases/groups/groups_usecases.dart'
+    as _i984;
+import 'package:good_manager/domain/usecases/groups/groups_usecases_impl.dart'
+    as _i260;
+import 'package:good_manager/domain/usecases/payment/payment_usecases_impl.dart'
+    as _i779;
+import 'package:good_manager/domain/usecases/payment/payment_usercases.dart'
+    as _i886;
+import 'package:good_manager/domain/usecases/stores/stores_usecases.dart'
+    as _i579;
+import 'package:good_manager/domain/usecases/stores/stores_usecases_impl.dart'
+    as _i411;
+import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart'
+    as _i331;
+import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases_impl.dart'
+    as _i949;
 import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart'
-    as _i25;
+    as _i884;
 import 'package:good_manager/presentation/pages/customers/bloc/customers_cubit.dart'
-    as _i35;
+    as _i190;
 import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.dart'
-    as _i38;
+    as _i881;
 import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart'
     as _i51;
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart'
-    as _i59;
+    as _i436;
 import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.dart'
-    as _i52;
+    as _i425;
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart'
-    as _i62;
-import 'package:good_manager/presentation/pages/login/auth_cubit.dart' as _i47;
+    as _i0;
+import 'package:good_manager/presentation/pages/login/auth_cubit.dart' as _i403;
 import 'package:good_manager/presentation/pages/onboarding/bloc/on_boarding_cubit.dart'
-    as _i48;
+    as _i234;
 import 'package:good_manager/presentation/pages/payment/bloc/payments_cubit.dart'
-    as _i45;
+    as _i152;
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart'
-    as _i55;
+    as _i638;
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart'
-    as _i64;
+    as _i984;
 import 'package:good_manager/presentation/pages/save_customer/bloc/save_customer_cubit.dart'
-    as _i34;
+    as _i153;
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart'
-    as _i56;
+    as _i467;
 import 'package:good_manager/presentation/pages/save_expense/bloc/save_expense_cubit.dart'
-    as _i41;
+    as _i150;
 import 'package:good_manager/presentation/pages/save_good/bloc/quick_insert_document_cubit.dart'
-    as _i3;
+    as _i595;
 import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.dart'
-    as _i61;
+    as _i928;
 import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart'
-    as _i57;
+    as _i764;
 import 'package:good_manager/presentation/pages/save_payment/bloc/save_payment_cubit.dart'
-    as _i22;
+    as _i458;
 import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit.dart'
-    as _i46;
+    as _i733;
 import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart'
-    as _i42;
+    as _i340;
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart'
-    as _i63;
+    as _i664;
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart'
-    as _i60;
+    as _i989;
 import 'package:good_manager/presentation/pages/suppliers/bloc/suppliers_cubit.dart'
-    as _i58;
+    as _i831;
 import 'package:good_manager/presentation/widgets/add_quantity_and_price/add_quantity_and_price_cubit.dart'
-    as _i4;
-import 'package:injectable/injectable.dart' as _i2;
+    as _i205;
+import 'package:injectable/injectable.dart' as _i526;
 
-extension GetItInjectableX on _i1.GetIt {
+extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
-  _i1.GetIt init({
+  _i174.GetIt init({
     String? environment,
-    _i2.EnvironmentFilter? environmentFilter,
+    _i526.EnvironmentFilter? environmentFilter,
   }) {
-    final gh = _i2.GetItHelper(
+    final gh = _i526.GetItHelper(
       this,
       environment,
       environmentFilter,
     );
-    gh.factory<_i3.QuickInsertDocumentCubit>(
-        () => _i3.QuickInsertDocumentCubit());
-    gh.factory<_i4.AddQuantityAndPriceCubit>(
-        () => _i4.AddQuantityAndPriceCubit());
-    gh.singleton<_i5.Storage>(() => _i5.Storage());
-    gh.factory<_i6.PaymentRepository>(() => _i7.PaymentRepositoryImpl());
-    gh.factory<_i8.StoresRepository>(() => _i9.StoresRepositoryImpl());
-    gh.factory<_i10.PaymentUseCases>(() =>
-        _i11.PaymentUseCasesImpl(repository: gh<_i6.PaymentRepository>()));
-    gh.factory<_i12.GoodsRepository>(() => _i13.GoodsRepositoryImpl());
-    gh.factory<_i14.CustomersRepository>(() => _i15.CustomersRepositoryImpl());
-    gh.factory<_i16.DocumentRepository>(() => _i17.DocumentRepositoryImpl());
-    gh.factory<_i18.SuppliersRepository>(() => _i19.SuppliersRepositoryImpl());
-    gh.factory<_i20.GroupsRepository>(() => _i21.GroupsRepositoryImpl());
-    gh.factory<_i22.SavePaymentCubit>(
-        () => _i22.SavePaymentCubit(useCase: gh<_i10.PaymentUseCases>()));
-    gh.factory<_i23.ExpenseRepository>(() => _i24.ExpenseRepositoryImpl());
-    gh.factory<_i25.BarcodeScannerCubit>(
-        () => _i25.BarcodeScannerCubit(storage: gh<_i5.Storage>()));
-    gh.factory<_i26.DocumentTransactionRepository>(
-        () => _i27.DocumentTransactionRepositoryImpl());
-    gh.factory<_i28.GoodHistoryUseCases>(() => _i29.GoodHistoryUseCasesIpm(
-          storage: gh<_i5.Storage>(),
-          documentRepository: gh<_i16.DocumentRepository>(),
+    gh.factory<_i595.QuickInsertDocumentCubit>(
+        () => _i595.QuickInsertDocumentCubit());
+    gh.factory<_i205.AddQuantityAndPriceCubit>(
+        () => _i205.AddQuantityAndPriceCubit());
+    gh.singleton<_i72.Storage>(() => _i72.Storage());
+    gh.factory<_i309.PaymentRepository>(() => _i545.PaymentRepositoryImpl());
+    gh.factory<_i339.StoresRepository>(() => _i903.StoresRepositoryImpl());
+    gh.factory<_i886.PaymentUseCases>(() =>
+        _i779.PaymentUseCasesImpl(repository: gh<_i309.PaymentRepository>()));
+    gh.factory<_i585.GoodsRepository>(() => _i521.GoodsRepositoryImpl());
+    gh.factory<_i54.CustomersRepository>(() => _i52.CustomersRepositoryImpl());
+    gh.factory<_i811.DocumentRepository>(() => _i166.DocumentRepositoryImpl());
+    gh.factory<_i435.SuppliersRepository>(
+        () => _i753.SuppliersRepositoryImpl());
+    gh.factory<_i990.GroupsRepository>(() => _i795.GroupsRepositoryImpl());
+    gh.factory<_i458.SavePaymentCubit>(
+        () => _i458.SavePaymentCubit(useCase: gh<_i886.PaymentUseCases>()));
+    gh.factory<_i385.ExpenseRepository>(() => _i587.ExpenseRepositoryImpl());
+    gh.factory<_i884.BarcodeScannerCubit>(
+        () => _i884.BarcodeScannerCubit(storage: gh<_i72.Storage>()));
+    gh.factory<_i769.DocumentTransactionRepository>(
+        () => _i987.DocumentTransactionRepositoryImpl());
+    gh.factory<_i137.GoodHistoryUseCases>(() => _i454.GoodHistoryUseCasesIpm(
+          storage: gh<_i72.Storage>(),
+          documentRepository: gh<_i811.DocumentRepository>(),
           documentTransactionRepository:
-              gh<_i26.DocumentTransactionRepository>(),
+              gh<_i769.DocumentTransactionRepository>(),
         ));
-    gh.factory<_i30.CustomersUseCase>(() =>
-        _i31.CustomersUseCaseImpl(repository: gh<_i14.CustomersRepository>()));
-    gh.factory<_i32.DocumentUseCases>(() => _i33.DocumentUseCasesImpl(
-          storage: gh<_i5.Storage>(),
-          repository: gh<_i16.DocumentRepository>(),
-          transactionRepository: gh<_i26.DocumentTransactionRepository>(),
+    gh.factory<_i236.CustomersUseCase>(() =>
+        _i676.CustomersUseCaseImpl(repository: gh<_i54.CustomersRepository>()));
+    gh.factory<_i231.DocumentUseCases>(() => _i1025.DocumentUseCasesImpl(
+          storage: gh<_i72.Storage>(),
+          repository: gh<_i811.DocumentRepository>(),
+          transactionRepository: gh<_i769.DocumentTransactionRepository>(),
         ));
-    gh.factory<_i34.SaveCustomerCubit>(
-        () => _i34.SaveCustomerCubit(useCase: gh<_i30.CustomersUseCase>()));
-    gh.factory<_i35.CustomersCubit>(() => _i35.CustomersCubit(
-          storage: gh<_i5.Storage>(),
-          useCase: gh<_i30.CustomersUseCase>(),
+    gh.factory<_i153.SaveCustomerCubit>(
+        () => _i153.SaveCustomerCubit(useCase: gh<_i236.CustomersUseCase>()));
+    gh.factory<_i190.CustomersCubit>(() => _i190.CustomersCubit(
+          storage: gh<_i72.Storage>(),
+          useCase: gh<_i236.CustomersUseCase>(),
         ));
-    gh.factory<_i36.ExpenseUseCases>(() =>
-        _i37.ExpenseUseCasesImpl(repository: gh<_i23.ExpenseRepository>()));
-    gh.factory<_i38.DocumentsCubit>(() => _i38.DocumentsCubit(
-          storage: gh<_i5.Storage>(),
-          useCase: gh<_i32.DocumentUseCases>(),
+    gh.factory<_i849.ExpenseUseCases>(() =>
+        _i446.ExpenseUseCasesImpl(repository: gh<_i385.ExpenseRepository>()));
+    gh.factory<_i881.DocumentsCubit>(() => _i881.DocumentsCubit(
+          storage: gh<_i72.Storage>(),
+          useCase: gh<_i231.DocumentUseCases>(),
         ));
-    gh.factory<_i39.SuppliersUseCase>(() =>
-        _i40.SuppliersUseCaseImpl(repository: gh<_i18.SuppliersRepository>()));
-    gh.factory<_i41.SaveExpenseCubit>(
-        () => _i41.SaveExpenseCubit(useCase: gh<_i36.ExpenseUseCases>()));
-    gh.factory<_i42.SaveSupplierCubit>(
-        () => _i42.SaveSupplierCubit(useCase: gh<_i39.SuppliersUseCase>()));
-    gh.factory<_i43.StoresUseCase>(() => _i44.StoresUseCaseImpl(
-          repository: gh<_i8.StoresRepository>(),
-          storage: gh<_i5.Storage>(),
+    gh.factory<_i331.SuppliersUseCase>(() => _i949.SuppliersUseCaseImpl(
+        repository: gh<_i435.SuppliersRepository>()));
+    gh.factory<_i150.SaveExpenseCubit>(
+        () => _i150.SaveExpenseCubit(useCase: gh<_i849.ExpenseUseCases>()));
+    gh.factory<_i340.SaveSupplierCubit>(
+        () => _i340.SaveSupplierCubit(useCase: gh<_i331.SuppliersUseCase>()));
+    gh.factory<_i579.StoresUseCase>(() => _i411.StoresUseCaseImpl(
+          repository: gh<_i339.StoresRepository>(),
+          storage: gh<_i72.Storage>(),
         ));
-    gh.factory<_i45.PaymentsCubit>(() => _i45.PaymentsCubit(
-          storage: gh<_i5.Storage>(),
-          useCase: gh<_i10.PaymentUseCases>(),
-          documentUseCases: gh<_i32.DocumentUseCases>(),
+    gh.factory<_i152.PaymentsCubit>(() => _i152.PaymentsCubit(
+          storage: gh<_i72.Storage>(),
+          useCase: gh<_i886.PaymentUseCases>(),
+          documentUseCases: gh<_i231.DocumentUseCases>(),
         ));
-    gh.factory<_i46.SaveStoreCubit>(() => _i46.SaveStoreCubit(
-          useCase: gh<_i43.StoresUseCase>(),
-          storage: gh<_i5.Storage>(),
+    gh.factory<_i403.AuthCubit>(() => _i403.AuthCubit(
+          useCase: gh<_i579.StoresUseCase>(),
+          storage: gh<_i72.Storage>(),
         ));
-    gh.factory<_i47.AuthCubit>(() => _i47.AuthCubit(
-          useCase: gh<_i43.StoresUseCase>(),
-          storage: gh<_i5.Storage>(),
+    gh.factory<_i234.OnBoardingCubit>(() => _i234.OnBoardingCubit(
+          useCase: gh<_i579.StoresUseCase>(),
+          storage: gh<_i72.Storage>(),
         ));
-    gh.factory<_i48.OnBoardingCubit>(() => _i48.OnBoardingCubit(
-          useCase: gh<_i43.StoresUseCase>(),
-          storage: gh<_i5.Storage>(),
+    gh.factory<_i733.SaveStoreCubit>(() => _i733.SaveStoreCubit(
+          useCase: gh<_i579.StoresUseCase>(),
+          storage: gh<_i72.Storage>(),
         ));
-    gh.factory<_i49.GroupsUseCases>(
-        () => _i50.GroupsUseCaseImpl(repository: gh<_i20.GroupsRepository>()));
+    gh.factory<_i984.GroupsUseCases>(() =>
+        _i260.GroupsUseCaseImpl(repository: gh<_i990.GroupsRepository>()));
     gh.factory<_i51.ExpensesCubit>(() => _i51.ExpensesCubit(
-          storage: gh<_i5.Storage>(),
-          useCase: gh<_i36.ExpenseUseCases>(),
+          storage: gh<_i72.Storage>(),
+          useCase: gh<_i849.ExpenseUseCases>(),
         ));
-    gh.factory<_i52.ItemHistoryCubit>(
-        () => _i52.ItemHistoryCubit(useCases: gh<_i28.GoodHistoryUseCases>()));
-    gh.factory<_i53.GoodsUseCases>(() => _i54.GoodsUseCaseImpl(
-          repository: gh<_i12.GoodsRepository>(),
+    gh.factory<_i425.ItemHistoryCubit>(() =>
+        _i425.ItemHistoryCubit(useCases: gh<_i137.GoodHistoryUseCases>()));
+    gh.factory<_i31.GoodsUseCases>(() => _i40.GoodsUseCaseImpl(
+          repository: gh<_i585.GoodsRepository>(),
           documentTransactionRepository:
-              gh<_i26.DocumentTransactionRepository>(),
+              gh<_i769.DocumentTransactionRepository>(),
         ));
-    gh.factory<_i55.ReportCubit>(() => _i55.ReportCubit(
-          storage: gh<_i5.Storage>(),
-          expenseUseCase: gh<_i36.ExpenseUseCases>(),
+    gh.factory<_i638.ReportCubit>(() => _i638.ReportCubit(
+          storage: gh<_i72.Storage>(),
+          expenseUseCase: gh<_i849.ExpenseUseCases>(),
         ));
-    gh.factory<_i56.SaveDocumentCubit>(() => _i56.SaveDocumentCubit(
-          useCase: gh<_i32.DocumentUseCases>(),
-          paymentUseCase: gh<_i10.PaymentUseCases>(),
-          goodUseCases: gh<_i53.GoodsUseCases>(),
-          storage: gh<_i5.Storage>(),
+    gh.factory<_i467.SaveDocumentCubit>(() => _i467.SaveDocumentCubit(
+          useCase: gh<_i231.DocumentUseCases>(),
+          paymentUseCase: gh<_i886.PaymentUseCases>(),
+          goodUseCases: gh<_i31.GoodsUseCases>(),
+          storage: gh<_i72.Storage>(),
         ));
-    gh.factory<_i57.SaveGroupCubit>(
-        () => _i57.SaveGroupCubit(useCase: gh<_i49.GroupsUseCases>()));
-    gh.factory<_i58.SuppliersCubit>(() => _i58.SuppliersCubit(
-          storage: gh<_i5.Storage>(),
-          useCase: gh<_i39.SuppliersUseCase>(),
+    gh.factory<_i764.SaveGroupCubit>(
+        () => _i764.SaveGroupCubit(useCase: gh<_i984.GroupsUseCases>()));
+    gh.factory<_i831.SuppliersCubit>(() => _i831.SuppliersCubit(
+          storage: gh<_i72.Storage>(),
+          useCase: gh<_i331.SuppliersUseCase>(),
         ));
-    gh.factory<_i59.GoodsCubit>(() => _i59.GoodsCubit(
-          storage: gh<_i5.Storage>(),
-          goodsUseCase: gh<_i53.GoodsUseCases>(),
-          groupsUseCase: gh<_i49.GroupsUseCases>(),
-          documentsUseCases: gh<_i32.DocumentUseCases>(),
+    gh.factory<_i436.GoodsCubit>(() => _i436.GoodsCubit(
+          storage: gh<_i72.Storage>(),
+          goodsUseCase: gh<_i31.GoodsUseCases>(),
+          groupsUseCase: gh<_i984.GroupsUseCases>(),
+          documentsUseCases: gh<_i231.DocumentUseCases>(),
         ));
-    gh.factory<_i60.StoresCubit>(() => _i60.StoresCubit(
-          storage: gh<_i5.Storage>(),
-          useCase: gh<_i43.StoresUseCase>(),
+    gh.factory<_i989.StoresCubit>(() => _i989.StoresCubit(
+          storage: gh<_i72.Storage>(),
+          useCase: gh<_i579.StoresUseCase>(),
         ));
-    gh.factory<_i61.SaveGoodCubit>(() => _i61.SaveGoodCubit(
-          useCase: gh<_i53.GoodsUseCases>(),
-          documentsUseCases: gh<_i32.DocumentUseCases>(),
-          storage: gh<_i5.Storage>(),
+    gh.factory<_i928.SaveGoodCubit>(() => _i928.SaveGoodCubit(
+          useCase: gh<_i31.GoodsUseCases>(),
+          documentsUseCases: gh<_i231.DocumentUseCases>(),
+          storage: gh<_i72.Storage>(),
         ));
-    gh.factory<_i62.HomeCubit>(() => _i62.HomeCubit(
-          storage: gh<_i5.Storage>(),
-          goodsUseCases: gh<_i53.GoodsUseCases>(),
-          documentsUseCases: gh<_i32.DocumentUseCases>(),
-          supplierUseCases: gh<_i39.SuppliersUseCase>(),
-          customerUseCase: gh<_i30.CustomersUseCase>(),
-          expenseUseCases: gh<_i36.ExpenseUseCases>(),
+    gh.factory<_i0.HomeCubit>(() => _i0.HomeCubit(
+          storage: gh<_i72.Storage>(),
+          goodsUseCases: gh<_i31.GoodsUseCases>(),
+          documentsUseCases: gh<_i231.DocumentUseCases>(),
+          supplierUseCases: gh<_i331.SuppliersUseCase>(),
+          customerUseCase: gh<_i236.CustomersUseCase>(),
+          expenseUseCases: gh<_i849.ExpenseUseCases>(),
         ));
-    gh.factory<_i63.SelectGroupCubit>(
-        () => _i63.SelectGroupCubit(groupsUseCase: gh<_i49.GroupsUseCases>()));
-    gh.factory<_i64.ReportDetailCubit>(() => _i64.ReportDetailCubit(
-          storage: gh<_i5.Storage>(),
-          goodsUseCase: gh<_i53.GoodsUseCases>(),
-          expenseUseCase: gh<_i36.ExpenseUseCases>(),
-          documentUseCases: gh<_i32.DocumentUseCases>(),
+    gh.factory<_i664.SelectGroupCubit>(() =>
+        _i664.SelectGroupCubit(groupsUseCase: gh<_i984.GroupsUseCases>()));
+    gh.factory<_i984.ReportDetailCubit>(() => _i984.ReportDetailCubit(
+          storage: gh<_i72.Storage>(),
+          goodsUseCase: gh<_i31.GoodsUseCases>(),
+          expenseUseCase: gh<_i849.ExpenseUseCases>(),
+          documentUseCases: gh<_i231.DocumentUseCases>(),
           documentTransactionRepository:
-              gh<_i26.DocumentTransactionRepository>(),
+              gh<_i769.DocumentTransactionRepository>(),
         ));
     return this;
   }

@@ -12,11 +12,15 @@ import '../../../domain/entities/supplier.dart';
 abstract class BaseState {}
 class InitialState extends BaseState {}
 class LoadingState extends BaseState {}
+class LoadSuccessState extends BaseState {}
+
 
 class OpenSaveItemState extends BaseState {
 
 }
 class OpenHelpPageState extends BaseState {}
+
+class OpenListSettingsDialogState extends BaseState {}
 class OpenSortDialogListState extends BaseState {}
 //goods
 class OpenSaveGoodPageState extends BaseState{

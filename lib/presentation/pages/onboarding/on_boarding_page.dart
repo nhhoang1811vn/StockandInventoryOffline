@@ -5,7 +5,6 @@ import 'package:formz/formz.dart';
 import 'package:good_manager/common/helpers/injection.container.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
-import '../../../presentation/widgets/snackbar_widgets.dart';
 import '../pages.dart';
 import 'bloc/on_boarding_cubit.dart';
 

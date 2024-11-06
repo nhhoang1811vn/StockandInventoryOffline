@@ -80,7 +80,7 @@ class SelectGroupPageState extends BaseStateWidget<SelectGroupPage> {
       BuildContext context, SelectGroupState state, Group? item) {
     return Expanded(
         child: InkWell(
-            onTap: () => context.read<SelectGroupCubit>().select(item?.id),
+            onTap: () => context.read<SelectGroupCubit>().select(item),
             child: Container(
               padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
               decoration: item?.id == state.selectedGroupId

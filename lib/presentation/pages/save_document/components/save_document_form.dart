@@ -134,7 +134,7 @@ class SaveDocumentForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    dateController.text = Config.dateFormat.format(state.date!);
+    dateController.text = Config.dateTimeFormat.format(state.date!);
     personNameController.text = state.personName ?? '';
     searchTextController.text = state.textSearch;
     searchTextController.selection = TextSelection.fromPosition(TextPosition(offset: state.textSearch.length));
@@ -169,25 +169,46 @@ class SaveDocumentForm extends StatelessWidget {
                             error: state.name.displayError?.name),
                       ),
                       SizedBox(
-                        width: 15.0,
+                        width: 12.0,
                       ),
                       Expanded(
                           child: AppTextField(
                         color: Colors.white,
                         controller: dateController,
-                        labelText: AppLocalizations.of(context)!.field_date,
+                        labelText: AppLocalizations.of(context)!.field_date_time,
                         keyboardType: TextInputType.datetime,
                         readOnly: true,
                         onTapped: () => {
-                          DatePicker.showDatePicker(context,
+                          //DatePicker.showDateTimePicker(context)
+                          DatePicker.showDateTimePicker(context,
                               showTitleActions: true,
                               minTime: Config.minTime,
                               maxTime: Config.maxTime,
                               onChanged: (date) {}, onConfirm: (date) {
                             context.read<SaveDocumentCubit>().dateChanged(date);
-                            dateController.text = Config.dateFormat.format(date);
+                            dateController.text = Config.dateTimeFormat.format(date);
                           }, currentTime: state.date, locale: LocaleType.vi)
                         },
+                      )),
+
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(child:
+                      AppTextField(
+                        color: Colors.white,
+                        controller: personNameController,
+                        labelText: state.item?.type == DocumentType.incoming
+                            ? AppLocalizations.of(context)!.field_supplier
+                            : AppLocalizations.of(context)!.field_customer,
+                        keyboardType: TextInputType.none,
+                        readOnly: true,
+                        onTapped: () => {context.read<SaveDocumentCubit>().onPersonClicked()},
                       )),
                       SizedBox(
                         width: 8,
@@ -196,23 +217,15 @@ class SaveDocumentForm extends StatelessWidget {
                           onTap: () => context.read<SaveDocumentCubit>().onPaymentStatusButtonPressed(),
                           child: Container(
                             alignment: Alignment.center,
-                            height: 48,
-                            width: 48,
+                            height: 36,
+                            width: 36,
                             decoration: BoxDecoration(  shape: BoxShape.circle,color: getPaymentStatusColor(), border: Border.all(color: Colors.white)),
                             child: Icon(UIConstants.paymentIconData, color: Palette.white, size: 24),
                           ))
+
                     ],
                   ),
-                  AppTextField(
-                    color: Colors.white,
-                    controller: personNameController,
-                    labelText: state.item?.type == DocumentType.incoming
-                        ? AppLocalizations.of(context)!.field_supplier
-                        : AppLocalizations.of(context)!.field_customer,
-                    keyboardType: TextInputType.none,
-                    readOnly: true,
-                    onTapped: () => {context.read<SaveDocumentCubit>().onPersonClicked()},
-                  ),
+
                   AppTextField(
                       color: Colors.white,
                       labelText: AppLocalizations.of(context)!.field_desc,

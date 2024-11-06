@@ -31,8 +31,7 @@ class GroupsRepositoryImpl implements GroupsRepository {
 
   @override
   Future<Group> get(int id) {
-    // TODO: implement get
-    throw UnimplementedError();
+    return db.findGroup(id);
   }
 
   @override

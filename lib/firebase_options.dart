@@ -21,24 +21,14 @@ class DefaultFirebaseOptions {
         return android;
       case TargetPlatform.iOS:
         return ios;
-      //case TargetPlatform.windows:
-      //  return windows;
+      case TargetPlatform.windows:
+        return windows;
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
         );
     }
   }
-
-  /*static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDoX0JgDmnerOQEZPnEtc9qEamxgNpoZZQ',
-    appId: '1:617423800641:web:eb2c94373b2a8e025839c0',
-    messagingSenderId: '617423800641',
-    projectId: 'quanlykho-4818e',
-    authDomain: 'quanlykho-4818e.firebaseapp.com',
-    storageBucket: 'quanlykho-4818e.appspot.com',
-    measurementId: 'G-V3B5TZ1H0N',
-  );*/
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCixmrqF34P7kKbZWOEtBbj6PCuHzAmWS0',
@@ -58,15 +48,6 @@ class DefaultFirebaseOptions {
     iosClientId: '617423800641-3hg9toe6rn1ho9pqbt7mami3vmda5l33.apps.googleusercontent.com',
     iosBundleId: 'com.ssteam.goodmanagerflutter',
   );
-
-  /*static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBFSW5s9KX8OHdKlmT-cK2gZ6a1H0AvC2U',
-    appId: '1:617423800641:ios:62ee012bf95388de5839c0',
-    messagingSenderId: '617423800641',
-    projectId: 'quanlykho-4818e',
-    storageBucket: 'quanlykho-4818e.appspot.com',
-    iosBundleId: 'com.ssteam.goodmanagerflutter',
-  );*/
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyDoX0JgDmnerOQEZPnEtc9qEamxgNpoZZQ',

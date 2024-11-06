@@ -52,6 +52,7 @@
   "field_supplier": "Supplier",
   "field_customer": "Customer",
   "field_date": "Date",
+  "field_date_time": "Date & Time",
   "field_amount": "Amount",
   "field_paid": "Paid",
   "field_remaining": "Remain",
@@ -168,6 +169,8 @@
   "error_same_barcode": "Error: same bar code",
   "action_search": "Search",
   "action_sort_by": "Sort by",
+  "action_export": "Export",
+
   "action_batch_scan": "Batch scan",
   "action_help": "Help",
   "report_type_goods": "List of Goods",
@@ -221,5 +224,10 @@
   "reset_password_successful": "Reset password Success",
   "cloud_file_no_updated": "Not updated yet",
   "signout_message": "Are you sure want to log out ?",
-  "item_history_title": "Item History"
+  "item_history_title": "Item History",
+
+  "list_settings":"List Settings",
+       "good_settings_hide_zero_entries": "Hide zero entries",
+       "good_setting_show_bar_code": "Show barcode",
+       "good_setting_show_description": "Show description"
 }

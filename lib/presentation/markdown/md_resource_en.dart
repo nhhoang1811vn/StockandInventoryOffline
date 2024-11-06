@@ -27,6 +27,12 @@ With gratitude,
 AppViet Team
   """;
  static const String whatNews = """
+ ### Version 1.0.8 - Dec 6  
+  * Fixed reported bugs. 
+  * Added List Settings on Goods Page.
+  * Modified Search function on Goods Page
+  * Added Quick Sync option
+  
   ### Version 1.0.7 - Sep 27  
   * Fixed reported bugs. 
   * Support iOS platform.

@@ -37,6 +37,7 @@ class Config {
   static DateTime maxTime = DateTime(2101, 1, 1);
 
   static DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+  static DateFormat dateTimeFormat = DateFormat('dd/MM/yyyy HH:mm');
   //static NumberFormat expenseAmountFormat = NumberFormat("0.##");
   static NumberFormat doubleFormat =  NumberFormat("0.##");
 

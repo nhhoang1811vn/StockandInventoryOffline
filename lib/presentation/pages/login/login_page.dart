@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:good_manager/db/db_helper.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/dialog_utils.dart';
 import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
@@ -12,7 +11,6 @@ import 'package:good_manager/presentation/pages/login/components/background.dart
 import 'package:good_manager/presentation/pages/login/components/do_not_have_account.dart';
 import 'package:good_manager/presentation/pages/login/components/sign_in_with_google_text.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
-import 'package:good_manager/presentation/widgets/progress_indicaror.dart';
 
 import 'auth_cubit.dart';
 
@@ -29,7 +27,7 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
   bool _emailValidate = false;
   bool _passwordValidate = false;
   var emailReg = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-
+  bool showLoading = false;
   @override
   Widget buildWidget(BuildContext context) {
     return Scaffold(
@@ -50,7 +48,9 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
       listenWhen: (previous, current) => previous != current,
       listener: (context, state) async {
         if (state is AuthLoading) {
-          ProgressIndicaror.showProgressIndicator(context);
+          setState(() {
+            showLoading = true;
+          });
         } else if (state is AuthError) {
           Navigator.of(context).pop();
           String title =
@@ -62,11 +62,9 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
             DialogUtils.showCustomDialog(context, title: title, message: message);
           }
         } else if (state is UserSignInSuccessfulWithStore){
-          if (!context.mounted) return;
-          Navigator.of(context).pushNamedAndRemoveUntil(Pages.home, (route) => false);
+          Navigator.of(context).pop();
         } else if (state is UserSignInSuccessfulWithNoStore){
-          if (!context.mounted) return;
-          Navigator.of(context).pushNamedAndRemoveUntil(Pages.onboarding, (route) => false);
+          Navigator.of(context).pop();
         }
         else if (state is UserNotVerified) {
           Navigator.of(context).pop();
@@ -75,216 +73,219 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
               AppLocalizations.of(context)!.email_not_verified_desc;
           DialogUtils.showCustomDialog(context, title: title, message: message);
         } else if (state is IsNewUser) {
-          /*context.pushNamedAndRemoveUntil(
-          Routes.createPassword,
-          predicate: (route) => false,
-          arguments: [state.googleUser, state.credential],
-        );*/
         } else if (state is AuthStopped){
           Navigator.of(context).pop();
         }
       },
       builder: (context, state) {
         return Scaffold(
-          body: Background(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.symmetric(horizontal: 40),
-                    child: Text(
-                      AppLocalizations.of(context)!.login,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF2661FA),
-                          fontSize: 36),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                  SizedBox(height: size.height * 0.03),
-                  Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.symmetric(horizontal: 40),
-                    child: TextField(
-                      controller: emailController,
-                      onChanged: (newText){
-                        setState(() {
-                          _emailValidate = false;
-                        });
-                      },
-                      decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.email,
-                          errorText: _emailValidate ?  AppLocalizations.of(context)!.error_email : null
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: size.height * 0.03),
-                  Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.symmetric(horizontal: 40),
-                    child: TextField(
-                      controller: passwordController,
-                      onChanged: (newText){
-                        setState(() {
-                          _passwordValidate = false;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.password,
-                          errorText: _passwordValidate ? AppLocalizations.of(context)!.error_password : null
-                      ),
-                      obscureText: true,
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(Pages.forgotPassword);
-                      },
+          body: Stack(
+            children: [
+              if (showLoading)
+                Center(child: CircularProgressIndicator()),
+              Background(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.symmetric(horizontal: 40),
                       child: Text(
-                        AppLocalizations.of(context)!.forgot_your_password,
-                        style: TextStyle(color: Color(0XFF2661FA)),
+                        AppLocalizations.of(context)!.login,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2661FA),
+                            fontSize: 36),
+                        textAlign: TextAlign.left,
                       ),
                     ),
-                  ),
-                  SizedBox(height: size.height * 0.05),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (emailReg.hasMatch(emailController.text) && passwordController.text.trim().isNotEmpty){
-                          context.read<AuthCubit>().signInWithEmail(
-                              emailController.text, passwordController.text);
-                        }else{
+                    SizedBox(height: size.height * 0.03),
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.symmetric(horizontal: 40),
+                      child: TextField(
+                        controller: emailController,
+                        onChanged: (newText){
                           setState(() {
-                            _emailValidate = !emailReg.hasMatch(emailController.text);
-                            _passwordValidate = passwordController.text.trim().isEmpty;
+                            _emailValidate = false;
                           });
-                        }
-
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(0),
-                      ),
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 50.0,
-                        width: size.width,
-                        decoration: new BoxDecoration(
-                            borderRadius: BorderRadius.circular(80.0),
-                            gradient: new LinearGradient(colors: [
-                              Color.fromARGB(255, 255, 136, 34),
-                              Color.fromARGB(255, 255, 177, 41)
-                            ])),
-                        child: Text(
-                          AppLocalizations.of(context)!.login,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                        },
+                        decoration: InputDecoration(
+                            labelText: AppLocalizations.of(context)!.email,
+                            errorText: _emailValidate ?  AppLocalizations.of(context)!.error_email : null
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                      child: SigninWithGoogleText()),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (Platform.isWindows) {
-                          context
-                              .read<AuthCubit>()
-                              .signInWithGoogleInWindowPlatform();
-                        } else {
-                          context.read<AuthCubit>().signInWithGoogle();
-                        }
+                    SizedBox(height: size.height * 0.03),
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.symmetric(horizontal: 40),
+                      child: TextField(
+                        controller: passwordController,
+                        onChanged: (newText){
+                          setState(() {
+                            _passwordValidate = false;
+                          });
                         },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(0),
-                      ),
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 50.0,
-                        width: size.width,
-                        decoration: new BoxDecoration(
-                            borderRadius: BorderRadius.circular(80.0),
-                            color: Colors.blue,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.password,
+                            errorText: _passwordValidate ? AppLocalizations.of(context)!.error_password : null
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          //crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(4),
-                              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-                              child:  SvgPicture.asset(
-                              'assets/svgs/google_icon2.svg',
-                              height: 24, width: 24,
-                            )),
-                            SizedBox(width: 16),
-                            Text(
-                            "Continue with Google",
+                        obscureText: true,
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.centerRight,
+                      margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(Pages.forgotPassword);
+                        },
+                        child: Text(
+                          AppLocalizations.of(context)!.forgot_your_password,
+                          style: TextStyle(color: Color(0XFF2661FA)),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: size.height * 0.05),
+                    Container(
+                      alignment: Alignment.centerRight,
+                      margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (emailReg.hasMatch(emailController.text) && passwordController.text.trim().isNotEmpty){
+                            justLogin = true;
+                            context.read<AuthCubit>().signInWithEmail(
+                                emailController.text, passwordController.text);
+                          }else{
+                            setState(() {
+                              _emailValidate = !emailReg.hasMatch(emailController.text);
+                              _passwordValidate = passwordController.text.trim().isEmpty;
+                            });
+                          }
+
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.all(0),
+                        ),
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 50.0,
+                          width: size.width,
+                          decoration: new BoxDecoration(
+                              borderRadius: BorderRadius.circular(80.0),
+                              gradient: new LinearGradient(colors: [
+                                Color.fromARGB(255, 255, 136, 34),
+                                Color.fromARGB(255, 255, 177, 41)
+                              ])),
+                          child: Text(
+                            AppLocalizations.of(context)!.login,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: Colors.white, fontWeight: FontWeight.bold),
-                          )],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.read<AuthCubit>().signInWithApple();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(0),
-                      ),
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 50.0,
-                        width: size.width,
-                        decoration: new BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(80.0),
-                          color: Colors.white,
+                    Container(
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                        child: SigninWithGoogleText()),
+                    Container(
+                      alignment: Alignment.centerRight,
+                      margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          justLogin = true;
+                          if (Platform.isWindows) {
+                            context
+                                .read<AuthCubit>()
+                                .signInWithGoogleInWindowPlatform();
+                          } else {
+                            context.read<AuthCubit>().signInWithGoogle();
+                          }
+                          },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.all(0),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              'assets/svgs/apple_logo.svg',
-                              height: 24, width: 24,
-                            ),
-                            SizedBox(width: 16),
-                            Text(
-                              "Continue with Apple",
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 50.0,
+                          width: size.width,
+                          decoration: new BoxDecoration(
+                              borderRadius: BorderRadius.circular(80.0),
+                              color: Colors.blue,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            //crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(4),
+                                decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                                child:  SvgPicture.asset(
+                                'assets/svgs/google_icon2.svg',
+                                height: 24, width: 24,
+                              )),
+                              SizedBox(width: 16),
+                              Text(
+                              "Continue with Google",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  color: Colors.black, fontWeight: FontWeight.bold),
+                                  color: Colors.white, fontWeight: FontWeight.bold),
                             )],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Container(
+                    Container(
                       alignment: Alignment.centerRight,
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                      child: DoNotHaveAccountText())
-                ],
+                      margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          justLogin = true;
+                          context.read<AuthCubit>().signInWithApple();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.all(0),
+                        ),
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 50.0,
+                          width: size.width,
+                          decoration: new BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(80.0),
+                            color: Colors.white,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/svgs/apple_logo.svg',
+                                height: 24, width: 24,
+                              ),
+                              SizedBox(width: 16),
+                              Text(
+                                "Continue with Apple",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black, fontWeight: FontWeight.bold),
+                              )],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                        alignment: Alignment.centerRight,
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                        child: DoNotHaveAccountText())
+                  ],
+                ),
               ),
-            ),
+            )],
           ),
         );
       },

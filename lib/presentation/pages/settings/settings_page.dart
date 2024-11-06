@@ -84,6 +84,12 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
               subtitle: cloudFileUpdatedTime.isEmpty?Text(AppLocalizations.of(context)!.cloud_file_no_updated):Text(cloudFileUpdatedTime),
               onTap: () => onCloudPressed(context),
             ),
+            ListTile(
+              leading: Icon(Icons.sync),
+              title: Text("Quick Sync"),
+              subtitle: Text("It will restart the app, and sync the latest app data"),
+              onTap: () => onQuickSyncPressed(context),
+            ),
           ],
         ));
   }
@@ -225,7 +231,7 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
     String dbPath = await PathUtils().getDatabasePath();
     File file = File(dbPath);
     final storageRef = FirebaseStorage.instance.ref();
-    String? uid = FirebaseAuth.instance.currentUser?.email;
+    String? uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null){
       final ref = storageRef.child("$uid/database.db");
       try {
@@ -236,7 +242,10 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
         ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
       }
     }
-
+  }
+  void onQuickSyncPressed(BuildContext context){
+    justLogin = true;
+    Navigator.of(context).pushNamedAndRemoveUntil(Pages.loading_data, (Route<dynamic> route) => false);
   }
 }
 

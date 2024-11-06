@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:csv/csv.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -25,7 +29,7 @@ import '../pages.dart';
 import 'components/save_document_form.dart';
 import 'components/select_payment_status_dialog.dart';
 import 'components/sort_save_document_dialog.dart';
-enum OverflowItemMenu { search, sortby, help }
+enum OverflowItemMenu { search, sortby, export,help }
 class SaveDocumentPage extends StatefulWidget{
   final Document item;
   SaveDocumentPage(this.item) : super();
@@ -205,14 +209,15 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
           PopupMenuButton<OverflowItemMenu>(itemBuilder: (context) => [
             PopupMenuItem<OverflowItemMenu>(value: OverflowItemMenu.search, child: Text(AppLocalizations.of(context)!.action_search)),
             PopupMenuItem<OverflowItemMenu>(value: OverflowItemMenu.sortby, child: Text(AppLocalizations.of(context)!.action_sort_by)),
+            PopupMenuItem<OverflowItemMenu>(value: OverflowItemMenu.export, child: Text(AppLocalizations.of(context)!.action_export)),
             PopupMenuItem<OverflowItemMenu>(value: OverflowItemMenu.help, child: Text(AppLocalizations.of(context)!.action_help)),
           ],
-            onSelected: (item) => handleClick(context,item),
+            onSelected: (item) => handleClick(context,item, state),
           )
 
         ]));
   }
-  void handleClick(BuildContext context, OverflowItemMenu item){
+  void handleClick(BuildContext context, OverflowItemMenu item, SaveDocumentState state){
     switch (item) {
       case OverflowItemMenu.search:
         context.read<SaveDocumentCubit>().onSearchMenuClicked();
@@ -222,12 +227,71 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
         context.read<SaveDocumentCubit>().onSortByMenuClicked();
         //sort by
         break;
+      case OverflowItemMenu.export:
+        onExport(state);
+        //context.read<SaveDocumentCubit>().onExportMenuClicked();
+        //sort by
+        break;
       case OverflowItemMenu.help:
         context.read<SaveDocumentCubit>().onHelpMenuClicked();
         break;
         //help
     }
   }
+  void onExport(SaveDocumentState state) async{
+    String fileName = 'AppVietQuanLyKho_Document_${state.name.value}.csv';
+    if (Platform.isWindows) {
+      String? outputFile = await FilePicker.platform.saveFile(
+          dialogTitle: 'Please select an output file:',
+          fileName: fileName,
+          allowedExtensions: ["csv"]
+      );
+      if (outputFile != null) {
+        await saveCSVFile(context, state, outputFile);
+      }
+    }else{
+      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+      if (selectedDirectory != null) {
+
+        String outputFile = "$selectedDirectory/$fileName";
+        await saveCSVFile(context, state, outputFile);
+      }
+    }
+  }
+  Future<void> saveCSVFile(BuildContext context, SaveDocumentState state, String outputFile) async{
+    try{
+      List<List<String>> data = [];
+      data.add([AppLocalizations.of(context)?.document_name_no??"", state.name.value.toString()]);
+      data.add([AppLocalizations.of(context)?.field_date_time??"", Config.dateTimeFormat.format(state.date!)]);
+      data.add([AppLocalizations.of(context)?.field_person_name??"", state.personName??""]);
+      data.add([AppLocalizations.of(context)?.field_desc??"", state.description]);
+      data.add([AppLocalizations.of(context)?.goods_title??""]);
+      data.add([
+        AppLocalizations.of(context)?.field_name??"",
+        AppLocalizations.of(context)?.field_desc??"",
+        AppLocalizations.of(context)?.field_bar_code??"",
+        AppLocalizations.of(context)?.field_quantity??""]);
+      state.allTransactions.forEach((item) {
+      data.add([
+        item.good.name,
+        item.good.description,
+        item.good.barCode??"",
+        item.quantity.toString()]);
+    });
+
+      String csv = const ListToCsvConverter().convert(data);
+      File file = File(outputFile);
+      await file.writeAsString(csv);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Lưu tệp CSV tại: ${file.path}'),
+      ));
+    }catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Lưu tệp CSV lỗi ${e.toString()}'),
+      ));
+    }
+  }
+
   Widget _buildSaveMenu(BuildContext context){
     return IconButton(onPressed: (){
       context.read<SaveDocumentCubit>().onSaveMenuClicked();

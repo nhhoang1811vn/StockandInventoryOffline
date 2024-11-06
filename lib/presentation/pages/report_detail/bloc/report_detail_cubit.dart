@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:csv/csv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -15,7 +14,6 @@ import 'package:good_manager/domain/usecases/expenses/expense_usercases.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../data/storage.dart';
 import '../../../../domain/entities/document.dart';
@@ -41,8 +39,15 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     required this.documentTransactionRepository
   }) : super(ReportDetailState.initial(state: InitialState()));
 
-  void init(BuildContext context, ReportType type, DateTime start, DateTime end){
-    emit(state.copyWith(type: type, start: start, end: end));
+  void init(
+      BuildContext context,
+      ReportType type,
+      DateTime start,
+      DateTime end,
+      int? groupId,
+      String? groupName
+      ){
+    emit(state.copyWith(state: LoadingState(),type: type, start: start, end: end, groupId: groupId, groupName: groupName));
     load(context);
   }
   Future<double> getQuantity(int goodId, List<Document> documents) async{
@@ -54,7 +59,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     }
     return incoming - outgoing;
   }
-  DateTime getPrevousHour(DateTime date){
+  DateTime getPreviousHour(DateTime date){
     return DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch - 60*60*1000);//- 60 mins
   }
   void load(BuildContext context) async{
@@ -69,9 +74,10 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
           "Bán ra (SL)",
           "Cuối Kỳ (SL)"]);
         int storeId = storage.getSelectedStoreId();
-        List<Good> goods = await goodsUseCase.getAllByStoreId(storeId);
+        List<Good> allGoods = await goodsUseCase.getAllByStoreId(storeId);
+        List<Good> goods = allGoods.where((good) => (state.groupId == null || state.groupId == good.groupId)).toList();
 
-        List<Document> documentsPrePeriod = await documentUseCases.getInRange(DateTime.fromMillisecondsSinceEpoch(0), getPrevousHour(state.start!));
+        List<Document> documentsPrePeriod = await documentUseCases.getInRange(DateTime.fromMillisecondsSinceEpoch(0), getPreviousHour(state.start!));
         List<Document> documentsInPeriod = await documentUseCases.getInRange(state.start!, state.end!);
         double totalStartPeriodStock = 0.0;
         double totalIncoming = 0.0;
@@ -167,6 +173,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
           totalRow.add(Config.currencyFormat.format(revenueTotal));
           data.add(totalRow);
         }
+        emit(state.copyWith(documents: items));
         break;
       case ReportType.DEBTS_BY_SUPPLIER:
         data = await getDataDebtBySupplier(context);
@@ -177,7 +184,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       default:
         break;
     }
-    emit(state.copyWith(data: data));
+    emit(state.copyWith(state: LoadSuccessState(), data: data));
   }
   Future<List<List<String>>> getDataDebtBySupplier(BuildContext context) async{
     List<List<String>> rows = [];
@@ -288,7 +295,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     }
     return directory?.path;
   }
-  onExportExcelFileMenuClicked() async{
+  /*onExportExcelFileMenuClicked() async{
     //runtime permission
     await Permission.storage.request();
     //convert data to csv
@@ -309,5 +316,5 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     await f.writeAsString(csv);
     print(filePath);
     showInfoToast(filePath);
-  }
+  }*/
 }

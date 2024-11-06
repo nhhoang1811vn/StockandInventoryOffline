@@ -82,7 +82,12 @@ Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Ho
  Chúng tôi đã tạo ra chức năng đơn giản này để theo dõi các chi tiêu của bạn cho một cửa hàng. 
  """;
   static const String whatNews = """
-  ### Phiên bản 1.0.6 - 27/09/2024
+  ### Phiên bản 1.0.8 - 6/11/24  
+  * Thêm cài đặt danh sách ở màn hình hàng hóa
+  * Sửa chức năng tìm kiếm ở màn hình hàng hóa
+  * Thêm chức năng Quick Sync
+  
+  ### Phiên bản 1.0.7 - 27/09/2024
   * Sữa lỗi được báo cáo.   
   * Hỗ trợ trên iOS.  
   

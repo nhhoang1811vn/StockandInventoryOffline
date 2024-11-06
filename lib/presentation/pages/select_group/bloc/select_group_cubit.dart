@@ -14,39 +14,41 @@ part 'select_group_state.dart';
 class SelectGroupCubit extends Cubit<SelectGroupState> {
   final GroupsUseCases groupsUseCase;
 
-  SelectGroupCubit({
-    required this.groupsUseCase
-  }) : super(SelectGroupState.initial(state: InitialState()));
+  SelectGroupCubit({required this.groupsUseCase})
+      : super(SelectGroupState.initial(state: InitialState()));
 
-  select(int? id) {
-    emit(state.copyWith(selectedGroupId: id));
+  select(Group? item) {
+    emit(
+      state.copyWith(selectedGroupId: item?.id, selectedGroupName: item?.name),
+    );
   }
 
-  void init(int? id,int? groupId) async{
+  void init(int? id, int? groupId) async {
     int storeId = storage.getSelectedStoreId();
     List<Group> groups = await groupsUseCase.getAllByStoreId(storeId);
     Map<int, Group> items = {};
     Group rootGroup = Group();
     rootGroup.name = "No Group";
     items[-1] = rootGroup;
-    for (Group group in groups){
+    for (Group group in groups) {
       items[group.id!] = group;
     }
-    if (id != null){
+    if (id != null) {
       //moving group, remove itself from the list
       items.remove(id);
     }
-    emit(state.copyWith(selectedGroupId: groupId,items: items));
-    Map<int,dynamic> map = run(null);
+    emit(state.copyWith(selectedGroupId: groupId, items: items));
+    Map<int, dynamic> map = run(null);
     emit(state.copyWith(treeMap: map));
   }
-  Map<int,dynamic> run(int? groupId){
-    Map<int,dynamic> map = Map();
+
+  Map<int, dynamic> run(int? groupId) {
+    Map<int, dynamic> map = Map();
     state.items?.forEach((key, value) {
-      if (value.groupId == groupId){
-        if (value.id == null){
+      if (value.groupId == groupId) {
+        if (value.id == null) {
           map[-1] = null;
-        }else{
+        } else {
           map[value.id!] = run(value.id);
         }
       }

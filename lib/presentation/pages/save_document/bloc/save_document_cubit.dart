@@ -215,7 +215,9 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   void onSortByMenuClicked() {
     emit(state.copyWith(state: OpenSortDialogListState()));
   }
-
+  void onExportMenuClicked() {
+    //emit(state.copyWith(state: OpenSortDialogListState()));
+  }
   void onBatchScanMenuClicked() {
     emit(state.copyWith(state: OpenBarcodeScannerPageState()));
   }
