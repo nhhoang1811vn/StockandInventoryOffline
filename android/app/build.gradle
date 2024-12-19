@@ -28,6 +28,11 @@ def keystorePropertiesFile = rootProject.file('upload-key-good-manager.jks')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
+configurations.all {
+    resolutionStrategy {
+        force 'androidx.core:core-ktx:1.6.0'
+    }
+}
 android {
     namespace "com.ssteam.goodmanagerflutter"
     compileSdk 34
