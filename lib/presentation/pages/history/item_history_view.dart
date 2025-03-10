@@ -10,6 +10,8 @@ import 'package:good_manager/presentation/pages/history/widget/item_history_row.
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
+import '../../app_style.dart';
+
 class ItemHistoryPage extends StatefulWidget {
   final int goodId;
   final DateTime? start;
@@ -65,7 +67,15 @@ class ItemHistoryPageState extends BaseStateWidget<ItemHistoryPage> {
       if (state.items.isNotEmpty)
         Expanded(child: _buildListView(state))
       else
-        Expanded(child: Center(child: Text("Không có dữ liệu")))
+        Expanded(child: Center(child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image(image: AssetImage('assets/images/document.png'), width: 60),
+            SizedBox(height: 16),
+            Text(AppLocalizations.of(context)!.empty_document, textAlign: TextAlign.center,style: AppStyle.getEmptyTextStyle())
+          ],
+        )))
     ];
     return Column(children: children);
   }

@@ -11,10 +11,8 @@ import 'package:good_manager/presentation/widgets/snackbar_widgets.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../domain/entities/stores_setting.dart';
-import '../../../main.dart';
 import '../../app_style.dart';
 import '../base/base_state.dart';
-import '../custom_navigation_drawer.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'components/store_item_row.dart';
@@ -77,7 +75,7 @@ class StoresPageState extends BaseStateWidget<StoresPage> {
         },
         builder: (context, state) =>  Scaffold(
           key: ScaffoldKey,
-            drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 7, storeName: storage.getSelectedStoreName()),
+            //drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 7, storeName: storage.getSelectedStoreName()),
             appBar: _buildAppBar(state),
             body: _buildBody(state),
             floatingActionButton:  FloatingActionButton(
@@ -162,17 +160,15 @@ class StoresPageState extends BaseStateWidget<StoresPage> {
       ]);
 
   Widget _buildListView(StoresState data) {
-    return  ListView.separated(
+    //return GridView.builder(gridDelegate: gridDelegate, itemBuilder: itemBuilder)
+    return  ListView.builder(
         itemBuilder: (BuildContext context, index) {
           Store item = data.items[index];
           return StoreItemRow(item, (item) {
             onPressed(item);
           }, (item) {
             onLongPressed(item);
-          });
-        },
-        separatorBuilder: (context, index) {
-          return Divider(color: Colors.grey[500]);
+          }, widget.isSelection);
         },
         itemCount: data.items.length);
   }

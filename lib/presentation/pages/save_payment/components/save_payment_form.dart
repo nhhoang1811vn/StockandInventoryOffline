@@ -60,7 +60,7 @@ class SavePaymentForm extends StatelessWidget {
                           }, onConfirm: (date) {
                             context.read<SavePaymentCubit>().dateChanged(date);
                             dateController.text = Config.dateFormat.format(date);
-                          }, currentTime: state.date, locale: LocaleType.vi)
+                          }, currentTime: state.date, locale: LocaleType.en)
                         },
                       ),
                       Row(

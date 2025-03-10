@@ -10,9 +10,7 @@ import 'package:good_manager/presentation/pages/report/components/select_group_d
 import 'package:good_manager/presentation/pages/report/report_date_range_type.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 
-import '../../../main.dart';
 import '../../constants.dart';
-import '../custom_navigation_drawer.dart';
 import '../pages.dart';
 
 class ReportPage extends StatefulWidget{
@@ -32,7 +30,7 @@ class ReportPageState extends BaseStateWidget<ReportPage> {
     return BlocConsumer<ReportCubit, ReportState>(
         builder: (context, state) => Scaffold(
           key: ScaffoldKey,
-            drawer: CustomNavigationDrawer(selectedIndex: 4, storeName: storage.getSelectedStoreName()),
+            //drawer: CustomNavigationDrawer(selectedIndex: 4, storeName: storage.getSelectedStoreName()),
             appBar: _buildAppBar(context),
             body: _buildBody()),
         listenWhen: (p1, p2) => p1.state != p2.state,

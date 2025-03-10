@@ -11,41 +11,58 @@ class GroupItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-        title: Text(
-          item.name,
-            style:
-            Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Visibility(
-              visible: item.description.isNotEmpty,
-              child: Text(
-                item.description,
-                style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onSurface),
-              ),
-            ),
-            if (item.barCode != null)
-              Row(children: [
-                Icon(UIConstants.barcodeIconData, size: 24, color: UIConstants.primaryColor),
-                SizedBox(
-                  width: 8,
-                ),
-                Text(item.barCode!, style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onSurface),)
-              ])
-          ],
-        ),
-        //trailing: Text(item.quality.toString()),
-        leading: Icon(UIConstants.groupIconData, size: 32, color: UIConstants.primaryColor,),
+    return Card(
+      margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
         onTap: () => onGroupTapped(item),
-        onLongPress: () => onGroupLongPressed(item));
+        onLongPress: () => onGroupLongPressed(item),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Image(image: AssetImage('assets/images/folder.png'), width: 32),
+              SizedBox(
+                width: 16,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(item.name,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+                  Visibility(
+                    visible: item.description.isNotEmpty,
+                    child: Text(
+                      item.description,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                    ),
+                  ),
+                  if (item.barCode != null)
+                    Row(children: [
+                      Icon(UIConstants.barcodeIconData, size: 24, color: UIConstants.primaryColor),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        item.barCode!,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                      )
+                    ])
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

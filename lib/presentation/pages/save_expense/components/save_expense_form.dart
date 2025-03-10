@@ -67,7 +67,7 @@ class SaveExpenseForm extends StatelessWidget {
                           }, onConfirm: (date) {
                             context.read<SaveExpenseCubit>().dateChanged(date);
                             dateController.text = Config.dateFormat.format(date);
-                          }, currentTime: state.date, locale: LocaleType.vi)
+                          }, currentTime: state.date, locale: LocaleType.en)
                         },
                       ),
                       Row(

@@ -5,8 +5,6 @@ import 'package:good_manager/presentation/pages/barcode_scanner/barcode_scanner_
 import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart';
 import 'package:good_manager/presentation/pages/customers/bloc/bloc.dart';
 import 'package:good_manager/presentation/pages/customers/customers_page.dart';
-import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.dart';
-import 'package:good_manager/presentation/pages/documents/documents_view.dart';
 import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart';
 import 'package:good_manager/presentation/pages/expenses/expenses_page.dart';
 import 'package:good_manager/presentation/pages/forgotpassword/forgot_password_page.dart';
@@ -16,11 +14,10 @@ import 'package:good_manager/presentation/pages/help/help_page_dart.dart';
 import 'package:good_manager/presentation/pages/help/helps_page_dart.dart';
 import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.dart';
 import 'package:good_manager/presentation/pages/history/item_history_view.dart';
-import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
-import 'package:good_manager/presentation/pages/home/home_page.dart';
 import 'package:good_manager/presentation/pages/login/auth_cubit.dart';
 import 'package:good_manager/presentation/pages/login/loading_data.dart';
 import 'package:good_manager/presentation/pages/login/login_page.dart';
+import 'package:good_manager/presentation/pages/main/main_page.dart';
 import 'package:good_manager/presentation/pages/onboarding/bloc/on_boarding_cubit.dart';
 import 'package:good_manager/presentation/pages/onboarding/on_boarding_page.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
@@ -85,18 +82,21 @@ class AppRouter {
               create: (context) => getIt<AuthCubit>(),
               child: LoadingData(),
             ));
-      case Pages.home:
+      case Pages.main:
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<HomeCubit>(),
-                  child: HomePage(),
-                ));
-      case Pages.document_list:
-        return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<DocumentsCubit>(),
-                  child: DocumentsPage(),
-                ));
+            builder: (_) => MainPage());
+      // case Pages.home:
+      //   return MaterialPageRoute(
+      //       builder: (_) => BlocProvider(
+      //             create: (context) => getIt<HomeCubit>(),
+      //             child: HomePage(),
+      //           ));
+      // case Pages.document_list:
+      //   return MaterialPageRoute(
+      //       builder: (_) => BlocProvider(
+      //             create: (context) => getIt<DocumentsCubit>(),
+      //             child: DocumentsPage(),
+      //           ));
       case Pages.save_document:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
@@ -125,7 +125,9 @@ class AppRouter {
                   create: (context) => getIt<GoodsCubit>(),
                   child: GoodsPage(
                       isSelection: args['isSelection'],
-                      document: args['document']),
+                      document: args['document'],
+                      key: UniqueKey()
+                  ),
                 ));
       case Pages.save_good:
         Map<dynamic, dynamic> args = settings.arguments as Map;
@@ -275,7 +277,7 @@ class AppRouter {
                 child: OnBoardingPage()));
 
       default:
-        return _buildRoute(settings, HomePage());
+        return _buildRoute(settings, MainPage());
     }
   }
 

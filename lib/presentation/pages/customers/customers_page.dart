@@ -3,11 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/customers_setting.dart';
-import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
-import 'package:good_manager/presentation/pages/custom_navigation_drawer.dart';
 import 'package:good_manager/presentation/pages/customers/widgets/customer_item_row.dart';
 import 'package:good_manager/presentation/pages/customers/widgets/sort_customer_dialog.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
@@ -72,7 +70,7 @@ class CustomersPageState extends BaseStateWidget<CustomersPage> {
         },
         builder: (context, state) =>  Scaffold(
           key: ScaffoldKey,
-        drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 6, storeName: storage.getSelectedStoreName(),),
+        //drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 6, storeName: storage.getSelectedStoreName(),),
         appBar: _buildAppBar(state),
         body: _buildBody(state),
         floatingActionButton:  FloatingActionButton(

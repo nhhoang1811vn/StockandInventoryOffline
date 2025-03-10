@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../data/storage.dart';
+import '../../../../domain/entities/document.dart';
 import '../../../../domain/entities/good.dart';
 import '../../../../domain/usecases/customers/customers_usecases.dart';
 import '../../../../domain/usecases/documents/document_usecases.dart';
@@ -34,22 +35,41 @@ class HomeCubit extends Cubit<HomeState> {
   void initState() async{
       int storeId = storage.getSelectedStoreId();
       List<Good> goods = await goodsUseCases.getAllByStoreId(storeId);
-      int countDocument = await documentsUseCases.getCount(storeId);
       int countSupplier = await supplierUseCases.getCount(storeId);
       int countCustomer = await customerUseCase.getCount(storeId);
       double sumExpense = await expenseUseCases.getSum(storeId);
 
+      List<Document> documents = await documentsUseCases.getAllByStoreId(storeId);
+      //int countDocument = documents.length;
+      int countIncomingDocument = 0;
+      int countOutgoingDocument = 0;
+      double sumPriceIncomingDocument = 0.0;
+      double sumPriceOutgoingDocument = 0.0;
+      for (Document item in documents){
+        if (item.type == DocumentType.incoming){
+          countIncomingDocument++;
+          sumPriceIncomingDocument+= item.amount*item.quantity;
+        }else{
+          countOutgoingDocument++;
+          sumPriceOutgoingDocument+= item.amount*item.quantity;
+        }
+      }
       double quantityTotal = 0;
-      double purchasePriceTotal = 0.0;
+      //double purchasePriceTotal = 0.0;
       for (Good good in goods){
         quantityTotal += good.quantity;
-        purchasePriceTotal += good.quantity * (good.purchasePrice ?? 0.0);
+        //purchasePriceTotal += good.quantity * (good.purchasePrice ?? 0.0);
       }
 
       emit(state.copyWith(
+        countGoods: goods.length,
           quantityTotal: quantityTotal,
-          purchasePriceTotal:purchasePriceTotal,
-          countDocument: countDocument,
+          //purchasePriceTotal:purchasePriceTotal,
+          //countDocument: countDocument,
+          countIncomingDocument: countIncomingDocument,
+          sumPriceIncomingDocument: sumPriceIncomingDocument,
+          countOutgoingDocument: countOutgoingDocument,
+          sumPriceOutgoingDocument : sumPriceOutgoingDocument,
           countSupplier: countSupplier,
           countCustomer: countCustomer,
           sumExpense: sumExpense

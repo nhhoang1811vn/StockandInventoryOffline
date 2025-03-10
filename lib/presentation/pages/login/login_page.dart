@@ -192,6 +192,12 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
                         margin:
                             EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                         child: SigninWithGoogleText()),
+                    ElevatedButton(
+                      onPressed: () {
+                        throw Exception("Test Crash!");
+                      },
+                      child: Text("Crash App"),
+                    ),
                     Container(
                       alignment: Alignment.centerRight,
                       margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
@@ -272,7 +278,8 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.black, fontWeight: FontWeight.bold),
-                              )],
+                              ),
+                            ],
                           ),
                         ),
                       ),

@@ -13,9 +13,7 @@ import 'package:good_manager/presentation/pages/expenses/components/sort_expense
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../../../main.dart';
 import '../base/base_state.dart';
-import '../custom_navigation_drawer.dart';
 import '../help_content.dart';
 import '../pages.dart';
 
@@ -140,7 +138,7 @@ class ExpensesPageState extends BaseStateWidget<ExpensesPage> {
             ))
       ]);
 
-  Widget _buildListView(ExpensesState data) => ListView.separated(
+  Widget _buildListView(ExpensesState data) => ListView.builder(
       itemBuilder: (BuildContext context, index) {
         Expense item = data.items[index];
         return ExpenseItemRow(item, (item) {
@@ -149,9 +147,9 @@ class ExpensesPageState extends BaseStateWidget<ExpensesPage> {
           onLongPressed(item);
         });
       },
-      separatorBuilder: (context, index) {
-        return Divider(color: Colors.grey[500]);
-      },
+      // separatorBuilder: (context, index) {
+      //   return Divider(color: Colors.grey[500]);
+      // },
       itemCount: data.items.length);
 
   void onPressed(Expense item) async {
@@ -210,7 +208,7 @@ class ExpensesPageState extends BaseStateWidget<ExpensesPage> {
     return BlocConsumer<ExpensesCubit, ExpensesState>(
         builder: (context, state) => Scaffold(
             key: ScaffoldKey,
-            drawer: CustomNavigationDrawer(selectedIndex: 3, storeName: storage.getSelectedStoreName()),
+            //drawer: CustomNavigationDrawer(selectedIndex: 3, storeName: storage.getSelectedStoreName()),
             appBar: _buildAppBar(state),
             body: _buildBody(state),
             floatingActionButton: FloatingActionButton(

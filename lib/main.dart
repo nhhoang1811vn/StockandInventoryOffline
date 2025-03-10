@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -24,7 +27,15 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  // Enable Crashlytics
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  //runApp(MyApp());
+
+  runZonedGuarded(() {
+    runApp(MyApp());
+  }, (error, stackTrace) {
+    FirebaseCrashlytics.instance.recordError(error, stackTrace, fatal: true);
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -67,10 +78,16 @@ class MyAppState extends State<MyApp> {
   ThemeData _buildTheme(brightness) {
     var baseTheme = ThemeData(
         brightness: brightness,
+        cardTheme: CardTheme(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8), // Rounded corners
+          ),
+        ),
         textTheme: TextTheme(
             displayLarge: TextStyle(),
-            titleLarge: TextStyle(),
+            titleLarge: TextStyle(fontSize: 19.0),
             titleMedium: TextStyle(fontSize: 17.0),
+            titleSmall: TextStyle(fontSize: 15.0),
             bodyMedium: TextStyle(fontSize: 15.0),
             bodySmall: TextStyle(),
             displaySmall: TextStyle(fontSize: 12.0)),
@@ -99,7 +116,8 @@ class MyAppState extends State<MyApp> {
         ));
 
     return baseTheme.copyWith(
-      textTheme: GoogleFonts.robotoTextTheme(baseTheme.textTheme),
+      //textTheme: GoogleFonts.robotoTextTheme(baseTheme.textTheme),
+      textTheme: GoogleFonts.montserratTextTheme(baseTheme.textTheme)
     );
   }
 

@@ -23,30 +23,29 @@ class SaveDocumentForm extends StatelessWidget {
   final TextEditingController dateController = TextEditingController();
 
   Widget _buildEmptyTransaction(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Icon(UIConstants.goodIconData, size: 60, color: AppColors.primaryColor),
-        Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: Text(AppLocalizations.of(context)!.empty_goods,
-                textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle()))
-      ],
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image(image: AssetImage('assets/images/box.png'), width: 60),
+          SizedBox(height: 16,),
+          Text(AppLocalizations.of(context)!.empty_goods,
+              textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle()),
+        ],
+      ),
     );
   }
 
   Widget _buildTransactionsView(BuildContext context, SaveDocumentState state) {
-    return ListView.separated(
+    return ListView.builder(
         itemBuilder: (BuildContext context, index) {
           var transaction = state.transactions[index];
           return DocumentTransactionItemRow(
               transaction,
               (item) => context.read<SaveDocumentCubit>().onPressedTransaction(transaction),
               (item) => onLongPressedTransaction(context, transaction));
-        },
-        separatorBuilder: (context, index) {
-          return Divider(color: Colors.grey[500]);
         },
         itemCount: state.transactions.length);
   }
@@ -100,9 +99,8 @@ class SaveDocumentForm extends StatelessWidget {
         child: Card(
           child: ListTile(
             title: TextField(
-              //focusNode: searchTextFocusNode,
               controller: searchTextController,
-              decoration: InputDecoration(hintText: "Tìm kiếm...", border: InputBorder.none),
+              decoration: InputDecoration(hintText: AppLocalizations.of(context)!.action_search, border: InputBorder.none),
               onChanged: context.read<SaveDocumentCubit>().onSearchTextChanged,
             ),
             trailing: Row(
@@ -187,7 +185,7 @@ class SaveDocumentForm extends StatelessWidget {
                               onChanged: (date) {}, onConfirm: (date) {
                             context.read<SaveDocumentCubit>().dateChanged(date);
                             dateController.text = Config.dateTimeFormat.format(date);
-                          }, currentTime: state.date, locale: LocaleType.vi)
+                          }, currentTime: state.date, locale: LocaleType.en)
                         },
                       )),
 
