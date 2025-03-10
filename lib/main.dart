@@ -103,7 +103,7 @@ class MyAppState extends State<MyApp> {
               if (states.contains(WidgetState.selected)) {
                 return Colors.blue.shade300;
               }
-              return Colors.blue.withOpacity(0.5); // Inactive track color
+              return Colors.blue.withValues(alpha: 125);
             },
           ),
         ),
@@ -116,8 +116,8 @@ class MyAppState extends State<MyApp> {
         ));
 
     return baseTheme.copyWith(
-      //textTheme: GoogleFonts.robotoTextTheme(baseTheme.textTheme),
-      textTheme: GoogleFonts.montserratTextTheme(baseTheme.textTheme)
+      textTheme: GoogleFonts.robotoTextTheme(baseTheme.textTheme),
+      //textTheme: GoogleFonts.montserratTextTheme(baseTheme.textTheme)
     );
   }
 

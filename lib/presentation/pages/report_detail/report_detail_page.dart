@@ -65,7 +65,7 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
   }
   _buildLoading(){
     return Container(
-      color: Colors.black.withOpacity(0.5), // Semi-transparent background
+      color: Colors.black.withValues(alpha: 125), // Semi-transparent background
       child: Center(
       child: Column(
       mainAxisSize: MainAxisSize.min,

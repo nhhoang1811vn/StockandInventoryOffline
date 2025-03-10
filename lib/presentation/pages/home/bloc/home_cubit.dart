@@ -48,10 +48,10 @@ class HomeCubit extends Cubit<HomeState> {
       for (Document item in documents){
         if (item.type == DocumentType.incoming){
           countIncomingDocument++;
-          sumPriceIncomingDocument+= item.amount*item.quantity;
+          sumPriceIncomingDocument+= item.amount;//*item.quantity;
         }else{
           countOutgoingDocument++;
-          sumPriceOutgoingDocument+= item.amount*item.quantity;
+          sumPriceOutgoingDocument+= item.amount;//*item.quantity;
         }
       }
       double quantityTotal = 0;
