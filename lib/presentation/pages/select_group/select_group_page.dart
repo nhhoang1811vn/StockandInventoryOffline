@@ -96,11 +96,8 @@ class SelectGroupPageState extends BaseStateWidget<SelectGroupPage> {
                   : null,
               child: Row(
                 children: [
-                  Icon(
-                    UIConstants.groupIconData,
-                    size: 24,
-                    color: UIConstants.primaryColor,
-                  ),
+                  Image(image: AssetImage('assets/images/folder.png'), width: 24),
+
                   SizedBox(
                     width: 16,
                   ),

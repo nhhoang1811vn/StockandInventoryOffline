@@ -17,14 +17,18 @@ class DocumentTransactionItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => onTransactionPressed(item),
-      onLongPress : () => onTransactionLongPressed(item),
-      child: Padding(padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0), child: Row(children: [
-        _buildLeadingWidget(),
-        SizedBox(width: 8,),
-        Expanded(child: _buildWidget(context))
-      ],),),);
+    return Card(
+      margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => onTransactionPressed(item),
+        onLongPress : () => onTransactionLongPressed(item),
+        child: Padding(padding: EdgeInsets.all(16.0), child: Row(children: [
+          _buildLeadingWidget(),
+          SizedBox(width: 8,),
+          Expanded(child: _buildWidget(context))
+        ],),),),
+    );
   }
   Widget _buildLeadingWidget(){
     return item.good.files.isNotEmpty
@@ -86,16 +90,9 @@ class DocumentTransactionItemRow extends StatelessWidget {
   }
   Widget getAvatarWidget(Uint8List bytes) {
     return SizedBox(width: 48, height: 48, child: Image.memory(bytes));
-    /*return Container(
-        width: 50,
-        height: 50,
-        alignment: Alignment.center,
-        decoration: new BoxDecoration(
-            shape: BoxShape.circle,
-          image: DecorationImage(image: FileImage(File(path)), fit: BoxFit.fill)
-        ));*/
   }
   Widget _buildEmptyAvatarWidget(){
-    return SizedBox(width: 48, height: 48, child: Icon(UIConstants.goodIconData, size: 32,color: UIConstants.primaryColor));
+    return Image(image: AssetImage('assets/images/box.png'), width: 32);
+    //return SizedBox(width: 48, height: 48, child: Icon(UIConstants.goodIconData, size: 32,color: UIConstants.primaryColor));
   }
 }

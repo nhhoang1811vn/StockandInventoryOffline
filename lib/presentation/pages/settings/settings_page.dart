@@ -15,7 +15,6 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../custom_navigation_drawer.dart';
 import '../pages.dart';
 import 'components/change_languages_dialog.dart';
 class SettingsPage extends StatefulWidget{
@@ -42,49 +41,60 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
   Widget buildWidget(BuildContext context) {
     return Scaffold(
         key: ScaffoldKey,
-        drawer: CustomNavigationDrawer(selectedIndex: 8, storeName: storage.getSelectedStoreName()),
+        backgroundColor: Colors.grey[100],
+        //drawer: CustomNavigationDrawer(selectedIndex: 8, storeName: storage.getSelectedStoreName()),
         appBar: new AppBar(
             title: new Text(AppLocalizations.of(context)!.settings_title)),
         body: ListView(
           //key: globalKey,
           children: [
+            Padding(padding: EdgeInsets.all(16.0),child: Text("General", style: Theme.of(context).textTheme.titleSmall,)),
+            // ListTile(
+            //   tileColor: Colors.white,
+            //   leading: Icon(Icons.language),
+            //   title:
+            //   Text(AppLocalizations.of(context)!.menu_item_language_title),
+            //   subtitle:
+            //   Text(AppLocalizations.of(context)!.menu_item_language_desc),
+            //   onTap: (){ showSelectLanguageDialog(context);},
+            // ),
+            //Divider(color: Colors.grey[500]),
             ListTile(
-              leading: Icon(Icons.language),
-              title:
-              Text(AppLocalizations.of(context)!.menu_item_language_title),
-              subtitle:
-              Text(AppLocalizations.of(context)!.menu_item_language_desc),
-              onTap: (){ showSelectLanguageDialog(context);},
-            ),
-            Divider(color: Colors.grey[500]),
-            ListTile(
+              tileColor: Colors.white,
               leading: Icon(UIConstants.barcodeIconData),
               title: Text(
                   AppLocalizations.of(context)!.menu_item_barcode_scanner_title),
               onTap: () => onBarcodeScannerPressed(context),
+              trailing: Icon(Icons.navigate_next),
             ),
-            Divider(color: Colors.grey[500]),
+            SizedBox(height: 32,),
+            Padding(padding: EdgeInsets.all(16.0),child: Text("Backup and Restore", style: Theme.of(context).textTheme.titleSmall,)),
+
             ListTile(
+              tileColor: Colors.white,
               leading: Icon(Icons.backup),
               title: Text(AppLocalizations.of(context)!.menu_back_up),
               subtitle: Text(AppLocalizations.of(context)!.menu_back_up_desc),
               onTap: () => onBackUpPressed(context),
             ),
-            Divider(color: Colors.grey[500]),
+            //Divider(color: Colors.grey[500]),
             ListTile(
+              tileColor: Colors.white,
               leading: Icon(Icons.restore),
               title: Text(AppLocalizations.of(context)!.menu_restore),
               subtitle: Text(AppLocalizations.of(context)!.menu_restore_desc),
               onTap: () => onRestorePressed(context),
             ),
-            Divider(color: Colors.grey[500]),
+            //Divider(color: Colors.grey[500]),
             ListTile(
+              tileColor: Colors.white,
               leading: Icon(Icons.cloud),
               title: Text(AppLocalizations.of(context)!.menu_push_data_to_cloud),
               subtitle: cloudFileUpdatedTime.isEmpty?Text(AppLocalizations.of(context)!.cloud_file_no_updated):Text(cloudFileUpdatedTime),
               onTap: () => onCloudPressed(context),
             ),
             ListTile(
+              tileColor: Colors.white,
               leading: Icon(Icons.sync),
               title: Text("Quick Sync"),
               subtitle: Text("It will restart the app, and sync the latest app data"),

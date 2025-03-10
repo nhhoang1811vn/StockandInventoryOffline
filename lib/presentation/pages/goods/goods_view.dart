@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/goods_setting.dart';
@@ -19,12 +19,10 @@ import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../../../main.dart';
 import '../../app_style.dart';
 import '../../widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
 import '../../widgets/snackbar_widgets.dart';
 import '../base/base_state.dart';
-import '../custom_navigation_drawer.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'good_item_row.dart';
@@ -34,7 +32,7 @@ class GoodsPage extends StatefulWidget {
   final bool isSelection;
   final Document? document;
 
-  GoodsPage({required this.isSelection, this.document});
+  GoodsPage({required this.isSelection, this.document, required Key? key}) : super(key: key);
 
   @override
   GoodsPageState createState() => GoodsPageState();
@@ -45,6 +43,7 @@ enum OverflowMenuItem { listSettings, help }
 class GoodsPageState extends BaseStateWidget<GoodsPage> {
   final TextEditingController searchTextController = TextEditingController();
   final FocusNode searchTextFocusNode = FocusNode();
+  final _key = GlobalKey<ExpandableFabState>();
 
   @override
   void initState() {
@@ -142,23 +141,18 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
 
   Widget get emptyView => Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(
-            UIConstants.goodIconData,
-            size: 60,
-            color: UIConstants.primaryColor,
-          ),
-          Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Text(AppLocalizations.of(context)!.empty_goods,
-                  textAlign: TextAlign.center,
-                  style: AppStyle.getEmptyTextStyle()))
+          Image(image: AssetImage('assets/images/box.png'), width: 60),
+          SizedBox(height: 16),
+          Text(AppLocalizations.of(context)!.empty_goods,
+              textAlign: TextAlign.center,
+              style: AppStyle.getEmptyTextStyle())
         ],
       );
 
   Widget _buildListView(GoodsState state) {
-    return ListView.separated(
+    return ListView.builder(
         itemBuilder: (BuildContext context, index) {
           if (index < state.groups.length) {
             var group = state.groups[index];
@@ -176,9 +170,9 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
                 isSelection: state.isSelection);
           }
         },
-        separatorBuilder: (context, index) {
-          return Divider(color: Colors.grey[500]);
-        },
+        //separatorBuilder: (context, index) {
+        //  return Divider(color: Colors.grey[500]);
+        //},
         itemCount: state.groups.length + state.goods.length);
   }
 
@@ -206,14 +200,6 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
             color: context.read<GoodsCubit>().hasSortOptions()
                 ? UIConstants.highlightMenuColor
                 : UIConstants.normalMenuColor));
-  }
-
-  Widget _buildHelpMenu() {
-    return IconButton(
-        onPressed: () {
-          context.read<GoodsCubit>().onHelpMenuClicked();
-        },
-        icon: Icon(Icons.help));
   }
 
   Widget _buildSearchBar(BuildContext context, GoodsState state) {
@@ -501,11 +487,6 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
         },
         builder: (context, state) => Scaffold(
             key: ScaffoldKey,
-            drawer: widget.isSelection
-                ? null
-                : CustomNavigationDrawer(
-                    selectedIndex: 1,
-                    storeName: storage.getSelectedStoreName()),
             appBar: new AppBar(
                 title: new Text(widget.isSelection
                     ? AppLocalizations.of(context)!.goods_select_title
@@ -535,43 +516,47 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
                           ]),
                 ]),
             body: _buildBody(context, state),
-            floatingActionButton: SpeedDial(
-              icon: Icons.add,
-              activeIcon: Icons.close,
-              //buttonSize: 56.0,
-              visible: true,
-              closeManually: false,
-              renderOverlay: false,
-              curve: Curves.bounceIn,
-              overlayColor: Colors.black,
-              overlayOpacity: 0.5,
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              elevation: 8.0,
-              shape: CircleBorder(),
-              //shape: RoundedRectangleBorder( borderRadius: BorderRadius.all(Radius.circular(8.0))),
-              children: [
-                SpeedDialChild(
-                    child: Icon(
-                      UIConstants.groupIconData,
-                      size: 20,
-                      color: UIConstants.primaryColor,
-                    ),
-                    backgroundColor: Colors.white,
-                    onTap: context.read<GoodsCubit>().onAddGroup,
-                    label: AppLocalizations.of(context)!.folder),
-                SpeedDialChild(
-                  child: SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: Icon(UIConstants.goodIconData,
-                        size: 20, color: UIConstants.primaryColor),
-                  ),
-                  backgroundColor: Colors.white,
-                  onTap: context.read<GoodsCubit>().onAddGood,
-                  label: AppLocalizations.of(context)!.good,
-                )
-              ],
-            )));
+          floatingActionButtonLocation: ExpandableFab.location,
+          floatingActionButton: ExpandableFab(
+            key: _key,
+            openButtonBuilder: RotateFloatingActionButtonBuilder(
+              child: const Icon(Icons.add),
+            ),
+            type: ExpandableFabType.up,
+            //childrenAnimation: ExpandableFabAnimation.none,
+            distance: 70,
+            overlayStyle: ExpandableFabOverlayStyle(
+              color: Colors.white.withOpacity(0.9),
+            ),
+            children: [
+              FloatingActionButton.extended(
+                icon:  Image(image: AssetImage('assets/images/box.png'), width: 24),
+                label: Text("Add Good"),
+                heroTag: null,
+                onPressed: () {
+                  final state = _key.currentState;
+                  if (state != null) {
+                    debugPrint('isOpen:${state.isOpen}');
+                    state.toggle();
+                  }
+                  context.read<GoodsCubit>().onAddGood();
+                },
+                //child: Icon(UIConstants.goodIconData, size: 30, color: Colors.blue[700],),
+              ),
+              FloatingActionButton.extended(
+                icon:  Image(image: AssetImage('assets/images/folder.png'), width: 24),
+                label: Text("Add Group"),
+                onPressed: (){
+                  final state = _key.currentState;
+                  if (state != null) {
+                    debugPrint('isOpen:${state.isOpen}');
+                    state.toggle();
+                  }
+                  context.read<GoodsCubit>().onAddGroup();
+                }
+              ),
+            ],
+          ),
+        ));
   }
 }

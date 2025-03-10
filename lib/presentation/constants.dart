@@ -36,13 +36,13 @@ class Config {
   static DateTime minTime = DateTime(1900, 1, 1);
   static DateTime maxTime = DateTime(2101, 1, 1);
 
-  static DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+  //static DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+  static DateFormat dateFormat = DateFormat('MMMM d, yyyy');
   static DateFormat dateTimeFormat = DateFormat('dd/MM/yyyy HH:mm');
-  //static NumberFormat expenseAmountFormat = NumberFormat("0.##");
-  static NumberFormat doubleFormat =  NumberFormat("0.##");
+  //static NumberFormat doubleFormat =  NumberFormat("0.##");
 
-  static NumberFormat currencyFormat = NumberFormat.currency(locale: "vi_VN", symbol: "đ");
-  static NumberFormat simpleCurrencyFormat = NumberFormat.decimalPattern("vi_VN");
+  static NumberFormat currencyFormat = NumberFormat.currency(locale: "en_US", symbol: "");
+  static NumberFormat simpleCurrencyFormat = NumberFormat.decimalPattern("en_US");
 }
 
 class UIConstants {
@@ -59,11 +59,10 @@ class UIConstants {
   static IconData cancelIconData = Icons.close;
   static IconData barcodeIconData =  FontAwesomeIcons.barcode;
 
-  static IconData homeIconData =  FontAwesomeIcons.house;
-  static IconData goodIconData =  FontAwesomeIcons.boxOpen;
-
-  static IconData groupIconData =  FontAwesomeIcons.solidFolder;//Icons.folder;//FontAwesomeIcons.folder;
-  static IconData documentIconData = FontAwesomeIcons.book;
+  //static IconData homeIconData =  FontAwesomeIcons.home;
+  //static IconData goodIconData =  FontAwesomeIcons.boxOpen;
+  //static IconData groupIconData =  FontAwesomeIcons.solidFolder;//Icons.folder;//FontAwesomeIcons.folder;
+  //static IconData documentIconData = FontAwesomeIcons.book;
   static IconData supplierIconData = FontAwesomeIcons.userGroup;
   static IconData customerIconData = FontAwesomeIcons.userGroup;
   static IconData expenseIconData = FontAwesomeIcons.handHoldingDollar;

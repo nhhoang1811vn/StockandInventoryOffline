@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 import 'package:good_manager/domain/entities/group.dart';
-import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 
 class SelectGroupDialog extends StatefulWidget {
@@ -90,11 +89,12 @@ class SelectGroupDialogState extends State<SelectGroupDialog> {
                   : null,
               child: Row(
                 children: [
-                  Icon(
-                    UIConstants.groupIconData,
-                    size: 24,
-                    color: UIConstants.primaryColor,
-                  ),
+              Image(image: AssetImage('assets/images/folder.png'), width: 24),
+                  // Icon(
+                  //   UIConstants.groupIconData,
+                  //   size: 24,
+                  //   color: UIConstants.primaryColor,
+                  // ),
                   SizedBox(
                     width: 16,
                   ),

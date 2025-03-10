@@ -8,7 +8,6 @@ import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
-import 'package:good_manager/presentation/pages/custom_navigation_drawer.dart';
 import 'package:good_manager/presentation/pages/documents/components/document_date_row.dart';
 import 'package:good_manager/presentation/pages/documents/document_ui.dart';
 import 'package:good_manager/presentation/pages/documents/sort_documents_dialog.dart';
@@ -21,9 +20,10 @@ import '../help_content.dart';
 import '../pages.dart';
 import 'add_document_dialog.dart';
 import 'bloc/documents_cubit.dart';
-import 'document_item_row.dart';
+import 'document_item_row2.dart';
 
 class DocumentsPage extends StatefulWidget {
+  const DocumentsPage({required Key? key}) : super(key: key);
   @override
   DocumentPageState createState() => DocumentPageState();
 }
@@ -61,13 +61,21 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
     return Column(children: children);
   }
 
-  Widget _buildIncomingDocumentView(BuildContext context, DocumentsState state) => Stack(
-        children: [_buildIncomingEmptyView(context, state), _buildIncomingListView(state)],
-      );
+  Widget _buildIncomingDocumentView(BuildContext context, DocumentsState state) => Column(
+    children: [Expanded(
+      child: Stack(
+            children: [_buildIncomingEmptyView(context, state), _buildIncomingListView(state)],
+          ),
+    )],
+  );
 
-  Widget _buildOutgoingDocumentView(BuildContext context, DocumentsState state) => Stack(
-        children: [_buildOutgoingEmptyView(context, state), _buildOutgoingListView(state)],
-      );
+  Widget _buildOutgoingDocumentView(BuildContext context, DocumentsState state) => Column(
+    children: [Expanded(
+      child: Stack(
+            children: [_buildOutgoingEmptyView(context, state), _buildOutgoingListView(state)],
+          ),
+    )],
+  );
 
   @override
   Widget buildWidget(BuildContext context) {
@@ -77,7 +85,7 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
             child: Builder(builder: (BuildContext context) {
               return Scaffold(
                   key: ScaffoldKey,
-                  drawer: CustomNavigationDrawer(selectedIndex: 2, storeName: storage.getSelectedStoreName()),
+                  //drawer: CustomNavigationDrawer(selectedIndex: 2, storeName: storage.getSelectedStoreName()),
                   appBar: _buildAppBar(state),
                   body: TabBarView(children: [
                     _buildAllDocumentView(state),
@@ -87,7 +95,8 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
                   floatingActionButton: FloatingActionButton(
                     onPressed: () => onAddDocument(DefaultTabController.of(context).index),
                     child: Icon(Icons.add)
-                  ));
+                  )
+              );
             })),
         listenWhen: (state1, state2) => state1.state != state2.state,
         listener: (context, state) async {
@@ -167,14 +176,13 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
       visible: state.items.isEmpty,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(UIConstants.documentIconData, size: 60, color: AppColors.primaryColor),
-          Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Text(AppLocalizations.of(context)!.empty_document,
-                  textAlign: TextAlign.center,
-                  style: AppStyle.getEmptyTextStyle()))
+          Image(image: AssetImage('assets/images/document.png'), width: 60),
+          SizedBox(height: 16),
+          Text(AppLocalizations.of(context)!.empty_document,
+              textAlign: TextAlign.center,
+              style: AppStyle.getEmptyTextStyle())
         ],
       ));
 
@@ -182,12 +190,11 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
       visible: state.incomingItems.isEmpty,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(UIConstants.documentIconData, size: 60, color: AppColors.primaryColor),
-          Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Text(AppLocalizations.of(context)!.empty_incoming_document, textAlign: TextAlign.center,style: AppStyle.getEmptyTextStyle()))
+          Image(image: AssetImage('assets/images/document.png'), width: 60),
+          SizedBox(height: 16),
+          Text(AppLocalizations.of(context)!.empty_incoming_document, textAlign: TextAlign.center,style: AppStyle.getEmptyTextStyle())
         ],
       ));
 
@@ -195,64 +202,54 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
       visible: state.outgoingItems.isEmpty,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(UIConstants.documentIconData, size: 60, color: AppColors.primaryColor),
-          Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Text(AppLocalizations.of(context)!.empty_outgoing_document, textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle()))
+          Image(image: AssetImage('assets/images/document.png'), width: 60),
+          SizedBox(height: 16),
+          Text(AppLocalizations.of(context)!.empty_outgoing_document, textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle())
         ],
       ));
 
   Widget _buildAllListView(DocumentsState state) => Visibility(
       visible: state.items.isNotEmpty,
-      child: ListView.separated(
+      child: ListView.builder(
           itemBuilder: (BuildContext context, index) {
             DocumentUI item = state.items[index];
             if (item.type == DocumentUIType.data) {
-              return DocumentItemRow(
+              return DocumentItemRow2(
                   true, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
             } else {
               return DocumentDateRow(item.dateText);
             }
           },
-          separatorBuilder: (context, index) {
-            return Divider(color: Colors.grey[500]);
-          },
           itemCount: state.items.length));
 
   Widget _buildIncomingListView(DocumentsState state) => Visibility(
       visible: state.incomingItems.isNotEmpty,
-      child: ListView.separated(
+      child: ListView.builder(
           itemBuilder: (BuildContext context, index) {
             DocumentUI item = state.incomingItems[index];
             if (item.type == DocumentUIType.data) {
-              return DocumentItemRow(
+              return DocumentItemRow2(
                   false, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
             } else {
               return DocumentDateRow(item.dateText);
             }
             },
-          separatorBuilder: (context, index) {
-            return Divider(color: Colors.grey[500]);
-          },
           itemCount: state.incomingItems.length));
 
   Widget _buildOutgoingListView(DocumentsState state) => Visibility(
       visible: state.outgoingItems.isNotEmpty,
-      child: ListView.separated(
+      child: ListView.builder(
           itemBuilder: (BuildContext context, index) {
             DocumentUI item = state.outgoingItems[index];
             if (item.type == DocumentUIType.data) {
-              return DocumentItemRow(
+              return DocumentItemRow2(
                   false, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
             } else {
               return DocumentDateRow(item.dateText);
             }
             },
-          separatorBuilder: (context, index) {
-            return Divider(color: Colors.grey[500]);
-          },
           itemCount: state.outgoingItems.length));
   Widget _buildSearchMenu(DocumentsState state){
     return IconButton(onPressed: (){

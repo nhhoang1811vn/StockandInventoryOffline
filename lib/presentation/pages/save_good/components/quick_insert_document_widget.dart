@@ -206,7 +206,7 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
                 onChanged: (date) {}, onConfirm: (date) {
                   context.read<QuickInsertDocumentCubit>().dateChanged(date);
                   dateTextController.text = Config.dateFormat.format(date);
-                }, currentTime: state.date, locale: LocaleType.vi)
+                }, currentTime: state.date, locale: LocaleType.en)
           },
         );
   }

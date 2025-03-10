@@ -30,8 +30,11 @@ class LoadingDataState extends State<LoadingData> {
         listener: (context, state) {
           if (state is UserSignInSuccessfulWithStore) {
             if (!context.mounted) return;
+            //Navigator.of(context)
+            //    .pushNamedAndRemoveUntil(Pages.home, (route) => false);
             Navigator.of(context)
-                .pushNamedAndRemoveUntil(Pages.home, (route) => false);
+                .pushNamedAndRemoveUntil(Pages.main, (route) => false);
+
           } else if (state is UserSignInSuccessfulWithNoStore) {
             if (!context.mounted) return;
             Navigator.of(context)

@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_beep/flutter_beep.dart';
+//import 'package:flutter_beep/flutter_beep.dart';
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
 import 'package:good_manager/main.dart';
 import 'package:vibration/vibration.dart';
@@ -16,7 +16,7 @@ class Utils{
     var enableSound = storage.getBarcodeScannerEnableBeep();
     var enableVibrate = storage.getBarcodeScannerEnableVibrate();
     if (enableSound){
-      FlutterBeep.beep();
+      //FlutterBeep.beep();
     }
     if (enableVibrate){
       var vibrationCapabilities = await Vibration.hasVibrator();

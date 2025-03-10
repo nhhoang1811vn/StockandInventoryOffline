@@ -28,9 +28,9 @@ class OnBoardingPage extends StatelessWidget {
       if (state.status.isFailure) {
         //ScaffoldMessenger.of(context)
         //    .showSnackBar(snackBarWhenFailureWithText(state.exceptionError));
-        Navigator.of(context).pushReplacementNamed(Pages.home);
+        Navigator.of(context).pushReplacementNamed(Pages.main);
       } else if (state.status.isSuccess) {
-        Navigator.of(context).pushReplacementNamed(Pages.home);
+        Navigator.of(context).pushReplacementNamed(Pages.main);
       }
     },builder: (context, state) => IntroductionScreen(
       //key: globalKey,
