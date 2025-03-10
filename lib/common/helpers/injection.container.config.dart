@@ -1,3 +1,4 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
@@ -131,6 +132,8 @@ import 'package:good_manager/presentation/pages/suppliers/bloc/suppliers_cubit.d
     as _i831;
 import 'package:good_manager/presentation/widgets/add_quantity_and_price/add_quantity_and_price_cubit.dart'
     as _i205;
+import 'package:good_manager/presentation/widgets/sale_report/sale_report_cubit.dart'
+    as _i218;
 import 'package:injectable/injectable.dart' as _i526;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -206,10 +209,6 @@ extension GetItInjectableX on _i174.GetIt {
           useCase: gh<_i886.PaymentUseCases>(),
           documentUseCases: gh<_i231.DocumentUseCases>(),
         ));
-    gh.factory<_i733.SaveStoreCubit>(() => _i733.SaveStoreCubit(
-          useCase: gh<_i579.StoresUseCase>(),
-          storage: gh<_i72.Storage>(),
-        ));
     gh.factory<_i403.AuthCubit>(() => _i403.AuthCubit(
           useCase: gh<_i579.StoresUseCase>(),
           storage: gh<_i72.Storage>(),
@@ -218,8 +217,14 @@ extension GetItInjectableX on _i174.GetIt {
           useCase: gh<_i579.StoresUseCase>(),
           storage: gh<_i72.Storage>(),
         ));
+    gh.factory<_i733.SaveStoreCubit>(() => _i733.SaveStoreCubit(
+          useCase: gh<_i579.StoresUseCase>(),
+          storage: gh<_i72.Storage>(),
+        ));
     gh.factory<_i984.GroupsUseCases>(() =>
         _i260.GroupsUseCaseImpl(repository: gh<_i990.GroupsRepository>()));
+    gh.factory<_i218.SaleReportCubit>(
+        () => _i218.SaleReportCubit(useCase: gh<_i231.DocumentUseCases>()));
     gh.factory<_i51.ExpensesCubit>(() => _i51.ExpensesCubit(
           storage: gh<_i72.Storage>(),
           useCase: gh<_i849.ExpenseUseCases>(),

@@ -10,6 +10,7 @@ import 'package:good_manager/presentation/widgets/logo_app_bar.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
 import '../../../domain/entities/document.dart';
+import '../../widgets/sale_report/sale_report_widget.dart';
 import '../pages.dart';
 
 class HomePage extends StatefulWidget {
@@ -84,6 +85,8 @@ class HomePageState extends BaseStateWidget<HomePage> {
                 SizedBox(width: 16),
                 Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.report_title, "N/A", UIConstants.reportIconData, Colors.green[50],Colors.green[700], openReport))
               ],),
+              SizedBox(height: 16,),
+              SaleReportWidget()
             ],
           )),
     ];
