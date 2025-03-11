@@ -13,6 +13,7 @@ import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.d
 import 'package:good_manager/presentation/pages/save_good/components/quick_insert_document_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
@@ -62,6 +63,10 @@ class SaveGoodForm extends StatelessWidget {
             ScaffoldMessenger.of(context)
                 .showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.error_same_barcode));
           } else if (state.state is SaveItemSuccessful) {
+            final InAppReview inAppReview = InAppReview.instance;
+            if (await inAppReview.isAvailable()) {
+              inAppReview.requestReview();
+            }
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
             Navigator.of(context).pop({"item": state.item, "document": state.document});
           } else if (state.state is OpenCalculatorToInputQuantityState) {
