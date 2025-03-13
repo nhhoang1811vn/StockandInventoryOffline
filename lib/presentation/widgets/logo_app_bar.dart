@@ -10,7 +10,7 @@ class LogoAppBar extends StatelessWidget implements PreferredSizeWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Image(
-            image: AssetImage('assets/images/app_icon.png'),
+            image: AssetImage('assets/images/box.png'),
             width: 36,
           ),
           SizedBox(width: 8),

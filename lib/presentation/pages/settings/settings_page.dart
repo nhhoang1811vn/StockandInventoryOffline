@@ -17,8 +17,10 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../pages.dart';
 import 'components/change_languages_dialog.dart';
-class SettingsPage extends StatefulWidget{
+
+class SettingsPage extends StatefulWidget {
   SettingsPage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return SettingsPageState();
@@ -28,15 +30,18 @@ class SettingsPage extends StatefulWidget{
 class SettingsPageState extends BaseStateWidget<SettingsPage> {
   //SettingsPage({Key? key}) : super(key: key);
   var cloudFileUpdatedTime = "";
+
   @override
   void initState() {
     super.initState();
     loadCloudFileUpdatedTime();
   }
+
   @override
   bool hasDrawer() {
     return true;
   }
+
   @override
   Widget buildWidget(BuildContext context) {
     return Scaffold(
@@ -46,9 +51,28 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
         appBar: new AppBar(
             title: new Text(AppLocalizations.of(context)!.settings_title)),
         body: ListView(
+          padding: EdgeInsets.all(16),
           //key: globalKey,
           children: [
-            Padding(padding: EdgeInsets.all(16.0),child: Text("General", style: Theme.of(context).textTheme.titleSmall,)),
+            Text(
+              "General",
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            Card(color: Colors.white, child: Column(children: [
+              SizedBox(
+                height: 4,
+              ),
+              ListTile(
+                leading: Icon(UIConstants.barcodeIconData),
+                title: Text(AppLocalizations.of(context)!
+                    .menu_item_barcode_scanner_title),
+                onTap: () => onBarcodeScannerPressed(context),
+                trailing: Icon(Icons.navigate_next),
+              ),
+              SizedBox(
+                height: 4,
+              ),
+            ],),),
             // ListTile(
             //   tileColor: Colors.white,
             //   leading: Icon(Icons.language),
@@ -59,90 +83,118 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
             //   onTap: (){ showSelectLanguageDialog(context);},
             // ),
             //Divider(color: Colors.grey[500]),
-            ListTile(
-              tileColor: Colors.white,
-              leading: Icon(UIConstants.barcodeIconData),
-              title: Text(
-                  AppLocalizations.of(context)!.menu_item_barcode_scanner_title),
-              onTap: () => onBarcodeScannerPressed(context),
-              trailing: Icon(Icons.navigate_next),
-            ),
-            SizedBox(height: 32,),
-            Padding(padding: EdgeInsets.all(16.0),child: Text("Backup and Restore", style: Theme.of(context).textTheme.titleSmall,)),
 
-            ListTile(
-              tileColor: Colors.white,
-              leading: Icon(Icons.backup),
-              title: Text(AppLocalizations.of(context)!.menu_back_up),
-              subtitle: Text(AppLocalizations.of(context)!.menu_back_up_desc),
-              onTap: () => onBackUpPressed(context),
+            SizedBox(
+              height: 16,
             ),
-            //Divider(color: Colors.grey[500]),
-            ListTile(
-              tileColor: Colors.white,
-              leading: Icon(Icons.restore),
-              title: Text(AppLocalizations.of(context)!.menu_restore),
-              subtitle: Text(AppLocalizations.of(context)!.menu_restore_desc),
-              onTap: () => onRestorePressed(context),
+            Text(
+              "Backup and Restore",
+              style: Theme.of(context).textTheme.titleSmall,
             ),
-            //Divider(color: Colors.grey[500]),
-            ListTile(
-              tileColor: Colors.white,
-              leading: Icon(Icons.cloud),
-              title: Text(AppLocalizations.of(context)!.menu_push_data_to_cloud),
-              subtitle: cloudFileUpdatedTime.isEmpty?Text(AppLocalizations.of(context)!.cloud_file_no_updated):Text(cloudFileUpdatedTime),
-              onTap: () => onCloudPressed(context),
+            SizedBox(
+              height: 8,
             ),
-            ListTile(
-              tileColor: Colors.white,
-              leading: Icon(Icons.sync),
-              title: Text("Quick Sync"),
-              subtitle: Text("It will restart the app, and sync the latest app data"),
-              onTap: () => onQuickSyncPressed(context),
-            ),
+            Card(
+              color: Colors.white,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 4,
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.backup),
+                    title: Text(AppLocalizations.of(context)!.menu_back_up),
+                    subtitle:
+                        Text(AppLocalizations.of(context)!.menu_back_up_desc),
+                    onTap: () => onBackUpPressed(context),
+                  ),
+                  Divider(
+                    height: 1,
+                  ),
+                  //Divider(color: Colors.grey[500]),
+                  ListTile(
+                    leading: Icon(Icons.restore),
+                    title: Text(AppLocalizations.of(context)!.menu_restore),
+                    subtitle:
+                        Text(AppLocalizations.of(context)!.menu_restore_desc),
+                    onTap: () => onRestorePressed(context),
+                  ),
+                  Divider(
+                    height: 1,
+                  ),
+                  //Divider(color: Colors.grey[500]),
+                  ListTile(
+                    leading: Icon(Icons.cloud),
+                    title: Text(
+                        AppLocalizations.of(context)!.menu_push_data_to_cloud),
+                    subtitle: cloudFileUpdatedTime.isEmpty
+                        ? Text(
+                            AppLocalizations.of(context)!.cloud_file_no_updated)
+                        : Text(cloudFileUpdatedTime),
+                    onTap: () => onCloudPressed(context),
+                  ),
+                  Divider(
+                    height: 1,
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.sync),
+                    title: Text("Quick Sync"),
+                    subtitle: Text(
+                        "It will restart the app, and sync the latest app data"),
+                    onTap: () => onQuickSyncPressed(context),
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                ],
+              ),
+            )
           ],
         ));
   }
-  void loadCloudFileUpdatedTime() async{
+
+  void loadCloudFileUpdatedTime() async {
     final storageRef = FirebaseStorage.instance.ref();
     String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null){
-      try{
+    if (uid != null) {
+      try {
         final ref = storageRef.child("$uid/database.db");
         ref.getMetadata().then((value) => setState(() {
-          cloudFileUpdatedTime = DateFormat('dd-MM-yyyy HH:mm').format(value.updated!);
-        }));
-      }on FirebaseException {
+              cloudFileUpdatedTime =
+                  DateFormat('dd-MM-yyyy HH:mm').format(value.updated!);
+            }));
+      } on FirebaseException {
         setState(() {
           cloudFileUpdatedTime = "";
         });
-      }catch(e){
+      } catch (e) {
         setState(() {
           cloudFileUpdatedTime = "";
         });
       }
-    }else{
+    } else {
       setState(() {
         cloudFileUpdatedTime = "";
       });
     }
+  }
 
-  }
-  void showSelectLanguageDialog(BuildContext context) async {
-    String currentCode = storage.getLanguageCode();
-    showDialog(
-        context: context,
-        builder: (_) => ChangeLanguagesDialog(currentCode, (code) {
-          storage.setLanguageCode(code);
-          MyApp.setLocale(context, code);
-              //appDataManager.sharedPrefsHelper.setLanguageCode(code);
-              //MyApp.setLocale(getContext(), code);
-            }),
-        barrierDismissible: true);
-  }
-  void onBarcodeScannerPressed(BuildContext context){
+  // void showSelectLanguageDialog(BuildContext context) async {
+  //   String currentCode = storage.getLanguageCode();
+  //   showDialog(
+  //       context: context,
+  //       builder: (_) => ChangeLanguagesDialog(currentCode, (code) {
+  //         storage.setLanguageCode(code);
+  //         MyApp.setLocale(context, code);
+  //             //appDataManager.sharedPrefsHelper.setLanguageCode(code);
+  //             //MyApp.setLocale(getContext(), code);
+  //           }),
+  //       barrierDismissible: true);
+  // }
+  void onBarcodeScannerPressed(BuildContext context) {
     Navigator.of(context).pushNamed(Pages.barcode_scanner);
   }
+
   Future<String?> getDownloadPath() async {
     Directory? directory;
     try {
@@ -150,69 +202,73 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
         directory = await getApplicationDocumentsDirectory();
       } else {
         directory = Directory('/storage/emulated/0/Download');
-        if (!await directory.exists()) directory = await getExternalStorageDirectory();
+        if (!await directory.exists())
+          directory = await getExternalStorageDirectory();
       }
     } catch (err) {
       print("Cannot get download folder path");
     }
     return directory?.path;
   }
-  Future<void> backup(BuildContext context, String filePath) async{
-    try{
+
+  Future<void> backup(BuildContext context, String filePath) async {
+    try {
       String dbPath = await PathUtils().getDatabasePath();
       File source = File(dbPath);
       if (Platform.isAndroid) {
         DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
         AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-        if (androidInfo.version.sdkInt > 29){
+        if (androidInfo.version.sdkInt > 29) {
           var status = await Permission.manageExternalStorage.status;
           if (!status.isGranted) {
             //openAppSettings();
             await Permission.manageExternalStorage.request();
           }
-        }else{
+        } else {
           var status = await Permission.storage.status;
           if (!status.isGranted) {
             await Permission.storage.request();
           }
         }
-      }else{
+      } else {
         var status = await Permission.storage.status;
         if (!status.isGranted) {
           await Permission.storage.request();
         }
       }
-        await source.copy(filePath);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context)!.backup_successful + " " +filePath),
-        ));
-    }catch (e){
+      await source.copy(filePath);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.of(context)!.backup_error + " " + e.toString()),
+        content: Text(
+            AppLocalizations.of(context)!.backup_successful + " " + filePath),
+      ));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+            AppLocalizations.of(context)!.backup_error + " " + e.toString()),
       ));
     }
   }
-  void onBackUpPressed(BuildContext context) async{
+
+  void onBackUpPressed(BuildContext context) async {
     final dateFormat = new DateFormat('dd-MM-yyyy-HH-mm');
     final timeStamp = dateFormat.format(DateTime.now());
     String fileName = "appviet_goodmanager_database_$timeStamp.db";
     if (Platform.isWindows) {
       String? outputFile = await FilePicker.platform.saveFile(
-        dialogTitle: 'Please select an output file:',
-        fileName: fileName
-      );
+          dialogTitle: 'Please select an output file:', fileName: fileName);
       if (outputFile != null) {
         await backup(context, outputFile);
       }
-    }else{
+    } else {
       String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
       if (selectedDirectory != null) {
-        String outputFile = selectedDirectory  + fileName;
+        String outputFile = selectedDirectory + fileName;
         await backup(context, outputFile);
       }
     }
   }
-  void onRestorePressed(BuildContext context) async{
+
+  void onRestorePressed(BuildContext context) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       restore(context, result.files.single.path!);
@@ -220,42 +276,47 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
       // User canceled the picker
     }
   }
-  void restore(BuildContext context, String filePath) async{
-    try{
+
+  void restore(BuildContext context, String filePath) async {
+    try {
       File source = File(filePath);
       String dbPath = await PathUtils().getDatabasePath();
       //File file = File(dbPath);
       //if (await file.exists()){
-     //   await file.delete();
+      //   await file.delete();
       //}
       await source.copy(dbPath);
       ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
-    }catch(e){
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("restore error: " + e.toString()),
       ));
     }
   }
-  void onCloudPressed(BuildContext context) async{
+
+  void onCloudPressed(BuildContext context) async {
     //upload
     String dbPath = await PathUtils().getDatabasePath();
     File file = File(dbPath);
     final storageRef = FirebaseStorage.instance.ref();
     String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null){
+    if (uid != null) {
       final ref = storageRef.child("$uid/database.db");
       try {
         await ref.putFile(file);
-        ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(snackBarWhenSuccess(context));
         loadCloudFileUpdatedTime();
       } on FirebaseException {
-        ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(snackBarWhenFailure(context));
       }
     }
   }
-  void onQuickSyncPressed(BuildContext context){
+
+  void onQuickSyncPressed(BuildContext context) {
     justLogin = true;
-    Navigator.of(context).pushNamedAndRemoveUntil(Pages.loading_data, (Route<dynamic> route) => false);
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        Pages.loading_data, (Route<dynamic> route) => false);
   }
 }
-

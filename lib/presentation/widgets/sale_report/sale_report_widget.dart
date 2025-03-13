@@ -30,7 +30,7 @@ class SaleReportWidgetState extends State<SaleReportWidget> {
               padding: EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Text("Sale Reports in last 6 months", style: Theme.of(context).textTheme.titleLarge),
+                  Text("Sale Reports in last 6 months", style: Theme.of(context).textTheme.titleMedium),
                   SizedBox(height: 16,),
                   SizedBox(height: 250, child: LineChart(getLineChartData(state), duration: const Duration(milliseconds: 250)),)
 

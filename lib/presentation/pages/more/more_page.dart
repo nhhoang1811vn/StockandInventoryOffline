@@ -19,14 +19,15 @@ import '../../markdown/md_provider_factory.dart';
 import '../../widgets/logo_app_bar.dart';
 import '../../widgets/select_message_type_dialog.dart';
 import '../pages.dart';
-class MorePage extends StatefulWidget{
+
+class MorePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return MorePageState();
   }
-
 }
-class MorePageState extends State<MorePage>{
+
+class MorePageState extends State<MorePage> {
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
     packageName: 'Unknown',
@@ -35,6 +36,7 @@ class MorePageState extends State<MorePage>{
     buildSignature: 'Unknown',
     installerStore: 'Unknown',
   );
+
   //var _storeName = "";
 
   @override
@@ -53,135 +55,167 @@ class MorePageState extends State<MorePage>{
 
   @override
   Widget build(BuildContext context) {
-    String displayName = FirebaseAuth.instance.currentUser?.displayName??"";
-    if (displayName.isEmpty){
+    String displayName = FirebaseAuth.instance.currentUser?.displayName ?? "";
+    if (displayName.isEmpty) {
       displayName = FirebaseAuth.instance.currentUser?.uid ?? "";
     }
-    String email = FirebaseAuth.instance.currentUser?.email??"";
-
+    String email = FirebaseAuth.instance.currentUser?.email ?? "";
 
     return Scaffold(
       appBar: LogoAppBar(),
       backgroundColor: Colors.grey[100],
       body: ListView(children: [
-
-        Padding(padding: EdgeInsets.all(16.0),child: Text("General", style: Theme.of(context).textTheme.titleSmall,)),
-        ListTile(
-          tileColor: Colors.white,
-          title: Text(displayName, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
-          subtitle: Text(email, style: Theme.of(context).textTheme.bodyMedium),
+        Card(
+          color: Colors.white,
+          margin: EdgeInsets.all(16),
+          child: Column(
+            children: [
+              SizedBox(height: 4),
+              ListTile(
+                tileColor: Colors.white,
+                title: Text(displayName,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.bold)),
+                subtitle:
+                    Text(email, style: Theme.of(context).textTheme.bodyMedium),
+              ),
+              Divider(height: 1,),
+              ListTile(
+                tileColor: Colors.white,
+                leading: Icon(Icons.close, size: UIConstants.drawerMenuSize),
+                title: Text(
+                    AppLocalizations.of(context)!.menu_item_delete_account),
+                onTap: () => onDeleteAccountItemPressed(),
+              ),
+              Divider(height: 1,),
+              ListTile(
+                tileColor: Colors.white,
+                leading: Icon(UIConstants.storeIconData,
+                    size: UIConstants.drawerMenuSize),
+                title: Text(AppLocalizations.of(context)!.stores_title),
+                trailing: Icon(Icons.navigate_next),
+                onTap: () => onStoresItemPressed(context),
+              ),
+              Divider(height: 1,),
+              ListTile(
+                tileColor: Colors.white,
+                leading:
+                    Icon(Icons.change_circle, size: UIConstants.drawerMenuSize),
+                title: Text("Change Tracking Store"),
+                subtitle:
+                    Text("Tracking Store: ${storage.getSelectedStoreName()}"),
+                trailing: Icon(Icons.navigate_next),
+                onTap: () => onChangeTrackingStoreItemPressed(context),
+              ),
+              Divider(height: 1,),
+              ListTile(
+                tileColor: Colors.white,
+                leading: Icon(UIConstants.settingIconData,
+                    size: UIConstants.drawerMenuSize),
+                title: Text(AppLocalizations.of(context)!.settings_title),
+                trailing: Icon(Icons.navigate_next),
+                onTap: () => onSettingsItemPressed(context),
+              ),
+              Divider(height: 1,),
+              ListTile(
+                tileColor: Colors.white,
+                title: Text(_packageInfo.appName,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.bold)),
+                subtitle: Text("Version " + _packageInfo.version,
+                    style: Theme.of(context).textTheme.bodyMedium),
+              ),
+              SizedBox(height: 4),
+            ],
+          ),
         ),
-        ListTile(
-          tileColor: Colors.white,
-          leading: Icon(Icons.close, size: UIConstants.drawerMenuSize),
-          title: Text(AppLocalizations.of(context)!.menu_item_delete_account),
-          onTap: () => onDeleteAccountItemPressed(),
-        ),
-        ListTile(
-          tileColor: Colors.white,
-          leading: Icon(UIConstants.storeIconData, size: UIConstants.drawerMenuSize),
-          title: Text(AppLocalizations.of(context)!.stores_title),
-          trailing: Icon(Icons.navigate_next),
-          onTap: () => onStoresItemPressed(context),
-        ),
-        ListTile(
-          tileColor: Colors.white,
-          leading: Icon(Icons.change_circle, size: UIConstants.drawerMenuSize),
-          title: Text("Change Tracking Store"),
-          subtitle: Text("Tracking Store: ${storage.getSelectedStoreName()}"),
-          trailing: Icon(Icons.navigate_next),
-          onTap: () => onChangeTrackingStoreItemPressed(context),
-        ),
-        ListTile(
-          tileColor: Colors.white,
-          leading: Icon(UIConstants.settingIconData, size: UIConstants.drawerMenuSize),
-          title: Text(AppLocalizations.of(context)!.settings_title),
-          trailing: Icon(Icons.navigate_next),
-          onTap: () => onSettingsItemPressed(context),
-        ),
-        ListTile(
-          tileColor: Colors.white,
-          title: Text(_packageInfo.appName, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
-          subtitle: Text("Version " + _packageInfo.version, style: Theme.of(context).textTheme.bodyMedium),
-        ),
-        // ListTile(
-        //   tileColor: Colors.white,
-        //   leading: Icon(FontAwesomeIcons.circleInfo, size: UIConstants.drawerMenuSize),
-        //   title: Text("About"),
-        //   trailing: Icon(Icons.navigate_next),
-        //   onTap: () => onAboutItemPressed(context),
-        // ),
-        Padding(padding: EdgeInsets.all(16.0),child: Text("Others", style: Theme.of(context).textTheme.titleSmall,)),
-        ListTile(
-          tileColor: Colors.white,
-          leading: Icon(FontAwesomeIcons.paperPlane, size: UIConstants.drawerMenuSize),
-          title: Text(AppLocalizations.of(context)!.menu_item_invite_friend_header),
-          onTap: () => onInviteFriend(context),
-        ),
-        ListTile(
-          tileColor: Colors.white,
-          leading: Icon(FontAwesomeIcons.circleQuestion, size: UIConstants.drawerMenuSize),
-          title: Text(AppLocalizations.of(context)!.question_or_suggestion_title),
-          onTap: () => onSelectMessageType(context),
-        ),
-        ListTile(
-          tileColor: Colors.white,
-          leading: Icon(FontAwesomeIcons.question, size: UIConstants.drawerMenuSize),
-          title: Text(AppLocalizations.of(context)!.help_title),
-          trailing: Icon(Icons.navigate_next),
-          onTap: () => onHelp(context),
-        ),
-        // ListTile(
-        //   tileColor: Colors.white,
-        //   leading: Icon(FontAwesomeIcons.comments, size: UIConstants.drawerMenuSize),
-        //   title: Text(AppLocalizations.of(context)!.menu_item_community_header),
-        //   onTap: () => onCommunity(context),
-        //   trailing: Icon(Icons.open_in_browser),
-        // ),
-        // if (Platform.isAndroid)
-        //   ListTile(
-        //     tileColor: Colors.white,
-        //     leading: Icon(Icons.coffee, size: UIConstants.drawerMenuSize),
-        //     title: Text(AppLocalizations.of(context)!.menu_item_donation),
-        //     onTap: () => onDonation(context),
-        //     trailing: Icon(Icons.navigate_next),
-        //   ),
-        ListTile(
-          tileColor: Colors.white,
-          leading: Icon(FontAwesomeIcons.flag, size: UIConstants.drawerMenuSize),
-          title: Text(AppLocalizations.of(context)!.whats_new_title),
-          onTap: () => onWhatsNew(context),
-          trailing: Icon(Icons.navigate_next),
-        ),
-        SizedBox(height: 16,),
-         ListTile(
-           tileColor: Colors.white,
-           leading: Icon(Icons.logout, size: UIConstants.drawerMenuSize),
-           title: Text(AppLocalizations.of(context)!.menu_item_sign_out),
-           trailing: Icon(Icons.navigate_next),
-           onTap: () => onLogoutItemPressed(),
-         ),
+        Card(
+          color: Colors.white,
+          margin: EdgeInsets.all(16),
+          child: Column(
+            children: [
+              SizedBox(height: 4),
+              ListTile(
+                tileColor: Colors.white,
+                leading: Icon(FontAwesomeIcons.paperPlane,
+                    size: UIConstants.drawerMenuSize),
+                title: Text(AppLocalizations.of(context)!
+                    .menu_item_invite_friend_header),
+                onTap: () => onInviteFriend(context),
+              ),
+              Divider(height: 1,),
+              ListTile(
+                tileColor: Colors.white,
+                leading: Icon(FontAwesomeIcons.circleQuestion,
+                    size: UIConstants.drawerMenuSize),
+                title: Text(
+                    AppLocalizations.of(context)!.question_or_suggestion_title),
+                onTap: () => onSelectMessageType(context),
+              ),
+              Divider(height: 1,),
+              ListTile(
+                tileColor: Colors.white,
+                leading: Icon(FontAwesomeIcons.question,
+                    size: UIConstants.drawerMenuSize),
+                title: Text(AppLocalizations.of(context)!.help_title),
+                trailing: Icon(Icons.navigate_next),
+                onTap: () => onHelp(context),
+              ),
+              Divider(height: 1,),
+              ListTile(
+                tileColor: Colors.white,
+                leading: Icon(FontAwesomeIcons.flag,
+                    size: UIConstants.drawerMenuSize),
+                title: Text(AppLocalizations.of(context)!.whats_new_title),
+                onTap: () => onWhatsNew(context),
+                trailing: Icon(Icons.navigate_next),
+              ),
+              Divider(height: 1,),
+              ListTile(
+                tileColor: Colors.white,
+                leading: Icon(Icons.logout, size: UIConstants.drawerMenuSize),
+                title: Text(AppLocalizations.of(context)!.menu_item_sign_out),
+                trailing: Icon(Icons.navigate_next),
+                onTap: () => onLogoutItemPressed(),
+              ),
+              SizedBox(height: 4),
+            ],
+          ),
+        )
       ]),
     );
   }
-  void onDeleteAccountItemPressed(){
-    DialogUtils.showCustomDialog(context, title: 'Notification', message: 'Are you sure to delete your account',cancelBtnText: "Cancel", okBtnText: "OK",cancelBtnFunction: (){
+
+  void onDeleteAccountItemPressed() {
+    DialogUtils.showCustomDialog(context,
+        title: 'Notification',
+        message: 'Are you sure to delete your account',
+        cancelBtnText: "Cancel",
+        okBtnText: "OK", cancelBtnFunction: () {
       Navigator.of(context).pop();
-    }, okBtnFunction: (){
+    }, okBtnFunction: () {
       FirebaseAuth.instance.currentUser?.delete();
       FirebaseAuth.instance.signOut();
       showInfoToast("Your account has been deleted");
       //Navigator.of(context).pop();
-      //Navigator.of(context).pushNamedAndRemoveUntil(
-      //  Pages.signIn, (route) => false,
-      //);
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        Pages.signIn, (route) => false,
+      );
     });
   }
-  void onStoresItemPressed(BuildContext context){
-    Navigator.of(context).pushNamed(Pages.store_list, arguments: {"isSelection": false});
+
+  void onStoresItemPressed(BuildContext context) {
+    Navigator.of(context)
+        .pushNamed(Pages.store_list, arguments: {"isSelection": false});
   }
-  void onChangeTrackingStoreItemPressed(BuildContext context) async{
-    final result = await Navigator.of(context).pushNamed(Pages.store_list, arguments: {"isSelection": true});
+
+  void onChangeTrackingStoreItemPressed(BuildContext context) async {
+    final result = await Navigator.of(context)
+        .pushNamed(Pages.store_list, arguments: {"isSelection": true});
     if (result != null) {
       Store store = result as Store;
 
@@ -190,24 +224,29 @@ class MorePageState extends State<MorePage>{
 
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => MainPage()),
-            (Route<dynamic> route) => false, // Remove all previous routes
+        (Route<dynamic> route) => false, // Remove all previous routes
       );
     }
   }
 
-  void onSettingsItemPressed(BuildContext context){
+  void onSettingsItemPressed(BuildContext context) {
     Navigator.of(context).pushNamed(Pages.settings);
   }
+
   void onInviteFriend(BuildContext context) {
     String encodeQueryParameters(Map<String, String> params) {
-      return params.entries.map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}').join('&');
+      return params.entries
+          .map((e) =>
+              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+          .join('&');
     }
 
     final Uri emailLaunchUri = Uri(
       scheme: 'mailto',
       path: '',
       query: encodeQueryParameters(<String, String>{
-        'subject': AppLocalizations.of(context)!.send_mail_invite_friend_subject,
+        'subject':
+            AppLocalizations.of(context)!.send_mail_invite_friend_subject,
         'body': AppLocalizations.of(context)!.send_mail_invite_friend_content,
       }),
     );
@@ -219,21 +258,21 @@ class MorePageState extends State<MorePage>{
     showDialog(
         context: context,
         builder: (_) => SelectMessageTypeDialog((messageType) {
-          switch (messageType) {
-            case MessageType.BUG_REPORT:
-              onBugReport(context);
-              break;
-            case MessageType.FEEDBACK:
-              onFeedback(context);
-              break;
-            case MessageType.SUGGESTION:
-              onSuggestion(context);
-              break;
-            case MessageType.QUESTION:
-              onQuestion(context);
-              break;
-          }
-        }),
+              switch (messageType) {
+                case MessageType.BUG_REPORT:
+                  onBugReport(context);
+                  break;
+                case MessageType.FEEDBACK:
+                  onFeedback(context);
+                  break;
+                case MessageType.SUGGESTION:
+                  onSuggestion(context);
+                  break;
+                case MessageType.QUESTION:
+                  onQuestion(context);
+                  break;
+              }
+            }),
         barrierDismissible: true);
   }
 
@@ -259,13 +298,17 @@ class MorePageState extends State<MorePage>{
 
   void onSendMail(String subject) {
     String encodeQueryParameters(Map<String, String> params) {
-      return params.entries.map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}').join('&');
+      return params.entries
+          .map((e) =>
+              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+          .join('&');
     }
 
     final Uri emailLaunchUri = Uri(
       scheme: 'mailto',
       path: Config.supportEmail,
-      query: encodeQueryParameters(<String, String>{'subject': subject, 'body': ""}),
+      query: encodeQueryParameters(
+          <String, String>{'subject': subject, 'body': ""}),
     );
     launchUrl(emailLaunchUri);
   }
@@ -287,55 +330,52 @@ class MorePageState extends State<MorePage>{
       "content": MDProviderFactory.get().getDonationText()
     });
   }
-  void onLogoutItemPressed(){
-    DialogUtils.showCustomDialog(context,
+
+  void onLogoutItemPressed() {
+    DialogUtils.showCustomDialog(
+      context,
       title: AppLocalizations.of(context)!.notification_dialog_title,
       message: AppLocalizations.of(context)!.signout_message,
-      okBtnFunction: () async{
+      okBtnFunction: () async {
         Navigator.of(context).pop();
         DialogUtils.showCustomDialog(context,
-            title:  AppLocalizations.of(context)!.notification_dialog_title,
+            title: AppLocalizations.of(context)!.notification_dialog_title,
             message: AppLocalizations.of(context)!.question_push_data,
-            okBtnFunction: () async{
-              String dbPath = await PathUtils().getDatabasePath();
-              File file = File(dbPath);
-              final storageRef = FirebaseStorage.instance.ref();
-              //String? email = FirebaseAuth.instance.currentUser?.email;
-              String? uid = FirebaseAuth.instance.currentUser?.uid;
-              if (uid != null){
-                final ref = storageRef.child("$uid/database.db");
-                try {
-                  await ref.putFile(file);
-                } on FirebaseException {
-                }
-              }
-              //clear db
-              DBHelper dbHelper = DBHelper();
-              dbHelper.reset();
-              FirebaseAuth.instance.signOut();
-              Navigator.of(context).pop();
-              //Navigator.of(context).pushNamedAndRemoveUntil(
-              //  Pages.signIn, (route) => false,
-              //);
-            },
-            cancelBtnFunction: () async{
-              //clear db
-              DBHelper dbHelper = DBHelper();
-              dbHelper.reset();
+            okBtnFunction: () async {
+          String dbPath = await PathUtils().getDatabasePath();
+          File file = File(dbPath);
+          final storageRef = FirebaseStorage.instance.ref();
+          //String? email = FirebaseAuth.instance.currentUser?.email;
+          String? uid = FirebaseAuth.instance.currentUser?.uid;
+          if (uid != null) {
+            final ref = storageRef.child("$uid/database.db");
+            try {
+              await ref.putFile(file);
+            } on FirebaseException {}
+          }
+          //clear db
+          DBHelper dbHelper = DBHelper();
+          dbHelper.reset();
+          FirebaseAuth.instance.signOut();
+          Navigator.of(context).pop();
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            Pages.signIn, (route) => false,
+          );
+        }, cancelBtnFunction: () async {
+          //clear db
+          DBHelper dbHelper = DBHelper();
+          dbHelper.reset();
 
-              FirebaseAuth.instance.signOut();
-              Navigator.of(context).pop();
-              //Navigator.of(context).pushNamedAndRemoveUntil(
-              //  Pages.signIn, (route) => false,
-              //);
-            },
+          FirebaseAuth.instance.signOut();
+          Navigator.of(context).pop();
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            Pages.signIn, (route) => false,
+          );
+        },
             okBtnText: AppLocalizations.of(context)!.action_ok,
-            cancelBtnText: AppLocalizations.of(context)!.action_cancel
-        );
-
+            cancelBtnText: AppLocalizations.of(context)!.action_cancel);
       },
       cancelBtnText: AppLocalizations.of(context)!.action_cancel,
-
     );
   }
 }

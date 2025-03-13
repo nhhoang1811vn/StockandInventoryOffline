@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
@@ -18,7 +19,6 @@ import '../../widgets/selected_store_view.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
-import 'add_document_dialog.dart';
 import 'bloc/documents_cubit.dart';
 import 'document_item_row2.dart';
 
@@ -29,6 +29,7 @@ class DocumentsPage extends StatefulWidget {
 }
 
 class DocumentPageState extends BaseStateWidget<DocumentsPage> {
+  final _key = GlobalKey<ExpandableFabState>();
   final TextEditingController searchTextController = TextEditingController();
 
   @override
@@ -92,10 +93,44 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
                     _buildIncomingDocumentView(context, state),
                     _buildOutgoingDocumentView(context, state),
                   ]),
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () => onAddDocument(DefaultTabController.of(context).index),
-                    child: Icon(Icons.add)
-                  )
+                  floatingActionButtonLocation: ExpandableFab.location,
+                  floatingActionButton: ExpandableFab(
+                    key: _key,
+                    openButtonBuilder: RotateFloatingActionButtonBuilder(
+                      child: const Icon(Icons.add),
+                    ),
+                    type: ExpandableFabType.up,
+                    //childrenAnimation: ExpandableFabAnimation.none,
+                    distance: 70,
+                    overlayStyle: ExpandableFabOverlayStyle(
+                      color: Colors.white.withOpacity(0.9),
+                    ),
+                    children: [
+                      FloatingActionButton.extended(
+                        icon:  Image(image: AssetImage('assets/images/document.png'), width: 24),
+                        label: Text(AppLocalizations.of(context)!.incoming_document_text),
+                        heroTag: null,
+                        onPressed: () {
+                          final state = _key.currentState;
+                          if (state != null) {
+                            state.toggle();
+                          }
+                          _onAddDocumentWithType(DocumentType.incoming);
+                        },
+                      ),
+                      FloatingActionButton.extended(
+                          icon:  Image(image: AssetImage('assets/images/document.png'), width: 24),
+                          label: Text(AppLocalizations.of(context)!.outgoing_document_text),
+                          onPressed: (){
+                            final state = _key.currentState;
+                            if (state != null) {
+                              state.toggle();
+                            }
+                            _onAddDocumentWithType(DocumentType.outgoing);
+                          }
+                      ),
+                    ],
+                  ),
               );
             })),
         listenWhen: (state1, state2) => state1.state != state2.state,
@@ -125,24 +160,6 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
     item.name = AppLocalizations.of(context)!.document_name_no + storage.getAutoDocumentNo(storeId).toString();
     await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
     context.read<DocumentsCubit>().loadItems();
-  }
-
-  void onAddDocument(int index) async {
-    switch (index) {
-      case 0:
-        DocumentType? type =
-            await showDialog(context: context, builder: (_) => AddDocumentDialogWidget(), barrierDismissible: true);
-        if (type != null) {
-          _onAddDocumentWithType(type);
-        }
-        break;
-      case 1:
-        _onAddDocumentWithType(DocumentType.incoming);
-        break;
-      case 2:
-        _onAddDocumentWithType(DocumentType.outgoing);
-        break;
-    }
   }
 
   PreferredSize _buildAppBar(DocumentsState state) {

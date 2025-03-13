@@ -5,4 +5,5 @@ abstract class StoresRepository
     extends BaseRepository<Store> {
   Future<int> getCount();
   Future<Store> getFirstStore();
+  Future<void> reset();
 }

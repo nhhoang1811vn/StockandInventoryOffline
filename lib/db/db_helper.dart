@@ -74,6 +74,10 @@ class DBHelper {
     _db?.close();
     _db = null;
   }
+  reset2() async{
+    _db?.close();
+    _db = await initDb();
+  }
 
   initDb() async {
     String path = await PathUtils().getDatabasePath();

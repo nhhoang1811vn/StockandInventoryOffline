@@ -31,7 +31,7 @@ class UserNotVerified extends AuthState {}
 
 class UserSignedOut extends AuthState {}
 
-//class UserSignIn extends AuthState {}
+class UserSignIn extends AuthState {}
 
 class UserSingupAndLinkedWithGoogle extends AuthState {}
 
