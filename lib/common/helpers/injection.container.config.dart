@@ -213,15 +213,15 @@ extension GetItInjectableX on _i174.GetIt {
           useCase: gh<_i886.PaymentUseCases>(),
           documentUseCases: gh<_i231.DocumentUseCases>(),
         ));
+    gh.factory<_i733.SaveStoreCubit>(() => _i733.SaveStoreCubit(
+          useCase: gh<_i579.StoresUseCase>(),
+          storage: gh<_i72.Storage>(),
+        ));
     gh.factory<_i403.AuthCubit>(() => _i403.AuthCubit(
           useCase: gh<_i579.StoresUseCase>(),
           storage: gh<_i72.Storage>(),
         ));
     gh.factory<_i234.OnBoardingCubit>(() => _i234.OnBoardingCubit(
-          useCase: gh<_i579.StoresUseCase>(),
-          storage: gh<_i72.Storage>(),
-        ));
-    gh.factory<_i733.SaveStoreCubit>(() => _i733.SaveStoreCubit(
           useCase: gh<_i579.StoresUseCase>(),
           storage: gh<_i72.Storage>(),
         ));
