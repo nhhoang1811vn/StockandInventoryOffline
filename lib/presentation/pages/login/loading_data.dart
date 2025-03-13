@@ -30,11 +30,8 @@ class LoadingDataState extends State<LoadingData> {
         listener: (context, state) {
           if (state is UserSignInSuccessfulWithStore) {
             if (!context.mounted) return;
-            //Navigator.of(context)
-            //    .pushNamedAndRemoveUntil(Pages.home, (route) => false);
             Navigator.of(context)
                 .pushNamedAndRemoveUntil(Pages.main, (route) => false);
-
           } else if (state is UserSignInSuccessfulWithNoStore) {
             if (!context.mounted) return;
             Navigator.of(context)
@@ -48,9 +45,17 @@ class LoadingDataState extends State<LoadingData> {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                    Image(image: AssetImage('assets/images/app_icon.png'), width: 80,),
-                        SizedBox(height: 16),
-                    SizedBox(width: 24,height: 24,child: CircularProgressIndicator())
+                    Image(
+                      image: AssetImage('assets/images/box.png'),
+                      width: 80,
+                    ),
+                    SizedBox(height: 16),
+                    SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator()),
+                    SizedBox(height: 16),
+                    Text("Loading data"),
                   ])));
         });
   }

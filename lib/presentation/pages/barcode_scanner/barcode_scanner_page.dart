@@ -23,8 +23,25 @@ class BarcodeScannerPageState extends BaseStateWidget<BarcodeScannerPage> {
 
       },
       builder: (context, state) => Scaffold(
+          backgroundColor: Colors.grey[100],
       appBar: _buildAppBar(context),
-      body: _buildBody(context, state),
+      body:  ListView(children: [
+        Card(color: Colors.white, margin: EdgeInsets.all(16), child: Column(
+          children: [
+            ListTile(
+                textColor: UIConstants.primaryColor,
+                title: Text(AppLocalizations.of(context)!.batch_mode_scan)
+            ),
+            _buildAfterEachScan(context, state),
+            ListTile(
+                textColor: UIConstants.primaryColor,
+                title: Text(AppLocalizations.of(context)!.when_a_barcode_is_found)
+            ),
+            _buildBeep(context,state),
+            _buildVibrate(context,state)
+          ],
+        ),),
+      ]),
     ));
   }
   PreferredSize _buildAppBar(BuildContext context) {
@@ -32,23 +49,6 @@ class BarcodeScannerPageState extends BaseStateWidget<BarcodeScannerPage> {
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(title: new Text(AppLocalizations.of(context)!.menu_item_barcode_scanner_title)),
     );
-  }
-
-  Widget _buildBody(BuildContext context, BarcodeScannerState state) {
-    List<Widget> children = [
-      ListTile(
-        textColor: UIConstants.primaryColor,
-        title: Text(AppLocalizations.of(context)!.batch_mode_scan)
-      ),
-      _buildAfterEachScan(context, state),
-      ListTile(
-        textColor: UIConstants.primaryColor,
-        title: Text(AppLocalizations.of(context)!.when_a_barcode_is_found)
-      ),
-      _buildBeep(context,state),
-      _buildVibrate(context,state)
-    ];
-    return Column(children: children);
   }
   Widget _buildAfterEachScan(BuildContext context, BarcodeScannerState state){
     return ListTile(

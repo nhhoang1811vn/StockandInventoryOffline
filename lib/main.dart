@@ -11,6 +11,7 @@ import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/presentation/pages/login/auth_cubit.dart';
 import 'package:good_manager/presentation/pages/login/loading_data.dart';
 import 'package:good_manager/presentation/pages/login/login_page.dart';
+import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -19,6 +20,7 @@ import 'firebase_options.dart';
 late List<CameraDescription> cameras;
 Storage storage = getIt<Storage>();
 bool justLogin = false;
+late String initialRoute;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
@@ -27,9 +29,16 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // Enable Crashlytics
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-  //runApp(MyApp());
+  FirebaseAuth.instance.authStateChanges().listen(
+        (user) {
+      if (user == null || !user.emailVerified) {
+        initialRoute = Pages.signIn;
+      } else {
+        initialRoute = Pages.loading_data;
+      }
+    },
+  );
 
   runZonedGuarded(() {
     runApp(MyApp());
@@ -43,37 +52,11 @@ class MyApp extends StatefulWidget {
   State<StatefulWidget> createState() {
     return MyAppState();
   }
-
-  static void setLocale(BuildContext context, String code) async {
-    MyAppState? state = context.findAncestorStateOfType<MyAppState>();
-    state?.changeLanguage(code);
-  }
 }
 
 class MyAppState extends State<MyApp> {
-  String _languageCode = "en";
   final AppRouter _router;
-
-  MyAppState() : _router = AppRouter() {
-    _languageCode = storage.getLanguageCode();
-  }
-  Locale locale(String languageCode) {
-    Locale _temp;
-    switch (languageCode) {
-      case "vi":
-        _temp = Locale("vi", "VN");
-        break;
-      default:
-        _temp = Locale("en", "US");
-    }
-    return _temp;
-  }
-
-  changeLanguage(String code) {
-    setState(() {
-      _languageCode = code;
-    });
-  }
+  MyAppState() : _router = AppRouter() {}
 
   ThemeData _buildTheme(brightness) {
     var baseTheme = ThemeData(
@@ -124,25 +107,27 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
       return MaterialApp(
-          debugShowCheckedModeBanner: false,
+          debugShowCheckedModeBanner: true,
           theme: _buildTheme(Brightness.light),
           onGenerateRoute: _router.getRoute,
           navigatorObservers: [_router.routeObserver],
-          locale: locale(_languageCode),
+          locale: Locale("en", "US"),
+          //locale: locale(_languageCode),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: StreamBuilder(stream: FirebaseAuth.instance.authStateChanges(), builder: (context, snapshot) {
-            if (snapshot.hasData){
-              return BlocProvider(
-                create: (context) => getIt<AuthCubit>(),
-                child: LoadingData(),
-              );
-            }
-            return BlocProvider(
-              create: (context) => getIt<AuthCubit>(),
-              child: LoginScreen(),
-            ); //AuthGate();
-          })
+          initialRoute: initialRoute,
+          // home: StreamBuilder(stream: FirebaseAuth.instance.authStateChanges(), builder: (context, snapshot) {
+          //   if (snapshot.hasData){
+          //     return BlocProvider(
+          //       create: (context) => getIt<AuthCubit>(),
+          //       child: LoadingData(),
+          //     );
+          //   }
+          //   return BlocProvider(
+          //     create: (context) => getIt<AuthCubit>(),
+          //     child: LoginScreen(),
+          //   ); //AuthGate();
+          // })
         );
     }
 }

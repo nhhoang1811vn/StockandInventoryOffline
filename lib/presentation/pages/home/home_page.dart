@@ -6,6 +6,7 @@ import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/utils.dart';
+import 'package:good_manager/presentation/widgets/expense_report_chart/expense_report_chart_widget.dart';
 import 'package:good_manager/presentation/widgets/logo_app_bar.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
@@ -42,7 +43,6 @@ class HomePageState extends BaseStateWidget<HomePage> {
         builder: (context, state) => Scaffold(
               key: ScaffoldKey,
               resizeToAvoidBottomInset: false,
-              //drawer: CustomNavigationDrawer(selectedIndex: 0, storeName: storage.getSelectedStoreName()),
               appBar: LogoAppBar(),
               body: _buildBody(state),
             ));
@@ -83,10 +83,12 @@ class HomePageState extends BaseStateWidget<HomePage> {
               Row(children: [
                 Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.expenses_title, Config.currencyFormat.format(state.sumExpense),UIConstants.expenseIconData, Colors.yellow[50],Colors.yellow[700], openExpenses)),
                 SizedBox(width: 16),
-                Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.report_title, "N/A", UIConstants.reportIconData, Colors.green[50],Colors.green[700], openReport))
+                Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.report_title, "", UIConstants.reportIconData, Colors.green[50],Colors.green[700], openReport))
               ],),
-              SizedBox(height: 16,),
-              SaleReportWidget()
+              SizedBox(height: 16),
+              SaleReportWidget(),
+              SizedBox(height: 16),
+              ExpenseReportChartWidget()
             ],
           )),
     ];
@@ -108,18 +110,17 @@ class HomePageState extends BaseStateWidget<HomePage> {
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(AppLocalizations.of(context)!.goods_title, style: Theme.of(context).textTheme.titleLarge),
+                    Text(AppLocalizations.of(context)!.goods_title, style: Theme.of(context).textTheme.titleMedium),
                     SizedBox(height: 4,),
-                    Text("${state.countGoods} items", style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                    Text("${state.countGoods} items", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                     SizedBox(
                       height: 4,
                     ),
-                    Text("Quantity ${Utils.getQuantityText(state.quantityTotal)}", style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                    Text("Quantity ${Utils.getQuantityText(state.quantityTotal)}", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
 
                   ],
                 )),
                 Image(image: AssetImage('assets/images/box.png'), width: 24),
-                //Icon(UIConstants.goodIconData, size: iconSize, color: Colors.blue[700]),
               ],
             ),
           ),
@@ -147,7 +148,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(AppLocalizations.of(context)!.documents_title, style: Theme.of(context).textTheme.titleLarge),
+                            Text(AppLocalizations.of(context)!.documents_title, style: Theme.of(context).textTheme.titleMedium),
                             SizedBox(
                               height: 4,
                             ),
@@ -165,8 +166,8 @@ class HomePageState extends BaseStateWidget<HomePage> {
                                   SizedBox(width: 8),
                                   Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
                                     Text("Incoming", style: Theme.of(context).textTheme.bodySmall,),
-                                    Text("${state.countIncomingDocument}", style: Theme.of(context).textTheme.titleLarge),
-                                    Text("${Config.currencyFormat.format(state.sumPriceIncomingDocument)}",  style: Theme.of(context).textTheme.titleLarge)
+                                    Text("${state.countIncomingDocument}", style: Theme.of(context).textTheme.titleMedium),
+                                    Text("${Config.currencyFormat.format(state.sumPriceIncomingDocument)}",  style: Theme.of(context).textTheme.titleMedium)
                                   ],)
                                 ],),
                               ),),
@@ -184,8 +185,8 @@ class HomePageState extends BaseStateWidget<HomePage> {
                                   SizedBox(width: 8),
                                   Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
                                     Text("Outgoing", style: Theme.of(context).textTheme.bodySmall,),
-                                    Text("${state.countOutgoingDocument}", style: Theme.of(context).textTheme.titleLarge),
-                                    Text("${Config.currencyFormat.format(state.sumPriceOutgoingDocument)}",  style: Theme.of(context).textTheme.titleLarge)
+                                    Text("${state.countOutgoingDocument}", style: Theme.of(context).textTheme.titleMedium),
+                                    Text("${Config.currencyFormat.format(state.sumPriceOutgoingDocument)}",  style: Theme.of(context).textTheme.titleMedium)
                                   ],)
                                 ],),
                               ),)
@@ -275,11 +276,11 @@ class HomePageState extends BaseStateWidget<HomePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(title, style: Theme.of(context).textTheme.titleLarge),
+                        Text(title, style: Theme.of(context).textTheme.titleMedium),
                         SizedBox(
                           height: 4,
                         ),
-                        Text(value, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                        Text(value, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                       ],
                     )),
                 Icon(icon, size: iconSize, color: iconColor),

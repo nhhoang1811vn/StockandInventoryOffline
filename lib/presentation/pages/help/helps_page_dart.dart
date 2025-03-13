@@ -21,7 +21,8 @@ class HelpsPageState extends BaseStateWidget<HelpsPage> {
             itemBuilder: (BuildContext context, int index) {
               HelpType type = HelpType.values[index];
               return ListTile(
-                visualDensity: VisualDensity(vertical: -3), // to compact
+                trailing: Icon(Icons.navigate_next),
+                //visualDensity: VisualDensity(vertical: -3), // to compact
                 title: Text(type.getTitle(context),),
                 onTap: (){
                   Navigator.of(context).pushNamed(Pages.help, arguments: {
@@ -32,7 +33,7 @@ class HelpsPageState extends BaseStateWidget<HelpsPage> {
               );
             },
           separatorBuilder: (context, index) {
-            return Divider(color: Colors.grey[500]);
+            return Divider(height: 1,);
           },
         ));
   }

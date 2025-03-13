@@ -30,7 +30,6 @@ class ReportPageState extends BaseStateWidget<ReportPage> {
     return BlocConsumer<ReportCubit, ReportState>(
         builder: (context, state) => Scaffold(
           key: ScaffoldKey,
-            //drawer: CustomNavigationDrawer(selectedIndex: 4, storeName: storage.getSelectedStoreName()),
             appBar: _buildAppBar(context),
             body: _buildBody()),
         listenWhen: (p1, p2) => p1.state != p2.state,
@@ -50,7 +49,7 @@ class ReportPageState extends BaseStateWidget<ReportPage> {
       itemBuilder: (BuildContext context, int index) {
         ReportType type = ReportType.values[index];
         return ListTile(
-          visualDensity: VisualDensity(vertical: -3), // to compact
+
           title: Text(
             type.getTitle(context),
           ),
@@ -61,10 +60,11 @@ class ReportPageState extends BaseStateWidget<ReportPage> {
               onReportTypeClicked(context, type);
             }
           },
+            trailing: Icon(Icons.navigate_next),
         );
       },
       separatorBuilder: (context, index) {
-        return Divider(color: Colors.grey[500]);
+        return Divider(height: 1,);
       },
     );
   }

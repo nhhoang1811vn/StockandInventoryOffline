@@ -12,6 +12,8 @@ import 'package:good_manager/domain/usecases/stores/stores_usecases.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../db/db_helper.dart';
+
 part 'auth_state.dart';
 
 
@@ -34,6 +36,9 @@ class AuthCubit extends Cubit<AuthState> {
   void checkStore() async{
     await Future.delayed(Duration(seconds: 2));
     try{
+      DBHelper dbHelper = DBHelper();
+      dbHelper.reset();
+
       final stores = await useCase.getAll();
       if (stores.isNotEmpty){
         await updateSelectedStore();
@@ -106,7 +111,7 @@ class AuthCubit extends Cubit<AuthState> {
         password: password,
       );
       if (userCredential.user!.emailVerified) {
-
+        emit(UserSignIn());
       } else {
         await _auth.signOut();
         emit(UserNotVerified());
@@ -131,10 +136,9 @@ class AuthCubit extends Cubit<AuthState> {
         idToken: result?.idToken,
       );
       await _auth.signInWithCredential(newCredential);
-      //emit(UserSignIn());
-      //downloadUserData();
+      emit(UserSignIn());
     } catch (err) {
-      // something went wrong
+      emit(AuthError(err.toString()));
     }
   }
   Future<void> signInWithApple() async{
@@ -144,11 +148,10 @@ class AuthCubit extends Cubit<AuthState> {
       appleProvider.addScope('email');
       appleProvider.addScope('name');
       final userCredential = await _auth.signInWithProvider(appleProvider);
-      print(userCredential.credential?.accessToken);
-      print(userCredential.user?.email);
-      print(userCredential.user?.emailVerified);
-      //emit(UserSignIn());
-      //downloadUserData();
+      //print(userCredential.credential?.accessToken);
+      //print(userCredential.user?.email);
+      //print(userCredential.user?.emailVerified);
+      emit(UserSignIn());
       /*if (userCredential.user!.emailVerified) {
         emit(UserSignIn());
       } else {
@@ -157,8 +160,6 @@ class AuthCubit extends Cubit<AuthState> {
       }*/
     } catch (e) {
       if (e.toString().contains("An unknown error has occurred")){
-        //user dismiss popup
-        //skip show error popup
         emit(AuthStopped());
       }else{
         emit(AuthError(e.toString()));
@@ -185,7 +186,8 @@ class AuthCubit extends Cubit<AuthState> {
         idToken: googleAuth.idToken,
       );
       await _auth.signInWithCredential(credential);
-      //emit(UserSignIn());
+
+      emit(UserSignIn());
       //downloadUserData();
     } catch (e) {
       emit(AuthError(e.toString()));

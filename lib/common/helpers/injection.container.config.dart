@@ -132,6 +132,8 @@ import 'package:good_manager/presentation/pages/suppliers/bloc/suppliers_cubit.d
     as _i831;
 import 'package:good_manager/presentation/widgets/add_quantity_and_price/add_quantity_and_price_cubit.dart'
     as _i205;
+import 'package:good_manager/presentation/widgets/expense_report_chart/expense_report_chart_cubit.dart'
+    as _i930;
 import 'package:good_manager/presentation/widgets/sale_report/sale_report_cubit.dart'
     as _i218;
 import 'package:injectable/injectable.dart' as _i526;
@@ -198,6 +200,8 @@ extension GetItInjectableX on _i174.GetIt {
         repository: gh<_i435.SuppliersRepository>()));
     gh.factory<_i150.SaveExpenseCubit>(
         () => _i150.SaveExpenseCubit(useCase: gh<_i849.ExpenseUseCases>()));
+    gh.factory<_i930.ExpenseReportChartCubit>(() =>
+        _i930.ExpenseReportChartCubit(useCase: gh<_i849.ExpenseUseCases>()));
     gh.factory<_i340.SaveSupplierCubit>(
         () => _i340.SaveSupplierCubit(useCase: gh<_i331.SuppliersUseCase>()));
     gh.factory<_i579.StoresUseCase>(() => _i411.StoresUseCaseImpl(

@@ -10,6 +10,7 @@ class StoresRepositoryImpl implements StoresRepository {
 
   var db = new DBHelper();
 
+
   @override
   Future<bool> delete(int id) {
     return db.deleteStore(id);
@@ -44,5 +45,9 @@ class StoresRepositoryImpl implements StoresRepository {
   Future<Store> getFirstStore() async{
     List<Store> stores = await db.getStores();
     return Future.value(stores.first);
+  }
+  @override
+  Future<void> reset() async{
+    await db.reset2();
   }
 }
