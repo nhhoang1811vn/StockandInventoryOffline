@@ -355,7 +355,7 @@ class MorePageState extends State<MorePage> {
           }
           //clear db
           DBHelper dbHelper = DBHelper();
-          dbHelper.reset();
+          await dbHelper.reset();
           FirebaseAuth.instance.signOut();
           Navigator.of(context).pop();
           Navigator.of(context).pushNamedAndRemoveUntil(
@@ -364,7 +364,7 @@ class MorePageState extends State<MorePage> {
         }, cancelBtnFunction: () async {
           //clear db
           DBHelper dbHelper = DBHelper();
-          dbHelper.reset();
+          await dbHelper.reset();
 
           FirebaseAuth.instance.signOut();
           Navigator.of(context).pop();

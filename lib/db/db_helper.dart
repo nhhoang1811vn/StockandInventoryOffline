@@ -70,14 +70,10 @@ class DBHelper {
     ],
   };
 
-  /*reset(){
-    _db?.close();
-    _db = null;
-  }
-  reset2() async{
+  reopen() async{
     _db?.close();
     _db = await initDb();
-  }*/
+  }
   reset() async{
     await _db?.close();
     String? path = _db?.path;

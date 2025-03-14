@@ -27,8 +27,10 @@ class AuthCubit extends Cubit<AuthState> {
   void downloadUserData() async{
     downloadDBFile((state){
       if (state == TaskState.success){
+        print("taskstate success");
         checkStore();
       }else if (state == TaskState.canceled || state == TaskState.error){
+        print("taskstate error");
         checkStore();
       }
     });
@@ -36,9 +38,10 @@ class AuthCubit extends Cubit<AuthState> {
   void checkStore() async{
     await Future.delayed(Duration(seconds: 2));
     try{
-      DBHelper dbHelper = DBHelper();
-      dbHelper.reset();
-
+      if (Platform.isIOS){
+        DBHelper dbHelper = DBHelper();
+        await dbHelper.reopen();
+      }
       final stores = await useCase.getAll();
       if (stores.isNotEmpty){
         await updateSelectedStore();
