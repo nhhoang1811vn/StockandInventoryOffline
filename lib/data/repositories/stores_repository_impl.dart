@@ -46,8 +46,4 @@ class StoresRepositoryImpl implements StoresRepository {
     List<Store> stores = await db.getStores();
     return Future.value(stores.first);
   }
-  @override
-  Future<void> reset() async{
-    await db.reset2();
-  }
 }
