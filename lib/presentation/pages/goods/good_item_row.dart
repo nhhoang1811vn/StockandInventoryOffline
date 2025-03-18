@@ -115,7 +115,7 @@ class GoodItemRow extends StatelessWidget {
   }
 
   Widget getAvatarWidget(Uint8List bytes) {
-    return SizedBox(width: 48, height: 48, child: Image.memory(bytes));
+    return SizedBox(width: 32, height: 32, child: Image.memory(bytes));
   }
 
   Widget _buildEmptyAvatarWidget() {
