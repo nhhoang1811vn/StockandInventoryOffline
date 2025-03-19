@@ -27,7 +27,6 @@ import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'components/save_document_form.dart';
-import 'components/select_payment_status_dialog.dart';
 import 'components/sort_save_document_dialog.dart';
 enum OverflowItemMenu { search, sortby, export,help }
 class SaveDocumentPage extends StatefulWidget{
@@ -37,10 +36,8 @@ class SaveDocumentPage extends StatefulWidget{
   State<StatefulWidget> createState() {
     return SaveDocumentPageState();
   }
-
 }
 class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
-
   @override
   Widget buildWidget(BuildContext context) {
     context.read<SaveDocumentCubit>().init(widget.item);
@@ -161,27 +158,6 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
               ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
 
             }
-          }else if (state.state is OpenChangePaymentDialogState){
-            PaymentStatus? status = await showDialog(
-                context: context,
-                builder: (_) => SelectPaymentStatusDialog(state.paymentStatus!),
-                barrierDismissible: true);
-            if (status != null){
-              if (status == PaymentStatus.PAID || status == PaymentStatus.UNPAID){
-                context.read<SaveDocumentCubit>().onPaymentStatusChanged(status);
-                context.read<SaveDocumentCubit>().save();
-              }else{
-                final saveResult = await context.read<SaveDocumentCubit>().save();
-                if (saveResult){
-                  await Navigator.of(context).pushNamed(Pages.payment_list, arguments: {"documentId": state.item!.id!});
-                  context.read<SaveDocumentCubit>().loadPaymentsAndCheck();
-                }
-              }
-
-            }
-          }else if (state.state is OpenPaymentListPageState){
-            await Navigator.of(context).pushNamed(Pages.payment_list, arguments: {"documentId": state.item!.id!});
-            context.read<SaveDocumentCubit>().loadPaymentsAndCheck();
           }
         },
         listenWhen: (state1, state2) => state1.state != state2.state,

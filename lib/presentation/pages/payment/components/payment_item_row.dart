@@ -12,17 +12,31 @@ class PaymentItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(Config.dateFormat.format(item.date), style:
-      Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
-      subtitle: Text(item.description, style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onSurface),),
-      trailing: Text(Config.currencyFormat.format(item.amount??0),
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
-      onTap: () => onPressed(item),
-      onLongPress: () => onLongPressed(item),
+    return Card(
+      margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => onPressed(item),
+        onLongPress: () => onLongPressed(item),
+        child: ListTile(
+          title: Text(item.name,
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(Config.dateFormat.format(item.date)),
+              if (item.description.isNotEmpty)
+                Text(
+                  item.description,
+                  style:
+                      Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                )
+            ],
+          ),
+          trailing: Text(Config.currencyFormat.format(item.amount ?? 0),
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+        ),
+      ),
     );
   }
 }

@@ -31,6 +31,10 @@ class PaymentRepositoryImpl implements PaymentRepository {
     // TODO: implement getAll
     throw UnimplementedError();
   }
+  @override
+  Future<List<Payment>> getAllByStoreId(int storeId) {
+    return db.getPaymentByStoreId(storeId);
+  }
 
   @override
   Future<bool> update(Payment item) {

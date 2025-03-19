@@ -192,6 +192,10 @@
   "payment_due_pending": "Cần trả/còn nợ",
   "payment_paid": "Đã trả",
   "empty_payment": "Chưa có thanh toán",
+   "title_incoming_payment": "Phiếu Chi",
+    "title_outgoing_payment": "Phiếu Thu",
+    "action_add_incoming_payment": "Thêm phiếu Chi",
+    "action_add_outgoing_payment": "Thêm phiếu Thu",
   "save_payment_title": "Lưu thanh toán",
   "menu_back_up": "Sao lưu dữ liệu",
   "menu_back_up_desc": "Xuất tệp database ra điện thoại",
@@ -224,5 +228,6 @@
      "list_settings":"Cài đặt danh sách",
        "good_settings_hide_zero_entries": "Ẩn đối tượng không có số lượng",
        "good_setting_show_bar_code": "Hiện mã vạch",
-       "good_setting_show_description": "Hiện mô tả"
+       "good_setting_show_description": "Hiện mô tả",
+         "version": "Phiên bản: %s"
 }

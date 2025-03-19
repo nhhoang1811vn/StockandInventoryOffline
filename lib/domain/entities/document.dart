@@ -20,7 +20,6 @@ extension DocumentTypeExtension on DocumentType{
 class Document extends BaseModel {
   DateTime date = DateTime.now();
   late DocumentType type;
-  PaymentStatus paymentStatus = PaymentStatus.UNPAID;
   int? personId;
   int? storeId;
 
@@ -44,7 +43,6 @@ class Document extends BaseModel {
     super.map(obj);
     this.date = DateTime.fromMillisecondsSinceEpoch(obj["date"]);
     this.type = DocumentType.values.firstWhere((element) => element.index == obj["type"]);
-    this.paymentStatus = PaymentStatus.values.firstWhere((element) => element.index == obj["paymentStatus"]);
     if (type == DocumentType.incoming){
       this.personId = obj["supplierId"];
       this.personName = obj["supplierName"];
@@ -61,7 +59,6 @@ class Document extends BaseModel {
     var map = super.toMap();
     map["date"] = date.millisecondsSinceEpoch;
     map["type"] = type.index;
-    map["paymentStatus"] = paymentStatus.index;
     if (type == DocumentType.incoming){
       map["supplierId"] = personId;
     }else{

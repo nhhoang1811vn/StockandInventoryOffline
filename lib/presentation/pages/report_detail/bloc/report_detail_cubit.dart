@@ -208,8 +208,8 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     query += "GROUP BY D.id ";
     query += "ORDER BY S.name, D.date DESC";
 
-
-    var result = await dbHelper.rawQuery(query, [storage.getSelectedStoreId(), PaymentStatus.PAID.index, state.start!.millisecondsSinceEpoch, state.end!.millisecondsSinceEpoch]);
+    //todo update here
+    var result = await dbHelper.rawQuery(query, [storage.getSelectedStoreId(), -1, state.start!.millisecondsSinceEpoch, state.end!.millisecondsSinceEpoch]);
     double totalAmount = 0.0;
     double totalPayment = 0.0;
     double totalRemain = 0.0;
@@ -252,8 +252,8 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     query += "GROUP BY D.id ";
     query += "ORDER BY C.name, D.date DESC";
 
-
-    var result = await dbHelper.rawQuery(query, [storage.getSelectedStoreId(), PaymentStatus.PAID.index, state.start!.millisecondsSinceEpoch, state.end!.millisecondsSinceEpoch]);
+//todo update here
+    var result = await dbHelper.rawQuery(query, [storage.getSelectedStoreId(), -1, state.start!.millisecondsSinceEpoch, state.end!.millisecondsSinceEpoch]);
     double totalAmount = 0.0;
     double totalPayment = 0.0;
     double totalRemain = 0.0;

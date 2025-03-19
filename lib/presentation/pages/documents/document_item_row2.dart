@@ -79,9 +79,7 @@ class DocumentItemRow2 extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _buildPaymentStatusWidget(),
                       Text(Utils.getQuantityText(item.quantity), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
-                      //Text("A: ${item.amount}")//
                       Text(Config.currencyFormat.format(item.amount))
                     ],
                   )
@@ -90,17 +88,6 @@ class DocumentItemRow2 extends StatelessWidget {
             ),
           )),
     );
-  }
-
-  Widget _buildPaymentStatusWidget() {
-    switch (item.paymentStatus) {
-      case PaymentStatus.UNPAID:
-        return Icon(UIConstants.paymentIconData, size: 24, color: Palette.red);
-      case PaymentStatus.PARTIAL:
-        return Icon(UIConstants.paymentIconData, size: 24, color: Palette.yellow);
-      case PaymentStatus.PAID:
-        return Icon(UIConstants.paymentIconData, size: 24, color: Palette.green);
-    }
   }
 
   String getTitleText(BuildContext context, DocumentType type, String name) {

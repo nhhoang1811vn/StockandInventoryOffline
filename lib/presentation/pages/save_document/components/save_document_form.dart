@@ -194,36 +194,16 @@ class SaveDocumentForm extends StatelessWidget {
                   SizedBox(
                     height: 8,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(child:
-                      AppTextField(
-                        color: Colors.white,
-                        controller: personNameController,
-                        labelText: state.item?.type == DocumentType.incoming
-                            ? AppLocalizations.of(context)!.field_supplier
-                            : AppLocalizations.of(context)!.field_customer,
-                        keyboardType: TextInputType.none,
-                        readOnly: true,
-                        onTapped: () => {context.read<SaveDocumentCubit>().onPersonClicked()},
-                      )),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      InkWell(
-                          onTap: () => context.read<SaveDocumentCubit>().onPaymentStatusButtonPressed(),
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 36,
-                            width: 36,
-                            decoration: BoxDecoration(  shape: BoxShape.circle,color: getPaymentStatusColor(), border: Border.all(color: Colors.white)),
-                            child: Icon(UIConstants.paymentIconData, color: Palette.white, size: 24),
-                          ))
-
-                    ],
+                  AppTextField(
+                    color: Colors.white,
+                    controller: personNameController,
+                    labelText: state.item?.type == DocumentType.incoming
+                        ? AppLocalizations.of(context)!.field_supplier
+                        : AppLocalizations.of(context)!.field_customer,
+                    keyboardType: TextInputType.none,
+                    readOnly: true,
+                    onTapped: () => {context.read<SaveDocumentCubit>().onPersonClicked()},
                   ),
-
                   AppTextField(
                       color: Colors.white,
                       labelText: AppLocalizations.of(context)!.field_desc,
@@ -273,18 +253,5 @@ class SaveDocumentForm extends StatelessWidget {
             ))
       ],
     );
-  }
-
-  Color getPaymentStatusColor() {
-    switch (state.paymentStatus) {
-      case PaymentStatus.UNPAID:
-        return Palette.red;
-      case PaymentStatus.PARTIAL:
-        return Palette.yellow;
-      case PaymentStatus.PAID:
-        return Palette.green;
-      default:
-        return Palette.blue;
-    }
   }
 }

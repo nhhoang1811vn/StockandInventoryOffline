@@ -68,6 +68,12 @@ class DBHelper {
       "CREATE TABLE IF NOT EXISTS $MEDIA_TABLE_NAME(id INTEGER PRIMARY KEY, goodId INTEGER NOT NULL, media BLOB, "
           "FOREIGN KEY(goodId) REFERENCES $GOODS_TABLE_NAME(id) ON DELETE CASCADE)"
     ],
+    3: [
+      "DROP TABLE $PAYMENTS_TABLE_NAME",
+      "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, documentId INTEGER NOT NULL, storeId INTEGER NOT NULL, " +
+          "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE," +
+          "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)"
+    ]
   };
 
   reopen() async{
@@ -85,7 +91,7 @@ class DBHelper {
 
   initDb() async {
     String path = await PathUtils().getDatabasePath();
-    var theDb = await openDatabase(path, version: 2, onCreate: _onCreate, onUpgrade: _onUpgrade);
+    var theDb = await openDatabase(path, version: 3, onCreate: _onCreate, onUpgrade: _onUpgrade);
     return theDb;
   }
   initDBWindow() async{
@@ -95,7 +101,7 @@ class DBHelper {
     var db = await databaseFactory.openDatabase(
       path,
       options: OpenDatabaseOptions(
-        version: 2,
+        version: 3,
         onCreate: (db, version) async {
           _onCreate(db, version);
         },
@@ -157,8 +163,9 @@ class DBHelper {
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)");
 
     await db.execute(
-      "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, documentId INTEGER NOT NULL, " +
-      "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE)"
+      "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, documentId INTEGER NOT NULL, storeId INTEGER NOT NULL, " +
+      "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE," +
+      "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)"
     );
 
     await db.execute(
@@ -852,6 +859,17 @@ class DBHelper {
     List<Expense> items = [];
     for (int i = 0; i < list.length; i++) {
       Expense item = Expense.map(list[i]);
+      items.add(item);
+    }
+    return items;
+  }
+  Future<List<Payment>> getPaymentByStoreId(int storeId) async{
+    var dbClient = await db;
+    List<Map> list = await dbClient.rawQuery(
+        'SELECT * FROM $PAYMENTS_TABLE_NAME where storeId = ? ORDER BY date DESC', [storeId]);
+    List<Payment> items = [];
+    for (int i = 0; i < list.length; i++) {
+      Payment item = Payment.map(list[i]);
       items.add(item);
     }
     return items;

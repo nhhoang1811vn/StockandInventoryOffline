@@ -19,6 +19,7 @@ import '../../markdown/md_provider_factory.dart';
 import '../../widgets/logo_app_bar.dart';
 import '../../widgets/select_message_type_dialog.dart';
 import '../pages.dart';
+import '../settings/components/change_languages_dialog.dart';
 
 class MorePage extends StatefulWidget {
   @override
@@ -119,6 +120,16 @@ class MorePageState extends State<MorePage> {
                 onTap: () => onSettingsItemPressed(context),
               ),
               Divider(height: 1,),
+              ListTile(
+                tileColor: Colors.white,
+                leading: Icon(FontAwesomeIcons.language),
+                title:
+                Text(AppLocalizations.of(context)!.menu_item_language_title),
+                subtitle:
+                Text(AppLocalizations.of(context)!.menu_item_language_desc),
+                onTap: (){ showSelectLanguageDialog(context);},
+              ),
+
               ListTile(
                 tileColor: Colors.white,
                 title: Text(_packageInfo.appName,
@@ -330,7 +341,15 @@ class MorePageState extends State<MorePage> {
       "content": MDProviderFactory.get().getDonationText()
     });
   }
-
+  void showSelectLanguageDialog(BuildContext context) async {
+    String currentCode = storage.getLanguageCode();
+    showDialog(
+        context: context,
+        builder: (_) => ChangeLanguagesDialog(currentCode, (code) {
+          storage.setLanguageCode(code);
+          MyApp.setLocale(context, code);
+    }), barrierDismissible: true);
+  }
   void onLogoutItemPressed() {
     DialogUtils.showCustomDialog(
       context,

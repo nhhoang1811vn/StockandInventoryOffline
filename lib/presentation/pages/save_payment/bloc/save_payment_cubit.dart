@@ -1,9 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../domain/entities/models/name.dart';
 import '../../../../domain/entities/payment.dart';
 import '../../../constants.dart';
 
@@ -28,8 +31,21 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     }
     emit(initState);
   }
+  void nameChanged(String value){
+    final name = NameInput.dirty(value: value);
+    emit(state.copyWith(name: name));
+  }
   void descriptionChanged(String value){
     emit(state.copyWith(description: value));
+  }
+  void onDocumentChanged(Document item){
+    emit(state.copyWith(state: InitialState(),
+        documentName: NameInput.dirty(value: item.name),
+        documentId: item.id
+    ));
+  }
+  void onDocumentNameClicked(){
+    emit(state.copyWith(state: OpenDocumentListState()));
   }
   void onAmountChanged(String value){
     if (value.isNotEmpty){
@@ -45,16 +61,25 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     emit(state.copyWith(date: date));
   }
   void onSaveClicked() async {
+    final validate = Formz.validate([state.name, state.documentName]);
+    if (validate){
       Payment item = state.item!;
+      item.name = state.name.value;
       item.description = state.description;
       item.date = state.date!;
       item.amount = state.amount;
+      item.documentId = state.documentId!;
+      //item.
       if (item.id == null){
         await useCase.insert(item);
       }else{
         await useCase.update(item);
       }
-      //Future.delayed(Duration(seconds: 2));
       emit(state.copyWith(state: SaveItemSuccessful()));
+    }else{
+      emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));
+      emit(state.copyWith(documentName: NameInput.dirty(value : state.documentName.value)));
+    }
+
   }
 }

@@ -52,15 +52,44 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
+  MyApp({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return MyAppState();
   }
+
+  static void setLocale(BuildContext context, String languageCode) async {
+    MyAppState? state = context.findAncestorStateOfType<MyAppState>();
+    state?.changeLanguage(languageCode);
+  }
+
 }
 
 class MyAppState extends State<MyApp> {
+
+  String? _languageCode;
   final AppRouter _router;
-  MyAppState() : _router = AppRouter() {}
+  MyAppState() : _router = AppRouter() {
+    _languageCode = storage.getLanguageCode();
+  }
+  Locale locale(String languageCode) {
+    Locale _temp;
+    switch (languageCode) {
+      case "vi":
+        _temp = Locale("vi", "VN");
+        break;
+      default:
+        _temp = Locale("en", "US");
+    }
+    return _temp;
+  }
+  changeLanguage(String code) {
+    setState(() {
+      _languageCode = code;
+    });
+  }
+
 
   ThemeData _buildTheme(brightness) {
     var baseTheme = ThemeData(
@@ -115,23 +144,10 @@ class MyAppState extends State<MyApp> {
           theme: _buildTheme(Brightness.light),
           onGenerateRoute: _router.getRoute,
           navigatorObservers: [_router.routeObserver],
-          locale: Locale("en", "US"),
-          //locale: locale(_languageCode),
+          locale: locale(_languageCode!),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           initialRoute: initialRoute,
-          // home: StreamBuilder(stream: FirebaseAuth.instance.authStateChanges(), builder: (context, snapshot) {
-          //   if (snapshot.hasData){
-          //     return BlocProvider(
-          //       create: (context) => getIt<AuthCubit>(),
-          //       child: LoadingData(),
-          //     );
-          //   }
-          //   return BlocProvider(
-          //     create: (context) => getIt<AuthCubit>(),
-          //     child: LoginScreen(),
-          //   ); //AuthGate();
-          // })
         );
     }
 }

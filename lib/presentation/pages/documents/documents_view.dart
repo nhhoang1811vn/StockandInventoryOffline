@@ -23,7 +23,11 @@ import 'bloc/documents_cubit.dart';
 import 'document_item_row2.dart';
 
 class DocumentsPage extends StatefulWidget {
-  const DocumentsPage({required Key? key}) : super(key: key);
+  final bool isSelection;
+  final DocumentType? selectionType;
+
+  const DocumentsPage({required this.isSelection, this.selectionType, required Key? key}) : super(key: key);
+
   @override
   DocumentPageState createState() => DocumentPageState();
 }
@@ -34,103 +38,138 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
 
   @override
   void initState() {
-    context.read<DocumentsCubit>().initState();
+    context.read<DocumentsCubit>().initState(widget.isSelection);
     super.initState();
   }
+
   @override
   bool hasDrawer() {
     return true;
   }
-  Widget _buildAllDocumentView(DocumentsState state) {
-    return getAllBody(state);
-  }
 
-  Widget getAllBody(DocumentsState state) {
-    List<Widget> children = [
-      Expanded(
-          child: Stack(children: [
-        Visibility(
-          child: _buildAllEmptyView(state),
-          visible: state.items.isEmpty,
-        ),
-        Visibility(
-          child: _buildAllListView(state),
-          visible: state.items.isNotEmpty,
-        )
-      ]))
-    ];
-    return Column(children: children);
-  }
+  Widget _buildAllDocumentView(DocumentsState state) => Column(
+        children: [
+          Expanded(
+              child: Stack(children: [
+            Visibility(
+              child: _buildEmptyView(state),
+              visible: state.items.isEmpty,
+            ),
+            Visibility(
+              child: _buildListView(state.items),
+              visible: state.items.isNotEmpty,
+            )
+          ]))
+        ],
+      );
 
   Widget _buildIncomingDocumentView(BuildContext context, DocumentsState state) => Column(
-    children: [Expanded(
-      child: Stack(
-            children: [_buildIncomingEmptyView(context, state), _buildIncomingListView(state)],
-          ),
-    )],
-  );
+        children: [
+          Expanded(
+            child: Stack(children: [
+              Visibility(child: _buildEmptyView(state), visible: state.incomingItems.isEmpty),
+              Visibility(child: _buildListView(state.incomingItems), visible: state.incomingItems.isNotEmpty)
+            ]),
+          )
+        ],
+      );
 
   Widget _buildOutgoingDocumentView(BuildContext context, DocumentsState state) => Column(
-    children: [Expanded(
-      child: Stack(
-            children: [_buildOutgoingEmptyView(context, state), _buildOutgoingListView(state)],
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                Visibility(child: _buildEmptyView(state), visible: state.outgoingItems.isEmpty),
+                Visibility(child: _buildListView(state.outgoingItems), visible: state.outgoingItems.isNotEmpty)
+              ],
+            ),
+          )
+        ],
+      );
+
+  int getInitialIndex() {
+    if (widget.isSelection) {
+      if (widget.selectionType == DocumentType.incoming) {
+        return 1;
+      } else {
+        return 2;
+      }
+    }
+    return 0;
+  }
+
+  Widget getFloatingActionButton(int index) {
+    if (index == 0) {
+      return ExpandableFab(
+        key: _key,
+        openButtonBuilder: RotateFloatingActionButtonBuilder(
+          child: const Icon(Icons.add),
+        ),
+        type: ExpandableFabType.up,
+        //childrenAnimation: ExpandableFabAnimation.none,
+        distance: 70,
+        overlayStyle: ExpandableFabOverlayStyle(
+          color: Colors.white.withOpacity(0.9),
+        ),
+        children: [
+          FloatingActionButton.extended(
+            icon: Image(image: AssetImage('assets/images/document.png'), width: 24),
+            label: Text(AppLocalizations.of(context)!.incoming_document_text),
+            heroTag: null,
+            onPressed: () {
+              final state = _key.currentState;
+              if (state != null) {
+                state.toggle();
+              }
+              _onAddDocumentWithType(DocumentType.incoming);
+            },
           ),
-    )],
-  );
+          FloatingActionButton.extended(
+              icon: Image(image: AssetImage('assets/images/document.png'), width: 24),
+              label: Text(AppLocalizations.of(context)!.outgoing_document_text),
+              onPressed: () {
+                final state = _key.currentState;
+                if (state != null) {
+                  state.toggle();
+                }
+                _onAddDocumentWithType(DocumentType.outgoing);
+              }),
+        ],
+      );
+    } else if (index == 1) {
+      return FloatingActionButton(
+        onPressed: () {
+          _onAddDocumentWithType(DocumentType.incoming);
+        },
+        child: Icon(Icons.add),
+      );
+    } else {
+      return FloatingActionButton(
+        onPressed: () {
+          _onAddDocumentWithType(DocumentType.outgoing);
+        },
+        child: Icon(Icons.add),
+      );
+    }
+  }
 
   @override
   Widget buildWidget(BuildContext context) {
     return BlocConsumer<DocumentsCubit, DocumentsState>(
         builder: (context, state) => DefaultTabController(
+            initialIndex: getInitialIndex(),
             length: 3,
             child: Builder(builder: (BuildContext context) {
               return Scaffold(
-                  key: ScaffoldKey,
-                  //drawer: CustomNavigationDrawer(selectedIndex: 2, storeName: storage.getSelectedStoreName()),
-                  appBar: _buildAppBar(state),
-                  body: TabBarView(children: [
-                    _buildAllDocumentView(state),
-                    _buildIncomingDocumentView(context, state),
-                    _buildOutgoingDocumentView(context, state),
-                  ]),
-                  floatingActionButtonLocation: ExpandableFab.location,
-                  floatingActionButton: ExpandableFab(
-                    key: _key,
-                    openButtonBuilder: RotateFloatingActionButtonBuilder(
-                      child: const Icon(Icons.add),
-                    ),
-                    type: ExpandableFabType.up,
-                    //childrenAnimation: ExpandableFabAnimation.none,
-                    distance: 70,
-                    overlayStyle: ExpandableFabOverlayStyle(
-                      color: Colors.white.withOpacity(0.9),
-                    ),
-                    children: [
-                      FloatingActionButton.extended(
-                        icon:  Image(image: AssetImage('assets/images/document.png'), width: 24),
-                        label: Text(AppLocalizations.of(context)!.incoming_document_text),
-                        heroTag: null,
-                        onPressed: () {
-                          final state = _key.currentState;
-                          if (state != null) {
-                            state.toggle();
-                          }
-                          _onAddDocumentWithType(DocumentType.incoming);
-                        },
-                      ),
-                      FloatingActionButton.extended(
-                          icon:  Image(image: AssetImage('assets/images/document.png'), width: 24),
-                          label: Text(AppLocalizations.of(context)!.outgoing_document_text),
-                          onPressed: (){
-                            final state = _key.currentState;
-                            if (state != null) {
-                              state.toggle();
-                            }
-                            _onAddDocumentWithType(DocumentType.outgoing);
-                          }
-                      ),
-                    ],
-                  ),
+                key: ScaffoldKey,
+                appBar: _buildAppBar(state),
+                body: TabBarView(children: [
+                  _buildAllDocumentView(state),
+                  _buildIncomingDocumentView(context, state),
+                  _buildOutgoingDocumentView(context, state),
+                ]),
+                floatingActionButtonLocation: ExpandableFab.location,
+                floatingActionButton: getFloatingActionButton(0),
               );
             })),
         listenWhen: (state1, state2) => state1.state != state2.state,
@@ -142,10 +181,8 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
             });
           } else if (state.state is OpenSortDialogListState) {
             DocumentsSetting? settings = await showDialog(
-                context: context,
-                builder: (_) => SortDocumentsDialog(state.settings),
-                barrierDismissible: true);
-            if (settings != null){
+                context: context, builder: (_) => SortDocumentsDialog(state.settings), barrierDismissible: true);
+            if (settings != null) {
               context.read<DocumentsCubit>().setSettings(settings);
             }
           }
@@ -189,104 +226,56 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
     );
   }
 
-  Widget _buildAllEmptyView(DocumentsState state) => Visibility(
-      visible: state.items.isEmpty,
-      child: Column(
+  Widget _buildEmptyView(DocumentsState state) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image(image: AssetImage('assets/images/document.png'), width: 60),
           SizedBox(height: 16),
           Text(AppLocalizations.of(context)!.empty_document,
-              textAlign: TextAlign.center,
-              style: AppStyle.getEmptyTextStyle())
+              textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle())
         ],
-      ));
+      );
+  Widget _buildListView(List<DocumentUI> items) => ListView.builder(
+      itemBuilder: (BuildContext context, index) {
+        DocumentUI item = items[index];
+        if (item.type == DocumentUIType.data) {
+          return DocumentItemRow2(
+              false, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
+        } else {
+          return DocumentDateRow(item.dateText);
+        }
+      },
+      itemCount: items.length);
 
-  Widget _buildIncomingEmptyView(BuildContext context, DocumentsState state) => Visibility(
-      visible: state.incomingItems.isEmpty,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image(image: AssetImage('assets/images/document.png'), width: 60),
-          SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.empty_incoming_document, textAlign: TextAlign.center,style: AppStyle.getEmptyTextStyle())
-        ],
-      ));
-
-  Widget _buildOutgoingEmptyView(BuildContext context, DocumentsState state) => Visibility(
-      visible: state.outgoingItems.isEmpty,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image(image: AssetImage('assets/images/document.png'), width: 60),
-          SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.empty_outgoing_document, textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle())
-        ],
-      ));
-
-  Widget _buildAllListView(DocumentsState state) => Visibility(
-      visible: state.items.isNotEmpty,
-      child: ListView.builder(
-          itemBuilder: (BuildContext context, index) {
-            DocumentUI item = state.items[index];
-            if (item.type == DocumentUIType.data) {
-              return DocumentItemRow2(
-                  true, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
-            } else {
-              return DocumentDateRow(item.dateText);
-            }
-          },
-          itemCount: state.items.length));
-
-  Widget _buildIncomingListView(DocumentsState state) => Visibility(
-      visible: state.incomingItems.isNotEmpty,
-      child: ListView.builder(
-          itemBuilder: (BuildContext context, index) {
-            DocumentUI item = state.incomingItems[index];
-            if (item.type == DocumentUIType.data) {
-              return DocumentItemRow2(
-                  false, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
-            } else {
-              return DocumentDateRow(item.dateText);
-            }
-            },
-          itemCount: state.incomingItems.length));
-
-  Widget _buildOutgoingListView(DocumentsState state) => Visibility(
-      visible: state.outgoingItems.isNotEmpty,
-      child: ListView.builder(
-          itemBuilder: (BuildContext context, index) {
-            DocumentUI item = state.outgoingItems[index];
-            if (item.type == DocumentUIType.data) {
-              return DocumentItemRow2(
-                  false, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
-            } else {
-              return DocumentDateRow(item.dateText);
-            }
-            },
-          itemCount: state.outgoingItems.length));
-  Widget _buildSearchMenu(DocumentsState state){
-    return IconButton(onPressed: (){
-      searchTextController.text = "";
-      context.read<DocumentsCubit>().onSearchMenuClicked();
-    }, icon: Icon(Icons.search, color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
-  }
-  Widget _buildSortMenu(){
-    return IconButton(onPressed: (){
-      context.read<DocumentsCubit>().onMenuSortClicked();
-    }, icon: Icon(Icons.sort, color: context.read<DocumentsCubit>().hasSortOptions() ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
-  }
-  Widget _buildHelpMenu(){
-    return IconButton(onPressed: (){
-      context.read<DocumentsCubit>().onMenuHelpClicked();
-    }, icon: Icon(Icons.help));
+  Widget _buildSearchMenu(DocumentsState state) {
+    return IconButton(
+        onPressed: () {
+          searchTextController.text = "";
+          context.read<DocumentsCubit>().onSearchMenuClicked();
+        },
+        icon: Icon(Icons.search,
+            color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
   }
 
+  Widget _buildSortMenu() {
+    return IconButton(
+        onPressed: () {
+          context.read<DocumentsCubit>().onMenuSortClicked();
+        },
+        icon: Icon(Icons.sort,
+            color: context.read<DocumentsCubit>().hasSortOptions()
+                ? UIConstants.highlightMenuColor
+                : UIConstants.normalMenuColor));
+  }
 
-
+  Widget _buildHelpMenu() {
+    return IconButton(
+        onPressed: () {
+          context.read<DocumentsCubit>().onMenuHelpClicked();
+        },
+        icon: Icon(Icons.help));
+  }
 
   Widget _buildSearchBar(BuildContext context, DocumentsState state) => Row(children: [
         Expanded(
@@ -325,8 +314,12 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
       ]);
 
   void onPressedDocument(Document item) async {
-    await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
-    context.read<DocumentsCubit>().loadItems();
+    if (widget.isSelection) {
+      Navigator.of(context).pop(item);
+    } else {
+      await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+      context.read<DocumentsCubit>().loadItems();
+    }
   }
 
   void onLongPressedDocument(Document item) {

@@ -178,19 +178,6 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
       });
     }
   }
-
-  // void showSelectLanguageDialog(BuildContext context) async {
-  //   String currentCode = storage.getLanguageCode();
-  //   showDialog(
-  //       context: context,
-  //       builder: (_) => ChangeLanguagesDialog(currentCode, (code) {
-  //         storage.setLanguageCode(code);
-  //         MyApp.setLocale(context, code);
-  //             //appDataManager.sharedPrefsHelper.setLanguageCode(code);
-  //             //MyApp.setLocale(getContext(), code);
-  //           }),
-  //       barrierDismissible: true);
-  // }
   void onBarcodeScannerPressed(BuildContext context) {
     Navigator.of(context).pushNamed(Pages.barcode_scanner);
   }

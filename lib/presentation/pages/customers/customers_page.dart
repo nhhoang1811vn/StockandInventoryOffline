@@ -70,7 +70,6 @@ class CustomersPageState extends BaseStateWidget<CustomersPage> {
         },
         builder: (context, state) =>  Scaffold(
           key: ScaffoldKey,
-        //drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 6, storeName: storage.getSelectedStoreName(),),
         appBar: _buildAppBar(state),
         body: _buildBody(state),
         floatingActionButton:  FloatingActionButton(
@@ -156,7 +155,7 @@ class CustomersPageState extends BaseStateWidget<CustomersPage> {
           ]);
 
   Widget _buildListView(CustomersState data) {
-    return  ListView.separated(
+    return  ListView.builder(
           itemBuilder: (BuildContext context, index) {
             Customer item = data.items[index];
             return CustomerItemRow(item, (item) {
@@ -170,9 +169,6 @@ class CustomersPageState extends BaseStateWidget<CustomersPage> {
             }, (item) {
               _launchUrl("tel:${item.phone}");
             });
-          },
-          separatorBuilder: (context, index) {
-            return Divider(color: Colors.grey[500]);
           },
           itemCount: data.items.length);
   }

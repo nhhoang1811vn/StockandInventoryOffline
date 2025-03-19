@@ -45,7 +45,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
         date: item.date,
         personId: item.personId,
         personName: item.personName,
-        paymentStatus: item.paymentStatus
+        //paymentStatus: item.paymentStatus
     );
     emit(initState);
     if (item.id != null) {
@@ -81,7 +81,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
       item.description = state.description;
       item.date = getDateOnly(state.date!);
       item.personId = state.personId;
-      item.paymentStatus = state.paymentStatus!;
+      //item.paymentStatus = state.paymentStatus!;
       if (item.id == null) {
         int id = await useCase.insert(item);
         item.id = id;
@@ -134,23 +134,6 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
     List<Payment> payments = await paymentUseCase.getByDocumentId(state.item!.id!);
     emit(state.copyWith(payments: payments));
   }
-  void loadPaymentsAndCheck() async{
-    List<Payment> payments = await paymentUseCase.getByDocumentId(state.item!.id!);
-    emit(state.copyWith(payments: payments));
-    if (payments.isNotEmpty){
-      verifyPaymentStatusButton();
-    }
-  }
-  void verifyPaymentStatusButton(){
-    double totalPayment = getTotalPayments(state.payments);
-    double totalAmount = state.totalAmount;
-    if (totalPayment < totalAmount){
-      emit(state.copyWith(paymentStatus: PaymentStatus.PARTIAL));
-    }else{
-      emit(state.copyWith(paymentStatus: PaymentStatus.PAID));
-    }
-    save();
-  }
   double getTotalPayments(List<Payment> payments){
     double total = 0.0;
     payments.forEach((element) {
@@ -170,11 +153,6 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
       emit(state.copyWith(allTransactions: transactions, totalQuantity: totalQuantity, totalAmount: totalAmount));
       sort();
       filter();
-
-      //total amount has changed, correct payment status button if there is any exist payment record
-      if (state.payments.isNotEmpty){
-        verifyPaymentStatusButton();
-      }
     }
   }
 
@@ -331,16 +309,5 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   }
   void onSearchBarcodeClicked(){
     emit(state.copyWith(state: OpenBarcodeScannerToSearchState()));
-  }
-
-  onPaymentStatusChanged(PaymentStatus status) {
-    emit(state.copyWith(paymentStatus: status));
-  }
-  void onPaymentStatusButtonPressed() async{
-    if (state.payments.isNotEmpty){
-      emit(state.copyWith(state: OpenPaymentListPageState()));
-    }else{
-      emit(state.copyWith(state: OpenChangePaymentDialogState()));
-    }
   }
 }

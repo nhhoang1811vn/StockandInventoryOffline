@@ -1,7 +1,7 @@
 class Pages {
   static const String onboarding = 'onboarding';
 
-  static const String payment_list = 'payment_list';
+  //static const String payment_list = 'payment_list';
   static const String save_payment = 'save_payment';
   static const String main = '/main';
   static const String home = '/home';
@@ -12,7 +12,7 @@ class Pages {
   static const String good_history = "/good_history";
   static const String save_group = '/save_group';
 
-  //static const String document_list = "/document_list";
+  static const String document_list = "/document_list";
   static const String save_document = '/save_document';
 
   static const String store_list = '/store_list';

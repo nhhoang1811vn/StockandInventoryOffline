@@ -194,7 +194,10 @@
   "payment_due_pending": "Due/pending",
   "payment_paid": "Paid",
   "empty_payment": "No Payment",
-
+  "title_incoming_payment": "Incoming Payments",
+  "title_outgoing_payment": "Outgoing Payments",
+  "action_add_incoming_payment": "Add incoming payment",
+  "action_add_outgoing_payment": "Add outgoing payment",
   "save_payment_title": "Save payment",
   "menu_back_up": "Back up data",
   "menu_back_up_desc": "Export database file to the phone",
@@ -229,5 +232,7 @@
   "list_settings":"List Settings",
        "good_settings_hide_zero_entries": "Hide zero entries",
        "good_setting_show_bar_code": "Show barcode",
-       "good_setting_show_description": "Show description"
+       "good_setting_show_description": "Show description",
+
+       "version": "Version: %s"
 }

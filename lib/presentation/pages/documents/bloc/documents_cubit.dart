@@ -23,7 +23,10 @@ class DocumentsCubit extends Cubit<DocumentsState> {
   final Storage storage;
   DocumentsCubit({required this.storage,required this.useCase}) : super(DocumentsState.initial(state: InitialState(), settings: storage.getDocumentsSetting()));
 
-  void initState(){
+  void initState(bool isSelection){
+    if (isSelection){
+      emit(state.copyWith(showSearchBar: true, textSearch: ""));
+    }
     loadItems();
   }
   void loadItems() async{
