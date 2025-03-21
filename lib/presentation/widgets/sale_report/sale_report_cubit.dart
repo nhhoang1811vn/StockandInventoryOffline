@@ -46,7 +46,6 @@ class SaleReportCubit extends Cubit<SaleReportState> {
       totalIncomingAmounts.add(totalIncomingAmount);
       totalOutgoingAmounts.add(totalOutgoingAmount);
 
-      //totalAmounts.add(totalAmount);
       if (totalIncomingAmount > maxTotalAmount) {
         maxTotalAmount = totalIncomingAmount;
       }
@@ -55,8 +54,8 @@ class SaleReportCubit extends Cubit<SaleReportState> {
       }
     }
     for (int i = 0; i < 6; i++) {
-      double normalizedValue1 = totalIncomingAmounts[i] * 4 / maxTotalAmount;
-      double normalizedValue2 = totalOutgoingAmounts[i] * 4 / maxTotalAmount;
+      double normalizedValue1 = totalIncomingAmounts[i] * 5 / maxTotalAmount;
+      double normalizedValue2 = totalOutgoingAmounts[i] * 5 / maxTotalAmount;
       data1.add(MapEntry(i.toDouble(), normalizedValue1));
       data2.add(MapEntry(i.toDouble(), normalizedValue2));
     }

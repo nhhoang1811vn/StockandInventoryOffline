@@ -18,13 +18,11 @@ class SaleReportWidget extends StatefulWidget {
 
 class SaleReportWidgetState extends State<SaleReportWidget> {
   late SaleReportState mState;
-  final double width = 7;
+  final double width = 12;
   final Color leftBarColor = Colors.red;
   final Color rightBarColor = Colors.green;
-  //late List<BarChartGroupData> rawBarGroups;
   List<BarChartGroupData> showingBarGroups = [];
   BarChartGroupData makeGroupData(int x, double y1, double y2) {
-
     return BarChartGroupData(
       barsSpace: 4,
       x: x,
@@ -45,27 +43,6 @@ class SaleReportWidgetState extends State<SaleReportWidget> {
   @override
   void initState() {
     super.initState();
-    // final barGroup1 = makeGroupData(0, 5, 12);
-    // final barGroup2 = makeGroupData(1, 16, 12);
-    // final barGroup3 = makeGroupData(2, 18, 5);
-    // final barGroup4 = makeGroupData(3, 20, 16);
-    // final barGroup5 = makeGroupData(4, 17, 6);
-    // final barGroup6 = makeGroupData(5, 19, 1.5);
-    // final barGroup7 = makeGroupData(6, 10, 1.5);
-    //
-    // final items = [
-    //   barGroup1,
-    //   barGroup2,
-    //   barGroup3,
-    //   barGroup4,
-    //   barGroup5,
-    //   barGroup6,
-    //   barGroup7,
-    // ];
-    //
-    // rawBarGroups = items;
-    //
-    // showingBarGroups = rawBarGroups;
   }
   @override
   Widget build(BuildContext context) {
@@ -91,9 +68,27 @@ class SaleReportWidgetState extends State<SaleReportWidget> {
       showingBarGroups.add(makeGroupData(i, y1, y2));
     }
     return BarChart(BarChartData(
-      maxY: 4,
-      barTouchData: BarTouchData(
+      maxY: 5,
 
+      barTouchData: BarTouchData(
+        touchTooltipData: BarTouchTooltipData(
+          getTooltipItem: (BarChartGroupData group,
+              int groupIndex,
+              BarChartRodData rod,
+              int rodIndex){
+            double realValue = 0.0;
+            if (rodIndex == 0){
+              double normalizedValue = mState.data1[groupIndex].value;// totalIncomingAmounts[index] * 5 / maxTotalAmount;
+              realValue = normalizedValue * mState.maxTotalAmount / 5;
+            }else if (rodIndex == 1){
+              double normalizedValue = mState.data2[groupIndex].value;// totalIncomingAmounts[index] * 5 / maxTotalAmount;
+              realValue = normalizedValue * mState.maxTotalAmount / 5;
+            }
+            //var text = Utils.formatNumber(realValue); // Convert the number to 'K', 'M', or 'B' format
+            return BarTooltipItem('${realValue.toStringAsFixed(2)}', TextStyle(color: Colors.white, fontSize: 14));
+
+          }
+        )
       ),
       titlesData: FlTitlesData(
         show: true,
@@ -122,7 +117,7 @@ class SaleReportWidgetState extends State<SaleReportWidget> {
         show: false,
       ),
       barGroups: showingBarGroups,
-      gridData: const FlGridData(show: false),
+      gridData: const FlGridData(show: true ),
     ));
   }
 
@@ -160,10 +155,9 @@ class SaleReportWidgetState extends State<SaleReportWidget> {
     double maxTotalAmount = mState.maxTotalAmount;
 
     // Determine the text based on the value and maxTotalAmount
-    if (value >= 0 && value <= 4) {
+    if (value >= 0 && value <= 5) {
       // Scale the value based on maxTotalAmount
-      double adjustedValue = value * (maxTotalAmount / 4);
-
+      double adjustedValue = value * (maxTotalAmount / 5);
       // Format the adjusted value using the formatNumber function
       text = Utils.formatNumber(adjustedValue); // Convert the number to 'K', 'M', or 'B' format
     } else {
