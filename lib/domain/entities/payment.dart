@@ -5,6 +5,7 @@ class Payment extends BaseModel {
   DateTime date = DateTime.now();
   double? amount;
   late int documentId;
+  String? documentName;
   late int storeId;
   DocumentType documentType = DocumentType.incoming;
 
@@ -15,7 +16,12 @@ class Payment extends BaseModel {
     this.date = DateTime.fromMillisecondsSinceEpoch(obj["date"]);
     this.amount = obj["amount"];
     this.documentId = obj["documentId"];
+    this.documentName = obj["documentName"];
     this.storeId = obj["storeId"];
+    if (obj["type"] != null){
+      this.documentType = DocumentType.values.firstWhere((element) => element.index == obj["type"]);
+    }
+
   }
 
   Map<String, dynamic> toMap() {

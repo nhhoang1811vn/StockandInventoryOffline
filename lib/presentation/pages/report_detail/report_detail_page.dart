@@ -72,7 +72,7 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
       children: [
         CircularProgressIndicator(),
         SizedBox(height: 16),
-        Text("Loading...", style: TextStyle(color: Colors.white, fontSize: 16, decoration: TextDecoration.none, )),
+        Text(AppLocalizations.of(context)!.loading_data, style: TextStyle(color: Colors.white, fontSize: 16, decoration: TextDecoration.none, )),
       ],
     )));
   }
@@ -172,8 +172,8 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
   pw.Widget _buildPDFContent(BuildContext context,ReportDetailState state, pw.Font font) {
     return pw.Column(children: [
       pw.Text(sprintf(AppLocalizations.of(context)!.report_detail_header, [
-        Config.dateFormat.format(state.start!),
-        Config.dateFormat.format(state.end!),
+        DateFormatFactory.getDateFormat().format(state.start!),
+        DateFormatFactory.getDateFormat().format(state.end!),
         storage.getSelectedStoreName()
       ]), style: pw.TextStyle(font: font)),
       pw.SizedBox(height: 16.0),
@@ -214,7 +214,7 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
             var goodId = state.ids[key - 1];
             Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
             context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
-          }else if (state.type == ReportType.LIST_OF_DOCUMENT){
+          }else if (state.type == ReportType.LIST_OF_DOCUMENT || state.type == ReportType.DEBTS_BY_CUSTOMER || state.type == ReportType.DEBTS_BY_SUPPLIER){
             var item = state.documents[key -1];
             Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
             context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
@@ -246,7 +246,7 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
                   var goodId = state.ids[key - 1];
                   Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
                   context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
-                }else if (state.type == ReportType.LIST_OF_DOCUMENT){
+                }else if (state.type == ReportType.LIST_OF_DOCUMENT ||  state.type == ReportType.DEBTS_BY_CUSTOMER || state.type == ReportType.DEBTS_BY_SUPPLIER){
                   var item = state.documents[key -1];
                   Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
                   context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
@@ -366,8 +366,8 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
   }
   Widget _buildContent(BuildContext context, ReportDetailState state){
     var text = sprintf(AppLocalizations.of(context)!.report_detail_header, [
-      Config.dateFormat.format(state.start!),
-      Config.dateFormat.format(state.end!),
+      DateFormatFactory.getDateFormat().format(state.start!),
+      DateFormatFactory.getDateFormat().format(state.end!),
       storage.getSelectedStoreName()
     ]);
     if (state.groupName != null){

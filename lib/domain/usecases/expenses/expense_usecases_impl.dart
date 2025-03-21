@@ -41,6 +41,5 @@ class ExpenseUseCasesImpl implements ExpenseUseCases{
   @override
   Future<List<Expense>> getExpensesInRange(DateTime start, DateTime end) {
     return repository.getInRange(start,end);
-
   }
 }

@@ -45,6 +45,8 @@ import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit
 import 'package:good_manager/presentation/pages/save_store/save_store_page.dart';
 import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart';
 import 'package:good_manager/presentation/pages/save_supplier/save_supplier_page.dart';
+import 'package:good_manager/presentation/pages/select_document/bloc/select_document_cubit.dart';
+import 'package:good_manager/presentation/pages/select_document/select_documents_page.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 import 'package:good_manager/presentation/pages/select_group/select_group_page.dart';
 import 'package:good_manager/presentation/pages/settings/settings_page.dart';
@@ -92,17 +94,22 @@ class AppRouter {
       //             create: (context) => getIt<HomeCubit>(),
       //             child: HomePage(),
       //           ));
-      case Pages.document_list:
+      case Pages.select_document:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
-                  create: (context) => getIt<DocumentsCubit>(),
-                  child: DocumentsPage(
-                    key: UniqueKey(),
-                    isSelection: args["isSelection"],
-                    selectionType: args["selectionType"],
-                  ),
-                ));
+              create: (context) => getIt<SelectDocumentCubit>(),
+              child: SelectDocumentsPage(selectionType: args["selectionType"],),
+            ));
+      // case Pages.document_list:
+      //   Map<dynamic, dynamic> args = settings.arguments as Map;
+      //   return MaterialPageRoute(
+      //       builder: (_) => BlocProvider(
+      //             create: (context) => getIt<DocumentsCubit>(),
+      //             child: DocumentsPage(
+      //               key: UniqueKey(),
+      //             ),
+      //           ));
       case Pages.save_document:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(

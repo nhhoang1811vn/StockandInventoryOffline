@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/presentation/pages/main/main_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../common/path_utils.dart';
@@ -104,9 +105,9 @@ class MorePageState extends State<MorePage> {
                 tileColor: Colors.white,
                 leading:
                     Icon(Icons.change_circle, size: UIConstants.drawerMenuSize),
-                title: Text("Change Tracking Store"),
+                title: Text(AppLocalizations.of(context)!.change_tracking_store),
                 subtitle:
-                    Text("Tracking Store: ${storage.getSelectedStoreName()}"),
+                    Text("${storage.getSelectedStoreName()}"),
                 trailing: Icon(Icons.navigate_next),
                 onTap: () => onChangeTrackingStoreItemPressed(context),
               ),
@@ -128,17 +129,6 @@ class MorePageState extends State<MorePage> {
                 subtitle:
                 Text(AppLocalizations.of(context)!.menu_item_language_desc),
                 onTap: (){ showSelectLanguageDialog(context);},
-              ),
-
-              ListTile(
-                tileColor: Colors.white,
-                title: Text(_packageInfo.appName,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.bold)),
-                subtitle: Text("Version " + _packageInfo.version,
-                    style: Theme.of(context).textTheme.bodyMedium),
               ),
               SizedBox(height: 4),
             ],
@@ -196,7 +186,9 @@ class MorePageState extends State<MorePage> {
               SizedBox(height: 4),
             ],
           ),
-        )
+        ),
+        Center(child: Text(sprintf(AppLocalizations.of(context)!.version, [_packageInfo.version]))),
+        SizedBox(height: 16),
       ]),
     );
   }

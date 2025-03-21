@@ -132,4 +132,8 @@ AppViet Team
  *  Delete item.
 
  """;
+
+ static const String helpPayments = """
+ The Payment section is designed to help you track real-money transactions efficiently, ensuring smooth financial operations within your stock and inventory system. Whether you're receiving payments from customers or making payments to suppliers, this feature allows you to maintain accurate records, manage cash flow, and prevent discrepancies.
+ """;
 }

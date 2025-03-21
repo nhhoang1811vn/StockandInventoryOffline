@@ -27,6 +27,7 @@ class Document extends BaseModel {
   String? personName;
   double quantity = 0.0;
   double amount = 0.0;
+  double paid = 0.0;
   Document();
 
   Document clone() {
@@ -53,6 +54,7 @@ class Document extends BaseModel {
     this.storeId = obj["storeId"];
     this.quantity = obj["quantity"]??0.0;
     this.amount = obj["amount"]??0.0;
+    //this.paid = obj["paid"]??0.0;
   }
 
   Map<String, dynamic> toMap() {

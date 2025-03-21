@@ -24,12 +24,18 @@ class PaymentItemRow extends StatelessWidget {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(Config.dateFormat.format(item.date)),
+              Text(DateFormatFactory.getDateFormat().format(item.date)),
               if (item.description.isNotEmpty)
                 Text(
                   item.description,
                   style:
                       Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                ),
+              if (item.documentName != null && item.documentName!.isNotEmpty)
+                Text(
+                  item.documentName!,
+                  style:
+                  Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
                 )
             ],
           ),

@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/payment_status.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
+import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
@@ -132,7 +133,7 @@ class SaveDocumentForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    dateController.text = Config.dateTimeFormat.format(state.date!);
+    dateController.text = DateFormatFactory.getDateAndTimeFormat().format(state.date!);
     personNameController.text = state.personName ?? '';
     searchTextController.text = state.textSearch;
     searchTextController.selection = TextSelection.fromPosition(TextPosition(offset: state.textSearch.length));
@@ -177,15 +178,15 @@ class SaveDocumentForm extends StatelessWidget {
                         keyboardType: TextInputType.datetime,
                         readOnly: true,
                         onTapped: () => {
-                          //DatePicker.showDateTimePicker(context)
                           DatePicker.showDateTimePicker(context,
+                              locale: MyApp.getDatePickerLocaleType(context),
                               showTitleActions: true,
                               minTime: Config.minTime,
                               maxTime: Config.maxTime,
                               onChanged: (date) {}, onConfirm: (date) {
                             context.read<SaveDocumentCubit>().dateChanged(date);
-                            dateController.text = Config.dateTimeFormat.format(date);
-                          }, currentTime: state.date, locale: LocaleType.en)
+                            dateController.text =  DateFormatFactory.getDateAndTimeFormat().format(date);
+                          }, currentTime: state.date)
                         },
                       )),
 

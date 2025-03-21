@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/presentation/pages/login/auth_cubit.dart';
@@ -62,6 +63,12 @@ class MyApp extends StatefulWidget {
   static void setLocale(BuildContext context, String languageCode) async {
     MyAppState? state = context.findAncestorStateOfType<MyAppState>();
     state?.changeLanguage(languageCode);
+  }
+  static LocaleType getDatePickerLocaleType(BuildContext context){
+    MyAppState? state = context.findAncestorStateOfType<MyAppState>();
+    if (state?._languageCode == "vi")
+      return LocaleType.vi;
+    return LocaleType.en;
   }
 
 }

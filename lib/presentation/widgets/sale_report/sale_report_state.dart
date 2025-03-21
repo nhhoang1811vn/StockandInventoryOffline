@@ -6,6 +6,7 @@ class SaleReportState with _$SaleReportState {
     //required BaseState state,
     DateTime? startDate,
     @Default(0.0)double maxTotalAmount,
-    @Default([]) List<MapEntry<double, double>> data
+    @Default([]) List<MapEntry<double, double>> data1,
+    @Default([]) List<MapEntry<double, double>> data2
   }) = _Initial;
 }

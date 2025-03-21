@@ -5,13 +5,13 @@ import 'package:good_manager/domain/entities/payment_status.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
 
-class DocumentItemRow2 extends StatelessWidget {
+class DocumentItemRow extends StatelessWidget {
   final Document item;
   final bool showAll;
   final void Function(Document document) onDocumentTapped;
   final void Function(Document document) onDocumentLongPressed;
 
-  DocumentItemRow2(this.showAll, this.item, this.onDocumentTapped, this.onDocumentLongPressed);
+  DocumentItemRow(this.showAll, this.item, this.onDocumentTapped, this.onDocumentLongPressed);
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class DocumentItemRow2 extends StatelessWidget {
                                 .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                           ),
                           //SizedBox(height: 4),
-                          Text(Config.dateFormat.format(item.date),
+                          Text(DateFormatFactory.getDateFormat().format(item.date),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
@@ -80,7 +80,8 @@ class DocumentItemRow2 extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(Utils.getQuantityText(item.quantity), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
-                      Text(Config.currencyFormat.format(item.amount))
+                      //Text("Paid/Amount"),
+                      Text("${Config.currencyFormat.format(item.paid)}/${Config.currencyFormat.format(item.amount)}")
                     ],
                   )
                 ],),))

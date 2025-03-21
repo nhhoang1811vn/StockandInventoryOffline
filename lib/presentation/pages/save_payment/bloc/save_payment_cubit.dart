@@ -24,7 +24,10 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
       initState = state.copyWith(item: item, date: DateTime.now());
     } else {
       initState = state.copyWith(item: item,
+          name: NameInput.dirty(value: item.name),
           description: item.description,
+          documentId: item.documentId,
+          documentName: NameInput.dirty(value: item.documentName??""),
           amount: item.amount,
           date: item.date
       );

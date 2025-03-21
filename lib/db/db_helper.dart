@@ -71,7 +71,8 @@ class DBHelper {
     3: [
       "DROP TABLE $PAYMENTS_TABLE_NAME",
       "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, documentId INTEGER NOT NULL, storeId INTEGER NOT NULL, " +
-          "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE," +
+          "FOREIGN KEY(documentId) "
+              "REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE," +
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)"
     ]
   };
@@ -579,12 +580,12 @@ class DBHelper {
         [goodId]);
   }
 
-  Future<List<Document>> findDocumentBySupplierId(int supplierId) async {
-    var dbClient = await db;
-    final sql = "SELECT * FROM $DOCUMENTS_TABLE_NAME WHERE id = ?";
-    List<Map> list = await dbClient.rawQuery(sql, [supplierId]);
-    return list.map((e) => Document.map(e)).toList();
-  }
+  // Future<List<Document>> findDocumentBySupplierId(int supplierId) async {
+  //   var dbClient = await db;
+  //   final sql = "SELECT * FROM $DOCUMENTS_TABLE_NAME WHERE id = ?";
+  //   List<Map> list = await dbClient.rawQuery(sql, [supplierId]);
+  //   return list.map((e) => Document.map(e)).toList();
+  // }
 
   Future<List<Document>> getDocuments(int storeId) async {
     var dbClient = await db;
@@ -608,11 +609,12 @@ class DBHelper {
             "LEFT JOIN $SUPPLIERS_TABLE_NAME B ON A.supplierId = B.id " +
             "LEFT JOIN $CUSTOMERS_TABLE_NAME C ON A.customerId = C.id " +
             "LEFT JOIN $DOCUMENT_TRANSACTIONS_TABLE_NAME D ON A.id = D.documentId " +
-
             "WHERE A.storeId = ? GROUP BY A.id", [storeId]);
     List<Document> documents = [];
     for (int i = 0; i < list.length; i++) {
       var document = Document.map(list[i]);
+      var payments = await getPaymentByDocumentId(document.id!);
+      document.paid = payments.fold(0.0, (sum, item) => sum += item.amount??0.0);
       documents.add(document);
     }
     return documents;
@@ -645,6 +647,8 @@ class DBHelper {
     List<Document> documents = [];
     for (int i = 0; i < list.length; i++) {
       var document = Document.map(list[i]);
+      var payments = await getPaymentByDocumentId(document.id!);
+      document.paid = payments.fold(0.0, (sum, item) => sum += item.amount??0.0);
       documents.add(document);
     }
     return documents;
@@ -863,10 +867,27 @@ class DBHelper {
     }
     return items;
   }
+  Future<List<Payment>> getPaymentsInRange(int storeId, DateTime start, DateTime end) async{
+    var dbClient = await db;
+    int startInt = start.millisecondsSinceEpoch;
+    int endInt = end.millisecondsSinceEpoch;
+    //List<Map> list = await dbClient.rawQuery(
+    //    'SELECT * FROM $PAYMENTS_TABLE_NAME where storeId = ? AND date BETWEEN ? AND ?', [storeId, startInt, endInt]);
+    List<Map> list = await dbClient.rawQuery(
+        "SELECT A.id, A.name, A.description, A.createdDate, A.updatedDate, A.date, A.amount, A.documentId, A.storeId, " +
+            "B.name as documentName, B.type as type FROM $PAYMENTS_TABLE_NAME A LEFT JOIN $DOCUMENTS_TABLE_NAME B ON A.documentId = B.id where A.storeId = ? AND A.date BETWEEN ? AND ? ORDER BY A.date DESC", [storeId, startInt, endInt]);
+    List<Payment> items = [];
+    for (int i = 0; i < list.length; i++) {
+      Payment item = Payment.map(list[i]);
+      items.add(item);
+    }
+    return items;
+  }
   Future<List<Payment>> getPaymentByStoreId(int storeId) async{
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
-        'SELECT * FROM $PAYMENTS_TABLE_NAME where storeId = ? ORDER BY date DESC', [storeId]);
+        "SELECT A.id, A.name, A.description, A.createdDate, A.updatedDate, A.date, A.amount, A.documentId, A.storeId, " +
+            "B.name as documentName, B.type as type FROM $PAYMENTS_TABLE_NAME A LEFT JOIN $DOCUMENTS_TABLE_NAME B ON A.documentId = B.id where A.storeId = ? ORDER BY A.date DESC", [storeId]);
     List<Payment> items = [];
     for (int i = 0; i < list.length; i++) {
       Payment item = Payment.map(list[i]);

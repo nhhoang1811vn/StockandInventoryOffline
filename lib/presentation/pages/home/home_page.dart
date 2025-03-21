@@ -85,10 +85,10 @@ class HomePageState extends BaseStateWidget<HomePage> {
                 SizedBox(width: 16),
                 Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.report_title, "", UIConstants.reportIconData, Colors.green[50],Colors.green[700], openReport))
               ],),
-              SizedBox(height: 16),
-              SaleReportWidget(),
-              SizedBox(height: 16),
-              ExpenseReportChartWidget()
+               SizedBox(height: 16),
+               SaleReportWidget(),
+              // SizedBox(height: 16),
+              // ExpenseReportChartWidget()
             ],
           )),
     ];
@@ -112,12 +112,11 @@ class HomePageState extends BaseStateWidget<HomePage> {
                   children: [
                     Text(AppLocalizations.of(context)!.goods_title, style: Theme.of(context).textTheme.titleMedium),
                     SizedBox(height: 4,),
-                    Text("${state.countGoods} items", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                    Text(AppLocalizations.of(context)!.title_good_count + ": ${state.countGoods}", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                     SizedBox(
                       height: 4,
                     ),
-                    Text("Quantity ${Utils.getQuantityText(state.quantityTotal)}", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-
+                    Text(AppLocalizations.of(context)!.title_total_quantity + ": ${Utils.getQuantityText(state.quantityTotal)}", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                   ],
                 )),
                 Image(image: AssetImage('assets/images/box.png'), width: 24),
@@ -165,7 +164,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                                   ),
                                   SizedBox(width: 8),
                                   Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
-                                    Text("Incoming", style: Theme.of(context).textTheme.bodySmall,),
+                                    Text(AppLocalizations.of(context)!.incoming_document_text, style: Theme.of(context).textTheme.bodySmall,),
                                     Text("${state.countIncomingDocument}", style: Theme.of(context).textTheme.titleMedium),
                                     Text("${Config.currencyFormat.format(state.sumPriceIncomingDocument)}",  style: Theme.of(context).textTheme.titleMedium)
                                   ],)
@@ -184,7 +183,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                                   ),
                                   SizedBox(width: 8),
                                   Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
-                                    Text("Outgoing", style: Theme.of(context).textTheme.bodySmall,),
+                                    Text(AppLocalizations.of(context)!.outgoing_document_text, style: Theme.of(context).textTheme.bodySmall,),
                                     Text("${state.countOutgoingDocument}", style: Theme.of(context).textTheme.titleMedium),
                                     Text("${Config.currencyFormat.format(state.sumPriceOutgoingDocument)}",  style: Theme.of(context).textTheme.titleMedium)
                                   ],)
@@ -206,7 +205,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                   Expanded(child: ElevatedButton.icon(
                     onPressed: openSaveIncomingDocument,
                     icon: Icon(Icons.add_circle_rounded), // Left icon
-                    label: Text("New incoming"), // Text on the right
+                    label: Text(AppLocalizations.of(context)!.incoming_document_text), // Text on the right
                   )),
                   SizedBox(
                     width: 16,
@@ -214,7 +213,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                   Expanded(child: ElevatedButton.icon(
                     onPressed: openSaveOutgoingDocument,
                     icon: Icon(Icons.remove_circle_rounded), // Left icon
-                    label: Text("New outgoing"), // Text on the right
+                    label: Text(AppLocalizations.of(context)!.outgoing_document_text), // Text on the right
                   )),
                 ],)
               ]

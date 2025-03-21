@@ -238,7 +238,7 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
     try{
       List<List<String>> data = [];
       data.add([AppLocalizations.of(context)?.document_name_no??"", state.name.value.toString()]);
-      data.add([AppLocalizations.of(context)?.field_date_time??"", Config.dateTimeFormat.format(state.date!)]);
+      data.add([AppLocalizations.of(context)?.field_date_time??"", DateFormatFactory.getDateAndTimeFormat().format(state.date!)]);
       data.add([AppLocalizations.of(context)?.field_person_name??"", state.personName??""]);
       data.add([AppLocalizations.of(context)?.field_desc??"", state.description]);
       data.add([AppLocalizations.of(context)?.goods_title??""]);

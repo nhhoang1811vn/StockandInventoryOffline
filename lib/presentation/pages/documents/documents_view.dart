@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
@@ -20,26 +19,31 @@ import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'bloc/documents_cubit.dart';
-import 'document_item_row2.dart';
+import 'components/add_document_dialog.dart';
+import 'components/document_item_row.dart';
 
 class DocumentsPage extends StatefulWidget {
-  final bool isSelection;
-  final DocumentType? selectionType;
-
-  const DocumentsPage({required this.isSelection, this.selectionType, required Key? key}) : super(key: key);
+  const DocumentsPage({required Key? key}) : super(key: key);
 
   @override
   DocumentPageState createState() => DocumentPageState();
 }
 
-class DocumentPageState extends BaseStateWidget<DocumentsPage> {
-  final _key = GlobalKey<ExpandableFabState>();
+class DocumentPageState extends BaseStateWidget<DocumentsPage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   final TextEditingController searchTextController = TextEditingController();
 
   @override
   void initState() {
-    context.read<DocumentsCubit>().initState(widget.isSelection);
+    context.read<DocumentsCubit>().initState();
+    _tabController = TabController(length: 3, vsync: this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -87,91 +91,36 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
         ],
       );
 
-  int getInitialIndex() {
-    if (widget.isSelection) {
-      if (widget.selectionType == DocumentType.incoming) {
-        return 1;
-      } else {
-        return 2;
-      }
-    }
-    return 0;
-  }
-
-  Widget getFloatingActionButton(int index) {
-    if (index == 0) {
-      return ExpandableFab(
-        key: _key,
-        openButtonBuilder: RotateFloatingActionButtonBuilder(
-          child: const Icon(Icons.add),
-        ),
-        type: ExpandableFabType.up,
-        //childrenAnimation: ExpandableFabAnimation.none,
-        distance: 70,
-        overlayStyle: ExpandableFabOverlayStyle(
-          color: Colors.white.withOpacity(0.9),
-        ),
-        children: [
-          FloatingActionButton.extended(
-            icon: Image(image: AssetImage('assets/images/document.png'), width: 24),
-            label: Text(AppLocalizations.of(context)!.incoming_document_text),
-            heroTag: null,
-            onPressed: () {
-              final state = _key.currentState;
-              if (state != null) {
-                state.toggle();
-              }
-              _onAddDocumentWithType(DocumentType.incoming);
-            },
-          ),
-          FloatingActionButton.extended(
-              icon: Image(image: AssetImage('assets/images/document.png'), width: 24),
-              label: Text(AppLocalizations.of(context)!.outgoing_document_text),
-              onPressed: () {
-                final state = _key.currentState;
-                if (state != null) {
-                  state.toggle();
-                }
-                _onAddDocumentWithType(DocumentType.outgoing);
-              }),
-        ],
-      );
-    } else if (index == 1) {
-      return FloatingActionButton(
-        onPressed: () {
-          _onAddDocumentWithType(DocumentType.incoming);
-        },
-        child: Icon(Icons.add),
-      );
-    } else {
-      return FloatingActionButton(
-        onPressed: () {
-          _onAddDocumentWithType(DocumentType.outgoing);
-        },
-        child: Icon(Icons.add),
-      );
-    }
-  }
-
   @override
   Widget buildWidget(BuildContext context) {
     return BlocConsumer<DocumentsCubit, DocumentsState>(
-        builder: (context, state) => DefaultTabController(
-            initialIndex: getInitialIndex(),
-            length: 3,
-            child: Builder(builder: (BuildContext context) {
-              return Scaffold(
-                key: ScaffoldKey,
-                appBar: _buildAppBar(state),
-                body: TabBarView(children: [
-                  _buildAllDocumentView(state),
-                  _buildIncomingDocumentView(context, state),
-                  _buildOutgoingDocumentView(context, state),
-                ]),
-                floatingActionButtonLocation: ExpandableFab.location,
-                floatingActionButton: getFloatingActionButton(0),
-              );
-            })),
+        builder: (context, state) => Scaffold(
+              appBar: _buildAppBar(state),
+              body: TabBarView(controller: _tabController, children: [
+                _buildAllDocumentView(state),
+                _buildIncomingDocumentView(context, state),
+                _buildOutgoingDocumentView(context, state),
+              ]),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () async{
+                  if (_tabController.index == 1){
+                    _onAddDocumentWithType(DocumentType.incoming);
+                  }else if (_tabController.index == 2){
+                    _onAddDocumentWithType(DocumentType.outgoing);
+                  }else{
+                    //show dialog
+                    DocumentType? type =
+                        await showDialog(context: context, builder: (_) => AddDocumentDialogWidget(), barrierDismissible: true);
+                    if (type != null) {
+                      _onAddDocumentWithType(type);
+                    }
+
+                  }
+
+                },
+                child: Icon(Icons.add),
+              ),
+            ),
         listenWhen: (state1, state2) => state1.state != state2.state,
         listener: (context, state) async {
           if (state.state is OpenHelpPageState) {
@@ -212,6 +161,7 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
               SelectedStoreView(),
               Visibility(child: _buildSearchBar(context, state), visible: state.showSearchBar),
               TabBar(
+                controller: _tabController,
                 indicatorColor: Theme.of(context).colorScheme.onPrimary,
                 tabs: [
                   Tab(text: AppLocalizations.of(context)!.document_list_tab_all.toUpperCase()),
@@ -236,11 +186,12 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
               textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle())
         ],
       );
+
   Widget _buildListView(List<DocumentUI> items) => ListView.builder(
       itemBuilder: (BuildContext context, index) {
         DocumentUI item = items[index];
         if (item.type == DocumentUIType.data) {
-          return DocumentItemRow2(
+          return DocumentItemRow(
               false, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
         } else {
           return DocumentDateRow(item.dateText);
@@ -314,12 +265,8 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> {
       ]);
 
   void onPressedDocument(Document item) async {
-    if (widget.isSelection) {
-      Navigator.of(context).pop(item);
-    } else {
-      await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
-      context.read<DocumentsCubit>().loadItems();
-    }
+    await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+    context.read<DocumentsCubit>().loadItems();
   }
 
   void onLongPressedDocument(Document item) {

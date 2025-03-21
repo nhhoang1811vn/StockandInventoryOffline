@@ -5,11 +5,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/pages/save_payment/components/save_payment_form.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:intl/intl.dart';
 
 import '../../../domain/entities/document.dart';
+import '../../../main.dart';
 import '../../utils.dart';
 import '../../widgets/circle_button_widget.dart';
 import '../../widgets/snackbar_widgets.dart';
@@ -39,8 +39,8 @@ class SavePaymentPage extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
           Navigator.of(context).pop(state.item);
         } else if (state.state is OpenDocumentListState) {
-          final result = await Navigator.of(context).pushNamed(Pages.document_list,
-              arguments: {"isSelection": true});
+          final result = await Navigator.of(context).pushNamed(Pages.select_document,
+              arguments: {"selectionType": item.documentType});
           if (result != null) {
             Document item = result as Document;
             context.read<SavePaymentCubit>().onDocumentChanged(item);
@@ -49,7 +49,7 @@ class SavePaymentPage extends StatelessWidget {
       },
       builder: (BuildContext context, SavePaymentState state) {
         documentNameController.text = state.documentName.value;
-        dateController.text = Config.dateFormat.format(state.date!);
+        dateController.text = DateFormatFactory.getDateFormat().format(state.date!);
         if (state.amount != null) {
           amountController.text = Config.simpleCurrencyFormat.format(state.amount);
         } else {
@@ -97,8 +97,8 @@ class SavePaymentPage extends StatelessWidget {
                             print('change $date');
                           }, onConfirm: (date) {
                             context.read<SavePaymentCubit>().dateChanged(date);
-                            dateController.text = Config.dateFormat.format(date);
-                          }, currentTime: state.date, locale: LocaleType.en)
+                            dateController.text = DateFormatFactory.getDateFormat().format(date);
+                          }, currentTime: state.date, locale: MyApp.getDatePickerLocaleType(context))
                         },
                       ),
                       Row(
@@ -128,9 +128,12 @@ class SavePaymentPage extends StatelessWidget {
   }
 
   PreferredSize _buildAppBar(BuildContext context) {
+
     return PreferredSize(
         preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-        child: AppBar(title: Text(AppLocalizations.of(context)!.save_payment_title), actions: <Widget>[
+        child: AppBar(title: Text(
+            item.documentType == DocumentType.incoming?AppLocalizations.of(context)!.save_incoming_payment_title:AppLocalizations.of(context)!.save_outgoing_payment_title
+            ), actions: <Widget>[
           IconButton(
               onPressed: () {
                 context.read<SavePaymentCubit>().onSaveClicked();

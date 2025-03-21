@@ -37,4 +37,8 @@ class PaymentUseCasesImpl implements PaymentUseCases{
   Future<List<Payment>> getByDocumentId(int documentId) {
     return repository.getByDocumentId(documentId);
   }
+  @override
+  Future<List<Payment>> getInRange(DateTime start, DateTime end) {
+    return repository.getInRange(start,end);
+  }
 }

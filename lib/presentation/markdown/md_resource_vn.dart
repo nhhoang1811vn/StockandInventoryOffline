@@ -130,4 +130,8 @@ Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Ho
  
  * Lần đầu tiên ra mắt chưa có gì để nói cả :), mọi người chọn nút trợ giúp ở từng màn hình để hiểu rõ nhé.
  """;
+
+  static const String helpPayments = """
+   Phần Thanh Toán giúp bạn theo dõi các giao dịch tiền thật một cách hiệu quả, đảm bảo hoạt động tài chính diễn ra suôn sẻ trong hệ thống quản lý kho và hàng tồn. Dù là nhận thanh toán từ khách hàng hay chi trả cho nhà cung cấp, tính năng này giúp bạn duy trì hồ sơ chính xác, quản lý dòng tiền và tránh sai sót.
+  """;
 }

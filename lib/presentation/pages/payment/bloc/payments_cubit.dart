@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
 import 'package:injectable/injectable.dart';
@@ -29,11 +30,13 @@ class PaymentsCubit extends Cubit<PaymentsState> {
 
   void onAddIncomingPayment(){
     Payment item = Payment();
+    item.documentType = DocumentType.incoming;
     item.storeId = storage.getSelectedStoreId();
     emit(state.copyWith(state: OpenSavePaymentPageState(item)));
   }
   void onAddOutgoingPayment(){
     Payment item = Payment();
+    item.documentType = DocumentType.outgoing;
     item.storeId = storage.getSelectedStoreId();
     emit(state.copyWith(state: OpenSavePaymentPageState(item)));
   }
@@ -43,7 +46,9 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   void loadItems() async{
     int storeId = storage.getSelectedStoreId();
     List<Payment> payments = await useCase.getAllByStoreId(storeId);
-    emit(state.copyWith(state: LoadSuccessState(),incomingItems: payments, outgoingItems: payments));
+    List<Payment> incomingPayments = payments.where((item) => item.documentType == DocumentType.incoming).toList();
+    List<Payment> outgoingPayments = payments.where((item) => item.documentType == DocumentType.outgoing).toList();
+    emit(state.copyWith(state: LoadSuccessState(),incomingItems: incomingPayments, outgoingItems: outgoingPayments));
   }
   delete(int id) async{
     await useCase.delete(id);

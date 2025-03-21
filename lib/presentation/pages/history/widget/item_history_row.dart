@@ -47,7 +47,7 @@ class ItemHistoryRow extends StatelessWidget{
                               Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                             ),
                             //SizedBox(height: 4),
-                            Text(Config.dateFormat.format(item.document!.date), style: Theme.of(context)
+                            Text(DateFormatFactory.getDateFormat().format(item.document!.date), style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
                                 .copyWith(color: Theme.of(context).colorScheme.onSurface)),

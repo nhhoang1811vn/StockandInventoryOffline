@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/pages/login/auth_cubit.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoadingData extends StatefulWidget {
   @override
@@ -55,7 +56,7 @@ class LoadingDataState extends State<LoadingData> {
                         height: 24,
                         child: CircularProgressIndicator()),
                     SizedBox(height: 16),
-                    Text("Loading data"),
+                    Text(AppLocalizations.of(context)!.loading_data),
                   ])));
         });
   }

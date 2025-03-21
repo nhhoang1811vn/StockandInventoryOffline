@@ -16,6 +16,8 @@ import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../main.dart';
+
 class QuickInsertDocumentWidget extends StatefulWidget {
   final Good good;
   final DocumentType type;
@@ -189,7 +191,7 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
   }
   Widget _buildDate(BuildContext context, QuickInsertDocumentState state){
     if (state.date != null){
-      dateTextController.text = Config.dateFormat.format(state.date!);
+      dateTextController.text = DateFormatFactory.getDateFormat().format(state.date!);
     }else{
       dateTextController.text = "";
     }
@@ -205,8 +207,8 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
                 maxTime: Config.maxTime,
                 onChanged: (date) {}, onConfirm: (date) {
                   context.read<QuickInsertDocumentCubit>().dateChanged(date);
-                  dateTextController.text = Config.dateFormat.format(date);
-                }, currentTime: state.date, locale: LocaleType.en)
+                  dateTextController.text = DateFormatFactory.getDateFormat().format(date);
+                }, currentTime: state.date, locale: MyApp.getDatePickerLocaleType(context))
           },
         );
   }

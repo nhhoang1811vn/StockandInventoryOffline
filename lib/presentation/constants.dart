@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:good_manager/main.dart';
 import 'package:intl/intl.dart';
 
 class Palette {
@@ -37,12 +38,34 @@ class Config {
   static DateTime maxTime = DateTime(2101, 1, 1);
 
   //static DateFormat dateFormat = DateFormat('dd/MM/yyyy');
-  static DateFormat dateFormat = DateFormat('MMMM d, yyyy');
-  static DateFormat dateTimeFormat = DateFormat('dd/MM/yyyy HH:mm');
+  //static DateFormat dateFormat = DateFormat('MMMM d, yyyy');
+  //static DateFormat dateTimeFormat = DateFormat('dd/MM/yyyy HH:mm');
   //static NumberFormat doubleFormat =  NumberFormat("0.##");
 
   static NumberFormat currencyFormat = NumberFormat.currency(locale: "en_US", symbol: "");
   static NumberFormat simpleCurrencyFormat = NumberFormat.decimalPattern("en_US");
+}
+class DateFormatFactory{
+  static DateFormat dateFormatEnglish = DateFormat("yyyy/MM/dd");
+  static DateFormat dateFormatVietNam = DateFormat("dd/MM/yyyy");
+  static DateFormat getDateFormat(){
+    String code = storage.getLanguageCode();
+    if (code == "en"){
+      return dateFormatEnglish;
+    }else{
+      return dateFormatVietNam;
+    }
+  }
+  static DateFormat dateAndTimeFormatEnglish = DateFormat("yyyy/MM/dd HH:mm");
+  static DateFormat dateAndTimeFormatVietNam = DateFormat("dd/MM/yyyy HH:mm");
+  static DateFormat getDateAndTimeFormat(){
+    String code = storage.getLanguageCode();
+    if (code == "en"){
+      return dateAndTimeFormatEnglish;
+    }else{
+      return dateAndTimeFormatVietNam;
+    }
+  }
 }
 
 class UIConstants {

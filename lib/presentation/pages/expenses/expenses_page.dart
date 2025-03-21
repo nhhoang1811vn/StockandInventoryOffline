@@ -208,7 +208,6 @@ class ExpensesPageState extends BaseStateWidget<ExpensesPage> {
     return BlocConsumer<ExpensesCubit, ExpensesState>(
         builder: (context, state) => Scaffold(
             key: ScaffoldKey,
-            //drawer: CustomNavigationDrawer(selectedIndex: 3, storeName: storage.getSelectedStoreName()),
             appBar: _buildAppBar(state),
             body: _buildBody(state),
             floatingActionButton: FloatingActionButton(

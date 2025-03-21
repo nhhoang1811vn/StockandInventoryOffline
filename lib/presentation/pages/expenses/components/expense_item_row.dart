@@ -32,7 +32,7 @@ class ExpenseItemRow extends StatelessWidget {
                         .titleMedium!
                         .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
                 Text(
-                  Config.dateFormat.format(item.date),
+                  DateFormatFactory.getDateFormat().format(item.date),
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
                 ),
               ],
@@ -47,7 +47,7 @@ class ExpenseItemRow extends StatelessWidget {
       title: Text(item.name, style:
       Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
       subtitle: Text(
-        Config.dateFormat.format(item.date),
+        DateFormatFactory.getDateFormat().format(item.date),
         style: Theme.of(context)
                         .textTheme
                         .bodyMedium!

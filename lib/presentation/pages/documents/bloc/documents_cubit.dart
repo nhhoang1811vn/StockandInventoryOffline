@@ -23,10 +23,7 @@ class DocumentsCubit extends Cubit<DocumentsState> {
   final Storage storage;
   DocumentsCubit({required this.storage,required this.useCase}) : super(DocumentsState.initial(state: InitialState(), settings: storage.getDocumentsSetting()));
 
-  void initState(bool isSelection){
-    if (isSelection){
-      emit(state.copyWith(showSearchBar: true, textSearch: ""));
-    }
+  void initState(){
     loadItems();
   }
   void loadItems() async{
@@ -92,7 +89,7 @@ class DocumentsCubit extends Cubit<DocumentsState> {
     List<DocumentUI> results = [];
     Set<String> set = {};
     for (var i = 0; i< data.length;i++){
-      String dateText = Config.dateFormat.format(data[i].date);
+      String dateText = DateFormatFactory.getDateFormat().format(data[i].date);
       if (!set.contains(dateText)){
         results.add(DocumentUI(DocumentUIType.date, dateText, null));
         set.add(dateText);

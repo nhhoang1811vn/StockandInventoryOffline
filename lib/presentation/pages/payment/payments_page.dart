@@ -8,40 +8,68 @@ import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
+import '../../markdown/md_provider_factory.dart';
 import '../base/base_state.dart';
+import '../help_content.dart';
 import '../pages.dart';
 import 'bloc/payments_cubit.dart';
 import 'components/payment_item_row.dart';
 
 class PaymentsPage extends StatefulWidget {
   PaymentsPage();
+
   @override
   PaymentsPageState createState() => PaymentsPageState();
 }
 
-class PaymentsPageState extends BaseStateWidget<PaymentsPage> {
-  final _key = GlobalKey<ExpandableFabState>();
+class PaymentsPageState extends BaseStateWidget<PaymentsPage> with SingleTickerProviderStateMixin{
+  //final _key = GlobalKey<ExpandableFabState>();
+  late TabController _tabController;
   @override
   void initState() {
     super.initState();
     context.read<PaymentsCubit>().init();
+    _tabController = TabController(length: 2, vsync: this);
   }
-
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+  Widget _buildHelpMenu() {
+    return IconButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed(Pages.help, arguments: {
+            "title": AppLocalizations.of(context)!.payments_title,
+            "content": MDProviderFactory.get().getHelpText(HelpType.PAYMENTS)
+          });
+        },
+        icon: Icon(Icons.help));
+  }
   PreferredSize _buildAppBar() {
     return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight * 2 + 20),
-      child: AppBar(title: new Text(AppLocalizations.of(context)!.payments_title), bottom: PreferredSize(
-    preferredSize: Size.fromHeight(UIConstants.appBarHeight + 20),child: Column(children: [
-      SelectedStoreView(),
-        TabBar(
-          indicatorColor: Theme.of(context).colorScheme.onPrimary,
-          tabs: [
-            Tab(text: AppLocalizations.of(context)!.title_incoming_payment),
-            Tab(text: AppLocalizations.of(context)!.title_outgoing_payment),
-          ],
-        )
-      ],),
-    )));
+        preferredSize: Size.fromHeight(UIConstants.appBarHeight * 2 + 20),
+        child: AppBar(
+            title: new Text(AppLocalizations.of(context)!.payments_title),
+            actions: [
+              _buildHelpMenu()
+            ],
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(UIConstants.appBarHeight + 20),
+              child: Column(
+                children: [
+                  SelectedStoreView(),
+                  TabBar(
+                    controller: _tabController,
+                    indicatorColor: Theme.of(context).colorScheme.onPrimary,
+                    tabs: [
+                      Tab(text: AppLocalizations.of(context)!.title_incoming_payment),
+                      Tab(text: AppLocalizations.of(context)!.title_outgoing_payment),
+                    ],
+                  )
+                ],
+              ),
+            )));
     //return AppBar(title: Text(AppLocalizations.of(context)!.payments_title))
   }
 
@@ -58,55 +86,42 @@ class PaymentsPageState extends BaseStateWidget<PaymentsPage> {
     }
     return _buildContent(data);
   }
-  Widget _buildContent(PaymentsState state){
-    return TabBarView(children: [
-      _buildIncomingPayment(state),
-      _buildOutgoingPayment(state)
-    ]);
-  }
-  Widget _buildIncomingPayment(PaymentsState state){
-    return Expanded(child: Stack(children: [
-      Visibility(
-        child: emptyView,
-        visible: state.incomingItems.isEmpty,
-      ),
-      Visibility(
-        child: _buildListView(state.incomingItems),
-        visible: state.incomingItems.isNotEmpty,
-      )
-    ],));
-  }
-  Widget _buildOutgoingPayment(PaymentsState state){
-    return Expanded(child: Stack(children: [
-      Visibility(
-        child: emptyView,
-        visible: state.outgoingItems.isEmpty,
-      ),
-      Visibility(
-        child: _buildListView(state.outgoingItems),
-        visible: state.outgoingItems.isNotEmpty,
-      )
-    ],));
+
+  Widget _buildContent(PaymentsState state) {
+    return TabBarView(children: [_buildIncomingPayment(state), _buildOutgoingPayment(state)]);
   }
 
-
-  /*Widget _buildContent(PaymentsState state) {
-    List<Widget> children = [
-      _buildTopWidget(state),
-      Expanded(
-          child: Stack(children: [
+  Widget _buildIncomingPayment(PaymentsState state) {
+    return Expanded(
+        child: Stack(
+      children: [
         Visibility(
           child: emptyView,
-          visible: state.items.isEmpty,
+          visible: state.incomingItems.isEmpty,
         ),
         Visibility(
-          child: _buildListView(state),
-          visible: state.items.isNotEmpty,
+          child: _buildListView(state.incomingItems),
+          visible: state.incomingItems.isNotEmpty,
         )
-      ]))
-    ];
-    return Column(children: children);
-  }*/
+      ],
+    ));
+  }
+
+  Widget _buildOutgoingPayment(PaymentsState state) {
+    return Expanded(
+        child: Stack(
+      children: [
+        Visibility(
+          child: emptyView,
+          visible: state.outgoingItems.isEmpty,
+        ),
+        Visibility(
+          child: _buildListView(state.outgoingItems),
+          visible: state.outgoingItems.isNotEmpty,
+        )
+      ],
+    ));
+  }
 
   Widget get emptyView =>
       Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -182,68 +197,32 @@ class PaymentsPageState extends BaseStateWidget<PaymentsPage> {
           );
         });
   }
-  Widget _buildScaffold(PaymentsState state){
-    return Scaffold(
-        appBar: _buildAppBar(),
-        body: _buildBody(state),
-        floatingActionButtonLocation: ExpandableFab.location,
-        floatingActionButton: ExpandableFab(
-          key: _key,
-          openButtonBuilder: RotateFloatingActionButtonBuilder(
-            child: const Icon(Icons.add),
-          ),
-          type: ExpandableFabType.up,
-          distance: 70,
-          overlayStyle: ExpandableFabOverlayStyle(
-            color: Colors.white.withAlpha(230),
-          ),
-          children: [
-            FloatingActionButton.extended(
-              icon:  Icon(UIConstants.paymentIconData),
-              label: Text(AppLocalizations.of(context)!.action_add_incoming_payment),
-              heroTag: null,
-              onPressed: () {
-                final state = _key.currentState;
-                if (state != null) {
-                  //debugPrint('isOpen:${state.isOpen}');
-                  state.toggle();
-                }
-                context.read<PaymentsCubit>().onAddIncomingPayment();
-              },
-              //child: Icon(UIConstants.goodIconData, size: 30, color: Colors.blue[700],),
-            ),
-            FloatingActionButton.extended(
-                icon:  Icon(UIConstants.paymentIconData),
-                label: Text(AppLocalizations.of(context)!.action_add_outgoing_payment),
-                onPressed: (){
-                  final state = _key.currentState;
-                  if (state != null) {
-                    debugPrint('isOpen:${state.isOpen}');
-                    state.toggle();
-                  }
-                  context.read<PaymentsCubit>().onAddIncomingPayment();
-                }
-            ),
-          ],
-        ),
-        );
-  }
   @override
   Widget buildWidget(BuildContext context) {
     return BlocConsumer<PaymentsCubit, PaymentsState>(
-        builder: (context, state) => DefaultTabController(length: 2, child: _buildScaffold(state))  ,
+        builder: (context, state) => Scaffold(
+            appBar: _buildAppBar(),
+            body: TabBarView(controller: _tabController,children: [
+              _buildIncomingPayment(state),
+              _buildOutgoingPayment(state)
+            ]),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                if (_tabController.index == 0){
+                  context.read<PaymentsCubit>().onAddIncomingPayment();
+                }else{
+                  context.read<PaymentsCubit>().onAddOutgoingPayment();
+                }
+              },
+              child: Icon(Icons.add),
+            )),
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async {
           if (state.state is OpenSavePaymentPageState) {
             final currentState = state.state as OpenSavePaymentPageState;
             final result =
-                await Navigator.of(context).pushNamed(Pages.save_payment,
-                    arguments: {
-                      "item": currentState.item
-                    });
+                await Navigator.of(context).pushNamed(Pages.save_payment, arguments: {"item": currentState.item});
             if (result != null) {
-              //Payment item = result as Payment;
-              //context.read<PaymentsCubit>().updateDocumentId(item.documentId);
               context.read<PaymentsCubit>().loadItems();
             }
           }
