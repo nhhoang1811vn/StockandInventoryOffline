@@ -98,15 +98,17 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
                       Text(AppLocalizations.of(context)!.incoming_document_text, style: TextStyle(fontSize: 25))
                     else
                       Text(AppLocalizations.of(context)!.outgoing_document_text, style: TextStyle(fontSize: 25)),
-                    //Text(widget.good.name, style: TextStyle(fontSize: TextSize.extraLarge)),
-                    //widget.good.description.isNotEmpty ? Text(widget.good.description) : Container(),
-                    //widget.good.barCode != null ? Text(widget.good.barCode!) : Container(),
-                    //Text(sprintf(AppLocalizations.of(context)!.in_stock_text, [widget.good.quantity])),
+                    SizedBox(height: 16),
                     _buildQuantity(context, state),
+                    SizedBox(height: 16),
                     _buildPrice(context, state),
+                    SizedBox(height: 16),
                     _buildAmount(context, state),
+                    SizedBox(height: 16),
                     _buildDate(context, state),
+                    SizedBox(height: 16),
                     _buildPerson(context,state, widget.type),
+                    SizedBox(height: 16),
                     _buildDescription(context, state)
                   ],
                 )
@@ -218,16 +220,19 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
     return AppTextField(
       controller: personNameTextController,
       labelText: type == DocumentType.incoming
-          ? AppLocalizations.of(context)!.field_supplier
-          : AppLocalizations.of(context)!.field_customer,
+          ? AppLocalizations.of(context)!.label_supplier_name
+          : AppLocalizations.of(context)!.label_customer_name,
+      hintText: AppLocalizations.of(context)!.hint_select,
       keyboardType: TextInputType.none,
       readOnly: true,
+      suffix: Icon(Icons.keyboard_arrow_down),
       onTapped: () => {context.read<QuickInsertDocumentCubit>().onPersonClicked()},
     );
   }
   Widget _buildDescription(BuildContext context,QuickInsertDocumentState state){
     return AppTextField(
-        labelText: AppLocalizations.of(context)!.field_desc,
+        labelText: AppLocalizations.of(context)!.label_description,
+        hintText: AppLocalizations.of(context)!.hint_description,
         initialValue: state.description,
         onChanged: (value) => context.read<QuickInsertDocumentCubit>().descriptionChanged(value),
         keyboardType: TextInputType.name);

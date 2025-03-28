@@ -25,11 +25,7 @@ class Palette {
 }
 class AppColors{
   static Color primaryColor = Colors.blue;
-  //static const Color secondaryColor = Colors.black;
-  static const Color secondaryColor = Color(0xFF292929);
-  //static Color greyColor = Color(0xFFF3F3F3);
-
-  static Color greyColor = Color(0xFFB7B7B7);
+  static const Color secondaryColor = Color(0xFF616161);
 }
 
 class Config {
@@ -50,22 +46,34 @@ class DateFormatFactory{
   static DateFormat dateFormatVietNam = DateFormat("dd/MM/yyyy");
   static DateFormat getDateFormat(){
     String code = storage.getLanguageCode();
-    if (code == "en"){
-      return dateFormatEnglish;
-    }else{
+    if (code == "vi"){
       return dateFormatVietNam;
+    }else{
+      return dateFormatEnglish;
     }
   }
   static DateFormat dateAndTimeFormatEnglish = DateFormat("yyyy/MM/dd HH:mm");
   static DateFormat dateAndTimeFormatVietNam = DateFormat("dd/MM/yyyy HH:mm");
   static DateFormat getDateAndTimeFormat(){
     String code = storage.getLanguageCode();
-    if (code == "en"){
-      return dateAndTimeFormatEnglish;
-    }else{
+    if (code == "vi"){
       return dateAndTimeFormatVietNam;
+    }else{
+      return dateAndTimeFormatEnglish;
     }
   }
+  static DateFormat monthFormatEnglish = DateFormat.MMM();
+  static DateFormat monthFormatVietNam = DateFormat.MMM("vi");
+  static DateFormat getMonthFormat(){
+    String code = storage.getLanguageCode();
+    if (code == "vi"){
+      return monthFormatVietNam;
+    }else{
+      return monthFormatEnglish;
+    }
+  }
+
+
 }
 
 class UIConstants {

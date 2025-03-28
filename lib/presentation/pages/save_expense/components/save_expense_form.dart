@@ -51,7 +51,8 @@ class SaveExpenseForm extends StatelessWidget {
                           keyboardType: TextInputType.name,
                           error: state.name.displayError?.name),
                       AppTextField(
-                          labelText: AppLocalizations.of(context)!.field_desc,
+                          labelText: AppLocalizations.of(context)!.label_description,
+                          hintText: AppLocalizations.of(context)!.hint_description,
                           initialValue: state.description,
                           onChanged: (value) => context.read<SaveExpenseCubit>().descriptionChanged(value),
                           keyboardType: TextInputType.name),

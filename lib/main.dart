@@ -108,14 +108,17 @@ class MyAppState extends State<MyApp> {
         ),
         textTheme: TextTheme(
             displayLarge: TextStyle(),
-            titleLarge: TextStyle(fontSize: 19.0),
-            titleMedium: TextStyle(fontSize: 17.0),
-            titleSmall: TextStyle(fontSize: 15.0),
-            bodyMedium: TextStyle(fontSize: 15.0),
-            bodySmall: TextStyle(),
+            titleLarge: TextStyle(fontSize: 19.0, fontWeight: FontWeight.bold),
+            titleMedium: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
+            titleSmall: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+
+            bodyLarge: TextStyle(fontSize: 19.0),
+            bodyMedium: TextStyle(fontSize: 17.0),
+            bodySmall: TextStyle(fontSize: 15.0),
             displaySmall: TextStyle(fontSize: 12.0)),
         colorScheme: ColorScheme.fromSeed(
             onSurface: Colors.black,
+            surface: Colors.white,
             onPrimary: Colors.blue.shade700,
             seedColor: Colors.blue.shade700,
             brightness: Brightness.light,

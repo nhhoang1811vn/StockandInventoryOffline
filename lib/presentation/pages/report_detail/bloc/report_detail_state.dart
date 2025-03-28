@@ -12,5 +12,8 @@ class ReportDetailState with _$ReportDetailState{
     @Default([]) List<List<String>> data,
     @Default([]) List<int> ids,
     @Default([]) List<Document> documents,
+    @Default([]) List<ColumnReport> columns,
+    @Default([]) List<List<String>> rows,
+
   }) = _Initial;
 }

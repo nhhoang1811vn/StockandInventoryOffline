@@ -99,7 +99,7 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
               create: (context) => getIt<SelectDocumentCubit>(),
-              child: SelectDocumentsPage(selectionType: args["selectionType"],),
+              child: SelectDocumentsPage(documentType: args["documentType"],),
             ));
       // case Pages.document_list:
       //   Map<dynamic, dynamic> args = settings.arguments as Map;

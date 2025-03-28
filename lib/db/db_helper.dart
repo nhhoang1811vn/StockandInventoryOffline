@@ -70,9 +70,8 @@ class DBHelper {
     ],
     3: [
       "DROP TABLE $PAYMENTS_TABLE_NAME",
-      "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, documentId INTEGER NOT NULL, storeId INTEGER NOT NULL, " +
-          "FOREIGN KEY(documentId) "
-              "REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE," +
+      "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, type INTEGER NOT NULL, documentId INTEGER, storeId INTEGER NOT NULL, " +
+          "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE, " +
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)"
     ]
   };
@@ -164,7 +163,7 @@ class DBHelper {
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)");
 
     await db.execute(
-      "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, documentId INTEGER NOT NULL, storeId INTEGER NOT NULL, " +
+      "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, type INTEGER NOT NULL,documentId INTEGER, storeId INTEGER NOT NULL, " +
       "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE," +
       "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)"
     );
@@ -871,11 +870,9 @@ class DBHelper {
     var dbClient = await db;
     int startInt = start.millisecondsSinceEpoch;
     int endInt = end.millisecondsSinceEpoch;
-    //List<Map> list = await dbClient.rawQuery(
-    //    'SELECT * FROM $PAYMENTS_TABLE_NAME where storeId = ? AND date BETWEEN ? AND ?', [storeId, startInt, endInt]);
     List<Map> list = await dbClient.rawQuery(
-        "SELECT A.id, A.name, A.description, A.createdDate, A.updatedDate, A.date, A.amount, A.documentId, A.storeId, " +
-            "B.name as documentName, B.type as type FROM $PAYMENTS_TABLE_NAME A LEFT JOIN $DOCUMENTS_TABLE_NAME B ON A.documentId = B.id where A.storeId = ? AND A.date BETWEEN ? AND ? ORDER BY A.date DESC", [storeId, startInt, endInt]);
+        "SELECT A.id, A.name, A.description, A.createdDate, A.updatedDate, A.date, A.amount,A.type, A.documentId, A.storeId, " +
+            "B.name as documentName FROM $PAYMENTS_TABLE_NAME A LEFT JOIN $DOCUMENTS_TABLE_NAME B ON A.documentId = B.id where A.storeId = ? AND A.date BETWEEN ? AND ? ORDER BY A.date DESC", [storeId, startInt, endInt]);
     List<Payment> items = [];
     for (int i = 0; i < list.length; i++) {
       Payment item = Payment.map(list[i]);
@@ -886,8 +883,8 @@ class DBHelper {
   Future<List<Payment>> getPaymentByStoreId(int storeId) async{
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
-        "SELECT A.id, A.name, A.description, A.createdDate, A.updatedDate, A.date, A.amount, A.documentId, A.storeId, " +
-            "B.name as documentName, B.type as type FROM $PAYMENTS_TABLE_NAME A LEFT JOIN $DOCUMENTS_TABLE_NAME B ON A.documentId = B.id where A.storeId = ? ORDER BY A.date DESC", [storeId]);
+        "SELECT A.id, A.name, A.description, A.createdDate, A.updatedDate, A.date, A.amount, A.type, A.documentId, A.storeId, " +
+            "B.name as documentName FROM $PAYMENTS_TABLE_NAME A LEFT JOIN $DOCUMENTS_TABLE_NAME B ON A.documentId = B.id where A.storeId = ? ORDER BY A.date DESC", [storeId]);
     List<Payment> items = [];
     for (int i = 0; i < list.length; i++) {
       Payment item = Payment.map(list[i]);

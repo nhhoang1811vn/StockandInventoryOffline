@@ -28,15 +28,15 @@ class PaymentsCubit extends Cubit<PaymentsState> {
     loadItems();
   }
 
-  void onAddIncomingPayment(){
+  void onAddInboundPayment(){
     Payment item = Payment();
-    item.documentType = DocumentType.incoming;
+    item.type = PaymentType.inbound;
     item.storeId = storage.getSelectedStoreId();
     emit(state.copyWith(state: OpenSavePaymentPageState(item)));
   }
-  void onAddOutgoingPayment(){
+  void onAddOutboundPayment(){
     Payment item = Payment();
-    item.documentType = DocumentType.outgoing;
+    item.type = PaymentType.outbound;
     item.storeId = storage.getSelectedStoreId();
     emit(state.copyWith(state: OpenSavePaymentPageState(item)));
   }
@@ -46,9 +46,9 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   void loadItems() async{
     int storeId = storage.getSelectedStoreId();
     List<Payment> payments = await useCase.getAllByStoreId(storeId);
-    List<Payment> incomingPayments = payments.where((item) => item.documentType == DocumentType.incoming).toList();
-    List<Payment> outgoingPayments = payments.where((item) => item.documentType == DocumentType.outgoing).toList();
-    emit(state.copyWith(state: LoadSuccessState(),incomingItems: incomingPayments, outgoingItems: outgoingPayments));
+    List<Payment> inboundPayments = payments.where((item) => item.type == PaymentType.inbound).toList();
+    List<Payment> outboundPayments = payments.where((item) => item.type == PaymentType.outbound).toList();
+    emit(state.copyWith(state: LoadSuccessState(),inboundItems: inboundPayments, outboundItems: outboundPayments));
   }
   delete(int id) async{
     await useCase.delete(id);

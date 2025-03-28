@@ -19,6 +19,7 @@ import 'package:printing/printing.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../constants.dart';
+import 'components/field_display_dialog.dart';
 
 class ReportDetailPage extends StatefulWidget{
   final ReportType type;
@@ -55,13 +56,16 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
         builder: (context, state) => Stack(children: [
           Scaffold(
               appBar: _buildAppBar(context, state),
-              body: _buildContent(context, state)),
-          if (state.state is LoadingState)
-            _buildLoading()
+              body: _buildBody(context, state)),
         ],),
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async {
         });
+  }
+  _buildBody(BuildContext context, ReportDetailState state){
+    if (state.state is LoadingState)
+      return _buildLoading();
+    return _buildContent(context, state);
   }
   _buildLoading(){
     return Container(
@@ -377,10 +381,20 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Text(text),
-              SizedBox(
-                height: 16,
-              ),
+              Row(children: [
+                IconButton(onPressed: () async{
+                  final updatedColumns = await showDialog(context: context, builder: (BuildContext context) {
+                    return ColumnDisplayDialog(columns: state.columns);
+                  });
+                  context.read<ReportDetailCubit>().setColumns(updatedColumns);
+                  context.read<ReportDetailCubit>().update();
+                }, icon: Icon(Icons.settings)),
+                Expanded(child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(text),
+                ))
+            ,
+              ],),
               if (Platform.isWindows)
                 _buildWindowTable(context, state)
               else

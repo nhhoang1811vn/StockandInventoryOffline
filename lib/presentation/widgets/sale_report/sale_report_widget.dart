@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/common/helpers/injection.container.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
+import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/sale_report/sale_report_cubit.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../domain/usecases/documents/document_usecases.dart';
 
@@ -53,7 +55,7 @@ class SaleReportWidgetState extends State<SaleReportWidget> {
               padding: EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Text("Sale Reports in last 6 months", style: Theme.of(context).textTheme.titleMedium),
+                  Text( AppLocalizations.of(context)!.title_chart_sale_report, style: Theme.of(context).textTheme.titleMedium),
                   SizedBox(height: 16,),
                   SizedBox(height: 250, child: _barChart(state))
                 ],
@@ -78,10 +80,10 @@ class SaleReportWidgetState extends State<SaleReportWidget> {
               int rodIndex){
             double realValue = 0.0;
             if (rodIndex == 0){
-              double normalizedValue = mState.data1[groupIndex].value;// totalIncomingAmounts[index] * 5 / maxTotalAmount;
+              double normalizedValue = mState.data1[groupIndex].value;
               realValue = normalizedValue * mState.maxTotalAmount / 5;
             }else if (rodIndex == 1){
-              double normalizedValue = mState.data2[groupIndex].value;// totalIncomingAmounts[index] * 5 / maxTotalAmount;
+              double normalizedValue = mState.data2[groupIndex].value;
               realValue = normalizedValue * mState.maxTotalAmount / 5;
             }
             //var text = Utils.formatNumber(realValue); // Convert the number to 'K', 'M', or 'B' format
@@ -125,7 +127,7 @@ class SaleReportWidgetState extends State<SaleReportWidget> {
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     if (mState.startDate != null){
       DateTime dateTime = DateTimeUtils.addMonths(mState.startDate!, value.toInt());
-      Widget text = Text(DateFormat('MMM').format(dateTime), style: Theme.of(context).textTheme.bodySmall);
+      Widget text = Text(DateFormatFactory.getMonthFormat().format(dateTime), style: Theme.of(context).textTheme.bodySmall);
       return SideTitleWidget(
         meta: meta,
         space: 10,

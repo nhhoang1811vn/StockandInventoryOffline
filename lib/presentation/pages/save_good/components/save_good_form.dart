@@ -132,24 +132,29 @@ class SaveGoodForm extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   AppTextField(
-                      labelText: AppLocalizations.of(context)!.field_name,
+                      labelText: AppLocalizations.of(context)!.label_good_name,
+                      hintText: AppLocalizations.of(context)!.hint_name,
                       initialValue: state.name.value,
                       onChanged: (value) => context.read<SaveGoodCubit>().nameChanged(value),
                       keyboardType: TextInputType.name,
                       error: state.name.displayError?.name),
+                  SizedBox(height: 16,),
                   AppTextField(
-                      labelText: AppLocalizations.of(context)!.field_desc,
+                      labelText: AppLocalizations.of(context)!.label_description,
+                      hintText: AppLocalizations.of(context)!.hint_description,
                       initialValue: state.description,
                       onChanged: (value) => context.read<SaveGoodCubit>().descriptionChanged(value),
                       keyboardType: TextInputType.name),
+                  SizedBox(height: 16,),
                   _buildBarCode(context, state),
-                  SizedBox(height: 12),
+                  SizedBox(height: 16),
                   if (transaction == null)
                     Column(children: [
                       Row(children: [
                         Expanded(child: _buildPurchasePrice(context, state)),
                         Expanded(child: _buildSalePrice(context, state))
                       ]),
+                      SizedBox(height: 16,),
                       Row(
                         children: [
                           Expanded(child: _buildQuantity(context, state, true)),
@@ -169,7 +174,7 @@ class SaveGoodForm extends StatelessWidget {
                         Expanded(child: _buildPrice(context, state))
                       ],
                     ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 16),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -190,7 +195,8 @@ class SaveGoodForm extends StatelessWidget {
         Expanded(
           child: AppTextField(
               controller: barcodeTextController,
-              labelText: AppLocalizations.of(context)!.field_bar_code,
+              labelText: AppLocalizations.of(context)!.label_bar_code,
+              hintText: AppLocalizations.of(context)!.hint_bar_code,
               onChanged: (value) => context.read<SaveGoodCubit>().barCodeChanged(value),
               keyboardType: TextInputType.text),
         ),

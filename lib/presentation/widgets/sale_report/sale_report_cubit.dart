@@ -10,14 +10,16 @@ import '../../../domain/usecases/documents/document_usecases.dart';
 import '../../pages/base/base_state.dart';
 
 part 'sale_report_cubit.freezed.dart';
+
 part 'sale_report_state.dart';
 
 @injectable
 class SaleReportCubit extends Cubit<SaleReportState> {
   final PaymentUseCases useCase;
+
   SaleReportCubit({required this.useCase}) : super(SaleReportState.initial());
 
-  void initState() async{
+  void initState() async {
     List<MapEntry<double, double>> data1 = [];
     List<MapEntry<double, double>> data2 = [];
     DateTime currentDate = DateTime.now();
@@ -26,21 +28,22 @@ class SaleReportCubit extends Cubit<SaleReportState> {
     List<double> totalIncomingAmounts = []; // To store the total amounts for each month
     List<double> totalOutgoingAmounts = [];
 
-    for (int i = 0; i<6;i++){
+    for (int i = 0; i < 6; i++) {
       DateTime startDate = DateTime(currentDate.year, currentDate.month - 5 + i, 1); // First day of the month
-      DateTime endDate = DateTime(currentDate.year, currentDate.month - 5 + i, 1).add(Duration(days: 32)); // First day of next month
+      DateTime endDate =
+          DateTime(currentDate.year, currentDate.month - 5 + i, 1).add(Duration(days: 32)); // First day of next month
       endDate = DateTime(endDate.year, endDate.month, 1).subtract(Duration(days: 1)); // Last day of the current month
 
       var payments = await useCase.getInRange(startDate, endDate);
-      var incomingPayments = payments.where((item) => item.documentType == DocumentType.incoming).toList();
-      var outgoingPayments = payments.where((item) => item.documentType == DocumentType.outgoing).toList();
+      var inboundPayments = payments.where((item) => item.type == PaymentType.inbound).toList();
+      var outboundPayments = payments.where((item) => item.type == PaymentType.outbound).toList();
 
       double totalIncomingAmount = 0.0;
-      for (Payment payment in incomingPayments){
+      for (Payment payment in inboundPayments) {
         totalIncomingAmount += payment.amount ?? 0.0;
       }
       double totalOutgoingAmount = 0.0;
-      for (Payment payment in outgoingPayments){
+      for (Payment payment in outboundPayments) {
         totalOutgoingAmount += payment.amount ?? 0.0;
       }
       totalIncomingAmounts.add(totalIncomingAmount);
@@ -53,17 +56,32 @@ class SaleReportCubit extends Cubit<SaleReportState> {
         maxTotalAmount = totalOutgoingAmount;
       }
     }
-    for (int i = 0; i < 6; i++) {
-      double normalizedValue1 = totalIncomingAmounts[i] * 5 / maxTotalAmount;
-      double normalizedValue2 = totalOutgoingAmounts[i] * 5 / maxTotalAmount;
-      data1.add(MapEntry(i.toDouble(), normalizedValue1));
-      data2.add(MapEntry(i.toDouble(), normalizedValue2));
-    }
-    emit(state.copyWith(
+    if (maxTotalAmount > 0) {
+      for (int i = 0; i < 6; i++) {
+        double normalizedValue1 = totalIncomingAmounts[i] * 5 / maxTotalAmount;
+        double normalizedValue2 = totalOutgoingAmounts[i] * 5 / maxTotalAmount;
+        data1.add(MapEntry(i.toDouble(), normalizedValue1));
+        data2.add(MapEntry(i.toDouble(), normalizedValue2));
+      }
+      emit(state.copyWith(
         startDate: DateTime(currentDate.year, currentDate.month - 5, 1),
         maxTotalAmount: maxTotalAmount,
         data1: data1,
-      data2: data2,
-    ));
+        data2: data2,
+      ));
+    } else {
+      for (int i = 0; i < 6; i++) {
+        double normalizedValue1 = 0.0;
+        double normalizedValue2 = 0.0;
+        data1.add(MapEntry(i.toDouble(), normalizedValue1));
+        data2.add(MapEntry(i.toDouble(), normalizedValue2));
+      }
+      emit(state.copyWith(
+        startDate: DateTime(currentDate.year, currentDate.month - 5, 1),
+        maxTotalAmount: maxTotalAmount,
+        data1: data1,
+        data2: data2,
+      ));
+    }
   }
 }

@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/payment_category.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
@@ -16,7 +18,13 @@ part 'save_payment_state.dart';
 @injectable
 class SavePaymentCubit extends Cubit<SavePaymentState> {
   final PaymentUseCases useCase;
-  SavePaymentCubit({required this.useCase}) : super(SavePaymentState.initial(state: InitialState()));
+  SavePaymentCubit({required this.useCase}) : super(SavePaymentState.initial(state: InitialState(), categories: [
+    PaymentCategory(Colors.blue.value, "blue"),
+    PaymentCategory(Colors.red.value, "red"),
+    PaymentCategory(Colors.yellow.value, "yellow"),
+  ],
+    selectedCategoryIndex: 2
+  ));
 
   void init(Payment item) {
     SavePaymentState initState;
@@ -24,7 +32,6 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
       initState = state.copyWith(item: item, date: DateTime.now());
     } else {
       initState = state.copyWith(item: item,
-          name: NameInput.dirty(value: item.name),
           description: item.description,
           documentId: item.documentId,
           documentName: NameInput.dirty(value: item.documentName??""),
@@ -33,10 +40,6 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
       );
     }
     emit(initState);
-  }
-  void nameChanged(String value){
-    final name = NameInput.dirty(value: value);
-    emit(state.copyWith(name: name));
   }
   void descriptionChanged(String value){
     emit(state.copyWith(description: value));
@@ -64,25 +67,24 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     emit(state.copyWith(date: date));
   }
   void onSaveClicked() async {
-    final validate = Formz.validate([state.name, state.documentName]);
-    if (validate){
       Payment item = state.item!;
-      item.name = state.name.value;
+      //item.name = state.name.value;
       item.description = state.description;
       item.date = state.date!;
       item.amount = state.amount;
-      item.documentId = state.documentId!;
-      //item.
+      item.documentId = state.documentId;
       if (item.id == null){
         await useCase.insert(item);
       }else{
         await useCase.update(item);
       }
       emit(state.copyWith(state: SaveItemSuccessful()));
-    }else{
-      emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));
-      emit(state.copyWith(documentName: NameInput.dirty(value : state.documentName.value)));
-    }
+  }
+  void resetState() {
+    emit(state.copyWith(state: InitialState()));
+  }
 
+  void onCategoryChanged(int index){
+    emit(state.copyWith(state: UpdateItemState(),selectedCategoryIndex: index));
   }
 }

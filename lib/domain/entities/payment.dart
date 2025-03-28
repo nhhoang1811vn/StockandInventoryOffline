@@ -1,14 +1,17 @@
 import 'package:good_manager/domain/entities/base_model.dart';
 import 'package:good_manager/domain/entities/document.dart';
 
+enum PaymentType {
+  inbound,
+  outbound,
+}
 class Payment extends BaseModel {
   DateTime date = DateTime.now();
   double? amount;
-  late int documentId;
+  int? documentId;
   String? documentName;
   late int storeId;
-  DocumentType documentType = DocumentType.incoming;
-
+  PaymentType type = PaymentType.inbound;
   Payment();
 
   Payment.map(dynamic obj) {
@@ -16,12 +19,12 @@ class Payment extends BaseModel {
     this.date = DateTime.fromMillisecondsSinceEpoch(obj["date"]);
     this.amount = obj["amount"];
     this.documentId = obj["documentId"];
-    this.documentName = obj["documentName"];
-    this.storeId = obj["storeId"];
-    if (obj["type"] != null){
-      this.documentType = DocumentType.values.firstWhere((element) => element.index == obj["type"]);
-    }
 
+    this.storeId = obj["storeId"];
+    this.type = PaymentType.values.firstWhere((element) => element.index == obj["type"]);
+    if (obj["documentName"] != null){
+      this.documentName = obj["documentName"];
+    }
   }
 
   Map<String, dynamic> toMap() {
@@ -30,6 +33,7 @@ class Payment extends BaseModel {
     map["amount"] = amount;
     map["documentId"] = documentId;
     map["storeId"] = storeId;
+    map["type"] = type.index;
     return map;
   }
 }

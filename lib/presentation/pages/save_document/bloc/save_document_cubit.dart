@@ -3,7 +3,6 @@ import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/domain/entities/batch_mode_scan.dart';
-import 'package:good_manager/domain/entities/payment_status.dart';
 import 'package:good_manager/domain/entities/save_document_setting.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';

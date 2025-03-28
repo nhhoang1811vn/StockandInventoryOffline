@@ -48,45 +48,30 @@ class SaveGroupForm extends StatelessWidget {
           }
         },
         builder: (context, state) =>
-            Stack(
-              children: [
-                Positioned.fill(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(UIConstants.screenSpace),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          AppTextField(
-                              labelText: AppLocalizations.of(context)!.field_name,
-                              initialValue: state.name.value,
-                              onChanged: (value) => context.read<SaveGroupCubit>().nameChanged(value),
-                              keyboardType: TextInputType.name,
-                              error: state.name.displayError?.name),
-                          AppTextField(
-                              labelText: AppLocalizations.of(context)!.field_desc,
-                              initialValue: state.description,
-                              onChanged: (value) => context.read<SaveGroupCubit>().descriptionChanged(value),
-                              keyboardType: TextInputType.name),
-                          _buildBarCode(context, state),
-                          /*SizedBox(height: 12),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              AppLocalizations.of(context)!.field_images,
-                              style: TextStyle(color: AppColors.secondaryColor, fontSize: 16),
-                            ),
-                          ),
-                          SizedBox(height: 12),*/
-
-                          /*ImagesPreviewView(state.files, false, context
-                              .read<SaveGroupCubit>()
-                              .onImagesChanged)*/
-
-                        ],
-                      ),
-                    ))
-              ],
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  AppTextField(
+                      labelText: AppLocalizations.of(context)!.label_group_name,
+                      hintText: AppLocalizations.of(context)!.hint_name,
+                      initialValue: state.name.value,
+                      onChanged: (value) => context.read<SaveGroupCubit>().nameChanged(value),
+                      keyboardType: TextInputType.name,
+                      error: state.name.displayError?.name),
+                  SizedBox(height: 16,),
+                  AppTextField(
+                      labelText: AppLocalizations.of(context)!.label_description,
+                      hintText: AppLocalizations.of(context)!.hint_description,
+                      initialValue: state.description,
+                      onChanged: (value) => context.read<SaveGroupCubit>().descriptionChanged(value),
+                      keyboardType: TextInputType.name),
+                  SizedBox(height: 16,),
+                  _buildBarCode(context, state),
+                ],
+              ),
             ));
   }
 
@@ -96,7 +81,8 @@ class SaveGroupForm extends StatelessWidget {
         Expanded(
           child: AppTextField(
               controller: barcodeTextController,
-              labelText: AppLocalizations.of(context)!.field_bar_code,
+              labelText: AppLocalizations.of(context)!.label_bar_code,
+              hintText: AppLocalizations.of(context)!.hint_bar_code,
               onChanged: (value) => context.read<SaveGroupCubit> ().barCodeChanged(value),
               keyboardType: TextInputType.number),
         ),

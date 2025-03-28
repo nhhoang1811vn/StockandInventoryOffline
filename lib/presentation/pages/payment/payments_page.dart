@@ -23,7 +23,6 @@ class PaymentsPage extends StatefulWidget {
 }
 
 class PaymentsPageState extends BaseStateWidget<PaymentsPage> with SingleTickerProviderStateMixin{
-  //final _key = GlobalKey<ExpandableFabState>();
   late TabController _tabController;
   @override
   void initState() {
@@ -63,61 +62,42 @@ class PaymentsPageState extends BaseStateWidget<PaymentsPage> with SingleTickerP
                     controller: _tabController,
                     indicatorColor: Theme.of(context).colorScheme.onPrimary,
                     tabs: [
-                      Tab(text: AppLocalizations.of(context)!.title_incoming_payment),
-                      Tab(text: AppLocalizations.of(context)!.title_outgoing_payment),
+                      Tab(text: AppLocalizations.of(context)!.title_outbound_payment),
+                      Tab(text: AppLocalizations.of(context)!.title_inbound_payment),
                     ],
                   )
                 ],
               ),
             )));
-    //return AppBar(title: Text(AppLocalizations.of(context)!.payments_title))
   }
 
-  Widget _buildLoading() {
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-
-  Widget _buildBody(PaymentsState data) {
-    final state = data.state;
-    if (state is LoadingState) {
-      return _buildLoading();
-    }
-    return _buildContent(data);
-  }
-
-  Widget _buildContent(PaymentsState state) {
-    return TabBarView(children: [_buildIncomingPayment(state), _buildOutgoingPayment(state)]);
-  }
-
-  Widget _buildIncomingPayment(PaymentsState state) {
+  Widget _buildInboundPayment(PaymentsState state) {
     return Expanded(
         child: Stack(
       children: [
         Visibility(
           child: emptyView,
-          visible: state.incomingItems.isEmpty,
+          visible: state.inboundItems.isEmpty,
         ),
         Visibility(
-          child: _buildListView(state.incomingItems),
-          visible: state.incomingItems.isNotEmpty,
+          child: _buildListView(state.inboundItems),
+          visible: state.inboundItems.isNotEmpty,
         )
       ],
     ));
   }
 
-  Widget _buildOutgoingPayment(PaymentsState state) {
+  Widget _buildOutboundPayment(PaymentsState state) {
     return Expanded(
         child: Stack(
       children: [
         Visibility(
           child: emptyView,
-          visible: state.outgoingItems.isEmpty,
+          visible: state.outboundItems.isEmpty,
         ),
         Visibility(
-          child: _buildListView(state.outgoingItems),
-          visible: state.outgoingItems.isNotEmpty,
+          child: _buildListView(state.outboundItems),
+          visible: state.outboundItems.isNotEmpty,
         )
       ],
     ));
@@ -203,15 +183,15 @@ class PaymentsPageState extends BaseStateWidget<PaymentsPage> with SingleTickerP
         builder: (context, state) => Scaffold(
             appBar: _buildAppBar(),
             body: TabBarView(controller: _tabController,children: [
-              _buildIncomingPayment(state),
-              _buildOutgoingPayment(state)
+              _buildOutboundPayment(state),
+              _buildInboundPayment(state),
             ]),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 if (_tabController.index == 0){
-                  context.read<PaymentsCubit>().onAddIncomingPayment();
+                  context.read<PaymentsCubit>().onAddOutboundPayment();
                 }else{
-                  context.read<PaymentsCubit>().onAddOutgoingPayment();
+                  context.read<PaymentsCubit>().onAddInboundPayment();
                 }
               },
               child: Icon(Icons.add),
