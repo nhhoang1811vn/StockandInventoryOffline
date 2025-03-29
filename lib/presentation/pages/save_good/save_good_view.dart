@@ -57,7 +57,6 @@ class SaveGoodPageState extends BaseStateWidget<SaveGoodPage> {
                               item: item,
                               transaction: transaction),
                         )
-
                       ],
                     ),
                   )),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/payment.dart';
+import 'package:good_manager/domain/entities/payment_category.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/save_payment/components/select_payment_category.dart';
 import 'package:good_manager/presentation/widgets/primary_button.dart';
@@ -33,12 +34,16 @@ class SavePaymentPage extends StatefulWidget {
 }
 
 class SavePaymentPageState extends State<SavePaymentPage> {
+  final TextEditingController descriptionController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
   final TextEditingController documentNameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    descriptionController.text = widget.item.description;
+
+
     context.read<SavePaymentCubit>().init(widget.item);
     return BlocConsumer<SavePaymentCubit, SavePaymentState>(
       listenWhen: (state1, state2) => state1.state != state2.state,
@@ -61,7 +66,11 @@ class SavePaymentPageState extends State<SavePaymentPage> {
       },
       builder: (BuildContext context, SavePaymentState state) {
         documentNameController.text = state.documentName.value;
-        dateController.text = DateFormatFactory.getDateFormat().format(state.date!);
+        if (state.date != null){
+          dateController.text = DateFormatFactory.getDateFormat().format(state.date!);
+        }else{
+          dateController.text = "";
+        }
         if (state.amount != null) {
           amountController.text = Config.simpleCurrencyFormat.format(state.amount);
         } else {
@@ -94,28 +103,23 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                                               context: context,
                                               isScrollControlled: true,
                                               builder: (builderContext) {
-                                                return SelectPaymentCategoryWidget(state.categories, (index) {
+                                                return SelectPaymentCategoryWidget(state.categories,state.selectedCategoryIndex, (index) {
                                                   context.read<SavePaymentCubit>().onCategoryChanged(index);
+                                                }, (){
+                                                  PaymentCategory item = PaymentCategory();
+                                                  item.color = Colors.blue.value;
+                                                  Navigator.of(context).pushNamed(Pages.save_payment_category, arguments: {"item": item});
                                                 });
                                               });
                                   },
-                                  prefix: Row(children: [
-                                    Container(
-                                      width: 24,
-                                      height: 24,
-                                      decoration: BoxDecoration(
-                                          color: Color(state.categories[state.selectedCategoryIndex].color),
-                                          shape: BoxShape.circle),
-                                    ),
-                                    SizedBox(width: 8),
-                                    Expanded(child: Text(state.categories[state.selectedCategoryIndex].name)),
-                                  ]),
-                                  suffix: Icon(Icons.keyboard_arrow_down)),
+                                  prefix: state.selectedCategoryIndex == null? Text(AppLocalizations.of(context)!.hint_select) : _buildCategoryWidget(state.categories[state.selectedCategoryIndex!]),
+                                  suffix: Icon(Icons.keyboard_arrow_down, size: 16,)),
                               SizedBox(height: 16),
                               AppTextField(
                                   labelText: AppLocalizations.of(context)!.label_description,
                                   hintText: AppLocalizations.of(context)!.hint_description,
-                                  initialValue: state.description,
+                                  controller: descriptionController,
+                                  //initialValue: state.description,
                                   onChanged: (value) => context.read<SavePaymentCubit>().descriptionChanged(value),
                                   keyboardType: TextInputType.name),
                               SizedBox(
@@ -123,7 +127,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                               ),
                               AppTextField(
                                   controller: documentNameController,
-                                  suffix: Icon(Icons.keyboard_arrow_down),
+                                  suffix: Icon(Icons.keyboard_arrow_down, size: 16),
                                   labelText: AppLocalizations.of(context)!.label_select_document_no,
                                   hintText: AppLocalizations.of(context)!.hint_select_document_no,
                                   keyboardType: TextInputType.none,
@@ -184,6 +188,20 @@ class SavePaymentPageState extends State<SavePaymentPage> {
             ));
       },
     );
+  }
+
+  Widget _buildCategoryWidget(PaymentCategory item){
+    return Row(children: [
+      Container(
+        width: 24,
+        height: 24,
+        decoration: BoxDecoration(
+            color: Color(item.color),
+            shape: BoxShape.circle),
+      ),
+      SizedBox(width: 8),
+      Expanded(child: Text(item.name)),
+    ]);
   }
 
   PreferredSize _buildAppBar(BuildContext context) {

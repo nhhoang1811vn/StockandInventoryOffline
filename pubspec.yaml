@@ -99,6 +99,7 @@ dependencies:
   flutter_expandable_fab: ^2.3.0
   fl_chart: ^0.70.2
   in_app_review: ^2.0.6
+  flutter_colorpicker: ^1.1.0
 
 
 dev_dependencies:

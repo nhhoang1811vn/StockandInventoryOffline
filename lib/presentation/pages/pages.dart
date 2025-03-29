@@ -3,6 +3,7 @@ class Pages {
 
   //static const String payment_list = 'payment_list';
   static const String save_payment = 'save_payment';
+  static const String save_payment_category = 'save_paymen_category';
   static const String main = '/main';
   static const String home = '/home';
   static const String loading_data = '/loading_data';

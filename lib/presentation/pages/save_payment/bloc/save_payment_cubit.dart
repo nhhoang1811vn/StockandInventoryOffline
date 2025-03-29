@@ -5,6 +5,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
+import 'package:good_manager/domain/usecases/payment_category/payment_category_usercases.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
 
@@ -18,15 +19,11 @@ part 'save_payment_state.dart';
 @injectable
 class SavePaymentCubit extends Cubit<SavePaymentState> {
   final PaymentUseCases useCase;
-  SavePaymentCubit({required this.useCase}) : super(SavePaymentState.initial(state: InitialState(), categories: [
-    PaymentCategory(Colors.blue.value, "blue"),
-    PaymentCategory(Colors.red.value, "red"),
-    PaymentCategory(Colors.yellow.value, "yellow"),
-  ],
-    selectedCategoryIndex: 2
-  ));
-
-  void init(Payment item) {
+  final PaymentCategoryUseCases paymentCategoryUseCases;
+  SavePaymentCubit({required this.useCase, required this.paymentCategoryUseCases}) : super(SavePaymentState.initial(state: InitialState()));
+  void init(Payment item) async{
+    var categories = await paymentCategoryUseCases.getAll();
+    /*emit(state.copyWith(categories: categories));
     SavePaymentState initState;
     if (item.id == null) {
       initState = state.copyWith(item: item, date: DateTime.now());
@@ -39,7 +36,16 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
           date: item.date
       );
     }
-    emit(initState);
+    emit(initState);*/
+    emit(state.copyWith(
+      categories: categories,
+      item: item,
+        description: item.description,
+        documentId: item.documentId,
+        documentName: NameInput.dirty(value: item.documentName??""),
+        amount: item.amount,
+        date: item.date
+    ));
   }
   void descriptionChanged(String value){
     emit(state.copyWith(description: value));

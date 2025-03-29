@@ -41,6 +41,8 @@ import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit
 import 'package:good_manager/presentation/pages/save_group/save_group_view.dart';
 import 'package:good_manager/presentation/pages/save_payment/bloc/save_payment_cubit.dart';
 import 'package:good_manager/presentation/pages/save_payment/save_payment_page.dart';
+import 'package:good_manager/presentation/pages/save_payment_category/bloc/save_payment_category_cubit.dart';
+import 'package:good_manager/presentation/pages/save_payment_category/save_payment_category_page.dart';
 import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit.dart';
 import 'package:good_manager/presentation/pages/save_store/save_store_page.dart';
 import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart';
@@ -131,6 +133,13 @@ class AppRouter {
                   create: (context) => getIt<SavePaymentCubit>(),
                   child: SavePaymentPage(args["item"]),
                 ));
+      case Pages.save_payment_category:
+        Map<dynamic, dynamic> args = settings.arguments as Map;
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<SavePaymentCategoryCubit>(),
+              child: SavePaymentCategoryPage(args["item"]),
+            ));
       case Pages.good_list:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(

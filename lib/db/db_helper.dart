@@ -9,6 +9,7 @@ import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/group.dart';
+import 'package:good_manager/domain/entities/payment_category.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
@@ -34,6 +35,7 @@ class DBHelper {
   static const String DOCUMENT_TRANSACTIONS_TABLE_NAME = "Transactions";
   static const String EXPENSES_TABLE_NAME = "Expenses";
   static const String PAYMENTS_TABLE_NAME = "Payments";
+  static const String PAYMENTS_CATEGORY_TABLE_NAME = "PaymentCategory";
 
   static const String MEDIA_TABLE_NAME = "Medias";
 
@@ -72,7 +74,9 @@ class DBHelper {
       "DROP TABLE $PAYMENTS_TABLE_NAME",
       "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, type INTEGER NOT NULL, documentId INTEGER, storeId INTEGER NOT NULL, " +
           "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE, " +
-          "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)"
+          "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
+      "CREATE TABLE IF NOT EXISTS $PAYMENTS_CATEGORY_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER, color INTEGER)"
+
     ]
   };
 
@@ -166,6 +170,9 @@ class DBHelper {
       "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, type INTEGER NOT NULL,documentId INTEGER, storeId INTEGER NOT NULL, " +
       "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE," +
       "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)"
+    );
+    await db.execute(
+      "CREATE TABLE IF NOT EXISTS $PAYMENTS_CATEGORY_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER, color INTEGER)"
     );
 
     await db.execute(
@@ -831,6 +838,28 @@ class DBHelper {
     int res = await dbClient.update(PAYMENTS_TABLE_NAME, item.toMap(),
         where: "id = ?", whereArgs: <int>[item.id!]);
     return res == 1;
+  }
+  //payment category
+  Future<int> insertPaymentCategory(PaymentCategory item) async {
+    var dbClient = await db;
+    int res = await dbClient.insert(PAYMENTS_CATEGORY_TABLE_NAME, item.toMap());
+    return res;
+  }
+  Future<bool> updatePaymentCategory(PaymentCategory item) async {
+    var dbClient = await db;
+    int res = await dbClient.update(PAYMENTS_CATEGORY_TABLE_NAME, item.toMap(),
+        where: "id = ?", whereArgs: <int>[item.id!]);
+    return res == 1;
+  }
+  Future<List<PaymentCategory>> getAllPaymentCategory() async{
+    var dbClient = await db;
+    List<Map> list = await dbClient.rawQuery('SELECT * FROM $PAYMENTS_CATEGORY_TABLE_NAME');
+    List<PaymentCategory> items = [];
+    for (int i = 0; i < list.length; i++) {
+      PaymentCategory item = PaymentCategory.map(list[i]);
+      items.add(item);
+    }
+    return items;
   }
   //document
   Future<int> insertDocument(Document item) async {
