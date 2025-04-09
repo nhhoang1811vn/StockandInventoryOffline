@@ -12,11 +12,15 @@ import '../../../domain/entities/supplier.dart';
 abstract class BaseState {}
 class InitialState extends BaseState {}
 class LoadingState extends BaseState {}
+class LoadSuccessState extends BaseState {}
+
 
 class OpenSaveItemState extends BaseState {
 
 }
 class OpenHelpPageState extends BaseState {}
+
+class OpenListSettingsDialogState extends BaseState {}
 class OpenSortDialogListState extends BaseState {}
 //goods
 class OpenSaveGoodPageState extends BaseState{
@@ -68,13 +72,10 @@ class OpenSavePaymentPageState extends BaseState{
   late Payment item;
   OpenSavePaymentPageState(this.item);
 }
+class OpenDocumentListState extends BaseState{
+  OpenDocumentListState();
+}
 //Document
-class OpenChangePaymentDialogState extends BaseState{
-
-}
-class OpenPaymentListPageState extends BaseState{
-
-}
 class OpenPersonListState extends BaseState{
 
 }

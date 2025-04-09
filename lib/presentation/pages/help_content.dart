@@ -5,7 +5,7 @@ enum HelpType{
   SUPPLIER_AND_CUSTOMER,
   GOODS,
   DOCUMENTS,
-  EXPENSE
+  PAYMENTS,
 }
 extension HelpTypeExtension on HelpType{
   String getTitle(BuildContext context){
@@ -19,9 +19,8 @@ extension HelpTypeExtension on HelpType{
 
       case HelpType.DOCUMENTS:
         return AppLocalizations.of(context)!.documents_title;
-
-      case HelpType.EXPENSE:
-        return AppLocalizations.of(context)!.expenses_title;
+      case HelpType.PAYMENTS:
+        return AppLocalizations.of(context)!.payments_title;
     }
   }
 }

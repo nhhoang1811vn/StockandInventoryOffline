@@ -4,10 +4,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/good_history.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.dart';
 import 'package:good_manager/presentation/pages/history/widget/item_history_row.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
+
+import '../../app_style.dart';
 
 class ItemHistoryPage extends StatefulWidget {
   final int goodId;
@@ -22,7 +25,7 @@ class ItemHistoryPage extends StatefulWidget {
   @override
   ItemHistoryPageState createState() => ItemHistoryPageState();
 }
-class ItemHistoryPageState extends State<ItemHistoryPage> {
+class ItemHistoryPageState extends BaseStateWidget<ItemHistoryPage> {
 
   @override
   void initState() {
@@ -30,9 +33,10 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
     context.read<ItemHistoryCubit>().initState(widget.goodId, widget.start, widget.end);
   }
   @override
-  Widget build(BuildContext context) {
+  Widget buildWidget(BuildContext context) {
     return BlocConsumer<ItemHistoryCubit, ItemHistoryState>(
         builder: (context, state) => Scaffold(
+          backgroundColor: Colors.grey.shade200,
           appBar: _buildAppBar(),
           body: _buildBody(state),
         ),
@@ -64,20 +68,25 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
       if (state.items.isNotEmpty)
         Expanded(child: _buildListView(state))
       else
-        Expanded(child: Center(child: Text("Không có dữ liệu")))
+        Expanded(child: Center(child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image(image: AssetImage('assets/images/document.png'), width: 60),
+            SizedBox(height: 16),
+            Text(AppLocalizations.of(context)!.empty_document, textAlign: TextAlign.center,style: AppStyle.getEmptyTextStyle())
+          ],
+        )))
     ];
     return Column(children: children);
   }
-  Widget _buildListView(ItemHistoryState data) => ListView.separated(
+  Widget _buildListView(ItemHistoryState data) => ListView.builder(
       itemBuilder: (BuildContext context, index) {
         GoodHistory item = data.items[index];
         return ItemHistoryRow(item, (item) async{
             await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
             context.read<ItemHistoryCubit>().loadItems();
         });
-      },
-      separatorBuilder: (context, index) {
-        return Divider(color: Colors.grey[500]);
       },
       itemCount: data.items.length);
 

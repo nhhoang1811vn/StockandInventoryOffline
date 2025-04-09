@@ -44,7 +44,7 @@ class StoresUseCaseImpl implements StoresUseCase{
   }
 
   @override
-  Future<List<Store>> getAll() {
+  Future<List<Store>> getAll(){
     return repository.getAll();
   }
 }

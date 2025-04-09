@@ -30,16 +30,6 @@ class DefaultFirebaseOptions {
     }
   }
 
-  /*static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDoX0JgDmnerOQEZPnEtc9qEamxgNpoZZQ',
-    appId: '1:617423800641:web:eb2c94373b2a8e025839c0',
-    messagingSenderId: '617423800641',
-    projectId: 'quanlykho-4818e',
-    authDomain: 'quanlykho-4818e.firebaseapp.com',
-    storageBucket: 'quanlykho-4818e.appspot.com',
-    measurementId: 'G-V3B5TZ1H0N',
-  );*/
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCixmrqF34P7kKbZWOEtBbj6PCuHzAmWS0',
     appId: '1:617423800641:android:21a71b46dd02d0e05839c0',
@@ -54,17 +44,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '617423800641',
     projectId: 'quanlykho-4818e',
     storageBucket: 'quanlykho-4818e.appspot.com',
+    androidClientId: '617423800641-b5a5vbl4h2qo98r84nm5nljharcuhtt9.apps.googleusercontent.com',
+    iosClientId: '617423800641-3hg9toe6rn1ho9pqbt7mami3vmda5l33.apps.googleusercontent.com',
     iosBundleId: 'com.ssteam.goodmanagerflutter',
   );
-
-  /*static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBFSW5s9KX8OHdKlmT-cK2gZ6a1H0AvC2U',
-    appId: '1:617423800641:ios:62ee012bf95388de5839c0',
-    messagingSenderId: '617423800641',
-    projectId: 'quanlykho-4818e',
-    storageBucket: 'quanlykho-4818e.appspot.com',
-    iosBundleId: 'com.ssteam.goodmanagerflutter',
-  );*/
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyDoX0JgDmnerOQEZPnEtc9qEamxgNpoZZQ',
@@ -75,4 +58,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'quanlykho-4818e.appspot.com',
     measurementId: 'G-9CKSJ18YBD',
   );
+
 }

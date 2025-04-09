@@ -18,64 +18,80 @@ class ItemHistoryRow extends StatelessWidget{
     }else{
       quantityText = "- " + Utils.getQuantityText(item.quantity);
     }
-    return InkWell(
+    return Card(
+      margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+      child: InkWell(
+          borderRadius: BorderRadius.circular(8),
           onTap: () => onDocumentTapped(item.document!),
           //onLongPress: () => onDocumentLongPressed(item),
-    child:  Container(
-        padding: EdgeInsets.fromLTRB(16, 8 , 16 , 8),
-        child: Column(
-          children: [
-            //Align(alignment: Alignment.centerRight, child: _buildPaymentStatusWidget()),
-            IntrinsicHeight(
-                child: Row(
-                  //crossAxisAlignment: CrossAxisAlignment.center,
-                  //mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 10,
-                      color: getIndicatorColor(item.document!.type),
-                      //child: Column(),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 8,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: getIndicatorColor(item.document!.type), // Change color as needed
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        bottomLeft: Radius.circular(8),
+                      ),
                     ),
-                    SizedBox(width: 8),
-                    Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              item.document?.name ?? "",
-                              style:
-                              Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                            ),
-                            //SizedBox(height: 4),
-                            Text(Config.dateFormat.format(item.document!.date), style: Theme.of(context)
+                  ),
+                ),
+                Expanded(child: Padding(padding: EdgeInsets.all(16), child: Row(children: [
+                  Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            item.document?.name ?? "",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                          ),
+                          //SizedBox(height: 4),
+                          Text(DateFormatFactory.getDateFormat().format(item.document!.date),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                          //SizedBox(height: 4),
+                          item.document!.personName != null
+                              ? Text(
+                            item.document!.personName!,
+                            style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
-                                .copyWith(color: Theme.of(context).colorScheme.onSurface)),
-                            //SizedBox(height: 4),
-                            item.document!.personName != null ? Text(item.document!.personName!, style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(color: Theme.of(context).colorScheme.onSurface),) : Container(),
-                            item.document!.description.isNotEmpty ? Text(item.document!.description, style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(color: Theme.of(context).colorScheme.onSurface)) : Container()
-                          ],
-                        )),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(quantityText, style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
-                        Text(Config.currencyFormat.format(item.amount))
-                      ],
-                    )
-
-                  ],
-                ))
-          ],
-        ),
-      ));
+                                .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                          )
+                              : Container(),
+                          item.document!.description.isNotEmpty
+                              ? Text(item.document!.description,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(color: Theme.of(context).colorScheme.onSurface))
+                              : Container()
+                        ],
+                      )),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(quantityText, style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                      //Text("Paid/Amount"),
+                      Text(item.amount.toString())
+                    ],
+                  )
+                ],),))
+              ],
+            ),
+          )),
+    );
   }
   Color getIndicatorColor(DocumentType type) {
     switch (type) {

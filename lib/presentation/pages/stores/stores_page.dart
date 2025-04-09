@@ -4,16 +4,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
 import 'package:good_manager/presentation/pages/stores/components/sort_store_dialog.dart';
 import 'package:good_manager/presentation/widgets/snackbar_widgets.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../domain/entities/stores_setting.dart';
-import '../../../main.dart';
 import '../../app_style.dart';
 import '../base/base_state.dart';
-import '../custom_navigation_drawer.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'components/store_item_row.dart';
@@ -29,7 +28,11 @@ class StoresPage extends StatefulWidget {
   StoresPageState createState() => StoresPageState();
 }
 
-class StoresPageState extends State<StoresPage> {
+class StoresPageState extends BaseStateWidget<StoresPage> {
+  @override
+  bool hasDrawer() {
+    return !widget.isSelection;
+  }
   final TextEditingController searchTextController = TextEditingController();
   final FocusNode searchTextFocusNode = FocusNode();
   @override
@@ -41,7 +44,7 @@ class StoresPageState extends State<StoresPage> {
     context.read<StoresCubit>().initState(widget.isSelection);
   }
   @override
-  Widget build(BuildContext context){
+  Widget buildWidget(BuildContext context){
     return BlocConsumer<StoresCubit, StoresState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async{
@@ -71,7 +74,9 @@ class StoresPageState extends State<StoresPage> {
           }
         },
         builder: (context, state) =>  Scaffold(
-            drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 7, storeName: storage.getSelectedStoreName()),
+          key: ScaffoldKey,
+            backgroundColor: Colors.grey.shade200,
+            //drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 7, storeName: storage.getSelectedStoreName()),
             appBar: _buildAppBar(state),
             body: _buildBody(state),
             floatingActionButton:  FloatingActionButton(
@@ -156,17 +161,15 @@ class StoresPageState extends State<StoresPage> {
       ]);
 
   Widget _buildListView(StoresState data) {
-    return  ListView.separated(
+    //return GridView.builder(gridDelegate: gridDelegate, itemBuilder: itemBuilder)
+    return  ListView.builder(
         itemBuilder: (BuildContext context, index) {
           Store item = data.items[index];
           return StoreItemRow(item, (item) {
             onPressed(item);
           }, (item) {
             onLongPressed(item);
-          });
-        },
-        separatorBuilder: (context, index) {
-          return Divider(color: Colors.grey[500]);
+          }, widget.isSelection);
         },
         itemCount: data.items.length);
   }

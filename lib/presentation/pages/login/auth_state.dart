@@ -11,6 +11,8 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
+class AuthStopped extends AuthState {}
+
 @immutable
 abstract class AuthState {}
 
@@ -34,3 +36,6 @@ class UserSignIn extends AuthState {}
 class UserSingupAndLinkedWithGoogle extends AuthState {}
 
 class UserSingupButNotVerified extends AuthState {}
+
+class UserSignInSuccessfulWithStore extends AuthState{}
+class UserSignInSuccessfulWithNoStore extends AuthState{}

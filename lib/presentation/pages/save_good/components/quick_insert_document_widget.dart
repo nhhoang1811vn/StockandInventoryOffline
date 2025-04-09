@@ -16,6 +16,8 @@ import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../main.dart';
+
 class QuickInsertDocumentWidget extends StatefulWidget {
   final Good good;
   final DocumentType type;
@@ -96,15 +98,17 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
                       Text(AppLocalizations.of(context)!.incoming_document_text, style: TextStyle(fontSize: 25))
                     else
                       Text(AppLocalizations.of(context)!.outgoing_document_text, style: TextStyle(fontSize: 25)),
-                    //Text(widget.good.name, style: TextStyle(fontSize: TextSize.extraLarge)),
-                    //widget.good.description.isNotEmpty ? Text(widget.good.description) : Container(),
-                    //widget.good.barCode != null ? Text(widget.good.barCode!) : Container(),
-                    //Text(sprintf(AppLocalizations.of(context)!.in_stock_text, [widget.good.quantity])),
+                    SizedBox(height: 16),
                     _buildQuantity(context, state),
+                    SizedBox(height: 16),
                     _buildPrice(context, state),
+                    SizedBox(height: 16),
                     _buildAmount(context, state),
+                    SizedBox(height: 16),
                     _buildDate(context, state),
+                    SizedBox(height: 16),
                     _buildPerson(context,state, widget.type),
+                    SizedBox(height: 16),
                     _buildDescription(context, state)
                   ],
                 )
@@ -189,7 +193,7 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
   }
   Widget _buildDate(BuildContext context, QuickInsertDocumentState state){
     if (state.date != null){
-      dateTextController.text = Config.dateFormat.format(state.date!);
+      dateTextController.text = DateFormatFactory.getDateFormat().format(state.date!);
     }else{
       dateTextController.text = "";
     }
@@ -197,6 +201,7 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
           controller: dateTextController,
           labelText: AppLocalizations.of(context)!.field_date,
           keyboardType: TextInputType.datetime,
+          suffix: Icon(Icons.keyboard_arrow_down, size: 16,),
           readOnly: true,
           onTapped: () => {
             DatePicker.showDatePicker(context,
@@ -205,8 +210,8 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
                 maxTime: Config.maxTime,
                 onChanged: (date) {}, onConfirm: (date) {
                   context.read<QuickInsertDocumentCubit>().dateChanged(date);
-                  dateTextController.text = Config.dateFormat.format(date);
-                }, currentTime: state.date, locale: LocaleType.vi)
+                  dateTextController.text = DateFormatFactory.getDateFormat().format(date);
+                }, currentTime: state.date, locale: MyApp.getDatePickerLocaleType(context))
           },
         );
   }
@@ -216,16 +221,21 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
     return AppTextField(
       controller: personNameTextController,
       labelText: type == DocumentType.incoming
-          ? AppLocalizations.of(context)!.field_supplier
-          : AppLocalizations.of(context)!.field_customer,
+          ? AppLocalizations.of(context)!.label_supplier_name
+          : AppLocalizations.of(context)!.label_customer_name,
+      hintText: AppLocalizations.of(context)!.hint_select,
       keyboardType: TextInputType.none,
       readOnly: true,
+      suffix: Icon(Icons.keyboard_arrow_down, size: 16,),
       onTapped: () => {context.read<QuickInsertDocumentCubit>().onPersonClicked()},
     );
   }
   Widget _buildDescription(BuildContext context,QuickInsertDocumentState state){
     return AppTextField(
-        labelText: AppLocalizations.of(context)!.field_desc,
+        labelText: AppLocalizations.of(context)!.label_description,
+        hintText: AppLocalizations.of(context)!.hint_description,
+        maxLines: null,
+        minLines: 2,
         initialValue: state.description,
         onChanged: (value) => context.read<QuickInsertDocumentCubit>().descriptionChanged(value),
         keyboardType: TextInputType.name);

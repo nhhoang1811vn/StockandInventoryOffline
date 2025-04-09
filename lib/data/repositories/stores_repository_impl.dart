@@ -10,6 +10,7 @@ class StoresRepositoryImpl implements StoresRepository {
 
   var db = new DBHelper();
 
+
   @override
   Future<bool> delete(int id) {
     return db.deleteStore(id);

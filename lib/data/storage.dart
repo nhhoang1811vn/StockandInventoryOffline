@@ -56,7 +56,7 @@ class Storage{
     prefs.setString(StorageKeys.LanguageCode, value);
   }
   String getLanguageCode() {
-    return prefs.getString(StorageKeys.LanguageCode)??"vi";
+    return prefs.getString(StorageKeys.LanguageCode)??"en";
   }
   void setSuppliersSetting(SuppliersSetting settings){
     prefs.setString(StorageKeys.SuppliersSetting, jsonEncode(settings.toJson()));
@@ -155,7 +155,7 @@ class Storage{
   }
 }
 class StorageKeys{
-  static const String InitSettings = "InitSettings";
+  static const String InitSettings = "InitSettings2";
   //settings
   static const String BarcodeScannerBatchScanMode = "BarcodeScannerBatchScanMode";
   static const String BarcodeScannerEnableBeep = "BarcodeScannerEnableBeep";

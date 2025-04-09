@@ -7,7 +7,7 @@ import 'package:good_manager/domain/entities/search_documents_type.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
-import 'package:good_manager/presentation/pages/custom_navigation_drawer.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/documents/components/document_date_row.dart';
 import 'package:good_manager/presentation/pages/documents/document_ui.dart';
 import 'package:good_manager/presentation/pages/documents/sort_documents_dialog.dart';
@@ -18,72 +18,110 @@ import '../../widgets/selected_store_view.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
-import 'add_document_dialog.dart';
 import 'bloc/documents_cubit.dart';
-import 'document_item_row.dart';
+import 'components/add_document_dialog.dart';
+import 'components/document_item_row.dart';
 
 class DocumentsPage extends StatefulWidget {
+  const DocumentsPage({required Key? key}) : super(key: key);
+
   @override
   DocumentPageState createState() => DocumentPageState();
 }
 
-class DocumentPageState extends State<DocumentsPage> {
+class DocumentPageState extends BaseStateWidget<DocumentsPage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   final TextEditingController searchTextController = TextEditingController();
 
   @override
   void initState() {
     context.read<DocumentsCubit>().initState();
+    _tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
 
-  Widget _buildAllDocumentView(DocumentsState state) {
-    return getAllBody(state);
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
-  Widget getAllBody(DocumentsState state) {
-    List<Widget> children = [
-      Expanded(
-          child: Stack(children: [
-        Visibility(
-          child: _buildAllEmptyView(state),
-          visible: state.items.isEmpty,
-        ),
-        Visibility(
-          child: _buildAllListView(state),
-          visible: state.items.isNotEmpty,
-        )
-      ]))
-    ];
-    return Column(children: children);
+  @override
+  bool hasDrawer() {
+    return true;
   }
 
-  Widget _buildIncomingDocumentView(BuildContext context, DocumentsState state) => Stack(
-        children: [_buildIncomingEmptyView(context, state), _buildIncomingListView(state)],
+  Widget _buildAllDocumentView(DocumentsState state) => Column(
+        children: [
+          Expanded(
+              child: Stack(children: [
+            Visibility(
+              child: _buildEmptyView(state),
+              visible: state.items.isEmpty,
+            ),
+            Visibility(
+              child: _buildListView(state.items),
+              visible: state.items.isNotEmpty,
+            )
+          ]))
+        ],
       );
 
-  Widget _buildOutgoingDocumentView(BuildContext context, DocumentsState state) => Stack(
-        children: [_buildOutgoingEmptyView(context, state), _buildOutgoingListView(state)],
+  Widget _buildIncomingDocumentView(BuildContext context, DocumentsState state) => Column(
+        children: [
+          Expanded(
+            child: Stack(children: [
+              Visibility(child: _buildEmptyView(state), visible: state.incomingItems.isEmpty),
+              Visibility(child: _buildListView(state.incomingItems), visible: state.incomingItems.isNotEmpty)
+            ]),
+          )
+        ],
+      );
+
+  Widget _buildOutgoingDocumentView(BuildContext context, DocumentsState state) => Column(
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                Visibility(child: _buildEmptyView(state), visible: state.outgoingItems.isEmpty),
+                Visibility(child: _buildListView(state.outgoingItems), visible: state.outgoingItems.isNotEmpty)
+              ],
+            ),
+          )
+        ],
       );
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildWidget(BuildContext context) {
     return BlocConsumer<DocumentsCubit, DocumentsState>(
-        builder: (context, state) => DefaultTabController(
-            length: 3,
-            child: Builder(builder: (BuildContext context) {
-              return Scaffold(
-                  drawer: CustomNavigationDrawer(selectedIndex: 2, storeName: storage.getSelectedStoreName()),
-                  appBar: _buildAppBar(state),
-                  body: TabBarView(children: [
-                    _buildAllDocumentView(state),
-                    _buildIncomingDocumentView(context, state),
-                    _buildOutgoingDocumentView(context, state),
-                  ]),
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () => onAddDocument(DefaultTabController.of(context).index),
-                    child: Icon(Icons.add)
-                  ));
-            })),
+        builder: (context, state) => Scaffold(
+          backgroundColor: Colors.grey.shade200,
+              appBar: _buildAppBar(state),
+              body: TabBarView(controller: _tabController, children: [
+                _buildAllDocumentView(state),
+                _buildIncomingDocumentView(context, state),
+                _buildOutgoingDocumentView(context, state),
+              ]),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () async{
+                  if (_tabController.index == 1){
+                    _onAddDocumentWithType(DocumentType.incoming);
+                  }else if (_tabController.index == 2){
+                    _onAddDocumentWithType(DocumentType.outgoing);
+                  }else{
+                    //show dialog
+                    DocumentType? type =
+                        await showDialog(context: context, builder: (_) => AddDocumentDialogWidget(), barrierDismissible: true);
+                    if (type != null) {
+                      _onAddDocumentWithType(type);
+                    }
+
+                  }
+
+                },
+                child: Icon(Icons.add),
+              ),
+            ),
         listenWhen: (state1, state2) => state1.state != state2.state,
         listener: (context, state) async {
           if (state.state is OpenHelpPageState) {
@@ -93,10 +131,8 @@ class DocumentPageState extends State<DocumentsPage> {
             });
           } else if (state.state is OpenSortDialogListState) {
             DocumentsSetting? settings = await showDialog(
-                context: context,
-                builder: (_) => SortDocumentsDialog(state.settings),
-                barrierDismissible: true);
-            if (settings != null){
+                context: context, builder: (_) => SortDocumentsDialog(state.settings), barrierDismissible: true);
+            if (settings != null) {
               context.read<DocumentsCubit>().setSettings(settings);
             }
           }
@@ -113,24 +149,6 @@ class DocumentPageState extends State<DocumentsPage> {
     context.read<DocumentsCubit>().loadItems();
   }
 
-  void onAddDocument(int index) async {
-    switch (index) {
-      case 0:
-        DocumentType? type =
-            await showDialog(context: context, builder: (_) => AddDocumentDialogWidget(), barrierDismissible: true);
-        if (type != null) {
-          _onAddDocumentWithType(type);
-        }
-        break;
-      case 1:
-        _onAddDocumentWithType(DocumentType.incoming);
-        break;
-      case 2:
-        _onAddDocumentWithType(DocumentType.outgoing);
-        break;
-    }
-  }
-
   PreferredSize _buildAppBar(DocumentsState state) {
     return PreferredSize(
       preferredSize: Size.fromHeight(58.0 + 20 + 58.0 + (state.showSearchBar ? 65 : 0)),
@@ -144,6 +162,7 @@ class DocumentPageState extends State<DocumentsPage> {
               SelectedStoreView(),
               Visibility(child: _buildSearchBar(context, state), visible: state.showSearchBar),
               TabBar(
+                controller: _tabController,
                 indicatorColor: Theme.of(context).colorScheme.onPrimary,
                 tabs: [
                   Tab(text: AppLocalizations.of(context)!.document_list_tab_all.toUpperCase()),
@@ -158,116 +177,57 @@ class DocumentPageState extends State<DocumentsPage> {
     );
   }
 
-  Widget _buildAllEmptyView(DocumentsState state) => Visibility(
-      visible: state.items.isEmpty,
-      child: Column(
+  Widget _buildEmptyView(DocumentsState state) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(UIConstants.documentIconData, size: 60, color: AppColors.primaryColor),
-          Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Text(AppLocalizations.of(context)!.empty_document,
-                  textAlign: TextAlign.center,
-                  style: AppStyle.getEmptyTextStyle()))
+          Image(image: AssetImage('assets/images/document.png'), width: 60),
+          SizedBox(height: 16),
+          Text(AppLocalizations.of(context)!.empty_document,
+              textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle())
         ],
-      ));
+      );
 
-  Widget _buildIncomingEmptyView(BuildContext context, DocumentsState state) => Visibility(
-      visible: state.incomingItems.isEmpty,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Icon(UIConstants.documentIconData, size: 60, color: AppColors.primaryColor),
-          Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Text(AppLocalizations.of(context)!.empty_incoming_document, textAlign: TextAlign.center,style: AppStyle.getEmptyTextStyle()))
-        ],
-      ));
+  Widget _buildListView(List<DocumentUI> items) => ListView.builder(
+      itemBuilder: (BuildContext context, index) {
+        DocumentUI item = items[index];
+        if (item.type == DocumentUIType.data) {
+          return DocumentItemRow(
+              false, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
+        } else {
+          return DocumentDateRow(item.dateText);
+        }
+      },
+      itemCount: items.length);
 
-  Widget _buildOutgoingEmptyView(BuildContext context, DocumentsState state) => Visibility(
-      visible: state.outgoingItems.isEmpty,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Icon(UIConstants.documentIconData, size: 60, color: AppColors.primaryColor),
-          Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Text(AppLocalizations.of(context)!.empty_outgoing_document, textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle()))
-        ],
-      ));
-
-  Widget _buildAllListView(DocumentsState state) => Visibility(
-      visible: state.items.isNotEmpty,
-      child: ListView.separated(
-          itemBuilder: (BuildContext context, index) {
-            DocumentUI item = state.items[index];
-            if (item.type == DocumentUIType.data) {
-              return DocumentItemRow(
-                  true, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
-            } else {
-              return DocumentDateRow(item.dateText);
-            }
-          },
-          separatorBuilder: (context, index) {
-            return Divider(color: Colors.grey[500]);
-          },
-          itemCount: state.items.length));
-
-  Widget _buildIncomingListView(DocumentsState state) => Visibility(
-      visible: state.incomingItems.isNotEmpty,
-      child: ListView.separated(
-          itemBuilder: (BuildContext context, index) {
-            DocumentUI item = state.incomingItems[index];
-            if (item.type == DocumentUIType.data) {
-              return DocumentItemRow(
-                  false, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
-            } else {
-              return DocumentDateRow(item.dateText);
-            }
-            },
-          separatorBuilder: (context, index) {
-            return Divider(color: Colors.grey[500]);
-          },
-          itemCount: state.incomingItems.length));
-
-  Widget _buildOutgoingListView(DocumentsState state) => Visibility(
-      visible: state.outgoingItems.isNotEmpty,
-      child: ListView.separated(
-          itemBuilder: (BuildContext context, index) {
-            DocumentUI item = state.outgoingItems[index];
-            if (item.type == DocumentUIType.data) {
-              return DocumentItemRow(
-                  false, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
-            } else {
-              return DocumentDateRow(item.dateText);
-            }
-            },
-          separatorBuilder: (context, index) {
-            return Divider(color: Colors.grey[500]);
-          },
-          itemCount: state.outgoingItems.length));
-  Widget _buildSearchMenu(DocumentsState state){
-    return IconButton(onPressed: (){
-      searchTextController.text = "";
-      context.read<DocumentsCubit>().onSearchMenuClicked();
-    }, icon: Icon(Icons.search, color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
-  }
-  Widget _buildSortMenu(){
-    return IconButton(onPressed: (){
-      context.read<DocumentsCubit>().onMenuSortClicked();
-    }, icon: Icon(Icons.sort, color: context.read<DocumentsCubit>().hasSortOptions() ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
-  }
-  Widget _buildHelpMenu(){
-    return IconButton(onPressed: (){
-      context.read<DocumentsCubit>().onMenuHelpClicked();
-    }, icon: Icon(Icons.help));
+  Widget _buildSearchMenu(DocumentsState state) {
+    return IconButton(
+        onPressed: () {
+          searchTextController.text = "";
+          context.read<DocumentsCubit>().onSearchMenuClicked();
+        },
+        icon: Icon(Icons.search,
+            color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
   }
 
+  Widget _buildSortMenu() {
+    return IconButton(
+        onPressed: () {
+          context.read<DocumentsCubit>().onMenuSortClicked();
+        },
+        icon: Icon(Icons.sort,
+            color: context.read<DocumentsCubit>().hasSortOptions()
+                ? UIConstants.highlightMenuColor
+                : UIConstants.normalMenuColor));
+  }
 
-
+  Widget _buildHelpMenu() {
+    return IconButton(
+        onPressed: () {
+          context.read<DocumentsCubit>().onMenuHelpClicked();
+        },
+        icon: Icon(Icons.help));
+  }
 
   Widget _buildSearchBar(BuildContext context, DocumentsState state) => Row(children: [
         Expanded(

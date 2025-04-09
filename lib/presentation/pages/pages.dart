@@ -1,10 +1,12 @@
 class Pages {
   static const String onboarding = 'onboarding';
 
-  static const String payment_list = 'payment_list';
+  //static const String payment_list = 'payment_list';
   static const String save_payment = 'save_payment';
+  static const String save_payment_category = 'save_paymen_category';
+  static const String main = '/main';
   static const String home = '/home';
-  static const String auth = '/auth';
+  static const String loading_data = '/loading_data';
 
   static const String good_list = '/good_list';
   static const String save_good = '/save_good';
@@ -12,6 +14,7 @@ class Pages {
   static const String save_group = '/save_group';
 
   static const String document_list = "/document_list";
+  static const String select_document = "/select_document";
   static const String save_document = '/save_document';
 
   static const String store_list = '/store_list';
@@ -41,6 +44,4 @@ class Pages {
   static const String signup = "/signup";
   static const String signIn = "/signIn";
   static const String forgotPassword = "/forgotPassword";
-
-
 }

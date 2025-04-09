@@ -11,6 +11,7 @@ import 'package:good_manager/presentation/pages/save_expense/bloc/save_expense_c
 import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../main.dart';
 import '../../../../presentation/widgets/snackbar_widgets.dart';
 import '../../../utils.dart';
 import '../../currency_app_text_field.dart';
@@ -23,7 +24,7 @@ class SaveExpenseForm extends StatelessWidget {
   SaveExpenseForm({Key? key, required this.item}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    dateController.text = Config.dateFormat.format(item.date);
+    dateController.text = DateFormatFactory.getDateFormat().format(item.date);
     amountController.text = item.amount == null ? "" : Config.simpleCurrencyFormat.format(item.amount);
 
     return BlocConsumer<SaveExpenseCubit, SaveExpenseState>(
@@ -51,7 +52,8 @@ class SaveExpenseForm extends StatelessWidget {
                           keyboardType: TextInputType.name,
                           error: state.name.displayError?.text(context)),
                       AppTextField(
-                          labelText: AppLocalizations.of(context)!.field_desc,
+                          labelText: AppLocalizations.of(context)!.label_description,
+                          hintText: AppLocalizations.of(context)!.hint_description,
                           initialValue: state.description,
                           onChanged: (value) => context.read<SaveExpenseCubit>().descriptionChanged(value),
                           keyboardType: TextInputType.name),
@@ -64,11 +66,10 @@ class SaveExpenseForm extends StatelessWidget {
                               showTitleActions: true,
                               minTime: Config.minTime,
                               maxTime: Config.maxTime, onChanged: (date) {
-                            print('change $date');
                           }, onConfirm: (date) {
                             context.read<SaveExpenseCubit>().dateChanged(date);
-                            dateController.text = Config.dateFormat.format(date);
-                          }, currentTime: state.date, locale: LocaleType.vi)
+                            dateController.text = DateFormatFactory.getDateFormat().format(date);
+                          }, currentTime: state.date, locale: MyApp.getDatePickerLocaleType(context))
                         },
                       ),
                       Row(

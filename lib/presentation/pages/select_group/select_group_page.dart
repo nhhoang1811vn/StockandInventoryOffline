@@ -4,11 +4,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 
 import '../../widgets/selected_store_view.dart';
-
-class SelectGroupPage extends StatelessWidget {
+class SelectGroupPage extends StatefulWidget{
   final int? id;
   final int? groupId;
 
@@ -16,12 +16,18 @@ class SelectGroupPage extends StatelessWidget {
   //if id is null, meaning moving good
   SelectGroupPage(this.id, this.groupId) : super();
 
+  @override
+  State<StatefulWidget> createState() {
+    return SelectGroupPageState();
+  }
+}
+class SelectGroupPageState extends BaseStateWidget<SelectGroupPage> {
   final TreeController _treeController =
       TreeController(allNodesExpanded: false);
 
   @override
-  Widget build(BuildContext context) {
-    context.read<SelectGroupCubit>().init(id, groupId);
+  Widget buildWidget(BuildContext context) {
+    context.read<SelectGroupCubit>().init(widget.id, widget.groupId);
     return BlocConsumer<SelectGroupCubit, SelectGroupState>(
         builder: (context, state) => Scaffold(
             appBar: _buildAppBar(context, state),
@@ -74,7 +80,7 @@ class SelectGroupPage extends StatelessWidget {
       BuildContext context, SelectGroupState state, Group? item) {
     return Expanded(
         child: InkWell(
-            onTap: () => context.read<SelectGroupCubit>().select(item?.id),
+            onTap: () => context.read<SelectGroupCubit>().select(item),
             child: Container(
               padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
               decoration: item?.id == state.selectedGroupId
@@ -90,11 +96,8 @@ class SelectGroupPage extends StatelessWidget {
                   : null,
               child: Row(
                 children: [
-                  Icon(
-                    UIConstants.groupIconData,
-                    size: 24,
-                    color: UIConstants.primaryColor,
-                  ),
+                  Image(image: AssetImage('assets/images/folder.png'), width: 24),
+
                   SizedBox(
                     width: 16,
                   ),

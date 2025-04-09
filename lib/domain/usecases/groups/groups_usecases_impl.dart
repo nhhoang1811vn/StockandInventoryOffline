@@ -34,4 +34,10 @@ class GroupsUseCaseImpl implements GroupsUseCases{
   Future<List<Group>> getAllByStoreId(int storeId) {
     return repository.getAllByStoreId(storeId);
   }
+
+  @override
+  Future<Group> getById(int id) {
+    return repository.get(id);
+  }
+
 }

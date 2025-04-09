@@ -26,30 +26,28 @@ class SaveStoreForm extends StatelessWidget {
             Navigator.of(context).pop(state.item);
           }
         },
-        builder: (context, state) => Stack(
-              children: [
-                Positioned.fill(
-                    child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(UIConstants.screenSpace),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      AppTextField(
-                          labelText: AppLocalizations.of(context)!.field_name,
-                          initialValue: state.name.value,
-                          onChanged: (value) => context.read<SaveStoreCubit>().nameChanged(value),
-                          keyboardType: TextInputType.name,
-                          error: state.name.displayError?.text(context)),
-                      AppTextField(
-                          labelText: AppLocalizations.of(context)!.field_desc,
-                          initialValue: state.description,
-                          onChanged: (value) => context.read<SaveStoreCubit>().descriptionChanged(value),
-                          keyboardType: TextInputType.name),
-                    ],
-                  ),
-                ))
-              ],
-            ));
+        builder: (context, state) => Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    AppTextField(
+                        labelText: AppLocalizations.of(context)!.field_name,
+                        hintText: AppLocalizations.of(context)!.hint_name,
+                        initialValue: state.name.value,
+                        onChanged: (value) => context.read<SaveStoreCubit>().nameChanged(value),
+                        keyboardType: TextInputType.name,
+                        error: state.name.displayError?.text(context)),
+                    SizedBox(height: 16,),
+                    AppTextField(
+                        labelText: AppLocalizations.of(context)!.label_description,
+                        hintText: AppLocalizations.of(context)!.hint_description,
+                        initialValue: state.description,
+                        onChanged: (value) => context.read<SaveStoreCubit>().descriptionChanged(value),
+                        keyboardType: TextInputType.name),
+                  ],
+          ),
+        ));
   }
 }

@@ -14,6 +14,7 @@ class PathUtils{
 
   getDatabasePath() async{
     io.Directory documentsDirectory = await getApplicationDocumentsDirectory();
+
     String path = "";
     if (io.Platform.isWindows){
       String appName = "AppViet_GoodManager";
@@ -23,5 +24,4 @@ class PathUtils{
     }
     return path;
   }
-
 }

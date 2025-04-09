@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/help_content.dart';
 
 import '../../markdown/md_provider_factory.dart';
 import '../pages.dart';
-class HelpsPage extends StatelessWidget {
-  HelpsPage({Key? key}) : super(key: key);
+class HelpsPage extends StatefulWidget{
   @override
-  Widget build(BuildContext context) {
+  State<StatefulWidget> createState() {
+    return HelpsPageState();
+  }
+}
+class HelpsPageState extends BaseStateWidget<HelpsPage> {
+  @override
+  Widget buildWidget(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(AppLocalizations.of(context)!.help_title)),
         body: ListView.separated(
@@ -15,7 +21,8 @@ class HelpsPage extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               HelpType type = HelpType.values[index];
               return ListTile(
-                visualDensity: VisualDensity(vertical: -3), // to compact
+                trailing: Icon(Icons.navigate_next),
+                //visualDensity: VisualDensity(vertical: -3), // to compact
                 title: Text(type.getTitle(context),),
                 onTap: (){
                   Navigator.of(context).pushNamed(Pages.help, arguments: {
@@ -26,7 +33,7 @@ class HelpsPage extends StatelessWidget {
               );
             },
           separatorBuilder: (context, index) {
-            return Divider(color: Colors.grey[500]);
+            return Divider(height: 1,);
           },
         ));
   }

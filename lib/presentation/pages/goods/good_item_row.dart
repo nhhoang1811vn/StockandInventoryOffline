@@ -8,27 +8,42 @@ import 'package:good_manager/presentation/utils.dart';
 class GoodItemRow extends StatelessWidget {
   final Good item;
   final double quantity;
+  final bool showBarcode;
+  final bool showDescription;
   final void Function(Good good) onGoodTapped;
   final void Function(Good good) onGoodLongPressed;
   final bool isSelection;
 
-  GoodItemRow(this.item, this.quantity, this.onGoodTapped, this.onGoodLongPressed, [this.isSelection = false]);
+  GoodItemRow({
+      required this.item,
+      required this.quantity,
+      required this.showBarcode,
+      required this.showDescription,
+      required this.onGoodTapped,
+      required this.onGoodLongPressed,
+      required this.isSelection
+      });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => onGoodTapped(item),
-      onLongPress: () => onGoodLongPressed(item),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-        child: Row(
-          children: [
-            _buildLeadingWidget(),
-            SizedBox(
-              width: 8,
-            ),
-            Expanded(child: _buildWidget(context))
-          ],
+    return Card(
+      color: Theme.of(context).colorScheme.surface,
+      margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => onGoodTapped(item),
+        onLongPress: () => onGoodLongPressed(item),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              _buildLeadingWidget(),
+              SizedBox(
+                width: 16,
+              ),
+              Expanded(child: _buildWidget(context))
+            ],
+          ),
         ),
       ),
     );
@@ -53,7 +68,7 @@ class GoodItemRow extends StatelessWidget {
                 style:
                     Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
             SizedBox(height: 4),
-            if (item.barCode != null)
+            if (showBarcode && item.barCode != null)
               Row(children: [
                 Icon(UIConstants.barcodeIconData, size: 24, color: UIConstants.primaryColor),
                 SizedBox(
@@ -65,7 +80,7 @@ class GoodItemRow extends StatelessWidget {
                         .bodyMedium!
                         .copyWith(color: Theme.of(context).colorScheme.onSurface)),
               ]),
-            if (item.description.isNotEmpty)
+            if (showDescription && item.description.isNotEmpty)
               Column(
                 children: [
                   SizedBox(
@@ -92,20 +107,19 @@ class GoodItemRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Text(Config.currencyFormat.format(item.purchasePrice ?? 0),
-            style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.red.shade700)),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red.shade700)),
         Text("/"),
         Text(Config.currencyFormat.format(item.salePrice ?? 0),
-            style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.green.shade700)),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.green.shade700)),
       ],
     );
   }
 
   Widget getAvatarWidget(Uint8List bytes) {
-    return SizedBox(width: 48, height: 48, child: Image.memory(bytes));
+    return SizedBox(width: 32, height: 32, child: Image.memory(bytes));
   }
 
   Widget _buildEmptyAvatarWidget() {
-    return SizedBox(
-        width: 48, height: 48, child: Icon(UIConstants.goodIconData, size: 32, color: UIConstants.primaryColor));
+    return Image(image: AssetImage('assets/images/box.png'), width: 32);
   }
 }

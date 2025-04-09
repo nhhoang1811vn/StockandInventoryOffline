@@ -27,11 +27,18 @@ class PaymentUseCasesImpl implements PaymentUseCases{
 
   @override
   Future<List<Payment>> getAll() {
-    // TODO: implement getAll
-    throw UnimplementedError();
+    return repository.getAll();
+  }
+  @override
+  Future<List<Payment>> getAllByStoreId(int storeId) {
+    return repository.getAllByStoreId(storeId);
   }
   @override
   Future<List<Payment>> getByDocumentId(int documentId) {
     return repository.getByDocumentId(documentId);
+  }
+  @override
+  Future<List<Payment>> getInRange(DateTime start, DateTime end) {
+    return repository.getInRange(start,end);
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
 import 'package:injectable/injectable.dart';
 
@@ -22,35 +21,32 @@ class PaymentsCubit extends Cubit<PaymentsState> {
     required this.useCase,
     required this.documentUseCases
   }) : super(PaymentsState.initial(state: InitialState()));
-  void init(int documentId){
-    emit(state.copyWith(documentId: documentId));
-    loadInvoiced();
+  void init(){
+    emit(state.copyWith(state: LoadingState()));
     loadItems();
   }
-  void loadInvoiced() async{
-    List<DocumentTransaction> transactions = await documentUseCases.getTransactionsByDocumentId(state.documentId!);
-    double invoiced = 0.0;
-    for (DocumentTransaction transaction in transactions){
-      invoiced += transaction.quantity * (transaction.price??0.0);
-    }
-    emit(state.copyWith(invoiced: invoiced));
-  }
-  void onAddNewPaymentButtonPressed(){
+
+  void onAddInboundPayment(){
     Payment item = Payment();
-    item.documentId = state.documentId!;
+    item.type = PaymentType.inbound;
+    item.storeId = storage.getSelectedStoreId();
     emit(state.copyWith(state: OpenSavePaymentPageState(item)));
   }
-
+  void onAddOutboundPayment(){
+    Payment item = Payment();
+    item.type = PaymentType.outbound;
+    item.storeId = storage.getSelectedStoreId();
+    emit(state.copyWith(state: OpenSavePaymentPageState(item)));
+  }
   void onPaymentPressed(Payment item) {
     emit(state.copyWith(state: OpenSavePaymentPageState(item)));
   }
   void loadItems() async{
-    List<Payment> payments = await useCase.getByDocumentId(state.documentId!);
-    double paid = 0.0;
-    for (Payment payment in payments){
-      paid += payment.amount??0;
-    }
-    emit(state.copyWith(items: payments, paid: paid));
+    int storeId = storage.getSelectedStoreId();
+    List<Payment> payments = await useCase.getAllByStoreId(storeId);
+    List<Payment> inboundPayments = payments.where((item) => item.type == PaymentType.inbound).toList();
+    List<Payment> outboundPayments = payments.where((item) => item.type == PaymentType.outbound).toList();
+    emit(state.copyWith(state: LoadSuccessState(),inboundItems: inboundPayments, outboundItems: outboundPayments));
   }
   delete(int id) async{
     await useCase.delete(id);

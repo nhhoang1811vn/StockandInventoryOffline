@@ -3,10 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/suppliers_setting.dart';
-import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
-import 'package:good_manager/presentation/pages/custom_navigation_drawer.dart';
+import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/suppliers/widgets/supplier_item_row.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:sprintf/sprintf.dart';
@@ -27,7 +26,7 @@ class SuppliersPage extends StatefulWidget {
   SuppliersPageState createState() => SuppliersPageState();
 }
 
-class SuppliersPageState extends State<SuppliersPage> {
+class SuppliersPageState extends BaseStateWidget<SuppliersPage> {
   final TextEditingController searchTextController = TextEditingController();
   final FocusNode searchTextFocusNode = FocusNode();
   @override
@@ -39,7 +38,11 @@ class SuppliersPageState extends State<SuppliersPage> {
     context.read<SuppliersCubit>().initState(widget.isSelection);
   }
   @override
-  Widget build(BuildContext context){
+  bool hasDrawer() {
+    return !widget.isSelection;
+  }
+  @override
+  Widget buildWidget(BuildContext context){
     return BlocConsumer<SuppliersCubit, SuppliersState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async{
@@ -68,8 +71,11 @@ class SuppliersPageState extends State<SuppliersPage> {
           }
 
         },
+
         builder: (context, state) =>  Scaffold(
-        drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 5, storeName: storage.getSelectedStoreName(),),
+            key: ScaffoldKey,
+        backgroundColor: Colors.grey.shade200,
+        //drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 5, storeName: storage.getSelectedStoreName(),),
         appBar: _buildAppBar(state),
         body: _buildBody(state),
         floatingActionButton:  FloatingActionButton(
@@ -155,7 +161,7 @@ class SuppliersPageState extends State<SuppliersPage> {
           ]);
 
   Widget _buildListView(SuppliersState data) {
-    return  ListView.separated(
+    return  ListView.builder(
           itemBuilder: (BuildContext context, index) {
             Supplier item = data.items[index];
             return SupplierItemRow(item, (item) {
@@ -170,9 +176,9 @@ class SuppliersPageState extends State<SuppliersPage> {
               _launchUrl("tel:${item.phone}");
             });
           },
-          separatorBuilder: (context, index) {
-            return Divider(color: Colors.grey[500]);
-          },
+          //separatorBuilder: (context, index) {
+          //  return Divider(color: Colors.grey[500]);
+          //},
           itemCount: data.items.length);
   }
   void onPressed(Supplier item) async {
