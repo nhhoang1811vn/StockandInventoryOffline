@@ -41,7 +41,7 @@ class ReportDetailPage extends StatefulWidget{
   }
 }
 class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
-  static const double MIN_WIDTH_CELL = 120.0;
+  //static const double MIN_WIDTH_CELL = 120.0;
   @override
   Widget buildWidget(BuildContext context) {
     context.read<ReportDetailCubit>().init(
@@ -204,24 +204,34 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
     List<Widget> results = [];
     bool flag = true;
 
-    int columnCount = state.data.firstOrNull?.length ?? 1;
-    double cellWidth = getCellWidth(context, columnCount);
+    //int columnCount = state.data.firstOrNull?.length ?? 1;
+    //double cellWidth = getCellWidth(context, columnCount);
     state.data.asMap().forEach((key, value) {
-      if (key == 0 || key == state.data.length - 1) {
-        results.add(_buildHighlightCell(value: value.first, width: cellWidth));
+      if (key == 0) {
+        results.add(_buildHighlightCell(value: value.first));
       } else {
         results.add(_buildNormalCell(
             value: value.first,
-            width: cellWidth,
-            type: flag, onPressed: (){
+            //width: cellWidth,
+            type: flag, onPressed: () async{
           if (state.type == ReportType.LIST_OF_GOODS){
             var goodId = state.ids[key - 1];
-            Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
+            await Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
             context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
           }else if (state.type == ReportType.LIST_OF_DOCUMENT || state.type == ReportType.DEBTS_BY_CUSTOMER || state.type == ReportType.DEBTS_BY_SUPPLIER){
-            var item = state.documents[key -1];
-            Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
-            context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
+            var position = key -1 ;
+            if (position >=0 && position < state.documents.length){
+              var item = state.documents[position];
+              await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+              context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
+            }
+          }else if (state.type == ReportType.OUTBOUND_PAYMENTS || state.type == ReportType.INBOUND_PAYMENTS){
+            var position = key - 1;
+            if (position >= 0 && position < state.payments.length){
+              var item = state.payments[position];
+              await Navigator.of(context).pushNamed(Pages.save_payment, arguments: {'item': item});
+              context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
+            }
           }
            }));
         flag = !flag;
@@ -233,28 +243,25 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
   List<Widget> _buildRows(BuildContext context, ReportDetailState state) {
     List<Widget> results = [];
     bool flag = false;
-    int columnCount = state.data.firstOrNull?.length ?? 1;
-    double cellWidth = getCellWidth(context, columnCount);
     state.data.asMap().forEach((key, value) {
       List<Widget> rows = [];
       for (int i = 1; i < value.length; i++) {
-        if (key == 0 || key == state.data.length - 1) {
-          rows.add(_buildHighlightCell(value: value[i], width: cellWidth));
+        if (key == 0) {
+          rows.add(_buildHighlightCell(value: value[i]));
         } else {
           rows.add(_buildNormalCell(
               value: value[i],
-              width: cellWidth,
               type: flag,
               onPressed: (){
-                if (state.type == ReportType.LIST_OF_GOODS){
-                  var goodId = state.ids[key - 1];
-                  Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
-                  context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
-                }else if (state.type == ReportType.LIST_OF_DOCUMENT ||  state.type == ReportType.DEBTS_BY_CUSTOMER || state.type == ReportType.DEBTS_BY_SUPPLIER){
-                  var item = state.documents[key -1];
-                  Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
-                  context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
-                }
+                // if (state.type == ReportType.LIST_OF_GOODS){
+                //   var goodId = state.ids[key - 1];
+                //   Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
+                //   context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
+                // }else if (state.type == ReportType.LIST_OF_DOCUMENT ||  state.type == ReportType.DEBTS_BY_CUSTOMER || state.type == ReportType.DEBTS_BY_SUPPLIER){
+                //   var item = state.documents[key -1];
+                //   Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+                //   context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
+                // }
               }));
         }
       }
@@ -266,17 +273,17 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
   List<Widget> _buildFullRow(BuildContext context, ReportDetailState state) {
     List<Widget> results = [];
     bool flag = false;
-    int columnCount = state.data.firstOrNull?.length ?? 1;
-    double cellWidth = getCellWidth(context, columnCount);
+    //int columnCount = state.data.firstOrNull?.length ?? 1;
+    //double cellWidth = getCellWidth(context, columnCount);
     state.data.asMap().forEach((key, value) {
       List<Widget> rows = [];
       for (int i = 0; i < value.length; i++) {
         if (key == 0 || key == state.data.length - 1) {
-          rows.add(_buildHighlightCell(value: value[i], width: cellWidth));
+          rows.add(_buildHighlightCell(value: value[i]));
         } else {
           rows.add(_buildNormalCell(
               value: value[i],
-              width: cellWidth,
+              //width: cellWidth,
               type: flag,
           onPressed: (){
             if (state.type == ReportType.LIST_OF_GOODS){
@@ -297,10 +304,9 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
     return results;
   }
 
-  Widget _buildHighlightCell({String value = "", double width = MIN_WIDTH_CELL}) {
+  Widget _buildHighlightCell({String value = ""}) {
     return _buildCell(
         value: value,
-        width: width,
         backgroundColor: UIConstants.primaryDarkColor,
         textColor: Colors.white,
         fontWeight: FontWeight.w600);
@@ -309,12 +315,12 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
   Widget _buildNormalCell({
     String value = "",
     bool type = true,
-    double width = MIN_WIDTH_CELL,
+    //double width = MIN_WIDTH_CELL,
     Function()? onPressed = null}) {
     if (type) {
       return _buildCell(
           value : value,
-          width: width,
+          //width: width,
           backgroundColor: Colors.grey.shade200,
           textColor: Colors.black,
           fontWeight : FontWeight.w400,
@@ -324,7 +330,7 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
     } else {
       return _buildCell(
           value : value,
-          width: width,
+          //width: width,
           backgroundColor: Colors.white,
           textColor: Colors.black,
           fontWeight : FontWeight.w400,
@@ -336,8 +342,7 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
 
   Widget _buildCell(
       {String value = "",
-        double width = MIN_WIDTH_CELL
-        ,
+        //double width = MIN_WIDTH_CELL,
         required Color backgroundColor,
         required Color textColor,
         required FontWeight fontWeight,
@@ -348,26 +353,29 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
       onTap: onPressed,
       child: Container(
         alignment: Alignment.center,
-        width: width,
+        width: 120,
+        height: 40,
         color: backgroundColor,
         margin: EdgeInsets.all(1.0),
         child: Text(
           value,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(color: textColor, fontWeight: fontWeight),
         ),
       ),
     );
   }
-  double getCellWidth(BuildContext context, int columnCount){
-    if (Platform.isWindows){
-      var screenWidth = MediaQuery.sizeOf(context).width - 20;
-      var cellWidth = screenWidth / columnCount;
-      var width = max(cellWidth, MIN_WIDTH_CELL);
-      return width;
-    }else{
-      return MIN_WIDTH_CELL;
-    }
-  }
+  // double getCellWidth(BuildContext context, int columnCount){
+  //   if (Platform.isWindows){
+  //     var screenWidth = MediaQuery.sizeOf(context).width - 20;
+  //     var cellWidth = screenWidth / columnCount;
+  //     var width = max(cellWidth, MIN_WIDTH_CELL);
+  //     return width;
+  //   }else{
+  //     return MIN_WIDTH_CELL;
+  //   }
+  // }
   Widget _buildContent(BuildContext context, ReportDetailState state){
     var text = sprintf(AppLocalizations.of(context)!.report_detail_header, [
       DateFormatFactory.getDateFormat().format(state.start!),

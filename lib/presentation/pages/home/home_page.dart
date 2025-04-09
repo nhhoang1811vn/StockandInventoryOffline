@@ -6,7 +6,6 @@ import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/utils.dart';
-import 'package:good_manager/presentation/widgets/expense_report_chart/expense_report_chart_widget.dart';
 import 'package:good_manager/presentation/widgets/logo_app_bar.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
@@ -17,7 +16,8 @@ import '../pages.dart';
 class HomePage extends StatefulWidget {
   final VoidCallback onOpenGoodsPage;
   final VoidCallback onOpenDocumentsPage;
-  HomePage({required this.onOpenGoodsPage, required this.onOpenDocumentsPage, required Key? key}) : super(key: key);
+  final VoidCallback onOpenPaymentsPage;
+  HomePage({required this.onOpenGoodsPage, required this.onOpenDocumentsPage, required this.onOpenPaymentsPage, required Key? key}) : super(key: key);
 
   @override
   HomePageState createState() => HomePageState();
@@ -41,6 +41,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async {},
         builder: (context, state) => Scaffold(
+          backgroundColor: Colors.grey.shade200,
               key: ScaffoldKey,
               resizeToAvoidBottomInset: false,
               appBar: LogoAppBar(),
@@ -81,7 +82,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
               ],),
               SizedBox(height: 16),
               Row(children: [
-                Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.expenses_title, Config.currencyFormat.format(state.sumExpense),UIConstants.expenseIconData, Colors.yellow[50],Colors.yellow[700], openExpenses)),
+                Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.payments_title, "",Icons.payment, Colors.yellow[50],Colors.yellow[700], widget.onOpenPaymentsPage,)),
                 SizedBox(width: 16),
                 Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.report_title, "", UIConstants.reportIconData, Colors.green[50],Colors.green[700], openReport))
               ],),
@@ -279,7 +280,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                         SizedBox(
                           height: 4,
                         ),
-                        Text(value, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                        Text(value, style: Theme.of(context).textTheme.bodyMedium),
                       ],
                     )),
                 Icon(icon, size: iconSize, color: iconColor),
@@ -289,7 +290,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
         ));
   }
 
-  void openExpenses() {
-    Navigator.of(context).pushNamed(Pages.expenses).then((value) => context.read<HomeCubit>().initState());
-  }
+  //void openExpenses() {
+  //  Navigator.of(context).pushNamed(Pages.expenses).then((value) => context.read<HomeCubit>().initState());
+  //}
 }

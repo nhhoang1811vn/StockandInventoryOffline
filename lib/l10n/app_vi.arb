@@ -68,6 +68,7 @@
     "action_send_sms": "Gửi Tin Nhắn",
     "action_phone_call": "Gọi Điện Thoại",
     "action_view_transaction": "Xem hoá đơn",
+      "action_edit": "Sửa",
     "action_delete": "Xoá",
     "message_name_blank": "Tên không được để trống",
     "notification_dialog_title": "Thông báo",
@@ -230,15 +231,16 @@
     "title_total_quantity": "Tổng tồn kho",
     "title_select_document": "Chọn hoá đơn",
     "title_chart_sale_report": "Báo cáo doanh thu 6 tháng",
-    "label_select_payment_category": "Select category",
+    "label_select_payment_category": "Chọn danh mục",
     "label_description": "Mô tả",
     "hint_description": "Nhập mô tả",
     "label_select_document_no": "Hoá Đơn",
-    "hint_select_document_no": "Chọn",
+
      "label_supplier_name": "Tên nhà cung cấp",
       "label_customer_name": "Tên khách hàng",
         "label_group_name": "Tên nhóm",
          "label_good_name": "Tên hàng hoá",
+          "label_category_name": "Tên danh mục",
         "hint_name": "Nhập tên",
      "label_address": "Địa chỉ",
         "hint_address": "Nhập địa chỉ",
@@ -255,5 +257,19 @@
             "hint_bar_code": "Nhập mã vạch",
 
         "action_save": "Lưu",
-        "hint_select": "Chọn"
+        "hint_select": "Chọn",
+          "action_add_payment_category": "Thêm danh mục",
+          "title_pick_color": "Chọn màu",
+          "action_add_group": "Thêm nhóm",
+              "action_add_good": "Thêm hàng hoá",
+               "no_category": "Không danh mục",
+
+               "field_start_period": "Đầu kì",
+                "field_in": "Nhập vào",
+                 "field_out": "Bán ra",
+                  "field_end_period": "Cuối kì",
+                            "action_document_created_withname": "Hoá đơn %s đã được tạo",
+                            "good_information": "Thông tin hàng hoá",
+                                                          "images_information": "Thông tin hình ảnh",
+                                                            "change_color":"Thay đổi màu"
 }

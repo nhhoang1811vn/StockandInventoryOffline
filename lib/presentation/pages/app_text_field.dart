@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../constants.dart';
-
 class AppTextField extends StatelessWidget {
   final String labelText;
   final String hintText;
@@ -19,6 +17,9 @@ class AppTextField extends StatelessWidget {
   Widget? prefix;
   Widget? suffix;
 
+  int minLines;
+  int? maxLines;
+
   AppTextField(
       {Key? key,
       required this.labelText,
@@ -30,11 +31,12 @@ class AppTextField extends StatelessWidget {
       this.readOnly = false,
       this.controller,
       this.error,
-      //this.color = AppColors.secondaryColor,
       this.inputFormatter,
       this.suffixText,
         this.prefix,
-        this.suffix
+        this.suffix,
+        this.minLines = 1,
+        this.maxLines = 1
       })
       : super(key: key);
 
@@ -63,6 +65,8 @@ class AppTextField extends StatelessWidget {
       controller: controller,
       initialValue: initialValue,
       keyboardType: keyboardType,
+      minLines: minLines,
+      maxLines: maxLines,
       decoration: InputDecoration(
           border: border,
           prefix: prefix,
@@ -81,7 +85,7 @@ class AppTextField extends StatelessWidget {
           hintStyle: TextStyle(fontSize: 17, color: Colors.black)),
       autocorrect: false,
       textInputAction: TextInputAction.done,
-      maxLines: 1,
+
       onChanged: onChanged,
       readOnly: readOnly!,
       inputFormatters: inputFormatter,

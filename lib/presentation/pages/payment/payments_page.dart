@@ -72,35 +72,43 @@ class PaymentsPageState extends BaseStateWidget<PaymentsPage> with SingleTickerP
   }
 
   Widget _buildInboundPayment(PaymentsState state) {
-    return Expanded(
-        child: Stack(
+    return Column(
       children: [
-        Visibility(
-          child: emptyView,
-          visible: state.inboundItems.isEmpty,
-        ),
-        Visibility(
-          child: _buildListView(state.inboundItems),
-          visible: state.inboundItems.isNotEmpty,
-        )
+        Expanded(
+            child: Stack(
+          children: [
+            Visibility(
+              child: emptyView,
+              visible: state.inboundItems.isEmpty,
+            ),
+            Visibility(
+              child: _buildListView(state.inboundItems),
+              visible: state.inboundItems.isNotEmpty,
+            )
+          ],
+        )),
       ],
-    ));
+    );
   }
 
   Widget _buildOutboundPayment(PaymentsState state) {
-    return Expanded(
-        child: Stack(
+    return Column(
       children: [
-        Visibility(
-          child: emptyView,
-          visible: state.outboundItems.isEmpty,
-        ),
-        Visibility(
-          child: _buildListView(state.outboundItems),
-          visible: state.outboundItems.isNotEmpty,
-        )
+        Expanded(
+            child: Stack(
+          children: [
+            Visibility(
+              child: emptyView,
+              visible: state.outboundItems.isEmpty,
+            ),
+            Visibility(
+              child: _buildListView(state.outboundItems),
+              visible: state.outboundItems.isNotEmpty,
+            )
+          ],
+        )),
       ],
-    ));
+    );
   }
 
   Widget get emptyView =>
@@ -181,6 +189,7 @@ class PaymentsPageState extends BaseStateWidget<PaymentsPage> with SingleTickerP
   Widget buildWidget(BuildContext context) {
     return BlocConsumer<PaymentsCubit, PaymentsState>(
         builder: (context, state) => Scaffold(
+          backgroundColor: Colors.grey.shade200,
             appBar: _buildAppBar(),
             body: TabBarView(controller: _tabController,children: [
               _buildOutboundPayment(state),

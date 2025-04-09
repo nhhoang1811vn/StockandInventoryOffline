@@ -72,15 +72,6 @@ AppViet Team
  
   * First Release.
  """;
- static const String helpExpenses = """
-  We have added a simple function to track your revenue of your stores in the application. These can be cost of fuel, rent, wages...
-  
-  After create a incoming document, you can create negative amount command to decrease store's money
-  
-  After create a outgoing document, you can create positive amount command to increase store's money.
-  
-  So each month, we can track your revenue of your stores.
- """;
  static const String helpDocuments = """
  There are 2 types of documents:
 
@@ -134,6 +125,33 @@ AppViet Team
  """;
 
  static const String helpPayments = """
- The Payment section is designed to help you track real-money transactions efficiently, ensuring smooth financial operations within your stock and inventory system. Whether you're receiving payments from customers or making payments to suppliers, this feature allows you to maintain accurate records, manage cash flow, and prevent discrepancies.
- """;
+  ## Payment Saving Guide  
+
+This page helps you accurately record your payments.  
+
+### 📂 Select a Payment Category  
+- Choose the appropriate category to easily track expenses or income.  
+- Examples: **Food, Transportation, Salaries, Sales Revenue**, etc.  
+- If no suitable category exists, you can create a new one.  
+
+### ✏️ Edit or Delete a Category  
+- **Long-press** on a category in the list to show the options to **edit** or **delete**.  
+- If a category is deleted, related payments will be assigned to a default category.  
+
+### 🧾 Select an Invoice  
+- You can **link a payment to an invoice** for better tracking.  
+- If the invoice is not in the list, check again or create a new one.  
+- The system will automatically assign the payment amount based on the selected invoice.  
+
+### 💾 Save Payment  
+- Enter all required details: **Amount, Payment Date, Notes (if any)**.  
+- Double-check before clicking **Save** to avoid mistakes.  
+
+### 🗑️ Delete a Payment  
+- To delete a payment, **long-press** on the item in the list.  
+
+Ensure accurate entries for better financial tracking! ✅  
+
+""";
+
 }

@@ -1,16 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
-import 'package:good_manager/presentation/constants.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../domain/usecases/documents/document_usecases.dart';
-import '../../pages/base/base_state.dart';
-
 part 'sale_report_cubit.freezed.dart';
-
 part 'sale_report_state.dart';
 
 @injectable

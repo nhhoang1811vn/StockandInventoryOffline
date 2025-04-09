@@ -95,6 +95,7 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> with SingleTicker
   Widget buildWidget(BuildContext context) {
     return BlocConsumer<DocumentsCubit, DocumentsState>(
         builder: (context, state) => Scaffold(
+          backgroundColor: Colors.grey.shade200,
               appBar: _buildAppBar(state),
               body: TabBarView(controller: _tabController, children: [
                 _buildAllDocumentView(state),

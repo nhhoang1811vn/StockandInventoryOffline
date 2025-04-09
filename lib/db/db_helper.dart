@@ -72,10 +72,11 @@ class DBHelper {
     ],
     3: [
       "DROP TABLE $PAYMENTS_TABLE_NAME",
-      "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, type INTEGER NOT NULL, documentId INTEGER, storeId INTEGER NOT NULL, " +
+      "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, type INTEGER NOT NULL, categoryId INTEGER, documentId INTEGER, storeId INTEGER NOT NULL, " +
+          "FOREIGN KEY(categoryId) REFERENCES $PAYMENTS_CATEGORY_TABLE_NAME(id), " +
           "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE, " +
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
-      "CREATE TABLE IF NOT EXISTS $PAYMENTS_CATEGORY_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER, color INTEGER)"
+      "CREATE TABLE IF NOT EXISTS $PAYMENTS_CATEGORY_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,type INTEGER NOT NULL, color INTEGER)"
 
     ]
   };
@@ -167,12 +168,13 @@ class DBHelper {
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)");
 
     await db.execute(
-      "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, type INTEGER NOT NULL,documentId INTEGER, storeId INTEGER NOT NULL, " +
-      "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE," +
+      "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, type INTEGER NOT NULL,categoryId INTEGER, documentId INTEGER, storeId INTEGER NOT NULL, " +
+      "FOREIGN KEY(categoryId) REFERENCES $PAYMENTS_CATEGORY_TABLE_NAME(id), " +
+          "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE," +
       "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)"
     );
     await db.execute(
-      "CREATE TABLE IF NOT EXISTS $PAYMENTS_CATEGORY_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER, color INTEGER)"
+      "CREATE TABLE IF NOT EXISTS $PAYMENTS_CATEGORY_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,type INTEGER NOT NULL, color INTEGER)"
     );
 
     await db.execute(
@@ -628,7 +630,8 @@ class DBHelper {
   Future<List<Document>> getDocumentsInRange(int storeId, DateTime start, DateTime end) async {
     var dbClient = await db;
     int startInt = start.millisecondsSinceEpoch;
-    int endInt = end.millisecondsSinceEpoch;
+    //int endInt = end.millisecondsSinceEpoch;
+    int endInt = DateTime(end.year, end.month, end.day, 23, 59, 59, 999).millisecondsSinceEpoch;
     String query = "SELECT A.id, " +
         "A.name, " +
         "A.description, " +
@@ -861,6 +864,14 @@ class DBHelper {
     }
     return items;
   }
+  Future<bool> deletePaymentCategory(int id) async {
+    var dbClient = await db;
+    //dbClient.execute("PRAGMA foreign_keys = ON;");
+    int res = await dbClient
+        .rawDelete('DELETE FROM $PAYMENTS_CATEGORY_TABLE_NAME WHERE id = ?', [id]);
+    return res > 0;
+  }
+
   //document
   Future<int> insertDocument(Document item) async {
     var dbClient = await db;
@@ -898,13 +909,20 @@ class DBHelper {
   Future<List<Payment>> getPaymentsInRange(int storeId, DateTime start, DateTime end) async{
     var dbClient = await db;
     int startInt = start.millisecondsSinceEpoch;
-    int endInt = end.millisecondsSinceEpoch;
+    int endInt = DateTime(end.year, end.month, end.day, 23, 59, 59, 999).millisecondsSinceEpoch;
+    //int endInt = end.millisecondsSinceEpoch;
     List<Map> list = await dbClient.rawQuery(
-        "SELECT A.id, A.name, A.description, A.createdDate, A.updatedDate, A.date, A.amount,A.type, A.documentId, A.storeId, " +
-            "B.name as documentName FROM $PAYMENTS_TABLE_NAME A LEFT JOIN $DOCUMENTS_TABLE_NAME B ON A.documentId = B.id where A.storeId = ? AND A.date BETWEEN ? AND ? ORDER BY A.date DESC", [storeId, startInt, endInt]);
+        "SELECT * FROM $PAYMENTS_TABLE_NAME where storeId = ? AND date BETWEEN ? AND ? ORDER BY date DESC", [storeId, startInt, endInt]);
     List<Payment> items = [];
     for (int i = 0; i < list.length; i++) {
       Payment item = Payment.map(list[i]);
+      if (item.documentId != null){
+        Document document = await getDocument(item.documentId!);
+        item.documentName = document.name;
+      }
+      if (item.categoryId != null){
+        item.category = await getCategory(item.categoryId!);
+      }
       items.add(item);
     }
     return items;
@@ -912,14 +930,30 @@ class DBHelper {
   Future<List<Payment>> getPaymentByStoreId(int storeId) async{
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
-        "SELECT A.id, A.name, A.description, A.createdDate, A.updatedDate, A.date, A.amount, A.type, A.documentId, A.storeId, " +
-            "B.name as documentName FROM $PAYMENTS_TABLE_NAME A LEFT JOIN $DOCUMENTS_TABLE_NAME B ON A.documentId = B.id where A.storeId = ? ORDER BY A.date DESC", [storeId]);
+        "SELECT * FROM $PAYMENTS_TABLE_NAME WHERE storeId = ? ORDER BY date DESC", [storeId]);
     List<Payment> items = [];
     for (int i = 0; i < list.length; i++) {
       Payment item = Payment.map(list[i]);
+      if (item.documentId != null){
+        Document document = await getDocument(item.documentId!);
+        item.documentName = document.name;
+      }
+      if (item.categoryId != null){
+        item.category = await getCategory(item.categoryId!);
+      }
       items.add(item);
     }
     return items;
+  }
+  Future<PaymentCategory> getCategory(int id) async{
+    var dbClient = await db;
+    List<Map> list = await dbClient.rawQuery("SELECT * FROM $PAYMENTS_CATEGORY_TABLE_NAME where id = ?", [id]);
+    return PaymentCategory.map(list.first);
+  }
+  Future<Document> getDocument(int id) async{
+    var dbClient = await db;
+    List<Map> list = await dbClient.rawQuery("SELECT * FROM $DOCUMENTS_TABLE_NAME where id = ?", [id]);
+    return Document.map(list.first);
   }
 
   Future<List<Payment>> getPaymentByDocumentId(int documentId) async{

@@ -97,8 +97,6 @@ import 'package:good_manager/presentation/pages/customers/bloc/customers_cubit.d
     as _i190;
 import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.dart'
     as _i881;
-import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart'
-    as _i51;
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart'
     as _i436;
 import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.dart'
@@ -255,10 +253,6 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i984.GroupsUseCases>(() =>
         _i260.GroupsUseCaseImpl(repository: gh<_i990.GroupsRepository>()));
-    gh.factory<_i51.ExpensesCubit>(() => _i51.ExpensesCubit(
-          storage: gh<_i72.Storage>(),
-          useCase: gh<_i849.ExpenseUseCases>(),
-        ));
     gh.factory<_i425.ItemHistoryCubit>(() =>
         _i425.ItemHistoryCubit(useCases: gh<_i137.GoodHistoryUseCases>()));
     gh.factory<_i31.GoodsUseCases>(() => _i40.GoodsUseCaseImpl(
@@ -282,16 +276,6 @@ extension GetItInjectableX on _i174.GetIt {
           storage: gh<_i72.Storage>(),
           useCase: gh<_i331.SuppliersUseCase>(),
         ));
-    gh.factory<_i984.ReportDetailCubit>(() => _i984.ReportDetailCubit(
-          storage: gh<_i72.Storage>(),
-          goodsUseCase: gh<_i31.GoodsUseCases>(),
-          expenseUseCase: gh<_i849.ExpenseUseCases>(),
-          documentUseCases: gh<_i231.DocumentUseCases>(),
-          documentTransactionRepository:
-              gh<_i769.DocumentTransactionRepository>(),
-          suppliersUseCase: gh<_i331.SuppliersUseCase>(),
-          customersUseCase: gh<_i236.CustomersUseCase>(),
-        ));
     gh.factory<_i436.GoodsCubit>(() => _i436.GoodsCubit(
           storage: gh<_i72.Storage>(),
           goodsUseCase: gh<_i31.GoodsUseCases>(),
@@ -307,16 +291,25 @@ extension GetItInjectableX on _i174.GetIt {
           documentsUseCases: gh<_i231.DocumentUseCases>(),
           storage: gh<_i72.Storage>(),
         ));
+    gh.factory<_i984.ReportDetailCubit>(() => _i984.ReportDetailCubit(
+          storage: gh<_i72.Storage>(),
+          goodsUseCase: gh<_i31.GoodsUseCases>(),
+          paymentUseCases: gh<_i886.PaymentUseCases>(),
+          documentUseCases: gh<_i231.DocumentUseCases>(),
+          documentTransactionRepository:
+              gh<_i769.DocumentTransactionRepository>(),
+          suppliersUseCase: gh<_i331.SuppliersUseCase>(),
+          customersUseCase: gh<_i236.CustomersUseCase>(),
+        ));
+    gh.factory<_i664.SelectGroupCubit>(() =>
+        _i664.SelectGroupCubit(groupsUseCase: gh<_i984.GroupsUseCases>()));
     gh.factory<_i0.HomeCubit>(() => _i0.HomeCubit(
           storage: gh<_i72.Storage>(),
           goodsUseCases: gh<_i31.GoodsUseCases>(),
           documentsUseCases: gh<_i231.DocumentUseCases>(),
           supplierUseCases: gh<_i331.SuppliersUseCase>(),
           customerUseCase: gh<_i236.CustomersUseCase>(),
-          expenseUseCases: gh<_i849.ExpenseUseCases>(),
         ));
-    gh.factory<_i664.SelectGroupCubit>(() =>
-        _i664.SelectGroupCubit(groupsUseCase: gh<_i984.GroupsUseCases>()));
     return this;
   }
 }

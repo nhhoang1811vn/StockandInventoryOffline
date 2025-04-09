@@ -1,7 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/entities/document.dart';
-import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
 import 'package:injectable/injectable.dart';
 

@@ -12,8 +12,6 @@ class MDProviderIpmVN extends MDProvider{
         return MarkdownResourceVN.helpGoods;
       case HelpType.DOCUMENTS:
         return MarkdownResourceVN.helpDocuments;
-      case HelpType.EXPENSE:
-        return MarkdownResourceVN.helpExpenses;
       case HelpType.SUPPLIER_AND_CUSTOMER:
         return MarkdownResourceVN.helpSupplierCustomers;
       case HelpType.PAYMENTS:

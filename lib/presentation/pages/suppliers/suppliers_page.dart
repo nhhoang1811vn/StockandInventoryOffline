@@ -74,6 +74,7 @@ class SuppliersPageState extends BaseStateWidget<SuppliersPage> {
 
         builder: (context, state) =>  Scaffold(
             key: ScaffoldKey,
+        backgroundColor: Colors.grey.shade200,
         //drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 5, storeName: storage.getSelectedStoreName(),),
         appBar: _buildAppBar(state),
         body: _buildBody(state),

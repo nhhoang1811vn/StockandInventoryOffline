@@ -486,6 +486,7 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
           }
         },
         builder: (context, state) => Scaffold(
+          backgroundColor: Colors.grey.shade200,
             key: ScaffoldKey,
             appBar: new AppBar(
                 title: new Text(widget.isSelection
@@ -505,13 +506,13 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
                       icon: Icon(Icons.more_vert),
                       itemBuilder: (BuildContext context) =>
                           <PopupMenuEntry<OverflowMenuItem>>[
-                            const PopupMenuItem<OverflowMenuItem>(
+                            PopupMenuItem<OverflowMenuItem>(
                               value: OverflowMenuItem.listSettings,
-                              child: Text('List Settings'),
+                              child: Text(AppLocalizations.of(context)!.list_settings),
                             ),
-                            const PopupMenuItem<OverflowMenuItem>(
+                            PopupMenuItem<OverflowMenuItem>(
                               value: OverflowMenuItem.help,
-                              child: Text('Help'),
+                              child: Text(AppLocalizations.of(context)!.action_help),
                             )
                           ]),
                 ]),
@@ -531,7 +532,7 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
             children: [
               FloatingActionButton.extended(
                 icon:  Image(image: AssetImage('assets/images/box.png'), width: 24),
-                label: Text("Add Good"),
+                label: Text(AppLocalizations.of(context)!.action_add_good),
                 heroTag: null,
                 onPressed: () {
                   final state = _key.currentState;
@@ -545,7 +546,7 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
               ),
               FloatingActionButton.extended(
                 icon:  Image(image: AssetImage('assets/images/folder.png'), width: 24),
-                label: Text("Add Group"),
+                label: Text(AppLocalizations.of(context)!.action_add_group),
                 onPressed: (){
                   final state = _key.currentState;
                   if (state != null) {

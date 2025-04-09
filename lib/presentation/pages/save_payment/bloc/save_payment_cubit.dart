@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
@@ -22,7 +21,8 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
   final PaymentCategoryUseCases paymentCategoryUseCases;
   SavePaymentCubit({required this.useCase, required this.paymentCategoryUseCases}) : super(SavePaymentState.initial(state: InitialState()));
   void init(Payment item) async{
-    var categories = await paymentCategoryUseCases.getAll();
+    var allCategories = await paymentCategoryUseCases.getAll();
+    var categories = allCategories.where((category) => category.type == item.type).toList();
     /*emit(state.copyWith(categories: categories));
     SavePaymentState initState;
     if (item.id == null) {
@@ -37,8 +37,14 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
       );
     }
     emit(initState);*/
+    //PaymentCategory? selectedCategory = categories.firstWhere((category) => category.id == item.categoryId,  orElse: () => null as PaymentCategory?);
+    PaymentCategory? selectedCategory = categories.firstWhereOrNull(
+          (category) => category.id == item.categoryId,
+    );
     emit(state.copyWith(
+      state: UpdateItemState(),
       categories: categories,
+      selectedCategory: selectedCategory,
       item: item,
         description: item.description,
         documentId: item.documentId,
@@ -74,11 +80,12 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
   }
   void onSaveClicked() async {
       Payment item = state.item!;
-      //item.name = state.name.value;
       item.description = state.description;
       item.date = state.date!;
       item.amount = state.amount;
       item.documentId = state.documentId;
+      item.categoryId = state.selectedCategory?.id;
+
       if (item.id == null){
         await useCase.insert(item);
       }else{
@@ -90,7 +97,19 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     emit(state.copyWith(state: InitialState()));
   }
 
-  void onCategoryChanged(int index){
-    emit(state.copyWith(state: UpdateItemState(),selectedCategoryIndex: index));
+  void onCategoryChanged(PaymentCategory item){
+    emit(state.copyWith(state: UpdateItemState(),selectedCategory: item));
+  }
+  void onRefreshCategories() async{
+    var allCategories = await paymentCategoryUseCases.getAll();
+    var categories = allCategories.where((category) => category.type == state.item!.type).toList();
+
+    PaymentCategory? selectedCategory = categories.firstWhereOrNull(
+          (category) => category.id == state.selectedCategory?.id,
+    );
+    emit(state.copyWith(categories: categories, selectedCategory: selectedCategory));
+  }
+  void deleteCategory(int id) async{
+    await paymentCategoryUseCases.delete(id);
   }
 }

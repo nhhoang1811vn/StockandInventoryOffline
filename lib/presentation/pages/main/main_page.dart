@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.dart';
 import 'package:good_manager/presentation/pages/documents/documents_view.dart';
@@ -13,7 +14,6 @@ import '../../../common/helpers/injection.container.dart';
 import '../../constants.dart';
 import '../home/bloc/home_cubit.dart';
 import '../home/home_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -37,7 +37,11 @@ class MainPageState extends State<MainPage> {
           children: [
             BlocProvider(
               create: (context) => getIt<HomeCubit>(),
-              child: HomePage(key: UniqueKey(),onOpenGoodsPage: () => _onItemTapped(1), onOpenDocumentsPage: () => _onItemTapped(2),),
+              child: HomePage(key: UniqueKey(),
+                onOpenGoodsPage: () => _onItemTapped(1), 
+                onOpenDocumentsPage: () => _onItemTapped(2),
+                onOpenPaymentsPage: () => _onItemTapped(3),
+              ),
             ),
             BlocProvider(create: (context) => getIt<GoodsCubit>(),
               child: GoodsPage(key: UniqueKey(),isSelection: false,),

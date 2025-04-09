@@ -132,6 +132,37 @@ Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Ho
  """;
 
   static const String helpPayments = """
-   Phần Thanh Toán giúp bạn theo dõi các giao dịch tiền thật một cách hiệu quả, đảm bảo hoạt động tài chính diễn ra suôn sẻ trong hệ thống quản lý kho và hàng tồn. Dù là nhận thanh toán từ khách hàng hay chi trả cho nhà cung cấp, tính năng này giúp bạn duy trì hồ sơ chính xác, quản lý dòng tiền và tránh sai sót.
+  ## Hướng dẫn Lưu Thanh Toán  
+
+Trang này giúp bạn ghi lại các khoản thanh toán một cách chính xác.  
+
+### 🔹 Chọn loại thanh toán  
+Có hai loại thanh toán:  
+- **Thanh toán đi (Outbound Payment)** – Khi bạn **trả tiền** cho nhà cung cấp, nhân viên, hóa đơn, v.v.  
+- **Thanh toán đến (Inbound Payment)** – Khi bạn **nhận tiền** từ khách hàng hoặc các nguồn khác.  
+
+### 📂 Chọn danh mục thanh toán  
+- Chọn danh mục phù hợp để dễ dàng quản lý và theo dõi chi tiêu hoặc thu nhập.  
+- Ví dụ: **Ăn uống, Đi lại, Tiền lương, Thu nhập từ bán hàng**, v.v.  
+- Nếu không có danh mục phù hợp, bạn có thể tạo danh mục mới.  
+
+### ✏️ Sửa hoặc Xóa danh mục  
+- **Nhấn giữ** vào danh mục trong danh sách để hiển thị tùy chọn **sửa** hoặc **xóa**.  
+- Nếu xóa danh mục, các khoản thanh toán liên quan sẽ được chuyển về danh mục mặc định.  
+
+### 🧾 Chọn hóa đơn  
+- Bạn có thể **liên kết thanh toán với một hóa đơn** để theo dõi chính xác.  
+- Nếu hóa đơn chưa có trong danh sách, hãy kiểm tra lại hoặc tạo mới.  
+- Hệ thống sẽ tự động gán số tiền thanh toán theo hóa đơn đã chọn.  
+
+### 💾 Lưu thanh toán  
+- Nhập đầy đủ thông tin: **Số tiền, Ngày thanh toán, Ghi chú (nếu có)**.  
+- Kiểm tra lại trước khi bấm **Lưu** để tránh sai sót.  
+
+### 🗑️ Xóa thanh toán  
+- Nếu cần xóa một khoản thanh toán, **nhấn giữ** vào mục trong danh sách để thực hiện.  
+
+Hãy đảm bảo nhập chính xác để theo dõi tài chính hiệu quả! ✅  
+
   """;
 }

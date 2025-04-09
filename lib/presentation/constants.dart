@@ -38,7 +38,7 @@ class Config {
   //static DateFormat dateTimeFormat = DateFormat('dd/MM/yyyy HH:mm');
   //static NumberFormat doubleFormat =  NumberFormat("0.##");
 
-  static NumberFormat currencyFormat = NumberFormat.currency(locale: "en_US", symbol: "");
+  static NumberFormat currencyFormat = NumberFormat.currency(locale: "en_US", symbol: "",decimalDigits: 0);
   static NumberFormat simpleCurrencyFormat = NumberFormat.decimalPattern("en_US");
 }
 class DateFormatFactory{

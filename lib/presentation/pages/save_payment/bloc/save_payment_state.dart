@@ -13,7 +13,7 @@ class SavePaymentState with _$SavePaymentState {
     @Default('') String exceptionError,
     Payment? item,
     @Default([]) List<PaymentCategory> categories,
-    int? selectedCategoryIndex
+    PaymentCategory? selectedCategory
   }) = _Initial;
 }
 

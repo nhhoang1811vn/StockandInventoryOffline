@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/group.dart';
-import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
@@ -60,12 +60,14 @@ class SaveGroupForm extends StatelessWidget {
                       initialValue: state.name.value,
                       onChanged: (value) => context.read<SaveGroupCubit>().nameChanged(value),
                       keyboardType: TextInputType.name,
-                      error: state.name.displayError?.name),
+                      error: state.name.displayError?.text(context)),
                   SizedBox(height: 16,),
                   AppTextField(
                       labelText: AppLocalizations.of(context)!.label_description,
                       hintText: AppLocalizations.of(context)!.hint_description,
                       initialValue: state.description,
+                      maxLines: null,
+                      minLines: 2,
                       onChanged: (value) => context.read<SaveGroupCubit>().descriptionChanged(value),
                       keyboardType: TextInputType.name),
                   SizedBox(height: 16,),

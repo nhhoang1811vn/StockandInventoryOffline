@@ -69,6 +69,7 @@ class CustomersPageState extends BaseStateWidget<CustomersPage> {
 
         },
         builder: (context, state) =>  Scaffold(
+          backgroundColor: Colors.grey.shade200,
           key: ScaffoldKey,
         appBar: _buildAppBar(state),
         body: _buildBody(state),

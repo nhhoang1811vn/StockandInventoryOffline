@@ -5,13 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/customer.dart';
-import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/repositories/document_transaction_repositories.dart';
 import 'package:good_manager/domain/usecases/customers/customers_usecases.dart';
-import 'package:good_manager/domain/usecases/expenses/expense_usercases.dart';
+import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
 import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:injectable/injectable.dart';
@@ -19,12 +18,12 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../../../data/storage.dart';
 import '../../../../domain/entities/document.dart';
+import '../../../../domain/entities/payment.dart';
 import '../../../../domain/usecases/documents/document_usecases.dart';
 import '../../../../domain/usecases/goods/goods_usercases.dart';
 import '../../base/base_state.dart';
 
 part 'report_detail_cubit.freezed.dart';
-
 part 'report_detail_state.dart';
 
 class ColumnReport{
@@ -38,7 +37,7 @@ class ColumnReport{
 class ReportDetailCubit extends Cubit<ReportDetailState> {
   final Storage storage;
   final GoodsUseCases goodsUseCase;
-  final ExpenseUseCases expenseUseCase;
+  final PaymentUseCases paymentUseCases;
   final DocumentUseCases documentUseCases;
   final DocumentTransactionRepository documentTransactionRepository;
   final SuppliersUseCase suppliersUseCase;
@@ -47,7 +46,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
   ReportDetailCubit(
       {required this.storage,
       required this.goodsUseCase,
-      required this.expenseUseCase,
+      required this.paymentUseCases,
       required this.documentUseCases,
       required this.documentTransactionRepository,
       required this.suppliersUseCase,
@@ -77,7 +76,6 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
   }
 
   void load(BuildContext context) async {
-    List<List<String>> data = [];
     switch (state.type) {
       case ReportType.LIST_OF_GOODS:
         await initListOfGoods(context);
@@ -92,16 +90,15 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         await initDebtByCustomer(context);
         break;
       case ReportType.OUTBOUND_PAYMENTS:
-        initOutboundPayments(context);
+        await initPayments(context, PaymentType.outbound);
         break;
       case ReportType.INBOUND_PAYMENTS:
-        initInboundPayments(context);
+        await  initPayments(context, PaymentType.inbound);
         break;
       default:
         break;
     }
     update();
-    //emit(state.copyWith(state: LoadSuccessState(), data: data));
   }
   void update(){
     List<List<String>> data = [];
@@ -128,10 +125,10 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     List<ColumnReport> columns = [
       ColumnReport(AppLocalizations.of(context)!.field_bar_code),
       ColumnReport(AppLocalizations.of(context)!.field_name),
-      ColumnReport("Ban đầu (SL)"),
-      ColumnReport("Nhập vào (SL)"),
-      ColumnReport("Bán ra (SL)"),
-      ColumnReport("Cuối Kỳ (SL)"),
+      ColumnReport(AppLocalizations.of(context)!.field_start_period),
+      ColumnReport(AppLocalizations.of(context)!.field_in),
+      ColumnReport(AppLocalizations.of(context)!.field_out),
+      ColumnReport(AppLocalizations.of(context)!.field_end_period)
     ];
     List<List<String>> rows = [];
     int storeId = storage.getSelectedStoreId();
@@ -238,9 +235,12 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     ];
     List<Document> pressDocuments = [];
     List<List<String>> rows = [];
-    double totalAmount = 0.0;
-    double totalPaid = 0.0;
-    double totalRemain = 0.0;
+
+    List<String> names = [];
+    List<double> amounts = [];
+    List<double> paids = [];
+    List<double> remains = [];
+
     int storeId = storage.getSelectedStoreId();
     List<Supplier> suppliers = await suppliersUseCase.getAllByStoreId(storeId);
     List<Document> allDocuments = await documentUseCases.getInRange(state.start!, state.end!);
@@ -253,36 +253,38 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       double personTotalAmount = 0.0;
       double personTotalPaid = 0.0;
       double personTotalRemaining = 0.0;
-      rows.add([supplierName, "", "", "", "", ""]);
-      for (Document document in documents) {
 
+      for (Document document in documents) {
         String documentName = document.name;
         String documentDate = DateFormatFactory.getDateFormat().format(document.date);
         String amount = Config.currencyFormat.format(document.amount);
         String paid = Config.currencyFormat.format(document.paid);
         String remain = Config.currencyFormat.format(document.amount - document.paid);
 
-        rows.add(["", documentName, documentDate, amount, paid, remain]);
+        rows.add([supplierName, documentName, documentDate, amount, paid, remain]);
 
         personTotalAmount += document.amount;
         personTotalPaid += document.paid;
         personTotalRemaining += (document.amount - document.paid);
-
-        totalAmount += document.amount;
-        totalPaid += document.paid;
-        totalRemain += (document.amount - document.paid);
       }
-      rows.add(["", "", "", Config.currencyFormat.format(personTotalAmount), Config.currencyFormat.format(personTotalPaid), Config.currencyFormat.format(personTotalRemaining)]);
-
+      names.add(supplierName);
+      amounts.add(personTotalAmount);
+      paids.add(personTotalPaid);
+      remains.add(personTotalRemaining);
     }
-    rows.add([
-      AppLocalizations.of(context)!.field_total,
-      "",
-      "",
-      getDoubleText(totalAmount),
-      getDoubleText(totalPaid),
-      getDoubleText(totalRemain)
-    ]);
+    rows.add([AppLocalizations.of(context)!.field_total, "","", "","",""]);
+
+    for (int i = 0 ; i< names.length;i++){
+      rows.add([
+        names[i],
+        "",
+        "",
+        Config.currencyFormat.format(amounts[i]),
+        Config.currencyFormat.format(paids[i]),
+        Config.currencyFormat.format(remains[i]),
+
+      ]);
+    }
     emit(state.copyWith(columns: columns, rows: rows,documents: pressDocuments));
   }
 
@@ -297,9 +299,10 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       ColumnReport(AppLocalizations.of(context)!.field_paid),
       ColumnReport(AppLocalizations.of(context)!.field_remaining),
     ];
-    double totalAmount = 0.0;
-    double totalPaid = 0.0;
-    double totalRemain = 0.0;
+    List<String> names = [];
+    List<double> amounts = [];
+    List<double> paids = [];
+    List<double> remains = [];
 
     int storeId = storage.getSelectedStoreId();
     List<Customer> customers = await customersUseCase.getAllByStoreId(storeId);
@@ -309,43 +312,76 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       String customerName = customer.name;
       List<Document> documents = outgoingDocuments.where((item) => item.personId == customer.id).toList();
       pressDocuments.addAll(documents);
-      double customerTotalAmount = 0.0;
-      double customerTotalPaid = 0.0;
-      double customerTotalRemaining = 0.0;
-      rows.add([customerName, "", "", "", "", ""]);
+      double personTotalAmount = 0.0;
+      double personTotalPaid = 0.0;
+      double personTotalRemaining = 0.0;
+
       for (Document document in documents) {
         String documentName = document.name;
         String documentDate = DateFormatFactory.getDateFormat().format(document.date);
         String amount = Config.currencyFormat.format(document.amount);
         String paid = Config.currencyFormat.format(document.paid);
         String remain = Config.currencyFormat.format(document.amount - document.paid);
-        rows.add(["", documentName, documentDate, amount, paid, remain]);
-        customerTotalAmount += document.amount;
-        customerTotalPaid += document.paid;
-        customerTotalRemaining += (document.amount - document.paid);
-
-        totalAmount += document.amount;
-        totalPaid += document.paid;
-        totalRemain += (document.amount - document.paid);
+        rows.add([customerName, documentName, documentDate, amount, paid, remain]);
+        personTotalAmount += document.amount;
+        personTotalPaid += document.paid;
+        personTotalRemaining += (document.amount - document.paid);
       }
-      rows.add(["", "", "", Config.currencyFormat.format(customerTotalAmount), Config.currencyFormat.format(customerTotalPaid), Config.currencyFormat.format(customerTotalRemaining)]);
+      names.add(customerName);
+      amounts.add(personTotalAmount);
+      paids.add(personTotalPaid);
+      remains.add(personTotalRemaining);
+
     }
-    rows.add([
-      AppLocalizations.of(context)!.field_total,
-      "",
-      "",
-      getDoubleText(totalAmount),
-      getDoubleText(totalPaid),
-      getDoubleText(totalRemain)
-    ]);
+    rows.add([AppLocalizations.of(context)!.field_total, "","", "","",""]);
+    for (int i = 0 ; i< names.length;i++){
+      rows.add([
+        names[i],
+        "",
+        "",
+        Config.currencyFormat.format(amounts[i]),
+        Config.currencyFormat.format(paids[i]),
+        Config.currencyFormat.format(remains[i]),
+
+      ]);
+    }
     emit(state.copyWith(columns: columns, rows: rows, documents: pressDocuments));
   }
+  Future<void> initPayments(BuildContext context, PaymentType type) async{
+    List<List<String>> rows = [];
+    List<ColumnReport> columns = [
+      ColumnReport(AppLocalizations.of(context)!.label_category_name),
+      ColumnReport(AppLocalizations.of(context)!.field_date),
+      ColumnReport(AppLocalizations.of(context)!.field_amount),
+    ];
 
-  Future<void> initInboundPayments(BuildContext context) async{
-    List<List<String>> rows = [];
-  }
-  Future<void> initOutboundPayments(BuildContext context) async{
-    List<List<String>> rows = [];
+    List<Payment> allItems = await paymentUseCases.getInRange(state.start!, state.end!);
+    List<Payment> outboundItems = allItems.where((item) => item.type == type).toList();
+
+    var items = [...outboundItems]..sort((a, b) {
+      if (a.category?.name == null) return 1;
+      if (b.category?.name == null) return -1;
+      return a.category!.name.compareTo(b.category!.name);
+    });
+    Map<String, double> categoryTotals = {};
+    for (Payment item in items){
+      var name = "";
+      if (item.category != null){
+        name = item.category!.name;
+      }else{
+        name = AppLocalizations.of(context)!.no_category;
+      }
+      String dateText = DateFormatFactory.getDateFormat().format(item.date);
+      String amountText =  Config.currencyFormat.format(item.amount  ?? 0);
+      rows.add([name, dateText, amountText]);
+
+      categoryTotals[name] = (categoryTotals[name] ?? 0) + (item.amount ?? 0);
+    }
+    rows.add([AppLocalizations.of(context)!.field_total, "",""]);
+    categoryTotals.forEach((category, total) {
+      rows.add([category, "", Config.currencyFormat.format(total)]);
+    });
+    emit(state.copyWith(columns: columns, rows: rows, payments: items));
   }
 
   String getDateTimeText(int date) {

@@ -21,8 +21,8 @@ class SaleReportWidget extends StatefulWidget {
 class SaleReportWidgetState extends State<SaleReportWidget> {
   late SaleReportState mState;
   final double width = 12;
-  final Color leftBarColor = Colors.red;
-  final Color rightBarColor = Colors.green;
+  final Color leftBarColor = Colors.green;
+  final Color rightBarColor = Colors.red;
   List<BarChartGroupData> showingBarGroups = [];
   BarChartGroupData makeGroupData(int x, double y1, double y2) {
     return BarChartGroupData(
@@ -51,6 +51,7 @@ class SaleReportWidgetState extends State<SaleReportWidget> {
     return BlocProvider(create: (_) => SaleReportCubit(useCase: getIt<PaymentUseCases>())..initState(), child: BlocConsumer<SaleReportCubit, SaleReportState>(builder: (BuildContext context, SaleReportState state) {
       mState = state;
       return Card(
+          color: Theme.of(context).colorScheme.surface,
           child: Padding(
               padding: EdgeInsets.all(16),
               child: Column(
@@ -110,7 +111,7 @@ class SaleReportWidgetState extends State<SaleReportWidget> {
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 28,
+              reservedSize: 50,
               interval: 1,
               getTitlesWidget: leftTitleWidgets,
             )),
@@ -149,7 +150,7 @@ class SaleReportWidgetState extends State<SaleReportWidget> {
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 14,
+      fontSize: 12,
     );
     String text;
 

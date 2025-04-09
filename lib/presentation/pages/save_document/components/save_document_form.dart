@@ -154,7 +154,7 @@
 //                         initialValue: state.name.value,
 //                         onChanged: (value) => context.read<SaveDocumentCubit>().nameChanged(value),
 //                         keyboardType: TextInputType.name,
-//                         error: state.name.displayError?.name),
+//                         error: state.name.displayError?.text(context)),
 //                   ),
 //                   SizedBox(
 //                     width: 12.0,

@@ -69,18 +69,18 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   void dateChanged(DateTime date) {
     emit(state.copyWith(date: date));
   }
-  DateTime getDateOnly(DateTime dateTime){
-    return DateTime(dateTime.year, dateTime.month, dateTime.day);
-  }
+  //DateTime getDateOnly(DateTime dateTime){
+  //  return DateTime(dateTime.year, dateTime.month, dateTime.day);
+  //}
   Future<bool> save() async {
     final validate = Formz.validate([state.name]);
     if (validate) {
       Document item = state.item!;
       item.name = state.name.value;
       item.description = state.description;
-      item.date = getDateOnly(state.date!);
+      //item.date = getDateOnly(state.date!);
+      item.date = state.date!;
       item.personId = state.personId;
-      //item.paymentStatus = state.paymentStatus!;
       if (item.id == null) {
         int id = await useCase.insert(item);
         item.id = id;
@@ -143,12 +143,13 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   void loadTransactions() async {
     if (state.item?.id != null){
       List<DocumentTransaction> transactions = await useCase.getTransactionsByDocumentId(state.item!.id!);
-      double totalQuantity = 0;
+      double totalQuantity = 0.0;
       double totalAmount = 0.0;
       transactions.forEach((element) {
         totalQuantity += element.quantity;
         totalAmount += (element.quantity * (element.price ?? 0.0));
       });
+      totalQuantity = double.parse(totalQuantity.toStringAsFixed(2));
       emit(state.copyWith(allTransactions: transactions, totalQuantity: totalQuantity, totalAmount: totalAmount));
       sort();
       filter();

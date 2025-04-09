@@ -201,6 +201,7 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
           controller: dateTextController,
           labelText: AppLocalizations.of(context)!.field_date,
           keyboardType: TextInputType.datetime,
+          suffix: Icon(Icons.keyboard_arrow_down, size: 16,),
           readOnly: true,
           onTapped: () => {
             DatePicker.showDatePicker(context,
@@ -225,7 +226,7 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
       hintText: AppLocalizations.of(context)!.hint_select,
       keyboardType: TextInputType.none,
       readOnly: true,
-      suffix: Icon(Icons.keyboard_arrow_down),
+      suffix: Icon(Icons.keyboard_arrow_down, size: 16,),
       onTapped: () => {context.read<QuickInsertDocumentCubit>().onPersonClicked()},
     );
   }
@@ -233,6 +234,8 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
     return AppTextField(
         labelText: AppLocalizations.of(context)!.label_description,
         hintText: AppLocalizations.of(context)!.hint_description,
+        maxLines: null,
+        minLines: 2,
         initialValue: state.description,
         onChanged: (value) => context.read<QuickInsertDocumentCubit>().descriptionChanged(value),
         keyboardType: TextInputType.name);

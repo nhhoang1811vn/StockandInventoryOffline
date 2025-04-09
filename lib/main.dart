@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
@@ -6,13 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/data/storage.dart';
-import 'package:good_manager/presentation/pages/login/auth_cubit.dart';
-import 'package:good_manager/presentation/pages/login/loading_data.dart';
-import 'package:good_manager/presentation/pages/login/login_page.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -107,15 +102,20 @@ class MyAppState extends State<MyApp> {
           ),
         ),
         textTheme: TextTheme(
-            displayLarge: TextStyle(),
-            titleLarge: TextStyle(fontSize: 19.0, fontWeight: FontWeight.bold),
-            titleMedium: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
             titleSmall: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+            titleMedium: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
+            titleLarge: TextStyle(fontSize: 19.0, fontWeight: FontWeight.bold),
 
-            bodyLarge: TextStyle(fontSize: 19.0),
-            bodyMedium: TextStyle(fontSize: 17.0),
-            bodySmall: TextStyle(fontSize: 15.0),
-            displaySmall: TextStyle(fontSize: 12.0)),
+            // bodySmall: TextStyle(fontSize: 15.0),
+            // bodyMedium: TextStyle(fontSize: 17.0),
+            // bodyLarge: TextStyle(fontSize: 19.0),
+            //
+            //
+            // displaySmall: TextStyle(fontSize: 12.0),
+            // displayMedium: TextStyle(),
+            // displayLarge: TextStyle(),
+        ),
+
         colorScheme: ColorScheme.fromSeed(
             onSurface: Colors.black,
             surface: Colors.white,
@@ -134,7 +134,14 @@ class MyAppState extends State<MyApp> {
           ),
         ),
         scaffoldBackgroundColor: Colors.white,
-        appBarTheme: AppBarTheme(iconTheme: IconThemeData(color: Colors.black)),
+        appBarTheme: AppBarTheme(
+            iconTheme: IconThemeData(color: Colors.black),
+          titleTextStyle: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.blue,
+          ),
+        ),
         primaryColor: Colors.blue,
         primarySwatch: Colors.blue,
         inputDecorationTheme: InputDecorationTheme(
@@ -144,6 +151,8 @@ class MyAppState extends State<MyApp> {
     return baseTheme.copyWith(
       textTheme: GoogleFonts.robotoTextTheme(baseTheme.textTheme),
       //textTheme: GoogleFonts.montserratTextTheme(baseTheme.textTheme)
+      //  textTheme: GoogleFonts.gamjaFlowerTextTheme(baseTheme.textTheme),
+
     );
   }
 

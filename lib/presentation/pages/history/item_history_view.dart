@@ -36,6 +36,7 @@ class ItemHistoryPageState extends BaseStateWidget<ItemHistoryPage> {
   Widget buildWidget(BuildContext context) {
     return BlocConsumer<ItemHistoryCubit, ItemHistoryState>(
         builder: (context, state) => Scaffold(
+          backgroundColor: Colors.grey.shade200,
           appBar: _buildAppBar(),
           body: _buildBody(state),
         ),
@@ -79,16 +80,13 @@ class ItemHistoryPageState extends BaseStateWidget<ItemHistoryPage> {
     ];
     return Column(children: children);
   }
-  Widget _buildListView(ItemHistoryState data) => ListView.separated(
+  Widget _buildListView(ItemHistoryState data) => ListView.builder(
       itemBuilder: (BuildContext context, index) {
         GoodHistory item = data.items[index];
         return ItemHistoryRow(item, (item) async{
             await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
             context.read<ItemHistoryCubit>().loadItems();
         });
-      },
-      separatorBuilder: (context, index) {
-        return Divider(color: Colors.grey[500]);
       },
       itemCount: data.items.length);
 

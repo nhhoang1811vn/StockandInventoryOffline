@@ -1,13 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/expense.dart';
 import 'package:good_manager/domain/usecases/expenses/expense_usercases.dart';
-import 'package:good_manager/presentation/constants.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../domain/usecases/documents/document_usecases.dart';
-import '../../pages/base/base_state.dart';
 
 part 'expense_report_chart_cubit.freezed.dart';
 part 'expense_report_chart_state.dart';

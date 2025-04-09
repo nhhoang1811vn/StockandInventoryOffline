@@ -27,6 +27,7 @@ class GoodItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Theme.of(context).colorScheme.surface,
       margin: EdgeInsets.only(left: 16, right: 16, top: 16),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
@@ -106,10 +107,10 @@ class GoodItemRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Text(Config.currencyFormat.format(item.purchasePrice ?? 0),
-            style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.red.shade700)),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red.shade700)),
         Text("/"),
         Text(Config.currencyFormat.format(item.salePrice ?? 0),
-            style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.green.shade700)),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.green.shade700)),
       ],
     );
   }

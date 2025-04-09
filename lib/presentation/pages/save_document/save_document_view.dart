@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
+import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/save_document_setting.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/main.dart';
@@ -30,7 +31,6 @@ import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'components/document_transaction_item_row.dart';
-import 'components/save_document_form.dart';
 import 'components/sort_save_document_dialog.dart';
 
 enum OverflowItemMenu { search, sortby, export, help }
@@ -70,6 +70,8 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
                 Supplier item = result as Supplier;
                 context.read<SaveDocumentCubit>().onPersonNameChanged(item.name);
                 context.read<SaveDocumentCubit>().onPersonChanged(item.id!);
+
+                personNameController.text = item.name;
               }
             } else {
               final result =
@@ -78,6 +80,8 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
                 Customer item = result as Customer;
                 context.read<SaveDocumentCubit>().onPersonNameChanged(item.name);
                 context.read<SaveDocumentCubit>().onPersonChanged(item.id!);
+
+                personNameController.text = item.name;
               }
             }
           } else if (state.state is OpenGoodListState) {
@@ -192,7 +196,7 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
                                     initialValue: state.name.value,
                                     onChanged: (value) => context.read<SaveDocumentCubit>().nameChanged(value),
                                     keyboardType: TextInputType.name,
-                                    error: state.name.displayError?.name),
+                                    error: state.name.displayError?.text(context)),
                                 SizedBox(
                                   height: 16.0,
                                 ),
@@ -238,6 +242,8 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
                                 AppTextField(
                                     labelText: AppLocalizations.of(context)!.label_description,
                                     hintText: AppLocalizations.of(context)!.hint_description,
+                                    maxLines: null,
+                                    minLines: 2,
                                     initialValue: state.description,
                                     onChanged: (value) => context.read<SaveDocumentCubit>().descriptionChanged(value),
                                     keyboardType: TextInputType.name),
@@ -353,7 +359,7 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
   }
 
   void onExport(SaveDocumentState state) async {
-    String fileName = 'AppVietQuanLyKho_Document_${state.name.value}.csv';
+    String fileName = 'StockandInventory_Document_${state.name.value}.csv';
     if (Platform.isWindows) {
       String? outputFile = await FilePicker.platform
           .saveFile(dialogTitle: 'Please select an output file:', fileName: fileName, allowedExtensions: ["csv"]);
@@ -394,11 +400,11 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
       File file = File(outputFile);
       await file.writeAsString(csv);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Lưu tệp CSV tại: ${file.path}'),
+        content: Text('Save CSV Failed: ${file.path}'),
       ));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Lưu tệp CSV lỗi ${e.toString()}'),
+        content: Text('Save CSV Failed: ${e.toString()}'),
       ));
     }
   }

@@ -5,10 +5,6 @@ import 'package:good_manager/presentation/pages/barcode_scanner/barcode_scanner_
 import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart';
 import 'package:good_manager/presentation/pages/customers/bloc/bloc.dart';
 import 'package:good_manager/presentation/pages/customers/customers_page.dart';
-import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.dart';
-import 'package:good_manager/presentation/pages/documents/documents_view.dart';
-import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart';
-import 'package:good_manager/presentation/pages/expenses/expenses_page.dart';
 import 'package:good_manager/presentation/pages/forgotpassword/forgot_password_page.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/goods_view.dart';
@@ -23,8 +19,6 @@ import 'package:good_manager/presentation/pages/main/main_page.dart';
 import 'package:good_manager/presentation/pages/onboarding/bloc/on_boarding_cubit.dart';
 import 'package:good_manager/presentation/pages/onboarding/on_boarding_page.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
-import 'package:good_manager/presentation/pages/payment/bloc/payments_cubit.dart';
-import 'package:good_manager/presentation/pages/payment/payments_page.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/report_page.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
@@ -215,9 +209,6 @@ class AppRouter {
         return _buildRoute(settings, HelpPage(title: args['title'], content: args['content']));
       case Pages.take_picture:
         return _buildRoute(settings, TakePictureScreen(camera: cameras.first));
-      case Pages.expenses:
-        return MaterialPageRoute(
-            builder: (_) => BlocProvider(create: (context) => getIt<ExpensesCubit>(), child: ExpensesPage()));
       case Pages.report:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(create: (context) => getIt<ReportCubit>(), child: ReportPage()));

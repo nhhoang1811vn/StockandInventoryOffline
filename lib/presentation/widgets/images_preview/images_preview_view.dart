@@ -188,8 +188,6 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
   Widget _buildTopView(ImagesPreviewData data) {
     return Container(
       height: 250,
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(border: Border.all(color: AppColors.secondaryColor)),
       child: data.items.isEmpty ? buildEmptyView() : _buildPageView(data),
     );
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
-import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart';
@@ -35,11 +35,13 @@ class SaveSupplierForm extends StatelessWidget {
                         initialValue: item?.name,
                         onChanged: (value) => context.read<SaveSupplierCubit>().nameChanged(value),
                         keyboardType: TextInputType.name,
-                        error: state.name.displayError?.name),
+                        error: state.name.displayError?.text(context)),
                     SizedBox(height: 16),
                     AppTextField(
                         labelText: AppLocalizations.of(context)!.label_description,
                         hintText: AppLocalizations.of(context)!.hint_description,
+                        maxLines: null,
+                        minLines: 2,
                         initialValue: item?.description,
                         onChanged: (value) => context.read<SaveSupplierCubit>().descriptionChanged(value),
                         keyboardType: TextInputType.name),
