@@ -40,6 +40,7 @@
     "empty_customers": "No Customers",
     "save_group_title": "Save Group",
     "field_name": "Name",
+
     "error_field_name_empty": "Please ensure the email entered is valid",
     "field_bar_code": "Barcode",
     "field_quantity": "Quantity",
@@ -121,6 +122,8 @@
     "action_skip": "Skip",
     "message_confirm_delete_no_args": "Are you sure to delete it?",
     "message_confirm_delete": "Are you sure to delete %s?",
+    "message_confirm_delete_account": "Are you sure to delete your account ?",
+    "delete_account_successful": "Your account has been deleted",
     "menu_item_settings_title": "Settings",
     "menu_item_settings_desc": "Settings Information",
     "menu_item_language_title": "Language",
@@ -232,6 +235,7 @@
     "title_select_document": "Select document",
     "title_chart_sale_report": "Sale Report in last 6 months",
     "label_select_payment_category": "Select category",
+    "label_select_wallet": "Select wallet",
 
     "label_description": "Description",
     "hint_description": "Input description",
@@ -241,6 +245,7 @@
     "label_group_name": "Group name",
     "label_good_name": "Good name",
     "label_category_name": "Category name",
+    "label_wallet_name": "Wallet name",
     "hint_name": "Input name",
     "label_address": "Address",
     "hint_address": "Input address",
@@ -269,7 +274,12 @@
                       "action_document_created_withname": "Document %s was created",
                           "good_information": "Document information",
                               "images_information": "Images information",
-                              "change_color":"Change color"
+                              "change_color":"Change color",
+                              "save_file_successful": "Save file successful at %s",
+                                "save_file_failed": "Save file failed at %s",
+                                "no_group": "No group",
+                                    "save_wallet_title": "Save Wallet",
+                                    "action_add_wallet": "Add Wallet"
 
 
 }

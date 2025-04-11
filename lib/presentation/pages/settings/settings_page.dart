@@ -159,10 +159,14 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
     if (uid != null) {
       try {
         final ref = storageRef.child("$uid/database.db");
-        ref.getMetadata().then((value) => setState(() {
-              cloudFileUpdatedTime =
-                  DateFormat('dd-MM-yyyy HH:mm').format(value.updated!);
-            }));
+        final metadata = await ref.getMetadata();
+        setState(() {
+          if (metadata.updated != null){
+            cloudFileUpdatedTime = DateFormat('dd-MM-yyyy HH:mm').format(metadata.updated!);
+          }else{
+            cloudFileUpdatedTime = "";
+          }
+        });
       } on FirebaseException {
         setState(() {
           cloudFileUpdatedTime = "";
@@ -295,6 +299,9 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
             .showSnackBar(snackBarWhenSuccess(context));
         loadCloudFileUpdatedTime();
       } on FirebaseException {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(snackBarWhenFailure(context));
+      } catch (e){
         ScaffoldMessenger.of(context)
             .showSnackBar(snackBarWhenFailure(context));
       }

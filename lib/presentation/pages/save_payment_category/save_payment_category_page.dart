@@ -1,0 +1,135 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/domain/entities/payment_category.dart';
+import 'package:good_manager/presentation/pages/app_text_field.dart';
+import 'package:good_manager/presentation/pages/save_payment_category/bloc/save_payment_category_cubit.dart';
+
+import '../../constants.dart';
+import '../../widgets/primary_button.dart';
+import '../../widgets/snackbar_widgets.dart';
+import '../base/base_state.dart';
+
+class SavePaymentCategoryPage extends StatefulWidget {
+  final PaymentCategory item;
+
+  SavePaymentCategoryPage(this.item);
+
+  @override
+  State<StatefulWidget> createState() {
+    return SavePaymentCategoryPageState();
+  }
+}
+
+class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
+  @override
+  Widget build(BuildContext context) {
+    context.read<SavePaymentCategoryCubit>().init(widget.item);
+    return BlocConsumer<SavePaymentCategoryCubit, SavePaymentCategoryState>(
+        listenWhen: (state1, state2) => state1.state != state2.state,
+        listener: (context, state) async {
+          if (state.state is SaveItemError) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+          } else if (state.state is SaveItemSuccessful) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
+            Navigator.of(context).pop(state.item);
+          }
+        },
+        builder: (BuildContext context, SavePaymentCategoryState state) {
+          return Scaffold(
+            backgroundColor: Colors.grey.shade200,
+            appBar: _buildAppBar(context),
+            body: _buildBody(state),
+          );
+        });
+  }
+
+  PreferredSize _buildAppBar(BuildContext context) {
+    return PreferredSize(
+        preferredSize: Size.fromHeight(UIConstants.appBarHeight),
+        child: AppBar(
+          title: Text(AppLocalizations.of(context)!.action_add_payment_category),
+        ));
+  }
+
+  Widget _buildBody(SavePaymentCategoryState state) {
+    return Column(
+      children: [
+        Expanded(
+            child: SingleChildScrollView(
+          padding: EdgeInsets.all(16),
+          child: Card(
+            color: Theme.of(context).colorScheme.surface,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (builder) => AlertDialog(
+                              title: Text(AppLocalizations.of(context)!.title_pick_color),
+                              content: SingleChildScrollView(
+                                child: BlockPicker(
+                                  pickerColor: state.color,
+                                  onColorChanged: context.read<SavePaymentCategoryCubit>().onColorChanged,
+                                ),
+                              ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Close the dialog
+                              },
+                              child: Text(AppLocalizations.of(context)!.action_ok),
+                            ),
+                          ],));
+                    },
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(color: state.color, shape: BoxShape.circle),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Text(AppLocalizations.of(context)!.change_color),
+                  SizedBox(
+                    height: 32,
+                  ),
+                  AppTextField(
+                    labelText: AppLocalizations.of(context)!.label_category_name,
+                    hintText: AppLocalizations.of(context)!.hint_name,
+                    keyboardType: TextInputType.name,
+                    initialValue: state.name.value,
+                    onChanged: (value) => context.read<SavePaymentCategoryCubit>().nameChanged(value),
+                  ),
+                  SizedBox(height: 16),
+                  AppTextField(
+                    labelText: AppLocalizations.of(context)!.label_description,
+                    hintText: AppLocalizations.of(context)!.hint_description,
+                    maxLines: null,
+                    minLines: 2,
+                    keyboardType: TextInputType.name,
+                    initialValue: state.description,
+                    onChanged: (value) => context.read<SavePaymentCategoryCubit>().descriptionChanged(value),
+                  )
+                ],
+              ),
+            ),
+          ),
+        )),
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          color: Theme.of(context).colorScheme.surface,
+          child: PrimaryButton(AppLocalizations.of(context)!.action_save, () {
+            context.read<SavePaymentCategoryCubit>().onSaveClicked();
+          }),
+        )
+      ],
+    );
+  }
+}

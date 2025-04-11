@@ -70,12 +70,14 @@ class SaleReportCubit extends Cubit<SaleReportState> {
         data1.add(MapEntry(i.toDouble(), normalizedValue1));
         data2.add(MapEntry(i.toDouble(), normalizedValue2));
       }
-      emit(state.copyWith(
-        startDate: DateTime(currentDate.year, currentDate.month - 5, 1),
-        maxTotalAmount: maxTotalAmount,
-        data1: data1,
-        data2: data2,
-      ));
+      if (!isClosed){
+        emit(state.copyWith(
+          startDate: DateTime(currentDate.year, currentDate.month - 5, 1),
+          maxTotalAmount: maxTotalAmount,
+          data1: data1,
+          data2: data2,
+        ));
+      }
     }
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:good_manager/domain/entities/wallet.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
@@ -82,14 +84,14 @@ class HomePageState extends BaseStateWidget<HomePage> {
               ],),
               SizedBox(height: 16),
               Row(children: [
-                Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.payments_title, "",Icons.payment, Colors.yellow[50],Colors.yellow[700], widget.onOpenPaymentsPage,)),
+                Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.payments_title, "", FontAwesomeIcons.moneyBill, Colors.yellow[50],Colors.yellow[700], widget.onOpenPaymentsPage,)),
                 SizedBox(width: 16),
                 Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.report_title, "", UIConstants.reportIconData, Colors.green[50],Colors.green[700], openReport))
               ],),
-               SizedBox(height: 16),
-               SaleReportWidget(),
-              // SizedBox(height: 16),
-              // ExpenseReportChartWidget()
+               //SizedBox(height: 16),
+               //SaleReportWidget(),
+                SizedBox(height: 16),
+              _walletsCard(state)
             ],
           )),
     ];
@@ -120,7 +122,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                     Text(AppLocalizations.of(context)!.title_total_quantity + ": ${Utils.getQuantityText(state.quantityTotal)}", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                   ],
                 )),
-                Image(image: AssetImage('assets/images/box.png'), width: 24),
+                Icon(FontAwesomeIcons.box, color:  Colors.blue[700])
               ],
             ),
           ),
@@ -198,7 +200,9 @@ class HomePageState extends BaseStateWidget<HomePage> {
 
                           ],
                         )),
-                    Image(image: AssetImage('assets/images/document.png'), width: 24),
+                    Icon(FontAwesomeIcons.receipt, color: Colors.orange[700],)
+                    //FontAwesomeIcons.receipt
+                    //Image(image: AssetImage('assets/images/document.png'), width: 24),
                     //Icon(UIConstants.documentIconData, size: iconSize, color: Colors.orange[700]),
                   ],
                 ),
@@ -244,8 +248,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
     item.storeId = storeId;
     item.type = DocumentType.outgoing;
     item.name = AppLocalizations.of(context)!.document_name_no + storage.getAutoDocumentNo(storeId).toString();
-    Navigator.of(context).pushNamed(Pages.save_document,
-        arguments: {'item': item}).then((value) => context.read<HomeCubit>().initState());
+    Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item}).then((value) => context.read<HomeCubit>().initState());
   }
 
   void openSuppliers() {
@@ -289,8 +292,109 @@ class HomePageState extends BaseStateWidget<HomePage> {
           ),
         ));
   }
+  Widget _walletsCard(HomeState state) {
+    return Card(
+      color: Theme.of(context).colorScheme.surface,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              Text(
+                "Wallets",
+                style: Theme.of(context).textTheme.titleLarge,
+                textAlign: TextAlign.center,
+              ),
+              Spacer(),
+              Icon(Icons.wallet, size: 36, color: Colors.blue),
 
-  //void openExpenses() {
-  //  Navigator.of(context).pushNamed(Pages.expenses).then((value) => context.read<HomeCubit>().initState());
-  //}
+            ],),
+
+            SizedBox(height: 16),
+            Row(children: [
+              Expanded(child: Column(        crossAxisAlignment: CrossAxisAlignment.start,children: [
+                Text("\$1,200.00", style: Theme.of(context).textTheme.titleLarge),
+                Text("Total Balance", style: Theme.of(context).textTheme.bodyMedium),
+              ],)),
+              OutlinedButton(
+                onPressed: () {
+                  int storeId = storage.getSelectedStoreId();
+                  Wallet item = Wallet();
+                  item.color = Colors.blue.value;
+                  item.storeId = storeId;
+                  Navigator.of(context).pushNamed(Pages.save_wallet, arguments: {'item': item}).then((value) => context.read<HomeCubit>().initState());
+                },
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Colors.grey, width: 1),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min, // Wrap content
+                  children: [
+                    Icon(Icons.add, size: 20, color: Colors.black),
+                    SizedBox(width: 8),
+                    Text(
+                      AppLocalizations.of(context)!.action_add_wallet,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ],
+                ),
+              )
+            ],),
+            SizedBox(height: 16),
+            GridView.builder(
+              itemCount: state.wallets.length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // Two columns
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                childAspectRatio: 1.5, // Adjust height vs width
+              ),
+                itemBuilder: (context, index) {
+                  return _walletCard(state.wallets[index]);
+                }
+            )
+          ],
+        ),
+      ),
+    );
+  }
+  Widget _walletCard(Wallet item) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      color: Color(item.color),
+      child: InkWell(
+        onTap: (){
+          Navigator.of(context).pushNamed(Pages.save_wallet, arguments: {'item': item}).then((value) => context.read<HomeCubit>().initState());
+        },
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                Expanded(child: Text(
+                    item.name,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),),
+                Icon(Icons.more_horiz, color: Colors.white,)
+              ],),
+
+              SizedBox(height: 8),
+              Text("\$2,430.75", style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 }

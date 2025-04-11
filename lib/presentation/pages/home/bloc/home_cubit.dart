@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/entities/wallet.dart';
+import 'package:good_manager/domain/usecases/wallets/wallet_usecases.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../data/storage.dart';
@@ -21,12 +23,15 @@ class HomeCubit extends Cubit<HomeState> {
   final DocumentUseCases documentsUseCases;
   final SuppliersUseCase supplierUseCases;
   final CustomersUseCase customerUseCase;
+  final WalletUseCases walletUseCases;
   HomeCubit({
     required this.storage,
     required this.goodsUseCases,
     required this.documentsUseCases,
     required this.supplierUseCases,
     required this.customerUseCase,
+    required this.walletUseCases,
+
   }) : super(HomeState.initial(state: InitialState()));
 
   void initState() async{
@@ -53,7 +58,7 @@ class HomeCubit extends Cubit<HomeState> {
       for (Good good in goods){
         quantityTotal += good.quantity;
       }
-
+      List<Wallet> wallets = await walletUseCases.getAllByStoreId(storeId);
       emit(state.copyWith(
         countGoods: goods.length,
           quantityTotal: quantityTotal,
@@ -63,6 +68,7 @@ class HomeCubit extends Cubit<HomeState> {
           sumPriceOutgoingDocument : sumPriceOutgoingDocument,
           countSupplier: countSupplier,
           countCustomer: countCustomer,
+          wallets : wallets
       ));
   }
 

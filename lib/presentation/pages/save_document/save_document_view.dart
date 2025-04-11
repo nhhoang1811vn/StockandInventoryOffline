@@ -144,14 +144,16 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
           } else if (state.state is OpenInputQuantityDialogState) {
             final finalState = state.state as OpenInputQuantityDialogState;
             final good = finalState.good;
-            Map<dynamic, dynamic> result = await showDialog(
+            Map<dynamic, dynamic>? result = await showDialog(
                 context: context,
                 builder: (_) => AddQuantityAndPriceWidget(good, widget.item.type),
-                barrierDismissible: true);
-            double quantity = result["quantity"] ?? 0;
-            double price = result["price"] ?? 0.0;
-            context.read<SaveDocumentCubit>().saveThenAddTransaction(good, quantity, price);
-            context.read<SaveDocumentCubit>().onBatchScanMenuClicked();
+                barrierDismissible: false);
+            if (result != null){
+              double quantity = result["quantity"] ?? 0;
+              double price = result["price"] ?? 0.0;
+              context.read<SaveDocumentCubit>().saveThenAddTransaction(good, quantity, price);
+              context.read<SaveDocumentCubit>().onBatchScanMenuClicked();
+            }
           } else if (state.state is OpenBarcodeScannerToSearchState) {
             //open bar code scanner to fill search text box
             var result = await Navigator.push(

@@ -25,10 +25,7 @@ class Pages {
 
   static const String customer_list = '/customer_list';
   static const String save_customer = '/save_customer';
-
-
-  static const String expenses = "/expenses";
-  static const String save_expense = "/save_expense";
+  static const String save_wallet = "/save_wallet";
 
   static const String help = '/help';
   static const String helps = '/helps';

@@ -10,7 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/router.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 
 import '../common/helpers/injection.container.dart';
 import 'firebase_options.dart';
@@ -95,6 +95,7 @@ class MyAppState extends State<MyApp> {
 
   ThemeData _buildTheme(brightness) {
     var baseTheme = ThemeData(
+        fontFamily: 'Roboto',
         brightness: brightness,
         cardTheme: CardTheme(
           shape: RoundedRectangleBorder(
@@ -105,15 +106,16 @@ class MyAppState extends State<MyApp> {
             titleSmall: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
             titleMedium: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
             titleLarge: TextStyle(fontSize: 19.0, fontWeight: FontWeight.bold),
-
-            // bodySmall: TextStyle(fontSize: 15.0),
-            // bodyMedium: TextStyle(fontSize: 17.0),
-            // bodyLarge: TextStyle(fontSize: 19.0),
-            //
-            //
-            // displaySmall: TextStyle(fontSize: 12.0),
-            // displayMedium: TextStyle(),
-            // displayLarge: TextStyle(),
+        ),
+        checkboxTheme: CheckboxThemeData(
+          fillColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return Colors.blue.shade700; // Checked color
+            }
+            return Colors.white; // Unchecked color
+          }),
+          checkColor: WidgetStateProperty.all(Colors.white),
+          side: BorderSide(color: Colors.grey.shade700), // Border when unchecked
         ),
 
         colorScheme: ColorScheme.fromSeed(
@@ -124,13 +126,21 @@ class MyAppState extends State<MyApp> {
             brightness: Brightness.light,
         ),
         switchTheme: SwitchThemeData(
-          trackColor: WidgetStateProperty.resolveWith<Color?>(
-                (states) {
-              if (states.contains(WidgetState.selected)) {
-                return Colors.blue.shade300;
+          thumbColor: WidgetStateProperty.resolveWith<Color?>(
+              (states){
+                if (states.contains(WidgetState.selected)){
+                  return Colors.white;
+                }
+                return Colors.grey;
               }
-              return Colors.blue.withValues(alpha: 125);
-            },
+          ),
+          trackColor: WidgetStateProperty.resolveWith<Color?>(
+                  (states){
+                if (states.contains(WidgetState.selected)){
+                  return Colors.blue.shade700;
+                }
+                return Colors.grey.shade100;
+              }
           ),
         ),
         scaffoldBackgroundColor: Colors.white,
@@ -149,7 +159,7 @@ class MyAppState extends State<MyApp> {
         ));
 
     return baseTheme.copyWith(
-      textTheme: GoogleFonts.robotoTextTheme(baseTheme.textTheme),
+      //textTheme: GoogleFonts.robotoTextTheme(baseTheme.textTheme),
       //textTheme: GoogleFonts.montserratTextTheme(baseTheme.textTheme)
       //  textTheme: GoogleFonts.gamjaFlowerTextTheme(baseTheme.textTheme),
 

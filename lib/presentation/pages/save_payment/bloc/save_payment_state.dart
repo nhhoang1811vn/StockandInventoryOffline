@@ -4,7 +4,6 @@ part of 'save_payment_cubit.dart';
 class SavePaymentState with _$SavePaymentState {
   const factory SavePaymentState.initial({
     required BaseState state,
-    //@Default(NameInput.pure()) NameInput name,
     @Default('') String description,
     int? documentId,
     @Default(NameInput.pure()) NameInput documentName,
@@ -13,7 +12,11 @@ class SavePaymentState with _$SavePaymentState {
     @Default('') String exceptionError,
     Payment? item,
     @Default([]) List<PaymentCategory> categories,
-    PaymentCategory? selectedCategory
+    PaymentCategory? selectedCategory,
+
+    @Default([]) List<Wallet> wallets,
+    Wallet? selectedWallet,
+
   }) = _Initial;
 }
 
