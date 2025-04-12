@@ -1,2 +1,0 @@
-/Users/hoanghuynguyen/Documents/goodmanagerflutter/android/app/.cxx/Debug/5z336j1i/x86/CMakeFiles/edit_cache.dir
-/Users/hoanghuynguyen/Documents/goodmanagerflutter/android/app/.cxx/Debug/5z336j1i/x86/CMakeFiles/rebuild_cache.dir

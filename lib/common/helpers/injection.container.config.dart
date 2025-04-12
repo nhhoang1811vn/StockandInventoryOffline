@@ -205,11 +205,11 @@ extension GetItInjectableX on _i174.GetIt {
           storage: gh<_i72.Storage>(),
           useCase: gh<_i236.CustomersUseCase>(),
         ));
-    gh.factory<_i42.SelectDocumentCubit>(() => _i42.SelectDocumentCubit(
+    gh.factory<_i881.DocumentsCubit>(() => _i881.DocumentsCubit(
           storage: gh<_i72.Storage>(),
           useCase: gh<_i231.DocumentUseCases>(),
         ));
-    gh.factory<_i881.DocumentsCubit>(() => _i881.DocumentsCubit(
+    gh.factory<_i42.SelectDocumentCubit>(() => _i42.SelectDocumentCubit(
           storage: gh<_i72.Storage>(),
           useCase: gh<_i231.DocumentUseCases>(),
         ));
@@ -233,15 +233,15 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i1001.SaveWalletCubit>(
         () => _i1001.SaveWalletCubit(useCase: gh<_i322.WalletUseCases>()));
-    gh.factory<_i733.SaveStoreCubit>(() => _i733.SaveStoreCubit(
-          useCase: gh<_i579.StoresUseCase>(),
-          storage: gh<_i72.Storage>(),
-        ));
     gh.factory<_i403.AuthCubit>(() => _i403.AuthCubit(
           useCase: gh<_i579.StoresUseCase>(),
           storage: gh<_i72.Storage>(),
         ));
     gh.factory<_i234.OnBoardingCubit>(() => _i234.OnBoardingCubit(
+          useCase: gh<_i579.StoresUseCase>(),
+          storage: gh<_i72.Storage>(),
+        ));
+    gh.factory<_i733.SaveStoreCubit>(() => _i733.SaveStoreCubit(
           useCase: gh<_i579.StoresUseCase>(),
           storage: gh<_i72.Storage>(),
         ));
