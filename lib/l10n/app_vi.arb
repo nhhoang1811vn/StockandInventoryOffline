@@ -317,6 +317,7 @@
   "good_information": "Thông tin hàng hoá",
   "images_information": "Thông tin hình ảnh",
   "change_color": "Thay đổi màu",
+  "change_icon":"Đổi biểu tượng",
   "save_file_successful": "Lưu tệp thành công tại %s",
   "save_file_failed": "Lưu tệp thất bại tại %s",
    "no_group": "Không nhóm",

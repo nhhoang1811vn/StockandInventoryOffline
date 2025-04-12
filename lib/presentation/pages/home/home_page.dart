@@ -75,7 +75,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
             children: [
               _buildGoods(state),
               SizedBox(height: 16),
-              _buildNewDocuments(state),
+              _buildDocuments(state),
               SizedBox(height: 16),
               Row(children: [
                 Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.suppliers_title, state.countSupplier.toString(), UIConstants.supplierIconData, Colors.pink[50],Colors.pink[700], openSuppliers)),
@@ -128,12 +128,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
           ),
         ));
   }
-
-  //void openGoods() {
-  //  Navigator.of(context).pushNamed(Pages.good_list,
-  //      arguments: {'isSelection': false}).then((value) => context.read<HomeCubit>().initState());
-  //}
-  Widget _buildNewDocuments(HomeState state){
+  Widget _buildDocuments(HomeState state){
     return Card(
         color: Colors.orange[50],
         child: InkWell(
@@ -207,18 +202,48 @@ class HomePageState extends BaseStateWidget<HomePage> {
                   ],
                 ),
                 Row(children: [
-                  Expanded(child: ElevatedButton.icon(
+                  Expanded(child:  OutlinedButton(
                     onPressed: openSaveIncomingDocument,
-                    icon: Icon(Icons.add_circle_rounded), // Left icon
-                    label: Text(AppLocalizations.of(context)!.incoming_document_text), // Text on the right
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.grey, width: 1),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min, // Wrap content
+                      children: [
+                        Icon(Icons.add, size: 20, color: Colors.black),
+                        SizedBox(width: 8),
+                        Text(
+                          AppLocalizations.of(context)!.incoming_document_text,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
+                    ),
                   )),
+
+
                   SizedBox(
                     width: 16,
                   ),
-                  Expanded(child: ElevatedButton.icon(
+                  Expanded(child:  OutlinedButton(
                     onPressed: openSaveOutgoingDocument,
-                    icon: Icon(Icons.remove_circle_rounded), // Left icon
-                    label: Text(AppLocalizations.of(context)!.outgoing_document_text), // Text on the right
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.grey, width: 1),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min, // Wrap content
+                      children: [
+                        Icon(Icons.remove, size: 20, color: Colors.black),
+                        SizedBox(width: 8),
+                        Text(
+                          AppLocalizations.of(context)!.outgoing_document_text,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
+                    ),
                   )),
                 ],)
               ]
@@ -226,9 +251,6 @@ class HomePageState extends BaseStateWidget<HomePage> {
           ),
         ));
   }
-  //void openDocuments() {
-  //  Navigator.of(context).pushNamed(Pages.document_list).then((value) => context.read<HomeCubit>().initState());
-  //}
 
   void openSaveIncomingDocument() async {
     int storeId = storage.getSelectedStoreId();

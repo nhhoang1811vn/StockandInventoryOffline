@@ -41,7 +41,7 @@
     "save_group_title": "Save Group",
     "field_name": "Name",
 
-    "error_field_name_empty": "Please ensure the email entered is valid",
+    "error_field_name_empty": "Please ensure the name entered is valid",
     "field_bar_code": "Barcode",
     "field_quantity": "Quantity",
     "field_quantity_short_form": "Quan",
@@ -275,6 +275,7 @@
                           "good_information": "Document information",
                               "images_information": "Images information",
                               "change_color":"Change color",
+                              "change_icon":"Change icon",
                               "save_file_successful": "Save file successful at %s",
                                 "save_file_failed": "Save file failed at %s",
                                 "no_group": "No group",

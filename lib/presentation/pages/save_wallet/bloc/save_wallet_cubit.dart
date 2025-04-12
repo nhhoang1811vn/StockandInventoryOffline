@@ -23,7 +23,8 @@ class SaveWalletCubit extends Cubit<SaveWalletState>{
   void init(Wallet item) {
     SaveWalletState initState;
     initState = state.copyWith(item: item,
-        name: NameInput.dirty(value: item.name),
+        name: (item.name.isNotEmpty)?NameInput.dirty(value: item.name):NameInput.pure(),
+        //name: NameInput.dirty(value: item.name),
         description: item.description,
         color: Color(item.color)
     );
@@ -52,6 +53,8 @@ class SaveWalletCubit extends Cubit<SaveWalletState>{
         await useCase.update(item);
       }
       emit(state.copyWith(state: SaveItemSuccessful(), item: item));
+    }else{
+      emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));
     }
   }
 }

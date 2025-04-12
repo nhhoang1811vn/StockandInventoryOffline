@@ -137,7 +137,8 @@ class SaveGoodForm extends StatelessWidget {
                 initialValue: state.name.value,
                 onChanged: (value) => context.read<SaveGoodCubit>().nameChanged(value),
                 keyboardType: TextInputType.name,
-                error: state.name.displayError?.text(context)),
+                error: state.name.displayError?.text(context)
+            ),
             SizedBox(
               height: 16,
             ),

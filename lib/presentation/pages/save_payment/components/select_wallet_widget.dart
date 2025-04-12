@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/domain/entities/payment_category.dart';
 import 'package:good_manager/domain/entities/wallet.dart';
-import 'package:good_manager/presentation/pages/save_payment/components/category_selection_row.dart';
 import 'package:good_manager/presentation/pages/save_payment/components/wallet_selection_row.dart';
 import 'package:good_manager/presentation/widgets/primary_button.dart';
 

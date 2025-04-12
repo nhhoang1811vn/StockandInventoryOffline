@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
 import 'package:good_manager/domain/usecases/payment_category/payment_category_usercases.dart';
@@ -20,9 +21,9 @@ class SavePaymentCategoryCubit extends Cubit<SavePaymentCategoryState>{
   void init(PaymentCategory item) {
     SavePaymentCategoryState initState;
     initState = state.copyWith(item: item,
-        name: NameInput.dirty(value: item.name),
+        name: (item.name.isNotEmpty)?NameInput.dirty(value: item.name):NameInput.pure(),
         description: item.description,
-        color: Color(item.color)
+        icon: item.icon
     );
     emit(initState);
   }
@@ -32,20 +33,26 @@ class SavePaymentCategoryCubit extends Cubit<SavePaymentCategoryState>{
   void nameChanged(String value){
     emit(state.copyWith(name: NameInput.dirty(value: value)));
   }
-  void onColorChanged(Color color){
-    emit(state.copyWith(state: UpdateItemState(),color: color));
-  }
+  //void onColorChanged(Color color){
+  //  emit(state.copyWith(state: UpdateItemState(),color: color));
+  //}
   void onSaveClicked() async {
-    PaymentCategory item = state.item!;
-    item.name = state.name.value;
-    item.description = state.description;
-    item.color = state.color!.value;
-    if (item.id == null){
-      int id = await useCase.insert(item);
-      item.id = id;
+    final validate = Formz.validate([state.name]);
+    if (validate){
+      PaymentCategory item = state.item!;
+      item.name = state.name.value;
+      item.description = state.description;
+      item.icon = state.icon!;
+      //item.color = state.color!.value;
+      if (item.id == null){
+        int id = await useCase.insert(item);
+        item.id = id;
+      }else{
+        await useCase.update(item);
+      }
+      emit(state.copyWith(state: SaveItemSuccessful(), item: item));
     }else{
-      await useCase.update(item);
+      emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));
     }
-    emit(state.copyWith(state: SaveItemSuccessful(), item: item));
   }
 }

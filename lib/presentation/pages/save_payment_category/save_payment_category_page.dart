@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/save_payment_category/bloc/save_payment_category_cubit.dart';
@@ -67,35 +68,36 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (builder) => AlertDialog(
-                              title: Text(AppLocalizations.of(context)!.title_pick_color),
-                              content: SingleChildScrollView(
-                                child: BlockPicker(
-                                  pickerColor: state.color,
-                                  onColorChanged: context.read<SavePaymentCategoryCubit>().onColorChanged,
-                                ),
-                              ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(); // Close the dialog
-                              },
-                              child: Text(AppLocalizations.of(context)!.action_ok),
-                            ),
-                          ],));
+                      // showDialog(
+                      //     context: context,
+                      //     builder: (builder) => AlertDialog(
+                      //         title: Text(AppLocalizations.of(context)!.title_pick_color),
+                      //         content: SingleChildScrollView(
+                      //           child: BlockPicker(
+                      //             pickerColor: state.color,
+                      //             onColorChanged: context.read<SavePaymentCategoryCubit>().onColorChanged,
+                      //           ),
+                      //         ),
+                      //     actions: [
+                      //       TextButton(
+                      //         onPressed: () {
+                      //           Navigator.of(context).pop(); // Close the dialog
+                      //         },
+                      //         child: Text(AppLocalizations.of(context)!.action_ok),
+                      //       ),
+                      //     ],));
                     },
                     child: Container(
                       width: 80,
                       height: 80,
-                      decoration: BoxDecoration(color: state.color, shape: BoxShape.circle),
+                      decoration: BoxDecoration(color: Colors.grey[100], shape: BoxShape.circle),
+                      child: Center(child: Text(state.icon!, style: TextStyle(fontSize: 36),)),
                     ),
                   ),
                   SizedBox(
                     height: 8,
                   ),
-                  Text(AppLocalizations.of(context)!.change_color),
+                  Text(AppLocalizations.of(context)!.change_icon, style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Colors.blue),),
                   SizedBox(
                     height: 32,
                   ),
@@ -105,6 +107,7 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
                     keyboardType: TextInputType.name,
                     initialValue: state.name.value,
                     onChanged: (value) => context.read<SavePaymentCategoryCubit>().nameChanged(value),
+                      error: state.name.displayError?.text(context)
                   ),
                   SizedBox(height: 16),
                   AppTextField(

@@ -96,7 +96,7 @@ class SaveWalletPageState extends State<SaveWalletPage> {
                   SizedBox(
                     height: 8,
                   ),
-                  Text(AppLocalizations.of(context)!.change_color, style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Colors.red),),
+                  Text(AppLocalizations.of(context)!.change_color, style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Colors.blue),),
                   SizedBox(
                     height: 32,
                   ),

@@ -133,9 +133,9 @@ class SavePaymentPageState extends State<SavePaymentPage> {
               onLongPressed: (item) {
                 _showCategoryOptionsDialog(item);
               },
-              onAddNewCategoryButtonPressed: () async {
+              onAddNewButtonPressed: () async {
                 PaymentCategory item = PaymentCategory();
-                item.color = Colors.blue.value;
+                //item.color = Colors.blue.value;
                 item.type = widget.item.type;
                 var result =
                     await Navigator.of(context).pushNamed(Pages.save_payment_category, arguments: {"item": item});
