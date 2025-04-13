@@ -83,7 +83,14 @@ class DBHelper {
     ],
     4: [
       "CREATE TABLE IF NOT EXISTS $WALLET_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER, color INTEGER,storeId INTEGER NOT NULL, " +
-          "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)"
+          "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
+
+      "CREATE TABLE ${PAYMENTS_TABLE_NAME}_new ( id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER, date INTEGER, amount REAL, type INTEGER NOT NULL,categoryId INTEGER,documentId INTEGER,storeId INTEGER NOT NULL,walletId INTEGER)",
+      //copy
+      "INSERT INTO ${PAYMENTS_TABLE_NAME}_new (id, name, description, createdDate, updatedDate, date, amount, type,categoryId, documentId, storeId) " +
+  "SELECT id, name, description, createdDate, updatedDate, date, amount, type, categoryId, documentId, storeId FROM $PAYMENTS_TABLE_NAME",
+      "DROP TABLE $PAYMENTS_TABLE_NAME",
+      "ALTER TABLE ${PAYMENTS_TABLE_NAME}_new RENAME TO $PAYMENTS_TABLE_NAME"
     ]
   };
 

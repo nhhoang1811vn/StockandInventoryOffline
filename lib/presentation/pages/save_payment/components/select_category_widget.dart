@@ -86,7 +86,6 @@ class SelectCategoryWidgetState extends State<SelectCategoryWidget> {
       color: Colors.grey.shade200,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        // Ensures the column only takes as much space as needed
         children: [
           Text(AppLocalizations.of(context)!.label_select_payment_category,
               style: Theme.of(context).textTheme.titleMedium),
@@ -94,7 +93,7 @@ class SelectCategoryWidgetState extends State<SelectCategoryWidget> {
           Card(
             color: Colors.white,
             child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(8),
               child: GridView.builder(
                   itemCount: widget.categories.length + 1,
                   shrinkWrap: true,

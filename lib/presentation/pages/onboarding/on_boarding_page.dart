@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:formz/formz.dart';
 import 'package:good_manager/common/helpers/injection.container.dart';
+import 'package:good_manager/presentation/constants.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 import '../pages.dart';
@@ -61,7 +62,7 @@ class OnBoardingPage extends StatelessWidget {
                 border: Border.all(width: 2, color: Colors.blue),
                 shape: BoxShape.circle,
               ),child: Image.asset(
-                "assets/images/onboarding_good.png",
+                "assets/images/box.png",
               )),
           decoration: pageDecoration,
         ),

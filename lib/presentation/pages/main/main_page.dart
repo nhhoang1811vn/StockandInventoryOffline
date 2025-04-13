@@ -57,8 +57,8 @@ class MainPageState extends State<MainPage> {
           type: BottomNavigationBarType.fixed,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.home), label: AppLocalizations.of(context)!.home_title),
-            BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.box), label: AppLocalizations.of(context)!.goods_title),
-            BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.receipt), label: AppLocalizations.of(context)!.documents_title),
+            BottomNavigationBarItem(icon: Icon(UIConstants.goodIconData), label: AppLocalizations.of(context)!.goods_title),
+            BottomNavigationBarItem(icon: Icon(UIConstants.documentIconData), label: AppLocalizations.of(context)!.documents_title),
             BottomNavigationBarItem(icon: Icon(UIConstants.paymentIconData), label: AppLocalizations.of(context)!.payments_title),
             BottomNavigationBarItem(icon: Icon(UIConstants.settingIconData), label: AppLocalizations.of(context)!.settings_title),
           ],

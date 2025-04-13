@@ -434,7 +434,7 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image(image: AssetImage('assets/images/box.png'), width: 60),
+          Icon(UIConstants.goodIconData, size: 64, color: Theme.of(context).colorScheme.onPrimary),
           SizedBox(
             height: 16,
           ),

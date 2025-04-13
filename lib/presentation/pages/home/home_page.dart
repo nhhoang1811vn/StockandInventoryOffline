@@ -84,7 +84,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
               ],),
               SizedBox(height: 16),
               Row(children: [
-                Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.payments_title, "", FontAwesomeIcons.moneyBill, Colors.yellow[50],Colors.yellow[700], widget.onOpenPaymentsPage,)),
+                Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.payments_title, "", UIConstants.paymentIconData, Colors.yellow[50],Colors.yellow[700], widget.onOpenPaymentsPage,)),
                 SizedBox(width: 16),
                 Expanded(child: _buildSingleValueCard(AppLocalizations.of(context)!.report_title, "", UIConstants.reportIconData, Colors.green[50],Colors.green[700], openReport))
               ],),
@@ -122,7 +122,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                     Text(AppLocalizations.of(context)!.title_total_quantity + ": ${Utils.getQuantityText(state.quantityTotal)}", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                   ],
                 )),
-                Icon(FontAwesomeIcons.box, color:  Colors.blue[700])
+                Icon(UIConstants.goodIconData, color:  Colors.blue[700])
               ],
             ),
           ),
@@ -195,10 +195,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
 
                           ],
                         )),
-                    Icon(FontAwesomeIcons.receipt, color: Colors.orange[700],)
-                    //FontAwesomeIcons.receipt
-                    //Image(image: AssetImage('assets/images/document.png'), width: 24),
-                    //Icon(UIConstants.documentIconData, size: iconSize, color: Colors.orange[700]),
+                    Icon(UIConstants.documentIconData, color: Colors.orange[700],)
                   ],
                 ),
                 Row(children: [
@@ -329,7 +326,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                 textAlign: TextAlign.center,
               ),
               Spacer(),
-              Icon(Icons.wallet, size: 36, color: Colors.blue),
+              Icon(UIConstants.walletIconData, size: iconSize, color: Colors.blue),
 
             ],),
 

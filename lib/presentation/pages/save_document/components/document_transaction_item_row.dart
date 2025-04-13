@@ -24,16 +24,16 @@ class DocumentTransactionItemRow extends StatelessWidget {
         onTap: () => onTransactionPressed(item),
         onLongPress : () => onTransactionLongPressed(item),
         child: Padding(padding: EdgeInsets.all(16.0), child: Row(children: [
-          _buildLeadingWidget(),
+          _buildLeadingWidget(context),
           SizedBox(width: 8,),
           Expanded(child: _buildWidget(context))
         ],),),),
     );
   }
-  Widget _buildLeadingWidget(){
+  Widget _buildLeadingWidget(BuildContext context){
     return item.good.files.isNotEmpty
         ? getAvatarWidget(item.good.files.first)
-        : _buildEmptyAvatarWidget();
+        : _buildEmptyAvatarWidget(context);
   }
   Widget _buildWidget(BuildContext context){
     return Column(children: [
@@ -91,8 +91,7 @@ class DocumentTransactionItemRow extends StatelessWidget {
   Widget getAvatarWidget(Uint8List bytes) {
     return SizedBox(width: 48, height: 48, child: Image.memory(bytes));
   }
-  Widget _buildEmptyAvatarWidget(){
-    return Image(image: AssetImage('assets/images/box.png'), width: 32);
-    //return SizedBox(width: 48, height: 48, child: Icon(UIConstants.goodIconData, size: 32,color: UIConstants.primaryColor));
+  Widget _buildEmptyAvatarWidget(BuildContext context){
+    return Icon(UIConstants.goodIconData, size: 32, color: Theme.of(context).colorScheme.onPrimary);
   }
 }
