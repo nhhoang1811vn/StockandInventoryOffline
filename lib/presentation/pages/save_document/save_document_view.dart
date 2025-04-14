@@ -20,6 +20,7 @@ import 'package:good_manager/presentation/pages/save_document/bloc/save_document
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../../../domain/entities/supplier.dart';
@@ -60,6 +61,10 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
           if (state.state is SaveDocumentFailedState) {
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(state.exceptionError));
           } else if (state.state is SaveDocumentSuccessfulState) {
+            final InAppReview inAppReview = InAppReview.instance;
+            if (await inAppReview.isAvailable()) {
+              inAppReview.requestReview();
+            }
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
             Navigator.of(context).pop();
           } else if (state.state is OpenPersonListState) {

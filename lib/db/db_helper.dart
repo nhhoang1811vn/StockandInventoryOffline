@@ -86,11 +86,11 @@ class DBHelper {
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
       "DROP TABLE $PAYMENTS_TABLE_NAME",
       "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, type INTEGER NOT NULL,categoryId INTEGER,walletId INTEGER, documentId INTEGER,supplierId INTEGER,customerId INTEGER, storeId INTEGER NOT NULL, " +
-          "FOREIGN KEY(categoryId) REFERENCES $PAYMENTS_CATEGORY_TABLE_NAME(id), " +
-          "FOREIGN KEY(walletId) REFERENCES $WALLET_TABLE_NAME(id), " +
-          "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id)," +
-          "FOREIGN KEY(supplierId) REFERENCES $SUPPLIERS_TABLE_NAME(id)," +
-          "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id)," +
+          "FOREIGN KEY(categoryId) REFERENCES $PAYMENTS_CATEGORY_TABLE_NAME(id) ON DELETE SET NULL, " +
+          "FOREIGN KEY(walletId) REFERENCES $WALLET_TABLE_NAME(id) ON DELETE SET NULL, " +
+          "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE SET NULL," +
+          "FOREIGN KEY(supplierId) REFERENCES $SUPPLIERS_TABLE_NAME(id) ON DELETE SET NULL," +
+          "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id) ON DELETE SET NULL," +
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
       "DROP TABLE $PAYMENTS_CATEGORY_TABLE_NAME",
       "CREATE TABLE IF NOT EXISTS $PAYMENTS_CATEGORY_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,type INTEGER NOT NULL, icon TEXT)"
@@ -188,11 +188,11 @@ class DBHelper {
 
     await db.execute(
         "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, type INTEGER NOT NULL,categoryId INTEGER,walletId INTEGER, documentId INTEGER,supplierId INTEGER,customerId INTEGER, storeId INTEGER NOT NULL, " +
-            "FOREIGN KEY(categoryId) REFERENCES $PAYMENTS_CATEGORY_TABLE_NAME(id), " +
-            "FOREIGN KEY(walletId) REFERENCES $WALLET_TABLE_NAME(id), " +
-            "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id)," +
-            "FOREIGN KEY(supplierId) REFERENCES $SUPPLIERS_TABLE_NAME(id)," +
-            "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id)," +
+            "FOREIGN KEY(categoryId) REFERENCES $PAYMENTS_CATEGORY_TABLE_NAME(id) ON DELETE SET NULL, " +
+            "FOREIGN KEY(walletId) REFERENCES $WALLET_TABLE_NAME(id) ON DELETE SET NULL, " +
+            "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE SET NULL," +
+            "FOREIGN KEY(supplierId) REFERENCES $SUPPLIERS_TABLE_NAME(id) ON DELETE SET NULL," +
+            "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id) ON DELETE SET NULL," +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)");
     await db.execute(
         "CREATE TABLE IF NOT EXISTS $PAYMENTS_CATEGORY_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,type INTEGER NOT NULL, icon TEXT)");
@@ -297,7 +297,7 @@ class DBHelper {
 
   Future<bool> deleteSupplier(int id) async {
     var dbClient = await db;
-
+    dbClient.execute("PRAGMA foreign_keys = ON;");
     int res = await dbClient.rawDelete('DELETE FROM $SUPPLIERS_TABLE_NAME WHERE id = ?', [id]);
     return res == 1;
   }
@@ -355,7 +355,7 @@ class DBHelper {
 
   Future<bool> deleteCustomer(int id) async {
     var dbClient = await db;
-
+    dbClient.execute("PRAGMA foreign_keys = ON;");
     int res = await dbClient.rawDelete('DELETE FROM $CUSTOMERS_TABLE_NAME WHERE id = ?', [id]);
     return res == 1;
   }
@@ -366,6 +366,7 @@ class DBHelper {
     if (list.isNotEmpty) {
       return Customer.map(list.first);
     }
+    //return null;
     throw Exception("possible?");
     //return null;
   }
@@ -796,7 +797,7 @@ class DBHelper {
 
   Future<bool> deletePaymentCategory(int id) async {
     var dbClient = await db;
-    //dbClient.execute("PRAGMA foreign_keys = ON;");
+    dbClient.execute("PRAGMA foreign_keys = ON;");
     int res = await dbClient.rawDelete('DELETE FROM $PAYMENTS_CATEGORY_TABLE_NAME WHERE id = ?', [id]);
     return res > 0;
   }
@@ -907,7 +908,6 @@ class DBHelper {
       }
       if (item.documentId != null) {
         item.document = await getDocument(item.documentId!);
-        ;
       }
       items.add(item);
     }
@@ -942,10 +942,14 @@ class DBHelper {
     return items;
   }
 
-  Future<PaymentCategory> getCategory(int id) async {
+  Future<PaymentCategory?> getCategory(int id) async {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery("SELECT * FROM $PAYMENTS_CATEGORY_TABLE_NAME where id = ?", [id]);
-    return PaymentCategory.map(list.first);
+    if (list.isNotEmpty){
+      return PaymentCategory.map(list.first);
+    }
+    return null;
+
   }
 
   Future<Document> getDocument(int id) async {
@@ -999,6 +1003,7 @@ class DBHelper {
 
   Future<bool> deleteWallet(int id) async {
     var dbClient = await db;
+    dbClient.execute("PRAGMA foreign_keys = ON;");
     int res = await dbClient.rawDelete('DELETE FROM $WALLET_TABLE_NAME WHERE id = ?', [id]);
     return res > 0;
   }
@@ -1025,9 +1030,14 @@ class DBHelper {
     return items;
   }
 
-  Future<Wallet> getWallet(int id) async {
+  Future<Wallet?> getWallet(int id) async {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery("SELECT * FROM $WALLET_TABLE_NAME where id = ?", [id]);
-    return Wallet.map(list.first);
+    if (list.isNotEmpty){
+      return Wallet.map(list.first);
+    }else{
+      return null;
+    }
+
   }
 }

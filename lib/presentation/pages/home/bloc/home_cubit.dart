@@ -73,5 +73,8 @@ class HomeCubit extends Cubit<HomeState> {
 
       ));
   }
+  void deleteWallet(Wallet item) async{
+    walletUseCases.delete(item.id!);
+  }
 
 }
