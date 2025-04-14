@@ -6,6 +6,7 @@ import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../../../../presentation/widgets/snackbar_widgets.dart';
@@ -32,6 +33,10 @@ class SaveGroupForm extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.error_same_barcode));
           }
           else if (state.state is SaveItemSuccessful) {
+            final InAppReview inAppReview = InAppReview.instance;
+            if (await inAppReview.isAvailable()) {
+              inAppReview.requestReview();
+            }
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
             Navigator.of(context).pop(state.item);
           } else if (state.state is OpenBarcodeScannerPageState){

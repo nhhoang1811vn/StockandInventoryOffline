@@ -450,7 +450,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                   crossAxisCount: 2, // Two columns
                   mainAxisSpacing: 8,
                   crossAxisSpacing: 8,
-                  childAspectRatio: 1.5, // Adjust height vs width
+                  childAspectRatio: 1.4, // Adjust height vs width
                 ),
                 itemBuilder: (context, index) {
                   return _walletCard(state.wallets[index]);
@@ -460,7 +460,26 @@ class HomePageState extends BaseStateWidget<HomePage> {
       ),
     );
   }
-
+  void _showWalletOptionsDialog(Wallet item) {
+    showDialog(
+        context: context,
+        builder: (BuildContext mContext) {
+          return SimpleDialog(
+            children: <Widget>[
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: (){
+                  Navigator.pop(context);
+                  context.read<HomeCubit>().deleteWallet(item);
+                  context.read<HomeCubit>().initState();
+                },
+                child: Text(AppLocalizations.of(context)!.action_delete),
+              ),
+            ],
+          );
+        },
+        barrierDismissible: true);
+  }
   Widget _walletCard(Wallet item) {
     return Card(
       elevation: 4,
@@ -487,13 +506,15 @@ class HomePageState extends BaseStateWidget<HomePage> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Icon(
+                  IconButton(onPressed: (){
+                    _showWalletOptionsDialog(item);
+                  }, icon:  Icon(
                     Icons.more_horiz,
                     color: Colors.white,
-                  )
+                  ))
                 ],
               ),
-              SizedBox(height: 8),
+              //SizedBox(height: 8),
               Text(Config.simpleCurrencyFormat.format(item.balance),
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white)),
             ],
