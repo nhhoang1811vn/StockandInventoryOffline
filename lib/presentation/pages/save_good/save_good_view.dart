@@ -6,18 +6,11 @@ import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
-import 'package:intl/intl.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../../../domain/entities/document.dart';
-import '../../utils.dart';
 import '../../widgets/images_preview/images_preview_view.dart';
 import '../../widgets/primary_button.dart';
-import '../../widgets/snackbar_widgets.dart';
-import '../base/base_state.dart';
-import '../pages.dart';
 import 'bloc/save_good_cubit.dart';
-import 'components/quick_insert_document_widget.dart';
 import 'components/save_good_form.dart';
 
 class SaveGoodPage extends StatefulWidget{

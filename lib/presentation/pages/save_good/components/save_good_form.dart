@@ -14,14 +14,11 @@ import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.d
 import 'package:good_manager/presentation/pages/save_good/components/quick_insert_document_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../../../../domain/entities/good.dart';
 import '../../../../presentation/widgets/snackbar_widgets.dart';
-import '../../../widgets/images_preview/images_preview_view.dart';
 import '../../currency_app_text_field.dart';
 
 class SaveGoodForm extends StatelessWidget {

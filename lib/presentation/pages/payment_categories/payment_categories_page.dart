@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/payment_categories/bloc/payment_categories_cubit.dart';
 import 'package:good_manager/presentation/widgets/categories_grid_view.dart';
 
 import '../../../domain/entities/payment.dart';
 import '../../../domain/entities/payment_category.dart';
 import '../../constants.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import '../pages.dart';
 
 class PaymentCategoriesPage extends StatefulWidget {

@@ -28,7 +28,6 @@ import '../../../../domain/usecases/goods/goods_usercases.dart';
 import '../../base/base_state.dart';
 
 part 'report_detail_cubit.freezed.dart';
-
 part 'report_detail_state.dart';
 
 class ColumnReport {

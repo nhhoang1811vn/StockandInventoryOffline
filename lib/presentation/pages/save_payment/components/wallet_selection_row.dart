@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/domain/entities/payment_category.dart';
 import 'package:good_manager/domain/entities/wallet.dart';
 
 class WalletSelectionRow extends StatelessWidget {

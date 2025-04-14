@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/common/helpers/injection.container.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/components/select_date_range_dialog.dart';
 import 'package:good_manager/presentation/pages/report/report_date_range_type.dart';
-import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 
 import '../../constants.dart';
 import '../pages.dart';

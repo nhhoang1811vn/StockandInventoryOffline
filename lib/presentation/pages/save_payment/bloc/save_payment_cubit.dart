@@ -13,15 +13,12 @@ import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart';
 import 'package:good_manager/domain/usecases/wallets/wallet_usecases.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
-import 'package:good_manager/presentation/pages/suppliers/widgets/supplier_item_row.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../domain/entities/models/name.dart';
 import '../../../../domain/entities/payment.dart';
 import '../../../constants.dart';
 
 part 'save_payment_cubit.freezed.dart';
-
 part 'save_payment_state.dart';
 
 @injectable

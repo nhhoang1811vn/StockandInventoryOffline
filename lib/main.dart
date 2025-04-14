@@ -11,7 +11,6 @@ import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/router.dart';
 
-
 import '../common/helpers/injection.container.dart';
 import 'firebase_options.dart';
 late List<CameraDescription> cameras;

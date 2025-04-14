@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
-import 'package:good_manager/presentation/widgets/categories_grid_view.dart';
 
 
 class SelectCategoryWidget extends StatefulWidget {

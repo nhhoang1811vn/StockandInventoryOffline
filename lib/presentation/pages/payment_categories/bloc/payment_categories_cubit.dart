@@ -1,13 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
-import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
 import 'package:good_manager/domain/usecases/payment_category/payment_category_usercases.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../data/storage.dart';
 import '../../../../domain/entities/payment.dart';
-import '../../../../domain/usecases/payment/payment_usercases.dart';
 import '../../base/base_state.dart';
 
 part 'payment_categories_cubit.freezed.dart';

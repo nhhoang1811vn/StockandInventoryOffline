@@ -13,7 +13,6 @@ import 'package:good_manager/presentation/widgets/category_short_form_widget.dar
 import 'package:good_manager/presentation/widgets/primary_button.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:intl/intl.dart';
-import 'package:sprintf/sprintf.dart';
 
 import '../../../domain/entities/document.dart';
 import '../../../main.dart';

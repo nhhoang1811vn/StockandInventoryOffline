@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/wallet.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
@@ -12,7 +11,6 @@ import 'package:good_manager/presentation/widgets/logo_app_bar.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
 import '../../../domain/entities/document.dart';
-import '../../widgets/sale_report/sale_report_widget.dart';
 import '../pages.dart';
 
 class HomePage extends StatefulWidget {
