@@ -6,7 +6,7 @@ class SavePaymentState with _$SavePaymentState {
     required BaseState state,
     @Default('') String description,
     int? documentId,
-    @Default(NameInput.pure()) NameInput documentName,
+    //@Default(NameInput.pure()) NameInput documentName,
     DateTime? date,
     double? amount,
     @Default('') String exceptionError,
@@ -16,6 +16,13 @@ class SavePaymentState with _$SavePaymentState {
 
     @Default([]) List<Wallet> wallets,
     Wallet? selectedWallet,
+
+    int? supplierId,
+    int? customerId,
+
+    Document? document,
+    Supplier? supplier,
+    Customer? customer
 
   }) = _Initial;
 }

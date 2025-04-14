@@ -108,6 +108,8 @@ import 'package:good_manager/presentation/pages/onboarding/bloc/on_boarding_cubi
     as _i234;
 import 'package:good_manager/presentation/pages/payment/bloc/payments_cubit.dart'
     as _i152;
+import 'package:good_manager/presentation/pages/payment_categories/bloc/payment_categories_cubit.dart'
+    as _i850;
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart'
     as _i638;
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart'
@@ -205,11 +207,11 @@ extension GetItInjectableX on _i174.GetIt {
           storage: gh<_i72.Storage>(),
           useCase: gh<_i236.CustomersUseCase>(),
         ));
-    gh.factory<_i881.DocumentsCubit>(() => _i881.DocumentsCubit(
+    gh.factory<_i42.SelectDocumentCubit>(() => _i42.SelectDocumentCubit(
           storage: gh<_i72.Storage>(),
           useCase: gh<_i231.DocumentUseCases>(),
         ));
-    gh.factory<_i42.SelectDocumentCubit>(() => _i42.SelectDocumentCubit(
+    gh.factory<_i881.DocumentsCubit>(() => _i881.DocumentsCubit(
           storage: gh<_i72.Storage>(),
           useCase: gh<_i231.DocumentUseCases>(),
         ));
@@ -220,19 +222,33 @@ extension GetItInjectableX on _i174.GetIt {
         repository: gh<_i435.SuppliersRepository>()));
     gh.factory<_i322.WalletUseCases>(() =>
         _i1072.WalletUseCasesImpl(repository: gh<_i318.WalletRepository>()));
+    gh.factory<_i458.SavePaymentCubit>(() => _i458.SavePaymentCubit(
+          useCase: gh<_i886.PaymentUseCases>(),
+          paymentCategoryUseCases: gh<_i79.PaymentCategoryUseCases>(),
+          walletUseCases: gh<_i322.WalletUseCases>(),
+          customersUseCase: gh<_i236.CustomersUseCase>(),
+          suppliersUseCase: gh<_i331.SuppliersUseCase>(),
+        ));
+    gh.factory<_i850.PaymentCategoriesCubit>(() => _i850.PaymentCategoriesCubit(
+        paymentCategoryUseCases: gh<_i79.PaymentCategoryUseCases>()));
     gh.factory<_i340.SaveSupplierCubit>(
         () => _i340.SaveSupplierCubit(useCase: gh<_i331.SuppliersUseCase>()));
-    gh.factory<_i579.StoresUseCase>(() => _i411.StoresUseCaseImpl(
-          repository: gh<_i339.StoresRepository>(),
-          storage: gh<_i72.Storage>(),
-        ));
     gh.factory<_i152.PaymentsCubit>(() => _i152.PaymentsCubit(
           storage: gh<_i72.Storage>(),
           useCase: gh<_i886.PaymentUseCases>(),
           documentUseCases: gh<_i231.DocumentUseCases>(),
+          paymentCategoryUseCases: gh<_i79.PaymentCategoryUseCases>(),
+        ));
+    gh.factory<_i579.StoresUseCase>(() => _i411.StoresUseCaseImpl(
+          repository: gh<_i339.StoresRepository>(),
+          storage: gh<_i72.Storage>(),
         ));
     gh.factory<_i1001.SaveWalletCubit>(
         () => _i1001.SaveWalletCubit(useCase: gh<_i322.WalletUseCases>()));
+    gh.factory<_i733.SaveStoreCubit>(() => _i733.SaveStoreCubit(
+          useCase: gh<_i579.StoresUseCase>(),
+          storage: gh<_i72.Storage>(),
+        ));
     gh.factory<_i403.AuthCubit>(() => _i403.AuthCubit(
           useCase: gh<_i579.StoresUseCase>(),
           storage: gh<_i72.Storage>(),
@@ -241,19 +257,10 @@ extension GetItInjectableX on _i174.GetIt {
           useCase: gh<_i579.StoresUseCase>(),
           storage: gh<_i72.Storage>(),
         ));
-    gh.factory<_i733.SaveStoreCubit>(() => _i733.SaveStoreCubit(
-          useCase: gh<_i579.StoresUseCase>(),
-          storage: gh<_i72.Storage>(),
-        ));
     gh.factory<_i984.GroupsUseCases>(() =>
         _i260.GroupsUseCaseImpl(repository: gh<_i990.GroupsRepository>()));
     gh.factory<_i425.ItemHistoryCubit>(() =>
         _i425.ItemHistoryCubit(useCases: gh<_i137.GoodHistoryUseCases>()));
-    gh.factory<_i458.SavePaymentCubit>(() => _i458.SavePaymentCubit(
-          useCase: gh<_i886.PaymentUseCases>(),
-          paymentCategoryUseCases: gh<_i79.PaymentCategoryUseCases>(),
-          walletUseCases: gh<_i322.WalletUseCases>(),
-        ));
     gh.factory<_i31.GoodsUseCases>(() => _i40.GoodsUseCaseImpl(
           repository: gh<_i585.GoodsRepository>(),
           documentTransactionRepository:
@@ -304,6 +311,7 @@ extension GetItInjectableX on _i174.GetIt {
               gh<_i769.DocumentTransactionRepository>(),
           suppliersUseCase: gh<_i331.SuppliersUseCase>(),
           customersUseCase: gh<_i236.CustomersUseCase>(),
+          walletUseCases: gh<_i322.WalletUseCases>(),
         ));
     gh.factory<_i664.SelectGroupCubit>(() =>
         _i664.SelectGroupCubit(groupsUseCase: gh<_i984.GroupsUseCases>()));

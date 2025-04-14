@@ -1,14 +1,19 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
+import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/wallet.dart';
+import 'package:good_manager/domain/usecases/customers/customers_usecases.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
 import 'package:good_manager/domain/usecases/payment_category/payment_category_usercases.dart';
+import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart';
 import 'package:good_manager/domain/usecases/wallets/wallet_usecases.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
+import 'package:good_manager/presentation/pages/suppliers/widgets/supplier_item_row.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../domain/entities/models/name.dart';
@@ -24,8 +29,16 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
   final PaymentUseCases useCase;
   final PaymentCategoryUseCases paymentCategoryUseCases;
   final WalletUseCases walletUseCases;
+  final CustomersUseCase customersUseCase;
+  final SuppliersUseCase suppliersUseCase;
 
-  SavePaymentCubit({required this.useCase, required this.paymentCategoryUseCases, required this.walletUseCases})
+  SavePaymentCubit({
+    required this.useCase,
+    required this.paymentCategoryUseCases,
+    required this.walletUseCases,
+    required this.customersUseCase,
+    required this.suppliersUseCase
+  })
       : super(SavePaymentState.initial(state: InitialState()));
 
   void init(Payment item) async {
@@ -46,7 +59,11 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
         item: item,
         description: item.description,
         documentId: item.documentId,
-        documentName: NameInput.dirty(value: item.document?.name ?? ""),
+        document: item.document,
+        supplierId: item.supplierId,
+        supplier: item.supplier,
+        customerId: item.customerId,
+        customer: item.customer,
         amount: item.amount,
         date: item.date));
   }
@@ -55,12 +72,36 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     emit(state.copyWith(description: value));
   }
 
-  void onDocumentChanged(Document item) {
-    emit(state.copyWith(state: InitialState(), documentName: NameInput.dirty(value: item.name), documentId: item.id));
+  void onDocumentChanged(Document item) async{
+    emit(state.copyWith(documentId: null, document: null, customerId: null, customer: null, supplierId: null, supplier: null));
+    emit(state.copyWith(documentId: item.id, document: item));
+
+    if (state.item!.type == PaymentType.inbound){
+      if (item.personId != null){
+        Customer customer = await customersUseCase.get(item.personId!);
+        emit(state.copyWith(customerId: item.personId, customer: customer));
+      }
+    }else{
+      if (item.personId != null){
+        Supplier supplier = await suppliersUseCase.get(item.personId!);
+        emit(state.copyWith(supplierId: item.personId, supplier: supplier));
+      }
+    }
+  }
+  void onSupplierChanged(Supplier item){
+    emit(state.copyWith(documentId: null, document: null, customerId: null, customer: null, supplierId: null, supplier: null));
+    emit(state.copyWith(supplierId : item.id, supplier: item));
+  }
+  void onCustomerChanged(Customer item){
+    emit(state.copyWith(documentId: null, document: null, customerId: null, customer: null, supplierId: null, supplier: null));
+    emit(state.copyWith(customerId: item.id, customer: item));
   }
 
-  void onDocumentNameClicked() {
+  void onSelectDocument() {
     emit(state.copyWith(state: OpenDocumentListState()));
+  }
+  void onSelectPerson(){
+    emit(state.copyWith(state: OpenPersonListState()));
   }
 
   void onAmountChanged(String value) {
@@ -85,6 +126,8 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     item.documentId = state.documentId;
     item.categoryId = state.selectedCategory?.id;
     item.walletId = state.selectedWallet?.id;
+    item.supplierId = state.supplierId;
+    item.customerId = state.customerId;
 
     if (item.id == null) {
       await useCase.insert(item);
@@ -124,9 +167,5 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
           (wallet) => wallet.id == state.selectedWallet?.id,
     );
     emit(state.copyWith(wallets: wallets, selectedWallet: selectedWallet));
-  }
-
-  void deleteCategory(int id) async {
-    await paymentCategoryUseCases.delete(id);
   }
 }

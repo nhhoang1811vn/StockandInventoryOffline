@@ -72,7 +72,7 @@ class SelectWalletWidgetState extends State<SelectWalletWidget>{
               : null, // No decoration if not selected
 
           child: Column(mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center, // Optional, helpful if Column grows
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,children: [
             Icon(UIConstants.walletIconData, color: Color(item.color), size: 24),
             SizedBox(height: 4),

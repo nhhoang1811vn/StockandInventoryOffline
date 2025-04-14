@@ -5,4 +5,5 @@ abstract class ItemsUseCase<M extends BaseModel>{
   Future<int> insert(M item);
   Future<bool> update(M item);
   Future<bool> delete(int id);
+  Future<M> get(int id);
 }

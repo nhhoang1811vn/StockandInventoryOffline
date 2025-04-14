@@ -53,4 +53,17 @@ class PaymentRepositoryImpl implements PaymentRepository {
     int storeId = storage.getSelectedStoreId();
     return db.getPaymentsInRange(storeId, start, end);
   }
+
+  @override
+  Future<List<Payment>> getInRangeByWalletId(int walletId, DateTime start, DateTime end) {
+    return db.getPaymentsInRangeByWalletId(walletId, start, end);
+  }
+  @override
+  Future<List<Payment>> getInRangeBySupplierId(int supplierId, DateTime start, DateTime end) {
+    return db.getPaymentsInRangeBySupplierId(supplierId, start, end);
+  }
+  @override
+  Future<List<Payment>> getInRangeByCustomerId(int customerId, DateTime start, DateTime end) {
+    return db.getPaymentsInRangeByCustomerId(customerId, start, end);
+  }
 }

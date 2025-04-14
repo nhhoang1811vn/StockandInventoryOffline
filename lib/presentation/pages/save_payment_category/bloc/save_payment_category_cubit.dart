@@ -33,9 +33,9 @@ class SavePaymentCategoryCubit extends Cubit<SavePaymentCategoryState>{
   void nameChanged(String value){
     emit(state.copyWith(name: NameInput.dirty(value: value)));
   }
-  //void onColorChanged(Color color){
-  //  emit(state.copyWith(state: UpdateItemState(),color: color));
-  //}
+  void onIconChanged(String icon){
+    emit(state.copyWith(state: UpdateItemState(),icon: icon));
+  }
   void onSaveClicked() async {
     final validate = Formz.validate([state.name]);
     if (validate){

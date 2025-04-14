@@ -29,4 +29,10 @@ class PaymentCategoryUseCasesImp implements PaymentCategoryUseCases{
   Future<List<PaymentCategory>> getAll() {
     return repository.getAll();
   }
+
+  @override
+  Future<PaymentCategory> get(int id) {
+    // TODO: implement get
+    throw UnimplementedError();
+  }
 }

@@ -59,7 +59,7 @@
     "field_total": "Total",
     "field_purchase_price": "Purchase price",
     "field_sale_price": "Sale price",
-    "field_cost": "Cost",
+    "field_price": "Price",
     "field_revenue": "Revenue",
     "field_document_no": "Document No",
     "home_menu_item_goods": "Goods",
@@ -176,6 +176,12 @@
     "report_type_list_of_documents": "List of documents",
     "report_type_debt_by_supplier": "Debt of Supplier",
     "report_type_debt_by_customer": "Debt of Customer",
+      "report_type_inbound_payments": "Inbound payments",
+      "report_type_outbound_payments": "Outbound payments",
+
+    "report_type_list_of_supplier_payments": "Payments by Suppliers",
+     "report_type_list_of_customer_payments": "Payments by Customer",
+
     "select_date_range": "Select date range",
     "report_type_current_month": "Current month",
     "report_type_last_30_days": "Last 30 days",
@@ -236,6 +242,9 @@
     "title_chart_sale_report": "Sale Report in last 6 months",
     "label_select_payment_category": "Select category",
     "label_select_wallet": "Select wallet",
+    "label_select_object": "Select object",
+      "label_select_outbound_object": "Select outbound object",
+      "label_select_inbound_object": "Select inbound object",
 
     "label_description": "Description",
     "hint_description": "Input description",
@@ -280,7 +289,16 @@
                                 "save_file_failed": "Save file failed at %s",
                                 "no_group": "No group",
                                     "save_wallet_title": "Save Wallet",
-                                    "action_add_wallet": "Add Wallet"
+                                    "action_add_wallet": "Add Wallet",
+                                    "total_balance": "Total Balance",
+                                    "title_wallet": "Wallets",
+                                        "categories": "Categories",
+                                     "title_save_category": "Save Category",
+                                     "inbound_categories": "Inbound Categories",
+                                     "outbound_categories": "Outbound Categories",
+                                          "select_object_type": "Select object types",
+
+                                         "title_report_list_of_wallet": "List of wallets"
 
 
 }

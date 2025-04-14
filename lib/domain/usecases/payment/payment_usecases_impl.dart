@@ -41,4 +41,23 @@ class PaymentUseCasesImpl implements PaymentUseCases{
   Future<List<Payment>> getInRange(DateTime start, DateTime end) {
     return repository.getInRange(start,end);
   }
+  @override
+  Future<List<Payment>> getInRangeByWalletId(int walletId, DateTime start, DateTime end) {
+    return repository.getInRangeByWalletId(walletId,start,end);
+  }
+  @override
+  Future<List<Payment>> getInRangeBySupplierId(int supplierId, DateTime start, DateTime end) {
+    return repository.getInRangeBySupplierId(supplierId, start, end);
+  }
+  @override
+  Future<List<Payment>> getInRangeByCustomerId(int customerId, DateTime start, DateTime end) {
+    return repository.getInRangeByCustomerId(customerId, start, end);
+  }
+
+  @override
+  Future<Payment> get(int id) {
+    // TODO: implement get
+    throw UnimplementedError();
+  }
+
 }

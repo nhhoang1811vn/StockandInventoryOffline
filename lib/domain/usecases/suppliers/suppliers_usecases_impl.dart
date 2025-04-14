@@ -35,4 +35,9 @@ class SuppliersUseCaseImpl implements SuppliersUseCase{
     return repository.getCount(storeId);
     
   }
+
+  @override
+  Future<Supplier> get(int id) {
+    return repository.get(id);
+  }
 }

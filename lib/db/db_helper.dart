@@ -84,13 +84,16 @@ class DBHelper {
     4: [
       "CREATE TABLE IF NOT EXISTS $WALLET_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER, color INTEGER,storeId INTEGER NOT NULL, " +
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
-
-      "CREATE TABLE ${PAYMENTS_TABLE_NAME}_new ( id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER, date INTEGER, amount REAL, type INTEGER NOT NULL,categoryId INTEGER,documentId INTEGER,storeId INTEGER NOT NULL,walletId INTEGER)",
-      //copy
-      "INSERT INTO ${PAYMENTS_TABLE_NAME}_new (id, name, description, createdDate, updatedDate, date, amount, type,categoryId, documentId, storeId) " +
-  "SELECT id, name, description, createdDate, updatedDate, date, amount, type, categoryId, documentId, storeId FROM $PAYMENTS_TABLE_NAME",
       "DROP TABLE $PAYMENTS_TABLE_NAME",
-      "ALTER TABLE ${PAYMENTS_TABLE_NAME}_new RENAME TO $PAYMENTS_TABLE_NAME"
+      "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, type INTEGER NOT NULL,categoryId INTEGER,walletId INTEGER, documentId INTEGER,supplierId INTEGER,customerId INTEGER, storeId INTEGER NOT NULL, " +
+          "FOREIGN KEY(categoryId) REFERENCES $PAYMENTS_CATEGORY_TABLE_NAME(id), " +
+          "FOREIGN KEY(walletId) REFERENCES $WALLET_TABLE_NAME(id), " +
+          "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id)," +
+          "FOREIGN KEY(supplierId) REFERENCES $SUPPLIERS_TABLE_NAME(id)," +
+          "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id)," +
+          "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
+      "DROP TABLE $PAYMENTS_CATEGORY_TABLE_NAME",
+      "CREATE TABLE IF NOT EXISTS $PAYMENTS_CATEGORY_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,type INTEGER NOT NULL, icon TEXT)"
     ]
   };
 
@@ -184,10 +187,12 @@ class DBHelper {
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)");
 
     await db.execute(
-        "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, type INTEGER NOT NULL,categoryId INTEGER,walletId INTEGER, documentId INTEGER, storeId INTEGER NOT NULL, " +
+        "CREATE TABLE IF NOT EXISTS $PAYMENTS_TABLE_NAME(id INTEGER PRIMARY KEY,name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,date INTEGER, amount REAL, type INTEGER NOT NULL,categoryId INTEGER,walletId INTEGER, documentId INTEGER,supplierId INTEGER,customerId INTEGER, storeId INTEGER NOT NULL, " +
             "FOREIGN KEY(categoryId) REFERENCES $PAYMENTS_CATEGORY_TABLE_NAME(id), " +
             "FOREIGN KEY(walletId) REFERENCES $WALLET_TABLE_NAME(id), " +
-            "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id) ON DELETE CASCADE," +
+            "FOREIGN KEY(documentId) REFERENCES $DOCUMENTS_TABLE_NAME(id)," +
+            "FOREIGN KEY(supplierId) REFERENCES $SUPPLIERS_TABLE_NAME(id)," +
+            "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id)," +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)");
     await db.execute(
         "CREATE TABLE IF NOT EXISTS $PAYMENTS_CATEGORY_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,type INTEGER NOT NULL, icon TEXT)");
@@ -281,13 +286,13 @@ class DBHelper {
     return res == 1;
   }
 
-  Future<Supplier?> getSupplier(int? id) async {
+  Future<Supplier> getSupplier(int id) async {
     var dbClient = await db;
     var list = await dbClient.rawQuery('SELECT * FROM $SUPPLIERS_TABLE_NAME where id = ?', [id]);
     if (list.isNotEmpty) {
       return Supplier.map(list.first);
     }
-    return null;
+    throw Exception("possible?");
   }
 
   Future<bool> deleteSupplier(int id) async {
@@ -355,13 +360,14 @@ class DBHelper {
     return res == 1;
   }
 
-  Future<Customer?> getCustomer(int? id) async {
+  Future<Customer> getCustomer(int id) async {
     var dbClient = await db;
     var list = await dbClient.rawQuery('SELECT * FROM $CUSTOMERS_TABLE_NAME where id = ?', [id]);
     if (list.isNotEmpty) {
       return Customer.map(list.first);
     }
-    return null;
+    throw Exception("possible?");
+    //return null;
   }
 
   //GROUP
@@ -565,13 +571,6 @@ class DBHelper {
     var dbClient = await db;
     await dbClient.rawDelete('DELETE FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME WHERE goodId =?', [goodId]);
   }
-
-  // Future<List<Document>> findDocumentBySupplierId(int supplierId) async {
-  //   var dbClient = await db;
-  //   final sql = "SELECT * FROM $DOCUMENTS_TABLE_NAME WHERE id = ?";
-  //   List<Map> list = await dbClient.rawQuery(sql, [supplierId]);
-  //   return list.map((e) => Document.map(e)).toList();
-  // }
 
   Future<List<Document>> getDocuments(int storeId) async {
     var dbClient = await db;
@@ -836,11 +835,64 @@ class DBHelper {
     return items;
   }
 
+  Future<List<Payment>> getPaymentsInRangeByWalletId(int walletId, DateTime start, DateTime end) async {
+    var dbClient = await db;
+    int startInt = start.millisecondsSinceEpoch;
+    int endInt = DateTime(end.year, end.month, end.day, 23, 59, 59, 999).millisecondsSinceEpoch;
+    List<Map> list = await dbClient.rawQuery(
+        "SELECT * FROM $PAYMENTS_TABLE_NAME where walletId = ? AND date BETWEEN ? AND ? ORDER BY date DESC",
+        [walletId, startInt, endInt]);
+    List<Payment> items = [];
+    for (int i = 0; i < list.length; i++) {
+      Payment item = Payment.map(list[i]);
+      /*if (item.categoryId != null) {
+        item.category = await getCategory(item.categoryId!);
+      }
+      if (item.walletId != null){
+        item.wallet = await getWallet(item.walletId!);
+      }
+      if (item.documentId != null){
+        item.document = await getDocument(item.documentId!);;
+      }*/
+      items.add(item);
+    }
+    return items;
+  }
+
+  Future<List<Payment>> getPaymentsInRangeBySupplierId(int supplierId, DateTime start, DateTime end) async {
+    var dbClient = await db;
+    int startInt = start.millisecondsSinceEpoch;
+    int endInt = DateTime(end.year, end.month, end.day, 23, 59, 59, 999).millisecondsSinceEpoch;
+    List<Map> list = await dbClient.rawQuery(
+        "SELECT * FROM $PAYMENTS_TABLE_NAME where supplierId = ? AND date BETWEEN ? AND ? ORDER BY date DESC",
+        [supplierId, startInt, endInt]);
+    List<Payment> items = [];
+    for (int i = 0; i < list.length; i++) {
+      Payment item = Payment.map(list[i]);
+      items.add(item);
+    }
+    return items;
+  }
+
+  Future<List<Payment>> getPaymentsInRangeByCustomerId(int customerId, DateTime start, DateTime end) async {
+    var dbClient = await db;
+    int startInt = start.millisecondsSinceEpoch;
+    int endInt = DateTime(end.year, end.month, end.day, 23, 59, 59, 999).millisecondsSinceEpoch;
+    List<Map> list = await dbClient.rawQuery(
+        "SELECT * FROM $PAYMENTS_TABLE_NAME where customerId = ? AND date BETWEEN ? AND ? ORDER BY date DESC",
+        [customerId, startInt, endInt]);
+    List<Payment> items = [];
+    for (int i = 0; i < list.length; i++) {
+      Payment item = Payment.map(list[i]);
+      items.add(item);
+    }
+    return items;
+  }
+
   Future<List<Payment>> getPaymentsInRange(int storeId, DateTime start, DateTime end) async {
     var dbClient = await db;
     int startInt = start.millisecondsSinceEpoch;
     int endInt = DateTime(end.year, end.month, end.day, 23, 59, 59, 999).millisecondsSinceEpoch;
-    //int endInt = end.millisecondsSinceEpoch;
     List<Map> list = await dbClient.rawQuery(
         "SELECT * FROM $PAYMENTS_TABLE_NAME where storeId = ? AND date BETWEEN ? AND ? ORDER BY date DESC",
         [storeId, startInt, endInt]);
@@ -850,11 +902,12 @@ class DBHelper {
       if (item.categoryId != null) {
         item.category = await getCategory(item.categoryId!);
       }
-      if (item.walletId != null){
+      if (item.walletId != null) {
         item.wallet = await getWallet(item.walletId!);
       }
-      if (item.documentId != null){
-        item.document = await getDocument(item.documentId!);;
+      if (item.documentId != null) {
+        item.document = await getDocument(item.documentId!);
+        ;
       }
       items.add(item);
     }
@@ -872,11 +925,17 @@ class DBHelper {
       if (item.categoryId != null) {
         item.category = await getCategory(item.categoryId!);
       }
-      if (item.walletId != null){
+      if (item.walletId != null) {
         item.wallet = await getWallet(item.walletId!);
       }
-      if (item.documentId != null){
-        item.document = await getDocument(item.documentId!);;
+      if (item.documentId != null) {
+        item.document = await getDocument(item.documentId!);
+      }
+      if (item.customerId != null) {
+        item.customer = await getCustomer(item.customerId!);
+      }
+      if (item.supplierId != null) {
+        item.supplier = await getSupplier(item.supplierId!);
       }
       items.add(item);
     }
@@ -899,6 +958,18 @@ class DBHelper {
     var dbClient = await db;
     List<Map> list = await dbClient
         .rawQuery('SELECT * FROM $PAYMENTS_TABLE_NAME where documentId = ? ORDER BY date DESC', [documentId]);
+
+    List<Payment> items = [];
+    for (int i = 0; i < list.length; i++) {
+      Payment item = Payment.map(list[i]);
+      items.add(item);
+    }
+    return items;
+  }
+
+  Future<List<Payment>> getPaymentByWalletId(int walletId) async {
+    var dbClient = await db;
+    List<Map> list = await dbClient.rawQuery('SELECT * FROM $PAYMENTS_TABLE_NAME where walletId = ?', [walletId]);
 
     List<Payment> items = [];
     for (int i = 0; i < list.length; i++) {
@@ -938,10 +1009,22 @@ class DBHelper {
     List<Wallet> items = [];
     for (int i = 0; i < list.length; i++) {
       Wallet item = Wallet.map(list[i]);
+      List<Payment> payments = await getPaymentByWalletId(item.id!);
+      double inAmount = payments
+          .where((payment) => payment.type == PaymentType.inbound)
+          .toList()
+          .fold(0.0, (sum, payment) => sum + (payment.amount ?? 0.0));
+      double outAmount = payments
+          .where((payment) => payment.type == PaymentType.outbound)
+          .toList()
+          .fold(0.0, (sum, payment) => sum + (payment.amount ?? 0.0));
+
+      item.balance = inAmount - outAmount;
       items.add(item);
     }
     return items;
   }
+
   Future<Wallet> getWallet(int id) async {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery("SELECT * FROM $WALLET_TABLE_NAME where id = ?", [id]);

@@ -68,7 +68,9 @@ class HomeCubit extends Cubit<HomeState> {
           sumPriceOutgoingDocument : sumPriceOutgoingDocument,
           countSupplier: countSupplier,
           countCustomer: countCustomer,
-          wallets : wallets
+          wallets : wallets,
+        totalBalance: wallets.fold(0.0, (sum, wallet) => sum + wallet.balance)
+
       ));
   }
 

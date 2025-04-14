@@ -2,7 +2,7 @@ import 'base_model.dart';
 class Wallet extends BaseModel{
   int color = 0;
   String number = "";
-  String balance = "";
+  double balance = 0.0;
   int? storeId;
 
   Wallet();

@@ -3,7 +3,7 @@ import 'package:good_manager/domain/entities/payment.dart';
 import 'base_model.dart';
 
 class PaymentCategory extends BaseModel{
-  String icon = "😄";
+  String icon = "🏠";
   PaymentType type = PaymentType.inbound;
   PaymentCategory();
   PaymentCategory.map(dynamic obj) {

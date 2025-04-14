@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
+import 'package:good_manager/presentation/widgets/categories_grid_view.dart';
 
 
 class SelectCategoryWidget extends StatefulWidget {
   final List<PaymentCategory> categories;
   final PaymentCategory? selectedCategory;
   final void Function(PaymentCategory item) onPressed;
-  final void Function(PaymentCategory item) onLongPressed;
   final VoidCallback onAddNewButtonPressed;
 
   SelectCategoryWidget(
       {required this.categories,
       required this.selectedCategory,
       required this.onPressed,
-      required this.onLongPressed,
       required this.onAddNewButtonPressed});
 
   @override
@@ -52,9 +51,6 @@ class SelectCategoryWidgetState extends State<SelectCategoryWidget> {
       onTap: (){
         widget.onPressed(item);
       },
-      onLongPress: (){
-        widget.onLongPressed(item);
-      },
       borderRadius: BorderRadius.circular(16),
       child: Container(
         decoration: selected
@@ -68,8 +64,12 @@ class SelectCategoryWidgetState extends State<SelectCategoryWidget> {
         )
             : null, // No decoration if not selected
 
-          child: Column(children: [
-            Text(item.icon, style: TextStyle(fontSize: 32)),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+            Text(item.icon, style: TextStyle(fontSize: 28)),
             SizedBox(height: 4),
             Text(
               item.name,
@@ -90,18 +90,19 @@ class SelectCategoryWidgetState extends State<SelectCategoryWidget> {
           Text(AppLocalizations.of(context)!.label_select_payment_category,
               style: Theme.of(context).textTheme.titleMedium),
           SizedBox(height: 16),
+          //CategoriesGridView(categories: widget.categories, onAddNewButtonPressed: widget.onAddNewButtonPressed, onPressed: (item){}, onLongPressed: (item){})
           Card(
             color: Colors.white,
             child: Padding(
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.all(16),
               child: GridView.builder(
                   itemCount: widget.categories.length + 1,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4, // Two columns
-                    mainAxisSpacing: 4,
-                    crossAxisSpacing: 4,
+                    crossAxisCount: 4,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 8,
                   ),
                   itemBuilder: (context, index) {
                     if (index < widget.categories.length){

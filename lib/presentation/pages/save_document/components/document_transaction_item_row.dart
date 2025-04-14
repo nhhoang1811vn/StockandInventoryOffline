@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
-
+import 'package:path/path.dart';
+import 'package:sprintf/sprintf.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class DocumentTransactionItemRow extends StatelessWidget {
   final DocumentTransaction item;
   final void Function(DocumentTransaction item) onTransactionPressed;
@@ -38,7 +40,7 @@ class DocumentTransactionItemRow extends StatelessWidget {
   Widget _buildWidget(BuildContext context){
     return Column(children: [
       _buildTop(context),
-      _buildBottom()
+      _buildBottom(context)
     ],);
   }
   Widget _buildTop(BuildContext context){
@@ -75,8 +77,7 @@ class DocumentTransactionItemRow extends StatelessWidget {
       ],
     );
   }
-  Widget _buildBottom(){
-    //var price = 0.0;
+  Widget _buildBottom(BuildContext con){
     var leftValue = "";
     var rightValue = "";
     if (item.price == null){
@@ -86,7 +87,12 @@ class DocumentTransactionItemRow extends StatelessWidget {
       leftValue = Config.currencyFormat.format(item.price!);
       rightValue = Config.currencyFormat.format(item.price!* item.quantity);
     }
-    return Align(alignment: Alignment.centerRight, child: Text("$leftValue / $rightValue"));
+    return Align(alignment: Alignment.centerRight, child: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+      Text(AppLocalizations.of(con)!.field_price + ": " + leftValue),
+      Text(AppLocalizations.of(con)!.field_amount + ": " + rightValue),
+    ]));
   }
   Widget getAvatarWidget(Uint8List bytes) {
     return SizedBox(width: 48, height: 48, child: Image.memory(bytes));

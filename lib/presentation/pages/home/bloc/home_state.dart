@@ -13,5 +13,8 @@ class HomeState with _$HomeState {
       @Default(0) int countSupplier,
       @Default(0) int countCustomer,
       @Default(0) double sumExpense,
-      @Default([]) List<Wallet> wallets}) = _Initial;
+      @Default([]) List<Wallet> wallets,
+          @Default(0) double totalBalance,
+
+      }) = _Initial;
 }

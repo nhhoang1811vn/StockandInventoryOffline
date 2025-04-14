@@ -63,7 +63,7 @@
   "field_total": "Tổng",
   "field_purchase_price": "Giá mua",
   "field_sale_price": "Giá bán",
-  "field_cost": "Chi phí",
+  "field_price": "Giá",
   "field_revenue": "Doanh thu",
   "field_document_no": "Hoá đơn số",
 
@@ -207,6 +207,10 @@
   "report_type_list_of_documents": "Danh sách hoá đơn",
   "report_type_debt_by_supplier": "Công nợ theo nhà cung cấp",
   "report_type_debt_by_customer": "Công nợ theo khách hàng",
+  "report_type_inbound_payments": "Giao dịch thu",
+  "report_type_outbound_payments": "Giao dịch chi",
+  "report_type_list_of_supplier_payments": "Giao dịch theo nhà cung cấp",
+  "report_type_list_of_customer_payments": "Giao dịch theo khách hàng",
   "select_date_range": "Chọn khoảng thời gian",
   "report_type_current_month": "Tháng hiện tại",
   "report_type_last_30_days": "30 ngày trước",
@@ -220,17 +224,17 @@
   "payment_status_partial": "Trả 1 phần",
   "payment_status_paid": "Đã trả",
 
-  "payments_title": "Thanh toán",
+  "payments_title": "Giao dịch",
   "payment_invoiced": "Hoá đơn",
   "payment_due_pending": "Cần trả/còn nợ",
   "payment_paid": "Đã trả",
-  "empty_payment": "Chưa có thanh toán",
+  "empty_payment": "Chưa có giao dịch",
 
-  "title_outbound_payment": "Thanh toán chi",
-  "title_inbound_payment": "Thanh toán thu",
-  "save_outbound_payment_title": "Lưu thanh toán chi",
-  "save_inbound_payment_title": "Lưu thanh toán thu",
-  "save_payment_title": "Lưu thanh toán",
+  "title_outbound_payment": "Chi",
+  "title_inbound_payment": "Thu",
+  "save_outbound_payment_title": "Lưu GD chi",
+  "save_inbound_payment_title": "Lưu GD thu",
+
 
   "menu_back_up": "Sao lưu dữ liệu",
   "menu_back_up_desc": "Xuất tệp database ra điện thoại",
@@ -277,6 +281,8 @@
 
   "label_select_payment_category": "Chọn danh mục",
     "label_select_wallet": "Chọn ví",
+  "label_select_outbound_object": "Chọn đối tượng chi",
+  "label_select_inbound_object": "Chọn đối tượng thu",
   "label_description": "Mô tả",
   "hint_description": "Nhập mô tả",
   "label_select_document_no": "Hoá Đơn",
@@ -309,8 +315,8 @@
   "no_category": "Không danh mục",
 
   "field_start_period": "Đầu kì",
-  "field_in": "Nhập vào",
-  "field_out": "Bán ra",
+  "field_in": "Vào",
+  "field_out": "Ra",
   "field_end_period": "Cuối kì",
 
   "action_document_created_withname": "Hoá đơn %s đã được tạo",
@@ -322,5 +328,14 @@
   "save_file_failed": "Lưu tệp thất bại tại %s",
    "no_group": "Không nhóm",
                "save_wallet_title": "Lưu Ví",
-                "action_add_wallet": "Thêm Ví"
+                "action_add_wallet": "Thêm Ví",
+                  "total_balance": "Tổng số dư",
+                     "title_wallet": "Ví Tiền",
+                     "categories": "Danh mục",
+                     "title_save_category": "Lưu danh mục",
+                        "inbound_categories": "Danh mục thu",
+                                                          "outbound_categories": "Danh mục chi",
+                                                          "select_object_type": "Chọn loại đối tượng",
+                                                                 "title_report_list_of_wallet": "Danh sách ví tiền"
+
 }

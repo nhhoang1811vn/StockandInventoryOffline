@@ -35,4 +35,10 @@ class WalletUseCasesImpl implements WalletUseCases{
     return repository.getAllByStoreId(storeId);
   }
 
+  @override
+  Future<Wallet> get(int id) {
+    // TODO: implement get
+    throw UnimplementedError();
+  }
+
 }

@@ -40,4 +40,10 @@ class GroupsUseCaseImpl implements GroupsUseCases{
     return repository.get(id);
   }
 
+  @override
+  Future<Group> get(int id) {
+    // TODO: implement get
+    throw UnimplementedError();
+  }
+
 }
