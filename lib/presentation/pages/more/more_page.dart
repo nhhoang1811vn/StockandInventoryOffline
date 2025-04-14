@@ -195,15 +195,15 @@ class MorePageState extends State<MorePage> {
 
   void onDeleteAccountItemPressed() {
     DialogUtils.showCustomDialog(context,
-        title: 'Notification',
-        message: 'Are you sure to delete your account',
-        cancelBtnText: "Cancel",
-        okBtnText: "OK", cancelBtnFunction: () {
+        title: AppLocalizations.of(context)!.notification_dialog_title,
+        message: AppLocalizations.of(context)!.message_confirm_delete_account,
+        cancelBtnText: AppLocalizations.of(context)!.action_cancel,
+        okBtnText: AppLocalizations.of(context)!.action_ok, cancelBtnFunction: () {
       Navigator.of(context).pop();
     }, okBtnFunction: () {
       FirebaseAuth.instance.currentUser?.delete();
       FirebaseAuth.instance.signOut();
-      showInfoToast("Your account has been deleted");
+      showInfoToast(AppLocalizations.of(context)!.delete_account_successful);
       //Navigator.of(context).pop();
       Navigator.of(context).pushNamedAndRemoveUntil(
         Pages.signIn, (route) => false,
@@ -359,10 +359,14 @@ class MorePageState extends State<MorePage> {
           //String? email = FirebaseAuth.instance.currentUser?.email;
           String? uid = FirebaseAuth.instance.currentUser?.uid;
           if (uid != null) {
-            final ref = storageRef.child("$uid/database.db");
             try {
+              final ref = storageRef.child("$uid/database.db");
               await ref.putFile(file);
-            } on FirebaseException {}
+            } on FirebaseException {
+
+            } catch (e){
+
+            }
           }
           //clear db
           DBHelper dbHelper = DBHelper();

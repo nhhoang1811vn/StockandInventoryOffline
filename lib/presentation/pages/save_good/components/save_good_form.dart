@@ -19,22 +19,19 @@ import 'package:intl/intl.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../../../../domain/entities/good.dart';
 import '../../../../presentation/widgets/snackbar_widgets.dart';
-import '../../../widgets/images_preview/images_preview_view.dart';
 import '../../currency_app_text_field.dart';
 
 class SaveGoodForm extends StatelessWidget {
   SaveGoodForm();
 
-  
   final quantityTextController = TextEditingController();
   final priceTextController = TextEditingController();
   final barcodeTextController = TextEditingController();
 
   final purchasePriceTextController = TextEditingController();
   final salePriceTextController = TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SaveGoodCubit, SaveGoodState>(
@@ -42,76 +39,76 @@ class SaveGoodForm extends StatelessWidget {
         return state1.state != state2.state;
       },
       listener: (BuildContext context, SaveGoodState state) async {
-      if (state.state is SaveItemError) {
-        ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
-      } else if (state.state is SaveItemSameBarcodeError) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.error_same_barcode));
-      } else if (state.state is SaveItemSuccessful) {
-        // final InAppReview inAppReview = InAppReview.instance;
-        // if (await inAppReview.isAvailable()) {
-        //   inAppReview.requestReview();
-        // }
-        ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
-        Navigator.of(context).pop({"item": state.item, "document": state.document});
-      } else if (state.state is OpenCalculatorToInputQuantityState) {
-        Utils.showCalculatorPopup(context, state.transaction!.quantity.toDouble(), (p0) {
-          context.read<SaveGoodCubit>().quantityChanged(p0.toInt().toString());
-          quantityTextController.text = p0.toInt().toString();
-        });
-      } else if (state.state is OpenCalculatorToInputPriceState) {
-        Utils.showCalculatorPopup(context, state.transaction!.price, (p0) {
-          NumberFormat format = new NumberFormat("0.#");
-          context.read<SaveGoodCubit>().onPriceChanged(format.format(p0));
-          priceTextController.text = Config.simpleCurrencyFormat.format(p0);
-        });
-      } else if (state.state is OpenCalculatorToInputPurchasePriceState) {
-        Utils.showCalculatorPopup(context, state.purchasePrice, (p0) {
-          NumberFormat format = new NumberFormat("0.#");
-          context.read<SaveGoodCubit>().onPurchasePriceChanged(format.format(p0));
-          purchasePriceTextController.text = Config.simpleCurrencyFormat.format(p0);
-        });
-      } else if (state.state is OpenCalculatorToInputSalePriceState) {
-        Utils.showCalculatorPopup(context, state.salePrice, (p0) {
-          NumberFormat format = new NumberFormat("0.#");
-          context.read<SaveGoodCubit>().onSalePriceChanged(format.format(p0));
-          salePriceTextController.text = Config.simpleCurrencyFormat.format(p0);
-        });
-      } else if (state.state is OpenBarcodeScannerPageState) {
-        var result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const SimpleBarcodeScannerPage(),
-            ));
-        if (result != "-1") {
-          Utils.handleABarcodeFound();
-          //barcodeTextController.text = result;
-          context.read<SaveGoodCubit>().barCodeChanged(result);
+        if (state.state is SaveItemError) {
+          ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+        } else if (state.state is SaveItemSameBarcodeError) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.error_same_barcode));
+        } else if (state.state is SaveItemSuccessful) {
+          final InAppReview inAppReview = InAppReview.instance;
+          if (await inAppReview.isAvailable()) {
+            inAppReview.requestReview();
+          }
+          ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
+          Navigator.of(context).pop({"item": state.item, "document": state.document});
+        } else if (state.state is OpenCalculatorToInputQuantityState) {
+          Utils.showCalculatorPopup(context, state.transaction!.quantity.toDouble(), (p0) {
+            context.read<SaveGoodCubit>().quantityChanged(p0.toInt().toString());
+            quantityTextController.text = p0.toInt().toString();
+          });
+        } else if (state.state is OpenCalculatorToInputPriceState) {
+          Utils.showCalculatorPopup(context, state.transaction!.price, (p0) {
+            NumberFormat format = new NumberFormat("0.#");
+            context.read<SaveGoodCubit>().onPriceChanged(format.format(p0));
+            priceTextController.text = Config.simpleCurrencyFormat.format(p0);
+          });
+        } else if (state.state is OpenCalculatorToInputPurchasePriceState) {
+          Utils.showCalculatorPopup(context, state.purchasePrice, (p0) {
+            NumberFormat format = new NumberFormat("0.#");
+            context.read<SaveGoodCubit>().onPurchasePriceChanged(format.format(p0));
+            purchasePriceTextController.text = Config.simpleCurrencyFormat.format(p0);
+          });
+        } else if (state.state is OpenCalculatorToInputSalePriceState) {
+          Utils.showCalculatorPopup(context, state.salePrice, (p0) {
+            NumberFormat format = new NumberFormat("0.#");
+            context.read<SaveGoodCubit>().onSalePriceChanged(format.format(p0));
+            salePriceTextController.text = Config.simpleCurrencyFormat.format(p0);
+          });
+        } else if (state.state is OpenBarcodeScannerPageState) {
+          var result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SimpleBarcodeScannerPage(),
+              ));
+          if (result != "-1") {
+            Utils.handleABarcodeFound();
+            //barcodeTextController.text = result;
+            context.read<SaveGoodCubit>().barCodeChanged(result);
+          }
+        } else if (state.state is OpenHistoryPageState) {
+          Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': state.item!.id});
+        } else if (state.state is OpenReceiveGoodsPopupState) {
+          //quick insert document +
+          Map<dynamic, dynamic>? result = await showDialog(
+              context: context,
+              builder: (_) => QuickInsertDocumentWidget(state.item!, DocumentType.incoming),
+              barrierDismissible: true);
+          if (result != null) {
+            saveTransaction(context, DocumentType.incoming, state, result);
+          }
+        } else if (state.state is OpenIssueGoodsPopupState) {
+          //quick insert document -
+          Map<dynamic, dynamic>? result = await showDialog(
+              context: context,
+              builder: (_) => QuickInsertDocumentWidget(state.item!, DocumentType.outgoing),
+              barrierDismissible: true);
+          if (result != null) {
+            saveTransaction(context, DocumentType.outgoing, state, result);
+          }
         }
-      }else if (state.state is OpenHistoryPageState){
-        Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': state.item!.id});
-      }  else if (state.state is OpenReceiveGoodsPopupState) {
-        //quick insert document +
-        Map<dynamic, dynamic>? result = await showDialog(
-            context: context,
-            builder: (_) => QuickInsertDocumentWidget(state.item!, DocumentType.incoming),
-            barrierDismissible: true);
-        if (result != null) {
-          saveTransaction(context, DocumentType.incoming, state, result);
-        }
-      } else if (state.state is OpenIssueGoodsPopupState) {
-        //quick insert document -
-        Map<dynamic, dynamic>? result = await showDialog(
-            context: context,
-            builder: (_) => QuickInsertDocumentWidget(state.item!, DocumentType.outgoing),
-            barrierDismissible: true);
-        if (result != null) {
-          saveTransaction(context, DocumentType.outgoing, state, result);
-        }
-      }
-    },
-      builder: (context, state){
-        barcodeTextController.text = state.barCode ?? '';
+      },
+      builder: (context, state) {
+        barcodeTextController.text = state.barCode;
         if (state.transaction?.price != null) {
           priceTextController.text = Config.simpleCurrencyFormat.format(state.transaction?.price);
         } else {
@@ -211,17 +208,17 @@ class SaveGoodForm extends StatelessWidget {
       children: [
         Expanded(
             child: AppTextField(
-              readOnly: readonly,
-              labelText: AppLocalizations.of(context)!.field_quantity,
-              keyboardType: TextInputType.number,
-              onChanged: (value) => context.read<SaveGoodCubit>().quantityChanged(value),
-              controller: quantityTextController,
-            )),
+          readOnly: readonly,
+          labelText: AppLocalizations.of(context)!.field_quantity,
+          keyboardType: TextInputType.number,
+          onChanged: (value) => context.read<SaveGoodCubit>().quantityChanged(value),
+          controller: quantityTextController,
+        )),
         if (!readonly)
           Align(
               alignment: Alignment.centerRight,
               child:
-              CircleButton(FontAwesomeIcons.calculator, context.read<SaveGoodCubit>().onQuantityCalculatorPressed))
+                  CircleButton(FontAwesomeIcons.calculator, context.read<SaveGoodCubit>().onQuantityCalculatorPressed))
       ],
     );
   }
@@ -231,12 +228,12 @@ class SaveGoodForm extends StatelessWidget {
       children: [
         Expanded(
             child: CurrencyAppTextField(
-              labelText: state.transaction?.type == DocumentType.incoming
-                  ? AppLocalizations.of(context)!.field_purchase_price
-                  : AppLocalizations.of(context)!.field_sale_price,
-              controller: priceTextController,
-              onChanged: context.read<SaveGoodCubit>().onPriceChanged,
-            )),
+          labelText: state.transaction?.type == DocumentType.incoming
+              ? AppLocalizations.of(context)!.field_purchase_price
+              : AppLocalizations.of(context)!.field_sale_price,
+          controller: priceTextController,
+          onChanged: context.read<SaveGoodCubit>().onPriceChanged,
+        )),
         CircleButton(FontAwesomeIcons.calculator, context.read<SaveGoodCubit>().onPriceCalculatorPressed)
       ],
     );
@@ -247,10 +244,10 @@ class SaveGoodForm extends StatelessWidget {
       children: [
         Expanded(
             child: CurrencyAppTextField(
-              labelText: AppLocalizations.of(context)!.field_purchase_price,
-              controller: purchasePriceTextController,
-              onChanged: context.read<SaveGoodCubit>().onPurchasePriceChanged,
-            )),
+          labelText: AppLocalizations.of(context)!.field_purchase_price,
+          controller: purchasePriceTextController,
+          onChanged: context.read<SaveGoodCubit>().onPurchasePriceChanged,
+        )),
         CircleButton(FontAwesomeIcons.calculator, context.read<SaveGoodCubit>().onPurchasePriceCalculatorPressed)
       ],
     );
@@ -261,10 +258,10 @@ class SaveGoodForm extends StatelessWidget {
       children: [
         Expanded(
             child: CurrencyAppTextField(
-              labelText: AppLocalizations.of(context)!.field_sale_price,
-              controller: salePriceTextController,
-              onChanged: context.read<SaveGoodCubit>().onSalePriceChanged,
-            )),
+          labelText: AppLocalizations.of(context)!.field_sale_price,
+          controller: salePriceTextController,
+          onChanged: context.read<SaveGoodCubit>().onSalePriceChanged,
+        )),
         CircleButton(FontAwesomeIcons.calculator, context.read<SaveGoodCubit>().onSalePriceCalculatorPressed)
       ],
     );
@@ -301,5 +298,4 @@ class SaveGoodForm extends StatelessWidget {
     var text = sprintf(AppLocalizations.of(context)!.action_document_created_withname, [document.name]);
     ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccessWithText(text));
   }
-
 }

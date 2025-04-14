@@ -72,7 +72,7 @@ class ItemHistoryPageState extends BaseStateWidget<ItemHistoryPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image(image: AssetImage('assets/images/document.png'), width: 60),
+            Icon(UIConstants.documentIconData, size: 64, color: Colors.orange.shade700),
             SizedBox(height: 16),
             Text(AppLocalizations.of(context)!.empty_document, textAlign: TextAlign.center,style: AppStyle.getEmptyTextStyle())
           ],

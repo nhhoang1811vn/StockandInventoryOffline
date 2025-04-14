@@ -3,7 +3,8 @@ class Pages {
 
   //static const String payment_list = 'payment_list';
   static const String save_payment = 'save_payment';
-  static const String save_payment_category = 'save_paymen_category';
+  static const String save_payment_category = 'save_payment_category';
+  static const String payment_categories = 'payment_categories';
   static const String main = '/main';
   static const String home = '/home';
   static const String loading_data = '/loading_data';
@@ -25,10 +26,7 @@ class Pages {
 
   static const String customer_list = '/customer_list';
   static const String save_customer = '/save_customer';
-
-
-  static const String expenses = "/expenses";
-  static const String save_expense = "/save_expense";
+  static const String save_wallet = "/save_wallet";
 
   static const String help = '/help';
   static const String helps = '/helps';

@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
+import 'package:good_manager/domain/entities/supplier.dart';
+import 'package:good_manager/domain/entities/wallet.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/pages/save_payment/components/select_payment_category.dart';
-import 'package:good_manager/presentation/widgets/payment_category_short_form_widget.dart';
+import 'package:good_manager/presentation/pages/save_payment/components/select_wallet_widget.dart';
+import 'package:good_manager/presentation/widgets/category_short_form_widget.dart';
 import 'package:good_manager/presentation/widgets/primary_button.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:intl/intl.dart';
@@ -17,12 +20,15 @@ import '../../markdown/md_provider_factory.dart';
 import '../../utils.dart';
 import '../../widgets/circle_button_widget.dart';
 import '../../widgets/snackbar_widgets.dart';
+import '../../widgets/wallet_short_form_widget.dart';
 import '../app_text_field.dart';
 import '../base/base_state.dart';
 import '../currency_app_text_field.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'bloc/save_payment_cubit.dart';
+import 'components/select_category_widget.dart';
+import 'components/select_dest_object_widget.dart';
 
 class SavePaymentPage extends StatefulWidget {
   final Payment item;
@@ -39,45 +45,49 @@ class SavePaymentPageState extends State<SavePaymentPage> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
-  final TextEditingController documentNameController = TextEditingController();
-  void _refreshCategoriesAndShowBottomSheetAgain(){
-    context.read<SavePaymentCubit>().onRefreshCategories();
-    Navigator.pop(context);
-    Future.delayed(Duration(milliseconds: 200), () {
-      _showSelectCategoryBottomSheet(context);
+
+  void _showSelectObjectBottomSheet(BuildContext context){
+    showModalBottomSheet(context: context,   isScrollControlled: true,        builder: (builderContext){
+      return SelectDestObjectWidget(
+        type: widget.item.type,
+        onDocumentOptionPressed: () {
+        Navigator.of(context).pop();
+        context.read<SavePaymentCubit>().onSelectDocument();
+      }, onPersonOptionPressed: (){
+        Navigator.of(context).pop();
+        context.read<SavePaymentCubit>().onSelectPerson();
+      },);
     });
   }
-  void _showCategoryOptionsDialog(PaymentCategory item) {
-    showDialog(
-        context: context,
-        builder: (BuildContext mContext) {
-          return SimpleDialog(
-            children: <Widget>[
-              SimpleDialogOption(
-                padding: EdgeInsets.all(16.0),
-                onPressed: () async{
+
+  void _showSelectWalletBottomSheet(BuildContext context){
+    var items = context.read<SavePaymentCubit>().state.wallets;
+    var selectedItem = context.read<SavePaymentCubit>().state.selectedWallet;
+    showModalBottomSheet(context: context,
+        isScrollControlled: true,
+        builder: (builderContext){
+          return SelectWalletWidget(
+              items: items,
+              selectedItem: selectedItem,
+              onPressed: (item){
+                Navigator.pop(context);
+                context.read<SavePaymentCubit>().onWalletChanged(item);
+              },
+              onAddButtonPressed: () async{
+                int storeId = storage.getSelectedStoreId();
+                Wallet item = Wallet();
+                item.storeId = storeId;
+                item.color = Colors.blue.toARGB32();
+                var result = await Navigator.of(context).pushNamed(Pages.save_wallet, arguments: {"item":  item});
+                if (result != null){
+                  Wallet createdWallet = result as Wallet;
+                  context.read<SavePaymentCubit>().onWalletChanged(createdWallet);
+                  context.read<SavePaymentCubit>().onRefreshWallets();
                   Navigator.pop(context);
-                  var result = await Navigator.of(context).pushNamed(Pages.save_payment_category, arguments: {"item": item});
-                  if (result != null){
-                    _refreshCategoriesAndShowBottomSheetAgain();
-                  }
-                },
-                child: Text(AppLocalizations.of(context)!.action_edit),
-              ),
-              SimpleDialogOption(
-                padding: EdgeInsets.all(16.0),
-                onPressed: (){
-                  Navigator.pop(context);
-                  context.read<SavePaymentCubit>().deleteCategory(item.id!);
-                  _refreshCategoriesAndShowBottomSheetAgain();
-                  //showDeleteDocumentConfirm(item);
-                },
-                child: Text(AppLocalizations.of(context)!.action_delete),
-              ),
-            ],
+                }
+              },
           );
-        },
-        barrierDismissible: true);
+        });
   }
 
   void _showSelectCategoryBottomSheet(BuildContext context) {
@@ -87,29 +97,56 @@ class SavePaymentPageState extends State<SavePaymentPage> {
         context: context,
         isScrollControlled: true,
         builder: (builderContext) {
-          return SelectPaymentCategoryWidget(
+          return SelectCategoryWidget(
               categories: categories,
               selectedCategory: category,
               onPressed: (item) {
                 Navigator.pop(context);
                 context.read<SavePaymentCubit>().onCategoryChanged(item);
               },
-              onLongPressed: (item) {
-                _showCategoryOptionsDialog(item);
-              },
-              onAddNewCategoryButtonPressed: () async {
+              onAddNewButtonPressed: () async {
                 PaymentCategory item = PaymentCategory();
-                item.color = Colors.blue.value;
                 item.type = widget.item.type;
                 var result =
                     await Navigator.of(context).pushNamed(Pages.save_payment_category, arguments: {"item": item});
                 if (result != null) {
-                  _refreshCategoriesAndShowBottomSheetAgain();
+                  PaymentCategory createdCategory = result as PaymentCategory;
+                  context.read<SavePaymentCubit>().onCategoryChanged(createdCategory);
+                  context.read<SavePaymentCubit>().onRefreshCategories();
+                  Navigator.pop(context);
                 }
               });
         });
   }
 
+  Widget _buildPrefixObject(SavePaymentState state){
+    var result = "";
+    if (widget.item.type == PaymentType.inbound){
+      if (state.documentId != null){
+        result = AppLocalizations.of(context)!.documents_title + " " + state.document!.name;
+        if (state.customer?.name != null){
+          result += " (${state.customer!.name})";
+        }
+      }else if (state.customerId != null){
+        result = state.customer!.name;
+      }else{
+        result = AppLocalizations.of(context)!.hint_select;
+      }
+    }else{
+      if (state.documentId != null){
+        result = AppLocalizations.of(context)!.documents_title + " " + state.document!.name;
+        //result = state.document!.name;
+        if (state.supplier?.name != null){
+          result += " (${state.supplier!.name})";
+        }
+      }else if (state.supplierId != null){
+        result = state.supplier!.name;
+      }else{
+        result = AppLocalizations.of(context)!.hint_select;
+      }
+    }
+    return Text(result);
+  }
   @override
   Widget build(BuildContext context) {
     descriptionController.text = widget.item.description;
@@ -131,10 +168,24 @@ class SavePaymentPageState extends State<SavePaymentPage> {
             context.read<SavePaymentCubit>().onDocumentChanged(item);
           }
           context.read<SavePaymentCubit>().resetState();
+        } else if (state.state is OpenPersonListState){
+          if (widget.item.type == PaymentType.inbound){
+            final result = await Navigator.of(context).pushNamed(Pages.customer_list, arguments: {"isSelection": true});
+            if (result != null){
+              Customer customer = result as Customer;
+              context.read<SavePaymentCubit>().onCustomerChanged(customer);
+            }
+          }else{
+            final result = await Navigator.of(context).pushNamed(Pages.supplier_list, arguments: {"isSelection": true});
+            if (result != null){
+              Supplier supplier = result as Supplier;
+              context.read<SavePaymentCubit>().onSupplierChanged(supplier);
+            }
+          }
         }
       },
       builder: (BuildContext context, SavePaymentState state) {
-        documentNameController.text = state.documentName.value;
+        //documentNameController.text = state.documentName.value;
         if (state.date != null) {
           dateController.text = DateFormatFactory.getDateFormat().format(state.date!);
         } else {
@@ -173,11 +224,41 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                                   },
                                   prefix: state.selectedCategory == null
                                       ? Text(AppLocalizations.of(context)!.hint_select)
-                                      : PaymentCategoryShortFormWidget(state.selectedCategory!),
+                                      : CategoryShortFormWidget(state.selectedCategory!),
                                   suffix: Icon(
                                     Icons.keyboard_arrow_down,
                                     size: 16,
                                   )),
+                              SizedBox(height: 16),
+                              AppTextField(
+                                  labelText: AppLocalizations.of(context)!.label_select_wallet,
+                                  keyboardType: TextInputType.none,
+                                  readOnly: true,
+                                  onTapped: () {
+                                    _showSelectWalletBottomSheet(context);
+                                  },
+                                  prefix: state.selectedWallet == null
+                                      ? Text(AppLocalizations.of(context)!.hint_select)
+                                      : WalletShortFormWidget(state.selectedWallet!),
+                                  suffix: Icon(
+                                    Icons.keyboard_arrow_down,
+                                    size: 16,
+                                  )),
+                              SizedBox(height: 16),
+                              AppTextField(
+
+                                  labelText: widget.item.type == PaymentType.inbound ? AppLocalizations.of(context)!.label_select_inbound_object : AppLocalizations.of(context)!.label_select_outbound_object,
+                                keyboardType: TextInputType.none,
+                                  readOnly: true,
+                                  onTapped: (){
+                                    _showSelectObjectBottomSheet(context);
+                                  },
+                                  prefix: _buildPrefixObject(state),
+                                  suffix: Icon(
+                                    Icons.keyboard_arrow_down,
+                                    size: 16,
+                                  )
+                              ),
                               SizedBox(height: 16),
                               AppTextField(
                                   labelText: AppLocalizations.of(context)!.label_description,
@@ -187,17 +268,17 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                                   minLines: 2,
                                   onChanged: (value) => context.read<SavePaymentCubit>().descriptionChanged(value),
                                   keyboardType: TextInputType.name),
-                              SizedBox(
-                                height: 16,
-                              ),
-                              AppTextField(
-                                  controller: documentNameController,
-                                  suffix: Icon(Icons.keyboard_arrow_down, size: 16),
-                                  labelText: AppLocalizations.of(context)!.label_select_document_no,
-                                  hintText: AppLocalizations.of(context)!.hint_select,
-                                  keyboardType: TextInputType.none,
-                                  readOnly: true,
-                                  onTapped: () => {context.read<SavePaymentCubit>().onDocumentNameClicked()}),
+                              // SizedBox(
+                              //   height: 16,
+                              // ),
+                              // AppTextField(
+                              //     controller: documentNameController,
+                              //     suffix: Icon(Icons.keyboard_arrow_down, size: 16),
+                              //     labelText: AppLocalizations.of(context)!.label_select_document_no,
+                              //     hintText: AppLocalizations.of(context)!.hint_select,
+                              //     keyboardType: TextInputType.none,
+                              //     readOnly: true,
+                              //     onTapped: () => {context.read<SavePaymentCubit>().onDocumentNameClicked()}),
                               SizedBox(height: 16),
                               AppTextField(
                                 controller: dateController,
@@ -219,6 +300,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                                 },
                               ),
                               SizedBox(height: 16),
+
                               Row(
                                 children: [
                                   Expanded(

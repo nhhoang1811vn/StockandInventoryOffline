@@ -90,17 +90,19 @@ class UIConstants {
   static IconData cancelIconData = Icons.close;
   static IconData barcodeIconData =  FontAwesomeIcons.barcode;
 
-  //static IconData homeIconData =  FontAwesomeIcons.home;
-  //static IconData goodIconData =  FontAwesomeIcons.boxOpen;
-  //static IconData groupIconData =  FontAwesomeIcons.solidFolder;//Icons.folder;//FontAwesomeIcons.folder;
-  //static IconData documentIconData = FontAwesomeIcons.book;
   static IconData supplierIconData = FontAwesomeIcons.userGroup;
   static IconData customerIconData = FontAwesomeIcons.userGroup;
   static IconData expenseIconData = FontAwesomeIcons.handHoldingDollar;
   static IconData reportIconData = FontAwesomeIcons.chartSimple;
   static IconData storeIconData = FontAwesomeIcons.shop;
   static IconData settingIconData = FontAwesomeIcons.gear;
-  static IconData paymentIconData = Icons.credit_card;
+  static IconData paymentIconData = FontAwesomeIcons.moneyBill;
+  static IconData walletIconData = FontAwesomeIcons.wallet;
+
+  static IconData goodIconData = FontAwesomeIcons.box;
+  static IconData groupIconData = Icons.folder;
+
+  static IconData documentIconData = FontAwesomeIcons.receipt;
 
   static const double screenSpace = 16.0;
 

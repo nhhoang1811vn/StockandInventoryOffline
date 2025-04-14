@@ -47,4 +47,10 @@ class StoresUseCaseImpl implements StoresUseCase{
   Future<List<Store>> getAll(){
     return repository.getAll();
   }
+
+  @override
+  Future<Store> get(int id) {
+    // TODO: implement get
+    throw UnimplementedError();
+  }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.dart';
 import 'package:good_manager/presentation/pages/documents/documents_view.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
@@ -57,8 +56,8 @@ class MainPageState extends State<MainPage> {
           type: BottomNavigationBarType.fixed,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.home), label: AppLocalizations.of(context)!.home_title),
-            BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.box), label: AppLocalizations.of(context)!.goods_title),
-            BottomNavigationBarItem(icon: Icon(Icons.book), label: AppLocalizations.of(context)!.documents_title),
+            BottomNavigationBarItem(icon: Icon(UIConstants.goodIconData), label: AppLocalizations.of(context)!.goods_title),
+            BottomNavigationBarItem(icon: Icon(UIConstants.documentIconData), label: AppLocalizations.of(context)!.documents_title),
             BottomNavigationBarItem(icon: Icon(UIConstants.paymentIconData), label: AppLocalizations.of(context)!.payments_title),
             BottomNavigationBarItem(icon: Icon(UIConstants.settingIconData), label: AppLocalizations.of(context)!.settings_title),
           ],

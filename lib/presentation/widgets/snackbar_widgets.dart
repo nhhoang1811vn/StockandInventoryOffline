@@ -4,13 +4,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 SnackBar snackBarWhenFailure(BuildContext context) {
   return SnackBar(
-    content: Text(AppLocalizations.of(context)!.error),
+    content: Text(AppLocalizations.of(context)?.error ?? ""),
     backgroundColor: Colors.red,
   );
 }
 SnackBar snackBarWhenSuccess(BuildContext context) {
   return SnackBar(
-    content: Text(AppLocalizations.of(context)!.success),
+    content: Text(AppLocalizations.of(context)?.success ?? ""),
     backgroundColor: Colors.green,
   );
 }

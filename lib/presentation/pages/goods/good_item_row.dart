@@ -37,7 +37,7 @@ class GoodItemRow extends StatelessWidget {
           padding: EdgeInsets.all(16.0),
           child: Row(
             children: [
-              _buildLeadingWidget(),
+              _buildLeadingWidget(context),
               SizedBox(
                 width: 16,
               ),
@@ -49,8 +49,8 @@ class GoodItemRow extends StatelessWidget {
     );
   }
 
-  Widget _buildLeadingWidget() {
-    return item.files.isNotEmpty ? getAvatarWidget(item.files.first) : _buildEmptyAvatarWidget();
+  Widget _buildLeadingWidget(BuildContext context) {
+    return item.files.isNotEmpty ? getAvatarWidget(item.files.first) : _buildEmptyAvatarWidget(context);
   }
 
   Widget _buildWidget(BuildContext context) {
@@ -119,7 +119,7 @@ class GoodItemRow extends StatelessWidget {
     return SizedBox(width: 32, height: 32, child: Image.memory(bytes));
   }
 
-  Widget _buildEmptyAvatarWidget() {
-    return Image(image: AssetImage('assets/images/box.png'), width: 32);
+  Widget _buildEmptyAvatarWidget(BuildContext context) {
+    return Icon(UIConstants.goodIconData, size: 32, color: Theme.of(context).colorScheme.onPrimary);
   }
 }

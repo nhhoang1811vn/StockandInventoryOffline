@@ -22,8 +22,7 @@ class CustomersRepositoryImpl implements CustomersRepository {
 
   @override
   Future<Customer> get(int id) {
-    // TODO: implement get
-    throw UnimplementedError();
+    return db.getCustomer(id);
   }
 
   @override

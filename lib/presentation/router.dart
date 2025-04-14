@@ -19,6 +19,8 @@ import 'package:good_manager/presentation/pages/main/main_page.dart';
 import 'package:good_manager/presentation/pages/onboarding/bloc/on_boarding_cubit.dart';
 import 'package:good_manager/presentation/pages/onboarding/on_boarding_page.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
+import 'package:good_manager/presentation/pages/payment_categories/bloc/payment_categories_cubit.dart';
+import 'package:good_manager/presentation/pages/payment_categories/payment_categories_page.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/report_page.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
@@ -27,8 +29,6 @@ import 'package:good_manager/presentation/pages/save_customer/bloc/save_customer
 import 'package:good_manager/presentation/pages/save_customer/save_customer_page.dart';
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
 import 'package:good_manager/presentation/pages/save_document/save_document_view.dart';
-import 'package:good_manager/presentation/pages/save_expense/bloc/save_expense_cubit.dart';
-import 'package:good_manager/presentation/pages/save_expense/save_expense_page.dart';
 import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.dart';
 import 'package:good_manager/presentation/pages/save_good/save_good_view.dart';
 import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
@@ -41,6 +41,8 @@ import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit
 import 'package:good_manager/presentation/pages/save_store/save_store_page.dart';
 import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart';
 import 'package:good_manager/presentation/pages/save_supplier/save_supplier_page.dart';
+import 'package:good_manager/presentation/pages/save_wallet/bloc/save_wallet_cubit.dart';
+import 'package:good_manager/presentation/pages/save_wallet/save_wallet_page.dart';
 import 'package:good_manager/presentation/pages/select_document/bloc/select_document_cubit.dart';
 import 'package:good_manager/presentation/pages/select_document/select_documents_page.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
@@ -113,13 +115,6 @@ class AppRouter {
                   create: (context) => getIt<SaveDocumentCubit>(),
                   child: SaveDocumentPage(args["item"]),
                 ));
-      // case Pages.payment_list:
-      //   Map<dynamic, dynamic> args = settings.arguments as Map;
-      //   return MaterialPageRoute(
-      //       builder: (_) => BlocProvider(
-      //             create: (context) => getIt<PaymentsCubit>(),
-      //             child: PaymentsPage(args["documentId"]),
-      //           ));
       case Pages.save_payment:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
@@ -220,18 +215,16 @@ class AppRouter {
                 child: ReportDetailPage(
                   args["type"],
                   args["start"],
-                  args["end"],
-                  args["groupId"],
-                  args["groupName"],
+                  args["end"]
                 )));
 
-      case Pages.save_expense:
+      case Pages.save_wallet:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
-                  create: (context) => getIt<SaveExpenseCubit>(),
-                  child: SaveExpensePage(
-                    item: args["item"],
+                  create: (context) => getIt<SaveWalletCubit>(),
+                  child: SaveWalletPage(
+                    args["item"],
                   ),
                 ));
       case Pages.settings:
@@ -263,7 +256,8 @@ class AppRouter {
       case Pages.onboarding:
         return _buildRoute(
             settings, BlocProvider(create: (context) => getIt<OnBoardingCubit>(), child: OnBoardingPage()));
-
+      case Pages.payment_categories:
+        return _buildRoute(settings, BlocProvider(create: (context) => getIt<PaymentCategoriesCubit>(), child: PaymentCategoriesPage(),));
       default:
         return _buildRoute(settings, MainPage());
     }

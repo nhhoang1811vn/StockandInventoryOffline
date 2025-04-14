@@ -20,6 +20,7 @@ import 'package:good_manager/presentation/pages/save_document/bloc/save_document
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../../../domain/entities/supplier.dart';
@@ -60,6 +61,10 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
           if (state.state is SaveDocumentFailedState) {
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(state.exceptionError));
           } else if (state.state is SaveDocumentSuccessfulState) {
+            final InAppReview inAppReview = InAppReview.instance;
+            if (await inAppReview.isAvailable()) {
+              inAppReview.requestReview();
+            }
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
             Navigator.of(context).pop();
           } else if (state.state is OpenPersonListState) {
@@ -144,14 +149,16 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
           } else if (state.state is OpenInputQuantityDialogState) {
             final finalState = state.state as OpenInputQuantityDialogState;
             final good = finalState.good;
-            Map<dynamic, dynamic> result = await showDialog(
+            Map<dynamic, dynamic>? result = await showDialog(
                 context: context,
                 builder: (_) => AddQuantityAndPriceWidget(good, widget.item.type),
-                barrierDismissible: true);
-            double quantity = result["quantity"] ?? 0;
-            double price = result["price"] ?? 0.0;
-            context.read<SaveDocumentCubit>().saveThenAddTransaction(good, quantity, price);
-            context.read<SaveDocumentCubit>().onBatchScanMenuClicked();
+                barrierDismissible: false);
+            if (result != null){
+              double quantity = result["quantity"] ?? 0;
+              double price = result["price"] ?? 0.0;
+              context.read<SaveDocumentCubit>().saveThenAddTransaction(good, quantity, price);
+              context.read<SaveDocumentCubit>().onBatchScanMenuClicked();
+            }
           } else if (state.state is OpenBarcodeScannerToSearchState) {
             //open bar code scanner to fill search text box
             var result = await Navigator.push(
@@ -432,7 +439,7 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image(image: AssetImage('assets/images/box.png'), width: 60),
+          Icon(UIConstants.goodIconData, size: 64, color: Theme.of(context).colorScheme.onPrimary),
           SizedBox(
             height: 16,
           ),

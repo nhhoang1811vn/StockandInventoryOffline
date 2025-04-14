@@ -22,7 +22,7 @@ class GroupItemRow extends StatelessWidget {
           padding: EdgeInsets.all(16),
           child: Row(
             children: [
-              Image(image: AssetImage('assets/images/folder.png'), width: 32),
+              Icon(UIConstants.groupIconData, size: 32, color: Theme.of(context).colorScheme.onPrimary),
               SizedBox(
                 width: 16,
               ),

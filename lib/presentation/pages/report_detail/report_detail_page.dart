@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
@@ -26,15 +25,10 @@ class ReportDetailPage extends StatefulWidget{
   final DateTime start;
   final DateTime end;
 
-  final int? groupId;
-  final String? groupName;
-
   ReportDetailPage(
       this.type,
       this.start,
-      this.end,
-      this.groupId,
-      this.groupName);
+      this.end);
   @override
   State<StatefulWidget> createState() {
     return ReportDetailPageState();
@@ -48,9 +42,7 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
         context,
         widget.type,
         widget.start,
-        widget.end,
-        widget.groupId,
-        widget.groupName
+        widget.end
     );
     return BlocConsumer<ReportDetailCubit, ReportDetailState>(
         builder: (context, state) => Stack(children: [
@@ -120,11 +112,11 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
       File file = File(outputFile);
       await file.writeAsString(csv);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Lưu tệp CSV tại: ${file.path}'),
+        content: Text(sprintf(AppLocalizations.of(context)!.save_file_successful, [file.path])),
       ));
     }catch(e){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Lưu tệp CSV lỗi ${e.toString()}'),
+        content: Text(sprintf(AppLocalizations.of(context)!.save_file_failed,[e.toString()])),
       ));
     }
   }
@@ -136,11 +128,11 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
       final File file = File(outputFile);
       await file.writeAsBytes(await pdf.save());
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Lưu tệp PDF tại: ${file.path}'),
+      content: Text(sprintf(AppLocalizations.of(context)!.save_file_successful, [file.path])),
       ));
     }catch(e){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Lưu tệp PDF lỗi ${e.toString()}'),
+        content: Text(sprintf(AppLocalizations.of(context)!.save_file_failed,[e.toString()])),
       ));
     }
   }
@@ -203,35 +195,44 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
   List<Widget> _buildFirstColumn(BuildContext context,ReportDetailState state) {
     List<Widget> results = [];
     bool flag = true;
-
-    //int columnCount = state.data.firstOrNull?.length ?? 1;
-    //double cellWidth = getCellWidth(context, columnCount);
     state.data.asMap().forEach((key, value) {
       if (key == 0) {
         results.add(_buildHighlightCell(value: value.first));
       } else {
         results.add(_buildNormalCell(
             value: value.first,
-            //width: cellWidth,
             type: flag, onPressed: () async{
           if (state.type == ReportType.LIST_OF_GOODS){
-            var goodId = state.ids[key - 1];
-            await Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
-            context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
-          }else if (state.type == ReportType.LIST_OF_DOCUMENT || state.type == ReportType.DEBTS_BY_CUSTOMER || state.type == ReportType.DEBTS_BY_SUPPLIER){
+            var good = state.goods[key - 1];
+            await Navigator.of(context).pushNamed(Pages.save_good, arguments: {'item': good});
+            //var goodId = state.goods[key - 1].id;
+            //await Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
+            context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end);
+          }else if (state.type == ReportType.LIST_OF_DOCUMENT){
             var position = key -1 ;
             if (position >=0 && position < state.documents.length){
               var item = state.documents[position];
               await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
-              context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
+              context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end);
             }
-          }else if (state.type == ReportType.OUTBOUND_PAYMENTS || state.type == ReportType.INBOUND_PAYMENTS){
-            var position = key - 1;
-            if (position >= 0 && position < state.payments.length){
-              var item = state.payments[position];
-              await Navigator.of(context).pushNamed(Pages.save_payment, arguments: {'item': item});
-              context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
-            }
+          }else if (state.type == ReportType.DEBTS_BY_SUPPLIER){
+            var position = key -1 ;
+            var item = state.suppliers[position];
+            await Navigator.of(context).pushNamed(Pages.save_supplier, arguments: {'item': item});
+            context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end);
+          }else if (state.type == ReportType.DEBTS_BY_CUSTOMER){
+            var position = key -1 ;
+            var item = state.customers[position];
+            await Navigator.of(context).pushNamed(Pages.save_customer, arguments: {'item': item});
+            context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end);
+          }
+          else if (state.type == ReportType.OUTBOUND_PAYMENTS || state.type == ReportType.INBOUND_PAYMENTS){
+            // var position = key - 1;
+            // if (position >= 0 && position < state.payments.length){
+            //   var item = state.payments[position];
+            //   await Navigator.of(context).pushNamed(Pages.save_payment, arguments: {'item': item});
+            //   context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end);
+            // }
           }
            }));
         flag = !flag;
@@ -273,8 +274,6 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
   List<Widget> _buildFullRow(BuildContext context, ReportDetailState state) {
     List<Widget> results = [];
     bool flag = false;
-    //int columnCount = state.data.firstOrNull?.length ?? 1;
-    //double cellWidth = getCellWidth(context, columnCount);
     state.data.asMap().forEach((key, value) {
       List<Widget> rows = [];
       for (int i = 0; i < value.length; i++) {
@@ -287,13 +286,14 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
               type: flag,
           onPressed: (){
             if (state.type == ReportType.LIST_OF_GOODS){
-              var goodId = state.ids[key - 1];
-              Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
-              context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
+              var good = state.goods[key - 1];
+              //Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
+              Navigator.of(context).pushNamed(Pages.save_good, arguments: {'item': good});
+              context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end);
             }else if (state.type == ReportType.LIST_OF_DOCUMENT){
               var item = state.documents[key -1];
               Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
-              context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
+              context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end);
             }
           }));
         }
@@ -354,7 +354,7 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
       child: Container(
         alignment: Alignment.center,
         width: 120,
-        height: 40,
+        height: 35,
         color: backgroundColor,
         margin: EdgeInsets.all(1.0),
         child: Text(
@@ -366,36 +366,28 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
       ),
     );
   }
-  // double getCellWidth(BuildContext context, int columnCount){
-  //   if (Platform.isWindows){
-  //     var screenWidth = MediaQuery.sizeOf(context).width - 20;
-  //     var cellWidth = screenWidth / columnCount;
-  //     var width = max(cellWidth, MIN_WIDTH_CELL);
-  //     return width;
-  //   }else{
-  //     return MIN_WIDTH_CELL;
-  //   }
-  // }
   Widget _buildContent(BuildContext context, ReportDetailState state){
     var text = sprintf(AppLocalizations.of(context)!.report_detail_header, [
       DateFormatFactory.getDateFormat().format(state.start!),
       DateFormatFactory.getDateFormat().format(state.end!),
       storage.getSelectedStoreName()
     ]);
-    if (state.groupName != null){
-      text += ", Group ${state.groupName}";
-    }
     return Container(
         child: SingleChildScrollView(
           child: Column(
             children: [
               Row(children: [
                 IconButton(onPressed: () async{
-                  final updatedColumns = await showDialog(context: context, builder: (BuildContext context) {
+                  final updatedColumns = await showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
                     return ColumnDisplayDialog(columns: state.columns);
                   });
-                  context.read<ReportDetailCubit>().setColumns(updatedColumns);
-                  context.read<ReportDetailCubit>().update();
+                  if (updatedColumns != null){
+                    context.read<ReportDetailCubit>().setColumns(updatedColumns);
+                    context.read<ReportDetailCubit>().update(context);
+                  }
                 }, icon: Icon(Icons.settings)),
                 Expanded(child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -412,13 +404,6 @@ class ReportDetailPageState extends BaseStateWidget<ReportDetailPage> {
           ),
         ));
   }
-  /*Widget _buildBody(BuildContext context, ReportDetailState state) {
-    return Stack(children: [
-      _buildContent(context, state),
-      if (state.state is LoadingState)
-        _buildLoading()
-    ],);
-  }*/
   _buildMobileTable(BuildContext context, ReportDetailState state){
     return SingleChildScrollView(
       child: Row(

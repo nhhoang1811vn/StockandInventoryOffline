@@ -143,7 +143,7 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image(image: AssetImage('assets/images/box.png'), width: 60),
+          Icon(UIConstants.goodIconData, size: 64, color: Theme.of(context).colorScheme.onPrimary),
           SizedBox(height: 16),
           Text(AppLocalizations.of(context)!.empty_goods,
               textAlign: TextAlign.center,
@@ -531,7 +531,7 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
             ),
             children: [
               FloatingActionButton.extended(
-                icon:  Image(image: AssetImage('assets/images/box.png'), width: 24),
+                icon:  Icon(UIConstants.goodIconData, size: 24, color: Theme.of(context).colorScheme.onPrimary),
                 label: Text(AppLocalizations.of(context)!.action_add_good),
                 heroTag: null,
                 onPressed: () {
@@ -542,10 +542,9 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
                   }
                   context.read<GoodsCubit>().onAddGood();
                 },
-                //child: Icon(UIConstants.goodIconData, size: 30, color: Colors.blue[700],),
               ),
               FloatingActionButton.extended(
-                icon:  Image(image: AssetImage('assets/images/folder.png'), width: 24),
+                icon: Icon(UIConstants.groupIconData, size: 24, color: Theme.of(context).colorScheme.onPrimary),
                 label: Text(AppLocalizations.of(context)!.action_add_group),
                 onPressed: (){
                   final state = _key.currentState;

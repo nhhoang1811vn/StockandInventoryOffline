@@ -22,8 +22,7 @@ class SuppliersRepositoryImpl implements SuppliersRepository {
 
   @override
   Future<Supplier> get(int id) {
-    // TODO: implement get
-    throw UnimplementedError();
+    return db.getSupplier(id);
   }
 
   @override

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/presentation/app_style.dart';
@@ -45,13 +44,22 @@ class PaymentsPageState extends BaseStateWidget<PaymentsPage> with SingleTickerP
         },
         icon: Icon(Icons.help));
   }
+  Widget _buildCategoriesMenu() {
+    return IconButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed(Pages.payment_categories);
+        },
+        icon: Icon(Icons.category));
+  }
   PreferredSize _buildAppBar() {
     return PreferredSize(
         preferredSize: Size.fromHeight(UIConstants.appBarHeight * 2 + 20),
         child: AppBar(
             title: new Text(AppLocalizations.of(context)!.payments_title),
             actions: [
+              _buildCategoriesMenu(),
               _buildHelpMenu()
+
             ],
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(UIConstants.appBarHeight + 20),
@@ -62,8 +70,8 @@ class PaymentsPageState extends BaseStateWidget<PaymentsPage> with SingleTickerP
                     controller: _tabController,
                     indicatorColor: Theme.of(context).colorScheme.onPrimary,
                     tabs: [
-                      Tab(text: AppLocalizations.of(context)!.title_outbound_payment),
                       Tab(text: AppLocalizations.of(context)!.title_inbound_payment),
+                      Tab(text: AppLocalizations.of(context)!.title_outbound_payment),
                     ],
                   )
                 ],
@@ -110,6 +118,7 @@ class PaymentsPageState extends BaseStateWidget<PaymentsPage> with SingleTickerP
       ],
     );
   }
+
 
   Widget get emptyView =>
       Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -192,15 +201,15 @@ class PaymentsPageState extends BaseStateWidget<PaymentsPage> with SingleTickerP
           backgroundColor: Colors.grey.shade200,
             appBar: _buildAppBar(),
             body: TabBarView(controller: _tabController,children: [
-              _buildOutboundPayment(state),
               _buildInboundPayment(state),
+              _buildOutboundPayment(state),
             ]),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 if (_tabController.index == 0){
-                  context.read<PaymentsCubit>().onAddOutboundPayment();
-                }else{
                   context.read<PaymentsCubit>().onAddInboundPayment();
+                }else{
+                  context.read<PaymentsCubit>().onAddOutboundPayment();
                 }
               },
               child: Icon(Icons.add),

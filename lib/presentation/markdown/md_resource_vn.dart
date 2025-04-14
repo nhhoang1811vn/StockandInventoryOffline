@@ -82,6 +82,12 @@ Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Ho
  Chúng tôi đã tạo ra chức năng đơn giản này để theo dõi các chi tiêu của bạn cho một cửa hàng. 
  """;
   static const String whatNews = """
+  ### Phiên bản 1.0.25 - 14/04/2025  
+  * Sửa lỗi được báo cáo.
+  * Thêm chức năng giao dịch. 
+  * Thêm chứ năng Ví tiền. 
+  * Thêm 5 dạng báo cáo mới. 
+  
   ### Phiên bản 1.0.8 - 6/11/24  
   * Thêm cài đặt danh sách ở màn hình hàng hóa
   * Sửa chức năng tìm kiếm ở màn hình hàng hóa
@@ -132,35 +138,36 @@ Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Ho
  """;
 
   static const String helpPayments = """
-  ## Hướng dẫn Lưu Thanh Toán  
+  ## Hướng dẫn Lưu Giao dịch
 
-Trang này giúp bạn ghi lại các khoản thanh toán một cách chính xác.  
+Trang này giúp bạn ghi lại các khoản giao dịch một cách chính xác.  
 
-### 🔹 Chọn loại thanh toán  
-Có hai loại thanh toán:  
-- **Thanh toán đi (Outbound Payment)** – Khi bạn **trả tiền** cho nhà cung cấp, nhân viên, hóa đơn, v.v.  
-- **Thanh toán đến (Inbound Payment)** – Khi bạn **nhận tiền** từ khách hàng hoặc các nguồn khác.  
+### 🔹 Chọn loại Giao dịch
+Có hai loại:  
+- **Giao dịch chi** – Khi bạn **trả tiền** cho nhà cung cấp, nhân viên, hóa đơn, v.v.  
+- **Giao dịch thu** – Khi bạn **nhận tiền** từ khách hàng hoặc các nguồn khác.  
 
-### 📂 Chọn danh mục thanh toán  
+### 📂 Chọn danh mục  
 - Chọn danh mục phù hợp để dễ dàng quản lý và theo dõi chi tiêu hoặc thu nhập.  
 - Ví dụ: **Ăn uống, Đi lại, Tiền lương, Thu nhập từ bán hàng**, v.v.  
 - Nếu không có danh mục phù hợp, bạn có thể tạo danh mục mới.  
 
 ### ✏️ Sửa hoặc Xóa danh mục  
 - **Nhấn giữ** vào danh mục trong danh sách để hiển thị tùy chọn **sửa** hoặc **xóa**.  
-- Nếu xóa danh mục, các khoản thanh toán liên quan sẽ được chuyển về danh mục mặc định.  
+- Nếu xóa danh mục, các khoản GD liên quan sẽ được chuyển về danh mục mặc định.  
 
-### 🧾 Chọn hóa đơn  
-- Bạn có thể **liên kết thanh toán với một hóa đơn** để theo dõi chính xác.  
+### 🧾 Chọn đối tượng thu/chi  
+- Bạn có thể **liên kết GD với một hóa đơn** để theo dõi chính xác.  
+- Bạn có thể **liên kết GD với một đối tượng**. 
 - Nếu hóa đơn chưa có trong danh sách, hãy kiểm tra lại hoặc tạo mới.  
-- Hệ thống sẽ tự động gán số tiền thanh toán theo hóa đơn đã chọn.  
+- Hệ thống sẽ tự động gán số tiền GD theo hóa đơn đã chọn.  
 
-### 💾 Lưu thanh toán  
-- Nhập đầy đủ thông tin: **Số tiền, Ngày thanh toán, Ghi chú (nếu có)**.  
+### 💾 Lưu GD  
+- Nhập đầy đủ thông tin: **Số tiền, Ngày GD, Ghi chú (nếu có)**.  
 - Kiểm tra lại trước khi bấm **Lưu** để tránh sai sót.  
 
-### 🗑️ Xóa thanh toán  
-- Nếu cần xóa một khoản thanh toán, **nhấn giữ** vào mục trong danh sách để thực hiện.  
+### 🗑️ Xóa GD 
+- Nếu cần xóa một khoản GD, **nhấn giữ** vào mục trong danh sách để thực hiện.  
 
 Hãy đảm bảo nhập chính xác để theo dõi tài chính hiệu quả! ✅  
 

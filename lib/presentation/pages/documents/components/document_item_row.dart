@@ -80,8 +80,10 @@ class DocumentItemRow extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(Utils.getQuantityText(item.quantity), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                      Text("${AppLocalizations.of(context)!.field_paid} : ${Config.currencyFormat.format(item.paid)}"),
+                      Text("${AppLocalizations.of(context)!.field_amount} : ${Config.currencyFormat.format(item.amount)}")
                       //Text("Paid/Amount"),
-                      Text("${Config.currencyFormat.format(item.paid)}/${Config.currencyFormat.format(item.amount)}")
+                      //Text("${Config.currencyFormat.format(item.paid)}/${Config.currencyFormat.format(item.amount)}")
                     ],
                   )
                 ],),))

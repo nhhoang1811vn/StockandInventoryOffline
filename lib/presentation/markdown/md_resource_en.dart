@@ -27,6 +27,13 @@ With gratitude,
 AppViet Team
   """;
  static const String whatNews = """
+ ### Version 1.0.25 - 2025 Apr 14  
+  * Fixed reported bugs.
+  * Added Payment features. 
+  * Added Wallet features. 
+  * Added new 5 report types. 
+ 
+ 
  ### Version 1.0.8 - Dec 6  
   * Fixed reported bugs. 
   * Added List Settings on Goods Page.
