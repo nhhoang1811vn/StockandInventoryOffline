@@ -417,7 +417,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                   onPressed: () {
                     int storeId = storage.getSelectedStoreId();
                     Wallet item = Wallet();
-                    item.color = Colors.blue.value;
+                    item.color = Colors.blue.toARGB32();
                     item.storeId = storeId;
                     Navigator.of(context).pushNamed(Pages.save_wallet,
                         arguments: {'item': item}).then((value) => context.read<HomeCubit>().initState());

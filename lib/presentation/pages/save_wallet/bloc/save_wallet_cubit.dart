@@ -43,7 +43,7 @@ class SaveWalletCubit extends Cubit<SaveWalletState>{
       Wallet item = state.item!;
       item.name = state.name.value;
       item.description = state.description;
-      item.color = state.color!.value;
+      item.color = state.color!.toARGB32();
       if (item.id == null){
         int id = await useCase.insert(item);
         item.id = id;

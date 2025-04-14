@@ -77,7 +77,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                 int storeId = storage.getSelectedStoreId();
                 Wallet item = Wallet();
                 item.storeId = storeId;
-                item.color = Colors.blue.value;
+                item.color = Colors.blue.toARGB32();
                 var result = await Navigator.of(context).pushNamed(Pages.save_wallet, arguments: {"item":  item});
                 if (result != null){
                   Wallet createdWallet = result as Wallet;

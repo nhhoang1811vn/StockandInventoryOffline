@@ -56,7 +56,7 @@ class CategoriesGridView extends StatelessWidget{
     );
   }
   Widget _buildCategoryWidget(BuildContext context, PaymentCategory item) {
-    bool selected = false;
+
     return InkWell(
       onTap: (){
         onPressed(item);
@@ -66,17 +66,6 @@ class CategoriesGridView extends StatelessWidget{
       },
       borderRadius: BorderRadius.circular(16),
       child: Container(
-          decoration: selected
-              ? BoxDecoration(
-            color: Colors.blue.shade50,
-            border: Border.all(
-              color: Colors.blue.shade700,
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(16),
-          )
-              : null, // No decoration if not selected
-
           child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,

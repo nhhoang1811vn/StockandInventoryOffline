@@ -108,7 +108,7 @@ class SaveGoodForm extends StatelessWidget {
       }
     },
       builder: (context, state){
-        barcodeTextController.text = state.barCode ?? '';
+        barcodeTextController.text = state.barCode;
         if (state.transaction?.price != null) {
           priceTextController.text = Config.simpleCurrencyFormat.format(state.transaction?.price);
         } else {

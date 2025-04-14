@@ -82,6 +82,12 @@ Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Ho
  Chúng tôi đã tạo ra chức năng đơn giản này để theo dõi các chi tiêu của bạn cho một cửa hàng. 
  """;
   static const String whatNews = """
+  ### Phiên bản 1.0.25 - 14/04/2025  
+  * Sửa lỗi được báo cáo.
+  * Thêm chức năng giao dịch. 
+  * Thêm chứ năng Ví tiền. 
+  * Thêm 5 dạng báo cáo mới. 
+  
   ### Phiên bản 1.0.8 - 6/11/24  
   * Thêm cài đặt danh sách ở màn hình hàng hóa
   * Sửa chức năng tìm kiếm ở màn hình hàng hóa
