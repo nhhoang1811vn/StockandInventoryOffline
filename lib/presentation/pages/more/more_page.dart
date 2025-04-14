@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/presentation/pages/main/main_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../common/path_utils.dart';
@@ -19,6 +20,7 @@ import '../../markdown/md_provider_factory.dart';
 import '../../widgets/logo_app_bar.dart';
 import '../../widgets/select_message_type_dialog.dart';
 import '../pages.dart';
+import '../settings/components/change_languages_dialog.dart';
 
 class MorePage extends StatefulWidget {
   @override
@@ -103,9 +105,9 @@ class MorePageState extends State<MorePage> {
                 tileColor: Colors.white,
                 leading:
                     Icon(Icons.change_circle, size: UIConstants.drawerMenuSize),
-                title: Text("Change Tracking Store"),
+                title: Text(AppLocalizations.of(context)!.change_tracking_store),
                 subtitle:
-                    Text("Tracking Store: ${storage.getSelectedStoreName()}"),
+                    Text("${storage.getSelectedStoreName()}"),
                 trailing: Icon(Icons.navigate_next),
                 onTap: () => onChangeTrackingStoreItemPressed(context),
               ),
@@ -121,13 +123,12 @@ class MorePageState extends State<MorePage> {
               Divider(height: 1,),
               ListTile(
                 tileColor: Colors.white,
-                title: Text(_packageInfo.appName,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.bold)),
-                subtitle: Text("Version " + _packageInfo.version,
-                    style: Theme.of(context).textTheme.bodyMedium),
+                leading: Icon(FontAwesomeIcons.language),
+                title:
+                Text(AppLocalizations.of(context)!.menu_item_language_title),
+                subtitle:
+                Text(AppLocalizations.of(context)!.menu_item_language_desc),
+                onTap: (){ showSelectLanguageDialog(context);},
               ),
               SizedBox(height: 4),
             ],
@@ -185,22 +186,24 @@ class MorePageState extends State<MorePage> {
               SizedBox(height: 4),
             ],
           ),
-        )
+        ),
+        Center(child: Text(sprintf(AppLocalizations.of(context)!.version, [_packageInfo.version]))),
+        SizedBox(height: 16),
       ]),
     );
   }
 
   void onDeleteAccountItemPressed() {
     DialogUtils.showCustomDialog(context,
-        title: 'Notification',
-        message: 'Are you sure to delete your account',
-        cancelBtnText: "Cancel",
-        okBtnText: "OK", cancelBtnFunction: () {
+        title: AppLocalizations.of(context)!.notification_dialog_title,
+        message: AppLocalizations.of(context)!.message_confirm_delete_account,
+        cancelBtnText: AppLocalizations.of(context)!.action_cancel,
+        okBtnText: AppLocalizations.of(context)!.action_ok, cancelBtnFunction: () {
       Navigator.of(context).pop();
     }, okBtnFunction: () {
       FirebaseAuth.instance.currentUser?.delete();
       FirebaseAuth.instance.signOut();
-      showInfoToast("Your account has been deleted");
+      showInfoToast(AppLocalizations.of(context)!.delete_account_successful);
       //Navigator.of(context).pop();
       Navigator.of(context).pushNamedAndRemoveUntil(
         Pages.signIn, (route) => false,
@@ -330,7 +333,15 @@ class MorePageState extends State<MorePage> {
       "content": MDProviderFactory.get().getDonationText()
     });
   }
-
+  void showSelectLanguageDialog(BuildContext context) async {
+    String currentCode = storage.getLanguageCode();
+    showDialog(
+        context: context,
+        builder: (_) => ChangeLanguagesDialog(currentCode, (code) {
+          storage.setLanguageCode(code);
+          MyApp.setLocale(context, code);
+    }), barrierDismissible: true);
+  }
   void onLogoutItemPressed() {
     DialogUtils.showCustomDialog(
       context,
@@ -348,10 +359,14 @@ class MorePageState extends State<MorePage> {
           //String? email = FirebaseAuth.instance.currentUser?.email;
           String? uid = FirebaseAuth.instance.currentUser?.uid;
           if (uid != null) {
-            final ref = storageRef.child("$uid/database.db");
             try {
+              final ref = storageRef.child("$uid/database.db");
               await ref.putFile(file);
-            } on FirebaseException {}
+            } on FirebaseException {
+
+            } catch (e){
+
+            }
           }
           //clear db
           DBHelper dbHelper = DBHelper();

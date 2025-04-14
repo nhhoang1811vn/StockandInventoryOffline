@@ -34,6 +34,9 @@ class CustomersUseCaseImpl implements CustomersUseCase{
   @override
   Future<int> getCount(int storeId) {
     return repository.getCount(storeId);
-    
+  }
+  @override
+  Future<Customer> get(int id) {
+    return repository.get(id);
   }
 }

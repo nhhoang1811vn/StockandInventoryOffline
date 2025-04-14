@@ -3,7 +3,6 @@ import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/domain/entities/batch_mode_scan.dart';
-import 'package:good_manager/domain/entities/payment_status.dart';
 import 'package:good_manager/domain/entities/save_document_setting.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
@@ -45,7 +44,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
         date: item.date,
         personId: item.personId,
         personName: item.personName,
-        paymentStatus: item.paymentStatus
+        //paymentStatus: item.paymentStatus
     );
     emit(initState);
     if (item.id != null) {
@@ -70,18 +69,18 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   void dateChanged(DateTime date) {
     emit(state.copyWith(date: date));
   }
-  DateTime getDateOnly(DateTime dateTime){
-    return DateTime(dateTime.year, dateTime.month, dateTime.day);
-  }
+  //DateTime getDateOnly(DateTime dateTime){
+  //  return DateTime(dateTime.year, dateTime.month, dateTime.day);
+  //}
   Future<bool> save() async {
     final validate = Formz.validate([state.name]);
     if (validate) {
       Document item = state.item!;
       item.name = state.name.value;
       item.description = state.description;
-      item.date = getDateOnly(state.date!);
+      //item.date = getDateOnly(state.date!);
+      item.date = state.date!;
       item.personId = state.personId;
-      item.paymentStatus = state.paymentStatus!;
       if (item.id == null) {
         int id = await useCase.insert(item);
         item.id = id;
@@ -134,23 +133,6 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
     List<Payment> payments = await paymentUseCase.getByDocumentId(state.item!.id!);
     emit(state.copyWith(payments: payments));
   }
-  void loadPaymentsAndCheck() async{
-    List<Payment> payments = await paymentUseCase.getByDocumentId(state.item!.id!);
-    emit(state.copyWith(payments: payments));
-    if (payments.isNotEmpty){
-      verifyPaymentStatusButton();
-    }
-  }
-  void verifyPaymentStatusButton(){
-    double totalPayment = getTotalPayments(state.payments);
-    double totalAmount = state.totalAmount;
-    if (totalPayment < totalAmount){
-      emit(state.copyWith(paymentStatus: PaymentStatus.PARTIAL));
-    }else{
-      emit(state.copyWith(paymentStatus: PaymentStatus.PAID));
-    }
-    save();
-  }
   double getTotalPayments(List<Payment> payments){
     double total = 0.0;
     payments.forEach((element) {
@@ -161,20 +143,16 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   void loadTransactions() async {
     if (state.item?.id != null){
       List<DocumentTransaction> transactions = await useCase.getTransactionsByDocumentId(state.item!.id!);
-      double totalQuantity = 0;
+      double totalQuantity = 0.0;
       double totalAmount = 0.0;
       transactions.forEach((element) {
         totalQuantity += element.quantity;
         totalAmount += (element.quantity * (element.price ?? 0.0));
       });
+      totalQuantity = double.parse(totalQuantity.toStringAsFixed(2));
       emit(state.copyWith(allTransactions: transactions, totalQuantity: totalQuantity, totalAmount: totalAmount));
       sort();
       filter();
-
-      //total amount has changed, correct payment status button if there is any exist payment record
-      if (state.payments.isNotEmpty){
-        verifyPaymentStatusButton();
-      }
     }
   }
 
@@ -331,16 +309,5 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   }
   void onSearchBarcodeClicked(){
     emit(state.copyWith(state: OpenBarcodeScannerToSearchState()));
-  }
-
-  onPaymentStatusChanged(PaymentStatus status) {
-    emit(state.copyWith(paymentStatus: status));
-  }
-  void onPaymentStatusButtonPressed() async{
-    if (state.payments.isNotEmpty){
-      emit(state.copyWith(state: OpenPaymentListPageState()));
-    }else{
-      emit(state.copyWith(state: OpenChangePaymentDialogState()));
-    }
   }
 }

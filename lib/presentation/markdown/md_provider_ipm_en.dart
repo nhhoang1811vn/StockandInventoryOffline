@@ -12,10 +12,10 @@ class MDProviderIpmEN extends MDProvider{
         return MarkdownResourceEN.helpGoods;
       case HelpType.DOCUMENTS:
         return MarkdownResourceEN.helpDocuments;
-      case HelpType.EXPENSE:
-        return MarkdownResourceEN.helpExpenses;
       case HelpType.SUPPLIER_AND_CUSTOMER:
         return MarkdownResourceEN.helpSupplierCustomers;
+      case HelpType.PAYMENTS:
+        return MarkdownResourceEN.helpPayments;
       default:
         return '';
     }

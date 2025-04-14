@@ -7,10 +7,14 @@ class ReportDetailState with _$ReportDetailState{
     ReportType? type,
     DateTime? start,
     DateTime? end,
-  int? groupId,
-  String? groupName,
     @Default([]) List<List<String>> data,
-    @Default([]) List<int> ids,
+    //@Default([]) List<int> ids,
+    @Default([]) List<Good> goods,
     @Default([]) List<Document> documents,
+    @Default([]) List<Supplier> suppliers,
+    @Default([]) List<Customer> customers,
+    @Default([]) List<ColumnReport> columns,
+    @Default([]) List<List<String>> rows,
+    @Default([]) List<Payment> payments,
   }) = _Initial;
 }

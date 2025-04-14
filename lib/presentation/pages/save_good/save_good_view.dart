@@ -8,6 +8,8 @@ import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
 import '../../../domain/entities/document.dart';
+import '../../widgets/images_preview/images_preview_view.dart';
+import '../../widgets/primary_button.dart';
 import 'bloc/save_good_cubit.dart';
 import 'components/save_good_form.dart';
 
@@ -15,7 +17,7 @@ class SaveGoodPage extends StatefulWidget{
   final Good item;
   final Document? document;
   final DocumentTransaction? transaction;
-  SaveGoodPage({
+    SaveGoodPage({
     required this.item,
     this.document,
     this.transaction,
@@ -40,24 +42,52 @@ class SaveGoodPageState extends BaseStateWidget<SaveGoodPage> {
   Widget buildWidget(BuildContext context) {
     context.read<SaveGoodCubit>().init(item, document, transaction);
     return Scaffold(
-        appBar: _buildAppBar(context),
-        body: Column(
-            children: [
-              SelectedStoreView(),
-              Expanded(child: SaveGoodForm(
-                  item: item,
-                  transaction: transaction))]));
+          backgroundColor: Colors.grey[200],
+          appBar: _buildAppBar(context),
+          body: Column(
+              children: [
+                SelectedStoreView(),
+                Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(UIConstants.screenSpace),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(AppLocalizations.of(context)!.good_information,
+                              style: Theme.of(context).textTheme.titleMedium),
+                          Card(
+                            color: Theme.of(context).colorScheme.surface,
+                            child: Padding(padding: EdgeInsets.all(16),child: SaveGoodForm()),
+                          ),
+                          SizedBox(height: 16,),
+                          Text(AppLocalizations.of(context)!.images_information,
+                              style: Theme.of(context).textTheme.titleMedium),
+                          Card(
+                            color: Theme.of(context).colorScheme.surface,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: BlocBuilder<SaveGoodCubit, SaveGoodState>(builder : (context, state) =>  ImagesPreviewView(state.files, true, context.read<SaveGoodCubit>().onImagesChanged)),
+                            ),
+                          )
+                        ],
+                      ),
+                    )),
+                //Expanded(child: ),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  color: Theme.of(context).colorScheme.surface,
+                  child: PrimaryButton(AppLocalizations.of(context)!.action_save, () {
+                    context.read<SaveGoodCubit>().onSaveClicked();
+                  }),
+                )
+              ]));
   }
 
   PreferredSize _buildAppBar(BuildContext context) {
     return PreferredSize(
         preferredSize: Size.fromHeight(UIConstants.appBarHeight),
         child: AppBar(title: Text(AppLocalizations.of(context)!.save_goods_title), actions: <Widget>[
-          IconButton(
-              onPressed: () {
-                context.read<SaveGoodCubit>().onSaveClicked();
-              },
-              icon: Icon(Icons.check)),
           IconButton(onPressed: (){
             context.read<SaveGoodCubit>().onHistoryClicked();
           }, icon: Icon(Icons.history))

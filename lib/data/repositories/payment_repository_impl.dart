@@ -3,6 +3,8 @@ import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/repositories/payment_repositories.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../main.dart';
+
 @Injectable(as: PaymentRepository)
 class PaymentRepositoryImpl implements PaymentRepository {
   PaymentRepositoryImpl();
@@ -31,6 +33,10 @@ class PaymentRepositoryImpl implements PaymentRepository {
     // TODO: implement getAll
     throw UnimplementedError();
   }
+  @override
+  Future<List<Payment>> getAllByStoreId(int storeId) {
+    return db.getPaymentByStoreId(storeId);
+  }
 
   @override
   Future<bool> update(Payment item) {
@@ -41,5 +47,23 @@ class PaymentRepositoryImpl implements PaymentRepository {
   @override
   Future<List<Payment>> getByDocumentId(int documentId) {
     return db.getPaymentByDocumentId(documentId);
+  }
+  @override
+  Future<List<Payment>> getInRange(DateTime start, DateTime end) {
+    int storeId = storage.getSelectedStoreId();
+    return db.getPaymentsInRange(storeId, start, end);
+  }
+
+  @override
+  Future<List<Payment>> getInRangeByWalletId(int walletId, DateTime start, DateTime end) {
+    return db.getPaymentsInRangeByWalletId(walletId, start, end);
+  }
+  @override
+  Future<List<Payment>> getInRangeBySupplierId(int supplierId, DateTime start, DateTime end) {
+    return db.getPaymentsInRangeBySupplierId(supplierId, start, end);
+  }
+  @override
+  Future<List<Payment>> getInRangeByCustomerId(int customerId, DateTime start, DateTime end) {
+    return db.getPaymentsInRangeByCustomerId(customerId, start, end);
   }
 }

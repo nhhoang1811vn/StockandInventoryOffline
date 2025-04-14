@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/common/helpers/injection.container.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/components/select_date_range_dialog.dart';
-import 'package:good_manager/presentation/pages/report/components/select_group_dialog.dart';
 import 'package:good_manager/presentation/pages/report/report_date_range_type.dart';
-import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 
 import '../../constants.dart';
 import '../pages.dart';
@@ -82,33 +79,18 @@ class ReportPageState extends BaseStateWidget<ReportPage> {
       DateTime start = result["start"];
       DateTime end = result["end"];
 
-      Map? result2 = await showSelectGroupDialog(context);
-      if (result2 != null){
-        int? groupId = result2["groupId"];
-        String? groupName = result2["groupName"];
-        Navigator.of(context).pushNamed(
-            Pages.report_detail,
-            arguments: {
-              'type': ReportType.LIST_OF_GOODS,
-              'start': start,
-              'end': end,
-              'groupId': groupId,
-              'groupName': groupName
-            });
-      }
+      Navigator.of(context).pushNamed(
+          Pages.report_detail,
+          arguments: {
+            'type': ReportType.LIST_OF_GOODS,
+            'start': start,
+            'end': end
+          });
     }
   }
 
   Future<Map?> showSelectDateRangeDialog(BuildContext context, ReportDateRangeType type) async {
     Map? result = await showDialog(context: context, builder: (_) => SelectDateRangeDialog(type));
-    return result;
-  }
-
-  Future<Map?> showSelectGroupDialog(BuildContext context) async {
-    Map? result = await showDialog(context: context, builder: (_) => BlocProvider(
-        create: (context) => getIt<SelectGroupCubit>(),
-        child: SelectGroupDialog(
-        )));
     return result;
   }
 }

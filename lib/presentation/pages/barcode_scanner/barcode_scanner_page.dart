@@ -77,17 +77,11 @@ class BarcodeScannerPageState extends BaseStateWidget<BarcodeScannerPage> {
     );
   }
   void showAfterEachScanDialog(BuildContext context, BarcodeScannerState state) async{
-    /*BatchModeScan mode;
-    if (state.batchModeScan == BatchModeScan.AUTO){
-      mode = BatchModeScan.AUTO;
-    }else{
-      mode = BatchModeScan.MANUAL;
-    }*/
-    BatchModeScan newMode = await showDialog(
+    BatchModeScan? newMode = await showDialog(
         context: context,
         builder: (_) => ChangeBatchModeScanDialogWidget(state.batchModeScan),
-        barrierDismissible: true);
-
-    context.read<BarcodeScannerCubit>().setBatchModeScan(newMode);
+        barrierDismissible: false);
+    if (newMode != null)
+      context.read<BarcodeScannerCubit>().setBatchModeScan(newMode);
   }
 }

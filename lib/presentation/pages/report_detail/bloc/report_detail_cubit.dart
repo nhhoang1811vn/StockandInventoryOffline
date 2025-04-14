@@ -4,19 +4,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/db/db_helper.dart';
-import 'package:good_manager/domain/entities/expense.dart';
+import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/good.dart';
-import 'package:good_manager/domain/entities/payment_status.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
+import 'package:good_manager/domain/entities/supplier.dart';
+import 'package:good_manager/domain/entities/wallet.dart';
 import 'package:good_manager/domain/repositories/document_transaction_repositories.dart';
-import 'package:good_manager/domain/usecases/expenses/expense_usercases.dart';
+import 'package:good_manager/domain/usecases/customers/customers_usecases.dart';
+import 'package:good_manager/domain/usecases/groups/groups_usecases.dart';
+import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
+import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart';
+import 'package:good_manager/domain/usecases/wallets/wallet_usecases.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../data/storage.dart';
 import '../../../../domain/entities/document.dart';
+import '../../../../domain/entities/group.dart';
+import '../../../../domain/entities/payment.dart';
 import '../../../../domain/usecases/documents/document_usecases.dart';
 import '../../../../domain/usecases/goods/goods_usercases.dart';
 import '../../base/base_state.dart';
@@ -24,261 +30,451 @@ import '../../base/base_state.dart';
 part 'report_detail_cubit.freezed.dart';
 part 'report_detail_state.dart';
 
+class ColumnReport {
+  final String title;
+  bool isVisible = true;
+  bool isPickValues = false;
+  Set<String> values = {};
+  Set<String> selectedValues = {};
+
+  ColumnReport(this.title, {this.isPickValues = false});
+}
+
 @injectable
 class ReportDetailCubit extends Cubit<ReportDetailState> {
   final Storage storage;
   final GoodsUseCases goodsUseCase;
-  final ExpenseUseCases expenseUseCase;
+  final GroupsUseCases groupsUseCases;
+  final PaymentUseCases paymentUseCases;
   final DocumentUseCases documentUseCases;
   final DocumentTransactionRepository documentTransactionRepository;
+  final SuppliersUseCase suppliersUseCase;
+  final CustomersUseCase customersUseCase;
+  final WalletUseCases walletUseCases;
+
   ReportDetailCubit({
     required this.storage,
     required this.goodsUseCase,
-    required this.expenseUseCase,
+    required this.groupsUseCases,
+    required this.paymentUseCases,
     required this.documentUseCases,
-    required this.documentTransactionRepository
+    required this.documentTransactionRepository,
+    required this.suppliersUseCase,
+    required this.customersUseCase,
+    required this.walletUseCases,
   }) : super(ReportDetailState.initial(state: InitialState()));
 
-  void init(
-      BuildContext context,
-      ReportType type,
-      DateTime start,
-      DateTime end,
-      int? groupId,
-      String? groupName
-      ){
-    emit(state.copyWith(state: LoadingState(),type: type, start: start, end: end, groupId: groupId, groupName: groupName));
+  void init(BuildContext context, ReportType type, DateTime start, DateTime end) {
+    emit(state.copyWith(state: LoadingState(), type: type, start: start, end: end));
     load(context);
   }
-  Future<double> getQuantity(int goodId, List<Document> documents) async{
+
+  Future<double> getQuantity(int goodId, List<Document> documents) async {
     double incoming = 0.0;
     double outgoing = 0.0;
-    for (Document document in documents){
-      incoming += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(DocumentType.incoming, goodId, document.id!);
-      outgoing += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(DocumentType.outgoing, goodId, document.id!);
+    for (Document document in documents) {
+      incoming += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(
+          DocumentType.incoming, goodId, document.id!);
+      outgoing += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(
+          DocumentType.outgoing, goodId, document.id!);
     }
     return incoming - outgoing;
   }
-  DateTime getPreviousHour(DateTime date){
-    return DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch - 60*60*1000);//- 60 mins
+
+  DateTime getPreviousHour(DateTime date) {
+    return DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch - 60 * 60 * 1000); //- 60 mins
   }
-  void load(BuildContext context) async{
-    List<List<String>> data = [];
-    switch(state.type){
+
+  void load(BuildContext context) async {
+    switch (state.type) {
       case ReportType.LIST_OF_GOODS:
-        data.add([
-          AppLocalizations.of(context)!.field_bar_code,
-          AppLocalizations.of(context)!.field_name,
-          "Ban đầu (SL)",
-          "Nhập vào (SL)",
-          "Bán ra (SL)",
-          "Cuối Kỳ (SL)"]);
-        int storeId = storage.getSelectedStoreId();
-        List<Good> allGoods = await goodsUseCase.getAllByStoreId(storeId);
-        List<Good> goods = allGoods.where((good) => (state.groupId == null || state.groupId == good.groupId)).toList();
-
-        List<Document> documentsPrePeriod = await documentUseCases.getInRange(DateTime.fromMillisecondsSinceEpoch(0), getPreviousHour(state.start!));
-        List<Document> documentsInPeriod = await documentUseCases.getInRange(state.start!, state.end!);
-        double totalStartPeriodStock = 0.0;
-        double totalIncoming = 0.0;
-        double totalOutgoing = 0.0;
-        double totalEndPeriodStock = 0.0;
-        for (Good good in goods){
-          double incoming = 0.0;
-          double outgoing = 0.0;
-          for (Document document in documentsInPeriod){
-            incoming += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(DocumentType.incoming, good.id!, document.id!);
-            outgoing += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(DocumentType.outgoing, good.id!, document.id!);
-          }
-          double startPeriodStock = await getQuantity(good.id!, documentsPrePeriod);
-          double endPeriodStock = startPeriodStock + incoming - outgoing;
-          List<String> row = [];
-          row.add(good.barCode ?? "");
-          row.add(good.name);
-          row.add(startPeriodStock.toString());
-          row.add(incoming.toString());
-          row.add(outgoing.toString());
-          row.add(endPeriodStock.toString());
-          if (startPeriodStock == 0.0 && incoming == 0.0 && outgoing == 0.0){
-
-          }else{
-            data.add(row);
-            totalStartPeriodStock += startPeriodStock;
-            totalIncoming += incoming;
-            totalOutgoing += outgoing;
-            totalEndPeriodStock += endPeriodStock;
-          }
-        }
-        if (data.length > 1){
-          //add total row
-          data.add([AppLocalizations.of(context)!.field_total, "", totalStartPeriodStock.toString(), totalIncoming.toString(), totalOutgoing.toString(), totalEndPeriodStock.toString()]);
-        }
-        emit(state.copyWith(ids: goods.map((e) => e.id!).toList()));
-        break;
-      case ReportType.EXPENSES:
-        List<Expense> items = await expenseUseCase.getExpensesInRange(state.start!, state.end!);
-        data.add([AppLocalizations.of(context)!.field_date, AppLocalizations.of(context)!.field_name, AppLocalizations.of(context)!.field_amount]);
-        double total = 0;
-        for (Expense item in items){
-          List<String> row = [];
-          row.add(Config.dateFormat.format(item.date));
-          row.add(item.name);
-          row.add(Config.currencyFormat.format(item.amount));
-          data.add(row);
-
-          total += item.amount??0;
-        }
-        if (items.isNotEmpty){
-          List<String> totalRow = [];
-          totalRow.add(AppLocalizations.of(context)!.field_total);
-          totalRow.add("");
-          totalRow.add(Config.currencyFormat.format(total));
-          data.add(totalRow);
-        }
+        await initListOfGoods(context);
         break;
       case ReportType.LIST_OF_DOCUMENT:
-        List<Document> items = await documentUseCases.getInRange(state.start!, state.end!);
-        data.add([AppLocalizations.of(context)!.field_date, AppLocalizations.of(context)!.field_name, AppLocalizations.of(context)!.field_document_type, AppLocalizations.of(context)!.field_person_name, AppLocalizations.of(context)!.field_quantity, AppLocalizations.of(context)!.field_cost,AppLocalizations.of(context)!.field_revenue]);
-        int quantityTotal = 0;
-        double costTotal = 0.0;
-        double revenueTotal = 0.0;
-        for (Document item in items){
-          List<String> row = [];
-          row.add(Config.dateFormat.format(item.date));
-          row.add(item.name);
-          row.add(item.type.getTitle(context));
-          row.add(item.personName ?? '');
-          row.add(item.quantity.toString());
-          if (item.type == DocumentType.incoming){
-            row.add(Config.currencyFormat.format(item.amount));
-            row.add("");
-            costTotal += item.amount;
-          }else{
-            row.add("");
-            row.add(Config.currencyFormat.format(item.amount));
-            revenueTotal += item.amount;
-          }
-          data.add(row);
-          //todo
-          //quantityTotal += item.quantity;
-        }
-        if (items.isNotEmpty){
-          List<String> totalRow = [];
-          totalRow.add(AppLocalizations.of(context)!.field_total);
-          totalRow.add("");
-          totalRow.add("");
-          totalRow.add("");
-          totalRow.add(quantityTotal.toString());
-          totalRow.add(Config.currencyFormat.format(costTotal));
-          totalRow.add(Config.currencyFormat.format(revenueTotal));
-          data.add(totalRow);
-        }
-        emit(state.copyWith(documents: items));
+        await initListOfDocuments(context);
         break;
       case ReportType.DEBTS_BY_SUPPLIER:
-        data = await getDataDebtBySupplier(context);
+        await initDebtBySupplier(context);
         break;
       case ReportType.DEBTS_BY_CUSTOMER:
-        data = await getDataDebtByCustomer(context);
+        await initDebtByCustomer(context);
         break;
+      case ReportType.OUTBOUND_PAYMENTS:
+        await initPayments(context, PaymentType.outbound);
+        break;
+      case ReportType.INBOUND_PAYMENTS:
+        await initPayments(context, PaymentType.inbound);
+        break;
+      case ReportType.LIST_OF_WALLETS:
+        await initListOfWallets(context);
+      case ReportType.LIST_OF_SUPPLIER_PAYMENTS:
+        await initListOfSupplierPayments(context);
+      case ReportType.LIST_OF_CUSTOMER_PAYMENTS:
+        await initListOfCustomerPayments(context);
       default:
         break;
     }
+    updateSetValues();
+    update(context);
+  }
+
+  void updateSetValues() {
+    List<ColumnReport> newColumns = state.columns;
+    for (int i = 0; i < state.rows.length; i++) {
+      for (int j = 0; j < newColumns.length; j++) {
+        if (newColumns[j].isPickValues) {
+          newColumns[j].values.add(state.rows[i][j]);
+          newColumns[j].selectedValues.add(state.rows[i][j]);
+        }
+      }
+    }
+    emit(state.copyWith(columns: newColumns));
+  }
+
+  void update(BuildContext context) {
+    List<List<String>> data = [];
+    List<String> header = [];
+    for (var column in state.columns) {
+      if (column.isVisible) {
+        header.add(column.title);
+      }
+    }
+    data.add(header);
+    List<List<String>> rows = state.rows;
+    List<List<String>> validRows = [];
+
+    for (var row in rows) {
+      var valid = true;
+      for (int j = 0; j < state.columns.length; j++) {
+        valid = isValid(state.columns[j], row[j]);
+        if (!valid) {
+          break;
+        }
+      }
+      if (valid) {
+        validRows.add(row);
+      }
+    }
+    if (validRows.length > 0) {
+      if (state.type == ReportType.LIST_OF_GOODS) {
+        double totalStartPeriod = 0.0;
+        double totalIn = 0.0;
+        double totalOut = 0.0;
+        double totalEndPeriod = 0.0;
+        for (int i = 0; i < validRows.length; i++) {
+          totalStartPeriod += double.parse(validRows[i][3]);
+          totalIn += double.parse(validRows[i][4]);
+          totalOut += double.parse(validRows[i][5]);
+          totalEndPeriod += double.parse(validRows[i][6]);
+        }
+        validRows.add([
+          AppLocalizations.of(context)!.field_total,
+          "",
+          "",
+          totalStartPeriod.toString(),
+          totalIn.toString(),
+          totalOut.toString(),
+          totalEndPeriod.toString()
+        ]);
+      } else if (state.type == ReportType.LIST_OF_DOCUMENT) {
+        double totalQuantity = 0.0;
+        double totalAmount = 0.0;
+        for (int i = 0; i < validRows.length; i++) {
+          totalQuantity += double.parse(validRows[i][4]);
+          totalAmount += double.parse(validRows[i][5]);
+        }
+        validRows.add(
+            [AppLocalizations.of(context)!.field_total, "", "", "", totalQuantity.toString(), totalAmount.toString()]);
+      }
+    }
+    for (var row in validRows) {
+      List<String> rowData = [];
+      for (int j = 0; j < state.columns.length; j++) {
+        if (state.columns[j].isVisible) {
+          rowData.add(row[j]);
+        }
+      }
+      data.add(rowData);
+    }
     emit(state.copyWith(state: LoadSuccessState(), data: data));
   }
-  Future<List<List<String>>> getDataDebtBySupplier(BuildContext context) async{
-    List<List<String>> rows = [];
-    //header
-    rows.add([
-      AppLocalizations.of(context)!.field_supplier,
-      AppLocalizations.of(context)!.field_document_no,
-      AppLocalizations.of(context)!.field_date,
-      AppLocalizations.of(context)!.field_amount,
-      AppLocalizations.of(context)!.field_paid,
-      AppLocalizations.of(context)!.field_remaining,
-    ]);
 
-    var dbHelper = DBHelper();
-
-    String query = "SELECT S.id as supplierId, S.name as supplierName,D.id, D.name as documentName, D.date, SUM(T.quantity*T.price) as amount, R.amount as payment FROM ${DBHelper.DOCUMENTS_TABLE_NAME} D ";
-    query += "INNER JOIN ${DBHelper.SUPPLIERS_TABLE_NAME} S ON D.supplierId = S.id ";
-    query += "LEFT JOIN ${DBHelper.DOCUMENT_TRANSACTIONS_TABLE_NAME} T ON D.id = T.documentId ";
-    query += "LEFT JOIN (SELECT documentId,SUM(amount) as amount FROM ${DBHelper.PAYMENTS_TABLE_NAME} GROUP BY documentId) as R ON D.id = R.documentId ";
-    query += "WHERE D.storeId = ? AND D.paymentStatus != ? AND D.date BETWEEN ? AND ?";
-    query += "GROUP BY D.id ";
-    query += "ORDER BY S.name, D.date DESC";
-
-
-    var result = await dbHelper.rawQuery(query, [storage.getSelectedStoreId(), PaymentStatus.PAID.index, state.start!.millisecondsSinceEpoch, state.end!.millisecondsSinceEpoch]);
-    double totalAmount = 0.0;
-    double totalPayment = 0.0;
-    double totalRemain = 0.0;
-
-    for (Map<dynamic, dynamic> map in result){
-      double amount = map["amount"]??0.0;
-      double payment = map["payment"]??0.0;
-      double remain = amount - payment;
-      totalAmount += amount;
-      totalPayment += payment;
-      totalRemain += remain;
-
-
-      rows.add([map["supplierName"], map["documentName"], getDateTimeText(map["date"]), getDoubleText(amount), getDoubleText(payment),getDoubleText(remain) ]);
-    }
-    rows.add([AppLocalizations.of(context)!.field_total, "", "", getDoubleText(totalAmount), getDoubleText(totalPayment), getDoubleText(totalRemain)]);
-    return rows;
+  bool isValid(ColumnReport column, String value) {
+    if (column.isPickValues && !column.selectedValues.contains(value)) return false;
+    return true;
   }
 
+  Future<void> initListOfGoods(BuildContext context) async {
+    List<ColumnReport> columns = [
+      ColumnReport(AppLocalizations.of(context)!.field_name),
+      ColumnReport(AppLocalizations.of(context)!.folder, isPickValues: true),
+      ColumnReport(AppLocalizations.of(context)!.field_bar_code),
+      ColumnReport(AppLocalizations.of(context)!.field_start_period),
+      ColumnReport(AppLocalizations.of(context)!.field_in),
+      ColumnReport(AppLocalizations.of(context)!.field_out),
+      ColumnReport(AppLocalizations.of(context)!.field_end_period)
+    ];
 
-  Future<List<List<String>>> getDataDebtByCustomer(BuildContext context) async{
     List<List<String>> rows = [];
-    //header
-    rows.add([
-      AppLocalizations.of(context)!.field_customer,
-      AppLocalizations.of(context)!.field_document_no,
-      AppLocalizations.of(context)!.field_date,
-      AppLocalizations.of(context)!.field_amount,
-      AppLocalizations.of(context)!.field_paid,
-      AppLocalizations.of(context)!.field_remaining,
-    ]);
+    int storeId = storage.getSelectedStoreId();
+    List<Good> allGoods = await goodsUseCase.getAllByStoreId(storeId);
+    allGoods.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
-    var dbHelper = DBHelper();
-
-    String query = "SELECT C.name as customerName,D.id, D.name as documentName, D.date, SUM(T.quantity*T.price) as amount, R.amount as payment FROM ${DBHelper.DOCUMENTS_TABLE_NAME} D ";
-    query += "INNER JOIN ${DBHelper.CUSTOMERS_TABLE_NAME} C ON D.customerId = C.id ";
-    query += "LEFT JOIN ${DBHelper.DOCUMENT_TRANSACTIONS_TABLE_NAME} T ON D.id = T.documentId ";
-    query += "LEFT JOIN (SELECT documentId,SUM(amount) as amount FROM ${DBHelper.PAYMENTS_TABLE_NAME} GROUP BY documentId) as R ON D.id = R.documentId ";
-    query += "WHERE D.storeId = ? AND D.paymentStatus != ? AND D.date BETWEEN ? AND ?";
-    query += "GROUP BY D.id ";
-    query += "ORDER BY C.name, D.date DESC";
-
-
-    var result = await dbHelper.rawQuery(query, [storage.getSelectedStoreId(), PaymentStatus.PAID.index, state.start!.millisecondsSinceEpoch, state.end!.millisecondsSinceEpoch]);
-    double totalAmount = 0.0;
-    double totalPayment = 0.0;
-    double totalRemain = 0.0;
-
-    for (Map<dynamic, dynamic> map in result){
-      double amount = map["amount"]??0.0;
-      double payment = map["payment"]??0.0;
-      double remain = amount - payment;
-      totalAmount += amount;
-      totalPayment += payment;
-      totalRemain += remain;
-      rows.add([map["customerName"], map["documentName"], getDateTimeText(map["date"]), getDoubleText(amount), getDoubleText(payment),getDoubleText(remain) ]);
+    List<Document> documentsPrePeriod =
+        await documentUseCases.getInRange(DateTime.fromMillisecondsSinceEpoch(0), getPreviousHour(state.start!));
+    List<Document> documentsInPeriod = await documentUseCases.getInRange(state.start!, state.end!);
+    for (Good good in allGoods) {
+      double incoming = 0.0;
+      double outgoing = 0.0;
+      for (Document document in documentsInPeriod) {
+        incoming += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(
+            DocumentType.incoming, good.id!, document.id!);
+        outgoing += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(
+            DocumentType.outgoing, good.id!, document.id!);
+      }
+      var groupName = AppLocalizations.of(context)!.no_group;
+      if (good.groupId != null) {
+        Group group = await groupsUseCases.getById(good.groupId!);
+        groupName = group.name;
+      }
+      double startPeriodStock = await getQuantity(good.id!, documentsPrePeriod);
+      double endPeriodStock = startPeriodStock + incoming - outgoing;
+      List<String> row = [
+        good.name,
+        groupName,
+        good.barCode ?? "",
+        startPeriodStock.toString(),
+        incoming.toString(),
+        outgoing.toString(),
+        endPeriodStock.toString()
+      ];
+      rows.add(row);
     }
-    rows.add([AppLocalizations.of(context)!.field_total, "", "", getDoubleText(totalAmount), getDoubleText(totalPayment), getDoubleText(totalRemain)]);
-    return rows;
+    emit(state.copyWith(columns: columns, rows: rows, goods: allGoods));
   }
 
+  Future<void> initListOfDocuments(BuildContext context) async {
+    List<ColumnReport> columns = [
+      ColumnReport(AppLocalizations.of(context)!.field_date),
+      ColumnReport(AppLocalizations.of(context)!.field_name),
+      ColumnReport(AppLocalizations.of(context)!.field_document_type, isPickValues: true),
+      ColumnReport(AppLocalizations.of(context)!.field_person_name, isPickValues: true),
+      ColumnReport(AppLocalizations.of(context)!.field_quantity),
+      ColumnReport(AppLocalizations.of(context)!.field_amount),
+    ];
 
-  String getDateTimeText(int date){
+    List<List<String>> rows = [];
+    List<Document> items = await documentUseCases.getInRange(state.start!, state.end!);
+    for (Document item in items) {
+      List<String> row = [];
+      row.add(DateFormatFactory.getDateFormat().format(item.date));
+      row.add(item.name);
+      row.add(item.type.getTitle(context));
+      row.add(item.personName ?? '');
+      row.add(item.quantity.toString());
+      row.add(item.amount.toString());
+      rows.add(row);
+    }
+    emit(state.copyWith(columns: columns, rows: rows, documents: items));
+  }
+
+  Future<void> initDebtBySupplier(BuildContext context) async {
+    List<ColumnReport> columns = [
+      ColumnReport(AppLocalizations.of(context)!.field_supplier, isPickValues: true),
+      ColumnReport(AppLocalizations.of(context)!.field_amount),
+      ColumnReport(AppLocalizations.of(context)!.field_paid),
+      ColumnReport(AppLocalizations.of(context)!.field_remaining),
+    ];
+    List<List<String>> rows = [];
+    int storeId = storage.getSelectedStoreId();
+    List<Supplier> suppliers = await suppliersUseCase.getAllByStoreId(storeId);
+    List<Document> allDocuments = await documentUseCases.getInRange(state.start!, state.end!);
+    List<Document> incomingDocuments = allDocuments.where((item) => item.type == DocumentType.incoming).toList();
+    for (Supplier supplier in suppliers) {
+      String supplierName = supplier.name;
+      List<Document> documents = incomingDocuments.where((item) => item.personId == supplier.id).toList();
+
+      double personTotalAmount = 0.0;
+      double personTotalPaid = 0.0;
+      double personTotalRemaining = 0.0;
+
+      for (Document document in documents) {
+        personTotalAmount += document.amount;
+        personTotalPaid += document.paid;
+        personTotalRemaining += (document.amount - document.paid);
+      }
+      rows.add([
+        supplierName,
+        Config.currencyFormat.format(personTotalAmount),
+        Config.currencyFormat.format(personTotalPaid),
+        Config.currencyFormat.format(personTotalRemaining)
+      ]);
+    }
+
+    emit(state.copyWith(columns: columns, rows: rows, suppliers: suppliers));
+  }
+
+  Future<void> initDebtByCustomer(BuildContext context) async {
+    List<List<String>> rows = [];
+    List<ColumnReport> columns = [
+      ColumnReport(AppLocalizations.of(context)!.field_customer, isPickValues: true),
+      ColumnReport(AppLocalizations.of(context)!.field_amount),
+      ColumnReport(AppLocalizations.of(context)!.field_paid),
+      ColumnReport(AppLocalizations.of(context)!.field_remaining),
+    ];
+
+    int storeId = storage.getSelectedStoreId();
+    List<Customer> customers = await customersUseCase.getAllByStoreId(storeId);
+    List<Document> allDocuments = await documentUseCases.getInRange(state.start!, state.end!);
+    List<Document> outgoingDocuments = allDocuments.where((item) => item.type == DocumentType.outgoing).toList();
+    for (Customer customer in customers) {
+      String customerName = customer.name;
+      List<Document> documents = outgoingDocuments.where((item) => item.personId == customer.id).toList();
+      double personTotalAmount = 0.0;
+      double personTotalPaid = 0.0;
+      double personTotalRemaining = 0.0;
+
+      for (Document document in documents) {
+        personTotalAmount += document.amount;
+        personTotalPaid += document.paid;
+        personTotalRemaining += (document.amount - document.paid);
+      }
+      rows.add([
+        customerName,
+        Config.currencyFormat.format(personTotalAmount),
+        Config.currencyFormat.format(personTotalPaid),
+        Config.currencyFormat.format(personTotalRemaining),
+      ]);
+    }
+    emit(state.copyWith(columns: columns, rows: rows, customers: customers));
+  }
+
+  Future<void> initPayments(BuildContext context, PaymentType type) async {
+    List<List<String>> rows = [];
+    List<ColumnReport> columns = [
+      ColumnReport(AppLocalizations.of(context)!.label_category_name, isPickValues: true),
+      ColumnReport(AppLocalizations.of(context)!.field_amount),
+    ];
+    List<Payment> allItems = await paymentUseCases.getInRange(state.start!, state.end!);
+    List<Payment> outboundItems = allItems.where((item) => item.type == type).toList();
+    var items = [...outboundItems]..sort((a, b) {
+        if (a.category?.name == null) return 1;
+        if (b.category?.name == null) return -1;
+        return a.category!.name.compareTo(b.category!.name);
+      });
+    Map<String, double> categoryTotals = {};
+    for (Payment item in items) {
+      var name = "";
+      if (item.category != null) {
+        name = item.category!.name;
+      } else {
+        name = AppLocalizations.of(context)!.no_category;
+      }
+      categoryTotals[name] = (categoryTotals[name] ?? 0) + (item.amount ?? 0);
+    }
+    categoryTotals.forEach((category, total) {
+      rows.add([category, Config.currencyFormat.format(total)]);
+    });
+    emit(state.copyWith(columns: columns, rows: rows, payments: items));
+  }
+
+  Future<void> initListOfWallets(BuildContext context) async {
+    List<ColumnReport> columns = [
+      ColumnReport(AppLocalizations.of(context)!.label_wallet_name),
+      ColumnReport(AppLocalizations.of(context)!.field_start_period),
+      ColumnReport(AppLocalizations.of(context)!.field_in),
+      ColumnReport(AppLocalizations.of(context)!.field_out),
+      ColumnReport(AppLocalizations.of(context)!.field_end_period),
+    ];
+    List<List<String>> rows = [];
+    int storeId = storage.getSelectedStoreId();
+    List<Wallet> wallets = await walletUseCases.getAllByStoreId(storeId);
+    for (Wallet wallet in wallets) {
+      List<Payment> prePayments = await paymentUseCases.getInRangeByWalletId(
+          wallet.id!, DateTime.fromMillisecondsSinceEpoch(0), getPreviousHour(state.start!));
+      List<Payment> payments = await paymentUseCases.getInRangeByWalletId(wallet.id!, state.start!, state.end!);
+
+      double preRev = getRevenue(prePayments);
+      double inAmount = payments
+          .where((payment) => payment.type == PaymentType.inbound)
+          .toList()
+          .fold(0.0, (sum, payment) => sum + (payment.amount ?? 0.0));
+      double outAmount = payments
+          .where((payment) => payment.type == PaymentType.outbound)
+          .toList()
+          .fold(0.0, (sum, payment) => sum + (payment.amount ?? 0.0));
+      rows.add([
+        wallet.name,
+        Config.simpleCurrencyFormat.format(preRev),
+        Config.simpleCurrencyFormat.format(inAmount),
+        Config.simpleCurrencyFormat.format(outAmount),
+        Config.simpleCurrencyFormat.format(preRev + inAmount - outAmount),
+      ]);
+    }
+    emit(state.copyWith(columns: columns, rows: rows));
+  }
+  Future<void> initListOfSupplierPayments(BuildContext context) async {
+    List<ColumnReport> columns = [
+      ColumnReport(AppLocalizations.of(context)!.label_supplier_name),
+      ColumnReport(AppLocalizations.of(context)!.field_amount),
+    ];
+    List<List<String>> rows = [];
+    int storeId = storage.getSelectedStoreId();
+    List<Supplier> suppliers = await suppliersUseCase.getAllByStoreId(storeId);
+    for (Supplier supplier in suppliers){
+      List<Payment> payments = await paymentUseCases.getInRangeBySupplierId(supplier.id!, state.start!, state.end!);
+      rows.add([
+        supplier.name,
+        Config.simpleCurrencyFormat.format(getTotal(payments)),
+      ]);
+    }
+    emit(state.copyWith(columns: columns, rows: rows));
+  }
+  Future<void> initListOfCustomerPayments(BuildContext context) async {
+    List<ColumnReport> columns = [
+      ColumnReport(AppLocalizations.of(context)!.label_customer_name),
+      ColumnReport(AppLocalizations.of(context)!.field_amount),
+    ];
+    List<List<String>> rows = [];
+    int storeId = storage.getSelectedStoreId();
+    List<Customer> customers = await customersUseCase.getAllByStoreId(storeId);
+    for (Customer customer in customers){
+      List<Payment> payments = await paymentUseCases.getInRangeByCustomerId(customer.id!, state.start!, state.end!);
+      rows.add([
+        customer.name,
+        Config.simpleCurrencyFormat.format(getTotal(payments)),
+      ]);
+    }
+    emit(state.copyWith(columns: columns, rows: rows));
+  }
+
+  double getRevenue(List<Payment> payments) {
+    double inAmount = payments
+        .where((payment) => payment.type == PaymentType.inbound)
+        .toList()
+        .fold(0.0, (sum, payment) => sum + (payment.amount ?? 0.0));
+    double outAmount = payments
+        .where((payment) => payment.type == PaymentType.outbound)
+        .toList()
+        .fold(0.0, (sum, payment) => sum + (payment.amount ?? 0.0));
+    return inAmount - outAmount;
+  }
+  double getTotal(List<Payment> payments){
+    return  payments
+        //.where((payment) => payment.type == PaymentType.inbound)
+        .toList()
+        .fold(0.0, (sum, payment) => sum + (payment.amount ?? 0.0));
+  }
+
+  String getDateTimeText(int date) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
-    return Config.dateFormat.format(dateTime);
+    return DateFormatFactory.getDateFormat().format(dateTime);
   }
-  String getDoubleText(double? input){
+
+  String getDoubleText(double? input) {
     return Config.currencyFormat.format(input);
   }
+
   Future<String?> getDownloadPath() async {
     Directory? directory;
     try {
@@ -295,26 +491,8 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     }
     return directory?.path;
   }
-  /*onExportExcelFileMenuClicked() async{
-    //runtime permission
-    await Permission.storage.request();
-    //convert data to csv
-    String csv = const ListToCsvConverter().convert(state.data);
-    //convert csv to file
-    String? downloadDir = await getDownloadPath();
 
-    String folder = downloadDir! + "/AppViet_QuanLyKho";
-    Directory directory = Directory(folder);
-    if (!directory.existsSync()){
-      directory.create();
-    }
-    String extension = ".csv";
-    DateTime _now = DateTime.now();
-    String timestamp = "${_now.day}_${_now.month}_${_now.year}_${_now.hour}_${_now.minute}_${_now.second}";
-    String filePath = folder + "/export_" + timestamp + extension;
-    File f = File(filePath);
-    await f.writeAsString(csv);
-    print(filePath);
-    showInfoToast(filePath);
-  }*/
+  void setColumns(List<ColumnReport> columns) {
+    emit(state.copyWith(columns: columns));
+  }
 }

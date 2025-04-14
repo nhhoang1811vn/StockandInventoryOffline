@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
-
 class DocumentTransactionItemRow extends StatelessWidget {
   final DocumentTransaction item;
   final void Function(DocumentTransaction item) onTransactionPressed;
@@ -24,21 +24,21 @@ class DocumentTransactionItemRow extends StatelessWidget {
         onTap: () => onTransactionPressed(item),
         onLongPress : () => onTransactionLongPressed(item),
         child: Padding(padding: EdgeInsets.all(16.0), child: Row(children: [
-          _buildLeadingWidget(),
+          _buildLeadingWidget(context),
           SizedBox(width: 8,),
           Expanded(child: _buildWidget(context))
         ],),),),
     );
   }
-  Widget _buildLeadingWidget(){
+  Widget _buildLeadingWidget(BuildContext context){
     return item.good.files.isNotEmpty
         ? getAvatarWidget(item.good.files.first)
-        : _buildEmptyAvatarWidget();
+        : _buildEmptyAvatarWidget(context);
   }
   Widget _buildWidget(BuildContext context){
     return Column(children: [
       _buildTop(context),
-      _buildBottom()
+      _buildBottom(context)
     ],);
   }
   Widget _buildTop(BuildContext context){
@@ -75,8 +75,7 @@ class DocumentTransactionItemRow extends StatelessWidget {
       ],
     );
   }
-  Widget _buildBottom(){
-    //var price = 0.0;
+  Widget _buildBottom(BuildContext con){
     var leftValue = "";
     var rightValue = "";
     if (item.price == null){
@@ -86,13 +85,17 @@ class DocumentTransactionItemRow extends StatelessWidget {
       leftValue = Config.currencyFormat.format(item.price!);
       rightValue = Config.currencyFormat.format(item.price!* item.quantity);
     }
-    return Align(alignment: Alignment.centerRight, child: Text("$leftValue / $rightValue"));
+    return Align(alignment: Alignment.centerRight, child: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+      Text(AppLocalizations.of(con)!.field_price + ": " + leftValue),
+      Text(AppLocalizations.of(con)!.field_amount + ": " + rightValue),
+    ]));
   }
   Widget getAvatarWidget(Uint8List bytes) {
     return SizedBox(width: 48, height: 48, child: Image.memory(bytes));
   }
-  Widget _buildEmptyAvatarWidget(){
-    return Image(image: AssetImage('assets/images/box.png'), width: 32);
-    //return SizedBox(width: 48, height: 48, child: Icon(UIConstants.goodIconData, size: 32,color: UIConstants.primaryColor));
+  Widget _buildEmptyAvatarWidget(BuildContext context){
+    return Icon(UIConstants.goodIconData, size: 32, color: Theme.of(context).colorScheme.onPrimary);
   }
 }

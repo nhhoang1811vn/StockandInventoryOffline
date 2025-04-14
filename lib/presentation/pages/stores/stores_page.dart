@@ -75,6 +75,7 @@ class StoresPageState extends BaseStateWidget<StoresPage> {
         },
         builder: (context, state) =>  Scaffold(
           key: ScaffoldKey,
+            backgroundColor: Colors.grey.shade200,
             //drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 7, storeName: storage.getSelectedStoreName()),
             appBar: _buildAppBar(state),
             body: _buildBody(state),

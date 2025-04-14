@@ -5,8 +5,6 @@ import 'package:good_manager/presentation/pages/barcode_scanner/barcode_scanner_
 import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart';
 import 'package:good_manager/presentation/pages/customers/bloc/bloc.dart';
 import 'package:good_manager/presentation/pages/customers/customers_page.dart';
-import 'package:good_manager/presentation/pages/expenses/bloc/expenses_cubit.dart';
-import 'package:good_manager/presentation/pages/expenses/expenses_page.dart';
 import 'package:good_manager/presentation/pages/forgotpassword/forgot_password_page.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/goods_view.dart';
@@ -21,8 +19,8 @@ import 'package:good_manager/presentation/pages/main/main_page.dart';
 import 'package:good_manager/presentation/pages/onboarding/bloc/on_boarding_cubit.dart';
 import 'package:good_manager/presentation/pages/onboarding/on_boarding_page.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
-import 'package:good_manager/presentation/pages/payment/bloc/payments_cubit.dart';
-import 'package:good_manager/presentation/pages/payment/payments_page.dart';
+import 'package:good_manager/presentation/pages/payment_categories/bloc/payment_categories_cubit.dart';
+import 'package:good_manager/presentation/pages/payment_categories/payment_categories_page.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/report_page.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
@@ -31,18 +29,22 @@ import 'package:good_manager/presentation/pages/save_customer/bloc/save_customer
 import 'package:good_manager/presentation/pages/save_customer/save_customer_page.dart';
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
 import 'package:good_manager/presentation/pages/save_document/save_document_view.dart';
-import 'package:good_manager/presentation/pages/save_expense/bloc/save_expense_cubit.dart';
-import 'package:good_manager/presentation/pages/save_expense/save_expense_page.dart';
 import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.dart';
 import 'package:good_manager/presentation/pages/save_good/save_good_view.dart';
 import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
 import 'package:good_manager/presentation/pages/save_group/save_group_view.dart';
 import 'package:good_manager/presentation/pages/save_payment/bloc/save_payment_cubit.dart';
 import 'package:good_manager/presentation/pages/save_payment/save_payment_page.dart';
+import 'package:good_manager/presentation/pages/save_payment_category/bloc/save_payment_category_cubit.dart';
+import 'package:good_manager/presentation/pages/save_payment_category/save_payment_category_page.dart';
 import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit.dart';
 import 'package:good_manager/presentation/pages/save_store/save_store_page.dart';
 import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart';
 import 'package:good_manager/presentation/pages/save_supplier/save_supplier_page.dart';
+import 'package:good_manager/presentation/pages/save_wallet/bloc/save_wallet_cubit.dart';
+import 'package:good_manager/presentation/pages/save_wallet/save_wallet_page.dart';
+import 'package:good_manager/presentation/pages/select_document/bloc/select_document_cubit.dart';
+import 'package:good_manager/presentation/pages/select_document/select_documents_page.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 import 'package:good_manager/presentation/pages/select_group/select_group_page.dart';
 import 'package:good_manager/presentation/pages/settings/settings_page.dart';
@@ -79,23 +81,32 @@ class AppRouter {
       case Pages.loading_data:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
-              create: (context) => getIt<AuthCubit>(),
-              child: LoadingData(),
-            ));
+                  create: (context) => getIt<AuthCubit>(),
+                  child: LoadingData(),
+                ));
       case Pages.main:
-        return MaterialPageRoute(
-            builder: (_) => MainPage());
+        return MaterialPageRoute(builder: (_) => MainPage());
       // case Pages.home:
       //   return MaterialPageRoute(
       //       builder: (_) => BlocProvider(
       //             create: (context) => getIt<HomeCubit>(),
       //             child: HomePage(),
       //           ));
+      case Pages.select_document:
+        Map<dynamic, dynamic> args = settings.arguments as Map;
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<SelectDocumentCubit>(),
+              child: SelectDocumentsPage(documentType: args["documentType"],),
+            ));
       // case Pages.document_list:
+      //   Map<dynamic, dynamic> args = settings.arguments as Map;
       //   return MaterialPageRoute(
       //       builder: (_) => BlocProvider(
       //             create: (context) => getIt<DocumentsCubit>(),
-      //             child: DocumentsPage(),
+      //             child: DocumentsPage(
+      //               key: UniqueKey(),
+      //             ),
       //           ));
       case Pages.save_document:
         Map<dynamic, dynamic> args = settings.arguments as Map;
@@ -104,13 +115,6 @@ class AppRouter {
                   create: (context) => getIt<SaveDocumentCubit>(),
                   child: SaveDocumentPage(args["item"]),
                 ));
-      case Pages.payment_list:
-        Map<dynamic, dynamic> args = settings.arguments as Map;
-        return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<PaymentsCubit>(),
-                  child: PaymentsPage(args["documentId"]),
-                ));
       case Pages.save_payment:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
@@ -118,16 +122,19 @@ class AppRouter {
                   create: (context) => getIt<SavePaymentCubit>(),
                   child: SavePaymentPage(args["item"]),
                 ));
+      case Pages.save_payment_category:
+        Map<dynamic, dynamic> args = settings.arguments as Map;
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<SavePaymentCategoryCubit>(),
+              child: SavePaymentCategoryPage(args["item"]),
+            ));
       case Pages.good_list:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
                   create: (context) => getIt<GoodsCubit>(),
-                  child: GoodsPage(
-                      isSelection: args['isSelection'],
-                      document: args['document'],
-                      key: UniqueKey()
-                  ),
+                  child: GoodsPage(isSelection: args['isSelection'], document: args['document'], key: UniqueKey()),
                 ));
       case Pages.save_good:
         Map<dynamic, dynamic> args = settings.arguments as Map;
@@ -163,8 +170,7 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
                   create: (context) => getIt<SuppliersCubit>(),
-                  child:
-                      SuppliersPage(isSelection: args?['isSelection'] ?? false),
+                  child: SuppliersPage(isSelection: args?['isSelection'] ?? false),
                 ));
       case Pages.save_supplier:
         Map<dynamic, dynamic> args = settings.arguments as Map;
@@ -180,8 +186,7 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
                   create: (context) => getIt<CustomersCubit>(),
-                  child:
-                      CustomersPage(isSelection: args?['isSelection'] ?? false),
+                  child: CustomersPage(isSelection: args?['isSelection'] ?? false),
                 ));
       case Pages.save_customer:
         Map<dynamic, dynamic> args = settings.arguments as Map;
@@ -196,20 +201,12 @@ class AppRouter {
         return _buildRoute(settings, HelpsPage());
       case Pages.help:
         Map<dynamic, dynamic> args = settings.arguments as Map;
-        return _buildRoute(
-            settings, HelpPage(title: args['title'], content: args['content']));
+        return _buildRoute(settings, HelpPage(title: args['title'], content: args['content']));
       case Pages.take_picture:
         return _buildRoute(settings, TakePictureScreen(camera: cameras.first));
-      case Pages.expenses:
-        return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                create: (context) => getIt<ExpensesCubit>(),
-                child: ExpensesPage()));
       case Pages.report:
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                create: (context) => getIt<ReportCubit>(),
-                child: ReportPage()));
+            builder: (_) => BlocProvider(create: (context) => getIt<ReportCubit>(), child: ReportPage()));
       case Pages.report_detail:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
@@ -218,18 +215,16 @@ class AppRouter {
                 child: ReportDetailPage(
                   args["type"],
                   args["start"],
-                  args["end"],
-                  args["groupId"],
-                  args["groupName"],
+                  args["end"]
                 )));
 
-      case Pages.save_expense:
+      case Pages.save_wallet:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
-                  create: (context) => getIt<SaveExpenseCubit>(),
-                  child: SaveExpensePage(
-                    item: args["item"],
+                  create: (context) => getIt<SaveWalletCubit>(),
+                  child: SaveWalletPage(
+                    args["item"],
                   ),
                 ));
       case Pages.settings:
@@ -247,35 +242,22 @@ class AppRouter {
       case Pages.barcode_scanner:
         //Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                create: (context) => getIt<BarcodeScannerCubit>(),
-                child: BarcodeScannerPage()));
+            builder: (_) =>
+                BlocProvider(create: (context) => getIt<BarcodeScannerCubit>(), child: BarcodeScannerPage()));
       case Pages.signup:
-        return _buildRoute(
-            settings,
-            BlocProvider(
-                create: (context) => getIt<AuthCubit>(),
-                child: SignUpScreen()));
+        return _buildRoute(settings, BlocProvider(create: (context) => getIt<AuthCubit>(), child: SignUpScreen()));
 
       case Pages.signIn:
-        return _buildRoute(
-            settings,
-            BlocProvider(
-                create: (context) => getIt<AuthCubit>(), child: LoginScreen()));
+        return _buildRoute(settings, BlocProvider(create: (context) => getIt<AuthCubit>(), child: LoginScreen()));
 
       case Pages.forgotPassword:
         return _buildRoute(
-            settings,
-            BlocProvider(
-                create: (context) => getIt<AuthCubit>(),
-                child: ForgotPasswordScreen()));
+            settings, BlocProvider(create: (context) => getIt<AuthCubit>(), child: ForgotPasswordScreen()));
       case Pages.onboarding:
         return _buildRoute(
-            settings,
-            BlocProvider(
-                create: (context) => getIt<OnBoardingCubit>(),
-                child: OnBoardingPage()));
-
+            settings, BlocProvider(create: (context) => getIt<OnBoardingCubit>(), child: OnBoardingPage()));
+      case Pages.payment_categories:
+        return _buildRoute(settings, BlocProvider(create: (context) => getIt<PaymentCategoriesCubit>(), child: PaymentCategoriesPage(),));
       default:
         return _buildRoute(settings, MainPage());
     }

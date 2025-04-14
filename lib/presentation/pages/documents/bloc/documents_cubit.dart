@@ -89,7 +89,7 @@ class DocumentsCubit extends Cubit<DocumentsState> {
     List<DocumentUI> results = [];
     Set<String> set = {};
     for (var i = 0; i< data.length;i++){
-      String dateText = Config.dateFormat.format(data[i].date);
+      String dateText = DateFormatFactory.getDateFormat().format(data[i].date);
       if (!set.contains(dateText)){
         results.add(DocumentUI(DocumentUIType.date, dateText, null));
         set.add(dateText);

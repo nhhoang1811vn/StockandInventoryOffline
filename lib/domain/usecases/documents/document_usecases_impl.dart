@@ -68,4 +68,10 @@ class DocumentUseCasesImpl implements DocumentUseCases{
   Future<List<DocumentTransaction>> getTransactionsByDocumentId(int documentId) {
     return transactionRepository.getTransactions(documentId);
   }
+
+  @override
+  Future<Document> get(int id) {
+    // TODO: implement get
+    throw UnimplementedError();
+  }
 }

@@ -143,7 +143,7 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image(image: AssetImage('assets/images/box.png'), width: 60),
+          Icon(UIConstants.goodIconData, size: 64, color: Theme.of(context).colorScheme.onPrimary),
           SizedBox(height: 16),
           Text(AppLocalizations.of(context)!.empty_goods,
               textAlign: TextAlign.center,
@@ -486,6 +486,7 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
           }
         },
         builder: (context, state) => Scaffold(
+          backgroundColor: Colors.grey.shade200,
             key: ScaffoldKey,
             appBar: new AppBar(
                 title: new Text(widget.isSelection
@@ -505,13 +506,13 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
                       icon: Icon(Icons.more_vert),
                       itemBuilder: (BuildContext context) =>
                           <PopupMenuEntry<OverflowMenuItem>>[
-                            const PopupMenuItem<OverflowMenuItem>(
+                            PopupMenuItem<OverflowMenuItem>(
                               value: OverflowMenuItem.listSettings,
-                              child: Text('List Settings'),
+                              child: Text(AppLocalizations.of(context)!.list_settings),
                             ),
-                            const PopupMenuItem<OverflowMenuItem>(
+                            PopupMenuItem<OverflowMenuItem>(
                               value: OverflowMenuItem.help,
-                              child: Text('Help'),
+                              child: Text(AppLocalizations.of(context)!.action_help),
                             )
                           ]),
                 ]),
@@ -530,8 +531,8 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
             ),
             children: [
               FloatingActionButton.extended(
-                icon:  Image(image: AssetImage('assets/images/box.png'), width: 24),
-                label: Text("Add Good"),
+                icon:  Icon(UIConstants.goodIconData, size: 24, color: Theme.of(context).colorScheme.onPrimary),
+                label: Text(AppLocalizations.of(context)!.action_add_good),
                 heroTag: null,
                 onPressed: () {
                   final state = _key.currentState;
@@ -541,11 +542,10 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
                   }
                   context.read<GoodsCubit>().onAddGood();
                 },
-                //child: Icon(UIConstants.goodIconData, size: 30, color: Colors.blue[700],),
               ),
               FloatingActionButton.extended(
-                icon:  Image(image: AssetImage('assets/images/folder.png'), width: 24),
-                label: Text("Add Group"),
+                icon: Icon(UIConstants.groupIconData, size: 24, color: Theme.of(context).colorScheme.onPrimary),
+                label: Text(AppLocalizations.of(context)!.action_add_group),
                 onPressed: (){
                   final state = _key.currentState;
                   if (state != null) {

@@ -16,7 +16,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../pages.dart';
-import 'components/change_languages_dialog.dart';
 
 class SettingsPage extends StatefulWidget {
   SettingsPage({Key? key}) : super(key: key);
@@ -159,10 +158,14 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
     if (uid != null) {
       try {
         final ref = storageRef.child("$uid/database.db");
-        ref.getMetadata().then((value) => setState(() {
-              cloudFileUpdatedTime =
-                  DateFormat('dd-MM-yyyy HH:mm').format(value.updated!);
-            }));
+        final metadata = await ref.getMetadata();
+        setState(() {
+          if (metadata.updated != null){
+            cloudFileUpdatedTime = DateFormat('dd-MM-yyyy HH:mm').format(metadata.updated!);
+          }else{
+            cloudFileUpdatedTime = "";
+          }
+        });
       } on FirebaseException {
         setState(() {
           cloudFileUpdatedTime = "";
@@ -178,19 +181,6 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
       });
     }
   }
-
-  // void showSelectLanguageDialog(BuildContext context) async {
-  //   String currentCode = storage.getLanguageCode();
-  //   showDialog(
-  //       context: context,
-  //       builder: (_) => ChangeLanguagesDialog(currentCode, (code) {
-  //         storage.setLanguageCode(code);
-  //         MyApp.setLocale(context, code);
-  //             //appDataManager.sharedPrefsHelper.setLanguageCode(code);
-  //             //MyApp.setLocale(getContext(), code);
-  //           }),
-  //       barrierDismissible: true);
-  // }
   void onBarcodeScannerPressed(BuildContext context) {
     Navigator.of(context).pushNamed(Pages.barcode_scanner);
   }
@@ -308,6 +298,9 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
             .showSnackBar(snackBarWhenSuccess(context));
         loadCloudFileUpdatedTime();
       } on FirebaseException {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(snackBarWhenFailure(context));
+      } catch (e){
         ScaffoldMessenger.of(context)
             .showSnackBar(snackBarWhenFailure(context));
       }

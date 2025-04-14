@@ -61,7 +61,7 @@ class OnBoardingPage extends StatelessWidget {
                 border: Border.all(width: 2, color: Colors.blue),
                 shape: BoxShape.circle,
               ),child: Image.asset(
-                "assets/images/onboarding_good.png",
+                "assets/images/box.png",
               )),
           decoration: pageDecoration,
         ),

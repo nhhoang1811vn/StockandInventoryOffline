@@ -75,8 +75,11 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
                         widget.good.description.isNotEmpty ? Text(widget.good.description) : Container(),
                         widget.good.barCode != null ? Text(widget.good.barCode!) : Container(),
                         Text(sprintf(AppLocalizations.of(context)!.in_stock_text, [widget.good.quantity])),
+                        SizedBox(height: 16),
                         _buildQuantity(context, state),
+                        SizedBox(height: 16),
                         _buildPrice(context, state),
+                        SizedBox(height: 16),
                         _buildAmount(context, state)
                       ],
                     )

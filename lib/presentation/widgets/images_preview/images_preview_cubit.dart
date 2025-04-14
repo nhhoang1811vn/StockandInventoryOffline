@@ -37,12 +37,13 @@ class ImagesPreviewCubit extends Cubit<ImagesPreviewData> {
       items.addAll(state.items);
       for (String? path in result.paths){
         if (path != null){
-          File file = File(path);
-          items.add(file.readAsBytesSync());
-
+          final bytes = await File(path).readAsBytes();
+          items.add(bytes);
         }
       }
-      emit(state.copyWith(state : DataChangedState(),items: items));
+      if (!isClosed){
+        emit(state.copyWith(state : DataChangedState(),items: items));
+      }
     }
   }
 

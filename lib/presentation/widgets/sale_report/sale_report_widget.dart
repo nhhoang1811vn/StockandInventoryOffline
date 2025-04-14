@@ -1,12 +1,12 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/common/helpers/injection.container.dart';
+import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
+import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/sale_report/sale_report_cubit.dart';
-import 'package:intl/intl.dart';
-
-import '../../../domain/usecases/documents/document_usecases.dart';
 
 class SaleReportWidget extends StatefulWidget {
   @override
@@ -17,94 +17,115 @@ class SaleReportWidget extends StatefulWidget {
 
 class SaleReportWidgetState extends State<SaleReportWidget> {
   late SaleReportState mState;
+  final double width = 12;
+  final Color leftBarColor = Colors.green;
+  final Color rightBarColor = Colors.red;
+  List<BarChartGroupData> showingBarGroups = [];
+  BarChartGroupData makeGroupData(int x, double y1, double y2) {
+    return BarChartGroupData(
+      barsSpace: 4,
+      x: x,
+      barRods: [
+        BarChartRodData(
+          toY: y1,
+          color: leftBarColor,
+          width: width,
+        ),
+        BarChartRodData(
+          toY: y2,
+          color: rightBarColor,
+          width: width,
+        ),
+      ],
+    );
+  }
   @override
   void initState() {
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(create: (_) => SaleReportCubit(useCase: getIt<DocumentUseCases>())..initState(), child: BlocConsumer<SaleReportCubit, SaleReportState>(builder: (BuildContext context, SaleReportState state) {
+    return BlocProvider(create: (_) => SaleReportCubit(useCase: getIt<PaymentUseCases>())..initState(), child: BlocConsumer<SaleReportCubit, SaleReportState>(builder: (BuildContext context, SaleReportState state) {
       mState = state;
       return Card(
+          color: Theme.of(context).colorScheme.surface,
           child: Padding(
               padding: EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Text("Sale Reports in last 6 months", style: Theme.of(context).textTheme.titleMedium),
+                  Text( AppLocalizations.of(context)!.title_chart_sale_report, style: Theme.of(context).textTheme.titleMedium),
                   SizedBox(height: 16,),
-                  SizedBox(height: 250, child: LineChart(getLineChartData(state), duration: const Duration(milliseconds: 250)),)
-
+                  SizedBox(height: 250, child: _barChart(state))
                 ],
               )));
     }, listener: (BuildContext context, SaleReportState state) {  },));
+  }
+  Widget _barChart(SaleReportState state){
+    showingBarGroups.clear();
+    for (int i = 0 ;i<state.data1.length;i++){
+      double y1 = state.data1[i].value;
+      double y2 = state.data2[i].value;
+      showingBarGroups.add(makeGroupData(i, y1, y2));
+    }
+    return BarChart(BarChartData(
+      maxY: 5,
 
-  }
-  LineChartData getLineChartData(SaleReportState state) {
-    return LineChartData(
-      lineTouchData: lineTouchData1,
-      gridData: gridData,
-      titlesData: titlesData1,
-      borderData: borderData,
-      lineBarsData: getLineBarsData(state),  // Use the cubit state data here
-      minX: 0,
-      maxX: 5,//6 months
-      maxY: 4,
-      minY: 0,
-    );
-  }
-  List<LineChartBarData> getLineBarsData(SaleReportState state){
-    List<FlSpot> spots1 = state.data.map((item) {
-      return FlSpot(item.key, item.value);
-    }).toList();
-    return [
-      LineChartBarData(
-        isCurved: true,
-        color: Colors.green,
-        barWidth: 4,
-        isStrokeCapRound: true,
-        dotData: const FlDotData(show: true),
-        belowBarData: BarAreaData(show: false),
-        spots: spots1,  // Use dynamic spots from state
+      barTouchData: BarTouchData(
+        touchTooltipData: BarTouchTooltipData(
+          getTooltipItem: (BarChartGroupData group,
+              int groupIndex,
+              BarChartRodData rod,
+              int rodIndex){
+            double realValue = 0.0;
+            if (rodIndex == 0){
+              double normalizedValue = mState.data1[groupIndex].value;
+              realValue = normalizedValue * mState.maxTotalAmount / 5;
+            }else if (rodIndex == 1){
+              double normalizedValue = mState.data2[groupIndex].value;
+              realValue = normalizedValue * mState.maxTotalAmount / 5;
+            }
+            //var text = Utils.formatNumber(realValue); // Convert the number to 'K', 'M', or 'B' format
+            return BarTooltipItem('${realValue.toStringAsFixed(2)}', TextStyle(color: Colors.white, fontSize: 14));
+
+          }
+        )
       ),
-    ];
-  }
-
-  LineTouchData get lineTouchData1 => LineTouchData(
-        handleBuiltInTouches: true,
-        touchTooltipData: LineTouchTooltipData(
-          getTooltipColor: (touchedSpot) =>
-              Colors.blueGrey.withValues(alpha: 0.8),
-        ),
-      );
-
-  FlGridData get gridData => const FlGridData(show: true);
-
-  FlTitlesData get titlesData1 => FlTitlesData(
-        bottomTitles: AxisTitles(
-          sideTitles: bottomTitles,
-        ),
+      titlesData: FlTitlesData(
+        show: true,
         rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
         topTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        leftTitles: AxisTitles(
-          sideTitles: leftTitles(),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: bottomTitleWidgets,
+            reservedSize: 42,
+          ),
         ),
-      );
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 50,
+              interval: 1,
+              getTitlesWidget: leftTitleWidgets,
+            )),
+      ),
+      borderData: FlBorderData(
+        show: false,
+      ),
+      barGroups: showingBarGroups,
+      gridData: const FlGridData(show: true ),
+    ));
+  }
 
-  SideTitles get bottomTitles => SideTitles(
-        showTitles: true,
-        reservedSize: 32,
-        interval: 1,
-        getTitlesWidget: bottomTitleWidgets,
-      );
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     if (mState.startDate != null){
       DateTime dateTime = DateTimeUtils.addMonths(mState.startDate!, value.toInt());
-      Widget text = Text(DateFormat('MMM').format(dateTime), style: Theme.of(context).textTheme.bodySmall);
+      Widget text = Text(DateFormatFactory.getMonthFormat().format(dateTime), style: Theme.of(context).textTheme.bodySmall);
       return SideTitleWidget(
         meta: meta,
         space: 10,
@@ -126,7 +147,7 @@ class SaleReportWidgetState extends State<SaleReportWidget> {
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 14,
+      fontSize: 12,
     );
     String text;
 
@@ -134,10 +155,9 @@ class SaleReportWidgetState extends State<SaleReportWidget> {
     double maxTotalAmount = mState.maxTotalAmount;
 
     // Determine the text based on the value and maxTotalAmount
-    if (value >= 0 && value <= 4) {
+    if (value >= 0 && value <= 5) {
       // Scale the value based on maxTotalAmount
-      double adjustedValue = value * (maxTotalAmount / 4);
-
+      double adjustedValue = value * (maxTotalAmount / 5);
       // Format the adjusted value using the formatNumber function
       text = Utils.formatNumber(adjustedValue); // Convert the number to 'K', 'M', or 'B' format
     } else {

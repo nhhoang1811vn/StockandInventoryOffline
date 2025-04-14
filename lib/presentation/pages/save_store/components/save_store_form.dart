@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/store.dart';
-import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit.dart';
@@ -25,30 +25,28 @@ class SaveStoreForm extends StatelessWidget {
             Navigator.of(context).pop(state.item);
           }
         },
-        builder: (context, state) => Stack(
-              children: [
-                Positioned.fill(
-                    child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(UIConstants.screenSpace),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      AppTextField(
-                          labelText: AppLocalizations.of(context)!.field_name,
-                          initialValue: state.name.value,
-                          onChanged: (value) => context.read<SaveStoreCubit>().nameChanged(value),
-                          keyboardType: TextInputType.name,
-                          error: state.name.displayError?.name),
-                      AppTextField(
-                          labelText: AppLocalizations.of(context)!.field_desc,
-                          initialValue: state.description,
-                          onChanged: (value) => context.read<SaveStoreCubit>().descriptionChanged(value),
-                          keyboardType: TextInputType.name),
-                    ],
-                  ),
-                ))
-              ],
-            ));
+        builder: (context, state) => Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    AppTextField(
+                        labelText: AppLocalizations.of(context)!.field_name,
+                        hintText: AppLocalizations.of(context)!.hint_name,
+                        initialValue: state.name.value,
+                        onChanged: (value) => context.read<SaveStoreCubit>().nameChanged(value),
+                        keyboardType: TextInputType.name,
+                        error: state.name.displayError?.text(context)),
+                    SizedBox(height: 16,),
+                    AppTextField(
+                        labelText: AppLocalizations.of(context)!.label_description,
+                        hintText: AppLocalizations.of(context)!.hint_description,
+                        initialValue: state.description,
+                        onChanged: (value) => context.read<SaveStoreCubit>().descriptionChanged(value),
+                        keyboardType: TextInputType.name),
+                  ],
+          ),
+        ));
   }
 }

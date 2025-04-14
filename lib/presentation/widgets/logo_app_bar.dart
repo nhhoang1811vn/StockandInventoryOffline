@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class LogoAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -16,7 +15,9 @@ class LogoAppBar extends StatelessWidget implements PreferredSizeWidget {
           SizedBox(width: 8),
           Text(
             "Stock and Inventory",
-            style: GoogleFonts.playfairDisplay(),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontStyle: FontStyle.italic,
+            ),
           ),
         ],
       ),

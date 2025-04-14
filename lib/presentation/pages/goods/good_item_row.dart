@@ -27,6 +27,7 @@ class GoodItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Theme.of(context).colorScheme.surface,
       margin: EdgeInsets.only(left: 16, right: 16, top: 16),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
@@ -36,7 +37,7 @@ class GoodItemRow extends StatelessWidget {
           padding: EdgeInsets.all(16.0),
           child: Row(
             children: [
-              _buildLeadingWidget(),
+              _buildLeadingWidget(context),
               SizedBox(
                 width: 16,
               ),
@@ -48,8 +49,8 @@ class GoodItemRow extends StatelessWidget {
     );
   }
 
-  Widget _buildLeadingWidget() {
-    return item.files.isNotEmpty ? getAvatarWidget(item.files.first) : _buildEmptyAvatarWidget();
+  Widget _buildLeadingWidget(BuildContext context) {
+    return item.files.isNotEmpty ? getAvatarWidget(item.files.first) : _buildEmptyAvatarWidget(context);
   }
 
   Widget _buildWidget(BuildContext context) {
@@ -106,10 +107,10 @@ class GoodItemRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Text(Config.currencyFormat.format(item.purchasePrice ?? 0),
-            style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.red.shade700)),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red.shade700)),
         Text("/"),
         Text(Config.currencyFormat.format(item.salePrice ?? 0),
-            style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.green.shade700)),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.green.shade700)),
       ],
     );
   }
@@ -118,7 +119,7 @@ class GoodItemRow extends StatelessWidget {
     return SizedBox(width: 32, height: 32, child: Image.memory(bytes));
   }
 
-  Widget _buildEmptyAvatarWidget() {
-    return Image(image: AssetImage('assets/images/box.png'), width: 32);
+  Widget _buildEmptyAvatarWidget(BuildContext context) {
+    return Icon(UIConstants.goodIconData, size: 32, color: Theme.of(context).colorScheme.onPrimary);
   }
 }

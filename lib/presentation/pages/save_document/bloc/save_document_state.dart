@@ -17,7 +17,6 @@ class SaveDocumentState with _$SaveDocumentState {
     @Default('') String textSearch,
     @Default(0) double totalQuantity,
     @Default(0) double totalAmount,
-    PaymentStatus? paymentStatus,
     @Default([]) List<Payment> payments
   }) = _Initial;
 }
