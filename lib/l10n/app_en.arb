@@ -124,12 +124,13 @@
     "message_confirm_delete": "Are you sure to delete %s?",
     "message_confirm_delete_account": "Are you sure to delete your account ?",
     "delete_account_successful": "Your account has been deleted",
-    "menu_item_settings_title": "Settings",
-    "menu_item_settings_desc": "Settings Information",
+
+
     "menu_item_language_title": "Language",
     "menu_item_language_desc": "Change Language",
     "menu_item_barcode_scanner_title": "Barcode scanner",
     "settings_title": "Settings",
+      "subscriptions_title": "Subscriptions",
     "dialog_title_change_language": "Select language",
     "english_text": "English",
     "vietnamese_text": "Vietnamese",
@@ -298,7 +299,11 @@
                                      "outbound_categories": "Outbound Categories",
                                           "select_object_type": "Select object types",
 
-                                         "title_report_list_of_wallet": "List of wallets"
-
+                                         "title_report_list_of_wallet": "List of wallets",
+                                         "pro_benefits_description": "All premium features of the app (Unlimited customers, suppliers, stores)",
+                                         "pro_lifetime_benefits_description": "With one-time purchase you will be able to use all advanced features forever",
+                                         "monthly": "Monthly",
+                                         "yearly": "Yearly",
+                                         "payonce": "Pay once use forever"
 
 }

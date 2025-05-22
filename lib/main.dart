@@ -10,6 +10,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/router.dart';
+import 'package:good_manager/purchase_manager.dart';
+
 
 import '../common/helpers/injection.container.dart';
 import 'firebase_options.dart';
@@ -47,6 +49,7 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
+
   MyApp({Key? key}) : super(key: key);
 
   @override
@@ -64,16 +67,22 @@ class MyApp extends StatefulWidget {
       return LocaleType.vi;
     return LocaleType.en;
   }
-
 }
-
 class MyAppState extends State<MyApp> {
-
+  final purchaseManager = PurchaseManager();
   String? _languageCode;
   final AppRouter _router;
   MyAppState() : _router = AppRouter() {
     _languageCode = storage.getLanguageCode();
   }
+
+  @override
+  void initState() {
+    super.initState();
+    purchaseManager.init();
+  }
+
+
   Locale locale(String languageCode) {
     Locale _temp;
     switch (languageCode) {

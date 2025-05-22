@@ -51,6 +51,7 @@ import 'package:good_manager/presentation/pages/settings/settings_page.dart';
 import 'package:good_manager/presentation/pages/signup/signup_page.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
 import 'package:good_manager/presentation/pages/stores/stores_page.dart';
+import 'package:good_manager/presentation/pages/subscription/subscription_page.dart';
 import 'package:good_manager/presentation/pages/suppliers/bloc/bloc.dart';
 import 'package:good_manager/presentation/pages/suppliers/suppliers_page.dart';
 import 'package:good_manager/presentation/pages/take_picture_screen.dart';
@@ -229,6 +230,8 @@ class AppRouter {
                 ));
       case Pages.settings:
         return _buildRoute(settings, SettingsPage());
+      case Pages.subscriptions:
+        return _buildRoute(settings, SubscriptionPage());
       case Pages.select_group:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(

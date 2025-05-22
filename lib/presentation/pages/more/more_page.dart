@@ -123,6 +123,15 @@ class MorePageState extends State<MorePage> {
               Divider(height: 1,),
               ListTile(
                 tileColor: Colors.white,
+                leading: Icon(Icons.production_quantity_limits,
+                    size: UIConstants.drawerMenuSize),
+                title: Text(AppLocalizations.of(context)!.subscriptions_title),
+                trailing: Icon(Icons.navigate_next),
+                onTap: () => onSubscriptionItemPressed(context),
+              ),
+              Divider(height: 1,),
+              ListTile(
+                tileColor: Colors.white,
                 leading: Icon(FontAwesomeIcons.language),
                 title:
                 Text(AppLocalizations.of(context)!.menu_item_language_title),
@@ -234,6 +243,9 @@ class MorePageState extends State<MorePage> {
 
   void onSettingsItemPressed(BuildContext context) {
     Navigator.of(context).pushNamed(Pages.settings);
+  }
+  void onSubscriptionItemPressed(BuildContext context) {
+    Navigator.of(context).pushNamed(Pages.subscriptions);
   }
 
   void onInviteFriend(BuildContext context) {

@@ -33,6 +33,7 @@ class Pages {
 
   static const String take_picture = '/take_picture';
   static const String settings = "/settings";
+  static const String subscriptions = "/subscriptions";
 
   static const String select_group = '/select_group';
   static const String barcode_scanner = "/barcode_scanner";

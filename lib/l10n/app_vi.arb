@@ -143,14 +143,12 @@
   "message_confirm_delete": "Bạn có chắc muốn xoá %s ?",
   "message_confirm_delete_account": "Bạn có chắc muốn xoá tài khoản ?",
   "delete_account_successful": "Tài khoản đã bị xoá.",
-
-  "menu_item_settings_title": "Cài đặt",
-  "menu_item_settings_desc": "Các thông tin cài đặt",
   "menu_item_language_title": "Ngôn ngữ",
   "menu_item_language_desc": "Thay đổi ngôn ngữ",
   "menu_item_barcode_scanner_title": "Quét mã vạch",
 
   "settings_title": "Cài đặt",
+  "subscriptions_title": "Gói đăng ký",
   "dialog_title_change_language": "Chọn ngôn ngữ",
   "english_text": "Tiếng Anh",
   "vietnamese_text": "Tiếng Việt",
@@ -336,6 +334,11 @@
                         "inbound_categories": "Danh mục thu",
                                                           "outbound_categories": "Danh mục chi",
                                                           "select_object_type": "Chọn loại đối tượng",
-                                                                 "title_report_list_of_wallet": "Danh sách ví tiền"
+                                                                 "title_report_list_of_wallet": "Danh sách ví tiền",
+                                                                   "pro_benefits_description": "Bao gồm tất cả tính năng nâng cao của ứng dụng (không giới hạn khách hàng, không giới hạn nhà cung cấp, không giới hạn cửa hàng.)",
+                                                                   "pro_lifetime_benefits_description": "Với một lần mua bạn có thể sử dụng tất cả tính năng nâng cao của ứng dụng",
+                                                                   "monthly": "Hàng tháng",
+                                                                                                            "yearly": "Hàng năm",
+                                                                                                            "payonce": "Trả 1 lần, sử dụng mãi mãi"
 
 }
