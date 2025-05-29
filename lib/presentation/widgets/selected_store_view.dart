@@ -19,7 +19,7 @@ class SelectedStoreViewState extends State<SelectedStoreView> {
   Widget build(BuildContext context) {
     return Container(
       height: 30,
-      color: UIConstants.primaryDarkColor,
+      color: Theme.of(context).colorScheme.primary,
       child: Center(
         child: Text(
           storeName,

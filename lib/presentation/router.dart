@@ -47,7 +47,10 @@ import 'package:good_manager/presentation/pages/select_document/bloc/select_docu
 import 'package:good_manager/presentation/pages/select_document/select_documents_page.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 import 'package:good_manager/presentation/pages/select_group/select_group_page.dart';
+import 'package:good_manager/presentation/pages/settings/general/bloc/settings_general_cubit.dart';
+import 'package:good_manager/presentation/pages/settings/general/settings_general_page.dart';
 import 'package:good_manager/presentation/pages/settings/settings_page.dart';
+import 'package:good_manager/presentation/pages/settings/view/settings_view_page.dart';
 import 'package:good_manager/presentation/pages/signup/signup_page.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
 import 'package:good_manager/presentation/pages/stores/stores_page.dart';
@@ -86,12 +89,6 @@ class AppRouter {
                 ));
       case Pages.main:
         return MaterialPageRoute(builder: (_) => MainPage());
-      // case Pages.home:
-      //   return MaterialPageRoute(
-      //       builder: (_) => BlocProvider(
-      //             create: (context) => getIt<HomeCubit>(),
-      //             child: HomePage(),
-      //           ));
       case Pages.select_document:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
@@ -99,15 +96,6 @@ class AppRouter {
               create: (context) => getIt<SelectDocumentCubit>(),
               child: SelectDocumentsPage(documentType: args["documentType"],),
             ));
-      // case Pages.document_list:
-      //   Map<dynamic, dynamic> args = settings.arguments as Map;
-      //   return MaterialPageRoute(
-      //       builder: (_) => BlocProvider(
-      //             create: (context) => getIt<DocumentsCubit>(),
-      //             child: DocumentsPage(
-      //               key: UniqueKey(),
-      //             ),
-      //           ));
       case Pages.save_document:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
@@ -229,6 +217,13 @@ class AppRouter {
                 ));
       case Pages.settings:
         return _buildRoute(settings, SettingsPage());
+      case Pages.settings_view:
+        return _buildRoute(settings, SettingsViewPage());
+      case Pages.settings_general:
+        return MaterialPageRoute(builder: (_) => BlocProvider(
+          create: (context) => getIt<SettingsGeneralCubit>(),
+          child: SettingsGeneralPage(),
+        ));
       case Pages.select_group:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
@@ -259,7 +254,7 @@ class AppRouter {
       case Pages.payment_categories:
         return _buildRoute(settings, BlocProvider(create: (context) => getIt<PaymentCategoriesCubit>(), child: PaymentCategoriesPage(),));
       default:
-        return _buildRoute(settings, MainPage());
+        return _buildRoute(settings, Text("Loading data...."));
     }
   }
 

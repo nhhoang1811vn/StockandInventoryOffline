@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/payment_categories/bloc/payment_categories_cubit.dart';
 import 'package:good_manager/presentation/widgets/categories_grid_view.dart';
 
@@ -38,7 +38,7 @@ class PaymentCategoriesPageState extends State<PaymentCategoriesPage> {
   }
   _buildScaffold(PaymentCategoriesState state){
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      
       appBar: _buildAppBar(),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),

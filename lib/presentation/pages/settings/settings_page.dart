@@ -5,11 +5,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+//import 'package:good_manager/l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/common/path_utils.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/widgets/snackbar_widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -26,10 +26,8 @@ class SettingsPage extends StatefulWidget {
   }
 }
 
-class SettingsPageState extends BaseStateWidget<SettingsPage> {
-  //SettingsPage({Key? key}) : super(key: key);
+class SettingsPageState extends State<SettingsPage> {
   var cloudFileUpdatedTime = "";
-
   @override
   void initState() {
     super.initState();
@@ -37,119 +35,152 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
   }
 
   @override
-  bool hasDrawer() {
-    return true;
-  }
-
-  @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
-        key: ScaffoldKey,
-        backgroundColor: Colors.grey[100],
-        //drawer: CustomNavigationDrawer(selectedIndex: 8, storeName: storage.getSelectedStoreName()),
         appBar: new AppBar(
             title: new Text(AppLocalizations.of(context)!.settings_title)),
-        body: ListView(
-          padding: EdgeInsets.all(16),
-          //key: globalKey,
-          children: [
-            Text(
-              "General",
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            Card(color: Colors.white, child: Column(children: [
+        body: _buildBody(),
+      );
+  }
+
+
+  Widget _buildBody() {
+    return ListView(
+      padding: EdgeInsets.all(16),
+      children: [
+        Card(
+          child: Column(
+            children: [
               SizedBox(
                 height: 4,
               ),
               ListTile(
+                leading: Icon(Icons.settings),
+                title: Text(
+                    AppLocalizations.of(context)!.menu_item_general),
+                onTap: () {
+                  Navigator.of(context).pushNamed(Pages.settings_general);
+                  //showSelectLanguageDialog(context);
+                },
+                trailing: Icon(Icons.navigate_next),
+              ),
+              Divider(
+                height: 1,
+              ),
+              ListTile(
+                leading: Icon(Icons.visibility),
+                title: Text(
+                    AppLocalizations.of(context)!.menu_item_view),
+                onTap: () {
+                  Navigator.of(context).pushNamed(Pages.settings_view);
+                },
+                trailing: Icon(Icons.navigate_next),
+              ),
+              Divider(
+                height: 1,
+              ),
+              ListTile(
                 leading: Icon(UIConstants.barcodeIconData),
                 title: Text(AppLocalizations.of(context)!
-                    .menu_item_barcode_scanner_title),
+                    .menu_item_barcode_scanner),
                 onTap: () => onBarcodeScannerPressed(context),
+                trailing: Icon(Icons.navigate_next),
+              ),
+              Divider(
+                height: 1,
+              ),
+              ListTile(
+                leading: Icon(Icons.warning),
+                title: Text(AppLocalizations.of(context)!
+                    .menu_item_minimum_quantity),
+                //onTap: () => onBarcodeScannerPressed(context),
+                trailing: Icon(Icons.navigate_next),
+              ),
+              Divider(
+                height: 1,
+              ),
+              ListTile(
+                leading: Icon(Icons.business),
+                title: Text(AppLocalizations.of(context)!
+                    .menu_item_my_store),
+                //onTap: () => onBarcodeScannerPressed(context),
+                trailing: Icon(Icons.navigate_next),
+              ),
+              Divider(
+                height: 1,
+              ),
+              ListTile(
+                leading: Icon(Icons.backup),
+                title: Text(AppLocalizations.of(context)!
+                    .menu_item_backup_and_restore),
+                //onTap: () => onBarcodeScannerPressed(context),
                 trailing: Icon(Icons.navigate_next),
               ),
               SizedBox(
                 height: 4,
               ),
-            ],),),
-            // ListTile(
-            //   tileColor: Colors.white,
-            //   leading: Icon(Icons.language),
-            //   title:
-            //   Text(AppLocalizations.of(context)!.menu_item_language_title),
-            //   subtitle:
-            //   Text(AppLocalizations.of(context)!.menu_item_language_desc),
-            //   onTap: (){ showSelectLanguageDialog(context);},
-            // ),
-            //Divider(color: Colors.grey[500]),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 16,
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Card(
 
-            SizedBox(
-              height: 16,
-            ),
-            Text(
-              "Backup and Restore",
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Card(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 4,
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.backup),
-                    title: Text(AppLocalizations.of(context)!.menu_back_up),
-                    subtitle:
-                        Text(AppLocalizations.of(context)!.menu_back_up_desc),
-                    onTap: () => onBackUpPressed(context),
-                  ),
-                  Divider(
-                    height: 1,
-                  ),
-                  //Divider(color: Colors.grey[500]),
-                  ListTile(
-                    leading: Icon(Icons.restore),
-                    title: Text(AppLocalizations.of(context)!.menu_restore),
-                    subtitle:
-                        Text(AppLocalizations.of(context)!.menu_restore_desc),
-                    onTap: () => onRestorePressed(context),
-                  ),
-                  Divider(
-                    height: 1,
-                  ),
-                  //Divider(color: Colors.grey[500]),
-                  ListTile(
-                    leading: Icon(Icons.cloud),
-                    title: Text(
-                        AppLocalizations.of(context)!.menu_push_data_to_cloud),
-                    subtitle: cloudFileUpdatedTime.isEmpty
-                        ? Text(
-                            AppLocalizations.of(context)!.cloud_file_no_updated)
-                        : Text(cloudFileUpdatedTime),
-                    onTap: () => onCloudPressed(context),
-                  ),
-                  Divider(
-                    height: 1,
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.sync),
-                    title: Text("Quick Sync"),
-                    subtitle: Text(
-                        "It will restart the app, and sync the latest app data"),
-                    onTap: () => onQuickSyncPressed(context),
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                ],
+          child: Column(
+            children: [
+              SizedBox(
+                height: 4,
               ),
-            )
-          ],
-        ));
+              ListTile(
+                leading: Icon(Icons.backup),
+                title: Text(AppLocalizations.of(context)!.menu_back_up),
+                subtitle: Text(AppLocalizations.of(context)!.menu_back_up_desc),
+                onTap: () => onBackUpPressed(context),
+              ),
+              Divider(
+                height: 1,
+              ),
+              ListTile(
+                leading: Icon(Icons.restore),
+                title: Text(AppLocalizations.of(context)!.menu_restore),
+                subtitle: Text(AppLocalizations.of(context)!.menu_restore_desc),
+                onTap: () => onRestorePressed(context),
+              ),
+              Divider(
+                height: 1,
+              ),
+              //Divider(color: Colors.grey[500]),
+              ListTile(
+                leading: Icon(Icons.cloud),
+                title:
+                    Text(AppLocalizations.of(context)!.menu_push_data_to_cloud),
+                subtitle: cloudFileUpdatedTime.isEmpty
+                    ? Text(AppLocalizations.of(context)!.cloud_file_no_updated)
+                    : Text(cloudFileUpdatedTime),
+                onTap: () => onCloudPressed(context),
+              ),
+              Divider(
+                height: 1,
+              ),
+              ListTile(
+                leading: Icon(Icons.sync),
+                title: Text("Quick Sync"),
+                subtitle: Text(
+                    "It will restart the app, and sync the latest app data"),
+                onTap: () => onQuickSyncPressed(context),
+              ),
+              SizedBox(
+                height: 4,
+              ),
+            ],
+          ),
+        )
+      ],
+    );
   }
 
   void loadCloudFileUpdatedTime() async {
@@ -160,9 +191,10 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
         final ref = storageRef.child("$uid/database.db");
         final metadata = await ref.getMetadata();
         setState(() {
-          if (metadata.updated != null){
-            cloudFileUpdatedTime = DateFormat('dd-MM-yyyy HH:mm').format(metadata.updated!);
-          }else{
+          if (metadata.updated != null) {
+            cloudFileUpdatedTime =
+                DateFormat('dd-MM-yyyy HH:mm').format(metadata.updated!);
+          } else {
             cloudFileUpdatedTime = "";
           }
         });
@@ -181,6 +213,7 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
       });
     }
   }
+
   void onBarcodeScannerPressed(BuildContext context) {
     Navigator.of(context).pushNamed(Pages.barcode_scanner);
   }
@@ -300,7 +333,7 @@ class SettingsPageState extends BaseStateWidget<SettingsPage> {
       } on FirebaseException {
         ScaffoldMessenger.of(context)
             .showSnackBar(snackBarWhenFailure(context));
-      } catch (e){
+      } catch (e) {
         ScaffoldMessenger.of(context)
             .showSnackBar(snackBarWhenFailure(context));
       }

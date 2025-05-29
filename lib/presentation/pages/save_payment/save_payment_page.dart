@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
@@ -197,7 +197,6 @@ class SavePaymentPageState extends State<SavePaymentPage> {
           amountController.text = "";
         }
         return Scaffold(
-            backgroundColor: Colors.grey[200],
             appBar: _buildAppBar(context),
             body: Column(
               children: [
@@ -209,7 +208,6 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Card(
-                        color: Theme.of(context).colorScheme.surface,
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(

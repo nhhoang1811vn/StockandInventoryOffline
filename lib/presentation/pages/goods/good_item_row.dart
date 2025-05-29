@@ -27,7 +27,7 @@ class GoodItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).colorScheme.surface,
+
       margin: EdgeInsets.only(left: 16, right: 16, top: 16),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
@@ -66,11 +66,11 @@ class GoodItemRow extends StatelessWidget {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(item.name,
                 style:
-                    Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+                    Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.primary)),
             SizedBox(height: 4),
             if (showBarcode && item.barCode != null)
               Row(children: [
-                Icon(UIConstants.barcodeIconData, size: 24, color: UIConstants.primaryColor),
+                Icon(UIConstants.barcodeIconData, size: 24, color: Theme.of(context).colorScheme.primary),
                 SizedBox(
                   width: 8,
                 ),
@@ -120,6 +120,6 @@ class GoodItemRow extends StatelessWidget {
   }
 
   Widget _buildEmptyAvatarWidget(BuildContext context) {
-    return Icon(UIConstants.goodIconData, size: 32, color: Theme.of(context).colorScheme.onPrimary);
+    return Icon(UIConstants.goodIconData, size: 32, color: Theme.of(context).colorScheme.primary);
   }
 }

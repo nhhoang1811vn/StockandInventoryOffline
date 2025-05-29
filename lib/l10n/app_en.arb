@@ -80,10 +80,6 @@
     "message_delete_customer_error_having_document": "You have documents attached to the supplier, can not perform this action",
     "action_ok": "OK",
     "action_cancel": "Cancel",
-    "search_by_name": "By name",
-    "search_by_description": "By description",
-    "search_by_barcode": "By barcode",
-    "search_by_everywhere": "Everywhere",
     "search_by_customer_supplier": "By customer/supplier",
     "action_move_to_group": "Move to group",
     "action_edit_group": "Edit group",
@@ -126,9 +122,18 @@
     "delete_account_successful": "Your account has been deleted",
     "menu_item_settings_title": "Settings",
     "menu_item_settings_desc": "Settings Information",
+    "menu_item_general" : "General",
+    "menu_item_view" : "Display",
+    "menu_item_barcode_scanner": "Barcode scanner",
+    "menu_item_minimum_quantity": "Minimum quantity",
+    "menu_item_my_store": "My Store",
+    "menu_item_backup_and_restore" : "Back up and restore",
+
     "menu_item_language_title": "Language",
     "menu_item_language_desc": "Change Language",
-    "menu_item_barcode_scanner_title": "Barcode scanner",
+    "menu_item_passcode_title" : "Pass code lock",
+    "menu_item_passcode_desc" : "Desc",
+
     "settings_title": "Settings",
     "dialog_title_change_language": "Select language",
     "english_text": "English",
@@ -281,7 +286,7 @@
                      "field_out": "Out",
                       "field_end_period": "End Period",
                       "action_document_created_withname": "Document %s was created",
-                          "good_information": "Document information",
+                          "good_information": "Good information",
                               "images_information": "Images information",
                               "change_color":"Change color",
                               "change_icon":"Change icon",
@@ -298,7 +303,8 @@
                                      "outbound_categories": "Outbound Categories",
                                           "select_object_type": "Select object types",
 
-                                         "title_report_list_of_wallet": "List of wallets"
+                                         "title_report_list_of_wallet": "List of wallets",
+                                         "hint_search_by": "Search..."
 
 
 }

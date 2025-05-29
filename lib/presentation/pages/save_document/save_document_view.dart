@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:csv/csv.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
@@ -15,16 +14,16 @@ import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../../../domain/entities/supplier.dart';
-import '../../app_style.dart';
 import '../../style_size.dart';
 import '../../widgets/snackbar_widgets.dart';
 import '../app_text_field.dart';
@@ -47,12 +46,12 @@ class SaveDocumentPage extends StatefulWidget {
   }
 }
 
-class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
+class SaveDocumentPageState extends State<SaveDocumentPage> {
   final TextEditingController personNameController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   final TextEditingController searchTextController = TextEditingController();
   @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     context.read<SaveDocumentCubit>().init(widget.item);
     personNameController.text = widget.item.personName ?? '';
     dateController.text = DateFormatFactory.getDateAndTimeFormat().format(widget.item.date);
@@ -177,7 +176,7 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
         },
         listenWhen: (state1, state2) => state1.state != state2.state,
         builder: (context, state) => Scaffold(
-              backgroundColor: Colors.grey.shade200,
+              
               resizeToAvoidBottomInset: false,
               appBar: _buildAppBar(context, state),
               body: Column(
@@ -192,7 +191,6 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
                         Text(AppLocalizations.of(context)!.document_information,
                             style: Theme.of(context).textTheme.titleMedium),
                         Card(
-                          color: Theme.of(context).colorScheme.surface,
                           child: Padding(
                             padding: EdgeInsets.all(16),
                             child: Column(
@@ -264,7 +262,7 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
                         _buildSearchBar(context, state),
                         Expanded(
                           child: Card(
-                            color: Theme.of(context).colorScheme.surface,
+
                             child: Stack(
                               children: [
                                 Visibility(
@@ -367,22 +365,10 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
 
   void onExport(SaveDocumentState state) async {
     String fileName = 'StockandInventory_Document_${state.name.value}.csv';
-    if (Platform.isWindows) {
-      String? outputFile = await FilePicker.platform
-          .saveFile(dialogTitle: 'Please select an output file:', fileName: fileName, allowedExtensions: ["csv"]);
-      if (outputFile != null) {
-        await saveCSVFile(context, state, outputFile);
-      }
-    } else {
-      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-      if (selectedDirectory != null) {
-        String outputFile = "$selectedDirectory/$fileName";
-        await saveCSVFile(context, state, outputFile);
-      }
-    }
+    await saveCSVFile(context, state, fileName);
   }
 
-  Future<void> saveCSVFile(BuildContext context, SaveDocumentState state, String outputFile) async {
+  Future<void> saveCSVFile(BuildContext context, SaveDocumentState state, String fileName) async {
     try {
       List<List<String>> data = [];
       data.add([AppLocalizations.of(context)?.document_name_no ?? "", state.name.value.toString()]);
@@ -404,10 +390,19 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
       });
 
       String csv = const ListToCsvConverter().convert(data);
-      File file = File(outputFile);
+
+      final dir = await getApplicationDocumentsDirectory();
+      final path = '${dir.path}/$fileName';
+      final file = File(path);
+
       await file.writeAsString(csv);
+      // Export via share dialog (iOS-compatible)
+      final params = ShareParams(
+        files: [XFile('${file.path}')],
+      );
+      await SharePlus.instance.share(params);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Save CSV Failed: ${file.path}'),
+        content: Text('Save CSV Successful: ${file.path}'),
       ));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -439,12 +434,12 @@ class SaveDocumentPageState extends BaseStateWidget<SaveDocumentPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(UIConstants.goodIconData, size: 64, color: Theme.of(context).colorScheme.onPrimary),
+          Icon(UIConstants.goodIconData, size: 64, color: Theme.of(context).colorScheme.primary),
           SizedBox(
             height: 16,
           ),
           Text(AppLocalizations.of(context)!.empty_goods,
-              textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle()),
+              textAlign: TextAlign.center),
         ],
       ),
     );

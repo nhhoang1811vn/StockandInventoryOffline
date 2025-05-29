@@ -13,11 +13,11 @@ import '../domain/entities/customers_setting.dart';
 import '../domain/entities/suppliers_setting.dart';
 
 @singleton
-class Storage{
+class Storage {
   late SharedPreferences prefs;
-  Future<void> init() async{
+  Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey(StorageKeys.InitSettings)){
+    if (!prefs.containsKey(StorageKeys.InitSettings)) {
       setSuppliersSetting(SuppliersSetting.getDefault());
       setCustomersSetting(CustomersSetting.getDefault());
       setGoodsSetting(GoodsSetting.getDefault());
@@ -26,140 +26,196 @@ class Storage{
       setSaveDocumentSetting(SaveDocumentSetting.getDefault());
       setStoresSetting(StoresSetting.getDefault());
 
-      prefs.setInt(StorageKeys.BarcodeScannerBatchScanMode, BatchModeScan.MANUAL.value);
+      prefs.setInt(
+          StorageKeys.BarcodeScannerBatchScanMode, BatchModeScan.MANUAL.value);
       prefs.setBool(StorageKeys.BarcodeScannerEnableBeep, true);
       prefs.setBool(StorageKeys.BarcodeScannerEnableVibrate, true);
-
       prefs.setBool(StorageKeys.InitSettings, true);
     }
   }
+
   int getSelectedStoreId() {
-    return prefs.getInt(StorageKeys.SelectedStoreId)??-1;
+    return prefs.getInt(StorageKeys.SelectedStoreId) ?? -1;
   }
 
   void setSelectedStoreId(int storeId) {
     prefs.setInt(StorageKeys.SelectedStoreId, storeId);
   }
-  String getSelectedStoreName(){
-    return prefs.getString(StorageKeys.SelectedStoreName)??"";
+
+  String getSelectedStoreName() {
+    return prefs.getString(StorageKeys.SelectedStoreName) ?? "";
   }
-  void setSelectedStoreName(String value){
+
+  void setSelectedStoreName(String value) {
     prefs.setString(StorageKeys.SelectedStoreName, value);
   }
+
   bool getFirstTime() {
-    return prefs.getBool(StorageKeys.FirstTime)??true;
+    return prefs.getBool(StorageKeys.FirstTime) ?? true;
   }
+
   void setFirstTime(bool value) {
     prefs.setBool(StorageKeys.FirstTime, value);
   }
+
   void setLanguageCode(String value) {
     prefs.setString(StorageKeys.LanguageCode, value);
   }
+
   String getLanguageCode() {
-    return prefs.getString(StorageKeys.LanguageCode)??"en";
+    return prefs.getString(StorageKeys.LanguageCode) ?? "en";
   }
-  void setSuppliersSetting(SuppliersSetting settings){
-    prefs.setString(StorageKeys.SuppliersSetting, jsonEncode(settings.toJson()));
+
+  void setSuppliersSetting(SuppliersSetting settings) {
+    prefs.setString(
+        StorageKeys.SuppliersSetting, jsonEncode(settings.toJson()));
   }
+
   SuppliersSetting getSuppliersSetting() {
-    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.SuppliersSetting)!);
+    Map<String, Object?> json =
+        jsonDecode(prefs.getString(StorageKeys.SuppliersSetting)!);
     return SuppliersSetting.fromJson(json);
   }
-  void setCustomersSetting(CustomersSetting settings){
-    prefs.setString(StorageKeys.CustomersSetting, jsonEncode(settings.toJson()));
+
+  void setCustomersSetting(CustomersSetting settings) {
+    prefs.setString(
+        StorageKeys.CustomersSetting, jsonEncode(settings.toJson()));
   }
+
   CustomersSetting getCustomersSetting() {
-    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.CustomersSetting)!);
+    Map<String, Object?> json =
+        jsonDecode(prefs.getString(StorageKeys.CustomersSetting)!);
     return CustomersSetting.fromJson(json);
   }
 
-
-  void setGoodsSetting(GoodsSetting settings){
+  void setGoodsSetting(GoodsSetting settings) {
     prefs.setString(StorageKeys.GoodsSetting, jsonEncode(settings.toJson()));
   }
-  GoodsSetting getGoodsSetting(){
-    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.GoodsSetting)!);
+
+  GoodsSetting getGoodsSetting() {
+    Map<String, Object?> json =
+        jsonDecode(prefs.getString(StorageKeys.GoodsSetting)!);
     return GoodsSetting.fromJson(json);
   }
-  void setExpensesSetting(ExpensesSetting settings){
+
+  void setExpensesSetting(ExpensesSetting settings) {
     prefs.setString(StorageKeys.ExpensesSetting, jsonEncode(settings.toJson()));
   }
-  ExpensesSetting getExpensesSetting(){
-    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.ExpensesSetting)!);
+
+  ExpensesSetting getExpensesSetting() {
+    Map<String, Object?> json =
+        jsonDecode(prefs.getString(StorageKeys.ExpensesSetting)!);
     return ExpensesSetting.fromJson(json);
   }
-  void setStoresSetting(StoresSetting settings){
+
+  void setStoresSetting(StoresSetting settings) {
     prefs.setString(StorageKeys.StoresSetting, jsonEncode(settings.toJson()));
   }
-  StoresSetting getStoresSetting(){
-    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.StoresSetting)!);
+
+  StoresSetting getStoresSetting() {
+    Map<String, Object?> json =
+        jsonDecode(prefs.getString(StorageKeys.StoresSetting)!);
     return StoresSetting.fromJson(json);
   }
 
-  void setDocumentsSetting(DocumentsSetting settings){
-    prefs.setString(StorageKeys.DocumentsSetting, jsonEncode(settings.toJson()));
+  void setDocumentsSetting(DocumentsSetting settings) {
+    prefs.setString(
+        StorageKeys.DocumentsSetting, jsonEncode(settings.toJson()));
   }
-  DocumentsSetting getDocumentsSetting(){
-    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.DocumentsSetting)!);
+
+  DocumentsSetting getDocumentsSetting() {
+    Map<String, Object?> json =
+        jsonDecode(prefs.getString(StorageKeys.DocumentsSetting)!);
     return DocumentsSetting.fromJson(json);
   }
 
-  int getAutoDocumentNo(int storeId){
-    int? value = prefs.getInt(StorageKeys.AutoDocumentName + storeId.toString());
-    if (value == null){
+  int getAutoDocumentNo(int storeId) {
+    int? value =
+        prefs.getInt(StorageKeys.AutoDocumentName + storeId.toString());
+    if (value == null) {
       return 1;
-    }else{
+    } else {
       return value + 1;
     }
   }
-  void increaseAutoDocumentNo(int storeId){
-    int? value = prefs.getInt(StorageKeys.AutoDocumentName + storeId.toString());
-    if (value == null){
+
+  void increaseAutoDocumentNo(int storeId) {
+    int? value =
+        prefs.getInt(StorageKeys.AutoDocumentName + storeId.toString());
+    if (value == null) {
       prefs.setInt(StorageKeys.AutoDocumentName + storeId.toString(), 1);
-    }else{
-      prefs.setInt(StorageKeys.AutoDocumentName + storeId.toString(), value + 1);
+    } else {
+      prefs.setInt(
+          StorageKeys.AutoDocumentName + storeId.toString(), value + 1);
     }
   }
 
   void setBarcodeScannerEnableBeep(bool value) {
     prefs.setBool(StorageKeys.BarcodeScannerEnableBeep, value);
   }
-  bool getBarcodeScannerEnableBeep(){
+
+  bool getBarcodeScannerEnableBeep() {
     return prefs.getBool(StorageKeys.BarcodeScannerEnableBeep)!;
   }
+
   void setBarcodeScannerEnableVibrate(bool value) {
     prefs.setBool(StorageKeys.BarcodeScannerEnableVibrate, value);
   }
-  bool getBarcodeScannerEnableVibrate(){
+
+  bool getBarcodeScannerEnableVibrate() {
     return prefs.getBool(StorageKeys.BarcodeScannerEnableVibrate)!;
   }
-  BatchModeScan getBatchModeScan(){
+
+  BatchModeScan getBatchModeScan() {
     int value = prefs.getInt(StorageKeys.BarcodeScannerBatchScanMode)!;
-    if (value == BatchModeScan.MANUAL.value){
+    if (value == BatchModeScan.MANUAL.value) {
       return BatchModeScan.MANUAL;
-    }else{
+    } else {
       return BatchModeScan.AUTO;
     }
   }
-  void setBatchModeScan(BatchModeScan mode){
+
+  void setBatchModeScan(BatchModeScan mode) {
     prefs.setInt(StorageKeys.BarcodeScannerBatchScanMode, mode.value);
   }
 
   //save document settings
-  void setSaveDocumentSetting(SaveDocumentSetting settings){
-    prefs.setString(StorageKeys.SaveDocumentSetting, jsonEncode(settings.toJson()));
+  void setSaveDocumentSetting(SaveDocumentSetting settings) {
+    prefs.setString(
+        StorageKeys.SaveDocumentSetting, jsonEncode(settings.toJson()));
   }
-  SaveDocumentSetting getSaveDocumentSetting(){
-    Map<String, Object?> json = jsonDecode(prefs.getString(StorageKeys.SaveDocumentSetting)!);
+
+  SaveDocumentSetting getSaveDocumentSetting() {
+    Map<String, Object?> json =
+        jsonDecode(prefs.getString(StorageKeys.SaveDocumentSetting)!);
     return SaveDocumentSetting.fromJson(json);
   }
+
+  //settings
+  void setEnablePasscode(bool value) {
+    prefs.setBool(StorageKeys.EnablePasscodeKey, value);
+  }
+
+  bool getEnablePasscode() {
+    return prefs.getBool(StorageKeys.EnablePasscodeKey) ?? false;
+  }
+  void setPasscode(String passcode) {
+    prefs.setString(StorageKeys.UserPasscodeKey, passcode);
+  }
+
+  String getPasscode() {
+    return prefs.getString(StorageKeys.UserPasscodeKey) ?? "";
+  }
 }
-class StorageKeys{
+
+class StorageKeys {
   static const String InitSettings = "InitSettings2";
   //settings
-  static const String BarcodeScannerBatchScanMode = "BarcodeScannerBatchScanMode";
+  static const String BarcodeScannerBatchScanMode =
+      "BarcodeScannerBatchScanMode";
   static const String BarcodeScannerEnableBeep = "BarcodeScannerEnableBeep";
-  static const String BarcodeScannerEnableVibrate = "BarcodeScannerEnableVibrate";
+  static const String BarcodeScannerEnableVibrate =
+      "BarcodeScannerEnableVibrate";
 
   static const String SelectedStoreId = "SelectedStoreId";
   static const String SelectedStoreName = "SelectedStoreName";
@@ -175,4 +231,7 @@ class StorageKeys{
   static const String SaveDocumentSetting = "SaveDocumentSetting";
 
   static const String AutoDocumentName = "AutoDocumentName";
+  static const String EnablePasscodeKey = "EnablePasscode";
+  static const String UserPasscodeKey = "UserPasscode";
+  
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
@@ -39,7 +39,7 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
         },
         builder: (BuildContext context, SavePaymentCategoryState state) {
           return Scaffold(
-            backgroundColor: Colors.grey.shade200,
+            
             appBar: _buildAppBar(context),
             body: _buildBody(state),
           );
@@ -61,10 +61,6 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
             child: SingleChildScrollView(
               padding: EdgeInsets.all(16),
               child: Card(
-                color: Theme
-                    .of(context)
-                    .colorScheme
-                    .surface,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(

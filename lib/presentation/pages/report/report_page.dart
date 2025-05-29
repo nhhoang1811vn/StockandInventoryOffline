@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/components/select_date_range_dialog.dart';
 import 'package:good_manager/presentation/pages/report/report_date_range_type.dart';
@@ -17,16 +16,12 @@ class ReportPage extends StatefulWidget{
     return ReportPageState();
   }
 }
-class ReportPageState extends BaseStateWidget<ReportPage> {
+class ReportPageState extends State<ReportPage> {
+
   @override
-  bool hasDrawer() {
-    return true;
-  }
-  @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     return BlocConsumer<ReportCubit, ReportState>(
         builder: (context, state) => Scaffold(
-          key: ScaffoldKey,
             appBar: _buildAppBar(context),
             body: _buildBody()),
         listenWhen: (p1, p2) => p1.state != p2.state,

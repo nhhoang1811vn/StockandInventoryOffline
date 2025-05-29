@@ -89,11 +89,6 @@
 
   "action_ok": "Đồng ý",
   "action_cancel": "Huỷ",
-
-  "search_by_name": "Theo tên",
-  "search_by_description": "Theo mô tả",
-  "search_by_barcode": "Theo mã code",
-  "search_by_everywhere": "Mọi nơi",
   "search_by_customer_supplier": "Theo tên KH, NCC",
 
   "action_move_to_group": "Di chuyển nhóm",
@@ -146,8 +141,17 @@
 
   "menu_item_settings_title": "Cài đặt",
   "menu_item_settings_desc": "Các thông tin cài đặt",
+  "menu_item_general" : "Chung",
+  "menu_item_view" : "Hiển thị",
+      "menu_item_barcode_scanner": "Quét mã vạch",
+      "menu_item_minimum_quantity": "Số lượng tối thiểu",
+      "menu_item_my_store": "Của hàng của tôi",
+      "menu_item_backup_and_restore" : "Back up and restore",
+
   "menu_item_language_title": "Ngôn ngữ",
   "menu_item_language_desc": "Thay đổi ngôn ngữ",
+   "menu_item_passcode_title" : "Khoá mật khẩu",
+    "menu_item_passcode_desc" : "Khoá mật khẩu",
   "menu_item_barcode_scanner_title": "Quét mã vạch",
 
   "settings_title": "Cài đặt",
@@ -336,6 +340,7 @@
                         "inbound_categories": "Danh mục thu",
                                                           "outbound_categories": "Danh mục chi",
                                                           "select_object_type": "Chọn loại đối tượng",
-                                                                 "title_report_list_of_wallet": "Danh sách ví tiền"
+                                                                 "title_report_list_of_wallet": "Danh sách ví tiền",
+                                                                   "hint_search_by": "Tìm kiếm..."
 
 }

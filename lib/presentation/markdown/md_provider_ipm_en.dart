@@ -16,9 +16,7 @@ class MDProviderIpmEN extends MDProvider{
         return MarkdownResourceEN.helpSupplierCustomers;
       case HelpType.PAYMENTS:
         return MarkdownResourceEN.helpPayments;
-      default:
-        return '';
-    }
+      }
   }
 
   @override

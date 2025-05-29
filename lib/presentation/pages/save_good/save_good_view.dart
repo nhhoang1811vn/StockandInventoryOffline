@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
 import '../../../domain/entities/document.dart';
@@ -27,7 +26,7 @@ class SaveGoodPage extends StatefulWidget{
     return SaveGoodPageState(item: item, document: document, transaction: transaction);
   }
 }
-class SaveGoodPageState extends BaseStateWidget<SaveGoodPage> {
+class SaveGoodPageState extends State<SaveGoodPage> {
   final Good item;
   final Document? document;
   final DocumentTransaction? transaction;
@@ -39,10 +38,9 @@ class SaveGoodPageState extends BaseStateWidget<SaveGoodPage> {
 
 
   @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     context.read<SaveGoodCubit>().init(item, document, transaction);
     return Scaffold(
-          backgroundColor: Colors.grey[200],
           appBar: _buildAppBar(context),
           body: Column(
               children: [
@@ -56,14 +54,12 @@ class SaveGoodPageState extends BaseStateWidget<SaveGoodPage> {
                           Text(AppLocalizations.of(context)!.good_information,
                               style: Theme.of(context).textTheme.titleMedium),
                           Card(
-                            color: Theme.of(context).colorScheme.surface,
                             child: Padding(padding: EdgeInsets.all(16),child: SaveGoodForm()),
                           ),
                           SizedBox(height: 16,),
                           Text(AppLocalizations.of(context)!.images_information,
                               style: Theme.of(context).textTheme.titleMedium),
                           Card(
-                            color: Theme.of(context).colorScheme.surface,
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: BlocBuilder<SaveGoodCubit, SaveGoodState>(builder : (context, state) =>  ImagesPreviewView(state.files, true, context.read<SaveGoodCubit>().onImagesChanged)),
@@ -75,8 +71,8 @@ class SaveGoodPageState extends BaseStateWidget<SaveGoodPage> {
                 //Expanded(child: ),
                 Container(
                   width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   color: Theme.of(context).colorScheme.surface,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: PrimaryButton(AppLocalizations.of(context)!.action_save, () {
                     context.read<SaveGoodCubit>().onSaveClicked();
                   }),

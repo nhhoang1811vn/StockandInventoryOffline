@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/payment.dart';
-import 'package:good_manager/presentation/app_style.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
 import '../../markdown/md_provider_factory.dart';
@@ -21,7 +19,7 @@ class PaymentsPage extends StatefulWidget {
   PaymentsPageState createState() => PaymentsPageState();
 }
 
-class PaymentsPageState extends BaseStateWidget<PaymentsPage> with SingleTickerProviderStateMixin{
+class PaymentsPageState extends State<PaymentsPage> with SingleTickerProviderStateMixin{
   late TabController _tabController;
   @override
   void initState() {
@@ -68,7 +66,7 @@ class PaymentsPageState extends BaseStateWidget<PaymentsPage> with SingleTickerP
                   SelectedStoreView(),
                   TabBar(
                     controller: _tabController,
-                    indicatorColor: Theme.of(context).colorScheme.onPrimary,
+                    indicatorColor: Theme.of(context).colorScheme.primary,
                     tabs: [
                       Tab(text: AppLocalizations.of(context)!.title_inbound_payment),
                       Tab(text: AppLocalizations.of(context)!.title_outbound_payment),
@@ -125,14 +123,13 @@ class PaymentsPageState extends BaseStateWidget<PaymentsPage> with SingleTickerP
         Icon(
           UIConstants.paymentIconData,
           size: 60,
-          color: AppColors.primaryColor,
+          color: Theme.of(context).colorScheme.primary,
         ),
         Padding(
             padding: EdgeInsets.only(top: 16),
             child: Text(
               AppLocalizations.of(context)!.empty_payment,
-              textAlign: TextAlign.center,
-              style: AppStyle.getEmptyTextStyle(),
+              textAlign: TextAlign.center
             ))
       ]);
 
@@ -195,10 +192,9 @@ class PaymentsPageState extends BaseStateWidget<PaymentsPage> with SingleTickerP
         });
   }
   @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     return BlocConsumer<PaymentsCubit, PaymentsState>(
         builder: (context, state) => Scaffold(
-          backgroundColor: Colors.grey.shade200,
             appBar: _buildAppBar(),
             body: TabBarView(controller: _tabController,children: [
               _buildInboundPayment(state),

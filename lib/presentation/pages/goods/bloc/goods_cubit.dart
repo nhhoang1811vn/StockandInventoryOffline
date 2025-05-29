@@ -1,16 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/criteria/criteria.dart';
-import 'package:good_manager/presentation/criteria/filter_good_by_barcode_criteria.dart';
-import 'package:good_manager/presentation/criteria/filter_good_by_description_criteria.dart';
 import 'package:good_manager/presentation/criteria/filter_good_by_everywhere_criteria.dart';
-import 'package:good_manager/presentation/criteria/filter_good_by_name_criteria.dart';
-import 'package:good_manager/presentation/criteria/group_by_barcode_criteria.dart';
-import 'package:good_manager/presentation/criteria/group_by_description_criteria.dart';
 import 'package:good_manager/presentation/criteria/group_by_everywhere_criteria.dart';
 import 'package:good_manager/presentation/pages/goods/sort/sort_by_barcode_goods.dart';
 import 'package:injectable/injectable.dart';
@@ -19,12 +13,10 @@ import '../../../../data/storage.dart';
 import '../../../../domain/entities/good.dart';
 import '../../../../domain/entities/goods_setting.dart';
 import '../../../../domain/entities/group.dart';
-import '../../../../domain/entities/search_goods_type.dart';
 import '../../../../domain/entities/sort_by_text.dart';
 import '../../../../domain/usecases/documents/document_usecases.dart';
 import '../../../../domain/usecases/goods/goods_usercases.dart';
 import '../../../../domain/usecases/groups/groups_usecases.dart';
-import '../../../criteria/group_by_name_criteria.dart';
 import '../../base/base_sort_items.dart';
 import '../../base/base_state.dart';
 import '../sort/sort_by_barcode_groups.dart';
@@ -108,17 +100,13 @@ class GoodsCubit extends Cubit<GoodsState> {
   void onListSettingsMenuClicked(){
     emit(state.copyWith(state: OpenListSettingsDialogState()));
   }
-  String getSearchTextHint(BuildContext context) {
-    return state.settings.searchGoodsType.getText(context);
-  }
+  // String getSearchTextHint(BuildContext context) {
+  //   return state.settings.searchGoodsType.getText(context);
+  // }
   void onSearchBarcodeClicked(){
     emit(state.copyWith(state: OpenBarcodeScannerToSearchState()));
   }
-  void setSearchGoodsType(SearchGoodsType type) {
-    GoodsSetting settings = state.settings.copyWith(searchGoodsType: type);
-    setSettings(settings);
-    refresh();
-  }
+  
   void onSearchTextChanged(String newValue) {
     emit(state.copyWith(textSearch: newValue));
     refresh();
@@ -151,28 +139,30 @@ class GoodsCubit extends Cubit<GoodsState> {
     }
   }
   Criteria<Group> getFilterGroupCriteria(){
-    switch(state.settings.searchGoodsType){
-      case SearchGoodsType.byName:
-        return GroupByNameCriteria(state.textSearch);
-      case SearchGoodsType.byDescription:
-        return GroupByDescriptionCriteria(state.textSearch);
-      case SearchGoodsType.byBarcode:
-        return GroupByBarcodeCriteria(state.textSearch);
-      default:
-        return GroupByEverywhereCriteria(state.textSearch);
-    }
+    return GroupByEverywhereCriteria(state.textSearch);
+    // switch(state.settings.searchGoodsType){
+    //   case SearchGoodsType.byName:
+    //     return GroupByNameCriteria(state.textSearch);
+    //   case SearchGoodsType.byDescription:
+    //     return GroupByDescriptionCriteria(state.textSearch);
+    //   case SearchGoodsType.byBarcode:
+    //     return GroupByBarcodeCriteria(state.textSearch);
+    //   default:
+    //     return GroupByEverywhereCriteria(state.textSearch);
+    // }
   }
   Criteria<Good> getFilterGoodCriteria(){
-    switch(state.settings.searchGoodsType){
-      case SearchGoodsType.byName:
-        return FilterGoodByNameCriteria(state.textSearch);
-      case SearchGoodsType.byDescription:
-        return FilterGoodByDescriptionCriteria(state.textSearch);
-      case SearchGoodsType.byBarcode:
-        return FilterGoodByBarcodeCriteria(state.textSearch);
-      default:
-        return FilterGoodByEverywhereCriteria(state.textSearch);
-    }
+    return FilterGoodByEverywhereCriteria(state.textSearch);
+    // switch(state.settings.searchGoodsType){
+    //   case SearchGoodsType.byName:
+    //     return FilterGoodByNameCriteria(state.textSearch);
+    //   case SearchGoodsType.byDescription:
+    //     return FilterGoodByDescriptionCriteria(state.textSearch);
+    //   case SearchGoodsType.byBarcode:
+    //     return FilterGoodByBarcodeCriteria(state.textSearch);
+    //   default:
+        
+    // }
   }
   void loadItemsMatchSearchText(){
     Criteria<Group> groupCriteria = getFilterGroupCriteria();

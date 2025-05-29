@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
@@ -46,11 +46,11 @@ class DocumentTransactionItemRow extends StatelessWidget {
       children: [
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
           Text(item.good.name, style:
-          Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+          Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.primary)),
           SizedBox(height: 4),
           if (item.good.barCode != null)
             Row(children: [
-              Icon(UIConstants.barcodeIconData, size: 24,color: UIConstants.primaryColor),
+              Icon(UIConstants.barcodeIconData, size: 24,color: Theme.of(context).colorScheme.primary),
               SizedBox(
                 width: 8,
               ),
@@ -96,6 +96,6 @@ class DocumentTransactionItemRow extends StatelessWidget {
     return SizedBox(width: 48, height: 48, child: Image.memory(bytes));
   }
   Widget _buildEmptyAvatarWidget(BuildContext context){
-    return Icon(UIConstants.goodIconData, size: 32, color: Theme.of(context).colorScheme.onPrimary);
+    return Icon(UIConstants.goodIconData, size: 32, color: Theme.of(context).colorScheme.primary);
   }
 }

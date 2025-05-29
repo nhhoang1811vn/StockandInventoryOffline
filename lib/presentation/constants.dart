@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/main.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 
 class Palette {
   static const Color green = Color(0xFF54b849);
@@ -24,7 +25,7 @@ class Palette {
   static const Color yellow = Color(0xFFD1D100);
 }
 class AppColors{
-  static Color primaryColor = Colors.blue;
+  //static Color primaryColor = Colors.blue;
   static const Color secondaryColor = Color(0xFF616161);
 }
 
@@ -115,11 +116,11 @@ class UIConstants {
       TextStyle(fontWeight: FontWeight.w300, color: Colors.black);
   static const double progressBarOpacity = 0.6;
   static const Color progressBarColor = Colors.black;
-  static Color primaryColor = Colors.blue[600]!;
-  static Color primaryDarkColor = Colors.blue[800]!;
+  //static Color primaryColor = Colors.blue[600]!;
+  //static Color primaryDarkColor = Colors.blue[800]!;
 
-  static Color normalMenuColor = Colors.black;
-  static Color highlightMenuColor = Colors.blue[700]!;
+  //static Color normalMenuColor = Colors.black;
+  //static Color highlightMenuColor = Colors.blue[700]!;
 }
 
 void showInfoToast(msg) {
@@ -128,7 +129,7 @@ void showInfoToast(msg) {
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.CENTER,
       timeInSecForIosWeb: 1,
-      backgroundColor: UIConstants.primaryColor,
+      backgroundColor: Colors.blue,
       textColor: Colors.white,
       fontSize: 16.0);
 }

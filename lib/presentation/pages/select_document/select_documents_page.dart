@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
-import 'package:good_manager/domain/entities/search_documents_type.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
@@ -12,8 +11,6 @@ import 'package:good_manager/presentation/pages/documents/document_ui.dart';
 import 'package:good_manager/presentation/pages/documents/sort_documents_dialog.dart';
 import 'package:good_manager/presentation/pages/select_document/bloc/select_document_cubit.dart';
 import 'package:sprintf/sprintf.dart';
-
-import '../../app_style.dart';
 import '../../widgets/selected_store_view.dart';
 import '../base/base_state.dart';
 import '../documents/components/document_item_row.dart';
@@ -55,7 +52,7 @@ class SelectDocumentsPageState extends State<SelectDocumentsPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<SelectDocumentCubit, SelectDocumentState>(
         builder: (context, state) => Scaffold(
-          backgroundColor: Colors.grey.shade200,
+          
               appBar: _buildAppBar(state),
               body: _buildDocumentView(state),
               floatingActionButton: FloatingActionButton(
@@ -118,7 +115,7 @@ class SelectDocumentsPageState extends State<SelectDocumentsPage> {
           Icon(UIConstants.documentIconData, size: 64, color: Colors.orange.shade700),
           SizedBox(height: 16),
           Text(AppLocalizations.of(context)!.empty_document,
-              textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle())
+              textAlign: TextAlign.center)
         ],
       );
 
@@ -141,7 +138,7 @@ class SelectDocumentsPageState extends State<SelectDocumentsPage> {
           context.read<SelectDocumentCubit>().onSearchMenuClicked();
         },
         icon: Icon(Icons.search,
-            color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
+            color: state.showSearchBar ? Theme.of(context).colorScheme.primary: Theme.of(context).iconTheme.color));
   }
 
   Widget _buildSortMenu() {
@@ -151,8 +148,8 @@ class SelectDocumentsPageState extends State<SelectDocumentsPage> {
         },
         icon: Icon(Icons.sort,
             color: context.read<SelectDocumentCubit>().hasSortOptions()
-                ? UIConstants.highlightMenuColor
-                : UIConstants.normalMenuColor));
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).iconTheme.color));
   }
 
   Widget _buildHelpMenu() {
@@ -163,41 +160,36 @@ class SelectDocumentsPageState extends State<SelectDocumentsPage> {
         icon: Icon(Icons.help));
   }
 
-  Widget _buildSearchBar(BuildContext context, SelectDocumentState state) => Row(children: [
-        Expanded(
-            child: Card(
-          child: ListTile(
-            title: TextField(
-              decoration: InputDecoration(
-                  hintText: state.settings.searchDocumentsType.getText(context), border: InputBorder.none),
-              onChanged: context.read<SelectDocumentCubit>().onSearchTextChanged,
-              controller: searchTextController,
-            ),
-            trailing: Visibility(
-              child: IconButton(
-                  icon: Icon(UIConstants.cancelIconData),
-                  onPressed: () {
-                    searchTextController.text = "";
-                    context.read<SelectDocumentCubit>().resetSearchText();
-                  }),
-              visible: state.textSearch.isNotEmpty,
-            ),
+  Widget _buildSearchBar(BuildContext context, SelectDocumentState state) => Container(
+     color: Colors.grey.shade200,
+    child: Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Container(
+      
+         decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8), // Rounded corners
+                ),
+        child: ListTile(
+          title: TextField(
+            decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.hint_search_by, border: InputBorder.none),
+            onChanged: context.read<SelectDocumentCubit>().onSearchTextChanged,
+            controller: searchTextController,
           ),
-        )),
-        PopupMenuButton<SearchDocumentsType>(
-          itemBuilder: (BuildContext a) => <PopupMenuEntry<SearchDocumentsType>>[
-            PopupMenuItem<SearchDocumentsType>(
-                value: SearchDocumentsType.byName, child: Text(AppLocalizations.of(context)!.search_by_name)),
-            PopupMenuItem<SearchDocumentsType>(
-                value: SearchDocumentsType.byDescription,
-                child: Text(AppLocalizations.of(context)!.search_by_description)),
-            PopupMenuItem<SearchDocumentsType>(
-                value: SearchDocumentsType.byCustomerSupplier,
-                child: Text(AppLocalizations.of(context)!.search_by_customer_supplier)),
-          ],
-          onSelected: context.read<SelectDocumentCubit>().setSearchDocumentsType,
-        )
-      ]);
+          trailing: Visibility(
+            child: IconButton(
+                icon: Icon(UIConstants.cancelIconData),
+                onPressed: () {
+                  searchTextController.text = "";
+                  context.read<SelectDocumentCubit>().resetSearchText();
+                }),
+            visible: state.textSearch.isNotEmpty,
+          ),
+        ),
+      ),
+    ),
+  );
 
   void onPressedDocument(Document item) async {
     Navigator.of(context).pop(item);

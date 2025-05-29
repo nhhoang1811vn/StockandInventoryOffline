@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/customers_setting.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/customers/widgets/customer_item_row.dart';
 import 'package:good_manager/presentation/pages/customers/widgets/sort_customer_dialog.dart';
+import 'package:good_manager/presentation/widgets/search_bar_widget.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../app_style.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
@@ -26,7 +24,7 @@ class CustomersPage extends StatefulWidget {
   CustomersPageState createState() => CustomersPageState();
 }
 
-class CustomersPageState extends BaseStateWidget<CustomersPage> {
+class CustomersPageState extends State<CustomersPage> {
   final TextEditingController searchTextController = TextEditingController();
   final FocusNode searchTextFocusNode = FocusNode();
   @override
@@ -34,12 +32,9 @@ class CustomersPageState extends BaseStateWidget<CustomersPage> {
     super.initState();
     context.read<CustomersCubit>().initState(widget.isSelection);
   }
+
   @override
-  bool hasDrawer() {
-    return !widget.isSelection;
-  }
-  @override
-  Widget buildWidget(BuildContext context){
+  Widget build(BuildContext context){
     return BlocConsumer<CustomersCubit, CustomersState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async{
@@ -69,8 +64,7 @@ class CustomersPageState extends BaseStateWidget<CustomersPage> {
 
         },
         builder: (context, state) =>  Scaffold(
-          backgroundColor: Colors.grey.shade200,
-          key: ScaffoldKey,
+          
         appBar: _buildAppBar(state),
         body: _buildBody(state),
         floatingActionButton:  FloatingActionButton(
@@ -104,7 +98,11 @@ class CustomersPageState extends BaseStateWidget<CustomersPage> {
   Widget _buildContent(CustomersState data){
     List<Widget> children = [
       SelectedStoreView(),
-       Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
+       Visibility(
+           //child: _buildSearchBar(data), 
+           visible: data.showSearchBar,
+            child: SearchBarWidget(controller: searchTextController),
+       ),
        Expanded(
                 child: Stack(children: [
                   Visibility(
@@ -120,39 +118,46 @@ class CustomersPageState extends BaseStateWidget<CustomersPage> {
     return Column(children: children);
   }
 
-  Widget _buildSearchBar(CustomersState data) => Card(
-          child: ListTile(
-            title: TextField(
-              focusNode: searchTextFocusNode,
-              decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.search_by_name, border: InputBorder.none),
-              onChanged: context.read<CustomersCubit>().searchTextChanged,
-              controller: searchTextController,
+  Widget _buildSearchBar(CustomersState data) => Padding(
+    padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+    child: Container(
+      decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8), // Rounded corners
             ),
-            trailing: Visibility(
-              child: IconButton(
-                icon: Icon(UIConstants.cancelIconData),
-                onPressed: (){
-                  searchTextController.text = "";
-                  context.read<CustomersCubit>().resetSearchText();
-                }
-              ),
-              visible: data.textSearch.isNotEmpty,
-            ),
+      child: ListTile(
+        title: TextField(
+          focusNode: searchTextFocusNode,
+          decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.hint_search_by, border: InputBorder.none),
+          onChanged: context.read<CustomersCubit>().searchTextChanged,
+          controller: searchTextController,
+        ),
+        trailing: Visibility(
+          child: IconButton(
+            icon: Icon(UIConstants.cancelIconData),
+            onPressed: (){
+              searchTextController.text = "";
+              context.read<CustomersCubit>().resetSearchText();
+            }
           ),
-        );
+          visible: data.textSearch.isNotEmpty,
+        ),
+      ),
+    ),
+  );
 
 
   Widget get emptyView => Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Icon(UIConstants.supplierIconData, size: 60,color: AppColors.primaryColor),
+            Icon(UIConstants.supplierIconData, size: 60,color: Theme.of(context).colorScheme.primary),
             Padding(
                 padding: EdgeInsets.only(top: 16),
                 child: Text(AppLocalizations.of(context)!.empty_customers,
                     textAlign: TextAlign.center,
-                    style: AppStyle.getEmptyTextStyle()))
+                ))
           ]);
 
   Widget _buildListView(CustomersState data) {
@@ -231,12 +236,12 @@ class CustomersPageState extends BaseStateWidget<CustomersPage> {
         searchTextFocusNode.requestFocus();
       }
       context.read<CustomersCubit>().onShowSearchBarMenuClicked();
-    }, icon: Icon(Icons.search, color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
+    }, icon: Icon(Icons.search, color: state.showSearchBar ? Theme.of(context).colorScheme.primary : Theme.of(context).iconTheme.color));
   }
   Widget _buildSortMenu() {
     return IconButton(onPressed: (){
       context.read<CustomersCubit>().onSortMenuClicked();
-    }, icon: Icon(Icons.sort, color: context.read<CustomersCubit>().hasSortOptions() ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor ));
+    }, icon: Icon(Icons.sort, color: context.read<CustomersCubit>().hasSortOptions() ? Theme.of(context).colorScheme.primary : Theme.of(context).iconTheme.color ));
   }
   Widget _buildHelpMenu(){
     return IconButton(onPressed: (){

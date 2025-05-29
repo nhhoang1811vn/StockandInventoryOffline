@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 enum SupplierItemMenu { sendEmail, sendSMS, phoneCall }
 class SupplierItemRow extends StatelessWidget{
@@ -15,7 +15,6 @@ class SupplierItemRow extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).colorScheme.surface,
       margin: EdgeInsets.only(left: 16, right: 16, top: 16),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
@@ -26,7 +25,7 @@ class SupplierItemRow extends StatelessWidget{
             child: Text('${item.name[0].toUpperCase()}'),
           ),
           title: Text(item.name, style:
-          Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+          Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.primary)),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

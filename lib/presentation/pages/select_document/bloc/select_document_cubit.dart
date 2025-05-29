@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
-import 'package:good_manager/domain/entities/search_documents_type.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
 import 'package:good_manager/presentation/constants.dart';
@@ -23,16 +22,23 @@ part 'select_document_state.dart';
 class SelectDocumentCubit extends Cubit<SelectDocumentState> {
   final DocumentUseCases useCase;
   final Storage storage;
-  SelectDocumentCubit({required this.storage,required this.useCase}) : super(SelectDocumentState.initial(state: InitialState(), type: DocumentType.incoming, settings: storage.getDocumentsSetting()));
+  SelectDocumentCubit({required this.storage, required this.useCase})
+      : super(SelectDocumentState.initial(
+            state: InitialState(),
+            type: DocumentType.incoming,
+            settings: storage.getDocumentsSetting()));
 
-  void initState(DocumentType documentType){
-    emit(state.copyWith(showSearchBar: true, textSearch: "", type : documentType));
+  void initState(DocumentType documentType) {
+    emit(state.copyWith(
+        showSearchBar: true, textSearch: "", type: documentType));
     loadItems();
   }
-  void loadItems() async{
+
+  void loadItems() async {
     int storeId = storage.getSelectedStoreId();
     List<Document> allItems = await useCase.getAllByStoreId(storeId);
-    List<Document> items = allItems.where((item) => item.paid < item.amount).toList();
+    List<Document> items =
+        allItems.where((item) => item.paid < item.amount).toList();
     emit(state.copyWith(allDocuments: items));
     sort();
     filter();
@@ -52,7 +58,8 @@ class SelectDocumentCubit extends Cubit<SelectDocumentState> {
     emit(state.copyWith(textSearch: val));
     filter();
   }
-  void sort(){
+
+  void sort() {
     List<Document> items = sortDocuments();
     emit(state.copyWith(allDocuments: items));
   }
@@ -89,12 +96,13 @@ class SelectDocumentCubit extends Cubit<SelectDocumentState> {
     });
     return items;
   }
-  List<DocumentUI> getDocumentUIs(List<Document> data){
+
+  List<DocumentUI> getDocumentUIs(List<Document> data) {
     List<DocumentUI> results = [];
     Set<String> set = {};
-    for (var i = 0; i< data.length;i++){
+    for (var i = 0; i < data.length; i++) {
       String dateText = DateFormatFactory.getDateFormat().format(data[i].date);
-      if (!set.contains(dateText)){
+      if (!set.contains(dateText)) {
         results.add(DocumentUI(DocumentUIType.date, dateText, null));
         set.add(dateText);
       }
@@ -102,8 +110,10 @@ class SelectDocumentCubit extends Cubit<SelectDocumentState> {
     }
     return results;
   }
+
   void filter() {
-    List<Document> documents = state.allDocuments.where((element) => filterDocument(element)).toList();
+    List<Document> documents =
+        state.allDocuments.where((element) => filterDocument(element)).toList();
     List<Document> incomingDocuments = documents
         .where((element) => element.type == DocumentType.incoming)
         .toList();
@@ -111,12 +121,14 @@ class SelectDocumentCubit extends Cubit<SelectDocumentState> {
         .where((element) => element.type == DocumentType.outgoing)
         .toList();
     emit(state.copyWith(documents: documents));
-    if (state.type == DocumentType.incoming){
-      emit(state.copyWith(documents: documents,
+    if (state.type == DocumentType.incoming) {
+      emit(state.copyWith(
+        documents: documents,
         items: getDocumentUIs(incomingDocuments),
       ));
-    }else{
-      emit(state.copyWith(documents: documents,
+    } else {
+      emit(state.copyWith(
+        documents: documents,
         items: getDocumentUIs(outgoingDocuments),
       ));
     }
@@ -126,17 +138,21 @@ class SelectDocumentCubit extends Cubit<SelectDocumentState> {
     if (state.textSearch.trim().isEmpty) {
       return true;
     }
-    switch (state.settings.searchDocumentsType) {
-      case SearchDocumentsType.byName:
-        return document.name.contains(state.textSearch);
-      case SearchDocumentsType.byDescription:
-        return document.description.contains(state.textSearch);
-      case SearchDocumentsType.byCustomerSupplier:
-        return (document.personName != null && document.personName!.contains(state.textSearch));
-    }
+    // switch (state.settings.searchDocumentsType) {
+    //   case SearchDocumentsType.byName:
+    //     return document.name.contains(state.textSearch);
+    //   case SearchDocumentsType.byDescription:
+    //     return document.description.contains(state.textSearch);
+    //   case SearchDocumentsType.byCustomerSupplier:
+    //     return (document.personName != null && document.personName!.contains(state.textSearch));
+    // }
+    return (document.name.contains(state.textSearch) ||
+        document.description.contains(state.textSearch) ||
+        (document.personName != null &&
+            document.personName!.contains(state.textSearch)));
   }
 
-  void onMenuSortClicked(){
+  void onMenuSortClicked() {
     emit(state.copyWith(state: OpenSortDialogListState()));
   }
 
@@ -147,19 +163,21 @@ class SelectDocumentCubit extends Cubit<SelectDocumentState> {
     return false;
   }
 
-  void onMenuHelpClicked(){
+  void onMenuHelpClicked() {
     emit(state.copyWith(state: OpenHelpPageState()));
   }
-  void setSearchDocumentsType(SearchDocumentsType type) {
-    DocumentsSetting settings = state.settings.copyWith(searchDocumentsType: type);
-    storage.setDocumentsSetting(settings);
-    emit(state.copyWith(settings: settings));
-    filter();
-  }
-  void delete(int id) async{
+
+  // void setSearchDocumentsType(SearchDocumentsType type) {
+  //   DocumentsSetting settings = state.settings.copyWith(searchDocumentsType: type);
+  //   storage.setDocumentsSetting(settings);
+  //   emit(state.copyWith(settings: settings));
+  //   filter();
+  // }
+  void delete(int id) async {
     await useCase.delete(id);
     loadItems();
   }
+
   void setSettings(DocumentsSetting settings) {
     storage.setDocumentsSetting(settings);
     emit(state.copyWith(settings: settings));

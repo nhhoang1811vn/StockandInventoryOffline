@@ -12,7 +12,6 @@ class GroupItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).colorScheme.surface,
       margin: EdgeInsets.only(left: 16, right: 16, top: 16),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
@@ -22,7 +21,7 @@ class GroupItemRow extends StatelessWidget {
           padding: EdgeInsets.all(16),
           child: Row(
             children: [
-              Icon(UIConstants.groupIconData, size: 32, color: Theme.of(context).colorScheme.onPrimary),
+              Icon(UIConstants.groupIconData, size: 32, color: Theme.of(context).colorScheme.primary),
               SizedBox(
                 width: 16,
               ),
@@ -33,7 +32,7 @@ class GroupItemRow extends StatelessWidget {
                       style: Theme.of(context)
                           .textTheme
                           .titleMedium!
-                          .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+                          .copyWith(color: Theme.of(context).colorScheme.primary)),
                   Visibility(
                     visible: item.description.isNotEmpty,
                     child: Text(
@@ -46,7 +45,7 @@ class GroupItemRow extends StatelessWidget {
                   ),
                   if (item.barCode != null)
                     Row(children: [
-                      Icon(UIConstants.barcodeIconData, size: 24, color: UIConstants.primaryColor),
+                      Icon(UIConstants.barcodeIconData, size: 24, color: Theme.of(context).colorScheme.primary),
                       SizedBox(
                         width: 8,
                       ),

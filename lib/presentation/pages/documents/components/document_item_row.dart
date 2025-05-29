@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
@@ -15,7 +15,6 @@ class DocumentItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).colorScheme.surface,
       margin: EdgeInsets.only(left: 16, right: 16, top: 16),
       child: InkWell(
           borderRadius: BorderRadius.circular(8),
@@ -48,7 +47,7 @@ class DocumentItemRow extends StatelessWidget {
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium!
-                                .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                                .copyWith(color: Colors.blue),
                           ),
                           //SizedBox(height: 4),
                           Text(DateFormatFactory.getDateFormat().format(item.date),

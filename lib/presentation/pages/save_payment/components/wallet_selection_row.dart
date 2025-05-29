@@ -34,7 +34,7 @@ class WalletSelectionRow extends StatelessWidget {
                 ),
           title: Text(
             item.name,
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.primary),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

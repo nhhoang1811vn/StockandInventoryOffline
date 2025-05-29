@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/entities/search_goods_type.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
 
@@ -12,7 +11,6 @@ class GoodsSetting with _$GoodsSetting {
       {required SortByText sortByName,
       required SortByNumber sortByBarcode,
       required SortByNumber sortByQuantity,
-      required SearchGoodsType searchGoodsType,
       required bool hideZeroEntries,
         required bool showBarcode,
         required bool showDescription
@@ -25,7 +23,6 @@ class GoodsSetting with _$GoodsSetting {
       sortByName: SortByText.no_sort,
       sortByBarcode: SortByNumber.no_sort,
       sortByQuantity: SortByNumber.no_sort,
-      searchGoodsType: SearchGoodsType.byName,
       hideZeroEntries: false,
       showBarcode: true,
       showDescription: true

@@ -34,6 +34,9 @@ class Pages {
   static const String take_picture = '/take_picture';
   static const String settings = "/settings";
 
+  static const String settings_general = "/settings_general";
+  static const String settings_view = "/settings_view";
+
   static const String select_group = '/select_group';
   static const String barcode_scanner = "/barcode_scanner";
   static const String report = "/report";

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/presentation/pages/main/main_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -65,16 +65,14 @@ class MorePageState extends State<MorePage> {
 
     return Scaffold(
       appBar: LogoAppBar(),
-      backgroundColor: Colors.grey[100],
       body: ListView(children: [
         Card(
-          color: Colors.white,
           margin: EdgeInsets.all(16),
           child: Column(
             children: [
               SizedBox(height: 4),
               ListTile(
-                tileColor: Colors.white,
+               
                 title: Text(displayName,
                     style: Theme.of(context)
                         .textTheme
@@ -85,7 +83,7 @@ class MorePageState extends State<MorePage> {
               ),
               Divider(height: 1,),
               ListTile(
-                tileColor: Colors.white,
+               
                 leading: Icon(Icons.close, size: UIConstants.drawerMenuSize),
                 title: Text(
                     AppLocalizations.of(context)!.menu_item_delete_account),
@@ -93,7 +91,7 @@ class MorePageState extends State<MorePage> {
               ),
               Divider(height: 1,),
               ListTile(
-                tileColor: Colors.white,
+               
                 leading: Icon(UIConstants.storeIconData,
                     size: UIConstants.drawerMenuSize),
                 title: Text(AppLocalizations.of(context)!.stores_title),
@@ -102,7 +100,7 @@ class MorePageState extends State<MorePage> {
               ),
               Divider(height: 1,),
               ListTile(
-                tileColor: Colors.white,
+               
                 leading:
                     Icon(Icons.change_circle, size: UIConstants.drawerMenuSize),
                 title: Text(AppLocalizations.of(context)!.change_tracking_store),
@@ -113,35 +111,26 @@ class MorePageState extends State<MorePage> {
               ),
               Divider(height: 1,),
               ListTile(
-                tileColor: Colors.white,
+               
                 leading: Icon(UIConstants.settingIconData,
                     size: UIConstants.drawerMenuSize),
                 title: Text(AppLocalizations.of(context)!.settings_title),
                 trailing: Icon(Icons.navigate_next),
                 onTap: () => onSettingsItemPressed(context),
               ),
-              Divider(height: 1,),
-              ListTile(
-                tileColor: Colors.white,
-                leading: Icon(FontAwesomeIcons.language),
-                title:
-                Text(AppLocalizations.of(context)!.menu_item_language_title),
-                subtitle:
-                Text(AppLocalizations.of(context)!.menu_item_language_desc),
-                onTap: (){ showSelectLanguageDialog(context);},
-              ),
+            
               SizedBox(height: 4),
             ],
           ),
         ),
         Card(
-          color: Colors.white,
+         
           margin: EdgeInsets.all(16),
           child: Column(
             children: [
               SizedBox(height: 4),
               ListTile(
-                tileColor: Colors.white,
+               
                 leading: Icon(FontAwesomeIcons.paperPlane,
                     size: UIConstants.drawerMenuSize),
                 title: Text(AppLocalizations.of(context)!
@@ -150,7 +139,7 @@ class MorePageState extends State<MorePage> {
               ),
               Divider(height: 1,),
               ListTile(
-                tileColor: Colors.white,
+               
                 leading: Icon(FontAwesomeIcons.circleQuestion,
                     size: UIConstants.drawerMenuSize),
                 title: Text(
@@ -159,7 +148,7 @@ class MorePageState extends State<MorePage> {
               ),
               Divider(height: 1,),
               ListTile(
-                tileColor: Colors.white,
+               
                 leading: Icon(FontAwesomeIcons.question,
                     size: UIConstants.drawerMenuSize),
                 title: Text(AppLocalizations.of(context)!.help_title),
@@ -168,7 +157,7 @@ class MorePageState extends State<MorePage> {
               ),
               Divider(height: 1,),
               ListTile(
-                tileColor: Colors.white,
+               
                 leading: Icon(FontAwesomeIcons.flag,
                     size: UIConstants.drawerMenuSize),
                 title: Text(AppLocalizations.of(context)!.whats_new_title),
@@ -177,7 +166,7 @@ class MorePageState extends State<MorePage> {
               ),
               Divider(height: 1,),
               ListTile(
-                tileColor: Colors.white,
+               
                 leading: Icon(Icons.logout, size: UIConstants.drawerMenuSize),
                 title: Text(AppLocalizations.of(context)!.menu_item_sign_out),
                 trailing: Icon(Icons.navigate_next),
@@ -333,15 +322,7 @@ class MorePageState extends State<MorePage> {
       "content": MDProviderFactory.get().getDonationText()
     });
   }
-  void showSelectLanguageDialog(BuildContext context) async {
-    String currentCode = storage.getLanguageCode();
-    showDialog(
-        context: context,
-        builder: (_) => ChangeLanguagesDialog(currentCode, (code) {
-          storage.setLanguageCode(code);
-          MyApp.setLocale(context, code);
-    }), barrierDismissible: true);
-  }
+  
   void onLogoutItemPressed() {
     DialogUtils.showCustomDialog(
       context,

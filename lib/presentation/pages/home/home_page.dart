@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/wallet.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/logo_app_bar.dart';
@@ -29,7 +28,7 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => HomePageState();
 }
 
-class HomePageState extends BaseStateWidget<HomePage> {
+class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
@@ -37,39 +36,18 @@ class HomePageState extends BaseStateWidget<HomePage> {
   }
 
   @override
-  bool hasDrawer() {
-    return true;
-  }
-
-  @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async {},
         builder: (context, state) => Scaffold(
-              backgroundColor: Colors.grey.shade200,
-              key: ScaffoldKey,
               resizeToAvoidBottomInset: false,
               appBar: LogoAppBar(),
-              body: _buildBody(state),
+              body: _buildContent(state),
             ));
   }
 
   double iconSize = 20;
-
-  Widget _buildBody(HomeState state) {
-    //final state1 = state.state;
-    //if (state1 is LoadingState) {
-    //  return _buildLoading();
-    //}
-    return _buildContent(state);
-  }
-
-  // Widget _buildLoading() {
-  //   return const Center(
-  //     child: CircularProgressIndicator(),
-  //   );
-  // }
 
   Widget _buildContent(HomeState state) {
     List<Widget> children = [
@@ -89,8 +67,6 @@ class HomePageState extends BaseStateWidget<HomePage> {
                           AppLocalizations.of(context)!.suppliers_title,
                           state.countSupplier.toString(),
                           UIConstants.supplierIconData,
-                          Colors.pink[50],
-                          Colors.pink[700],
                           openSuppliers)),
                   SizedBox(width: 16),
                   Expanded(
@@ -98,8 +74,6 @@ class HomePageState extends BaseStateWidget<HomePage> {
                           AppLocalizations.of(context)!.customers_title,
                           state.countCustomer.toString(),
                           UIConstants.customerIconData,
-                          Colors.purple[50],
-                          Colors.purple[700],
                           openCustomers)),
                 ],
               ),
@@ -111,14 +85,12 @@ class HomePageState extends BaseStateWidget<HomePage> {
                     AppLocalizations.of(context)!.payments_title,
                     "",
                     UIConstants.paymentIconData,
-                    Colors.yellow[50],
-                    Colors.yellow[700],
                     widget.onOpenPaymentsPage,
                   )),
                   SizedBox(width: 16),
                   Expanded(
                       child: _buildSingleValueCard(AppLocalizations.of(context)!.report_title, "",
-                          UIConstants.reportIconData, Colors.green[50], Colors.green[700], openReport))
+                          UIConstants.reportIconData, openReport))
                 ],
               ),
               //SizedBox(height: 16),
@@ -133,7 +105,6 @@ class HomePageState extends BaseStateWidget<HomePage> {
 
   Widget _buildGoods(HomeState state) {
     return Card(
-        color: Colors.blue[50],
         child: InkWell(
           onTap: widget.onOpenGoodsPage,
           borderRadius: BorderRadius.circular(8),
@@ -146,7 +117,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(AppLocalizations.of(context)!.goods_title, style: Theme.of(context).textTheme.titleMedium),
+                    Text(AppLocalizations.of(context)!.goods_title),//, style: Theme.of(context).textTheme.titleMedium),
                     SizedBox(
                       height: 4,
                     ),
@@ -161,7 +132,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                   ],
                 )),
-                Icon(UIConstants.goodIconData, color: Colors.blue[700])
+                Icon(UIConstants.goodIconData, color: Theme.of(context).colorScheme.primary)
               ],
             ),
           ),
@@ -170,7 +141,6 @@ class HomePageState extends BaseStateWidget<HomePage> {
 
   Widget _buildDocuments(HomeState state) {
     return Card(
-        color: Colors.orange[50],
         child: InkWell(
           onTap: widget.onOpenDocumentsPage,
           borderRadius: BorderRadius.circular(8),
@@ -263,7 +233,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                   )),
                   Icon(
                     UIConstants.documentIconData,
-                    color: Colors.orange[700],
+                      color: Theme.of(context).colorScheme.primary
                   )
                 ],
               ),
@@ -280,7 +250,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min, // Wrap content
                       children: [
-                        Icon(Icons.add, size: 20, color: Colors.black),
+                        Icon(Icons.add, size: 20),
                         SizedBox(width: 8),
                         Text(
                           AppLocalizations.of(context)!.incoming_document_text,
@@ -303,7 +273,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min, // Wrap content
                       children: [
-                        Icon(Icons.remove, size: 20, color: Colors.black),
+                        Icon(Icons.remove, size: 20),
                         SizedBox(width: 8),
                         Text(
                           AppLocalizations.of(context)!.outgoing_document_text,
@@ -354,9 +324,8 @@ class HomePageState extends BaseStateWidget<HomePage> {
   }
 
   Widget _buildSingleValueCard(
-      String title, String value, IconData icon, Color? bgColor, Color? iconColor, VoidCallback onTap) {
+      String title, String value, IconData icon, VoidCallback onTap) {
     return Card(
-        color: bgColor,
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(8),
@@ -376,7 +345,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                     Text(value, style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 )),
-                Icon(icon, size: iconSize, color: iconColor),
+                Icon(icon, size: iconSize, color: Theme.of(context).colorScheme.primary),
               ],
             ),
           ),
@@ -385,7 +354,6 @@ class HomePageState extends BaseStateWidget<HomePage> {
 
   Widget _walletsCard(HomeState state) {
     return Card(
-      color: Theme.of(context).colorScheme.surface,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -399,7 +367,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                   textAlign: TextAlign.center,
                 ),
                 Spacer(),
-                Icon(UIConstants.walletIconData, size: iconSize, color: Colors.blue),
+                Icon(UIConstants.walletIconData, size: iconSize, color: Theme.of(context).colorScheme.primary),
               ],
             ),
             SizedBox(height: 16),
@@ -430,7 +398,7 @@ class HomePageState extends BaseStateWidget<HomePage> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min, // Wrap content
                     children: [
-                      Icon(Icons.add, size: 20, color: Colors.black),
+                      Icon(Icons.add, size: 20),
                       SizedBox(width: 8),
                       Text(
                         AppLocalizations.of(context)!.action_add_wallet,

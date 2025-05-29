@@ -138,6 +138,8 @@ import 'package:good_manager/presentation/pages/select_document/bloc/select_docu
     as _i42;
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart'
     as _i664;
+import 'package:good_manager/presentation/pages/settings/general/bloc/settings_general_cubit.dart'
+    as _i961;
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart'
     as _i989;
 import 'package:good_manager/presentation/pages/suppliers/bloc/suppliers_cubit.dart'
@@ -186,6 +188,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i884.BarcodeScannerCubit(storage: gh<_i72.Storage>()));
     gh.factory<_i638.ReportCubit>(
         () => _i638.ReportCubit(storage: gh<_i72.Storage>()));
+    gh.factory<_i961.SettingsGeneralCubit>(
+        () => _i961.SettingsGeneralCubit(storage: gh<_i72.Storage>()));
     gh.factory<_i769.DocumentTransactionRepository>(
         () => _i987.DocumentTransactionRepositoryImpl());
     gh.factory<_i137.GoodHistoryUseCases>(() => _i454.GoodHistoryUseCasesIpm(
@@ -229,6 +233,10 @@ extension GetItInjectableX on _i174.GetIt {
           customersUseCase: gh<_i236.CustomersUseCase>(),
           suppliersUseCase: gh<_i331.SuppliersUseCase>(),
         ));
+    gh.factory<_i1001.SaveWalletCubit>(() => _i1001.SaveWalletCubit(
+          useCase: gh<_i322.WalletUseCases>(),
+          paymentUseCases: gh<_i886.PaymentUseCases>(),
+        ));
     gh.factory<_i850.PaymentCategoriesCubit>(() => _i850.PaymentCategoriesCubit(
         paymentCategoryUseCases: gh<_i79.PaymentCategoryUseCases>()));
     gh.factory<_i340.SaveSupplierCubit>(
@@ -243,8 +251,6 @@ extension GetItInjectableX on _i174.GetIt {
           repository: gh<_i339.StoresRepository>(),
           storage: gh<_i72.Storage>(),
         ));
-    gh.factory<_i1001.SaveWalletCubit>(
-        () => _i1001.SaveWalletCubit(useCase: gh<_i322.WalletUseCases>()));
     gh.factory<_i733.SaveStoreCubit>(() => _i733.SaveStoreCubit(
           useCase: gh<_i579.StoresUseCase>(),
           storage: gh<_i72.Storage>(),

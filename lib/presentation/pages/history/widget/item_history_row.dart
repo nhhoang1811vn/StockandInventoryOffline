@@ -51,7 +51,7 @@ class ItemHistoryRow extends StatelessWidget{
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium!
-                                .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                                .copyWith(color: Theme.of(context).colorScheme.primary),
                           ),
                           //SizedBox(height: 4),
                           Text(DateFormatFactory.getDateFormat().format(item.document!.date),
@@ -99,8 +99,6 @@ class ItemHistoryRow extends StatelessWidget{
         return Colors.red;
       case DocumentType.outgoing:
         return Colors.green;
-      default:
-        return Colors.orange;
-    }
+      }
   }
 }
