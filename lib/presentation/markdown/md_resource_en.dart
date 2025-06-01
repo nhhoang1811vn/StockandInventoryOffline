@@ -29,6 +29,10 @@ AppViet Team
  static const String whatNews = """
  ### Version 1.0.30 - 2025 May 30  
   * Fixed reported bugs.  
+  * Added Minimum quantity feature
+  * Added Company information feature
+  * Added Dark mode, Passcode lock
+  * Added new type of report: REORDER
  
  ### Version 1.0.25 - 2025 Apr 14  
   * Fixed reported bugs.
