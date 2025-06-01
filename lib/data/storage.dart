@@ -26,8 +26,7 @@ class Storage {
       setSaveDocumentSetting(SaveDocumentSetting.getDefault());
       setStoresSetting(StoresSetting.getDefault());
 
-      prefs.setInt(
-          StorageKeys.BarcodeScannerBatchScanMode, BatchModeScan.MANUAL.value);
+      prefs.setInt(StorageKeys.BarcodeScannerBatchScanMode, BatchModeScan.MANUAL.value);
       prefs.setBool(StorageKeys.BarcodeScannerEnableBeep, true);
       prefs.setBool(StorageKeys.BarcodeScannerEnableVibrate, true);
       prefs.setBool(StorageKeys.InitSettings, true);

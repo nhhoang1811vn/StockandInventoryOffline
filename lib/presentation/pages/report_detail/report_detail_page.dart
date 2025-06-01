@@ -22,8 +22,8 @@ import 'components/field_display_dialog.dart';
 
 class ReportDetailPage extends StatefulWidget {
   final ReportType type;
-  final DateTime start;
-  final DateTime end;
+  final DateTime? start;
+  final DateTime? end;
 
   ReportDetailPage(this.type, this.start, this.end);
   @override
@@ -33,7 +33,6 @@ class ReportDetailPage extends StatefulWidget {
 }
 
 class ReportDetailPageState extends State<ReportDetailPage> {
-  //static const double MIN_WIDTH_CELL = 120.0;
   @override
   Widget build(BuildContext context) {
     context
@@ -93,7 +92,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
       BuildContext context, ReportDetailState state) {
     return IconButton(
         onPressed: () async {
-          String fileName = '${getExportPdfFileName(context, state)}.csv';
+          String fileName = '${getExportFileName(context, state)}.csv';
           saveAndExportCSV(context, state, fileName);
         },
         icon: FaIcon(FontAwesomeIcons.fileCsv));
@@ -159,7 +158,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
   Widget _buildPDFMenu(BuildContext context, ReportDetailState state) {
     return IconButton(
         onPressed: () async {
-          String fileName = '${getExportPdfFileName(context, state)}.pdf';
+          String fileName = '${getExportFileName(context, state)}.pdf';
           await saveAndExportPDF(context, state, fileName);
           // if (Platform.isWindows) {
           //   String? outputFile = await FilePicker.platform.saveFile(
@@ -182,7 +181,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
         icon: FaIcon(FontAwesomeIcons.filePdf));
   }
 
-  String getExportPdfFileName(BuildContext context, ReportDetailState state) {
+  String getExportFileName(BuildContext context, ReportDetailState state) {
     String name = state.type!.getTitle(context).replaceAll(" ", "");
     return name;
   }
@@ -365,27 +364,35 @@ class ReportDetailPageState extends State<ReportDetailPage> {
         fontWeight: FontWeight.w600);
   }
 
-  Widget _buildNormalCell(
-      {String value = "",
-      bool type = true,
-      //double width = MIN_WIDTH_CELL,
-      Function()? onPressed = null}) {
+  Widget _buildNormalCell({String value = "", bool type = true, Function()? onPressed = null}) {
+    final isDarkMode = Theme
+        .of(context)
+        .brightness == Brightness.dark;
+    var backgroundColor1;
+    var backgroundColor2;
+    var textColor;
+    if (isDarkMode){
+      backgroundColor1 = Colors.grey.shade800;
+      backgroundColor2 = Colors.grey.shade600;
+      textColor = Colors.white;
+    }else{
+      backgroundColor1 = Colors.grey.shade200;
+      backgroundColor2 = Colors.grey.shade400;
+      textColor = Colors.black;
+    }
     if (type) {
       return _buildCell(
         value: value,
-        backgroundColor: Colors.grey.shade200,
-        //width: width,
-        
-        textColor: Colors.black,
+        backgroundColor: backgroundColor1,
+        textColor: textColor,
         fontWeight: FontWeight.w400,
         onPressed: onPressed,
       );
     } else {
       return _buildCell(
         value: value,
-        //width: width,
-        backgroundColor: Colors.white,
-        textColor: Colors.black,
+        backgroundColor: backgroundColor2,
+        textColor: textColor,
         fontWeight: FontWeight.w400,
         onPressed: onPressed,
       );
@@ -405,25 +412,35 @@ class ReportDetailPageState extends State<ReportDetailPage> {
       child: Container(
         alignment: Alignment.center,
         width: 120,
-        height: 35,
+        height: 20,
         color: backgroundColor,
         margin: EdgeInsets.all(1.0),
         child: Text(
           value,
-          maxLines: 2,
+          maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(color: textColor, fontWeight: fontWeight),
+          style: TextStyle(
+              color: textColor,
+              fontSize: 12,
+              fontWeight: fontWeight),
         ),
       ),
     );
   }
 
   Widget _buildContent(BuildContext context, ReportDetailState state) {
-    var text = sprintf(AppLocalizations.of(context)!.report_detail_header, [
-      DateFormatFactory.getDateFormat().format(state.start!),
-      DateFormatFactory.getDateFormat().format(state.end!),
-      storage.getSelectedStoreName()
-    ]);
+    var text = "";
+    if (state.type == ReportType.RE_ORDER){
+      text =  sprintf(AppLocalizations.of(context)!.report_detail_store_only_header, [
+        storage.getSelectedStoreName()
+      ]);
+    }else{
+      text = sprintf(AppLocalizations.of(context)!.report_detail_header, [
+        DateFormatFactory.getDateFormat().format(state.start!),
+        DateFormatFactory.getDateFormat().format(state.end!),
+        storage.getSelectedStoreName()
+      ]);
+    }
     return Container(
         child: SingleChildScrollView(
       child: Column(

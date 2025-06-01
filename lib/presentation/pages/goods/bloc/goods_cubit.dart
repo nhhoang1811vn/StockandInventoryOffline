@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
@@ -31,15 +34,26 @@ class GoodsCubit extends Cubit<GoodsState> {
   final GoodsUseCases goodsUseCase;
   final GroupsUseCases groupsUseCase;
   final DocumentUseCases documentsUseCases;
+  final AppSettings appSettings;
   GoodsCubit({
     required this.storage,
+    required this.appSettings,
     required this.goodsUseCase,
     required this.groupsUseCase,
-    required this.documentsUseCases
+    required this.documentsUseCases,
+
 
   }) : super(GoodsState.initial(state: InitialState(), settings: storage.getGoodsSetting()));
   void initState(bool isSelection, Document? document) async {
-    emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection, document: document));
+    var minQuantitySettings = await appSettings.getMinimumQuantitySettings();
+
+    emit(state.copyWith(
+        isSelection: isSelection,
+        showSearchBar: isSelection,
+        document: document,
+        showMinQuantity: minQuantitySettings.showInList,
+        minQuantityColor: Color(minQuantitySettings.color)
+    ));
     loadData();
   }
   void onSelectedGroupTapped(int index) {
@@ -103,9 +117,9 @@ class GoodsCubit extends Cubit<GoodsState> {
   // String getSearchTextHint(BuildContext context) {
   //   return state.settings.searchGoodsType.getText(context);
   // }
-  void onSearchBarcodeClicked(){
-    emit(state.copyWith(state: OpenBarcodeScannerToSearchState()));
-  }
+  //void onSearchBarcodeClicked(){
+  //  emit(state.copyWith(state: OpenBarcodeScannerToSearchState()));
+  //}
   
   void onSearchTextChanged(String newValue) {
     emit(state.copyWith(textSearch: newValue));

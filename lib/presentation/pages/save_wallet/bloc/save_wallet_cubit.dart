@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/entities/wallet.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
@@ -21,7 +22,8 @@ part 'save_wallet_state.dart';
 class SaveWalletCubit extends Cubit<SaveWalletState> {
   final WalletUseCases useCase;
   final PaymentUseCases paymentUseCases;
-  SaveWalletCubit({required this.useCase, required this.paymentUseCases})
+  final Storage storage;
+  SaveWalletCubit({required this.useCase, required this.paymentUseCases, required this.storage})
       : super(SaveWalletState.initial(state: InitialState()));
 
   void init(Wallet item) {

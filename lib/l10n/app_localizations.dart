@@ -359,6 +359,18 @@ abstract class AppLocalizations {
   /// **'Quan'**
   String get field_quantity_short_form;
 
+  /// No description provided for @field_min_quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum quantity'**
+  String get field_min_quantity;
+
+  /// No description provided for @field_min_quantity_short_form.
+  ///
+  /// In en, this message translates to:
+  /// **'Min.'**
+  String get field_min_quantity_short_form;
+
   /// No description provided for @field_total_short_form.
   ///
   /// In en, this message translates to:
@@ -656,7 +668,7 @@ abstract class AppLocalizations {
   /// No description provided for @send_mail_invite_friend_content.
   ///
   /// In en, this message translates to:
-  /// **'This is a good application, I use it everyday and recommend it for you. \nDownload link: https://play.google.com/store/apps/details?id=com.ssteam.good_manager'**
+  /// **'This is a good application, I use it everyday and recommend it for you. \nDownload for Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter\nDownload for iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293'**
   String get send_mail_invite_friend_content;
 
   /// No description provided for @menu_item_write_review_header.
@@ -845,11 +857,41 @@ abstract class AppLocalizations {
   /// **'Minimum quantity'**
   String get menu_item_minimum_quantity;
 
-  /// No description provided for @menu_item_my_store.
+  /// No description provided for @menu_item_show_min_quantity_items_page_title.
   ///
   /// In en, this message translates to:
-  /// **'My Store'**
-  String get menu_item_my_store;
+  /// **'Show minimum quantity in item\'s page'**
+  String get menu_item_show_min_quantity_items_page_title;
+
+  /// No description provided for @menu_item_show_min_quantity_list_page_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Show minimum quantity in list page'**
+  String get menu_item_show_min_quantity_list_page_title;
+
+  /// No description provided for @menu_item_min_quantity_color_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Color for goods needing reorder'**
+  String get menu_item_min_quantity_color_title;
+
+  /// No description provided for @menu_item_show_low_stock_alert_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Low Stock Alerts'**
+  String get menu_item_show_low_stock_alert_title;
+
+  /// No description provided for @menu_item_show_low_stock_alert_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'When you open the app, we will send you the notification to warning you'**
+  String get menu_item_show_low_stock_alert_desc;
+
+  /// No description provided for @menu_item_my_company.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Information'**
+  String get menu_item_my_company;
 
   /// No description provided for @menu_item_backup_and_restore.
   ///
@@ -1115,11 +1157,17 @@ abstract class AppLocalizations {
   /// **'Sort by'**
   String get action_sort_by;
 
-  /// No description provided for @action_export.
+  /// No description provided for @action_export_csv.
   ///
   /// In en, this message translates to:
-  /// **'Export'**
-  String get action_export;
+  /// **'Export CSV'**
+  String get action_export_csv;
+
+  /// No description provided for @action_export_pdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF'**
+  String get action_export_pdf;
 
   /// No description provided for @action_batch_scan.
   ///
@@ -1187,6 +1235,12 @@ abstract class AppLocalizations {
   /// **'Payments by Customer'**
   String get report_type_list_of_customer_payments;
 
+  /// No description provided for @report_type_reorder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorder'**
+  String get report_type_reorder;
+
   /// No description provided for @select_date_range.
   ///
   /// In en, this message translates to:
@@ -1228,6 +1282,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'From %s to %s store %s'**
   String get report_detail_header;
+
+  /// No description provided for @report_detail_store_only_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Store %s'**
+  String get report_detail_store_only_header;
 
   /// No description provided for @select_payment_status.
   ///
@@ -1876,6 +1936,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search...'**
   String get hint_search_by;
+
+  /// No description provided for @field_my_company_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Company name'**
+  String get field_my_company_name;
+
+  /// No description provided for @field_reorder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorder'**
+  String get field_reorder;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

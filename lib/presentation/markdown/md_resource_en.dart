@@ -27,6 +27,9 @@ With gratitude,
 AppViet Team
   """;
  static const String whatNews = """
+ ### Version 1.0.30 - 2025 May 30  
+  * Fixed reported bugs.  
+ 
  ### Version 1.0.25 - 2025 Apr 14  
   * Fixed reported bugs.
   * Added Payment features. 

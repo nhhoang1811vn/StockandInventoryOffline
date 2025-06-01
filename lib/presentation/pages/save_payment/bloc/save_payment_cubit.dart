@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
@@ -28,13 +29,16 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
   final WalletUseCases walletUseCases;
   final CustomersUseCase customersUseCase;
   final SuppliersUseCase suppliersUseCase;
+  final Storage storage;
 
   SavePaymentCubit({
     required this.useCase,
     required this.paymentCategoryUseCases,
     required this.walletUseCases,
     required this.customersUseCase,
-    required this.suppliersUseCase
+    required this.suppliersUseCase,
+    required this.storage,
+
   })
       : super(SavePaymentState.initial(state: InitialState()));
 

@@ -34,7 +34,7 @@ class SelectDestObjectWidgetState extends State<SelectDestObjectWidget>{
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16),
-      color: Colors.grey.shade200,
+      //color: Colors.grey.shade200,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

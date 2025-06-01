@@ -1,8 +1,10 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/usecases/goods/goods_usercases.dart';
@@ -23,8 +25,19 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
   final GoodsUseCases useCase;
   final DocumentUseCases documentsUseCases;
   final Storage storage;
-  SaveGoodCubit({required this.useCase, required this.documentsUseCases, required this.storage}) : super(SaveGoodState.initial(state: InitialState()));
+  final AppSettings appSettings;
+  SaveGoodCubit({
+    required this.useCase,
+    required this.documentsUseCases,
+    required this.storage,
+    required this.appSettings
+  }) : super(SaveGoodState.initial(state: InitialState()));
+  void initState() async{
+    var minQuantitySettings = await appSettings.getMinimumQuantitySettings();
+    emit(state.copyWith(showMinQuantity: minQuantitySettings.showInItem));
+  }
   void init(Good item, Document? document,DocumentTransaction? transaction){
+
     SaveGoodState initState = state.copyWith(
         item: item,
         document: document,
@@ -33,8 +46,9 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
         barCode: item.barCode??'',
         purchasePrice: item.purchasePrice,
         salePrice: item.salePrice,
+        minQuantity: item.minQuantity,
         files: item.files,
-        transaction: transaction
+        transaction: transaction,
     );
     emit(initState);
   }
@@ -50,6 +64,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
       item.salePrice = state.salePrice;
     }
     item.files = state.files;
+    item.minQuantity = state.minQuantity;
     if (item.id == null){
       item.id = await useCase.insert(item);
       emit(state.copyWith(item : item));
@@ -210,6 +225,15 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
       emit(state.copyWith(state: OpenIssueGoodsPopupState()));
     }else{
       emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));
+    }
+  }
+  onMinQuantityChanged(String value){
+    if (value.isNotEmpty){
+      num numValue = Config.simpleCurrencyFormat.parse(value);
+      double number = numValue.toDouble();
+      emit(state.copyWith(minQuantity: number));
+    }else{
+      emit(state.copyWith(minQuantity: null));
     }
   }
 }

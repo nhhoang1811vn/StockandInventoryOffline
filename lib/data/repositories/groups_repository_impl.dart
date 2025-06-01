@@ -4,10 +4,14 @@ import 'package:good_manager/domain/repositories/groups_repositories.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../main.dart';
+import '../storage.dart';
 
 @Injectable(as: GroupsRepository)
 class GroupsRepositoryImpl implements GroupsRepository {
-  GroupsRepositoryImpl();
+
+
+  final Storage storage;
+  GroupsRepositoryImpl(this.storage);
 
   var db = new DBHelper();
 

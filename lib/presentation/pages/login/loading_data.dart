@@ -41,7 +41,6 @@ class LoadingDataState extends State<LoadingData> {
         },
         builder: (context, state) {
           return Scaffold(
-              backgroundColor: Colors.white,
               body: Center(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

@@ -30,7 +30,6 @@ class PaymentItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        color: Theme.of(context).colorScheme.surface,
         margin: EdgeInsets.only(left: 16, right: 16, top: 16),
         child: InkWell(
             borderRadius: BorderRadius.circular(8),

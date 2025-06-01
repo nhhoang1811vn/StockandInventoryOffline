@@ -141,6 +141,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get field_quantity_short_form => 'SL';
 
   @override
+  String get field_min_quantity => 'Số lượng tối thiểu';
+
+  @override
+  String get field_min_quantity_short_form => 'SLTT.';
+
+  @override
   String get field_total_short_form => 'TC';
 
   @override
@@ -288,7 +294,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get send_mail_invite_friend_subject => 'Lời mời sử dụng ứng dụng';
 
   @override
-  String get send_mail_invite_friend_content => 'Đây là ứng dụng rất tuyệt vời mà mình sử dụng thường xuyên để quản lý kho, mình muốn giới thiệu nó cho bạn. \nĐường dẫn: https://play.google.com/store/apps/details?id=com.ssteam.good_manager';
+  String get send_mail_invite_friend_content => 'Đây là ứng dụng rất tuyệt vời mà mình sử dụng thường xuyên để quản lý kho, mình muốn giới thiệu nó cho bạn. \nAndroid: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter, iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
 
   @override
   String get menu_item_write_review_header => 'Viết đánh giá';
@@ -384,7 +390,22 @@ class AppLocalizationsVi extends AppLocalizations {
   String get menu_item_minimum_quantity => 'Số lượng tối thiểu';
 
   @override
-  String get menu_item_my_store => 'Của hàng của tôi';
+  String get menu_item_show_min_quantity_items_page_title => 'Hiển thị trường số lượng tối thiểu ở trang hàng hóa';
+
+  @override
+  String get menu_item_show_min_quantity_list_page_title => 'Hiển thị trường số lượng tối thiểu ở trang danh sách hàng hóa';
+
+  @override
+  String get menu_item_min_quantity_color_title => 'Màu sắc cho hàng hóa cần đặt hàng lại';
+
+  @override
+  String get menu_item_show_low_stock_alert_title => 'Hiển thị thông báo hết hàng';
+
+  @override
+  String get menu_item_show_low_stock_alert_desc => 'Khi bạn mở ứng dụng, chúng tôi sẽ gửi thông báo về việc hết hàng';
+
+  @override
+  String get menu_item_my_company => 'Thông tin công ty';
 
   @override
   String get menu_item_backup_and_restore => 'Back up and restore';
@@ -519,7 +540,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get action_sort_by => 'Sắp xếp';
 
   @override
-  String get action_export => 'Xuất CSV';
+  String get action_export_csv => 'Xuất CSV';
+
+  @override
+  String get action_export_pdf => 'Xuất PDF';
 
   @override
   String get action_batch_scan => 'Quét mã vạch liên tục';
@@ -555,6 +579,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get report_type_list_of_customer_payments => 'Giao dịch theo khách hàng';
 
   @override
+  String get report_type_reorder => 'Báo cáo cần đặt hàng';
+
+  @override
   String get select_date_range => 'Chọn khoảng thời gian';
 
   @override
@@ -574,6 +601,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get report_detail_header => 'Từ ngày %s đến ngày %s cửa hàng %s';
+
+  @override
+  String get report_detail_store_only_header => 'Cửa hàng %s';
 
   @override
   String get select_payment_status => 'Chọn trạng thái thanh toán';
@@ -898,4 +928,10 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get hint_search_by => 'Tìm kiếm...';
+
+  @override
+  String get field_my_company_name => 'Tên công ty';
+
+  @override
+  String get field_reorder => 'Tái đặt hàng';
 }

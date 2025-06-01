@@ -44,7 +44,9 @@ class SelectWalletWidgetState extends State<SelectWalletWidget>{
             borderRadius: BorderRadius.circular(16),
           ), // No decoration if not selected
 
-          child: Icon(Icons.add, color: Colors.grey.shade700)),
+          child: Icon(Icons.add,
+              //color: Colors.grey.shade700
+          )),
     );
   }
   Widget _buildWidget(Wallet item) {
@@ -60,7 +62,7 @@ class SelectWalletWidgetState extends State<SelectWalletWidget>{
       child: Container(
           decoration: selected
               ? BoxDecoration(
-            color: Colors.blue.shade50,
+            //color: Colors.blue.shade50,
             border: Border.all(
               color: Colors.blue.shade700,
               width: 1,
@@ -87,15 +89,13 @@ class SelectWalletWidgetState extends State<SelectWalletWidget>{
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16),
-      color: Colors.grey.shade200,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(AppLocalizations.of(context)!.label_select_payment_category,
+          Text(AppLocalizations.of(context)!.label_select_wallet,
               style: Theme.of(context).textTheme.titleMedium),
           SizedBox(height: 16),
           Card(
-            color: Colors.white,
             child: Padding(
               padding: EdgeInsets.all(8),
               child: GridView.builder(

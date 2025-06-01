@@ -3,12 +3,13 @@ import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/repositories/goods_repositories.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../main.dart';
+import '../storage.dart';
 
 
 @Injectable(as: GoodsRepository)
 class GoodsRepositoryImpl implements GoodsRepository {
-  GoodsRepositoryImpl();
+  final Storage storage;
+  GoodsRepositoryImpl(this.storage);
 
   var db = new DBHelper();
 

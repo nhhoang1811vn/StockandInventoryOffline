@@ -173,4 +173,12 @@ class DocumentsCubit extends Cubit<DocumentsState> {
     sort();
     filter();
   }
+
+  getSelectedStoreId(){
+    return storage.getSelectedStoreId();
+  }
+  String getAutoDocumentNo() {
+    return storage.getAutoDocumentNo(getSelectedStoreId()).toString();
+  }
+
 }

@@ -35,13 +35,16 @@ class SelectCategoryWidgetState extends State<SelectCategoryWidget> {
       child: Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: Colors.grey.shade700,
+              //color: Colors.grey.shade700,
               width: 1,
             ),
             borderRadius: BorderRadius.circular(16),
           ), // No decoration if not selected
 
-          child: Icon(Icons.add, color: Colors.grey.shade700)),
+          child: Icon(
+              Icons.add,
+              //color: Colors.grey.shade700
+          )),
     );
   }
   Widget _buildWidget(PaymentCategory item) {
@@ -54,7 +57,7 @@ class SelectCategoryWidgetState extends State<SelectCategoryWidget> {
       child: Container(
         decoration: selected
             ? BoxDecoration(
-          color: Colors.blue.shade50,
+          //color: Colors.blue.shade50,
           border: Border.all(
             color: Colors.blue.shade700,
             width: 1,
@@ -82,7 +85,6 @@ class SelectCategoryWidgetState extends State<SelectCategoryWidget> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16),
-      color: Colors.grey.shade200,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -91,7 +93,7 @@ class SelectCategoryWidgetState extends State<SelectCategoryWidget> {
           SizedBox(height: 16),
           //CategoriesGridView(categories: widget.categories, onAddNewButtonPressed: widget.onAddNewButtonPressed, onPressed: (item){}, onLongPressed: (item){})
           Card(
-            color: Colors.white,
+
             child: Padding(
               padding: EdgeInsets.all(16),
               child: GridView.builder(

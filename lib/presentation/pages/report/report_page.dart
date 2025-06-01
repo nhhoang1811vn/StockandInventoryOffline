@@ -46,8 +46,8 @@ class ReportPageState extends State<ReportPage> {
             type.getTitle(context),
           ),
           onTap: () {
-            if (type == ReportType.LIST_OF_GOODS){
-              onReportListOfGood(context);
+            if (type == ReportType.RE_ORDER){
+              onReportReorder(context);
             }else{
               onReportTypeClicked(context, type);
             }
@@ -68,20 +68,12 @@ class ReportPageState extends State<ReportPage> {
       Navigator.of(context).pushNamed(Pages.report_detail, arguments: {'type': reportType, 'start': start, 'end': end});
     }
   }
-  void onReportListOfGood(BuildContext context) async{
-    Map? result = await showSelectDateRangeDialog(context, ReportDateRangeType.CURRENT_MONTH);
-    if (result != null){
-      DateTime start = result["start"];
-      DateTime end = result["end"];
-
-      Navigator.of(context).pushNamed(
-          Pages.report_detail,
-          arguments: {
-            'type': ReportType.LIST_OF_GOODS,
-            'start': start,
-            'end': end
-          });
-    }
+  void onReportReorder(BuildContext context) async{
+    Navigator.of(context).pushNamed(
+        Pages.report_detail,
+        arguments: {
+          'type': ReportType.RE_ORDER,
+        });
   }
 
   Future<Map?> showSelectDateRangeDialog(BuildContext context, ReportDateRangeType type) async {

@@ -12,6 +12,8 @@ enum ReportType{
   LIST_OF_CUSTOMER_PAYMENTS,
   LIST_OF_SUPPLIER_PAYMENTS,
 
+  RE_ORDER
+
 }
 extension ReportTypeExtension on ReportType{
   String getTitle(BuildContext context){
@@ -34,7 +36,8 @@ extension ReportTypeExtension on ReportType{
         return AppLocalizations.of(context)!.report_type_list_of_supplier_payments;
       case ReportType.LIST_OF_CUSTOMER_PAYMENTS:
         return AppLocalizations.of(context)!.report_type_list_of_customer_payments;
-
+      case ReportType.RE_ORDER:
+        return AppLocalizations.of(context)!.report_type_reorder;
     }
   }
 }

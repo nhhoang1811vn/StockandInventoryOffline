@@ -47,8 +47,13 @@ import 'package:good_manager/presentation/pages/select_document/bloc/select_docu
 import 'package:good_manager/presentation/pages/select_document/select_documents_page.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 import 'package:good_manager/presentation/pages/select_group/select_group_page.dart';
+import 'package:good_manager/presentation/pages/settings/data/settings_data_page.dart';
 import 'package:good_manager/presentation/pages/settings/general/bloc/settings_general_cubit.dart';
 import 'package:good_manager/presentation/pages/settings/general/settings_general_page.dart';
+import 'package:good_manager/presentation/pages/settings/minimum_quantity/bloc/minimum_quantity_cubit.dart';
+import 'package:good_manager/presentation/pages/settings/minimum_quantity/minimum_quantity_page.dart';
+import 'package:good_manager/presentation/pages/settings/my_company/bloc/my_company_cubit.dart';
+import 'package:good_manager/presentation/pages/settings/my_company/my_company_page.dart';
 import 'package:good_manager/presentation/pages/settings/settings_page.dart';
 import 'package:good_manager/presentation/pages/settings/view/settings_view_page.dart';
 import 'package:good_manager/presentation/pages/signup/signup_page.dart';
@@ -219,10 +224,22 @@ class AppRouter {
         return _buildRoute(settings, SettingsPage());
       case Pages.settings_view:
         return _buildRoute(settings, SettingsViewPage());
+      case Pages.settings_minimum_quantity:
+        return MaterialPageRoute(builder: (_) => BlocProvider(
+          create: (context) => getIt<MinimumQuantityCubit>(),
+          child: MinimumQuantityPage(),
+        ));
+      case Pages.settings_data:
+        return _buildRoute(settings, SettingsDataPage());
       case Pages.settings_general:
         return MaterialPageRoute(builder: (_) => BlocProvider(
           create: (context) => getIt<SettingsGeneralCubit>(),
           child: SettingsGeneralPage(),
+        ));
+      case Pages.settings_my_company:
+        return MaterialPageRoute(builder: (_) => BlocProvider(
+          create: (context) => getIt<MyCompanyCubit>(),
+          child: MyCompanyPage(),
         ));
       case Pages.select_group:
         Map<dynamic, dynamic> args = settings.arguments as Map;

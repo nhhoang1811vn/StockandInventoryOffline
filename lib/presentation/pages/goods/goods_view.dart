@@ -17,6 +17,7 @@ import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:sprintf/sprintf.dart';
 import '../../widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
+import '../../widgets/search_bar_widget.dart';
 import '../../widgets/snackbar_widgets.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
@@ -37,7 +38,6 @@ class GoodsPage extends StatefulWidget {
 enum OverflowMenuItem { listSettings, help }
 
 class GoodsPageState extends State<GoodsPage> {
-  final TextEditingController searchTextController = TextEditingController();
   final FocusNode searchTextFocusNode = FocusNode();
   final _key = GlobalKey<ExpandableFabState>();
 
@@ -55,7 +55,20 @@ class GoodsPageState extends State<GoodsPage> {
     List<Widget> children = [
       SelectedStoreView(),
       _buildSelectedGroupView(state),
-      _buildSearchBar(context, state),
+      Visibility(
+        visible: state.showSearchBar,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 16, top : 16),
+          child: SearchBarWidget(
+            onTextChanged: (newValue) {
+              context.read<GoodsCubit>().onSearchTextChanged(newValue);
+            },
+            focusNode: searchTextFocusNode,
+            showCamera: true,
+          ),
+        ),
+      ),
+      //_buildSearchBar(context, state),
       Expanded(
           child: Stack(children: [
         Visibility(
@@ -155,21 +168,20 @@ class GoodsPageState extends State<GoodsPage> {
                 quantity: good.quantity,
                 showBarcode: state.settings.showBarcode,
                 showDescription: state.settings.showDescription,
+                showMinQuantity: state.showMinQuantity,
+                minQuantityColor: state.minQuantityColor??Colors.black,
                 onGoodTapped: (item) => onPressedGood(good),
                 onGoodLongPressed: (item) => onLongPressedGood(good),
                 isSelection: state.isSelection);
           }
         },
-        //separatorBuilder: (context, index) {
-        //  return Divider(color: Colors.grey[500]);
-        //},
         itemCount: state.groups.length + state.goods.length);
   }
 
   Widget _buildSearchMenu(GoodsState state) {
     return IconButton(
         onPressed: () {
-          searchTextController.text = "";
+          //searchTextController.text = "";
           if (!state.showSearchBar) {
             searchTextFocusNode.requestFocus();
           }
@@ -192,56 +204,56 @@ class GoodsPageState extends State<GoodsPage> {
                 : Theme.of(context).iconTheme.color));
   }
 
-  Widget _buildSearchBar(BuildContext context, GoodsState state) {
-    return Visibility(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-          child: Container(
-              decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8), // Rounded corners
-            ),
-            child: ListTile(
-                    leading: Icon(Icons.search),
-                    title: TextField(
-                      
-                      controller: searchTextController,
-                      decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!.hint_search_by,
-                          border: InputBorder.none
-                          ),
-                      onChanged: context.read<GoodsCubit>().onSearchTextChanged,
-                              
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Visibility(
-                          child: IconButton(
-                            icon: Icon(UIConstants.cancelIconData),
-                            onPressed: () {
-                              searchTextController.text = "";
-                              context.read<GoodsCubit>().onSearchTextChanged("");
-                            },
-                          ),
-                          visible: state.textSearch.isNotEmpty,
-                        ),
-                        IconButton(
-                          //icon: Icon(Icons.barcode_reader),
-                          icon: Image.asset(
-                            UIConstants.searchBarcodeIconPath,
-                            width: 24,
-                          ),
-                          onPressed:
-                              context.read<GoodsCubit>().onSearchBarcodeClicked,
-                        )
-                      ],
-                    ),
-            ),
-          ),
-        ),
-        visible: state.showSearchBar);
-  }
+  // Widget _buildSearchBar(BuildContext context, GoodsState state) {
+  //   return Visibility(
+  //       child: Padding(
+  //         padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+  //         child: Container(
+  //             decoration: BoxDecoration(
+  //             color: Colors.white,
+  //             borderRadius: BorderRadius.circular(8), // Rounded corners
+  //           ),
+  //           child: ListTile(
+  //                   leading: Icon(Icons.search),
+  //                   title: TextField(
+  //
+  //                     controller: searchTextController,
+  //                     decoration: InputDecoration(
+  //                         hintText: AppLocalizations.of(context)!.hint_search_by,
+  //                         border: InputBorder.none
+  //                         ),
+  //                     onChanged: context.read<GoodsCubit>().onSearchTextChanged,
+  //
+  //                   ),
+  //                   trailing: Row(
+  //                     mainAxisSize: MainAxisSize.min,
+  //                     children: [
+  //                       Visibility(
+  //                         child: IconButton(
+  //                           icon: Icon(UIConstants.cancelIconData),
+  //                           onPressed: () {
+  //                             searchTextController.text = "";
+  //                             context.read<GoodsCubit>().onSearchTextChanged("");
+  //                           },
+  //                         ),
+  //                         visible: state.textSearch.isNotEmpty,
+  //                       ),
+  //                       IconButton(
+  //                         //icon: Icon(Icons.barcode_reader),
+  //                         icon: Image.asset(
+  //                           UIConstants.searchBarcodeIconPath,
+  //                           width: 24,
+  //                         ),
+  //                         onPressed:
+  //                             context.read<GoodsCubit>().onSearchBarcodeClicked,
+  //                       )
+  //                     ],
+  //                   ),
+  //           ),
+  //         ),
+  //       ),
+  //       visible: state.showSearchBar);
+  // }
 
   Widget _buildLoading() {
     return const Center(
@@ -440,19 +452,8 @@ class GoodsPageState extends State<GoodsPage> {
             ScaffoldMessenger.of(context).showSnackBar(
                 snackBarWhenFailureWithText(
                     AppLocalizations.of(context)!.insert_transaction_fail));
-          } else if (state.state is OpenBarcodeScannerToSearchState) {
-            //open bar code scanner to fill search text box
-            var result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SimpleBarcodeScannerPage(),
-                ));
-            if (result != "-1") {
-              Utils.handleABarcodeFound();
-              searchTextController.text = result;
-              context.read<GoodsCubit>().onSearchTextChanged(result);
-            }
-          } else if (state.state is OpenListSettingsDialogState){
+          }
+          else if (state.state is OpenListSettingsDialogState){
             GoodsSetting? settings = await showDialog(
                 context: context,
                 builder: (_) => ListSettingsDialog(state.settings),

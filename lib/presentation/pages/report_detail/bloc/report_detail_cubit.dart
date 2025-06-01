@@ -64,7 +64,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     required this.walletUseCases,
   }) : super(ReportDetailState.initial(state: InitialState()));
 
-  void init(BuildContext context, ReportType type, DateTime start, DateTime end) {
+  void init(BuildContext context, ReportType type, DateTime? start, DateTime? end) {
     emit(state.copyWith(state: LoadingState(), type: type, start: start, end: end));
     load(context);
   }
@@ -111,6 +111,8 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         await initListOfSupplierPayments(context);
       case ReportType.LIST_OF_CUSTOMER_PAYMENTS:
         await initListOfCustomerPayments(context);
+      case ReportType.RE_ORDER:
+        await initReorder(context);
       default:
         break;
     }
@@ -203,7 +205,44 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     if (column.isPickValues && !column.selectedValues.contains(value)) return false;
     return true;
   }
+  Future<void> initReorder(BuildContext context) async{
+    List<ColumnReport> columns = [
+      ColumnReport(AppLocalizations.of(context)!.field_name),
+      ColumnReport(AppLocalizations.of(context)!.field_bar_code),
+      ColumnReport(AppLocalizations.of(context)!.field_quantity),
+      ColumnReport(AppLocalizations.of(context)!.field_min_quantity),
+      ColumnReport(AppLocalizations.of(context)!.field_reorder),
+      ColumnReport(AppLocalizations.of(context)!.field_purchase_price),
+      ColumnReport(AppLocalizations.of(context)!.field_amount),
+    ];
+    List<List<String>> rows = [];
 
+    int storeId = storage.getSelectedStoreId();
+    List<Good> allGoods = await goodsUseCase.getAllByStoreId(storeId);
+    allGoods.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
+    for (Good good in allGoods) {
+      var minQuan = 0.0;
+      if (good.minQuantity != null){
+        minQuan = good.minQuantity!;
+      }
+      if (good.quantity < minQuan){
+        var reorder = minQuan - good.quantity;
+        var amount = reorder * (good.purchasePrice??0.0);
+        List<String> row = [
+          good.name,
+          good.barCode ?? "",
+          good.quantity.toString(),
+          minQuan.toString(),
+          reorder.toString(),
+          good.purchasePrice.toString(),
+          amount.toString()
+        ];
+        rows.add(row);
+      }
+    }
+    emit(state.copyWith(columns: columns, rows: rows));
+  }
   Future<void> initListOfGoods(BuildContext context) async {
     List<ColumnReport> columns = [
       ColumnReport(AppLocalizations.of(context)!.field_name),

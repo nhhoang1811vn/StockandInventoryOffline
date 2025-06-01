@@ -1,3 +1,4 @@
+import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/db/db_helper.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/domain/repositories/document_repositories.dart';
@@ -9,7 +10,8 @@ import '../../main.dart';
 
 @Injectable(as: DocumentRepository)
 class DocumentRepositoryImpl implements DocumentRepository {
-  DocumentRepositoryImpl();
+  final Storage storage;
+  DocumentRepositoryImpl(this.storage);
 
   var db = new DBHelper();
   @override

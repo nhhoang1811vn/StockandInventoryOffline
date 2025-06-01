@@ -67,12 +67,12 @@ class MorePageState extends State<MorePage> {
       appBar: LogoAppBar(),
       body: ListView(children: [
         Card(
+          clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.all(16),
           child: Column(
             children: [
-              SizedBox(height: 4),
               ListTile(
-               
+              onTap: () => {},
                 title: Text(displayName,
                     style: Theme.of(context)
                         .textTheme
@@ -118,19 +118,15 @@ class MorePageState extends State<MorePage> {
                 trailing: Icon(Icons.navigate_next),
                 onTap: () => onSettingsItemPressed(context),
               ),
-            
-              SizedBox(height: 4),
             ],
           ),
         ),
         Card(
-         
+          clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.all(16),
           child: Column(
             children: [
-              SizedBox(height: 4),
               ListTile(
-               
                 leading: Icon(FontAwesomeIcons.paperPlane,
                     size: UIConstants.drawerMenuSize),
                 title: Text(AppLocalizations.of(context)!
@@ -139,7 +135,6 @@ class MorePageState extends State<MorePage> {
               ),
               Divider(height: 1,),
               ListTile(
-               
                 leading: Icon(FontAwesomeIcons.circleQuestion,
                     size: UIConstants.drawerMenuSize),
                 title: Text(
@@ -148,7 +143,6 @@ class MorePageState extends State<MorePage> {
               ),
               Divider(height: 1,),
               ListTile(
-               
                 leading: Icon(FontAwesomeIcons.question,
                     size: UIConstants.drawerMenuSize),
                 title: Text(AppLocalizations.of(context)!.help_title),
@@ -157,7 +151,6 @@ class MorePageState extends State<MorePage> {
               ),
               Divider(height: 1,),
               ListTile(
-               
                 leading: Icon(FontAwesomeIcons.flag,
                     size: UIConstants.drawerMenuSize),
                 title: Text(AppLocalizations.of(context)!.whats_new_title),
@@ -166,13 +159,11 @@ class MorePageState extends State<MorePage> {
               ),
               Divider(height: 1,),
               ListTile(
-               
                 leading: Icon(Icons.logout, size: UIConstants.drawerMenuSize),
                 title: Text(AppLocalizations.of(context)!.menu_item_sign_out),
                 trailing: Icon(Icons.navigate_next),
                 onTap: () => onLogoutItemPressed(),
               ),
-              SizedBox(height: 4),
             ],
           ),
         ),

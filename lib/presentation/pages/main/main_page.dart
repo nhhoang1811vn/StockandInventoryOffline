@@ -105,8 +105,8 @@ class MainPageState extends State<MainPage> {
                 icon: Icon(UIConstants.paymentIconData),
                 label: AppLocalizations.of(context)!.payments_title),
             BottomNavigationBarItem(
-                icon: Icon(UIConstants.settingIconData),
-                label: AppLocalizations.of(context)!.settings_title),
+                icon: Icon(UIConstants.moreIconData),
+                label: AppLocalizations.of(context)!.more_title),
           ],
           currentIndex: _selectedIndex,
           selectedItemColor: Colors.blue,

@@ -31,6 +31,7 @@ class SaveGoodForm extends StatelessWidget {
 
   final purchasePriceTextController = TextEditingController();
   final salePriceTextController = TextEditingController();
+  final minQuantityTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +125,11 @@ class SaveGoodForm extends StatelessWidget {
         } else {
           salePriceTextController.text = "";
         }
+        if (state.minQuantity != null){
+          minQuantityTextController.text = Config.simpleCurrencyFormat.format(state.minQuantity);
+        }else{
+          minQuantityTextController.text = "";
+        }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -177,6 +183,16 @@ class SaveGoodForm extends StatelessWidget {
                   Expanded(child: _buildPrice(context, state))
                 ],
               ),
+            SizedBox(
+              height: 16,
+            ),
+            if (state.showMinQuantity)
+            AppTextField(
+                labelText: AppLocalizations.of(context)!.field_min_quantity,
+                hintText: AppLocalizations.of(context)!.field_min_quantity,
+                controller: minQuantityTextController,
+                onChanged: (value) => context.read<SaveGoodCubit>().onMinQuantityChanged(value),
+                keyboardType: TextInputType.number),
           ],
         );
       },

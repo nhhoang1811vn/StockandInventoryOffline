@@ -86,7 +86,7 @@ class SelectSymbolsWidgetState extends State<SelectSymbolsWidget> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16),
-      color: Colors.grey.shade200,
+      //color: Colors.grey.shade200,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -94,7 +94,7 @@ class SelectSymbolsWidgetState extends State<SelectSymbolsWidget> {
               style: Theme.of(context).textTheme.titleMedium),
           SizedBox(height: 16),
           Card(
-            color: Colors.white,
+            //color: Colors.white,
             child: Padding(
               padding: EdgeInsets.all(16),
               child: GridView.builder(

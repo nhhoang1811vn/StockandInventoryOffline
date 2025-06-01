@@ -49,6 +49,8 @@
   "field_bar_code": "Mã vạch",
   "field_quantity": "Số lượng",
   "field_quantity_short_form": "SL",
+  "field_min_quantity": "Số lượng tối thiểu",
+  "field_min_quantity_short_form": "SLTT.",
   "field_total_short_form": "TC",
   "field_supplier": "Nhà cung cấp",
   "field_customer": "Khách hàng",
@@ -107,7 +109,7 @@
 
   "menu_item_invite_friend_header": "Mời bạn bè",
   "send_mail_invite_friend_subject": "Lời mời sử dụng ứng dụng",
-  "send_mail_invite_friend_content": "Đây là ứng dụng rất tuyệt vời mà mình sử dụng thường xuyên để quản lý kho, mình muốn giới thiệu nó cho bạn. \nĐường dẫn: https://play.google.com/store/apps/details?id=com.ssteam.good_manager",
+  "send_mail_invite_friend_content": "Đây là ứng dụng rất tuyệt vời mà mình sử dụng thường xuyên để quản lý kho, mình muốn giới thiệu nó cho bạn. \nAndroid: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter, iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293",
 
   "menu_item_write_review_header": "Viết đánh giá",
   "menu_item_write_review_description": "Chia sẻ cảm nghĩ về ứng dụng của bạn với mọi người",
@@ -145,7 +147,12 @@
   "menu_item_view" : "Hiển thị",
       "menu_item_barcode_scanner": "Quét mã vạch",
       "menu_item_minimum_quantity": "Số lượng tối thiểu",
-      "menu_item_my_store": "Của hàng của tôi",
+      "menu_item_show_min_quantity_items_page_title": "Hiển thị trường số lượng tối thiểu ở trang hàng hóa",
+      "menu_item_show_min_quantity_list_page_title": "Hiển thị trường số lượng tối thiểu ở trang danh sách hàng hóa",
+          "menu_item_min_quantity_color_title": "Màu sắc cho hàng hóa cần đặt hàng lại",
+          "menu_item_show_low_stock_alert_title": "Hiển thị thông báo hết hàng",
+        "menu_item_show_low_stock_alert_desc": "Khi bạn mở ứng dụng, chúng tôi sẽ gửi thông báo về việc hết hàng",
+      "menu_item_my_company": "Thông tin công ty",
       "menu_item_backup_and_restore" : "Back up and restore",
 
   "menu_item_language_title": "Ngôn ngữ",
@@ -202,7 +209,8 @@
 
   "action_search": "Tìm kiếm",
   "action_sort_by": "Sắp xếp",
-  "action_export": "Xuất CSV",
+  "action_export_csv": "Xuất CSV",
+  "action_export_pdf": "Xuất PDF",
   "action_batch_scan": "Quét mã vạch liên tục",
   "action_help": "Trợ giúp",
 
@@ -215,6 +223,7 @@
   "report_type_outbound_payments": "Giao dịch chi",
   "report_type_list_of_supplier_payments": "Giao dịch theo nhà cung cấp",
   "report_type_list_of_customer_payments": "Giao dịch theo khách hàng",
+  "report_type_reorder": "Báo cáo cần đặt hàng",
   "select_date_range": "Chọn khoảng thời gian",
   "report_type_current_month": "Tháng hiện tại",
   "report_type_last_30_days": "30 ngày trước",
@@ -222,6 +231,7 @@
   "report_type_current_year": "Năm hiện tại",
   "report_type_custom": "Tự Chọn",
   "report_detail_header": "Từ ngày %s đến ngày %s cửa hàng %s",
+  "report_detail_store_only_header": "Cửa hàng %s",
 
   "select_payment_status": "Chọn trạng thái thanh toán",
   "payment_status_unpaid": "Chưa trả",
@@ -331,16 +341,19 @@
   "save_file_successful": "Lưu tệp thành công tại %s",
   "save_file_failed": "Lưu tệp thất bại tại %s",
    "no_group": "Không nhóm",
-               "save_wallet_title": "Lưu Ví",
-                "action_add_wallet": "Thêm Ví",
-                  "total_balance": "Tổng số dư",
-                     "title_wallet": "Ví Tiền",
-                     "categories": "Danh mục",
-                     "title_save_category": "Lưu danh mục",
-                        "inbound_categories": "Danh mục thu",
-                                                          "outbound_categories": "Danh mục chi",
-                                                          "select_object_type": "Chọn loại đối tượng",
-                                                                 "title_report_list_of_wallet": "Danh sách ví tiền",
-                                                                   "hint_search_by": "Tìm kiếm..."
+   "save_wallet_title": "Lưu Ví",
+    "action_add_wallet": "Thêm Ví",
+      "total_balance": "Tổng số dư",
+         "title_wallet": "Ví Tiền",
+         "categories": "Danh mục",
+         "title_save_category": "Lưu danh mục",
+            "inbound_categories": "Danh mục thu",
+  "outbound_categories": "Danh mục chi",
+  "select_object_type": "Chọn loại đối tượng",
+         "title_report_list_of_wallet": "Danh sách ví tiền",
+           "hint_search_by": "Tìm kiếm...",
+           "field_my_company_name": "Tên công ty",
+           "field_reorder": "Tái đặt hàng"
+
 
 }

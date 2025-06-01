@@ -16,12 +16,14 @@ import '../common/helpers/injection.container.dart';
 import 'firebase_options.dart';
 
 late List<CameraDescription> cameras;
-Storage storage = getIt<Storage>();
+//Storage storage = getIt<Storage>();
+late Storage storage;
 bool justLogin = false;
 late String initialRoute;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  configureDependencies();
+  await configureDependencies();
+  storage = getIt<Storage>();
   await storage.init();
   cameras = await availableCameras();
   await Firebase.initializeApp(
@@ -136,85 +138,21 @@ class MyAppState extends State<MyApp>{
     });
   }
 
-  ThemeData _buildTheme(brightness) {
-    var baseTheme = ThemeData(
-        fontFamily: 'Roboto',
-        brightness: brightness,
-        cardTheme: CardTheme(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8), // Rounded corners
-          ),
-        ),
-        textTheme: TextTheme(
-          titleSmall: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-          titleMedium: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
-          titleLarge: TextStyle(fontSize: 19.0, fontWeight: FontWeight.bold),
-        ),
-        checkboxTheme: CheckboxThemeData(
-          fillColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return Colors.blue.shade700; // Checked color
-            }
-            return Colors.white; // Unchecked color
-          }),
-          checkColor: WidgetStateProperty.all(Colors.white),
-          side:
-              BorderSide(color: Colors.grey.shade700), // Border when unchecked
-        ),
-        colorScheme: ColorScheme.fromSeed(
-          onSurface: Colors.black,
-          surface: Colors.white,
-          onPrimary: Colors.blue.shade700,
-          seedColor: Colors.blue.shade700,
-          brightness: Brightness.light,
-        ),
-        switchTheme: SwitchThemeData(
-          thumbColor: WidgetStateProperty.resolveWith<Color?>((states) {
-            if (states.contains(WidgetState.selected)) {
-              return Colors.white;
-            }
-            return Colors.grey;
-          }),
-          trackColor: WidgetStateProperty.resolveWith<Color?>((states) {
-            if (states.contains(WidgetState.selected)) {
-              return Colors.blue.shade700;
-            }
-            return Colors.grey.shade100;
-          }),
-        ),
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: AppBarTheme(
-          iconTheme: IconThemeData(color: Colors.black),
-          titleTextStyle: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.blue,
-          ),
-        ),
-        primaryColor: Colors.blue,
-        primarySwatch: Colors.blue,
-        inputDecorationTheme: InputDecorationTheme(
-          isDense: true,
-        ));
-
-    return baseTheme.copyWith(
-        //textTheme: GoogleFonts.robotoTextTheme(baseTheme.textTheme),
-        //textTheme: GoogleFonts.montserratTextTheme(baseTheme.textTheme)
-        //  textTheme: GoogleFonts.gamjaFlowerTextTheme(baseTheme.textTheme),
-
-        );
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.light().copyWith(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.blue.shade700,
+          primary: Colors.blue.shade700,
+          onPrimary: Colors.white,
+            //brightness: Brightness.light
+        ),
       ),
       darkTheme: ThemeData.dark().copyWith(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-            primary: Colors.blue,
+            seedColor: Colors.blue.shade700,
+            primary: Colors.blue.shade700,
             onPrimary: Colors.white,
             brightness: Brightness.dark),
       ),

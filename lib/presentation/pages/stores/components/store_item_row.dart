@@ -13,14 +13,14 @@ class StoreItemRow extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Card(
-
+      color: isSelection && item.id == storage.getSelectedStoreId() ? Colors.blue[50] : null,
       margin: EdgeInsets.only(left: 16, right: 16, top: 16),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
         onTap: () => onPressed(item),
         onLongPress: () => onLongPressed(item),
         child: ListTile(
-          tileColor: isSelection && item.id == storage.getSelectedStoreId() ? Colors.blue[50] : null,
+          //tileColor: isSelection && item.id == storage.getSelectedStoreId() ? Colors.blue[50] : null,
           leading: Icon(UIConstants.storeIconData, size: 24,color: Theme.of(context).colorScheme.primary),
           title: Text(item.name, style:
               Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.primary)),

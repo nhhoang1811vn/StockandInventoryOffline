@@ -18,7 +18,7 @@ class DocumentTransactionItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+      //margin: EdgeInsets.only(left: 16, right: 16, top: 16),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
         onTap: () => onTransactionPressed(item),

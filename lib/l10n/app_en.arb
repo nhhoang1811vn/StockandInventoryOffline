@@ -45,6 +45,8 @@
     "field_bar_code": "Barcode",
     "field_quantity": "Quantity",
     "field_quantity_short_form": "Quan",
+    "field_min_quantity": "Minimum quantity",
+    "field_min_quantity_short_form": "Min.",
     "field_total_short_form": "Total",
     "field_supplier": "Supplier",
     "field_customer": "Customer",
@@ -94,7 +96,7 @@
     "in_stock_text": "In Stock: %s",
     "menu_item_invite_friend_header": "Invite friends",
     "send_mail_invite_friend_subject": "Invitation using App",
-    "send_mail_invite_friend_content": "This is a good application, I use it everyday and recommend it for you. \nDownload link: https://play.google.com/store/apps/details?id=com.ssteam.good_manager",
+    "send_mail_invite_friend_content": "This is a good application, I use it everyday and recommend it for you. \nDownload for Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter\nDownload for iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293",
     "menu_item_write_review_header": "Write a review",
     "menu_item_write_review_description": "Share your review to everyone",
     "menu_item_feedback_header": "Feedback",
@@ -126,7 +128,12 @@
     "menu_item_view" : "Display",
     "menu_item_barcode_scanner": "Barcode scanner",
     "menu_item_minimum_quantity": "Minimum quantity",
-    "menu_item_my_store": "My Store",
+    "menu_item_show_min_quantity_items_page_title": "Show minimum quantity in item's page",
+    "menu_item_show_min_quantity_list_page_title": "Show minimum quantity in list page",
+    "menu_item_min_quantity_color_title": "Color for goods needing reorder",
+    "menu_item_show_low_stock_alert_title": "Show Low Stock Alerts",
+    "menu_item_show_low_stock_alert_desc": "When you open the app, we will send you the notification to warning you",
+    "menu_item_my_company": "Company Information",
     "menu_item_backup_and_restore" : "Back up and restore",
 
     "menu_item_language_title": "Language",
@@ -173,7 +180,8 @@
     "error_same_barcode": "Error: same bar code",
     "action_search": "Search",
     "action_sort_by": "Sort by",
-    "action_export": "Export",
+    "action_export_csv": "Export CSV",
+    "action_export_pdf": "Export PDF",
     "action_batch_scan": "Batch scan",
     "action_help": "Help",
     "report_type_goods": "List of Goods",
@@ -185,7 +193,8 @@
       "report_type_outbound_payments": "Outbound payments",
 
     "report_type_list_of_supplier_payments": "Payments by Suppliers",
-     "report_type_list_of_customer_payments": "Payments by Customer",
+    "report_type_list_of_customer_payments": "Payments by Customer",
+    "report_type_reorder": "Reorder",
 
     "select_date_range": "Select date range",
     "report_type_current_month": "Current month",
@@ -194,6 +203,7 @@
     "report_type_current_year": "Current year",
     "report_type_custom": "Custom",
     "report_detail_header": "From %s to %s store %s",
+    "report_detail_store_only_header": "Store %s",
     "select_payment_status": "Select payment status",
     "payment_status_unpaid": "Unpaid",
     "payment_status_partial": "Partial",
@@ -304,7 +314,9 @@
                                           "select_object_type": "Select object types",
 
                                          "title_report_list_of_wallet": "List of wallets",
-                                         "hint_search_by": "Search..."
+                                         "hint_search_by": "Search...",
+                                         "field_my_company_name": "Company name",
+                                         "field_reorder": "Reorder"
 
 
 }

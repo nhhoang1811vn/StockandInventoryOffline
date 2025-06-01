@@ -290,21 +290,23 @@ class HomePageState extends State<HomePage> {
   }
 
   void openSaveIncomingDocument() async {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = context.read<HomeCubit>().getSelectedStoreId();
+    String autoDocumentNo = context.read<HomeCubit>().getAutoDocumentNo();
     Document item = Document();
     item.storeId = storeId;
     item.type = DocumentType.incoming;
-    item.name = AppLocalizations.of(context)!.document_name_no + storage.getAutoDocumentNo(storeId).toString();
+    item.name = AppLocalizations.of(context)!.document_name_no + autoDocumentNo;
     Navigator.of(context).pushNamed(Pages.save_document,
         arguments: {'item': item}).then((value) => context.read<HomeCubit>().initState());
   }
 
   void openSaveOutgoingDocument() async {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = context.read<HomeCubit>().getSelectedStoreId();
+    String autoDocumentNo = context.read<HomeCubit>().getAutoDocumentNo();
     Document item = Document();
     item.storeId = storeId;
     item.type = DocumentType.outgoing;
-    item.name = AppLocalizations.of(context)!.document_name_no + storage.getAutoDocumentNo(storeId).toString();
+    item.name = AppLocalizations.of(context)!.document_name_no + autoDocumentNo;
     Navigator.of(context).pushNamed(Pages.save_document,
         arguments: {'item': item}).then((value) => context.read<HomeCubit>().initState());
   }
@@ -383,7 +385,7 @@ class HomePageState extends State<HomePage> {
                 )),
                 OutlinedButton(
                   onPressed: () {
-                    int storeId = storage.getSelectedStoreId();
+                    int storeId = context.read<HomeCubit>().getSelectedStoreId();
                     Wallet item = Wallet();
                     item.color = Colors.blue.toARGB32();
                     item.storeId = storeId;

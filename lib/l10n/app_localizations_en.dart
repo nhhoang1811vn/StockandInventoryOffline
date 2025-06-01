@@ -141,6 +141,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get field_quantity_short_form => 'Quan';
 
   @override
+  String get field_min_quantity => 'Minimum quantity';
+
+  @override
+  String get field_min_quantity_short_form => 'Min.';
+
+  @override
   String get field_total_short_form => 'Total';
 
   @override
@@ -288,7 +294,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get send_mail_invite_friend_subject => 'Invitation using App';
 
   @override
-  String get send_mail_invite_friend_content => 'This is a good application, I use it everyday and recommend it for you. \nDownload link: https://play.google.com/store/apps/details?id=com.ssteam.good_manager';
+  String get send_mail_invite_friend_content => 'This is a good application, I use it everyday and recommend it for you. \nDownload for Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter\nDownload for iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
 
   @override
   String get menu_item_write_review_header => 'Write a review';
@@ -384,7 +390,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menu_item_minimum_quantity => 'Minimum quantity';
 
   @override
-  String get menu_item_my_store => 'My Store';
+  String get menu_item_show_min_quantity_items_page_title => 'Show minimum quantity in item\'s page';
+
+  @override
+  String get menu_item_show_min_quantity_list_page_title => 'Show minimum quantity in list page';
+
+  @override
+  String get menu_item_min_quantity_color_title => 'Color for goods needing reorder';
+
+  @override
+  String get menu_item_show_low_stock_alert_title => 'Show Low Stock Alerts';
+
+  @override
+  String get menu_item_show_low_stock_alert_desc => 'When you open the app, we will send you the notification to warning you';
+
+  @override
+  String get menu_item_my_company => 'Company Information';
 
   @override
   String get menu_item_backup_and_restore => 'Back up and restore';
@@ -519,7 +540,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get action_sort_by => 'Sort by';
 
   @override
-  String get action_export => 'Export';
+  String get action_export_csv => 'Export CSV';
+
+  @override
+  String get action_export_pdf => 'Export PDF';
 
   @override
   String get action_batch_scan => 'Batch scan';
@@ -555,6 +579,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get report_type_list_of_customer_payments => 'Payments by Customer';
 
   @override
+  String get report_type_reorder => 'Reorder';
+
+  @override
   String get select_date_range => 'Select date range';
 
   @override
@@ -574,6 +601,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get report_detail_header => 'From %s to %s store %s';
+
+  @override
+  String get report_detail_store_only_header => 'Store %s';
 
   @override
   String get select_payment_status => 'Select payment status';
@@ -898,4 +928,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hint_search_by => 'Search...';
+
+  @override
+  String get field_my_company_name => 'Company name';
+
+  @override
+  String get field_reorder => 'Reorder';
 }

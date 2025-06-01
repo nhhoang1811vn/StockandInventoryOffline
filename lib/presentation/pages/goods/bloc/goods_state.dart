@@ -18,5 +18,8 @@ class GoodsState with _$GoodsState {
     @Default(0) double quantityTotal,
     @Default(0) double purchasePriceTotal,
     @Default(0) double salePriceTotal,
+
+    @Default(true) bool showMinQuantity,
+    Color? minQuantityColor
   }) = _Initial;
 }

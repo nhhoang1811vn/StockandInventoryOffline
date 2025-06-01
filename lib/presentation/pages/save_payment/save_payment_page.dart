@@ -266,17 +266,6 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                                   minLines: 2,
                                   onChanged: (value) => context.read<SavePaymentCubit>().descriptionChanged(value),
                                   keyboardType: TextInputType.name),
-                              // SizedBox(
-                              //   height: 16,
-                              // ),
-                              // AppTextField(
-                              //     controller: documentNameController,
-                              //     suffix: Icon(Icons.keyboard_arrow_down, size: 16),
-                              //     labelText: AppLocalizations.of(context)!.label_select_document_no,
-                              //     hintText: AppLocalizations.of(context)!.hint_select,
-                              //     keyboardType: TextInputType.none,
-                              //     readOnly: true,
-                              //     onTapped: () => {context.read<SavePaymentCubit>().onDocumentNameClicked()}),
                               SizedBox(height: 16),
                               AppTextField(
                                 controller: dateController,

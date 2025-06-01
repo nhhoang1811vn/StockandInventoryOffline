@@ -36,6 +36,10 @@ class Pages {
 
   static const String settings_general = "/settings_general";
   static const String settings_view = "/settings_view";
+  static const String settings_minimum_quantity = "/settings_minimum_quantity";
+  static const String settings_data = "/settings_data";
+  static const String settings_my_company = "/settings_my_company";
+
 
   static const String select_group = '/select_group';
   static const String barcode_scanner = "/barcode_scanner";

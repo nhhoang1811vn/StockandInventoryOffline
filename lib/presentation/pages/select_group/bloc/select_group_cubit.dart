@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/main.dart';
 import 'package:injectable/injectable.dart';
 
@@ -13,8 +14,9 @@ part 'select_group_state.dart';
 @injectable
 class SelectGroupCubit extends Cubit<SelectGroupState> {
   final GroupsUseCases groupsUseCase;
+  final Storage storage;
 
-  SelectGroupCubit({required this.groupsUseCase})
+  SelectGroupCubit({required this.groupsUseCase, required this.storage})
       : super(SelectGroupState.initial(state: InitialState()));
 
   select(Group? item) {

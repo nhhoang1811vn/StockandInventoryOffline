@@ -33,10 +33,9 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
   Widget _buildBody(SettingsGeneralState state) {
     return ListView(padding: EdgeInsets.all(16), children: [
       Card(
+          clipBehavior: Clip.antiAlias,
           child: Column(children: [
-      SizedBox(
-        height: 4,
-      ),
+
             ListTile(
               leading: Icon(FontAwesomeIcons.language),
               title: Text(
@@ -55,8 +54,9 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
               title: Text(
                   AppLocalizations.of(context)!.menu_item_passcode_title),
               subtitle:
-              Text(AppLocalizations.of(context)!.menu_item_passcode_desc),
+              Text(AppLocalizations.of(context)!.menu_item_passcode_title),
               trailing: Switch(
+
                   value: state.enablePasscode,
                   onChanged: (value) {
                     _handlePasscodeToggle(context, value, state.passcode);
@@ -65,47 +65,7 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
                 _handlePasscodeToggle(context, !state.enablePasscode, state.passcode);
               },
             ),
-            SizedBox(
-              height: 4,
-            ),
     ]))]);
-  }
-  void _showThemeDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Choose Theme'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text('System'),
-              onTap: () {
-                MyAppState? state = context.findAncestorStateOfType<MyAppState>();
-                state?.changeTheme(ThemeMode.system);
-                Navigator.of(context).pop();
-              },
-            ),
-            ListTile(
-              title: Text('Light'),
-              onTap: () {
-                MyAppState? state = context.findAncestorStateOfType<MyAppState>();
-                state?.changeTheme(ThemeMode.light);
-                Navigator.of(context).pop();
-              },
-            ),
-            ListTile(
-              title: Text('Dark'),
-              onTap: () {
-                MyAppState? state = context.findAncestorStateOfType<MyAppState>();
-                state?.changeTheme(ThemeMode.dark);
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ),
-      ),
-    );
   }
   void showSelectLanguageDialog(BuildContext context) async {
     String currentCode = storage.getLanguageCode();

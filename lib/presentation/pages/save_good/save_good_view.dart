@@ -35,7 +35,11 @@ class SaveGoodPageState extends State<SaveGoodPage> {
     this.document,
     this.transaction,
   });
-
+  @override
+  void initState() {
+    super.initState();
+    context.read<SaveGoodCubit>().initState();
+  }
 
   @override
   Widget build(BuildContext context) {

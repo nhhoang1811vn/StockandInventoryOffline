@@ -10,6 +10,7 @@ import 'package:good_manager/presentation/widgets/snackbar_widgets.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../domain/entities/stores_setting.dart';
+import '../../widgets/search_bar_widget.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
@@ -27,15 +28,10 @@ class StoresPage extends StatefulWidget {
 }
 
 class StoresPageState extends State<StoresPage> {
-
-  final TextEditingController searchTextController = TextEditingController();
   final FocusNode searchTextFocusNode = FocusNode();
   @override
   void initState() {
     super.initState();
-    //if (widget.isSelection){
-    //  searchTextFocusNode.requestFocus();
-    //}
     context.read<StoresCubit>().initState(widget.isSelection);
   }
   @override
@@ -103,7 +99,19 @@ class StoresPageState extends State<StoresPage> {
   }
   Widget _buildContent(StoresState data){
     List<Widget> children = [
-      Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
+      Visibility(
+        visible: data.showSearchBar,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 16, top : 16),
+          child: SearchBarWidget(
+            onTextChanged: (newValue) {
+              context.read<StoresCubit>().searchTextChanged(newValue);
+            },
+            focusNode: searchTextFocusNode,
+          ),
+        ),
+      ),
+      //Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
       Expanded(
           child: Stack(children: [
             Visibility(
@@ -119,34 +127,7 @@ class StoresPageState extends State<StoresPage> {
     return Column(children: children);
   }
 
-  Widget _buildSearchBar(StoresState data) => Padding(
-        padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-    child: Container(
-       decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8), // Rounded corners
-            ),
-      child: ListTile(
-        title: TextField(
-          focusNode: searchTextFocusNode,
-          decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.hint_search_by, border: InputBorder.none),
-          onChanged: context.read<StoresCubit>().searchTextChanged,
-          controller: searchTextController,
-        ),
-        trailing: Visibility(
-          child: IconButton(
-              icon: Icon(UIConstants.cancelIconData),
-              onPressed: (){
-                searchTextController.text = "";
-                context.read<StoresCubit>().resetSearchText();
-              }
-          ),
-          visible: data.textSearch.isNotEmpty,
-        ),
-      ),
-    ),
-  );
+
 
 
   Widget get emptyView => Column(
@@ -162,7 +143,6 @@ class StoresPageState extends State<StoresPage> {
       ]);
 
   Widget _buildListView(StoresState data) {
-    //return GridView.builder(gridDelegate: gridDelegate, itemBuilder: itemBuilder)
     return  ListView.builder(
         itemBuilder: (BuildContext context, index) {
           Store item = data.items[index];
@@ -227,7 +207,6 @@ class StoresPageState extends State<StoresPage> {
   }
   Widget _buildSearchMenu(StoresState state) {
     return IconButton(onPressed: () {
-      searchTextController.text = "";
       if (!state.showSearchBar) {
         searchTextFocusNode.requestFocus();
       }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../main.dart';
 
@@ -13,6 +14,30 @@ class SettingsViewPage extends StatefulWidget {
 }
 
 class SettingsViewPageState extends State<SettingsViewPage> {
+  String _subTitle = "";
+  @override
+  void initState(){
+    super.initState();
+    fetch();
+  }
+  Future<void> fetch() async{
+    final prefs = await SharedPreferences.getInstance();
+    final themeString = prefs.getString("user_theme_mode");
+    switch (themeString) {
+      case 'light':
+        _subTitle = "Light";
+        break;
+      case 'dark':
+        _subTitle = "Dark";
+        break;
+      case 'system':
+      default:
+        _subTitle = "system";
+    }
+    setState(() {
+
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,22 +45,20 @@ class SettingsViewPageState extends State<SettingsViewPage> {
       body: _buildBody(),
     );
   }
-
   Widget _buildBody() {
+
     return ListView(padding: EdgeInsets.all(16), children: [
       Card(
+          clipBehavior: Clip.antiAlias,
           child: Column(children: [
-      SizedBox(
-        height: 4,
-      ),
+
       ListTile(
         leading: Icon(Icons.brightness_6),
-        title: Text(
-            "AppTheme"),
+        title: Text("AppTheme"),
+        subtitle: Text(_subTitle),
         onTap: () => _showThemeDialog(context),
         trailing: Icon(Icons.navigate_next),
       ),
-
     ]))]);
   }
   void _showThemeDialog(BuildContext context) {
@@ -52,6 +75,7 @@ class SettingsViewPageState extends State<SettingsViewPage> {
                 MyAppState? state = context.findAncestorStateOfType<MyAppState>();
                 state?.changeTheme(ThemeMode.system);
                 Navigator.of(context).pop();
+                fetch();
               },
             ),
             ListTile(
@@ -60,6 +84,7 @@ class SettingsViewPageState extends State<SettingsViewPage> {
                 MyAppState? state = context.findAncestorStateOfType<MyAppState>();
                 state?.changeTheme(ThemeMode.light);
                 Navigator.of(context).pop();
+                fetch();
               },
             ),
             ListTile(
@@ -68,6 +93,7 @@ class SettingsViewPageState extends State<SettingsViewPage> {
                 MyAppState? state = context.findAncestorStateOfType<MyAppState>();
                 state?.changeTheme(ThemeMode.dark);
                 Navigator.of(context).pop();
+                fetch();
               },
             ),
           ],

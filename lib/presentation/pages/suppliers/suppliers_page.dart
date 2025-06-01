@@ -9,6 +9,7 @@ import 'package:good_manager/presentation/pages/suppliers/widgets/supplier_item_
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../widgets/search_bar_widget.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
@@ -24,14 +25,10 @@ class SuppliersPage extends StatefulWidget {
 }
 
 class SuppliersPageState extends State<SuppliersPage> {
-  final TextEditingController searchTextController = TextEditingController();
   final FocusNode searchTextFocusNode = FocusNode();
   @override
   void initState() {
     super.initState();
-    //if (widget.isSelection){
-    //  searchTextFocusNode.requestFocus();
-    //}
     context.read<SuppliersCubit>().initState(widget.isSelection);
   }
   
@@ -102,7 +99,20 @@ class SuppliersPageState extends State<SuppliersPage> {
   Widget _buildContent(SuppliersState data){
     List<Widget> children = [
       SelectedStoreView(),
-       Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
+      Visibility(
+        visible: data.showSearchBar,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 16, top : 16),
+          child: SearchBarWidget(
+            onTextChanged: (newValue) {
+              context.read<SuppliersCubit>().searchTextChanged(newValue);
+            },
+            focusNode: searchTextFocusNode,
+          ),
+        ),
+      ),
+
+      // Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
        Expanded(
                 child: Stack(children: [
                   Visibility(
@@ -117,37 +127,6 @@ class SuppliersPageState extends State<SuppliersPage> {
     ];
     return Column(children: children);
   }
-
-  Widget _buildSearchBar(SuppliersState data) => Padding(
-      padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-    child: Container(
-      decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8), // Rounded corners
-                ),
-      child: ListTile(
-        title: TextField(
-          focusNode: searchTextFocusNode,
-          decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.hint_search_by, border: InputBorder.none),
-          onChanged: context.read<SuppliersCubit>().searchTextChanged,
-          controller: searchTextController,
-        ),
-        trailing: Visibility(
-          child: IconButton(
-            icon: Icon(UIConstants.cancelIconData),
-            onPressed: (){
-              searchTextController.text = "";
-              context.read<SuppliersCubit>().resetSearchText();
-            }
-          ),
-          visible: data.textSearch.isNotEmpty,
-        ),
-      ),
-    ),
-  );
-
-
   Widget get emptyView => Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -233,7 +212,6 @@ class SuppliersPageState extends State<SuppliersPage> {
   }
   Widget _buildSearchMenu(SuppliersState state) {
     return IconButton(onPressed: () {
-      searchTextController.text = "";
       if (!state.showSearchBar) {
         searchTextFocusNode.requestFocus();
       }

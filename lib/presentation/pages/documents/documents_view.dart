@@ -10,6 +10,7 @@ import 'package:good_manager/presentation/pages/documents/components/document_da
 import 'package:good_manager/presentation/pages/documents/document_ui.dart';
 import 'package:good_manager/presentation/pages/documents/sort_documents_dialog.dart';
 import 'package:sprintf/sprintf.dart';
+import '../../widgets/search_bar_widget.dart';
 import '../../widgets/selected_store_view.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
@@ -27,7 +28,8 @@ class DocumentsPage extends StatefulWidget {
 
 class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final TextEditingController searchTextController = TextEditingController();
+  //final TextEditingController searchTextController = TextEditingController();
+  final FocusNode searchTextFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -131,11 +133,12 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
   }
 
   void _onAddDocumentWithType(DocumentType type) async {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = context.read<DocumentsCubit>().getSelectedStoreId();
+    String autoDocumentNo = context.read<DocumentsCubit>().getAutoDocumentNo();
     Document item = Document();
     item.storeId = storeId;
     item.type = type;
-    item.name = AppLocalizations.of(context)!.document_name_no + storage.getAutoDocumentNo(storeId).toString();
+    item.name = AppLocalizations.of(context)!.document_name_no + autoDocumentNo;
     await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
     context.read<DocumentsCubit>().loadItems();
   }
@@ -151,7 +154,19 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
           child: Column(
             children: [
               SelectedStoreView(),
-              Visibility(child: _buildSearchBar(context, state), visible: state.showSearchBar),
+              Visibility(
+                visible: state.showSearchBar,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16, top : 16),
+                  child: SearchBarWidget(
+                    onTextChanged: (newValue) {
+                      context.read<DocumentsCubit>().onSearchTextChanged(newValue);
+                    },
+                    focusNode: searchTextFocusNode,
+                  ),
+                ),
+              ),
+              //Visibility(child: _buildSearchBar(context, state), visible: state.showSearchBar),
               TabBar(
                 controller: _tabController,
                 indicatorColor: Theme.of(context).colorScheme.primary,
@@ -194,7 +209,10 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
   Widget _buildSearchMenu(DocumentsState state) {
     return IconButton(
         onPressed: () {
-          searchTextController.text = "";
+          if (!state.showSearchBar) {
+            searchTextFocusNode.requestFocus();
+          }
+          //searchTextController.text = "";
           context.read<DocumentsCubit>().onSearchMenuClicked();
         },
         icon: Icon(Icons.search,
@@ -219,36 +237,6 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
         },
         icon: Icon(Icons.help));
   }
-
-  Widget _buildSearchBar(BuildContext context, DocumentsState state) => Container(
-    color: Colors.grey.shade200,
-    child: Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: Container(
-         decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8), // Rounded corners
-              ),
-        child: ListTile(
-                title: TextField(
-                  decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!.hint_search_by, border: InputBorder.none),
-                  onChanged: context.read<DocumentsCubit>().onSearchTextChanged,
-                  controller: searchTextController,
-                ),
-                trailing: Visibility(
-                  child: IconButton(
-                      icon: Icon(UIConstants.cancelIconData),
-                      onPressed: () {
-                        searchTextController.text = "";
-                        context.read<DocumentsCubit>().resetSearchText();
-                      }),
-                  visible: state.textSearch.isNotEmpty,
-                ),
-        ),
-      ),
-    ),
-  );
 
   void onPressedDocument(Document item) async {
     await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});

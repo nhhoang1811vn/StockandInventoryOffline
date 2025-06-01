@@ -24,7 +24,7 @@ class SelectedStoreViewState extends State<SelectedStoreView> {
         child: Text(
           storeName,
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.bold),
         ),
       ),
     );

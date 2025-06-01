@@ -43,11 +43,6 @@ class DBHelper {
 
   Future<Database> get db async {
     if (_db != null) return _db!;
-    // if (Platform.isWindows) {
-    //   _db = await initDBWindow();
-    // }else{
-    //   _db = await initDb();
-    // }
     _db = await initDb();
     return _db!;
   }
@@ -94,6 +89,9 @@ class DBHelper {
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
       "DROP TABLE $PAYMENTS_CATEGORY_TABLE_NAME",
       "CREATE TABLE IF NOT EXISTS $PAYMENTS_CATEGORY_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,type INTEGER NOT NULL, icon TEXT)"
+    ],
+    5: [
+      "ALTER TABLE $GOODS_TABLE_NAME ADD COLUMN minQuantity REAL"
     ]
   };
 
@@ -113,7 +111,7 @@ class DBHelper {
 
   initDb() async {
     String path = await PathUtils().getDatabasePath();
-    var theDb = await openDatabase(path, version: 4, onCreate: _onCreate, onUpgrade: _onUpgrade);
+    var theDb = await openDatabase(path, version: 5, onCreate: _onCreate, onUpgrade: _onUpgrade);
     return theDb;
   }
 
@@ -176,7 +174,7 @@ class DBHelper {
             ""
                 "FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)");
     await db.execute(
-        "CREATE TABLE IF NOT EXISTS $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, purchasePrice REAL, salePrice REAL,  storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
+        "CREATE TABLE IF NOT EXISTS $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, purchasePrice REAL, salePrice REAL,  storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, minQuantity REAL, createdDate INTEGER, updatedDate INTEGER, " +
             "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE," +
             "FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)");
 
@@ -435,7 +433,9 @@ class DBHelper {
     var dbClient = await db;
     var list = await dbClient.rawQuery('SELECT * FROM $GOODS_TABLE_NAME where id = ?', [id]);
     if (list.isNotEmpty) {
-      return Good.map(list.first);
+      Good good = Good.map(list.first);
+      good.files = await getFiles(good.id!);
+      return good;
     }
     throw Exception("No Good");
   }

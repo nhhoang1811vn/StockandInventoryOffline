@@ -80,11 +80,13 @@ class SelectDocumentsPageState extends State<SelectDocumentsPage> {
   }
 
   void _onAddDocumentWithType(DocumentType type) async {
-    int storeId = storage.getSelectedStoreId();
+    //int storeId = storage.getSelectedStoreId();
+    int storeId = context.read<SelectDocumentCubit>().getSelectedStoreId();
+    int autoDocumentNo = context.read<SelectDocumentCubit>().getAutoDocumentNo(storeId);
     Document item = Document();
     item.storeId = storeId;
     item.type = type;
-    item.name = AppLocalizations.of(context)!.document_name_no + storage.getAutoDocumentNo(storeId).toString();
+    item.name = AppLocalizations.of(context)!.document_name_no + autoDocumentNo.toString();
     await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
     context.read<SelectDocumentCubit>().loadItems();
   }
