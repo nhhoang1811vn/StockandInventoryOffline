@@ -3,7 +3,6 @@ import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/repositories/groups_repositories.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../main.dart';
 import '../storage.dart';
 
 @Injectable(as: GroupsRepository)

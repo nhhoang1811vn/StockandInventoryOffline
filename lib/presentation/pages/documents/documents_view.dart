@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
-import 'package:good_manager/main.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/documents/components/document_date_row.dart';
 import 'package:good_manager/presentation/pages/documents/document_ui.dart';
 import 'package:good_manager/presentation/pages/documents/sort_documents_dialog.dart';
 import 'package:sprintf/sprintf.dart';
+
 import '../../widgets/search_bar_widget.dart';
 import '../../widgets/selected_store_view.dart';
 import '../base/base_state.dart';

@@ -1,7 +1,5 @@
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/my_company.dart';
 import 'package:injectable/injectable.dart';

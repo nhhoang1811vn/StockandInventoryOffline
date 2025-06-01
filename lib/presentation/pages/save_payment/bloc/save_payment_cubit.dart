@@ -12,7 +12,6 @@ import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
 import 'package:good_manager/domain/usecases/payment_category/payment_category_usercases.dart';
 import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart';
 import 'package:good_manager/domain/usecases/wallets/wallet_usecases.dart';
-import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
 

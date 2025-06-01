@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/payment.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 
 
 class SelectDestObjectWidget extends StatefulWidget{

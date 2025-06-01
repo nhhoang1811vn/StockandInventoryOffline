@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/goods_setting.dart';
 import 'package:good_manager/domain/entities/group.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/list_settings_dialog.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/sort_goods_dialog.dart';
 import 'package:good_manager/presentation/style_size.dart';
-import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:sprintf/sprintf.dart';
+
 import '../../widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
 import '../../widgets/search_bar_widget.dart';
 import '../../widgets/snackbar_widgets.dart';

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/main.dart';
 
-import '../constants.dart';
-
 class SelectedStoreView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {

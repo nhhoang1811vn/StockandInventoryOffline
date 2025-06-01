@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/main/main_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sprintf/sprintf.dart';
@@ -20,7 +20,6 @@ import '../../markdown/md_provider_factory.dart';
 import '../../widgets/logo_app_bar.dart';
 import '../../widgets/select_message_type_dialog.dart';
 import '../pages.dart';
-import '../settings/components/change_languages_dialog.dart';
 
 class MorePage extends StatefulWidget {
   @override

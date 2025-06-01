@@ -1,19 +1,7 @@
-import 'dart:io';
-
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 //import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
-import 'package:good_manager/common/path_utils.dart';
-import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/widgets/snackbar_widgets.dart';
-import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../pages.dart';
 

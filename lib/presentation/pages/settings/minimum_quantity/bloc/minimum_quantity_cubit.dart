@@ -7,7 +7,6 @@ import 'package:good_manager/domain/entities/minimum_quantity_settings.dart';
 import 'package:injectable/injectable.dart';
 
 part 'minimum_quantity_cubit.freezed.dart';
-
 part 'minimum_quantity_state.dart';
 
 @injectable

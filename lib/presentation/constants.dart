@@ -3,7 +3,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/main.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
 
 class Palette {
   static const Color green = Color(0xFF54b849);

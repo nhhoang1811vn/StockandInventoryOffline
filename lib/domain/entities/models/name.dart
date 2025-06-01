@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:formz/formz.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 
 // Define input validation errors
 enum NameInputError { empty }

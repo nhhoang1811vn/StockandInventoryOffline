@@ -8,7 +8,6 @@ import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/entities/wallet.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
 import 'package:good_manager/domain/usecases/wallets/wallet_usecases.dart';
-import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:injectable/injectable.dart';
 

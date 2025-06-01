@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 
 import '../../style_size.dart';
 

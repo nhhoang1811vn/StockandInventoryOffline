@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/good.dart';
@@ -15,6 +14,7 @@ import 'package:good_manager/domain/usecases/groups/groups_usecases.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
 import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart';
 import 'package:good_manager/domain/usecases/wallets/wallet_usecases.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
