@@ -4,6 +4,9 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:good_manager/presentation/pages/settings/minimum_quantity/bloc/minimum_quantity_cubit.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../markdown/md_provider_factory.dart';
+import '../../help_content.dart';
+import '../../pages.dart';
 
 class MinimumQuantityPage extends StatefulWidget {
   MinimumQuantityPage({Key? key}) : super(key: key);
@@ -28,11 +31,22 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
         builder: (BuildContext context, MinimumQuantityState state) {
           return Scaffold(
             appBar: new AppBar(
+              actions: [_buildHelpMenu()],
                 title: new Text(
                     AppLocalizations.of(context)!.menu_item_minimum_quantity)),
             body: _buildBody(state),
           );
         });
+  }
+  Widget _buildHelpMenu() {
+    return IconButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed(Pages.help, arguments: {
+            "title": AppLocalizations.of(context)!.menu_item_minimum_quantity,
+            "content": MDProviderFactory.get().getHelpText(HelpType.MIN_QUAN)
+          });
+        },
+        icon: Icon(Icons.help));
   }
 
   Widget _buildBody(MinimumQuantityState state) {

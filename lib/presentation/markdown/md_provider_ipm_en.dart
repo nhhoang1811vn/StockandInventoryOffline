@@ -16,7 +16,9 @@ class MDProviderIpmEN extends MDProvider{
         return MarkdownResourceEN.helpSupplierCustomers;
       case HelpType.PAYMENTS:
         return MarkdownResourceEN.helpPayments;
-      }
+      case HelpType.MIN_QUAN:
+        return MarkdownResourceEN.helpMinQuan;
+    }
   }
 
   @override

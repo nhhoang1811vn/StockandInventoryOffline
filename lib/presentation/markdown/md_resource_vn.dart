@@ -172,4 +172,34 @@ Có hai loại:
 Hãy đảm bảo nhập chính xác để theo dõi tài chính hiệu quả! ✅  
 
   """;
+
+ static const String helpMinQuan = """
+  ## Hướng Dẫn Sử Dụng Số Lượng Tối Thiểu  
+
+Trang này giúp bạn quản lý tồn kho bằng cách thiết lập **Số lượng tối thiểu** cho từng sản phẩm.  
+
+### 📦 Số Lượng Tối Thiểu Là Gì?  
+- **Số lượng tối thiểu** là mức tồn kho thấp nhất mà bạn muốn duy trì.  
+- Khi tồn kho giảm xuống dưới mức này, sản phẩm sẽ xuất hiện trong **Báo cáo cần đặt hàng**.  
+
+### 🛠️ Thiết Lập Số Lượng Tối Thiểu  
+- Vào phần **Cài đặt sản phẩm** khi thêm hoặc chỉnh sửa sản phẩm.  
+- Nhập số vào ô **Số lượng tối thiểu** (ví dụ: 5 hoặc 10).  
+- Đây là số lượng tối thiểu bạn muốn luôn có trong kho.  
+
+### 📉 Theo Dõi Tồn Kho Thấp  
+- Sử dụng **Báo cáo cần đặt hàng** để xem các sản phẩm có tồn kho thấp hơn số lượng tối thiểu.  
+- Giúp bạn đặt hàng đúng lúc và tránh hết hàng.  
+
+### 🔄 Cập Nhật Số Lượng Tối Thiểu  
+- Bạn có thể thay đổi số lượng tối thiểu bất kỳ lúc nào bằng cách chỉnh sửa sản phẩm.  
+- Điều chỉnh dựa trên tốc độ bán hàng hoặc theo mùa vụ.  
+
+### ✅ Mẹo Sử Dụng  
+- Thiết lập số lượng tối thiểu cao hơn cho các mặt hàng bán chạy hoặc quan trọng.  
+- Xem lại và điều chỉnh thường xuyên để đảm bảo cảnh báo chính xác.  
+
+Quản lý tồn kho hiệu quả và tránh thiếu hàng bất ngờ! 🔔  
+""";
+
 }

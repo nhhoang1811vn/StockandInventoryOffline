@@ -6,6 +6,7 @@ enum HelpType{
   GOODS,
   DOCUMENTS,
   PAYMENTS,
+  MIN_QUAN
 }
 extension HelpTypeExtension on HelpType{
   String getTitle(BuildContext context){
@@ -16,11 +17,12 @@ extension HelpTypeExtension on HelpType{
         return AppLocalizations.of(context)!.suppliers_title;
       case HelpType.GOODS:
         return AppLocalizations.of(context)!.goods_title;
-
       case HelpType.DOCUMENTS:
         return AppLocalizations.of(context)!.documents_title;
       case HelpType.PAYMENTS:
         return AppLocalizations.of(context)!.payments_title;
+      case HelpType.MIN_QUAN:
+        return AppLocalizations.of(context)!.menu_item_minimum_quantity;
     }
   }
 }
