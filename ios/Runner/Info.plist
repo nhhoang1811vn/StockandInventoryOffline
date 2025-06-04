@@ -71,5 +71,16 @@
 	<string>We need access to your photo library to allow you to select and edit photos.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app needs access to the microphone to record audio.</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>com.googleusercontent.apps.617423800641-3hg9toe6rn1ho9pqbt7mami3vmda5l33</string>
+        </array>
+      </dict>
+    </array>
 </dict>
 </plist>

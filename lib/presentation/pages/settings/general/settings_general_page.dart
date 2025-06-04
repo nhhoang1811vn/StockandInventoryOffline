@@ -6,7 +6,6 @@ import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/settings/general/bloc/settings_general_cubit.dart';
 
 import '../../../../main.dart';
-import '../components/change_languages_dialog.dart';
 
 class SettingsGeneralPage extends StatefulWidget {
   SettingsGeneralPage({Key? key}) : super(key: key);
@@ -17,6 +16,12 @@ class SettingsGeneralPage extends StatefulWidget {
   }
 }
 class SettingsGeneralPageState extends State<SettingsGeneralPage> {
+  late String _code;
+  @override
+  void initState() {
+    super.initState();
+    _code = storage.getLanguageCode();
+  }
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SettingsGeneralCubit, SettingsGeneralState>(
@@ -41,9 +46,9 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
               title: Text(
                   AppLocalizations.of(context)!.menu_item_language_title),
               subtitle:
-              Text(AppLocalizations.of(context)!.menu_item_language_desc),
+              Text(_code == "vi"?AppLocalizations.of(context)!.vietnamese_text:AppLocalizations.of(context)!.english_text),
               onTap: () {
-                showSelectLanguageDialog(context);
+                _showLanguageDialog(context);
               },
             ),
             Divider(
@@ -67,15 +72,42 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
             ),
     ]))]);
   }
-  void showSelectLanguageDialog(BuildContext context) async {
-    String currentCode = storage.getLanguageCode();
+  void _showLanguageDialog(BuildContext context) {
     showDialog(
-        context: context,
-        builder: (_) => ChangeLanguagesDialog(currentCode, (code) {
-          storage.setLanguageCode(code);
-          MyApp.setLocale(context, code);
-        }),
-        barrierDismissible: true);
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.dialog_title_change_language),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text(AppLocalizations.of(context)!.english_text),
+              onTap: () {
+                MyAppState? state = context.findAncestorStateOfType<MyAppState>();
+                storage.setLanguageCode("en");
+                state?.changeLanguage("en");
+                Navigator.of(context).pop();
+                setState(() {
+                  _code = "en";
+                });
+              },
+            ),
+            ListTile(
+              title: Text(AppLocalizations.of(context)!.vietnamese_text),
+              onTap: () {
+                MyAppState? state = context.findAncestorStateOfType<MyAppState>();
+                storage.setLanguageCode("vi");
+                state?.changeLanguage("vi");
+                Navigator.of(context).pop();
+                setState(() {
+                  _code = "vi";
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
   void _handlePasscodeToggle(BuildContext context, bool newValue, String currentPasscode) {
     if (newValue) {
