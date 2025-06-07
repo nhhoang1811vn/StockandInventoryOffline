@@ -600,10 +600,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get report_type_custom => 'Custom';
 
   @override
-  String get report_detail_header => 'From %s to %s store %s';
+  String get report_detail_period_time => 'From %s to %s';
 
   @override
-  String get report_detail_store_only_header => 'Store %s';
+  String get report_detail_store => 'Store %s';
 
   @override
   String get select_payment_status => 'Select payment status';

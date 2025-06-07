@@ -11,6 +11,7 @@ import 'package:good_manager/presentation/pages/documents/sort_documents_dialog.
 import 'package:good_manager/presentation/pages/select_document/bloc/select_document_cubit.dart';
 import 'package:sprintf/sprintf.dart';
 
+import '../../widgets/search_bar_widget.dart';
 import '../../widgets/selected_store_view.dart';
 import '../base/base_state.dart';
 import '../documents/components/document_item_row.dart';
@@ -29,8 +30,8 @@ class SelectDocumentsPage extends StatefulWidget {
 }
 
 class SelectDocumentsPageState extends State<SelectDocumentsPage> {
-  final TextEditingController searchTextController = TextEditingController();
-
+  //final TextEditingController searchTextController = TextEditingController();
+  final FocusNode searchTextFocusNode = FocusNode();
   @override
   void initState() {
     context.read<SelectDocumentCubit>().initState(widget.documentType);
@@ -102,7 +103,19 @@ class SelectDocumentsPageState extends State<SelectDocumentsPage> {
           child: Column(
             children: [
               SelectedStoreView(),
-              Visibility(child: _buildSearchBar(context, state), visible: state.showSearchBar),
+              Visibility(
+                visible: state.showSearchBar,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16, top : 16),
+                  child: SearchBarWidget(
+                    onTextChanged: (newValue) {
+                      context.read<SelectDocumentCubit>().onSearchTextChanged(newValue);
+                    },
+                    focusNode: searchTextFocusNode,
+                  ),
+                ),
+              ),
+              //Visibility(child: _buildSearchBar(context, state), visible: state.showSearchBar),
             ],
           ),
         ),
@@ -136,8 +149,10 @@ class SelectDocumentsPageState extends State<SelectDocumentsPage> {
   Widget _buildSearchMenu(SelectDocumentState state) {
     return IconButton(
         onPressed: () {
-          searchTextController.text = "";
-          context.read<SelectDocumentCubit>().onSearchMenuClicked();
+          if (!state.showSearchBar) {
+            searchTextFocusNode.requestFocus();
+          }
+         context.read<SelectDocumentCubit>().onSearchMenuClicked();
         },
         icon: Icon(Icons.search,
             color: state.showSearchBar ? Theme.of(context).colorScheme.primary: Theme.of(context).iconTheme.color));
@@ -161,38 +176,6 @@ class SelectDocumentsPageState extends State<SelectDocumentsPage> {
         },
         icon: Icon(Icons.help));
   }
-
-  Widget _buildSearchBar(BuildContext context, SelectDocumentState state) => Container(
-     color: Colors.grey.shade200,
-    child: Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: Container(
-      
-         decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8), // Rounded corners
-                ),
-        child: ListTile(
-          title: TextField(
-            decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.hint_search_by, border: InputBorder.none),
-            onChanged: context.read<SelectDocumentCubit>().onSearchTextChanged,
-            controller: searchTextController,
-          ),
-          trailing: Visibility(
-            child: IconButton(
-                icon: Icon(UIConstants.cancelIconData),
-                onPressed: () {
-                  searchTextController.text = "";
-                  context.read<SelectDocumentCubit>().resetSearchText();
-                }),
-            visible: state.textSearch.isNotEmpty,
-          ),
-        ),
-      ),
-    ),
-  );
-
   void onPressedDocument(Document item) async {
     Navigator.of(context).pop(item);
   }

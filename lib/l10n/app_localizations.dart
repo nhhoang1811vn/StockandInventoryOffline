@@ -1277,17 +1277,17 @@ abstract class AppLocalizations {
   /// **'Custom'**
   String get report_type_custom;
 
-  /// No description provided for @report_detail_header.
+  /// No description provided for @report_detail_period_time.
   ///
   /// In en, this message translates to:
-  /// **'From %s to %s store %s'**
-  String get report_detail_header;
+  /// **'From %s to %s'**
+  String get report_detail_period_time;
 
-  /// No description provided for @report_detail_store_only_header.
+  /// No description provided for @report_detail_store.
   ///
   /// In en, this message translates to:
   /// **'Store %s'**
-  String get report_detail_store_only_header;
+  String get report_detail_store;
 
   /// No description provided for @select_payment_status.
   ///

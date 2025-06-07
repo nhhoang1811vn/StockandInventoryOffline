@@ -1,6 +1,6 @@
 
-//import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter_beep/flutter_beep.dart';
+import 'package:audioplayers/audioplayers.dart';
+//import 'package:flutter_beep/flutter_beep.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
 import 'package:good_manager/main.dart';
@@ -53,13 +53,13 @@ class Utils{
     RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
     return num.toString().replaceAll(regex, '');
   }
-  //static AudioPlayer _audioPlayer = AudioPlayer();
+  static AudioPlayer _audioPlayer = AudioPlayer();
   static void handleABarcodeFound() async{
     var enableSound = storage.getBarcodeScannerEnableBeep();
     var enableVibrate = storage.getBarcodeScannerEnableVibrate();
     if (enableSound){
-      FlutterBeep.beep();
-      //await _audioPlayer.play(AssetSource('sounds/beep.mp3'));
+      //FlutterBeep.beep();
+      await _audioPlayer.play(AssetSource('sounds/beep.mp3'));
     }
     if (enableVibrate){
       var vibrationCapabilities = await Vibration.hasVibrator();

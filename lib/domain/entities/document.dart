@@ -7,12 +7,12 @@ enum DocumentType {
   outgoing,
 }
 extension DocumentTypeExtension on DocumentType{
-  String getTitle(BuildContext context){
+  String getTitle(AppLocalizations localizations){
     switch(this){
       case DocumentType.incoming:
-        return AppLocalizations.of(context)!.incoming_document_text;
+        return localizations.incoming_document_text;
       case DocumentType.outgoing:
-        return AppLocalizations.of(context)!.outgoing_document_text;
+        return localizations.outgoing_document_text;
     }
   }
 }

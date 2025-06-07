@@ -600,10 +600,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get report_type_custom => 'Tự Chọn';
 
   @override
-  String get report_detail_header => 'Từ ngày %s đến ngày %s cửa hàng %s';
+  String get report_detail_period_time => 'Từ ngày %s đến ngày %s';
 
   @override
-  String get report_detail_store_only_header => 'Cửa hàng %s';
+  String get report_detail_store => 'Cửa hàng %s';
 
   @override
   String get select_payment_status => 'Chọn trạng thái thanh toán';

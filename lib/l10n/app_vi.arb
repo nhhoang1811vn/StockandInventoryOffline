@@ -230,9 +230,8 @@
   "report_type_last_90_days": "90 ngày trước",
   "report_type_current_year": "Năm hiện tại",
   "report_type_custom": "Tự Chọn",
-  "report_detail_header": "Từ ngày %s đến ngày %s cửa hàng %s",
-  "report_detail_store_only_header": "Cửa hàng %s",
-
+  "report_detail_period_time": "Từ ngày %s đến ngày %s",
+  "report_detail_store": "Cửa hàng %s",
   "select_payment_status": "Chọn trạng thái thanh toán",
   "payment_status_unpaid": "Chưa trả",
   "payment_status_partial": "Trả 1 phần",

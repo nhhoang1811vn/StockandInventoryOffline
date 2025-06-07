@@ -196,7 +196,7 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
     return Container(
       height: 120,
       padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(border: Border.all(color: AppColors.secondaryColor)),
+      decoration: BoxDecoration(border: Border.all(color: Color(0xFF616161))),
       child: Row(
         children: [
           Expanded(
