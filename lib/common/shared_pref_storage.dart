@@ -10,17 +10,17 @@ class SharedPrefStorage implements Storage2 {
   SharedPrefStorage(this.prefs);
 
   @override
-  Future<void> write(String key, String value) async {
-    await prefs.setString(key, value);
+  void write(String key, String value){
+    prefs.setString(key, value);
   }
 
   @override
-  Future<String?> read(String key) async {
+  String? read(String key){
     return prefs.getString(key);
   }
 
   @override
-  Future<void> remove(String key) async {
-    await prefs.remove(key);
+  void remove(String key){
+    prefs.remove(key);
   }
 }

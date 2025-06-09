@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:good_manager/domain/entities/base_model.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 

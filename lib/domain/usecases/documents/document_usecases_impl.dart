@@ -71,7 +71,6 @@ class DocumentUseCasesImpl implements DocumentUseCases{
 
   @override
   Future<Document> get(int id) {
-    // TODO: implement get
-    throw UnimplementedError();
+    return repository.get(id);
   }
 }

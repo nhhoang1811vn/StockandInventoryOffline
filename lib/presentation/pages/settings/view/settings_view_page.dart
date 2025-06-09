@@ -32,7 +32,7 @@ class SettingsViewPageState extends State<SettingsViewPage> {
         break;
       case 'system':
       default:
-        _subTitle = "system";
+        _subTitle = "System";
     }
     setState(() {
 

@@ -7,18 +7,19 @@ import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
 class DocumentTransactionItemRow extends StatelessWidget {
   final DocumentTransaction item;
+  final Color bgColor;
   final void Function(DocumentTransaction item) onTransactionPressed;
   final void Function(DocumentTransaction item) onTransactionLongPressed;
   final bool isSelection;
 
   DocumentTransactionItemRow(
-      this.item, this.onTransactionPressed, this.onTransactionLongPressed,
+      this.item, this.bgColor,this.onTransactionPressed, this.onTransactionLongPressed,
       [this.isSelection = false]);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      //margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+    return Container(
+      color: bgColor,
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
         onTap: () => onTransactionPressed(item),

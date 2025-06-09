@@ -7,6 +7,7 @@ import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.dart';
 import 'package:good_manager/presentation/pages/history/widget/item_history_row.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
+import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
 class ItemHistoryPage extends StatefulWidget {
@@ -69,7 +70,7 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(UIConstants.documentIconData, size: 64, color: Colors.orange.shade700),
+            Icon(UIConstants.documentIconData, size: 64, color: Theme.of(context).colorScheme.primary,),
             SizedBox(height: 16),
             Text(AppLocalizations.of(context)!.empty_document, textAlign: TextAlign.center)
           ],
@@ -77,14 +78,19 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
     ];
     return Column(children: children);
   }
-  Widget _buildListView(ItemHistoryState data) => ListView.builder(
-      itemBuilder: (BuildContext context, index) {
-        GoodHistory item = data.items[index];
-        return ItemHistoryRow(item, (item) async{
-            await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+  Widget _buildListView(ItemHistoryState data) {
+    bool flag = true;
+    return ListView.builder(
+        itemBuilder: (BuildContext context, index) {
+          GoodHistory item = data.items[index];
+          flag = !flag;
+          return ItemHistoryRow(item, flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context),(item) async {
+            await Navigator.of(context).pushNamed(
+                Pages.save_document, arguments: {'item': item});
             context.read<ItemHistoryCubit>().loadItems();
-        });
-      },
-      itemCount: data.items.length);
+          });
+        },
+        itemCount: data.items.length);
+  }
 
 }

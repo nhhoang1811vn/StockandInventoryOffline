@@ -19,6 +19,8 @@ import 'package:good_manager/presentation/pages/main/main_page.dart';
 import 'package:good_manager/presentation/pages/onboarding/bloc/on_boarding_cubit.dart';
 import 'package:good_manager/presentation/pages/onboarding/on_boarding_page.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
+import 'package:good_manager/presentation/pages/payment/bloc/payments_cubit.dart';
+import 'package:good_manager/presentation/pages/payment/payments_page.dart';
 import 'package:good_manager/presentation/pages/payment_categories/bloc/payment_categories_cubit.dart';
 import 'package:good_manager/presentation/pages/payment_categories/payment_categories_page.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
@@ -270,6 +272,12 @@ class AppRouter {
             settings, BlocProvider(create: (context) => getIt<OnBoardingCubit>(), child: OnBoardingPage()));
       case Pages.payment_categories:
         return _buildRoute(settings, BlocProvider(create: (context) => getIt<PaymentCategoriesCubit>(), child: PaymentCategoriesPage(),));
+      case Pages.payments:
+        Map<dynamic, dynamic> args = settings.arguments as Map;
+        return _buildRoute(settings, BlocProvider(create: (context) => getIt<PaymentsCubit>(), child: PaymentsPage(
+          setting: args["setting"],
+          initialIndex: args["initialIndex"],
+        ),));
       default:
         return _buildRoute(settings, Text("Loading data...."));
     }

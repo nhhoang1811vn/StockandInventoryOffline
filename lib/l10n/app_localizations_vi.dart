@@ -159,7 +159,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get field_date => 'Ngày';
 
   @override
-  String get field_date_time => 'Ngay';
+  String get field_date_time => 'Ngày';
 
   @override
   String get field_amount => 'Thành tiền';
@@ -934,4 +934,31 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get field_reorder => 'Tái đặt hàng';
+
+  @override
+  String get title_filter => 'Bộ lọc';
+
+  @override
+  String get action_reset_all => 'Xóa bộ lọc';
+
+  @override
+  String get action_apply => 'Áp dụng';
+
+  @override
+  String get by_category => 'Theo danh mục';
+
+  @override
+  String get by_wallet => 'Theo ví';
+
+  @override
+  String get by_date => 'Theo ngày';
+
+  @override
+  String get show_all => 'Tất cả';
+
+  @override
+  String get start_date => 'Ngày bắt đầu';
+
+  @override
+  String get end_date => 'Ngày kết thúc';
 }

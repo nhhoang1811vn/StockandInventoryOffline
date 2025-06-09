@@ -5,9 +5,9 @@ import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
-import 'package:good_manager/presentation/pages/documents/components/document_date_row.dart';
-import 'package:good_manager/presentation/pages/documents/document_ui.dart';
+import 'package:good_manager/presentation/models/list_item.dart';
 import 'package:good_manager/presentation/pages/documents/sort_documents_dialog.dart';
+import 'package:good_manager/presentation/utils.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../widgets/search_bar_widget.dart';
@@ -194,17 +194,36 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
         ],
       );
 
-  Widget _buildListView(List<DocumentUI> items) => ListView.builder(
-      itemBuilder: (BuildContext context, index) {
-        DocumentUI item = items[index];
-        if (item.type == DocumentUIType.data) {
-          return DocumentItemRow(
-              false, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
-        } else {
-          return DocumentDateRow(item.dateText);
-        }
-      },
-      itemCount: items.length);
+  Widget _buildListView(List<ListItem> items) {
+    var flag = true;
+    return ListView.builder(
+        itemBuilder: (BuildContext context, index) {
+          ListItem item = items[index];
+          if (item is HeaderItem) {
+            flag = true;
+            return Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 8),
+                color: ColorUtils.getHeaderBgColor(context),
+                child: Text(
+                  DateFormatFactory.getDateFormat().format(item.date),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                )
+            );
+          } else if (item is DocumentListItem) {
+            flag = !flag;
+            return DocumentItemRow(
+                item.document, flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context), (item) {
+              onPressedDocument(item);
+            }, (item) {
+              onLongPressedDocument(item);
+            });
+          } else {
+            return SizedBox();
+          }
+        },
+        itemCount: items.length);
+  }
 
   Widget _buildSearchMenu(DocumentsState state) {
     return IconButton(

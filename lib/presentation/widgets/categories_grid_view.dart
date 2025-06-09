@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
+import 'package:good_manager/presentation/pages/payment/components/category_selection.dart';
 
 class CategoriesGridView extends StatelessWidget{
   final List<PaymentCategory> categories;
@@ -23,12 +24,18 @@ class CategoriesGridView extends StatelessWidget{
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+
             ),
             itemBuilder: (context, index) {
               if (index < categories.length){
-                return _buildCategoryWidget(context, categories[index]);
+                //return _buildCategoryWidget(context, categories[index]);
+                return CategorySelection(item: categories[index], isSelected: false, onPressed: (){
+                  onPressed(categories[index]);
+                }, onLongPressed: (){
+                  onLongPressed(categories[index]);
+                },);
               }else{
                 return _buildAddCategoryWidget();
               }
@@ -54,30 +61,4 @@ class CategoriesGridView extends StatelessWidget{
           child: Icon(Icons.add, color: Colors.grey.shade700)),
     );
   }
-  Widget _buildCategoryWidget(BuildContext context, PaymentCategory item) {
-
-    return InkWell(
-      onTap: (){
-        onPressed(item);
-      },
-      onLongPress: (){
-        onLongPressed(item);
-      },
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-            Text(item.icon, style: TextStyle(fontSize: 28)),
-            SizedBox(height: 4),
-            Text(
-              item.name,
-              style: Theme.of(context).textTheme.bodyMedium,
-            )
-          ])),
-    );
-  }
-
 }

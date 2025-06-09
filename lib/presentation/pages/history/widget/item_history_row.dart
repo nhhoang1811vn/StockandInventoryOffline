@@ -7,19 +7,20 @@ import 'package:good_manager/presentation/utils.dart';
 
 class ItemHistoryRow extends StatelessWidget{
   final GoodHistory item;
+  final Color bgColor;
   final void Function(Document document) onDocumentTapped;
-  ItemHistoryRow(this.item, this.onDocumentTapped);
+  ItemHistoryRow(this.item, this.bgColor, this.onDocumentTapped);
 
   @override
   Widget build(BuildContext context) {
     String quantityText;
     if (item.document!.type == DocumentType.incoming){
-      quantityText = "+ " + Utils.getQuantityText(item.quantity);
+      quantityText = "+" + Utils.getQuantityText(item.quantity);
     }else{
-      quantityText = "- " + Utils.getQuantityText(item.quantity);
+      quantityText = "-" + Utils.getQuantityText(item.quantity);
     }
-    return Card(
-      margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+    return Container(
+      color: bgColor,
       child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () => onDocumentTapped(item.document!),
@@ -33,10 +34,10 @@ class ItemHistoryRow extends StatelessWidget{
                   child: Container(
                     decoration: BoxDecoration(
                       color: getIndicatorColor(item.document!.type), // Change color as needed
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        bottomLeft: Radius.circular(8),
-                      ),
+                      //borderRadius: BorderRadius.only(
+                        //topLeft: Radius.circular(8),
+                        //bottomLeft: Radius.circular(8),
+                      //),
                     ),
                   ),
                 ),

@@ -1,11 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/pages/documents/document_ui.dart';
+import 'package:good_manager/presentation/models/list_item.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../data/storage.dart';
@@ -20,9 +21,13 @@ part 'documents_state.dart';
 class DocumentsCubit extends Cubit<DocumentsState> {
   final DocumentUseCases useCase;
   final Storage storage;
-  DocumentsCubit({required this.storage, required this.useCase})
+  final AppSettings appSettings;
+  DocumentsCubit({
+    required this.storage,
+    required this.appSettings,
+    required this.useCase})
       : super(DocumentsState.initial(
-            state: InitialState(), settings: storage.getDocumentsSetting()));
+            state: InitialState(), settings: appSettings.getDocumentsSetting()));
 
   void initState() {
     loadItems();
@@ -89,16 +94,16 @@ class DocumentsCubit extends Cubit<DocumentsState> {
     return items;
   }
 
-  List<DocumentUI> getDocumentUIs(List<Document> data) {
-    List<DocumentUI> results = [];
+  List<ListItem> getDocumentUIs(List<Document> data) {
+    List<ListItem> results = [];
     Set<String> set = {};
     for (var i = 0; i < data.length; i++) {
       String dateText = DateFormatFactory.getDateFormat().format(data[i].date);
       if (!set.contains(dateText)) {
-        results.add(DocumentUI(DocumentUIType.date, dateText, null));
+        results.add(HeaderItem(data[i].date));// DocumentUI(DocumentUIType.date, dateText, null));
         set.add(dateText);
       }
-      results.add(DocumentUI(DocumentUIType.data, "", data[i]));
+      results.add(DocumentListItem(data[i]));
     }
     return results;
   }
@@ -168,7 +173,7 @@ class DocumentsCubit extends Cubit<DocumentsState> {
   }
 
   void setSettings(DocumentsSetting settings) {
-    storage.setDocumentsSetting(settings);
+    appSettings.setDocumentsSetting(settings);
     emit(state.copyWith(settings: settings));
     sort();
     filter();

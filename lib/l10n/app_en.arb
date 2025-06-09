@@ -316,7 +316,15 @@
                                          "title_report_list_of_wallet": "List of wallets",
                                          "hint_search_by": "Search...",
                                          "field_my_company_name": "Company name",
-                                         "field_reorder": "Reorder"
+                                         "field_reorder": "Reorder",
 
-
+    "title_filter": "Filter",
+    "action_reset_all": "Reset all",
+    "action_apply": "Apply",
+    "by_category": "By category",
+    "by_wallet": "By wallet",
+    "by_date": "By date",
+    "show_all": "Show all",
+    "start_date": "Start date",
+    "end_date": "End date"
 }

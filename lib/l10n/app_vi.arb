@@ -55,7 +55,7 @@
   "field_supplier": "Nhà cung cấp",
   "field_customer": "Khách hàng",
   "field_date": "Ngày",
-  "field_date_time": "Ngay",
+  "field_date_time": "Ngày",
   "field_amount": "Thành tiền",
   "field_paid": "Đã thanh toán",
   "field_remaining": "Còn lại",
@@ -352,7 +352,16 @@
          "title_report_list_of_wallet": "Danh sách ví tiền",
            "hint_search_by": "Tìm kiếm...",
            "field_my_company_name": "Tên công ty",
-           "field_reorder": "Tái đặt hàng"
+           "field_reorder": "Tái đặt hàng",
+           "title_filter": "Bộ lọc",
+               "action_reset_all": "Xóa bộ lọc",
+               "action_apply": "Áp dụng",
+               "by_category": "Theo danh mục",
+               "by_wallet": "Theo ví",
+               "by_date": "Theo ngày",
+               "show_all": "Tất cả",
+               "start_date": "Ngày bắt đầu",
+                   "end_date": "Ngày kết thúc"
 
 
 }

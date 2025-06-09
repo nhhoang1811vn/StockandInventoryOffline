@@ -27,8 +27,7 @@ class DocumentRepositoryImpl implements DocumentRepository {
 
   @override
   Future<Document> get(int id) {
-    // TODO: implement get
-    throw UnimplementedError();
+    return db.getDocument(id);
   }
 
   @override

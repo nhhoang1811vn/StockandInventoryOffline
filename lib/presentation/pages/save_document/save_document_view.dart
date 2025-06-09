@@ -211,144 +211,150 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                 children: [
                   SelectedStoreView(),
                   Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: ListView(
-                        children: [
-                          Text(
-                              AppLocalizations.of(context)!
-                                  .document_information,
-                              style: Theme.of(context).textTheme.titleMedium),
-                          Card(
-                            child: Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Column(
+                    child: ListView(
+                      children: [
+                        Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            color: ColorUtils.getHeaderBgColor(context),
+                            child: Text(
+                                AppLocalizations.of(context)!
+                                    .document_information,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.bold))),
+                        Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Column(
+                            children: [
+                              AppTextField(
+                                  labelText: AppLocalizations.of(context)!
+                                      .field_document_no,
+                                  hintText:
+                                      AppLocalizations.of(context)!.hint_name,
+                                  initialValue: state.name.value,
+                                  onChanged: (value) => context
+                                      .read<SaveDocumentCubit>()
+                                      .nameChanged(value),
+                                  keyboardType: TextInputType.name,
+                                  error:
+                                      state.name.displayError?.text(context)),
+                              SizedBox(
+                                height: 16.0,
+                              ),
+                              Row(
                                 children: [
-                                  AppTextField(
-                                      labelText: AppLocalizations.of(context)!
-                                          .field_document_no,
+                                  Expanded(
+                                    child: AppTextField(
+                                      controller: personNameController,
+                                      labelText: state.item?.type ==
+                                              DocumentType.incoming
+                                          ? AppLocalizations.of(context)!
+                                              .label_supplier_name
+                                          : AppLocalizations.of(context)!
+                                              .label_customer_name,
                                       hintText: AppLocalizations.of(context)!
-                                          .hint_name,
-                                      initialValue: state.name.value,
-                                      onChanged: (value) => context
-                                          .read<SaveDocumentCubit>()
-                                          .nameChanged(value),
-                                      keyboardType: TextInputType.name,
-                                      error: state.name.displayError
-                                          ?.text(context)),
+                                          .hint_select,
+                                      suffix: Icon(
+                                        Icons.keyboard_arrow_down,
+                                        size: 16,
+                                      ),
+                                      keyboardType: TextInputType.none,
+                                      readOnly: true,
+                                      onTapped: () => {
+                                        context
+                                            .read<SaveDocumentCubit>()
+                                            .onPersonClicked()
+                                      },
+                                    ),
+                                  ),
                                   SizedBox(
-                                    height: 16.0,
+                                    width: 16.0,
                                   ),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: AppTextField(
-                                          controller: personNameController,
-                                          labelText: state.item?.type ==
-                                                  DocumentType.incoming
-                                              ? AppLocalizations.of(context)!
-                                                  .label_supplier_name
-                                              : AppLocalizations.of(context)!
-                                                  .label_customer_name,
-                                          hintText:
-                                              AppLocalizations.of(context)!
-                                                  .hint_select,
-                                          suffix: Icon(
-                                            Icons.keyboard_arrow_down,
-                                            size: 16,
-                                          ),
-                                          keyboardType: TextInputType.none,
-                                          readOnly: true,
-                                          onTapped: () => {
-                                            context
-                                                .read<SaveDocumentCubit>()
-                                                .onPersonClicked()
-                                          },
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 16.0,
-                                      ),
-                                      Expanded(
-                                          child: AppTextField(
-                                        controller: dateController,
-                                        labelText: AppLocalizations.of(context)!
-                                            .field_date_time,
-                                        keyboardType: TextInputType.datetime,
-                                        readOnly: true,
-                                        onTapped: () => {
-                                          DatePicker.showDateTimePicker(context,
-                                              locale:
-                                                  MyApp.getDatePickerLocaleType(
-                                                      context),
-                                              showTitleActions: true,
-                                              minTime: Config.minTime,
-                                              maxTime: Config.maxTime,
-                                              onChanged: (date) {},
-                                              onConfirm: (date) {
-                                            context
-                                                .read<SaveDocumentCubit>()
-                                                .dateChanged(date);
-                                            dateController.text =
-                                                DateFormatFactory
-                                                        .getDateAndTimeFormat()
-                                                    .format(date);
-                                          }, currentTime: state.date)
-                                        },
-                                      )),
-                                    ],
-                                  ),
-                                  SizedBox(height: 16),
-                                  AppTextField(
-                                      labelText: AppLocalizations.of(context)!
-                                          .label_description,
-                                      hintText: AppLocalizations.of(context)!
-                                          .hint_description,
-                                      maxLines: null,
-                                      minLines: 2,
-                                      initialValue: state.description,
-                                      onChanged: (value) => context
-                                          .read<SaveDocumentCubit>()
-                                          .descriptionChanged(value),
-                                      keyboardType: TextInputType.name),
+                                  Expanded(
+                                      child: AppTextField(
+                                    controller: dateController,
+                                    labelText: AppLocalizations.of(context)!
+                                        .field_date_time,
+                                    keyboardType: TextInputType.datetime,
+                                    readOnly: true,
+                                    onTapped: () => {
+                                      DatePicker.showDateTimePicker(context,
+                                          locale:
+                                              MyApp.getDatePickerLocaleType(
+                                                  context),
+                                          showTitleActions: true,
+                                          minTime: Config.minTime,
+                                          maxTime: Config.maxTime,
+                                          onChanged: (date) {},
+                                          onConfirm: (date) {
+                                        context
+                                            .read<SaveDocumentCubit>()
+                                            .dateChanged(date);
+                                        dateController.text =
+                                            DateFormatFactory
+                                                    .getDateAndTimeFormat()
+                                                .format(date);
+                                      }, currentTime: state.date)
+                                    },
+                                  )),
                                 ],
                               ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 16,
-                          ),
-                          Text(AppLocalizations.of(context)!.goods_information,
-                              style: Theme.of(context).textTheme.titleMedium),
-                          Visibility(
-                            visible: state.showSearchBar,
-                            child: Padding(
-                              padding: EdgeInsets.only(bottom: 16.0),
-                              child: SearchBarWidget(
-                                onTextChanged: (newValue) {
-                                  context
+                              SizedBox(height: 16),
+                              AppTextField(
+                                  labelText: AppLocalizations.of(context)!
+                                      .label_description,
+                                  hintText: AppLocalizations.of(context)!
+                                      .hint_description,
+                                  maxLines: null,
+                                  minLines: 2,
+                                  initialValue: state.description,
+                                  onChanged: (value) => context
                                       .read<SaveDocumentCubit>()
-                                      .onSearchTextChanged(newValue);
-                                },
-                                focusNode: searchTextFocusNode,
-                                showCamera: true,
-                              ),
-                            ),
-                          ),
-                          Stack(
-                            children: [
-                              Visibility(
-                                child: _buildEmptyTransaction(context),
-                                visible: state.transactions.isEmpty,
-                              ),
-                              Visibility(
-                                child: _buildTransactionsView(context, state),
-                                visible: state.transactions.isNotEmpty,
-                              )
+                                      .descriptionChanged(value),
+                                  keyboardType: TextInputType.name),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                        Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            color: ColorUtils.getHeaderBgColor(context),
+                            child: Text(
+                                AppLocalizations.of(context)!.goods_information,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.bold))),
+                        Visibility(
+                          visible: state.showSearchBar,
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 16.0),
+                            child: SearchBarWidget(
+                              onTextChanged: (newValue) {
+                                context
+                                    .read<SaveDocumentCubit>()
+                                    .onSearchTextChanged(newValue);
+                              },
+                              focusNode: searchTextFocusNode,
+                              showCamera: true,
+                            ),
+                          ),
+                        ),
+                        Stack(
+                          children: [
+                            Visibility(
+                              child: _buildEmptyTransaction(context),
+                              visible: state.transactions.isEmpty,
+                            ),
+                            Visibility(
+                              child: _buildTransactionsView(context, state),
+                              visible: state.transactions.isNotEmpty,
+                            )
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                   Align(
@@ -505,60 +511,76 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Text(AppLocalizations.of(context)!.menu_item_my_company,
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+              style: pw.TextStyle(font: font, fontWeight: pw.FontWeight.bold)),
           pw.Text(
-              "${AppLocalizations.of(context)!.field_my_company_name}: ${myCompany?.companyName ?? ""}"),
+              "${AppLocalizations.of(context)!.field_my_company_name}: ${myCompany?.companyName ?? ""}",
+              style: pw.TextStyle(font: font)),
           pw.Row(children: [
             pw.Text(
-                "${AppLocalizations.of(context)!.label_address}: ${myCompany?.address ?? ""}"),
+                "${AppLocalizations.of(context)!.label_address}: ${myCompany?.address ?? ""}",
+                style: pw.TextStyle(font: font)),
             pw.Spacer(),
             pw.Text(
-                "${AppLocalizations.of(context)!.label_email}: ${myCompany?.email ?? ""}"),
+                "${AppLocalizations.of(context)!.label_email}: ${myCompany?.email ?? ""}",
+                style: pw.TextStyle(font: font)),
           ]),
           pw.Row(children: [
             pw.Text(
-                "${AppLocalizations.of(context)!.label_phone_number}: ${myCompany?.phone ?? ""}"),
+                "${AppLocalizations.of(context)!.label_phone_number}: ${myCompany?.phone ?? ""}",
+                style: pw.TextStyle(font: font)),
             pw.Spacer(),
             pw.Text(
-                "${AppLocalizations.of(context)!.label_tax_id}: ${myCompany?.taxId ?? ""}"),
+                "${AppLocalizations.of(context)!.label_tax_id}: ${myCompany?.taxId ?? ""}",
+                style: pw.TextStyle(font: font)),
           ]),
           pw.Text(
-              "${AppLocalizations.of(context)!.label_bank_details}: ${myCompany?.bankDetails ?? ""}"),
+              "${AppLocalizations.of(context)!.label_bank_details}: ${myCompany?.bankDetails ?? ""}",
+              style: pw.TextStyle(font: font)),
           pw.SizedBox(height: 16),
           pw.Text(AppLocalizations.of(context)!.document_information,
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+              style: pw.TextStyle(font: font, fontWeight: pw.FontWeight.bold)),
           pw.Row(children: [
             pw.Text(
-                "${AppLocalizations.of(context)!.document_name_no}: ${state.name.value.toString()}"),
+                "${AppLocalizations.of(context)!.document_name_no}: ${state.name.value.toString()}",
+                style: pw.TextStyle(font: font)),
             pw.Spacer(),
             pw.Text(
-                "${AppLocalizations.of(context)?.field_date_time}: ${DateFormatFactory.getDateAndTimeFormat().format(state.date!)}"),
+                "${AppLocalizations.of(context)?.field_date_time}: ${DateFormatFactory.getDateAndTimeFormat().format(state.date!)}",
+                style: pw.TextStyle(font: font)),
           ]),
           pw.Row(children: [
             pw.Text(
-                "${AppLocalizations.of(context)!.field_person_name}: ${state.personName ?? ""}"),
+                "${AppLocalizations.of(context)!.field_person_name}: ${state.personName ?? ""}",
+                style: pw.TextStyle(font: font)),
             pw.Spacer(),
             pw.Text(
-                "${AppLocalizations.of(context)?.label_description}: ${state.description}"),
+                "${AppLocalizations.of(context)?.label_description}: ${state.description}",
+                style: pw.TextStyle(font: font)),
           ]),
           pw.SizedBox(height: 16),
           pw.Text(AppLocalizations.of(context)!.goods_title,
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+              style: pw.TextStyle(font: font, fontWeight: pw.FontWeight.bold)),
           pw.Table(
               border: pw.TableBorder.all(color: PdfColors.grey),
               defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
               children: [
-                ...List.generate(table.length, (indexI) => pw.TableRow(children: [
-                  ...List.generate(table[indexI].length, (indexJ) =>  pw.Padding(
-                    padding: pw.EdgeInsets.all(8.0),
-                    child: pw.Text(table[indexI][indexJ]),
-                  ),)
-                ]))
-
+                ...List.generate(
+                    table.length,
+                    (indexI) => pw.TableRow(children: [
+                          ...List.generate(
+                            table[indexI].length,
+                            (indexJ) => pw.Padding(
+                              padding: pw.EdgeInsets.all(8.0),
+                              child: pw.Text(table[indexI][indexJ],
+                                  style: pw.TextStyle(font: font)),
+                            ),
+                          )
+                        ]))
               ])
         ]);
   }
-  List<List<String>> getTableData(SaveDocumentState state){
+
+  List<List<String>> getTableData(SaveDocumentState state) {
     List<List<String>> data = [];
     data.add([
       AppLocalizations.of(context)?.field_name ?? "",
@@ -705,27 +727,21 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
   }
 
   Widget _buildTransactionsView(BuildContext context, SaveDocumentState state) {
+    bool flag = true;
     return Column(
       children: state.transactions.map((transaction) {
+        flag = !flag;
         return DocumentTransactionItemRow(
             transaction,
+            flag
+                ? ColorUtils.getItemBgColor1(context)
+                : ColorUtils.getItemBgColor2(context),
             (item) => context
                 .read<SaveDocumentCubit>()
                 .onPressedTransaction(transaction),
             (item) => onLongPressedTransaction(context, transaction));
       }).toList(),
     );
-    return ListView.builder(
-        itemBuilder: (BuildContext context, index) {
-          var transaction = state.transactions[index];
-          return DocumentTransactionItemRow(
-              transaction,
-              (item) => context
-                  .read<SaveDocumentCubit>()
-                  .onPressedTransaction(transaction),
-              (item) => onLongPressedTransaction(context, transaction));
-        },
-        itemCount: state.transactions.length);
   }
 
   void onLongPressedTransaction(

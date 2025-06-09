@@ -43,7 +43,7 @@ class GoodsCubit extends Cubit<GoodsState> {
     required this.documentsUseCases,
 
 
-  }) : super(GoodsState.initial(state: InitialState(), settings: storage.getGoodsSetting()));
+  }) : super(GoodsState.initial(state: InitialState(), settings: appSettings.getGoodsSetting()));
   void initState(bool isSelection, Document? document) async {
     var minQuantitySettings = await appSettings.getMinimumQuantitySettings();
 
@@ -132,7 +132,7 @@ class GoodsCubit extends Cubit<GoodsState> {
   }
 
   void setSettings(GoodsSetting settings) {
-    storage.setGoodsSetting(settings);
+    appSettings.setGoodsSetting(settings);
     emit(state.copyWith(settings: settings));
     refresh();
   }

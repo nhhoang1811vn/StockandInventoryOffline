@@ -934,4 +934,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get field_reorder => 'Reorder';
+
+  @override
+  String get title_filter => 'Filter';
+
+  @override
+  String get action_reset_all => 'Reset all';
+
+  @override
+  String get action_apply => 'Apply';
+
+  @override
+  String get by_category => 'By category';
+
+  @override
+  String get by_wallet => 'By wallet';
+
+  @override
+  String get by_date => 'By date';
+
+  @override
+  String get show_all => 'Show all';
+
+  @override
+  String get start_date => 'Start date';
+
+  @override
+  String get end_date => 'End date';
 }

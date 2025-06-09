@@ -42,7 +42,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
     required this.goodUseCases,
     required this.storage,
     required this.appSettings,})
-      : super(SaveDocumentState.initial(state: InitialState(), setting: storage.getSaveDocumentSetting()));
+      : super(SaveDocumentState.initial(state: InitialState(), setting: appSettings.getSaveDocumentSetting()));
 
   void init(Document item) {
     SaveDocumentState initState = state.copyWith(
@@ -213,7 +213,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   }
 
   void setSettings(SaveDocumentSetting setting) {
-    storage.setSaveDocumentSetting(setting);
+    appSettings.setSaveDocumentSetting(setting);
     emit(state.copyWith(setting: setting));
     sort();
     filter();
@@ -315,7 +315,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
       loadTransactions();
     }
   }
-  Future<MyCompany?> getMyCompany(){
+  MyCompany? getMyCompany(){
     return appSettings.getMyCompany();
   }
 }

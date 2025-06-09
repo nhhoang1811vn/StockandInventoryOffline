@@ -6,16 +6,21 @@ import 'package:good_manager/presentation/utils.dart';
 
 class DocumentItemRow extends StatelessWidget {
   final Document item;
-  final bool showAll;
+  final Color bgColor;
+  //final bool showAll;
   final void Function(Document document) onDocumentTapped;
   final void Function(Document document) onDocumentLongPressed;
 
-  DocumentItemRow(this.showAll, this.item, this.onDocumentTapped, this.onDocumentLongPressed);
+  DocumentItemRow(
+      //this.showAll
+      this.item,
+      this.bgColor,
+      this.onDocumentTapped, this.onDocumentLongPressed);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+    return Container(
+      color: bgColor,
       child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () => onDocumentTapped(item),
@@ -29,10 +34,10 @@ class DocumentItemRow extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       color: getIndicatorColor(item.type), // Change color as needed
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        bottomLeft: Radius.circular(8),
-                      ),
+                      //borderRadius: BorderRadius.only(
+                        //topLeft: Radius.circular(8),
+                        //bottomLeft: Radius.circular(8),
+                      //),
                     ),
                   ),
                 ),
@@ -92,18 +97,18 @@ class DocumentItemRow extends StatelessWidget {
     );
   }
 
-  String getTitleText(BuildContext context, DocumentType type, String name) {
-    if (showAll) {
-      switch (type) {
-        case DocumentType.incoming:
-          return "${AppLocalizations.of(context)!.incoming_document_text} $name";
-        default:
-          return "${AppLocalizations.of(context)!.outgoing_document_text} $name";
-      }
-    } else {
-      return name;
-    }
-  }
+  // String getTitleText(BuildContext context, DocumentType type, String name) {
+  //   if (showAll) {
+  //     switch (type) {
+  //       case DocumentType.incoming:
+  //         return "${AppLocalizations.of(context)!.incoming_document_text} $name";
+  //       default:
+  //         return "${AppLocalizations.of(context)!.outgoing_document_text} $name";
+  //     }
+  //   } else {
+  //     return name;
+  //   }
+  // }
 
   Color getIndicatorColor(DocumentType type) {
     switch (type) {

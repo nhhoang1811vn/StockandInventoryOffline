@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/entities/customer.dart';
@@ -17,7 +14,6 @@ import 'package:good_manager/domain/usecases/wallets/wallet_usecases.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:injectable/injectable.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../../../../data/storage.dart';
 import '../../../../domain/entities/document.dart';
@@ -64,9 +60,9 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     required this.walletUseCases,
   }) : super(ReportDetailState.initial(state: InitialState()));
 
-  void init(AppLocalizations localizations, ReportType type, DateTime? start, DateTime? end) {
+  void init(AppLocalizations localizations, bool isNeedUpdateSelectedValue, ReportType type, DateTime? start, DateTime? end) {
     emit(state.copyWith(state: LoadingState(), type: type, start: start, end: end));
-    load(localizations);
+    load(localizations, isNeedUpdateSelectedValue);
   }
   void initColumn(List<ColumnReport> columns){
     emit(state.copyWith(columns: columns));
@@ -88,7 +84,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     return DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch - 60 * 60 * 1000); //- 60 mins
   }
 
-  void load(AppLocalizations localizations) async {
+  void load(AppLocalizations localizations, bool isNeedUpdateSelectedValue) async {
     switch (state.type) {
       case ReportType.LIST_OF_GOODS:
         await initListOfGoods(localizations);
@@ -119,16 +115,29 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       default:
         break;
     }
-    updateSetValues();
+    updateSetValuesForPickValuesColumn();
+    if (isNeedUpdateSelectedValue){
+      updateSelectedValueForPickValuesColumn();
+    }
     update(localizations);
   }
 
-  void updateSetValues() {
+  void updateSetValuesForPickValuesColumn() {
     List<ColumnReport> newColumns = state.columns;
     for (int i = 0; i < state.rows.length; i++) {
       for (int j = 0; j < newColumns.length; j++) {
         if (newColumns[j].isPickValues) {
           newColumns[j].values.add(state.rows[i][j]);
+        }
+      }
+    }
+    emit(state.copyWith(columns: newColumns));
+  }
+  void updateSelectedValueForPickValuesColumn(){
+    List<ColumnReport> newColumns = state.columns;
+    for (int i = 0; i < state.rows.length; i++) {
+      for (int j = 0; j < newColumns.length; j++) {
+        if (newColumns[j].isPickValues) {
           newColumns[j].selectedValues.add(state.rows[i][j]);
         }
       }
@@ -147,8 +156,9 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     data.add(header);
     List<List<String>> rows = state.rows;
     List<List<String>> validRows = [];
-
-    for (var row in rows) {
+    List<int?> ids = [];
+    for (int i =0; i< rows.length;i++){
+      var row = rows[i];
       var valid = true;
       for (int j = 0; j < state.columns.length; j++) {
         valid = isValid(state.columns[j], row[j]);
@@ -157,9 +167,18 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         }
       }
       if (valid) {
+        if (
+           state.type == ReportType.LIST_OF_CUSTOMER_PAYMENTS
+            || state.type == ReportType.LIST_OF_SUPPLIER_PAYMENTS
+        ){
+
+        }else{
+          ids.add(state.allIds[i]);
+        }
         validRows.add(row);
       }
     }
+    emit(state.copyWith(ids: ids));
     if (validRows.length > 0) {
       if (state.type == ReportType.LIST_OF_GOODS) {
         double totalStartPeriod = 0.0;
@@ -216,27 +235,35 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     List<Good> allGoods = await goodsUseCase.getAllByStoreId(storeId);
     allGoods.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
+    List<Good> items = [];
     for (Good good in allGoods) {
       var minQuan = 0.0;
       if (good.minQuantity != null){
         minQuan = good.minQuantity!;
       }
       if (good.quantity < minQuan){
-        var reorder = minQuan - good.quantity;
-        var amount = reorder * (good.purchasePrice??0.0);
-        List<String> row = [
-          good.name,
-          good.barCode ?? "",
-          good.quantity.toString(),
-          minQuan.toString(),
-          reorder.toString(),
-          good.purchasePrice.toString(),
-          amount.toString()
-        ];
-        rows.add(row);
+        items.add(good);
       }
     }
-    emit(state.copyWith(rows: rows));
+    for (Good item in items){
+      var minQuan = 0.0;
+      if (item.minQuantity != null){
+        minQuan = item.minQuantity!;
+      }
+      var reorder = minQuan - item.quantity;
+      var amount = reorder * (item.purchasePrice??0.0);
+      List<String> row = [
+        item.name,
+        item.barCode ?? "",
+        item.quantity.toString(),
+        minQuan.toString(),
+        reorder.toString(),
+        item.purchasePrice.toString(),
+        amount.toString()
+      ];
+      rows.add(row);
+    }
+    emit(state.copyWith(rows: rows,allIds: items.map((item) => item.id!).toList()));
   }
   Future<void> initListOfGoods(AppLocalizations localizations) async {
     List<List<String>> rows = [];
@@ -275,7 +302,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       ];
       rows.add(row);
     }
-    emit(state.copyWith(rows: rows, goods: allGoods));
+    emit(state.copyWith(rows: rows, allIds: allGoods.map((good) => good.id!).toList()));
   }
 
   Future<void> initListOfDocuments(AppLocalizations localizations) async {
@@ -291,7 +318,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       row.add(item.amount.toString());
       rows.add(row);
     }
-    emit(state.copyWith(rows: rows, documents: items));
+    emit(state.copyWith(rows: rows, allIds: items.map((document) => document.id!).toList()));
   }
 
   Future<void> initDebtBySupplier() async {
@@ -321,7 +348,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       ]);
     }
 
-    emit(state.copyWith(rows: rows, suppliers: suppliers));
+    emit(state.copyWith(rows: rows, allIds: suppliers.map((supplier) => supplier.id!).toList()));
   }
 
   Future<void> initDebtByCustomer() async {
@@ -349,7 +376,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         Config.currencyFormat.format(personTotalRemaining),
       ]);
     }
-    emit(state.copyWith(rows: rows, customers: customers));
+    emit(state.copyWith(rows: rows, allIds: customers.map((customer) => customer.id!).toList()));
   }
 
   Future<void> initPayments(AppLocalizations localizations, PaymentType type) async {
@@ -363,6 +390,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         return a.category!.name.compareTo(b.category!.name);
       });
     Map<String, double> categoryTotals = {};
+    Set<int?> categoryIds = {};
     for (Payment item in items) {
       var name = "";
       if (item.category != null) {
@@ -370,12 +398,13 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       } else {
         name = localizations.no_category;
       }
+      categoryIds.add(item.category?.id);
       categoryTotals[name] = (categoryTotals[name] ?? 0) + (item.amount ?? 0);
     }
     categoryTotals.forEach((category, total) {
       rows.add([category, Config.currencyFormat.format(total)]);
     });
-    emit(state.copyWith(rows: rows, payments: items));
+    emit(state.copyWith(rows: rows, allIds: categoryIds.toList()));
   }
 
   Future<void> initListOfWallets() async {
@@ -404,7 +433,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         Config.simpleCurrencyFormat.format(preRev + inAmount - outAmount),
       ]);
     }
-    emit(state.copyWith(rows: rows));
+    emit(state.copyWith(rows: rows, allIds: wallets.map((wallet) => wallet.id!).toList()));
   }
   Future<void> initListOfSupplierPayments() async {
     List<List<String>> rows = [];
@@ -460,24 +489,36 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     return Config.currencyFormat.format(input);
   }
 
-  Future<String?> getDownloadPath() async {
-    Directory? directory;
-    try {
-      if (Platform.isIOS) {
-        directory = await getApplicationDocumentsDirectory();
-      } else {
-        directory = Directory('/storage/emulated/0/Download');
-        // Put file in global download folder, if for an unknown reason it didn't exist, we fallback
-        // ignore: avoid_slow_async_io
-        if (!await directory.exists()) directory = await getExternalStorageDirectory();
-      }
-    } catch (err) {
-      print("Cannot get download folder path");
-    }
-    return directory?.path;
-  }
+  // Future<String?> getDownloadPath() async {
+  //   Directory? directory;
+  //   try {
+  //     if (Platform.isIOS) {
+  //       directory = await getApplicationDocumentsDirectory();
+  //     } else {
+  //       directory = Directory('/storage/emulated/0/Download');
+  //       // Put file in global download folder, if for an unknown reason it didn't exist, we fallback
+  //       // ignore: avoid_slow_async_io
+  //       if (!await directory.exists()) directory = await getExternalStorageDirectory();
+  //     }
+  //   } catch (err) {
+  //     print("Cannot get download folder path");
+  //   }
+  //   return directory?.path;
+  // }
 
   void setColumns(List<ColumnReport> columns) {
     emit(state.copyWith(columns: columns));
+  }
+  Future<Good> getGood(int id){
+    return goodsUseCase.get(id);
+  }
+  Future<Document> getDocument(int id){
+    return documentUseCases.get(id);
+  }
+  Future<Supplier> getSupplier(int id){
+    return suppliersUseCase.get(id);
+  }
+  Future<Customer> getCustomer(int id){
+    return customersUseCase.get(id);
   }
 }

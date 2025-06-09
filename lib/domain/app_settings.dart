@@ -1,10 +1,37 @@
+import 'package:good_manager/domain/entities/customers_setting.dart';
+import 'package:good_manager/domain/entities/documents_setting.dart';
+import 'package:good_manager/domain/entities/goods_setting.dart';
 import 'package:good_manager/domain/entities/minimum_quantity_settings.dart';
 import 'package:good_manager/domain/entities/my_company.dart';
+import 'package:good_manager/domain/entities/payments_setting.dart';
+import 'package:good_manager/domain/entities/save_document_setting.dart';
+import 'package:good_manager/domain/entities/stores_setting.dart';
+import 'package:good_manager/domain/entities/suppliers_setting.dart';
 
 abstract class AppSettings{
-  Future<MyCompany?> getMyCompany();
-  Future<void> setMyCompany(MyCompany obj);
-  Future<MinimumQuantitySettings> getMinimumQuantitySettings();
-  Future<void> setMinimumQuantitySettings(MinimumQuantitySettings obj);
+  MyCompany getMyCompany();
+  void setMyCompany(MyCompany obj);
+  MinimumQuantitySettings getMinimumQuantitySettings();
+  void setMinimumQuantitySettings(MinimumQuantitySettings obj);
+  SuppliersSetting getSuppliersSetting();
+  void setSuppliersSetting(SuppliersSetting obj);
+
+  CustomersSetting getCustomersSetting();
+  void setCustomersSetting(CustomersSetting obj);
+
+  GoodsSetting getGoodsSetting();
+  void setGoodsSetting(GoodsSetting obj);
+
+  DocumentsSetting getDocumentsSetting();
+  void setDocumentsSetting(DocumentsSetting obj);
+
+  StoresSetting getStoresSetting();
+  void setStoresSetting(StoresSetting obj);
+
+  SaveDocumentSetting getSaveDocumentSetting();
+  void setSaveDocumentSetting(SaveDocumentSetting obj);
+
+  PaymentsSetting getPaymentsSetting();
+  void setPaymentsSetting(PaymentsSetting obj);
 
 }

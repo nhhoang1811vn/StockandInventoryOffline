@@ -19,7 +19,7 @@ class SelectDocumentState with _$SelectDocumentState{
     required DocumentType type,
     @Default([]) List<Document> allDocuments,
     @Default([]) List<Document> documents,
-    @Default([]) List<DocumentUI> items,
+    @Default([]) List<ListItem> items,
     @Default('') String textSearch,
     required DocumentsSetting settings,
     @Default(false) bool showSearchBar}) = _Initial;

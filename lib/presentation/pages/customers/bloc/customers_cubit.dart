@@ -1,6 +1,7 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/customers_setting.dart';
 import 'package:good_manager/domain/usecases/customers/customers_usecases.dart';
@@ -18,7 +19,8 @@ part 'customers_state.dart';
 class CustomersCubit extends Cubit<CustomersState> {
   final CustomersUseCase useCase;
   final Storage storage;
-  CustomersCubit({required this.storage,required this.useCase}) : super(CustomersState.initial(state: InitialState(), settings: storage.getCustomersSetting()));
+  final AppSettings appSettings;
+  CustomersCubit({required this.appSettings,required this.storage,required this.useCase}) : super(CustomersState.initial(state: InitialState(), settings: appSettings.getCustomersSetting()));
 
   void initState(bool isSelection){
     emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection));
@@ -59,7 +61,7 @@ class CustomersCubit extends Cubit<CustomersState> {
   }
 
   void setSettings(CustomersSetting settings) {
-    storage.setCustomersSetting(settings);
+    appSettings.setCustomersSetting(settings);
     emit(state.copyWith(settings: settings));
     sort();
     filter();

@@ -5,12 +5,12 @@ import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
-import 'package:good_manager/presentation/pages/documents/components/document_date_row.dart';
-import 'package:good_manager/presentation/pages/documents/document_ui.dart';
 import 'package:good_manager/presentation/pages/documents/sort_documents_dialog.dart';
 import 'package:good_manager/presentation/pages/select_document/bloc/select_document_cubit.dart';
+import 'package:good_manager/presentation/utils.dart';
 import 'package:sprintf/sprintf.dart';
 
+import '../../models/list_item.dart';
 import '../../widgets/search_bar_widget.dart';
 import '../../widgets/selected_store_view.dart';
 import '../base/base_state.dart';
@@ -94,19 +94,19 @@ class SelectDocumentsPageState extends State<SelectDocumentsPage> {
 
   PreferredSize _buildAppBar(SelectDocumentState state) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(58.0 + 20 + (state.showSearchBar ? 65 : 0)),
+      preferredSize: Size.fromHeight(58 + 20 + (state.showSearchBar ? 81 : 0)),
       child: AppBar(
         actions: [_buildSearchMenu(state), _buildSortMenu(), _buildHelpMenu()],
         title: Text(AppLocalizations.of(context)!.title_select_document),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(58 + 20 + (state.showSearchBar ? 65 : 0)),
+          preferredSize: Size.fromHeight(58 + 20 + (state.showSearchBar ? 81 : 0)),
           child: Column(
             children: [
               SelectedStoreView(),
               Visibility(
                 visible: state.showSearchBar,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16, top : 16),
+                  padding: const EdgeInsets.all(16),
                   child: SearchBarWidget(
                     onTextChanged: (newValue) {
                       context.read<SelectDocumentCubit>().onSearchTextChanged(newValue);
@@ -115,7 +115,6 @@ class SelectDocumentsPageState extends State<SelectDocumentsPage> {
                   ),
                 ),
               ),
-              //Visibility(child: _buildSearchBar(context, state), visible: state.showSearchBar),
             ],
           ),
         ),
@@ -127,24 +126,43 @@ class SelectDocumentsPageState extends State<SelectDocumentsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(UIConstants.documentIconData, size: 64, color: Colors.orange.shade700),
+          Icon(UIConstants.documentIconData, size: 64, color: Theme.of(context).colorScheme.primary),
           SizedBox(height: 16),
           Text(AppLocalizations.of(context)!.empty_document,
               textAlign: TextAlign.center)
         ],
       );
 
-  Widget _buildListView(List<DocumentUI> items) => ListView.builder(
-      itemBuilder: (BuildContext context, index) {
-        DocumentUI item = items[index];
-        if (item.type == DocumentUIType.data) {
-          return DocumentItemRow(
-              false, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
-        } else {
-          return DocumentDateRow(item.dateText);
-        }
-      },
-      itemCount: items.length);
+  Widget _buildListView(List<ListItem> items) {
+    var flag = true;
+    return ListView.builder(
+        itemBuilder: (BuildContext context, index) {
+          ListItem item = items[index];
+          if (item is HeaderItem) {
+            flag = true;
+            return Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 8),
+                color: ColorUtils.getHeaderBgColor(context),
+                child: Text(
+                  DateFormatFactory.getDateFormat().format(item.date),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                )
+            );
+          } else if (item is DocumentListItem) {
+            flag = !flag;
+            return DocumentItemRow(
+                item.document, flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context), (item) {
+              onPressedDocument(item);
+            }, (item) {
+              onLongPressedDocument(item);
+            });
+          } else {
+            return SizedBox();
+          }
+        },
+        itemCount: items.length);
+  }
 
   Widget _buildSearchMenu(SelectDocumentState state) {
     return IconButton(

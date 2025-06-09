@@ -4,6 +4,7 @@ import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:good_manager/domain/entities/payments_setting.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/main.dart';
@@ -121,7 +122,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
   Widget build(BuildContext context) {
     context
         .read<ReportDetailCubit>()
-        .init(AppLocalizations.of(context)!, widget.type, widget.start, widget.end);
+        .init(AppLocalizations.of(context)!,true, widget.type, widget.start, widget.end);
     return BlocConsumer<ReportDetailCubit, ReportDetailState>(
         builder: (context, state) => Stack(
               children: [
@@ -282,44 +283,49 @@ class ReportDetailPageState extends State<ReportDetailPage> {
             value: value.first,
             type: flag,
             onPressed: () async {
-              if (state.type == ReportType.LIST_OF_GOODS) {
-                var good = state.goods[key - 1];
-                await Navigator.of(context).pushNamed(Pages.save_good, arguments: {'item': good});
-                //var goodId = state.goods[key - 1].id;
-                //await Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
-                context
-                    .read<ReportDetailCubit>()
-                    .init(AppLocalizations.of(context)!, widget.type, widget.start, widget.end);
-              } else if (state.type == ReportType.LIST_OF_DOCUMENT) {
-                var position = key - 1;
-                if (position >= 0 && position < state.documents.length) {
-                  var item = state.documents[position];
-                  await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+              var position = key - 1;
+              if (position >= 0 && position < state.ids.length) {
+                var id = state.ids[key - 1];
+                if (state.type == ReportType.LIST_OF_GOODS && id != null) {
+                  var good = await context.read<ReportDetailCubit>().getGood(id);
+                  await Navigator.of(context).pushNamed(Pages.save_good, arguments: {'item': good});
                   context
                       .read<ReportDetailCubit>()
-                      .init(AppLocalizations.of(context)!, widget.type, widget.start, widget.end);
+                      .init(AppLocalizations.of(context)!, false,widget.type, widget.start, widget.end);
+                }else if (state.type == ReportType.LIST_OF_DOCUMENT && id != null){
+                  var document = await context.read<ReportDetailCubit>().getDocument(id);
+                  await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': document});
+                  context
+                      .read<ReportDetailCubit>()
+                      .init(AppLocalizations.of(context)!,false, widget.type, widget.start, widget.end);
+                }else if (state.type == ReportType.DEBTS_BY_SUPPLIER && id!=null){
+                  var supplier = await context.read<ReportDetailCubit>().getSupplier(id);
+                  await Navigator.of(context).pushNamed(Pages.save_supplier, arguments: {'item': supplier});
+                  context
+                      .read<ReportDetailCubit>()
+                      .init(AppLocalizations.of(context)!, false,widget.type, widget.start, widget.end);
+                }else if (state.type == ReportType.DEBTS_BY_CUSTOMER && id != null){
+                  var customer = await context.read<ReportDetailCubit>().getCustomer(id);
+                  await Navigator.of(context).pushNamed(Pages.save_customer, arguments: {'item': customer});
+                  context
+                      .read<ReportDetailCubit>()
+                      .init(AppLocalizations.of(context)!, false,widget.type, widget.start, widget.end);
+                }else if (state.type == ReportType.INBOUND_PAYMENTS){
+                  PaymentsSetting setting = PaymentsSetting(selectedCategoryId: id, selectedWalletId: null, startDate: widget.start, endDate:  widget.end);
+                  await Navigator.of(context).pushNamed(Pages.payments, arguments: {'setting' : setting, 'initialIndex' : 1 });
+                }else if (state.type == ReportType.OUTBOUND_PAYMENTS){
+                  PaymentsSetting setting = PaymentsSetting(selectedCategoryId: id, selectedWalletId: null, startDate: widget.start, endDate:  widget.end);
+                  await Navigator.of(context).pushNamed(Pages.payments, arguments: {'setting' : setting, 'initialIndex' : 2});
+                }else if (state.type == ReportType.LIST_OF_WALLETS){
+                  PaymentsSetting setting = PaymentsSetting(selectedCategoryId: null, selectedWalletId: id, startDate: widget.start, endDate:  widget.end);
+                  await Navigator.of(context).pushNamed(Pages.payments, arguments: {'setting' : setting, 'initialIndex' : 0});
+                }else if (state.type == ReportType.RE_ORDER && id != null){
+                  var good = await context.read<ReportDetailCubit>().getGood(id);
+                  await Navigator.of(context).pushNamed(Pages.save_good, arguments: {'item': good});
+                  context
+                      .read<ReportDetailCubit>()
+                      .init(AppLocalizations.of(context)!, false,widget.type, widget.start, widget.end);
                 }
-              } else if (state.type == ReportType.DEBTS_BY_SUPPLIER) {
-                var position = key - 1;
-                var item = state.suppliers[position];
-                await Navigator.of(context).pushNamed(Pages.save_supplier, arguments: {'item': item});
-                context
-                    .read<ReportDetailCubit>()
-                    .init(AppLocalizations.of(context)!, widget.type, widget.start, widget.end);
-              } else if (state.type == ReportType.DEBTS_BY_CUSTOMER) {
-                var position = key - 1;
-                var item = state.customers[position];
-                await Navigator.of(context).pushNamed(Pages.save_customer, arguments: {'item': item});
-                context
-                    .read<ReportDetailCubit>()
-                    .init(AppLocalizations.of(context)!, widget.type, widget.start, widget.end);
-              } else if (state.type == ReportType.OUTBOUND_PAYMENTS || state.type == ReportType.INBOUND_PAYMENTS) {
-                // var position = key - 1;
-                // if (position >= 0 && position < state.payments.length){
-                //   var item = state.payments[position];
-                //   await Navigator.of(context).pushNamed(Pages.save_payment, arguments: {'item': item});
-                //   context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end);
-                // }
               }
             }));
         flag = !flag;
@@ -341,15 +347,6 @@ class ReportDetailPageState extends State<ReportDetailPage> {
               value: value[i],
               type: flag,
               onPressed: () {
-                // if (state.type == ReportType.LIST_OF_GOODS){
-                //   var goodId = state.ids[key - 1];
-                //   Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
-                //   context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
-                // }else if (state.type == ReportType.LIST_OF_DOCUMENT ||  state.type == ReportType.DEBTS_BY_CUSTOMER || state.type == ReportType.DEBTS_BY_SUPPLIER){
-                //   var item = state.documents[key -1];
-                //   Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
-                //   context.read<ReportDetailCubit>().init(context, widget.type, widget.start, widget.end, widget.groupId, widget.groupName);
-                // }
               }));
         }
       }

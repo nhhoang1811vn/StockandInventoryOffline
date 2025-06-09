@@ -1,6 +1,7 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
@@ -17,8 +18,12 @@ part 'suppliers_state.dart';
 @injectable
 class SuppliersCubit extends Cubit<SuppliersState> {
   final SuppliersUseCase useCase;
+  final AppSettings appSettings;
   final Storage storage;
-  SuppliersCubit({required this.storage,required this.useCase}) : super(SuppliersState.initial(state: InitialState(), settings: storage.getSuppliersSetting()));
+  SuppliersCubit({
+    required this.appSettings,
+    required this.storage,
+    required this.useCase}) : super(SuppliersState.initial(state: InitialState(), settings: appSettings.getSuppliersSetting()));
 
   void initState(bool isSelection){
     emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection));
@@ -76,7 +81,7 @@ class SuppliersCubit extends Cubit<SuppliersState> {
   }
 
   void setSettings(SuppliersSetting settings) {
-    storage.setSuppliersSetting(settings);
+    appSettings.setSuppliersSetting(settings);
     emit(state.copyWith(settings: settings));
     sort();
     filter();

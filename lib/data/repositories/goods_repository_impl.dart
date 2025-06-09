@@ -52,8 +52,7 @@ class GoodsRepositoryImpl implements GoodsRepository {
 
   @override
   Future<Good> get(int id) {
-    // TODO: implement get
-    throw UnimplementedError();
+    return db.findGood(id);
   }
 
   @override

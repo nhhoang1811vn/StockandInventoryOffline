@@ -1948,6 +1948,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reorder'**
   String get field_reorder;
+
+  /// No description provided for @title_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get title_filter;
+
+  /// No description provided for @action_reset_all.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset all'**
+  String get action_reset_all;
+
+  /// No description provided for @action_apply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get action_apply;
+
+  /// No description provided for @by_category.
+  ///
+  /// In en, this message translates to:
+  /// **'By category'**
+  String get by_category;
+
+  /// No description provided for @by_wallet.
+  ///
+  /// In en, this message translates to:
+  /// **'By wallet'**
+  String get by_wallet;
+
+  /// No description provided for @by_date.
+  ///
+  /// In en, this message translates to:
+  /// **'By date'**
+  String get by_date;
+
+  /// No description provided for @show_all.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all'**
+  String get show_all;
+
+  /// No description provided for @start_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Start date'**
+  String get start_date;
+
+  /// No description provided for @end_date.
+  ///
+  /// In en, this message translates to:
+  /// **'End date'**
+  String get end_date;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
+import 'package:good_manager/presentation/pages/payment/components/category_selection.dart';
 
 
 class SelectCategoryWidget extends StatefulWidget {
@@ -47,40 +48,6 @@ class SelectCategoryWidgetState extends State<SelectCategoryWidget> {
           )),
     );
   }
-  Widget _buildWidget(PaymentCategory item) {
-    bool selected = item.id == widget.selectedCategory?.id;
-    return InkWell(
-      onTap: (){
-        widget.onPressed(item);
-      },
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        decoration: selected
-            ? BoxDecoration(
-          //color: Colors.blue.shade50,
-          border: Border.all(
-            color: Colors.blue.shade700,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(16),
-        )
-            : null, // No decoration if not selected
-
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-            Text(item.icon, style: TextStyle(fontSize: 28)),
-            SizedBox(height: 4),
-            Text(
-              item.name,
-              style: Theme.of(context).textTheme.bodyMedium,
-            )
-          ])),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -107,7 +74,11 @@ class SelectCategoryWidgetState extends State<SelectCategoryWidget> {
                   ),
                   itemBuilder: (context, index) {
                     if (index < widget.categories.length){
-                      return _buildWidget(widget.categories[index]);
+                      var item = widget.categories[index];
+                      bool isSelected = item.id == widget.selectedCategory?.id;
+                      return CategorySelection(item: item, isSelected: isSelected, onPressed: (){
+                        widget.onPressed(item);
+                      });
                     }else{
                       return _buildAddCategoryWidget();
                     }
