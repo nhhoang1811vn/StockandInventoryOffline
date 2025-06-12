@@ -83,11 +83,10 @@ class DocumentItemRow extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(Utils.getQuantityText(item.quantity), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
-                      Text("${AppLocalizations.of(context)!.field_paid} : ${Config.currencyFormat.format(item.paid)}"),
-                      Text("${AppLocalizations.of(context)!.field_amount} : ${Config.currencyFormat.format(item.amount)}")
-                      //Text("Paid/Amount"),
-                      //Text("${Config.currencyFormat.format(item.paid)}/${Config.currencyFormat.format(item.amount)}")
+                      Text(Utils.getQuantityText(item.quantity), style: Theme.of(context).textTheme.titleMedium),
+                      Text("${AppLocalizations.of(context)!.field_amount}: ${Config.currencyFormat.format(item.amount)}"),
+                      Text("${AppLocalizations.of(context)!.field_paid}: ${Config.currencyFormat.format(item.paid)}"),
+                      Text("${AppLocalizations.of(context)!.field_remaining}: ${Config.currencyFormat.format(item.amount - item.paid)}"),
                     ],
                   )
                 ],),))
@@ -96,20 +95,6 @@ class DocumentItemRow extends StatelessWidget {
           )),
     );
   }
-
-  // String getTitleText(BuildContext context, DocumentType type, String name) {
-  //   if (showAll) {
-  //     switch (type) {
-  //       case DocumentType.incoming:
-  //         return "${AppLocalizations.of(context)!.incoming_document_text} $name";
-  //       default:
-  //         return "${AppLocalizations.of(context)!.outgoing_document_text} $name";
-  //     }
-  //   } else {
-  //     return name;
-  //   }
-  // }
-
   Color getIndicatorColor(DocumentType type) {
     switch (type) {
       case DocumentType.incoming:

@@ -11,6 +11,7 @@ import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
+import 'package:good_manager/presentation/utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -48,44 +49,66 @@ class ReportDetailPageState extends State<ReportDetailPage> {
     switch (type) {
       case ReportType.LIST_OF_GOODS:
         return [
-          ColumnReport(AppLocalizations.of(context)!.field_name),
-          ColumnReport(AppLocalizations.of(context)!.folder, isPickValues: true),
+          ColumnReport(AppLocalizations.of(context)!.field_name,
+              showTotalText: true),
+          ColumnReport(AppLocalizations.of(context)!.folder,
+              isPickValues: true),
           ColumnReport(AppLocalizations.of(context)!.field_bar_code),
-          ColumnReport(AppLocalizations.of(context)!.field_start_period),
-          ColumnReport(AppLocalizations.of(context)!.field_in),
-          ColumnReport(AppLocalizations.of(context)!.field_out),
-          ColumnReport(AppLocalizations.of(context)!.field_end_period)
+          ColumnReport(AppLocalizations.of(context)!.field_start_period,
+              showTotal: true),
+          ColumnReport(AppLocalizations.of(context)!.field_in, showTotal: true),
+          ColumnReport(AppLocalizations.of(context)!.field_out,
+              showTotal: true),
+          ColumnReport(AppLocalizations.of(context)!.field_end_period,
+              showTotal: true)
         ];
       case ReportType.LIST_OF_DOCUMENT:
         return [
-          ColumnReport(AppLocalizations.of(context)!.field_date),
+          ColumnReport(AppLocalizations.of(context)!.field_date,
+              showTotalText: true),
           ColumnReport(AppLocalizations.of(context)!.field_name),
-          ColumnReport(AppLocalizations.of(context)!.field_document_type, isPickValues: true),
-          ColumnReport(AppLocalizations.of(context)!.field_person_name, isPickValues: true),
-          ColumnReport(AppLocalizations.of(context)!.field_quantity),
-          ColumnReport(AppLocalizations.of(context)!.field_amount),
+          ColumnReport(AppLocalizations.of(context)!.field_document_type,
+              isPickValues: true),
+          ColumnReport(AppLocalizations.of(context)!.field_person_name,
+              isPickValues: true),
+          ColumnReport(AppLocalizations.of(context)!.field_quantity,
+              showTotal: true),
+          ColumnReport(AppLocalizations.of(context)!.field_amount,
+              showTotal: true),
         ];
       case ReportType.DEBTS_BY_SUPPLIER:
         return [
-          ColumnReport(AppLocalizations.of(context)!.field_supplier, isPickValues: true),
-          ColumnReport(AppLocalizations.of(context)!.field_amount),
-          ColumnReport(AppLocalizations.of(context)!.field_paid),
-          ColumnReport(AppLocalizations.of(context)!.field_remaining),
+          ColumnReport(AppLocalizations.of(context)!.field_supplier,
+              isPickValues: true, showTotalText: true),
+          ColumnReport(AppLocalizations.of(context)!.field_amount,
+              showTotal: true),
+          ColumnReport(AppLocalizations.of(context)!.field_paid,
+              showTotal: true),
+          ColumnReport(AppLocalizations.of(context)!.field_remaining,
+              showTotal: true),
         ];
       case ReportType.DEBTS_BY_CUSTOMER:
         return [
-          ColumnReport(AppLocalizations.of(context)!.field_customer, isPickValues: true),
-          ColumnReport(AppLocalizations.of(context)!.field_amount),
-          ColumnReport(AppLocalizations.of(context)!.field_paid),
-          ColumnReport(AppLocalizations.of(context)!.field_remaining),
+          ColumnReport(AppLocalizations.of(context)!.field_customer,
+              isPickValues: true, showTotalText: true),
+          ColumnReport(AppLocalizations.of(context)!.field_amount,
+              showTotal: true),
+          ColumnReport(AppLocalizations.of(context)!.field_paid,
+              showTotal: true),
+          ColumnReport(AppLocalizations.of(context)!.field_remaining,
+              showTotal: true),
         ];
       case ReportType.LIST_OF_WALLETS:
         return [
-          ColumnReport(AppLocalizations.of(context)!.label_wallet_name),
-          ColumnReport(AppLocalizations.of(context)!.field_start_period),
-          ColumnReport(AppLocalizations.of(context)!.field_in),
-          ColumnReport(AppLocalizations.of(context)!.field_out),
-          ColumnReport(AppLocalizations.of(context)!.field_end_period),
+          ColumnReport(AppLocalizations.of(context)!.label_wallet_name,
+              showTotalText: true),
+          ColumnReport(AppLocalizations.of(context)!.field_start_period,
+              showTotal: true),
+          ColumnReport(AppLocalizations.of(context)!.field_in, showTotal: true),
+          ColumnReport(AppLocalizations.of(context)!.field_out,
+              showTotal: true),
+          ColumnReport(AppLocalizations.of(context)!.field_end_period,
+              showTotal: true),
         ];
       case ReportType.LIST_OF_SUPPLIER_PAYMENTS:
         return [
@@ -93,40 +116,45 @@ class ReportDetailPageState extends State<ReportDetailPage> {
           ColumnReport(AppLocalizations.of(context)!.field_amount),
         ];
       case ReportType.LIST_OF_CUSTOMER_PAYMENTS:
-        return  [
+        return [
           ColumnReport(AppLocalizations.of(context)!.label_customer_name),
           ColumnReport(AppLocalizations.of(context)!.field_amount),
         ];
       case ReportType.RE_ORDER:
         return [
-          ColumnReport(AppLocalizations.of(context)!.field_name),
+          ColumnReport(AppLocalizations.of(context)!.field_name,
+              showTotalText: true),
           ColumnReport(AppLocalizations.of(context)!.field_bar_code),
-          ColumnReport(AppLocalizations.of(context)!.field_quantity),
+          ColumnReport(AppLocalizations.of(context)!.field_quantity,
+              showTotal: true),
           ColumnReport(AppLocalizations.of(context)!.field_min_quantity),
-          ColumnReport(AppLocalizations.of(context)!.field_reorder),
+          ColumnReport(AppLocalizations.of(context)!.field_reorder,
+              showTotal: true),
           ColumnReport(AppLocalizations.of(context)!.field_purchase_price),
-          ColumnReport(AppLocalizations.of(context)!.field_amount),
+          ColumnReport(AppLocalizations.of(context)!.field_amount,
+              showTotal: true),
         ];
       case ReportType.INBOUND_PAYMENTS:
       case ReportType.OUTBOUND_PAYMENTS:
         return [
-          ColumnReport(AppLocalizations.of(context)!.label_category_name, isPickValues: true),
-          ColumnReport(AppLocalizations.of(context)!.field_amount),
+          ColumnReport(AppLocalizations.of(context)!.label_category_name,
+              isPickValues: true, showTotalText: true),
+          ColumnReport(AppLocalizations.of(context)!.field_amount,
+              showTotal: true),
         ];
-      default:
-        return [];
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    context
-        .read<ReportDetailCubit>()
-        .init(AppLocalizations.of(context)!,true, widget.type, widget.start, widget.end);
+    context.read<ReportDetailCubit>().init(AppLocalizations.of(context)!, true,
+        widget.type, widget.start, widget.end);
     return BlocConsumer<ReportDetailCubit, ReportDetailState>(
         builder: (context, state) => Stack(
               children: [
-                Scaffold(appBar: _buildAppBar(context, state), body: _buildBody(context, state)),
+                Scaffold(
+                    appBar: _buildAppBar(context, state),
+                    body: _buildBody(context, state)),
               ],
             ),
         listenWhen: (p1, p2) => p1.state != p2.state,
@@ -140,7 +168,8 @@ class ReportDetailPageState extends State<ReportDetailPage> {
 
   _buildLoading() {
     return Container(
-        color: Colors.black.withValues(alpha: 125), // Semi-transparent background
+        color: Colors.black.withValues(alpha: 125),
+        // Semi-transparent background
         child: Center(
             child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -162,12 +191,16 @@ class ReportDetailPageState extends State<ReportDetailPage> {
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
         title: new Text(widget.type.getTitle(context)),
-        actions: [_buildExportExcelFileMenu(context, state), _buildPDFMenu(context, state)],
+        actions: [
+          _buildExportExcelFileMenu(context, state),
+          _buildPDFMenu(context, state)
+        ],
       ),
     );
   }
 
-  Widget _buildExportExcelFileMenu(BuildContext context, ReportDetailState state) {
+  Widget _buildExportExcelFileMenu(
+      BuildContext context, ReportDetailState state) {
     return IconButton(
         onPressed: () async {
           String fileName = '${getExportFileName(context, state)}.csv';
@@ -176,7 +209,8 @@ class ReportDetailPageState extends State<ReportDetailPage> {
         icon: FaIcon(FontAwesomeIcons.fileCsv));
   }
 
-  Future<void> saveAndExportCSV(BuildContext context, ReportDetailState state, String fileName) async {
+  Future<void> saveAndExportCSV(
+      BuildContext context, ReportDetailState state, String fileName) async {
     try {
       String csv = const ListToCsvConverter().convert(state.data);
 
@@ -201,12 +235,15 @@ class ReportDetailPageState extends State<ReportDetailPage> {
     }
   }
 
-  Future<void> saveAndExportPDF(BuildContext context, ReportDetailState state, String fileName) async {
+  Future<void> saveAndExportPDF(
+      BuildContext context, ReportDetailState state, String fileName) async {
     try {
       final pdf = pw.Document();
       final font = await PdfGoogleFonts.robotoRegular();
       pdf.addPage(
-        pw.Page(build: (pw.Context pwContext) => _buildPDFContent(context, state, font)),
+        pw.Page(
+            build: (pw.Context pwContext) =>
+                _buildPDFContent(context, state, font)),
       );
 
       final dir = await getApplicationDocumentsDirectory();
@@ -244,12 +281,14 @@ class ReportDetailPageState extends State<ReportDetailPage> {
     return name;
   }
 
-  pw.Widget _buildPDFContent(BuildContext context, ReportDetailState state, pw.Font font) {
+  pw.Widget _buildPDFContent(
+      BuildContext context, ReportDetailState state, pw.Font font) {
     var storeInfoText = getStoreInfoText();
     var periodInfoText = getPeriodInfoText(state);
     return pw.Column(children: [
       pw.Text(storeInfoText, style: pw.TextStyle(font: font)),
-      if (periodInfoText.isNotEmpty) pw.Text(periodInfoText, style: pw.TextStyle(font: font)),
+      if (periodInfoText.isNotEmpty)
+        pw.Text(periodInfoText, style: pw.TextStyle(font: font)),
       pw.SizedBox(height: 16.0),
       pw.Table(
           border: pw.TableBorder.all(color: PdfColors.grey),
@@ -258,7 +297,9 @@ class ReportDetailPageState extends State<ReportDetailPage> {
             ...List.generate(
                 state.data.length,
                 (indexI) => pw.TableRow(
-                        decoration: pw.BoxDecoration(color: indexI == 0 ? PdfColors.blue : PdfColors.white),
+                        decoration: pw.BoxDecoration(
+                            color:
+                                indexI == 0 ? PdfColors.blue : PdfColors.white),
                         children: [
                           ...List.generate(
                               state.data[indexI].length,
@@ -266,13 +307,17 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                                   padding: pw.EdgeInsets.all(8.0),
                                   child: pw.Text(state.data[indexI][indexJ],
                                       style: pw.TextStyle(
-                                          font: font, color: indexI == 0 ? PdfColors.white : PdfColors.black))))
+                                          font: font,
+                                          color: indexI == 0
+                                              ? PdfColors.white
+                                              : PdfColors.black))))
                         ]))
           ])
     ]);
   }
 
-  List<Widget> _buildFirstColumn(BuildContext context, ReportDetailState state) {
+  List<Widget> _buildFirstColumn(
+      BuildContext context, ReportDetailState state) {
     List<Widget> results = [];
     bool flag = true;
     state.data.asMap().forEach((key, value) {
@@ -287,44 +332,89 @@ class ReportDetailPageState extends State<ReportDetailPage> {
               if (position >= 0 && position < state.ids.length) {
                 var id = state.ids[key - 1];
                 if (state.type == ReportType.LIST_OF_GOODS && id != null) {
-                  var good = await context.read<ReportDetailCubit>().getGood(id);
-                  await Navigator.of(context).pushNamed(Pages.save_good, arguments: {'item': good});
-                  context
-                      .read<ReportDetailCubit>()
-                      .init(AppLocalizations.of(context)!, false,widget.type, widget.start, widget.end);
-                }else if (state.type == ReportType.LIST_OF_DOCUMENT && id != null){
-                  var document = await context.read<ReportDetailCubit>().getDocument(id);
-                  await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': document});
-                  context
-                      .read<ReportDetailCubit>()
-                      .init(AppLocalizations.of(context)!,false, widget.type, widget.start, widget.end);
-                }else if (state.type == ReportType.DEBTS_BY_SUPPLIER && id!=null){
-                  var supplier = await context.read<ReportDetailCubit>().getSupplier(id);
-                  await Navigator.of(context).pushNamed(Pages.save_supplier, arguments: {'item': supplier});
-                  context
-                      .read<ReportDetailCubit>()
-                      .init(AppLocalizations.of(context)!, false,widget.type, widget.start, widget.end);
-                }else if (state.type == ReportType.DEBTS_BY_CUSTOMER && id != null){
-                  var customer = await context.read<ReportDetailCubit>().getCustomer(id);
-                  await Navigator.of(context).pushNamed(Pages.save_customer, arguments: {'item': customer});
-                  context
-                      .read<ReportDetailCubit>()
-                      .init(AppLocalizations.of(context)!, false,widget.type, widget.start, widget.end);
-                }else if (state.type == ReportType.INBOUND_PAYMENTS){
-                  PaymentsSetting setting = PaymentsSetting(selectedCategoryId: id, selectedWalletId: null, startDate: widget.start, endDate:  widget.end);
-                  await Navigator.of(context).pushNamed(Pages.payments, arguments: {'setting' : setting, 'initialIndex' : 1 });
-                }else if (state.type == ReportType.OUTBOUND_PAYMENTS){
-                  PaymentsSetting setting = PaymentsSetting(selectedCategoryId: id, selectedWalletId: null, startDate: widget.start, endDate:  widget.end);
-                  await Navigator.of(context).pushNamed(Pages.payments, arguments: {'setting' : setting, 'initialIndex' : 2});
-                }else if (state.type == ReportType.LIST_OF_WALLETS){
-                  PaymentsSetting setting = PaymentsSetting(selectedCategoryId: null, selectedWalletId: id, startDate: widget.start, endDate:  widget.end);
-                  await Navigator.of(context).pushNamed(Pages.payments, arguments: {'setting' : setting, 'initialIndex' : 0});
-                }else if (state.type == ReportType.RE_ORDER && id != null){
-                  var good = await context.read<ReportDetailCubit>().getGood(id);
-                  await Navigator.of(context).pushNamed(Pages.save_good, arguments: {'item': good});
-                  context
-                      .read<ReportDetailCubit>()
-                      .init(AppLocalizations.of(context)!, false,widget.type, widget.start, widget.end);
+                  await Navigator.of(context).pushNamed(Pages.good_history,
+                      arguments: {
+                        'goodId': id,
+                        'start': widget.start,
+                        'end': widget.end
+                      });
+                  context.read<ReportDetailCubit>().init(
+                      AppLocalizations.of(context)!,
+                      false,
+                      widget.type,
+                      widget.start,
+                      widget.end);
+                } else if (state.type == ReportType.LIST_OF_DOCUMENT &&
+                    id != null) {
+                  var document =
+                      await context.read<ReportDetailCubit>().getDocument(id);
+                  await Navigator.of(context).pushNamed(Pages.save_document,
+                      arguments: {'item': document});
+                  context.read<ReportDetailCubit>().init(
+                      AppLocalizations.of(context)!,
+                      false,
+                      widget.type,
+                      widget.start,
+                      widget.end);
+                } else if (state.type == ReportType.DEBTS_BY_SUPPLIER &&
+                    id != null) {
+                  // var supplier =
+                  //     await context.read<ReportDetailCubit>().getSupplier(id);
+                  // await Navigator.of(context).pushNamed(Pages.save_supplier,
+                  //     arguments: {'item': supplier});
+                  // context.read<ReportDetailCubit>().init(
+                  //     AppLocalizations.of(context)!,
+                  //     false,
+                  //     widget.type,
+                  //     widget.start,
+                  //     widget.end);
+                } else if (state.type == ReportType.DEBTS_BY_CUSTOMER &&
+                    id != null) {
+                  // var customer =
+                  //     await context.read<ReportDetailCubit>().getCustomer(id);
+                  // await Navigator.of(context).pushNamed(Pages.save_customer,
+                  //     arguments: {'item': customer});
+                  // context.read<ReportDetailCubit>().init(
+                  //     AppLocalizations.of(context)!,
+                  //     false,
+                  //     widget.type,
+                  //     widget.start,
+                  //     widget.end);
+                } else if (state.type == ReportType.INBOUND_PAYMENTS) {
+                  PaymentsSetting setting = PaymentsSetting(
+                      selectedCategoryId: id,
+                      selectedWalletId: null,
+                      startDate: widget.start,
+                      endDate: widget.end);
+                  await Navigator.of(context).pushNamed(Pages.payments,
+                      arguments: {'setting': setting, 'initialIndex': 1});
+                } else if (state.type == ReportType.OUTBOUND_PAYMENTS) {
+                  PaymentsSetting setting = PaymentsSetting(
+                      selectedCategoryId: id,
+                      selectedWalletId: null,
+                      startDate: widget.start,
+                      endDate: widget.end);
+                  await Navigator.of(context).pushNamed(Pages.payments,
+                      arguments: {'setting': setting, 'initialIndex': 2});
+                } else if (state.type == ReportType.LIST_OF_WALLETS) {
+                  PaymentsSetting setting = PaymentsSetting(
+                      selectedCategoryId: null,
+                      selectedWalletId: id,
+                      startDate: widget.start,
+                      endDate: widget.end);
+                  await Navigator.of(context).pushNamed(Pages.payments,
+                      arguments: {'setting': setting, 'initialIndex': 0});
+                } else if (state.type == ReportType.RE_ORDER && id != null) {
+                  var good =
+                      await context.read<ReportDetailCubit>().getGood(id);
+                  await Navigator.of(context)
+                      .pushNamed(Pages.save_good, arguments: {'item': good});
+                  context.read<ReportDetailCubit>().init(
+                      AppLocalizations.of(context)!,
+                      false,
+                      widget.type,
+                      widget.start,
+                      widget.end);
                 }
               }
             }));
@@ -343,11 +433,8 @@ class ReportDetailPageState extends State<ReportDetailPage> {
         if (key == 0) {
           rows.add(_buildHighlightCell(value: value[i]));
         } else {
-          rows.add(_buildNormalCell(
-              value: value[i],
-              type: flag,
-              onPressed: () {
-              }));
+          rows.add(
+              _buildNormalCell(value: value[i], type: flag, onPressed: () {}));
         }
       }
       flag = !flag;
@@ -398,38 +485,25 @@ class ReportDetailPageState extends State<ReportDetailPage> {
   Widget _buildHighlightCell({String value = ""}) {
     return _buildCell(
         value: value,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        textColor: Colors.white,
+        //bac
+        backgroundColor: ColorUtils.getHeaderBgColor(context),
+        //textColor: Colors.white,
         fontWeight: FontWeight.w600);
   }
 
-  Widget _buildNormalCell({String value = "", bool type = true, Function()? onPressed = null}) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    var backgroundColor1;
-    var backgroundColor2;
-    var textColor;
-    if (isDarkMode) {
-      backgroundColor1 = Colors.grey.shade800;
-      backgroundColor2 = Colors.grey.shade600;
-      textColor = Colors.white;
-    } else {
-      backgroundColor1 = Colors.grey.shade200;
-      backgroundColor2 = Colors.grey.shade400;
-      textColor = Colors.black;
-    }
+  Widget _buildNormalCell(
+      {String value = "", bool type = true, Function()? onPressed = null}) {
     if (type) {
       return _buildCell(
         value: value,
-        backgroundColor: backgroundColor1,
-        textColor: textColor,
+        backgroundColor: ColorUtils.getItemBgColor1(context),
         fontWeight: FontWeight.w400,
         onPressed: onPressed,
       );
     } else {
       return _buildCell(
         value: value,
-        backgroundColor: backgroundColor2,
-        textColor: textColor,
+        backgroundColor: ColorUtils.getItemBgColor2(context),
         fontWeight: FontWeight.w400,
         onPressed: onPressed,
       );
@@ -438,9 +512,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
 
   Widget _buildCell({
     String value = "",
-    //double width = MIN_WIDTH_CELL,
     required Color backgroundColor,
-    required Color textColor,
     required FontWeight fontWeight,
     Function()? onPressed = null,
   }) {
@@ -456,20 +528,22 @@ class ReportDetailPageState extends State<ReportDetailPage> {
           value,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(color: textColor, fontSize: 12, fontWeight: fontWeight),
+          style: TextStyle(fontSize: 12, fontWeight: fontWeight),
         ),
       ),
     );
   }
 
   String getStoreInfoText() {
-    return sprintf(AppLocalizations.of(context)!.report_detail_store, [storage.getSelectedStoreName()]);
+    return sprintf(AppLocalizations.of(context)!.report_detail_store,
+        [storage.getSelectedStoreName()]);
   }
 
   String getPeriodInfoText(ReportDetailState state) {
     var periodInfoText = "";
     if (state.start != null && state.end != null) {
-      periodInfoText = sprintf(AppLocalizations.of(context)!.report_detail_period_time, [
+      periodInfoText =
+          sprintf(AppLocalizations.of(context)!.report_detail_period_time, [
         DateFormatFactory.getDateFormat().format(state.start!),
         DateFormatFactory.getDateFormat().format(state.end!),
       ]);
@@ -491,7 +565,10 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [Text(storeInfoText), if (periodInfoText.isNotEmpty) Text(periodInfoText)],
+                  children: [
+                    Text(storeInfoText),
+                    if (periodInfoText.isNotEmpty) Text(periodInfoText)
+                  ],
                 ),
               )),
               IconButton(
@@ -502,8 +579,12 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                           return ColumnDisplayDialog(columns: state.columns);
                         });
                     if (updatedColumns != null) {
-                      context.read<ReportDetailCubit>().setColumns(updatedColumns);
-                      context.read<ReportDetailCubit>().update(AppLocalizations.of(context)!);
+                      context
+                          .read<ReportDetailCubit>()
+                          .setColumns(updatedColumns);
+                      context
+                          .read<ReportDetailCubit>()
+                          .update(AppLocalizations.of(context)!);
                     }
                   },
                   icon: Icon(Icons.settings)),
@@ -531,7 +612,9 @@ class ReportDetailPageState extends State<ReportDetailPage> {
           Flexible(
               child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: _buildRows(context, state))))
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: _buildRows(context, state))))
         ],
       ),
     );

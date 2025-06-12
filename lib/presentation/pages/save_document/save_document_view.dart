@@ -25,8 +25,6 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
-
 import '../../../domain/entities/supplier.dart';
 import '../../style_size.dart';
 import '../../widgets/search_bar_widget.dart';
@@ -120,13 +118,8 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
               context.read<SaveDocumentCubit>().loadTransactions();
             }
           } else if (state.state is OpenBarcodeScannerPageState) {
-            var result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SimpleBarcodeScannerPage(),
-                ));
-            if (result != "-1") {
-              Utils.handleABarcodeFound();
+            var result = await Utils.scanBarcode(context);
+            if (result != null) {
               context.read<SaveDocumentCubit>().findGood(result);
             }
           } else if (state.state is OpenHelpPageState) {
@@ -187,21 +180,6 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
               context.read<SaveDocumentCubit>().onBatchScanMenuClicked();
             }
           }
-          // else if (state.state is OpenBarcodeScannerToSearchState) {
-          //   //open bar code scanner to fill search text box
-          //   var result = await Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //         builder: (context) => const SimpleBarcodeScannerPage(),
-          //       ));
-          //   if (result != "-1") {
-          //     Utils.handleABarcodeFound();
-          //     //searchTextController.text = result;
-          //     context.read<SaveDocumentCubit>().onSearchTextChanged(result);
-          //   } else {
-          //     ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
-          //   }
-          // }
         },
         listenWhen: (state1, state2) => state1.state != state2.state,
         builder: (context, state) => Scaffold(
@@ -216,7 +194,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                         Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
-                            color: ColorUtils.getHeaderBgColor(context),
+                            //color: ColorUtils.getHeaderBgColor(context),
                             child: Text(
                                 AppLocalizations.of(context)!
                                     .document_information,
@@ -320,7 +298,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                         Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
-                            color: ColorUtils.getHeaderBgColor(context),
+                            //color: ColorUtils.getHeaderBgColor(context),
                             child: Text(
                                 AppLocalizations.of(context)!.goods_information,
                                 style: Theme.of(context)
@@ -330,7 +308,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                         Visibility(
                           visible: state.showSearchBar,
                           child: Padding(
-                            padding: EdgeInsets.only(bottom: 16.0),
+                            padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16),
                             child: SearchBarWidget(
                               onTextChanged: (newValue) {
                                 context

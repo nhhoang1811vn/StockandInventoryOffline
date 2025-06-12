@@ -5,6 +5,8 @@ import 'package:good_manager/presentation/pages/barcode_scanner/barcode_scanner_
 import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart';
 import 'package:good_manager/presentation/pages/customers/bloc/bloc.dart';
 import 'package:good_manager/presentation/pages/customers/customers_page.dart';
+import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.dart';
+import 'package:good_manager/presentation/pages/documents/documents_view.dart';
 import 'package:good_manager/presentation/pages/forgotpassword/forgot_password_page.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/goods_view.dart';
@@ -45,8 +47,6 @@ import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier
 import 'package:good_manager/presentation/pages/save_supplier/save_supplier_page.dart';
 import 'package:good_manager/presentation/pages/save_wallet/bloc/save_wallet_cubit.dart';
 import 'package:good_manager/presentation/pages/save_wallet/save_wallet_page.dart';
-import 'package:good_manager/presentation/pages/select_document/bloc/select_document_cubit.dart';
-import 'package:good_manager/presentation/pages/select_document/select_documents_page.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 import 'package:good_manager/presentation/pages/select_group/select_group_page.dart';
 import 'package:good_manager/presentation/pages/settings/data/settings_data_page.dart';
@@ -96,13 +96,20 @@ class AppRouter {
                 ));
       case Pages.main:
         return MaterialPageRoute(builder: (_) => MainPage());
-      case Pages.select_document:
+      case Pages.document_list:
         Map<dynamic, dynamic> args = settings.arguments as Map;
-        return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-              create: (context) => getIt<SelectDocumentCubit>(),
-              child: SelectDocumentsPage(documentType: args["documentType"],),
-            ));
+          return MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => getIt<DocumentsCubit>(),
+                child: DocumentsPage(key: UniqueKey(),documentType: args["documentType"], isSelection: args["isSelection"],),
+              ));
+      // case Pages.select_document:
+      //   Map<dynamic, dynamic> args = settings.arguments as Map;
+      //   return MaterialPageRoute(
+      //       builder: (_) => BlocProvider(
+      //         create: (context) => getIt<SelectDocumentCubit>(),
+      //         child: SelectDocumentsPage(documentType: args["documentType"],),
+      //       ));
       case Pages.save_document:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(

@@ -13,10 +13,10 @@ import 'category_selection.dart';
 
 class FilterPaymentWidget extends StatefulWidget{
   final void Function() onResetAllPressed;
-  List<PaymentCategory> categories;
-  List<Wallet> wallets;
+  final List<PaymentCategory> categories;
+  final List<Wallet> wallets;
   final void Function(PaymentsSetting setting) onApplyPressed;
-  PaymentsSetting setting;
+  final PaymentsSetting setting;
   FilterPaymentWidget({
     required this.onResetAllPressed,
     required this.categories,

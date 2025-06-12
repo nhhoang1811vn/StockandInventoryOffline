@@ -45,8 +45,8 @@ class PaymentCategoriesPageState extends State<PaymentCategoriesPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(AppLocalizations.of(context)!.inbound_categories, style: Theme.of(context).textTheme.titleMedium,),
-            CategoriesGridView(categories: state.inboundCategories, onAddNewButtonPressed: () async{
+            //Text(, style: Theme.of(context).textTheme.titleMedium,),
+            CategoriesGridView(header: AppLocalizations.of(context)!.inbound_categories,categories: state.inboundCategories, onAddNewButtonPressed: () async{
               PaymentCategory item = PaymentCategory();
               item.type = PaymentType.inbound;
               funcA(item);
@@ -56,8 +56,8 @@ class PaymentCategoriesPageState extends State<PaymentCategoriesPage> {
               _showCategoryOptionsDialog(category);
             },),
             SizedBox(height: 16,),
-            Text(AppLocalizations.of(context)!.outbound_categories,  style: Theme.of(context).textTheme.titleMedium),
-            CategoriesGridView(categories: state.outboundCategories,onAddNewButtonPressed:  () async{
+            //Text(,  style: Theme.of(context).textTheme.titleMedium),
+            CategoriesGridView(header: AppLocalizations.of(context)!.outbound_categories, categories: state.outboundCategories,onAddNewButtonPressed:  () async{
               PaymentCategory item = PaymentCategory();
               item.type = PaymentType.outbound;
               funcA(item);

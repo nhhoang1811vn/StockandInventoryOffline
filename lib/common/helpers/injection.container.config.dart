@@ -138,8 +138,6 @@ import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier
     as _i340;
 import 'package:good_manager/presentation/pages/save_wallet/bloc/save_wallet_cubit.dart'
     as _i1001;
-import 'package:good_manager/presentation/pages/select_document/bloc/select_document_cubit.dart'
-    as _i42;
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart'
     as _i664;
 import 'package:good_manager/presentation/pages/settings/bloc/settings_cubit.dart'
@@ -251,6 +249,12 @@ extension GetItInjectableX on _i174.GetIt {
           useCase: gh<_i579.StoresUseCase>(),
           storage: gh<_i72.Storage>(),
         ));
+    gh.factory<_i425.ItemHistoryCubit>(() => _i425.ItemHistoryCubit(
+          useCases: gh<_i137.GoodHistoryUseCases>(),
+          documentUseCases: gh<_i231.DocumentUseCases>(),
+          documentTransactionRepository:
+              gh<_i769.DocumentTransactionRepository>(),
+        ));
     gh.factory<_i984.GroupsUseCases>(() =>
         _i260.GroupsUseCaseImpl(repository: gh<_i990.GroupsRepository>()));
     gh.factory<_i1001.SaveWalletCubit>(() => _i1001.SaveWalletCubit(
@@ -260,8 +264,6 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i218.SaleReportCubit>(
         () => _i218.SaleReportCubit(useCase: gh<_i886.PaymentUseCases>()));
-    gh.factory<_i425.ItemHistoryCubit>(() =>
-        _i425.ItemHistoryCubit(useCases: gh<_i137.GoodHistoryUseCases>()));
     gh.factory<_i31.GoodsUseCases>(() => _i40.GoodsUseCaseImpl(
           repository: gh<_i585.GoodsRepository>(),
           documentTransactionRepository:
@@ -303,11 +305,6 @@ extension GetItInjectableX on _i174.GetIt {
           goodsUseCase: gh<_i31.GoodsUseCases>(),
           groupsUseCase: gh<_i984.GroupsUseCases>(),
           documentsUseCases: gh<_i231.DocumentUseCases>(),
-        ));
-    gh.factory<_i42.SelectDocumentCubit>(() => _i42.SelectDocumentCubit(
-          appSettings: gh<_i39.AppSettings>(),
-          storage: gh<_i72.Storage>(),
-          useCase: gh<_i231.DocumentUseCases>(),
         ));
     gh.factory<_i194.MinimumQuantityCubit>(
         () => _i194.MinimumQuantityCubit(appSettings: gh<_i39.AppSettings>()));

@@ -4,8 +4,8 @@ import 'package:good_manager/domain/entities/wallet.dart';
 import '../../../constants.dart';
 
 class WalletSelection extends StatelessWidget {
-  Wallet item;
-  bool isSelected;
+  final Wallet item;
+  final bool isSelected;
   final void Function() onPressed;
 
   WalletSelection({

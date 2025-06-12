@@ -5,6 +5,8 @@ import 'package:good_manager/domain/entities/good_history.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 class ItemHistoryRow extends StatelessWidget{
   final GoodHistory item;
   final Color bgColor;
@@ -85,7 +87,8 @@ class ItemHistoryRow extends StatelessWidget{
                     children: [
                       Text(quantityText, style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                       //Text("Paid/Amount"),
-                      Text(item.amount.toString())
+                      Text("${AppLocalizations.of(context)!.field_amount}: ${Config.currencyFormat.format(item.amount)}"),
+                      //Text(item.amount.toString())
                     ],
                   )
                 ],),))

@@ -18,9 +18,7 @@ class MDProviderIpmVN extends MDProvider{
         return MarkdownResourceVN.helpPayments;
       case HelpType.MIN_QUAN:
         return MarkdownResourceVN.helpMinQuan;
-      default:
-        return '';
-    }
+      }
   }
 
   @override

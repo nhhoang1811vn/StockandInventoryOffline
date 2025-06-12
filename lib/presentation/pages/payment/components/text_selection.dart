@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppTextSelection extends StatelessWidget {
-  String item;
-  bool isSelected;
+  final String item;
+  final bool isSelected;
   final void Function() onPressed;
 
   AppTextSelection({

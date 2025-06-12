@@ -24,9 +24,9 @@ class DocumentTransactionItemRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         onTap: () => onTransactionPressed(item),
         onLongPress : () => onTransactionLongPressed(item),
-        child: Padding(padding: EdgeInsets.all(16.0), child: Row(children: [
+        child: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16.0), child: Row(children: [
           _buildLeadingWidget(context),
-          SizedBox(width: 8,),
+          SizedBox(width: 16),
           Expanded(child: _buildWidget(context))
         ],),),),
     );
@@ -94,9 +94,9 @@ class DocumentTransactionItemRow extends StatelessWidget {
     ]));
   }
   Widget getAvatarWidget(Uint8List bytes) {
-    return SizedBox(width: 48, height: 48, child: Image.memory(bytes));
+    return SizedBox(width: 36, height: 48, child: Image.memory(bytes, fit: BoxFit.cover,));
   }
   Widget _buildEmptyAvatarWidget(BuildContext context){
-    return Icon(UIConstants.goodIconData, size: 32, color: Theme.of(context).colorScheme.primary);
+    return Icon(UIConstants.goodIconData, size: 36, color: Theme.of(context).colorScheme.primary);
   }
 }

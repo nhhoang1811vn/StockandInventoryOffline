@@ -16,7 +16,6 @@ import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:intl/intl.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../../presentation/widgets/snackbar_widgets.dart';
@@ -76,14 +75,8 @@ class SaveGoodForm extends StatelessWidget {
             salePriceTextController.text = Config.simpleCurrencyFormat.format(p0);
           });
         } else if (state.state is OpenBarcodeScannerPageState) {
-          var result = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SimpleBarcodeScannerPage(),
-              ));
-          if (result != "-1") {
-            Utils.handleABarcodeFound();
-            //barcodeTextController.text = result;
+          var result = await Utils.scanBarcode(context);
+          if (result != null) {
             context.read<SaveGoodCubit>().barCodeChanged(result);
           }
         } else if (state.state is OpenHistoryPageState) {

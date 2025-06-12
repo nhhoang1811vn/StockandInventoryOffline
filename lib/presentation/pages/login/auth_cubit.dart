@@ -150,7 +150,8 @@ class AuthCubit extends Cubit<AuthState> {
       final appleProvider = AppleAuthProvider();
       appleProvider.addScope('email');
       appleProvider.addScope('name');
-      final userCredential = await _auth.signInWithProvider(appleProvider);
+      await _auth.signInWithProvider(appleProvider);
+      //final userCredential = await _auth.signInWithProvider(appleProvider);
       //print(userCredential.credential?.accessToken);
       //print(userCredential.user?.email);
       //print(userCredential.user?.emailVerified);

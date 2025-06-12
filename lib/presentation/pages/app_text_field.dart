@@ -47,8 +47,8 @@ class AppTextField extends StatelessWidget {
 
 
     final borderColor = isDark ? Colors.white70 : Colors.black;
-    final textColor = isDark ? Colors.white : Colors.black;
-    final hintColor = isDark ? Colors.white54 : Colors.black54;
+    //final textColor = isDark ? Colors.white : Colors.black;
+    //final hintColor = isDark ? Colors.white54 : Colors.black54;
 
     OutlineInputBorder border = OutlineInputBorder(
       borderSide: BorderSide(color: borderColor, width: 1.0),

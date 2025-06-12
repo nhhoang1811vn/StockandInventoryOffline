@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
 
 class CategorySelection extends StatelessWidget {
-  PaymentCategory item;
-  bool isSelected;
+  final PaymentCategory item;
+  final bool isSelected;
   final void Function() onPressed;
   final void Function()? onLongPressed;
 

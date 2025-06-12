@@ -55,14 +55,22 @@ class SaveGoodPageState extends State<SaveGoodPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(AppLocalizations.of(context)!.good_information,
-                              style: Theme.of(context).textTheme.titleMedium),
-                          Card(
-                            child: Padding(padding: EdgeInsets.all(16),child: SaveGoodForm()),
-                          ),
+                          //Text(AppLocalizations.of(context)!.good_information,
+                          //    style: Theme.of(context).textTheme.titleMedium),
+                          SaveGoodForm(),
                           SizedBox(height: 16,),
-                          Text(AppLocalizations.of(context)!.images_information,
-                              style: Theme.of(context).textTheme.titleMedium),
+                          Container(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              //color: ColorUtils.getHeaderBgColor(context),
+                              child: Text(
+                                  AppLocalizations.of(context)!
+                                      .images_information,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(fontWeight: FontWeight.bold))),
+                          //Text(AppLocalizations.of(context)!.images_information,
+                          //    style: Theme.of(context).textTheme.titleMedium),
                           Card(
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
@@ -76,7 +84,7 @@ class SaveGoodPageState extends State<SaveGoodPage> {
                 Container(
                   width: double.infinity,
                   color: Theme.of(context).colorScheme.surface,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: EdgeInsets.all(16),
                   child: PrimaryButton(AppLocalizations.of(context)!.action_save, () {
                     context.read<SaveGoodCubit>().onSaveClicked();
                   }),

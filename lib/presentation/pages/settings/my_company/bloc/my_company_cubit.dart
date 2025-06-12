@@ -18,17 +18,15 @@ class MyCompanyCubit extends Cubit<MyCompanyState> {
 
   Future<void> init() async{
     final item = await appSettings.getMyCompany();
-    if (item != null){
-      emit(state.copyWith(
-          companyName: item.companyName,
-          address: item.address,
-        email: item.email,
-        phone: item.phone,
-        taxID: item.taxId,
-        bankDetails: item.bankDetails,
-      ));
+    emit(state.copyWith(
+        companyName: item.companyName,
+        address: item.address,
+      email: item.email,
+      phone: item.phone,
+      taxID: item.taxId,
+      bankDetails: item.bankDetails,
+    ));
     }
-  }
   void onSaveButtonClicked(){
     MyCompany obj = MyCompany(companyName: state.companyName, address: state.address, email: state.email, phone: state.phone, taxId: state.taxID, bankDetails: state.bankDetails);
     appSettings.setMyCompany(obj);

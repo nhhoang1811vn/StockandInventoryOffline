@@ -31,15 +31,13 @@ class SaveStorePageState extends State<SaveStorePage> {
               padding: const EdgeInsets.all(UIConstants.screenSpace),
               child: Column(
                 children: [
-                  Card(
-                    child: SaveStoreForm(item: widget.item),
-                  )
+                  SaveStoreForm(item: widget.item)
                 ],
               ),
             )),
         Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.all(16),
           color: Theme.of(context).colorScheme.surface,
           child: PrimaryButton(AppLocalizations.of(context)!.action_save, () {
             context.read<SaveStoreCubit>().onSaveClicked();

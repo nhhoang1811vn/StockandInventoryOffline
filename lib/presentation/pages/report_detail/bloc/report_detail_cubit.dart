@@ -11,9 +11,11 @@ import 'package:good_manager/domain/usecases/groups/groups_usecases.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
 import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart';
 import 'package:good_manager/domain/usecases/wallets/wallet_usecases.dart';
+import 'package:good_manager/extension/date_time_apis.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:injectable/injectable.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../data/storage.dart';
 import '../../../../domain/entities/document.dart';
@@ -32,8 +34,10 @@ class ColumnReport {
   bool isPickValues = false;
   Set<String> values = {};
   Set<String> selectedValues = {};
+  bool showTotalText = false;
+  bool showTotal = false;
 
-  ColumnReport(this.title, {this.isPickValues = false});
+  ColumnReport(this.title, {this.isPickValues = false, this.showTotalText = false, this.showTotal = false});
 }
 
 @injectable
@@ -67,22 +71,36 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
   void initColumn(List<ColumnReport> columns){
     emit(state.copyWith(columns: columns));
   }
-
-  Future<double> getQuantity(int goodId, List<Document> documents) async {
+  Future<double> getSumQuantityIncoming(int goodId, List<Document> documents) async{
     double incoming = 0.0;
+    for (Document document in documents) {
+      incoming += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(DocumentType.incoming, goodId, document.id!);
+    }
+    return incoming;
+  }
+  Future<double> getSumQuantityOutgoing(int goodId, List<Document> documents) async{
     double outgoing = 0.0;
     for (Document document in documents) {
-      incoming += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(
-          DocumentType.incoming, goodId, document.id!);
-      outgoing += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(
-          DocumentType.outgoing, goodId, document.id!);
+      outgoing += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(DocumentType.outgoing, goodId, document.id!);
     }
-    return incoming - outgoing;
+    return outgoing;
   }
 
-  DateTime getPreviousHour(DateTime date) {
-    return DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch - 60 * 60 * 1000); //- 60 mins
-  }
+  // Future<double> getQuantity(int goodId, List<Document> documents) async {
+  //   double incoming = 0.0;
+  //   double outgoing = 0.0;
+  //   for (Document document in documents) {
+  //     incoming += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(
+  //         DocumentType.incoming, goodId, document.id!);
+  //     outgoing += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(
+  //         DocumentType.outgoing, goodId, document.id!);
+  //   }
+  //   return incoming - outgoing;
+  // }
+
+  //DateTime getPreviousHour(DateTime date) {
+  //  return DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch - 60 * 60 * 1000); //- 60 mins
+ // }
 
   void load(AppLocalizations localizations, bool isNeedUpdateSelectedValue) async {
     switch (state.type) {
@@ -180,36 +198,22 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     }
     emit(state.copyWith(ids: ids));
     if (validRows.length > 0) {
-      if (state.type == ReportType.LIST_OF_GOODS) {
-        double totalStartPeriod = 0.0;
-        double totalIn = 0.0;
-        double totalOut = 0.0;
-        double totalEndPeriod = 0.0;
-        for (int i = 0; i < validRows.length; i++) {
-          totalStartPeriod += double.parse(validRows[i][3]);
-          totalIn += double.parse(validRows[i][4]);
-          totalOut += double.parse(validRows[i][5]);
-          totalEndPeriod += double.parse(validRows[i][6]);
+      List<String> totalRow = [];
+      for (int i = 0; i < state.columns.length; i++) {
+        if (state.columns[i].showTotalText){
+          totalRow.add(localizations.field_total);
         }
-        validRows.add([
-          localizations.field_total,
-          "",
-          "",
-          totalStartPeriod.toString(),
-          totalIn.toString(),
-          totalOut.toString(),
-          totalEndPeriod.toString()
-        ]);
-      } else if (state.type == ReportType.LIST_OF_DOCUMENT) {
-        double totalQuantity = 0.0;
-        double totalAmount = 0.0;
-        for (int i = 0; i < validRows.length; i++) {
-          totalQuantity += double.parse(validRows[i][4]);
-          totalAmount += double.parse(validRows[i][5]);
+        else if (state.columns[i].showTotal) {
+          var sumAmount = 0.0;
+          for (int j = 0; j < validRows.length; j++) {
+            sumAmount += getDoubleFromFormattedText(validRows[j][i]);
+          }
+          totalRow.add(getDoubleText(sumAmount));
+        }else{
+          totalRow.add("");
         }
-        validRows.add(
-            [localizations.field_total, "", "", "", totalQuantity.toString(), totalAmount.toString()]);
       }
+      validRows.add(totalRow);
     }
     for (var row in validRows) {
       List<String> rowData = [];
@@ -255,11 +259,11 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       List<String> row = [
         item.name,
         item.barCode ?? "",
-        item.quantity.toString(),
-        minQuan.toString(),
-        reorder.toString(),
-        item.purchasePrice.toString(),
-        amount.toString()
+        getDoubleText(item.quantity),
+        getDoubleText(minQuan),
+        getDoubleText(reorder),
+        getDoubleText(item.purchasePrice??0),
+        getDoubleText(amount)
       ];
       rows.add(row);
     }
@@ -271,34 +275,31 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     List<Good> allGoods = await goodsUseCase.getAllByStoreId(storeId);
     allGoods.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
-    List<Document> documentsPrePeriod =
-        await documentUseCases.getInRange(DateTime.fromMillisecondsSinceEpoch(0), getPreviousHour(state.start!));
-    List<Document> documentsInPeriod = await documentUseCases.getInRange(state.start!, state.end!);
+    List<Document> documentsPrePeriod = await documentUseCases.getInRange(DateTime.fromMillisecondsSinceEpoch(0), state.start!.endOfYesterday());
+
+    List<Document> documentsInPeriod = await documentUseCases.getInRange(state.start!.startOfDay(), state.end!.endOfDay());
     for (Good good in allGoods) {
-      double incoming = 0.0;
-      double outgoing = 0.0;
-      for (Document document in documentsInPeriod) {
-        incoming += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(
-            DocumentType.incoming, good.id!, document.id!);
-        outgoing += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(
-            DocumentType.outgoing, good.id!, document.id!);
-      }
-      //var groupName = "No group";
       var groupName = localizations.no_group;
       if (good.groupId != null) {
         Group group = await groupsUseCases.getById(good.groupId!);
         groupName = group.name;
       }
-      double startPeriodStock = await getQuantity(good.id!, documentsPrePeriod);
+      double sumQuantityIncomingPre = await getSumQuantityIncoming(good.id!, documentsPrePeriod);
+      double sumQuantityOutgoingPre = await getSumQuantityOutgoing(good.id!, documentsPrePeriod);
+      double startPeriodStock = sumQuantityIncomingPre - sumQuantityOutgoingPre;
+
+      double incoming = await getSumQuantityIncoming(good.id!, documentsInPeriod);
+      double outgoing = await getSumQuantityOutgoing(good.id!, documentsInPeriod);
+
       double endPeriodStock = startPeriodStock + incoming - outgoing;
       List<String> row = [
         good.name,
         groupName,
         good.barCode ?? "",
-        startPeriodStock.toString(),
-        incoming.toString(),
-        outgoing.toString(),
-        endPeriodStock.toString()
+        getDoubleText(startPeriodStock),
+        getDoubleText(incoming),
+        getDoubleText(outgoing),
+        getDoubleText(endPeriodStock)
       ];
       rows.add(row);
     }
@@ -314,8 +315,8 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       row.add(item.name);
       row.add(item.type.getTitle(localizations));
       row.add(item.personName ?? '');
-      row.add(item.quantity.toString());
-      row.add(item.amount.toString());
+      row.add(getDoubleText(item.quantity));
+      row.add(getDoubleText(item.amount));
       rows.add(row);
     }
     emit(state.copyWith(rows: rows, allIds: items.map((document) => document.id!).toList()));
@@ -342,9 +343,9 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       }
       rows.add([
         supplierName,
-        Config.currencyFormat.format(personTotalAmount),
-        Config.currencyFormat.format(personTotalPaid),
-        Config.currencyFormat.format(personTotalRemaining)
+        getDoubleText(personTotalAmount),
+        getDoubleText(personTotalPaid),
+        getDoubleText(personTotalRemaining),
       ]);
     }
 
@@ -371,9 +372,9 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       }
       rows.add([
         customerName,
-        Config.currencyFormat.format(personTotalAmount),
-        Config.currencyFormat.format(personTotalPaid),
-        Config.currencyFormat.format(personTotalRemaining),
+        getDoubleText(personTotalAmount),
+        getDoubleText(personTotalPaid),
+        getDoubleText(personTotalRemaining),
       ]);
     }
     emit(state.copyWith(rows: rows, allIds: customers.map((customer) => customer.id!).toList()));
@@ -402,7 +403,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       categoryTotals[name] = (categoryTotals[name] ?? 0) + (item.amount ?? 0);
     }
     categoryTotals.forEach((category, total) {
-      rows.add([category, Config.currencyFormat.format(total)]);
+      rows.add([category, getDoubleText(total)]);
     });
     emit(state.copyWith(rows: rows, allIds: categoryIds.toList()));
   }
@@ -413,7 +414,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     List<Wallet> wallets = await walletUseCases.getAllByStoreId(storeId);
     for (Wallet wallet in wallets) {
       List<Payment> prePayments = await paymentUseCases.getInRangeByWalletId(
-          wallet.id!, DateTime.fromMillisecondsSinceEpoch(0), getPreviousHour(state.start!));
+          wallet.id!, DateTime.fromMillisecondsSinceEpoch(0), state.start!.endOfYesterday());
       List<Payment> payments = await paymentUseCases.getInRangeByWalletId(wallet.id!, state.start!, state.end!);
 
       double preRev = getRevenue(prePayments);
@@ -427,10 +428,10 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
           .fold(0.0, (sum, payment) => sum + (payment.amount ?? 0.0));
       rows.add([
         wallet.name,
-        Config.simpleCurrencyFormat.format(preRev),
-        Config.simpleCurrencyFormat.format(inAmount),
-        Config.simpleCurrencyFormat.format(outAmount),
-        Config.simpleCurrencyFormat.format(preRev + inAmount - outAmount),
+        getDoubleText(preRev),
+        getDoubleText(inAmount),
+        getDoubleText(outAmount),
+        getDoubleText(preRev + inAmount - outAmount),
       ]);
     }
     emit(state.copyWith(rows: rows, allIds: wallets.map((wallet) => wallet.id!).toList()));
@@ -456,7 +457,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       List<Payment> payments = await paymentUseCases.getInRangeByCustomerId(customer.id!, state.start!, state.end!);
       rows.add([
         customer.name,
-        Config.simpleCurrencyFormat.format(getTotal(payments)),
+        getDoubleText(getTotal(payments)),
       ]);
     }
     emit(state.copyWith(rows: rows));
@@ -485,26 +486,13 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     return DateFormatFactory.getDateFormat().format(dateTime);
   }
 
-  String getDoubleText(double? input) {
-    return Config.currencyFormat.format(input);
+  String getDoubleText(double input) {
+    final formatter = NumberFormat('#,###');
+    return formatter.format(input);
   }
-
-  // Future<String?> getDownloadPath() async {
-  //   Directory? directory;
-  //   try {
-  //     if (Platform.isIOS) {
-  //       directory = await getApplicationDocumentsDirectory();
-  //     } else {
-  //       directory = Directory('/storage/emulated/0/Download');
-  //       // Put file in global download folder, if for an unknown reason it didn't exist, we fallback
-  //       // ignore: avoid_slow_async_io
-  //       if (!await directory.exists()) directory = await getExternalStorageDirectory();
-  //     }
-  //   } catch (err) {
-  //     print("Cannot get download folder path");
-  //   }
-  //   return directory?.path;
-  // }
+  double getDoubleFromFormattedText(String input){
+    return double.tryParse(input.replaceAll(",", ""))??0;
+  }
 
   void setColumns(List<ColumnReport> columns) {
     emit(state.copyWith(columns: columns));

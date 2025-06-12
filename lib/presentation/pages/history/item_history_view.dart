@@ -3,12 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/domain/entities/good_history.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/models/list_item.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.dart';
 import 'package:good_manager/presentation/pages/history/widget/item_history_row.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
+
+import '../../widgets/date_item_row.dart';
 
 class ItemHistoryPage extends StatefulWidget {
   final int goodId;
@@ -74,7 +77,8 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
             SizedBox(height: 16),
             Text(AppLocalizations.of(context)!.empty_document, textAlign: TextAlign.center)
           ],
-        )))
+        ))),
+      _buildSummaryView(state)
     ];
     return Column(children: children);
   }
@@ -82,15 +86,46 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
     bool flag = true;
     return ListView.builder(
         itemBuilder: (BuildContext context, index) {
-          GoodHistory item = data.items[index];
+          ListItem item = data.items[index];
           flag = !flag;
-          return ItemHistoryRow(item, flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context),(item) async {
-            await Navigator.of(context).pushNamed(
-                Pages.save_document, arguments: {'item': item});
-            context.read<ItemHistoryCubit>().loadItems();
-          });
+          if (item is HeaderItem){
+            flag = true;
+            return DateItemRow(item.date);
+          }else if (item is GoodHistoryListItem){
+            flag = !flag;
+            return ItemHistoryRow(item.goodHistory, flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context),(item) async {
+              await Navigator.of(context).pushNamed(
+                  Pages.save_document, arguments: {'item': item});
+              context.read<ItemHistoryCubit>().loadItems();
+            });
+          }else{
+            return SizedBox();
+          }
+
         },
         itemCount: data.items.length);
+  }
+  Widget _buildSummaryView(ItemHistoryState state){
+    return Container(
+      width: double.infinity,
+      color: ColorUtils.getHeaderBgColor(context),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
+        if (state.start != null)
+          Text("${AppLocalizations.of(context)!.start_date}:${DateFormatFactory.getDateFormat().format(state.start!)}"),
+        if (state.end != null)
+          Text("${AppLocalizations.of(context)!.end_date}:${DateFormatFactory.getDateFormat().format(state.end!)}"),
+        Row(children: [
+          Text("${AppLocalizations.of(context)!.field_start_period}: ${Config.currencyFormat.format(state.startPeriodQuantity)}"),
+          SizedBox(width: 4,),
+          Text("${AppLocalizations.of(context)!.field_in}: ${Config.currencyFormat.format(state.inQuantity)}"),
+          SizedBox(width: 4,),
+          Text("${AppLocalizations.of(context)!.field_out}: ${Config.currencyFormat.format(state.outQuantity)}"),
+          SizedBox(width: 4,),
+          Text("${AppLocalizations.of(context)!.field_end_period}: ${Config.currencyFormat.format(state.endPeriodQuantity)}"),
+        ],)
+      ],) 
+    );
   }
 
 }

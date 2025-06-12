@@ -136,7 +136,6 @@ class PaymentsCubit extends Cubit<PaymentsState> {
 
     for (var payment in payments) {
       DateTime paymentDate = DateTime(payment.date.year, payment.date.month, payment.date.day);
-
       if (currentGroupDate == null || currentGroupDate != paymentDate) {
         currentGroupDate = paymentDate;
         groupedList.add(HeaderItem(paymentDate));

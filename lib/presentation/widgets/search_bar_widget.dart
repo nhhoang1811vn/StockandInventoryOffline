@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
-
-import '../constants.dart';
 import '../utils.dart';
 
 class SearchBarWidget extends StatefulWidget {
@@ -78,26 +75,11 @@ class SearchBarWidgetState extends State<SearchBarWidget> {
 
             if (widget.showCamera)
               IconButton(onPressed: () async{
-                String? res = await SimpleBarcodeScanner.scanBarcode(
-                  context,
-                  barcodeAppBar: const BarcodeAppBar(
-                    appBarTitle: 'Scan Bar code',
-                    centerTitle: false,
-                    enableBackButton: true,
-                    backButtonIcon: Icon(Icons.arrow_back_ios),
-                  ),
-                  isShowFlashIcon: false,
-                  delayMillis: 2000,
-                  cameraFace: CameraFace.back,
-                );
-                if (res != null && res != -1) {
-                  Utils.handleABarcodeFound();
-                  controller.text = res;
+                var result = await Utils.scanBarcode(context);
+                if (result != null) {
+                  controller.text = result;
                 }
-              }, icon: Image.asset(
-                UIConstants.searchBarcodeIconPath,
-                width: 24,
-              ),)
+              }, icon: Icon(Icons.barcode_reader),)
           ],)
       ),
     );

@@ -1,7 +1,4 @@
 part of 'item_history_cubit.dart';
-
-
-
 @freezed
 class ItemHistoryState with _$ItemHistoryState{
   const factory ItemHistoryState.initial({
@@ -9,6 +6,12 @@ class ItemHistoryState with _$ItemHistoryState{
     DateTime? start,
     DateTime? end,
     int? goodId,
-    @Default([]) List<GoodHistory> items
+
+    @Default(0) double startPeriodQuantity,
+    @Default(0) double inQuantity,
+    @Default(0) double outQuantity,
+    @Default(0) double endPeriodQuantity,
+  @Default([]) List<GoodHistory> goodHistories,
+    @Default([]) List<ListItem> items
     }) = _Initial;
 }

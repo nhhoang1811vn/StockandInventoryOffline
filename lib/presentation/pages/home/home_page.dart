@@ -116,7 +116,7 @@ class HomePageState extends State<HomePage> {
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(AppLocalizations.of(context)!.goods_title),//, style: Theme.of(context).textTheme.titleMedium),
+                    Text(AppLocalizations.of(context)!.goods_title, style: Theme.of(context).textTheme.titleMedium),
                     SizedBox(
                       height: 4,
                     ),

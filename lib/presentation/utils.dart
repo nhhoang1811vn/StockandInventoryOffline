@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
 import 'package:good_manager/main.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:vibration/vibration.dart';
 
 class DateTimeUtils{
@@ -54,6 +55,27 @@ class Utils{
     return num.toString().replaceAll(regex, '');
   }
   static AudioPlayer _audioPlayer = AudioPlayer();
+  static Future<String?> scanBarcode(BuildContext context) async{
+    String? result = await SimpleBarcodeScanner.scanBarcode(
+      context,
+      barcodeAppBar: const BarcodeAppBar(
+        appBarTitle: 'Scan Bar code',
+        centerTitle: false,
+        enableBackButton: true,
+        backButtonIcon: Icon(Icons.arrow_back_ios),
+      ),
+      isShowFlashIcon: false,
+      delayMillis: 2000,
+      cameraFace: CameraFace.back,
+    );
+    if (result != null && result != "-1"){
+      handleABarcodeFound();
+    }
+    if ("-1" == result){
+      return null;
+    }
+    return result;
+  }
   static void handleABarcodeFound() async{
     var enableSound = storage.getBarcodeScannerEnableBeep();
     var enableVibrate = storage.getBarcodeScannerEnableVibrate();

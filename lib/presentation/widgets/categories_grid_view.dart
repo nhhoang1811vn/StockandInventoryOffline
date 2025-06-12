@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
 import 'package:good_manager/presentation/pages/payment/components/category_selection.dart';
+import 'package:good_manager/presentation/utils.dart';
 
 class CategoriesGridView extends StatelessWidget{
+  final String header;
   final List<PaymentCategory> categories;
   final VoidCallback onAddNewButtonPressed;
   final void Function(PaymentCategory item) onPressed;
   final void Function(PaymentCategory item) onLongPressed;
   CategoriesGridView({
+    required this.header,
     required this.categories,
     required this.onAddNewButtonPressed,
     required this.onPressed,
@@ -16,30 +19,43 @@ class CategoriesGridView extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: GridView.builder(
-            itemCount: categories.length + 1,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(header, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),),
+            decoration: BoxDecoration(
+                color: ColorUtils.getHeaderBgColor(context),
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8))),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: GridView.builder(
+                itemCount: categories.length + 1,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
 
-            ),
-            itemBuilder: (context, index) {
-              if (index < categories.length){
-                //return _buildCategoryWidget(context, categories[index]);
-                return CategorySelection(item: categories[index], isSelected: false, onPressed: (){
-                  onPressed(categories[index]);
-                }, onLongPressed: (){
-                  onLongPressed(categories[index]);
-                },);
-              }else{
-                return _buildAddCategoryWidget();
-              }
-            }),
+                ),
+                itemBuilder: (context, index) {
+                  if (index < categories.length){
+                    //return _buildCategoryWidget(context, categories[index]);
+                    return CategorySelection(item: categories[index], isSelected: false, onPressed: (){
+                      onPressed(categories[index]);
+                    }, onLongPressed: (){
+                      onLongPressed(categories[index]);
+                    },);
+                  }else{
+                    return _buildAddCategoryWidget();
+                  }
+                }),
+          ),
+        ],
       ),
     );
   }

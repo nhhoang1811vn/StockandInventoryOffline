@@ -10,6 +10,7 @@ import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
 import '../../markdown/md_provider_factory.dart';
 import '../../models/list_item.dart';
+import '../../widgets/date_item_row.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
@@ -236,14 +237,7 @@ class PaymentsPageState extends State<PaymentsPage>
           final item = items[index];
           if (item is HeaderItem){
             flag = true;
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              color: ColorUtils.getHeaderBgColor(context),
-              child: Text(
-                DateFormatFactory.getDateFormat().format(item.date),
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              )
-            );
+            return DateItemRow(item.date);
           }else if (item is PaymentListItem){
             flag = !flag;
             return PaymentItemRow(item.payment, flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context) , (item) {
@@ -251,6 +245,8 @@ class PaymentsPageState extends State<PaymentsPage>
             }, (item) {
               onLongPressed(item);
             });
+          }else{
+            return SizedBox();
           }
         },
         itemCount: items.length);

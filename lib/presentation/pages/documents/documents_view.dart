@@ -10,6 +10,7 @@ import 'package:good_manager/presentation/pages/documents/sort_documents_dialog.
 import 'package:good_manager/presentation/utils.dart';
 import 'package:sprintf/sprintf.dart';
 
+import '../../widgets/date_item_row.dart';
 import '../../widgets/search_bar_widget.dart';
 import '../../widgets/selected_store_view.dart';
 import '../base/base_state.dart';
@@ -20,7 +21,11 @@ import 'components/add_document_dialog.dart';
 import 'components/document_item_row.dart';
 
 class DocumentsPage extends StatefulWidget {
-  const DocumentsPage({required Key? key}) : super(key: key);
+  final bool isSelection;
+  final DocumentType? documentType;
+  const DocumentsPage({required Key? key, this.documentType, this.isSelection = false}) : super();
+
+  //const DocumentsPage({required Key? key}) : super(key: key);
 
   @override
   DocumentPageState createState() => DocumentPageState();
@@ -28,9 +33,7 @@ class DocumentsPage extends StatefulWidget {
 
 class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  //final TextEditingController searchTextController = TextEditingController();
   final FocusNode searchTextFocusNode = FocusNode();
-
   @override
   void initState() {
     context.read<DocumentsCubit>().initState();
@@ -83,18 +86,27 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
           )
         ],
       );
-
+  Widget _buildBody(DocumentsState state){
+    if (widget.isSelection){
+       if (widget.documentType == DocumentType.incoming){
+         return Container(width: double.infinity, child: _buildIncomingDocumentView(context, state));
+       }else if (widget.documentType == DocumentType.outgoing){
+         return Container(width: double.infinity, child: _buildOutgoingDocumentView(context, state));
+         //return
+       }
+    }
+    return TabBarView(controller: _tabController, children: [
+      _buildAllDocumentView(state),
+      _buildIncomingDocumentView(context, state),
+      _buildOutgoingDocumentView(context, state),
+    ]);
+  }
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<DocumentsCubit, DocumentsState>(
         builder: (context, state) => Scaffold(
-          
               appBar: _buildAppBar(state),
-              body: TabBarView(controller: _tabController, children: [
-                _buildAllDocumentView(state),
-                _buildIncomingDocumentView(context, state),
-                _buildOutgoingDocumentView(context, state),
-              ]),
+              body: _buildBody(state),
               floatingActionButton: FloatingActionButton(
                 onPressed: () async{
                   if (_tabController.index == 1){
@@ -144,38 +156,48 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
   }
 
   PreferredSize _buildAppBar(DocumentsState state) {
+    double topHeight = 58;
+    double storeHeight = 32;
+    double searchBarHeight = 58 + 16;
+    double tabBarHeight = 58;
     return PreferredSize(
-      preferredSize: Size.fromHeight(58.0 + 20 + 58.0 + (state.showSearchBar ? 65 : 0)),
+      preferredSize: Size.fromHeight(topHeight + storeHeight +  (widget.isSelection ? 0 : tabBarHeight) + (state.showSearchBar ? searchBarHeight : 0)),
       child: AppBar(
         actions: [_buildSearchMenu(state), _buildSortMenu(), _buildHelpMenu()],
-        title: Text(AppLocalizations.of(context)!.documents_title),
+        title: widget.isSelection ? Text(AppLocalizations.of(context)!.title_select_document) : Text(AppLocalizations.of(context)!.documents_title),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(20 + 58 + (state.showSearchBar ? 65 : 0)),
+          preferredSize: Size.fromHeight(storeHeight + (widget.isSelection ? 0 : tabBarHeight) + (state.showSearchBar ? searchBarHeight : 0)),
           child: Column(
             children: [
-              SelectedStoreView(),
+              Container(height: storeHeight, child: SelectedStoreView()),
               Visibility(
                 visible: state.showSearchBar,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16, top : 16),
-                  child: SearchBarWidget(
-                    onTextChanged: (newValue) {
-                      context.read<DocumentsCubit>().onSearchTextChanged(newValue);
-                    },
-                    focusNode: searchTextFocusNode,
+                child: Container(
+                  height: searchBarHeight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SearchBarWidget(
+                      onTextChanged: (newValue) {
+                        context.read<DocumentsCubit>().onSearchTextChanged(newValue);
+                      },
+                      focusNode: searchTextFocusNode,
+                    ),
                   ),
                 ),
               ),
-              //Visibility(child: _buildSearchBar(context, state), visible: state.showSearchBar),
-              TabBar(
-                controller: _tabController,
-                indicatorColor: Theme.of(context).colorScheme.primary,
-                tabs: [
-                  Tab(text: AppLocalizations.of(context)!.document_list_tab_all.toUpperCase()),
-                  Tab(text: AppLocalizations.of(context)!.incoming_document_text.toUpperCase()),
-                  Tab(text: AppLocalizations.of(context)!.outgoing_document_text.toUpperCase()),
-                ],
-              )
+              if (!widget.isSelection)
+                Container(
+                  height: tabBarHeight,
+                  child: TabBar(
+                    controller: _tabController,
+                    indicatorColor: Theme.of(context).colorScheme.primary,
+                    tabs: [
+                      Tab(text: AppLocalizations.of(context)!.document_list_tab_all.toUpperCase()),
+                      Tab(text: AppLocalizations.of(context)!.incoming_document_text.toUpperCase()),
+                      Tab(text: AppLocalizations.of(context)!.outgoing_document_text.toUpperCase()),
+                    ],
+                  ),
+                )
             ],
           ),
         ),
@@ -201,15 +223,7 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
           ListItem item = items[index];
           if (item is HeaderItem) {
             flag = true;
-            return Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 8),
-                color: ColorUtils.getHeaderBgColor(context),
-                child: Text(
-                  DateFormatFactory.getDateFormat().format(item.date),
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                )
-            );
+            return DateItemRow(item.date);
           } else if (item is DocumentListItem) {
             flag = !flag;
             return DocumentItemRow(
@@ -258,8 +272,13 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
   }
 
   void onPressedDocument(Document item) async {
-    await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
-    context.read<DocumentsCubit>().loadItems();
+    if (widget.isSelection){
+      Navigator.of(context).pop(item);
+    }else{
+      await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+      context.read<DocumentsCubit>().loadItems();
+    }
+
   }
 
   void onLongPressedDocument(Document item) {
