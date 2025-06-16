@@ -11,4 +11,6 @@ abstract class DocumentUseCases extends ItemsUseCase<Document>{
   Future<bool> deleteTransaction(int transactionId);
 
   Future<List<Document>> getInRange(DateTime start, DateTime end);
+  Future<List<Document>> getInRangeBySupplierId(int id, DateTime start, DateTime end);
+  Future<List<Document>> getInRangeByCustomerId(int id, DateTime start, DateTime end);
 }

@@ -2002,6 +2002,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'End date'**
   String get end_date;
+
+  /// No description provided for @hint_tap_first_column.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap items in the first column to see details'**
+  String get hint_tap_first_column;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

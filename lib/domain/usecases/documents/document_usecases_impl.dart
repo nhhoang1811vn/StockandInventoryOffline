@@ -35,6 +35,14 @@ class DocumentUseCasesImpl implements DocumentUseCases{
   Future<List<Document>> getInRange(DateTime start, DateTime end) {
     return repository.getInRange(start, end);
   }
+  @override
+  Future<List<Document>> getInRangeBySupplierId(int id, DateTime start, DateTime end) {
+    return repository.getInRangeBySupplierId(id, start, end);
+  }
+  @override
+  Future<List<Document>> getInRangeByCustomerId(int id, DateTime start, DateTime end) {
+    return repository.getInRangeByCustomerId(id, start, end);
+  }
 
   @override
   Future<int> insert(Document item) {

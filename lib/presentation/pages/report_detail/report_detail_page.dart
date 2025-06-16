@@ -338,48 +338,30 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                         'start': widget.start,
                         'end': widget.end
                       });
-                  context.read<ReportDetailCubit>().init(
-                      AppLocalizations.of(context)!,
-                      false,
-                      widget.type,
-                      widget.start,
-                      widget.end);
+                  context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
                 } else if (state.type == ReportType.LIST_OF_DOCUMENT &&
                     id != null) {
                   var document =
                       await context.read<ReportDetailCubit>().getDocument(id);
                   await Navigator.of(context).pushNamed(Pages.save_document,
                       arguments: {'item': document});
-                  context.read<ReportDetailCubit>().init(
-                      AppLocalizations.of(context)!,
-                      false,
-                      widget.type,
-                      widget.start,
-                      widget.end);
+                  context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
                 } else if (state.type == ReportType.DEBTS_BY_SUPPLIER &&
                     id != null) {
-                  // var supplier =
-                  //     await context.read<ReportDetailCubit>().getSupplier(id);
-                  // await Navigator.of(context).pushNamed(Pages.save_supplier,
-                  //     arguments: {'item': supplier});
-                  // context.read<ReportDetailCubit>().init(
-                  //     AppLocalizations.of(context)!,
-                  //     false,
-                  //     widget.type,
-                  //     widget.start,
-                  //     widget.end);
+                  await Navigator.of(context).pushNamed(Pages.documents_history, arguments: {
+                    'supplierId': id,
+                    'start': widget.start,
+                    'end': widget.end
+                  });
+                  context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
                 } else if (state.type == ReportType.DEBTS_BY_CUSTOMER &&
                     id != null) {
-                  // var customer =
-                  //     await context.read<ReportDetailCubit>().getCustomer(id);
-                  // await Navigator.of(context).pushNamed(Pages.save_customer,
-                  //     arguments: {'item': customer});
-                  // context.read<ReportDetailCubit>().init(
-                  //     AppLocalizations.of(context)!,
-                  //     false,
-                  //     widget.type,
-                  //     widget.start,
-                  //     widget.end);
+                  await Navigator.of(context).pushNamed(Pages.documents_history, arguments: {
+                    'customerId': id,
+                    'start': widget.start,
+                    'end': widget.end
+                  });
+                  context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
                 } else if (state.type == ReportType.INBOUND_PAYMENTS) {
                   PaymentsSetting setting = PaymentsSetting(
                       selectedCategoryId: id,
@@ -567,7 +549,8 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(storeInfoText),
-                    if (periodInfoText.isNotEmpty) Text(periodInfoText)
+                    if (periodInfoText.isNotEmpty) Text(periodInfoText),
+                    Text(AppLocalizations.of(context)!.hint_tap_first_column)
                   ],
                 ),
               )),

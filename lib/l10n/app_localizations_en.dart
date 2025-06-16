@@ -961,4 +961,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get end_date => 'End date';
+
+  @override
+  String get hint_tap_first_column => 'Tap items in the first column to see details';
 }

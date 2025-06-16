@@ -37,7 +37,6 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<ItemHistoryCubit, ItemHistoryState>(
         builder: (context, state) => Scaffold(
-          
           appBar: _buildAppBar(),
           body: _buildBody(state),
         ),

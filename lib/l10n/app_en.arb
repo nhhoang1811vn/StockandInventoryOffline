@@ -326,5 +326,6 @@
     "by_date": "By date",
     "show_all": "Show all",
     "start_date": "Start date",
-    "end_date": "End date"
+    "end_date": "End date",
+    "hint_tap_first_column": "Tap items in the first column to see details"
 }

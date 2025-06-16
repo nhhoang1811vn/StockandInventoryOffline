@@ -41,16 +41,12 @@ class ItemHistoryCubit extends Cubit<ItemHistoryState>{
   }
 
   void updateSummaryInfo() async{
-    DateTime startDateTime = DateTime.now();
+    DateTime startDateTime = DateTime.fromMicrosecondsSinceEpoch(0);
     DateTime endDateTime = DateTime.now();
     if (state.start != null){
-      //user open this page from report
       startDateTime = state.start!;
-    }else{
-      startDateTime = DateTime.fromMicrosecondsSinceEpoch(0);
-      //user open this page from good catalog, to show all history
     }
-    if (state.end != null){
+    if (state.end != null) {
       endDateTime = state.end!;
     }
     List<Document> documentsPrePeriod = await documentUseCases.getInRange(DateTime.fromMillisecondsSinceEpoch(0), startDateTime.endOfYesterday());

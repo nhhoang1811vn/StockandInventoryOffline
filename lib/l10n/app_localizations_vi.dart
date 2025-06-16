@@ -961,4 +961,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get end_date => 'Ngày kết thúc';
+
+  @override
+  String get hint_tap_first_column => 'Nhấn các đối tượng ở cột đầu tiên để xem chi tiết.';
 }

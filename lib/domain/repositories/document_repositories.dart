@@ -11,4 +11,6 @@ abstract class DocumentRepository
 
   Future<List<Document>> getAllByStoreId(int storeId);
   Future<List<Document>> getInRange(DateTime start, DateTime end);
+  Future<List<Document>> getInRangeBySupplierId(int id, DateTime start, DateTime end);
+  Future<List<Document>> getInRangeByCustomerId(int id, DateTime start, DateTime end);
 }

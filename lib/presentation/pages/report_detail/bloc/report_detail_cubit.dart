@@ -63,7 +63,9 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     required this.customersUseCase,
     required this.walletUseCases,
   }) : super(ReportDetailState.initial(state: InitialState()));
-
+  void refresh(AppLocalizations localizations){
+    init(localizations, false, state.type!, state.start, state.end);
+  }
   void init(AppLocalizations localizations, bool isNeedUpdateSelectedValue, ReportType type, DateTime? start, DateTime? end) {
     emit(state.copyWith(state: LoadingState(), type: type, start: start, end: end));
     load(localizations, isNeedUpdateSelectedValue);

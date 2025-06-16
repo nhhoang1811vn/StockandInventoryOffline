@@ -142,7 +142,7 @@ class PaymentsPageState extends State<PaymentsPage>
                     tabs: [
                       Tab(
                           text: AppLocalizations.of(context)!
-                              .show_all),
+                              .document_list_tab_all),
                       Tab(
                           text: AppLocalizations.of(context)!
                               .title_inbound_payment),

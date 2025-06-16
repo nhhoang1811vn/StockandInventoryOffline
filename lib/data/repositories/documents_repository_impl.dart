@@ -79,4 +79,16 @@ class DocumentRepositoryImpl implements DocumentRepository {
   Future<int> getCount(int storeId) {
     return db.getCountDocument(storeId);
   }
+
+  @override
+  Future<List<Document>> getInRangeByCustomerId(int id, DateTime start, DateTime end) {
+    int storeId = storage.getSelectedStoreId();
+    return db.getDocumentsInRangeByCustomerId(storeId, id, start, end);
+  }
+
+  @override
+  Future<List<Document>> getInRangeBySupplierId(int id, DateTime start, DateTime end) {
+    int storeId = storage.getSelectedStoreId();
+    return db.getDocumentsInRangeBySupplierId(storeId, id, start, end);
+  }
 }

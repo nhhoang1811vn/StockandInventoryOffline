@@ -14,6 +14,7 @@ import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/domain/entities/wallet.dart';
+import 'package:good_manager/extension/date_time_apis.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../domain/entities/payment.dart';
@@ -609,9 +610,8 @@ class DBHelper {
 
   Future<List<Document>> getDocumentsInRange(int storeId, DateTime start, DateTime end) async {
     var dbClient = await db;
-    int startInt = start.millisecondsSinceEpoch;
-    //int endInt = end.millisecondsSinceEpoch;
-    int endInt = DateTime(end.year, end.month, end.day, 23, 59, 59, 999).millisecondsSinceEpoch;
+    int startInt = start.startOfDay().millisecondsSinceEpoch;
+    int endInt = end.endOfDay().millisecondsSinceEpoch;
     String query = "SELECT A.id, " +
         "A.name, " +
         "A.description, " +
@@ -633,6 +633,74 @@ class DBHelper {
         "LEFT JOIN $DOCUMENT_TRANSACTIONS_TABLE_NAME D ON A.id = D.documentId " +
         "WHERE A.storeId = ? AND A.date BETWEEN ? AND ? GROUP BY A.id";
     List<Map> list = await dbClient.rawQuery(query, [storeId, startInt, endInt]);
+    List<Document> documents = [];
+    for (int i = 0; i < list.length; i++) {
+      var document = Document.map(list[i]);
+      var payments = await getPaymentByDocumentId(document.id!);
+      document.paid = payments.fold(0.0, (sum, item) => sum += item.amount ?? 0.0);
+      documents.add(document);
+    }
+    return documents;
+  }
+  Future<List<Document>> getDocumentsInRangeBySupplierId(int storeId, int supplierId, DateTime start, DateTime end) async {
+    var dbClient = await db;
+    int startInt = start.startOfDay().millisecondsSinceEpoch;
+    int endInt = end.endOfDay().millisecondsSinceEpoch;
+    String query = "SELECT A.id, " +
+        "A.name, " +
+        "A.description, " +
+        "A.createdDate, " +
+        "A.updatedDate, " +
+        "A.date, " +
+        "A.type, " +
+        "A.paymentStatus, " +
+        "A.supplierId, " +
+        "A.customerId, " +
+        "A.storeId, " +
+        "B.name AS supplierName, " +
+        "C.name AS customerName, " +
+        "SUM(D.quantity) AS quantity, " +
+        "SUM(D.quantity * D.price) AS amount " +
+        "FROM $DOCUMENTS_TABLE_NAME A " +
+        "LEFT JOIN $SUPPLIERS_TABLE_NAME B ON A.supplierId = B.id " +
+        "LEFT JOIN $CUSTOMERS_TABLE_NAME C ON A.customerId = C.id " +
+        "LEFT JOIN $DOCUMENT_TRANSACTIONS_TABLE_NAME D ON A.id = D.documentId " +
+        "WHERE A.storeId = ? AND A.supplierId = ? AND A.date BETWEEN ? AND ? GROUP BY A.id";
+    List<Map> list = await dbClient.rawQuery(query, [storeId, supplierId,startInt, endInt]);
+    List<Document> documents = [];
+    for (int i = 0; i < list.length; i++) {
+      var document = Document.map(list[i]);
+      var payments = await getPaymentByDocumentId(document.id!);
+      document.paid = payments.fold(0.0, (sum, item) => sum += item.amount ?? 0.0);
+      documents.add(document);
+    }
+    return documents;
+  }
+  Future<List<Document>> getDocumentsInRangeByCustomerId(int storeId, int customerId, DateTime start, DateTime end) async {
+    var dbClient = await db;
+    int startInt = start.startOfDay().millisecondsSinceEpoch;
+    int endInt = end.endOfDay().millisecondsSinceEpoch;
+    String query = "SELECT A.id, " +
+        "A.name, " +
+        "A.description, " +
+        "A.createdDate, " +
+        "A.updatedDate, " +
+        "A.date, " +
+        "A.type, " +
+        "A.paymentStatus, " +
+        "A.supplierId, " +
+        "A.customerId, " +
+        "A.storeId, " +
+        "B.name AS supplierName, " +
+        "C.name AS customerName, " +
+        "SUM(D.quantity) AS quantity, " +
+        "SUM(D.quantity * D.price) AS amount " +
+        "FROM $DOCUMENTS_TABLE_NAME A " +
+        "LEFT JOIN $SUPPLIERS_TABLE_NAME B ON A.supplierId = B.id " +
+        "LEFT JOIN $CUSTOMERS_TABLE_NAME C ON A.customerId = C.id " +
+        "LEFT JOIN $DOCUMENT_TRANSACTIONS_TABLE_NAME D ON A.id = D.documentId " +
+        "WHERE A.storeId = ? AND A.customerId = ? AND A.date BETWEEN ? AND ? GROUP BY A.id";
+    List<Map> list = await dbClient.rawQuery(query, [storeId, customerId,startInt, endInt]);
     List<Document> documents = [];
     for (int i = 0; i < list.length; i++) {
       var document = Document.map(list[i]);
@@ -966,6 +1034,23 @@ class DBHelper {
     List<Payment> items = [];
     for (int i = 0; i < list.length; i++) {
       Payment item = Payment.map(list[i]);
+
+      if (item.categoryId != null) {
+        item.category = await getCategory(item.categoryId!);
+      }
+      if (item.walletId != null) {
+        item.wallet = await getWallet(item.walletId!);
+      }
+      if (item.documentId != null) {
+        item.document = await getDocument(item.documentId!);
+      }
+      if (item.customerId != null) {
+        item.customer = await getCustomer(item.customerId!);
+      }
+      if (item.supplierId != null) {
+        item.supplier = await getSupplier(item.supplierId!);
+      }
+
       items.add(item);
     }
     return items;
