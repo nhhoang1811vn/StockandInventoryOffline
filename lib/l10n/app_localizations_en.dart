@@ -423,6 +423,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menu_item_passcode_desc => 'Desc';
 
   @override
+  String get menu_item_reset_numeration_documents_title => 'Reset numeration of documents';
+
+  @override
   String get settings_title => 'Settings';
 
   @override
@@ -633,10 +636,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get empty_payment => 'No Payment';
 
   @override
-  String get title_outbound_payment => 'Outbound Payments';
+  String get title_outbound_payment => 'Outbound';
 
   @override
-  String get title_inbound_payment => 'Inbound Payments';
+  String get title_inbound_payment => 'Inbound';
 
   @override
   String get save_outbound_payment_title => 'Save Outbound Payment';
@@ -951,6 +954,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get by_wallet => 'By wallet';
 
   @override
+  String get by_customer => 'By customer';
+
+  @override
+  String get by_supplier => 'By supplier';
+
+  @override
   String get by_date => 'By date';
 
   @override
@@ -964,4 +973,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hint_tap_first_column => 'Tap items in the first column to see details';
+
+  @override
+  String get by_status => 'By status';
+
+  @override
+  String get status_paid => 'Paid';
+
+  @override
+  String get status_unpaid => 'Unpaid';
 }

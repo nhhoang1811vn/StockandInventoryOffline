@@ -107,6 +107,7 @@ class AppRouter {
                     key: UniqueKey(),
                     documentType: args["documentType"],
                     isSelection: args["isSelection"],
+                    setting: args["setting"],
                   ),
                 ));
       case Pages.documents_history:

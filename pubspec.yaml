@@ -105,6 +105,8 @@ dependencies:
   share_plus: ^11.0.0
   flutter_screen_lock: ^9.2.1+1
   #flutter_local_notifications: ^19.2.1
+  sticky_grouped_list: ^3.1.0
+
 
 
 dev_dependencies:

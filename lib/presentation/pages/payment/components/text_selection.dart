@@ -26,6 +26,7 @@ class AppTextSelection extends StatelessWidget {
       },
       borderRadius: BorderRadius.circular(16),
       child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 8),
           decoration: isSelected
               ? BoxDecoration(
             color: bgColor,
@@ -48,6 +49,7 @@ class AppTextSelection extends StatelessWidget {
                 Text(
                   item,
                   style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
                 )
               ])),
     );

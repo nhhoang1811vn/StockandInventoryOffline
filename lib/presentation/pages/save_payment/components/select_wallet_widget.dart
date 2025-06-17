@@ -75,7 +75,7 @@ class SelectWalletWidgetState extends State<SelectWalletWidget>{
                     if (index < widget.items.length){
                       var item = widget.items[index];
                       var isSelected = item.id == widget.selectedItem?.id;
-                      return WalletSelection(item: item, isSelected: isSelected, onPressed: (){
+                      return WalletSelection(item: item, isSelected: isSelected, showBalance: true,onPressed: (){
                         widget.onPressed(item);
                       });
                     }else{

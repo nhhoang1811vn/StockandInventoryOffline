@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:good_manager/domain/entities/customer.dart';
+import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
@@ -162,7 +163,11 @@ class SavePaymentPageState extends State<SavePaymentPage> {
         } else if (state.state is OpenDocumentListState) {
           var documentType = (widget.item.type == PaymentType.inbound) ? DocumentType.outgoing : DocumentType.incoming;
           //final result = await Navigator.of(context).pushNamed(Pages.select_document, arguments: {"documentType": documentType});
-          final result = await Navigator.of(context).pushNamed(Pages.document_list, arguments: {"documentType": documentType, 'isSelection' : true});
+          final result = await Navigator.of(context).pushNamed(Pages.document_list, arguments: {
+            "documentType": documentType, 
+            "isSelection" : true,
+            "setting": DocumentsSetting(isPaid: false)
+          });
           if (result != null) {
             Document item = result as Document;
             context.read<SavePaymentCubit>().onDocumentChanged(item);

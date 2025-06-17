@@ -923,6 +923,12 @@ abstract class AppLocalizations {
   /// **'Desc'**
   String get menu_item_passcode_desc;
 
+  /// No description provided for @menu_item_reset_numeration_documents_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset numeration of documents'**
+  String get menu_item_reset_numeration_documents_title;
+
   /// No description provided for @settings_title.
   ///
   /// In en, this message translates to:
@@ -1346,13 +1352,13 @@ abstract class AppLocalizations {
   /// No description provided for @title_outbound_payment.
   ///
   /// In en, this message translates to:
-  /// **'Outbound Payments'**
+  /// **'Outbound'**
   String get title_outbound_payment;
 
   /// No description provided for @title_inbound_payment.
   ///
   /// In en, this message translates to:
-  /// **'Inbound Payments'**
+  /// **'Inbound'**
   String get title_inbound_payment;
 
   /// No description provided for @save_outbound_payment_title.
@@ -1979,6 +1985,18 @@ abstract class AppLocalizations {
   /// **'By wallet'**
   String get by_wallet;
 
+  /// No description provided for @by_customer.
+  ///
+  /// In en, this message translates to:
+  /// **'By customer'**
+  String get by_customer;
+
+  /// No description provided for @by_supplier.
+  ///
+  /// In en, this message translates to:
+  /// **'By supplier'**
+  String get by_supplier;
+
   /// No description provided for @by_date.
   ///
   /// In en, this message translates to:
@@ -2008,6 +2026,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tap items in the first column to see details'**
   String get hint_tap_first_column;
+
+  /// No description provided for @by_status.
+  ///
+  /// In en, this message translates to:
+  /// **'By status'**
+  String get by_status;
+
+  /// No description provided for @status_paid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get status_paid;
+
+  /// No description provided for @status_unpaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpaid'**
+  String get status_unpaid;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

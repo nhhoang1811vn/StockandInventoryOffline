@@ -7,9 +7,11 @@ part 'documents_setting.g.dart';
 @freezed
 class DocumentsSetting with _$DocumentsSetting {
   factory DocumentsSetting({
-    required SortByNumber sortByDate}) = _DocumentsSetting;
+    required bool? isPaid
+  }) = _DocumentsSetting;
 
   factory DocumentsSetting.fromJson(Map<String, Object?> json) => _$DocumentsSettingFromJson(json);
-  factory DocumentsSetting.getDefault() => DocumentsSetting(sortByDate: SortByNumber.descending);
+  factory DocumentsSetting.getDefault() => DocumentsSetting(
+      isPaid: null);
 
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screen_lock/flutter_screen_lock.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
+import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/settings/general/bloc/settings_general_cubit.dart';
 
 import '../../../../main.dart';
@@ -61,7 +62,6 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
               subtitle:
               Text(AppLocalizations.of(context)!.menu_item_passcode_title),
               trailing: Switch(
-
                   value: state.enablePasscode,
                   onChanged: (value) {
                     _handlePasscodeToggle(context, value, state.passcode);
@@ -70,6 +70,18 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
                 _handlePasscodeToggle(context, !state.enablePasscode, state.passcode);
               },
             ),
+            Divider(
+              height: 1,
+            ),
+            ListTile(
+              leading: Icon(FontAwesomeIcons.refresh),
+              title: Text(
+                  AppLocalizations.of(context)!.menu_item_reset_numeration_documents_title),
+              onTap: (){
+                storage.resetAutoDocumentNo(storage.getSelectedStoreId());
+                showInfoToast(AppLocalizations.of(context)!.success);
+              },
+            )
     ]))]);
   }
   void _showLanguageDialog(BuildContext context) {

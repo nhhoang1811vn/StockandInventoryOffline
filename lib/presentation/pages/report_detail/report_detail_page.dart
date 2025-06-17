@@ -112,13 +112,13 @@ class ReportDetailPageState extends State<ReportDetailPage> {
         ];
       case ReportType.LIST_OF_SUPPLIER_PAYMENTS:
         return [
-          ColumnReport(AppLocalizations.of(context)!.label_supplier_name),
-          ColumnReport(AppLocalizations.of(context)!.field_amount),
+          ColumnReport(AppLocalizations.of(context)!.label_supplier_name, showTotalText: true),
+          ColumnReport(AppLocalizations.of(context)!.field_amount,  showTotal: true),
         ];
       case ReportType.LIST_OF_CUSTOMER_PAYMENTS:
         return [
-          ColumnReport(AppLocalizations.of(context)!.label_customer_name),
-          ColumnReport(AppLocalizations.of(context)!.field_amount),
+          ColumnReport(AppLocalizations.of(context)!.label_customer_name, showTotalText: true),
+          ColumnReport(AppLocalizations.of(context)!.field_amount, showTotal: true),
         ];
       case ReportType.RE_ORDER:
         return [
@@ -364,39 +364,65 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
                 } else if (state.type == ReportType.INBOUND_PAYMENTS) {
                   PaymentsSetting setting = PaymentsSetting(
-                      selectedCategoryId: id,
-                      selectedWalletId: null,
+                      selectedCategoryIds: {id},
+                      selectedWalletIds: {},
+                      selectedCustomerIds: {},
+                      selectedSupplierIds: {},
                       startDate: widget.start,
                       endDate: widget.end);
                   await Navigator.of(context).pushNamed(Pages.payments,
                       arguments: {'setting': setting, 'initialIndex': 1});
+                  context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
                 } else if (state.type == ReportType.OUTBOUND_PAYMENTS) {
                   PaymentsSetting setting = PaymentsSetting(
-                      selectedCategoryId: id,
-                      selectedWalletId: null,
+                      selectedCategoryIds: {id},
+                      selectedWalletIds: {},
+                      selectedCustomerIds: {},
+                      selectedSupplierIds: {},
                       startDate: widget.start,
                       endDate: widget.end);
                   await Navigator.of(context).pushNamed(Pages.payments,
                       arguments: {'setting': setting, 'initialIndex': 2});
+                  context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
                 } else if (state.type == ReportType.LIST_OF_WALLETS) {
                   PaymentsSetting setting = PaymentsSetting(
-                      selectedCategoryId: null,
-                      selectedWalletId: id,
+                      selectedCategoryIds: {},
+                      selectedWalletIds: {id!},
+                      selectedCustomerIds: {},
+                      selectedSupplierIds: {},
                       startDate: widget.start,
                       endDate: widget.end);
                   await Navigator.of(context).pushNamed(Pages.payments,
                       arguments: {'setting': setting, 'initialIndex': 0});
+                  context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
                 } else if (state.type == ReportType.RE_ORDER && id != null) {
                   var good =
                       await context.read<ReportDetailCubit>().getGood(id);
                   await Navigator.of(context)
                       .pushNamed(Pages.save_good, arguments: {'item': good});
-                  context.read<ReportDetailCubit>().init(
-                      AppLocalizations.of(context)!,
-                      false,
-                      widget.type,
-                      widget.start,
-                      widget.end);
+                  context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
+                } else if (state.type == ReportType.LIST_OF_CUSTOMER_PAYMENTS && id != null){
+                  PaymentsSetting setting = PaymentsSetting(
+                      selectedCategoryIds: {},
+                      selectedWalletIds: {},
+                      selectedCustomerIds: {id},
+                      selectedSupplierIds: {},
+                      startDate: widget.start,
+                      endDate: widget.end);
+                  await Navigator.of(context).pushNamed(Pages.payments,
+                      arguments: {'setting': setting, 'initialIndex': 1});
+                  context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
+                } else if (state.type == ReportType.LIST_OF_SUPPLIER_PAYMENTS && id != null){
+                  PaymentsSetting setting = PaymentsSetting(
+                      selectedCategoryIds: {},
+                      selectedWalletIds: {},
+                      selectedCustomerIds: {},
+                      selectedSupplierIds: {id},
+                      startDate: widget.start,
+                      endDate: widget.end);
+                  await Navigator.of(context).pushNamed(Pages.payments,
+                      arguments: {'setting': setting, 'initialIndex': 2});
+                  context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
                 }
               }
             }));

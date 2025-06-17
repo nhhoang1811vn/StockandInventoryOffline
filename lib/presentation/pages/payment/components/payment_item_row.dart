@@ -36,6 +36,8 @@ class PaymentItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle? primaryTextStyle = Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700);
+    TextStyle? subTextStyle = Theme.of(context).textTheme.bodySmall;
     return Container(
       color: bgColor,
       child: InkWell(
@@ -52,33 +54,28 @@ class PaymentItemRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(item.category != null ? item.category!.name : AppLocalizations.of(context)!.no_category,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                        style: primaryTextStyle),
                     if (item.wallet != null)
                       WalletShortFormWidget(item.wallet!),
-                    //item.wallet != null ?  : Text(AppLocalizations.of(context)!.n),
-                    Text(DateFormatFactory.getDateFormat().format(item.date), style: Theme.of(context).textTheme.bodySmall),
+                    Text(DateFormatFactory.getDateFormat().format(item.date), style: subTextStyle),
                     if (item.description.isNotEmpty)
                       Text(
                         item.description,
-                        style: Theme.of(context).textTheme.bodySmall,
+                        style: subTextStyle,
                       ),
                     if (item.document?.name != null && item.document!.name.isNotEmpty)
                       Text(
                         item.document!.name,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            //.copyWith(color: Theme.of(context).colorScheme.onSurface),
-                      )
+                        style: subTextStyle
+                      ),
+                    if (item.customer != null)
+                      Text(item.customer!.name, style: subTextStyle),
+                    if (item.supplier != null)
+                      Text(item.supplier!.name, style: subTextStyle)
                   ],
                 )),
                 Text("${item.type == PaymentType.inbound? "+" : "-"}${Config.currencyFormat.format(item.amount ?? 0)}",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!
+                  style: primaryTextStyle
                 )
               ],
             ),

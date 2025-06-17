@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
 import 'package:good_manager/domain/entities/payments_setting.dart';
+import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/wallet.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
@@ -15,12 +17,16 @@ class FilterPaymentWidget extends StatefulWidget{
   final void Function() onResetAllPressed;
   final List<PaymentCategory?> categories;
   final List<Wallet> wallets;
+  final List<Customer> customers;
+  final List<Supplier> suppliers;
   final void Function(PaymentsSetting setting) onApplyPressed;
   final PaymentsSetting setting;
   FilterPaymentWidget({
     required this.onResetAllPressed,
     required this.categories,
     required this.wallets,
+    required this.customers,
+    required this.suppliers,
     required this.onApplyPressed,
     required this.setting
   });
@@ -32,7 +38,10 @@ class FilterPaymentWidget extends StatefulWidget{
 }
 class FilterPaymentWidgetState extends State<FilterPaymentWidget>{
   Set<int?> _selectedCategoryIds = {};
-  int? _selectedWalletId;
+  Set<int> _selectedWalletIds = {};
+  Set<int> _selectedCustomerIds = {};
+  Set<int> _selectedSupplierIds = {};
+
 
   DateTime? _startDate;
   DateTime? _endDate;
@@ -41,10 +50,10 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget>{
   @override
   void initState() {
     super.initState();
-    _selectedCategoryIds = widget.setting.selectedCategoryIds;
-    _selectedWalletId = widget.setting.selectedWalletId;
-
-
+    _selectedCategoryIds = Set<int?>.of(widget.setting.selectedCategoryIds);
+    _selectedWalletIds = Set<int>.of(widget.setting.selectedWalletIds);
+    _selectedCustomerIds = Set<int>.of(widget.setting.selectedCustomerIds);
+    _selectedSupplierIds = Set<int>.of(widget.setting.selectedSupplierIds);
     _startDate = widget.setting.startDate;
     _endDate = widget.setting.endDate;
   }
@@ -66,6 +75,16 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget>{
           SizedBox(height: 8),
           buildWalletsGridView(widget.wallets),
           SizedBox(height: 16),
+          Text(AppLocalizations.of(context)!.by_customer,
+              style: Theme.of(context).textTheme.titleMedium),
+          SizedBox(height: 8),
+          buildCustomersGridView(widget.customers),
+          SizedBox(height: 16),
+          Text(AppLocalizations.of(context)!.by_supplier,
+              style: Theme.of(context).textTheme.titleMedium),
+          SizedBox(height: 8),
+          buildSuppliersGridView(widget.suppliers),
+          SizedBox(height: 16),
           Text(AppLocalizations.of(context)!.by_date,
               style: Theme.of(context).textTheme.titleMedium),
           SizedBox(height: 8),
@@ -80,7 +99,9 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget>{
               widget.onApplyPressed(
                   widget.setting.copyWith(
                       selectedCategoryIds: _selectedCategoryIds,
-                      selectedWalletId: _selectedWalletId,
+                      selectedWalletIds: _selectedWalletIds,
+                      selectedCustomerIds: _selectedCustomerIds,
+                      selectedSupplierIds: _selectedSupplierIds,
                       startDate: _startDate,
                       endDate: _endDate
                   )
@@ -130,9 +151,15 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget>{
           }else{
             return AppTextSelection(
                 item: AppLocalizations.of(context)!.no_category,
-                isSelected: true,
+                isSelected: _selectedCategoryIds.contains(item?.id),
                 onPressed: (){
-
+                  setState(() {
+                    if (_selectedCategoryIds.contains(item?.id)){
+                      _selectedCategoryIds.remove(item?.id);
+                    }else{
+                      _selectedCategoryIds.add(item?.id);
+                    }
+                  });
                 });
           }
 
@@ -152,19 +179,87 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget>{
         itemCount: items.length + 1,
         itemBuilder: (context, index) {
           if (index == 0)
-            return AppTextSelection(item: AppLocalizations.of(context)!.show_all, isSelected: (_selectedWalletId == null), onPressed: (){
+            return AppTextSelection(item: AppLocalizations.of(context)!.show_all, isSelected: _selectedWalletIds.isEmpty, onPressed: (){
               setState(() {
-                _selectedWalletId = null;
+                _selectedWalletIds = {};
               });
             });
+          var item = items[index - 1];
           return WalletSelection(
               item: items[index - 1],
-              isSelected: items[index - 1].id == _selectedWalletId,
+              isSelected: _selectedWalletIds.contains(items[index - 1].id),
+              showBalance: true,
               onPressed: () {
                 setState(() {
-                  _selectedWalletId = items[index - 1].id;
+                  if (_selectedWalletIds.contains(item.id)){
+                    _selectedWalletIds.remove(item.id);
+                  }else{
+                    _selectedWalletIds.add(item.id!);
+                  }
                 });
               });
+        });
+  }
+  Widget buildCustomersGridView(List<Customer> items){
+    return GridView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate:
+        SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 2.5
+        ),
+        itemCount: items.length + 1,
+        itemBuilder: (context, index) {
+          if (index == 0)
+            return AppTextSelection(item: AppLocalizations.of(context)!.show_all, isSelected: _selectedCustomerIds.isEmpty, onPressed: (){
+              setState(() {
+                _selectedCustomerIds = {};
+              });
+            });
+          var item = items[index - 1];
+          return AppTextSelection(item: item.name, isSelected: _selectedCustomerIds.contains(item.id), onPressed: (){
+            setState(() {
+              if (_selectedCustomerIds.contains(item.id)){
+                _selectedCustomerIds.remove(item.id);
+              }else{
+                _selectedCustomerIds.add(item.id!);
+              }
+            });
+          });
+        });
+  }
+  Widget buildSuppliersGridView(List<Supplier> items){
+    return GridView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate:
+        SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 2.5
+        ),
+        itemCount: items.length + 1,
+        itemBuilder: (context, index) {
+          if (index == 0)
+            return AppTextSelection(item: AppLocalizations.of(context)!.show_all, isSelected: _selectedSupplierIds.isEmpty, onPressed: (){
+              setState(() {
+                _selectedSupplierIds = {};
+              });
+            });
+          var item = items[index - 1];
+          return AppTextSelection(item: item.name, isSelected: _selectedSupplierIds.contains(item.id), onPressed: (){
+            setState(() {
+              if (_selectedSupplierIds.contains(item.id)){
+                _selectedSupplierIds.remove(item.id);
+              }else{
+                _selectedSupplierIds.add(item.id!);
+              }
+            });
+          });
         });
   }
   Widget buildDatesWidget(){

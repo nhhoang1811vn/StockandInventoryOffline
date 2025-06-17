@@ -20,10 +20,10 @@ class DocumentsState with _$DocumentsState{
     @Default([]) List<Document> documents,
     @Default([]) List<Document> incomingDocuments,
     @Default([]) List<Document> outgoingDocuments,
-    @Default([]) List<ListItem> items,
-    @Default([]) List<ListItem> incomingItems,
-    @Default([]) List<ListItem> outgoingItems,
+    //@Default([]) List<ListItem> items,
+    //@Default([]) List<ListItem> incomingItems,
+    //@Default([]) List<ListItem> outgoingItems,
     @Default('') String textSearch,
-    required DocumentsSetting settings,
+    DocumentsSetting? setting,
     @Default(false) bool showSearchBar}) = _Initial;
 }

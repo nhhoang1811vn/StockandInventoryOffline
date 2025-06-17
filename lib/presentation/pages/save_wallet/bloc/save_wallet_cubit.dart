@@ -69,7 +69,7 @@ class SaveWalletCubit extends Cubit<SaveWalletState> {
       item.color = state.color!.toARGB32();
       if (item.id == null) {
         int id = await useCase.insert(item);
-        if (state.amount != 0){
+        if (state.amount != 0 && state.amount != null){
           item.id = id;
           var payment = Payment();
           payment.description = "initial amount";

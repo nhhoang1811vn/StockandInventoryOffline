@@ -19,6 +19,8 @@ class DocumentItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle? primaryTextStyle = Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700);
+    TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
     return Container(
       color: bgColor,
       child: InkWell(
@@ -49,33 +51,20 @@ class DocumentItemRow extends StatelessWidget {
                         children: [
                           Text(
                             item.name,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(color: Colors.blue),
+                            style: primaryTextStyle,
                           ),
                           //SizedBox(height: 4),
                           Text(DateFormatFactory.getDateFormat().format(item.date),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(color: Theme.of(context).colorScheme.onSurface)),
-                          //SizedBox(height: 4),
+                              style: secondaryTextStyle),
                           item.personName != null
                               ? Text(
                             item.personName!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                              style: secondaryTextStyle
                           )
                               : Container(),
                           item.description.isNotEmpty
                               ? Text(item.description,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(color: Theme.of(context).colorScheme.onSurface))
+                              style: secondaryTextStyle)
                               : Container()
                         ],
                       )),
@@ -83,10 +72,10 @@ class DocumentItemRow extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(Utils.getQuantityText(item.quantity), style: Theme.of(context).textTheme.titleMedium),
-                      Text("${AppLocalizations.of(context)!.field_amount}: ${Config.currencyFormat.format(item.amount)}"),
-                      Text("${AppLocalizations.of(context)!.field_paid}: ${Config.currencyFormat.format(item.paid)}"),
-                      Text("${AppLocalizations.of(context)!.field_remaining}: ${Config.currencyFormat.format(item.amount - item.paid)}"),
+                      Text(Utils.getQuantityText(item.quantity), style:primaryTextStyle ),
+                      Text("${AppLocalizations.of(context)!.field_amount}: ${Config.currencyFormat.format(item.amount)}", style: secondaryTextStyle),
+                      Text("${AppLocalizations.of(context)!.field_paid}: ${Config.currencyFormat.format(item.paid)}", style: secondaryTextStyle),
+                      Text("${AppLocalizations.of(context)!.field_remaining}: ${Config.currencyFormat.format(item.amount - item.paid)}", style: secondaryTextStyle),
                     ],
                   )
                 ],),))

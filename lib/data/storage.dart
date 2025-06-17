@@ -55,6 +55,9 @@ class Storage {
       return value + 1;
     }
   }
+  void resetAutoDocumentNo(int storeId, ){
+    prefs.setInt(StorageKeys.AutoDocumentName + storeId.toString(), 0);
+  }
 
   void increaseAutoDocumentNo(int storeId) {
     int? value =

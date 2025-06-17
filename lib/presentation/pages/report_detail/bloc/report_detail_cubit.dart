@@ -187,14 +187,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         }
       }
       if (valid) {
-        if (
-           state.type == ReportType.LIST_OF_CUSTOMER_PAYMENTS
-            || state.type == ReportType.LIST_OF_SUPPLIER_PAYMENTS
-        ){
-
-        }else{
-          ids.add(state.allIds[i]);
-        }
+        ids.add(state.allIds[i]);
         validRows.add(row);
       }
     }
@@ -449,7 +442,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         Config.simpleCurrencyFormat.format(getTotal(payments)),
       ]);
     }
-    emit(state.copyWith(rows: rows));
+    emit(state.copyWith(rows: rows, allIds: suppliers.map((item) => item.id!).toList()));
   }
   Future<void> initListOfCustomerPayments() async {
     List<List<String>> rows = [];
@@ -462,7 +455,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         getDoubleText(getTotal(payments)),
       ]);
     }
-    emit(state.copyWith(rows: rows));
+    emit(state.copyWith(rows: rows, allIds: customers.map((item) => item.id!).toList()));
   }
 
   double getRevenue(List<Payment> payments) {

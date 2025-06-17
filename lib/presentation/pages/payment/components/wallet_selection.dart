@@ -7,10 +7,12 @@ class WalletSelection extends StatelessWidget {
   final Wallet item;
   final bool isSelected;
   final void Function() onPressed;
+  final bool showBalance;
 
   WalletSelection({
     required this.item,
     required this.isSelected,
+    required this.showBalance,
     required this.onPressed});
 
   @override
@@ -52,8 +54,10 @@ class WalletSelection extends StatelessWidget {
                 SizedBox(height: 4),
                 Text(
                   item.name,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                )
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                if (showBalance)
+                  Text(Config.currencyFormat.format(item.balance), style: Theme.of(context).textTheme.bodySmall,)
               ])),
     );
   }

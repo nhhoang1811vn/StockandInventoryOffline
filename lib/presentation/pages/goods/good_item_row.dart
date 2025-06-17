@@ -30,6 +30,7 @@ class GoodItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Card(
       margin: EdgeInsets.only(left: 16, right: 16, top: 16),
       child: InkWell(
@@ -59,6 +60,8 @@ class GoodItemRow extends StatelessWidget {
   }
 
   Widget _buildTop(BuildContext context) {
+    TextStyle? primaryTextStyle = Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700);
+    TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
     var quantityColor = Theme.of(context).colorScheme.onSurface;
     if (item.minQuantity == null) {
       if (item.quantity < 0) {
@@ -75,10 +78,7 @@ class GoodItemRow extends StatelessWidget {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(item.name,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(color: Theme.of(context).colorScheme.primary)),
+                style: primaryTextStyle),
             SizedBox(height: 4),
             if (showBarcode && item.barCode != null)
               Row(children: [
@@ -88,8 +88,7 @@ class GoodItemRow extends StatelessWidget {
                   width: 8,
                 ),
                 Text(item.barCode!,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface)),
+                    style: secondaryTextStyle),
               ]),
             if (showDescription && item.description.isNotEmpty)
               Column(
@@ -98,8 +97,7 @@ class GoodItemRow extends StatelessWidget {
                     height: 4,
                   ),
                   Text(item.description,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface)),
+                      style: secondaryTextStyle),
                 ],
               )
           ]),
@@ -108,35 +106,27 @@ class GoodItemRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(Utils.getQuantityText(item.quantity),
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(color: quantityColor)),
+                style: primaryTextStyle?.copyWith(color: quantityColor)),
             if (showMinQuantity)
               Row(
                 children: [
                   Text(
                       AppLocalizations.of(context)!
                           .field_min_quantity_short_form,
-                      style: Theme.of(context).textTheme.bodySmall),
+                      style: secondaryTextStyle),
                   Text(Utils.getQuantityText(item.minQuantity ?? 0),
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface)),
+                      style: secondaryTextStyle),
                 ],
               ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(Config.currencyFormat.format(item.purchasePrice ?? 0),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
+                    style: secondaryTextStyle
                         ?.copyWith(color: Colors.red.shade700)),
                 Text("/"),
                 Text(Config.currencyFormat.format(item.salePrice ?? 0),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
+                    style: secondaryTextStyle
                         ?.copyWith(color: Colors.green.shade700)),
               ],
             )

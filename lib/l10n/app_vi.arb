@@ -159,6 +159,7 @@
   "menu_item_language_desc": "Thay đổi ngôn ngữ",
    "menu_item_passcode_title" : "Khoá mật khẩu",
     "menu_item_passcode_desc" : "Khoá mật khẩu",
+    "menu_item_reset_numeration_documents_title" : "Cài lại bộ đếm hóa dơn",
   "menu_item_barcode_scanner_title": "Quét mã vạch",
 
   "settings_title": "Cài đặt",
@@ -358,11 +359,16 @@
                "action_apply": "Áp dụng",
                "by_category": "Theo danh mục",
                "by_wallet": "Theo ví",
+               "by_customer": "Theo khách hàng",
+               "by_supplier": "Theo NCC",
                "by_date": "Theo ngày",
                "show_all": "Tất cả",
                "start_date": "Ngày bắt đầu",
                    "end_date": "Ngày kết thúc",
-                       "hint_tap_first_column": "Nhấn các đối tượng ở cột đầu tiên để xem chi tiết."
+                       "hint_tap_first_column": "Nhấn các đối tượng ở cột đầu tiên để xem chi tiết.",
+                       "by_status": "Theo trạng thái",
+                           "status_paid": "Đã thanh toán",
+                           "status_unpaid": "Chưa thanh toán"
 
 
 }

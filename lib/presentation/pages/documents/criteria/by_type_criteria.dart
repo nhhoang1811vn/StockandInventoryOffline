@@ -1,0 +1,12 @@
+import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/presentation/criteria/criteria.dart';
+
+class ByTypeCriteria extends Criteria<Document>{
+  final DocumentType type;
+  ByTypeCriteria(this.type);
+
+  @override
+  List<Document> meetCriteria(List<Document> input) {
+    return input.where((document) => document.type == type).toList();
+  }
+}

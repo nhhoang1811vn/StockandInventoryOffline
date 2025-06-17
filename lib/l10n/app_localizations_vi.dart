@@ -423,6 +423,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get menu_item_passcode_desc => 'Khoá mật khẩu';
 
   @override
+  String get menu_item_reset_numeration_documents_title => 'Cài lại bộ đếm hóa dơn';
+
+  @override
   String get settings_title => 'Cài đặt';
 
   @override
@@ -951,6 +954,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get by_wallet => 'Theo ví';
 
   @override
+  String get by_customer => 'Theo khách hàng';
+
+  @override
+  String get by_supplier => 'Theo NCC';
+
+  @override
   String get by_date => 'Theo ngày';
 
   @override
@@ -964,4 +973,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get hint_tap_first_column => 'Nhấn các đối tượng ở cột đầu tiên để xem chi tiết.';
+
+  @override
+  String get by_status => 'Theo trạng thái';
+
+  @override
+  String get status_paid => 'Đã thanh toán';
+
+  @override
+  String get status_unpaid => 'Chưa thanh toán';
 }

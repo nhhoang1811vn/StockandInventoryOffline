@@ -7,6 +7,7 @@ import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/payment/components/filter_payment_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 import '../../markdown/md_provider_factory.dart';
 import '../../models/list_item.dart';
@@ -59,8 +60,12 @@ class PaymentsPageState extends State<PaymentsPage>
   }
 
   Widget _buildFilterMenu(PaymentsState state) {
-    bool showWarning = (state.setting!.selectedCategoryIds.isNotEmpty ||
-        state.setting?.selectedWalletId != null);
+    bool showWarning = (
+        state.setting!.selectedCategoryIds.isNotEmpty ||
+        state.setting!.selectedWalletIds.isNotEmpty ||
+        state.setting!.selectedCustomerIds.isNotEmpty ||
+        state.setting!.selectedSupplierIds.isNotEmpty
+    );
     return Stack(
       children: [
         IconButton(
@@ -103,6 +108,8 @@ class PaymentsPageState extends State<PaymentsPage>
                       },
                       categories: state.categories,
                       wallets: state.wallets,
+                      customers: state.customers,
+                      suppliers: state.suppliers,
                       onApplyPressed: (setting) {
                         context.read<PaymentsCubit>().applyFilter(setting);
                         Navigator.of(context).pop();
@@ -163,11 +170,11 @@ class PaymentsPageState extends State<PaymentsPage>
               children: [
                 Visibility(
                   child: emptyView,
-                  visible: state.items.isEmpty,
+                  visible: state.payments.isEmpty,
                 ),
                 Visibility(
-                  child: _buildListView(state.items),
-                  visible: state.items.isNotEmpty,
+                  child: _buildStickyListView(state.payments),
+                  visible: state.payments.isNotEmpty,
                 )
               ],
             )),
@@ -182,11 +189,11 @@ class PaymentsPageState extends State<PaymentsPage>
           children: [
             Visibility(
               child: emptyView,
-              visible: state.inboundItems.isEmpty,
+              visible: state.inboundPayments.isEmpty,
             ),
             Visibility(
-              child: _buildListView(state.inboundItems),
-              visible: state.inboundItems.isNotEmpty,
+              child: _buildStickyListView(state.inboundPayments),
+              visible: state.inboundPayments.isNotEmpty,
             )
           ],
         )),
@@ -202,11 +209,11 @@ class PaymentsPageState extends State<PaymentsPage>
           children: [
             Visibility(
               child: emptyView,
-              visible: state.outboundItems.isEmpty,
+              visible: state.outboundPayments.isEmpty,
             ),
             Visibility(
-              child: _buildListView(state.outboundItems),
-              visible: state.outboundItems.isNotEmpty,
+              child: _buildStickyListView(state.outboundPayments),
+              visible: state.outboundPayments.isNotEmpty,
             )
           ],
         )),
@@ -228,29 +235,51 @@ class PaymentsPageState extends State<PaymentsPage>
                 child: Text(AppLocalizations.of(context)!.empty_payment,
                     textAlign: TextAlign.center))
           ]);
-
-  Widget _buildListView(List<ListItem> items) {
-   
+  Widget _buildStickyListView(List<Payment> payments) {
     var flag = true;
-    return ListView.builder(
-        itemBuilder: (BuildContext context, index) {
-          final item = items[index];
-          if (item is HeaderItem){
-            flag = true;
-            return DateItemRow(item.date);
-          }else if (item is PaymentListItem){
-            flag = !flag;
-            return PaymentItemRow(item.payment, flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context) , (item) {
-              onPressed(item);
-            }, (item) {
-              onLongPressed(item);
-            });
-          }else{
-            return SizedBox();
-          }
-        },
-        itemCount: items.length);
+    return StickyGroupedListView<Payment, DateTime>(
+      elements: List.of(payments),
+      groupBy: (Payment payment) => DateTime(
+        payment.date.year,
+        payment.date.month,
+        payment.date.day,
+      ),
+      groupSeparatorBuilder: (Payment payment) => DateItemRow(payment.date),
+      itemBuilder: (context, Payment payment) {
+        flag = !flag;
+        return PaymentItemRow(
+          payment,
+          // Alternate background colors
+          flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context),
+              (item) => onPressed(item),
+              (item) => onLongPressed(item),
+        );
+      },
+      itemComparator: (a, b) => b.date.compareTo(a.date),
+      order: StickyGroupedListOrder.DESC,
+    );
   }
+  // Widget _buildListView(List<ListItem> items) {
+  //   var flag = true;
+  //   return ListView.builder(
+  //       itemBuilder: (BuildContext context, index) {
+  //         final item = items[index];
+  //         if (item is HeaderItem){
+  //           flag = true;
+  //           return DateItemRow(item.date);
+  //         }else if (item is PaymentListItem){
+  //           flag = !flag;
+  //           return PaymentItemRow(item.payment, flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context) , (item) {
+  //             onPressed(item);
+  //           }, (item) {
+  //             onLongPressed(item);
+  //           });
+  //         }else{
+  //           return SizedBox();
+  //         }
+  //       },
+  //       itemCount: items.length);
+  // }
 
   void onPressed(Payment item) async {
     context.read<PaymentsCubit>().onPaymentPressed(item);

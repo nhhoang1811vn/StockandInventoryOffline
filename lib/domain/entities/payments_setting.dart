@@ -8,9 +8,9 @@ class PaymentsSetting with _$PaymentsSetting {
   factory PaymentsSetting(
       {
         required Set<int?> selectedCategoryIds,
-        //required int? selectedCategoryId,
-        required int? selectedWalletId,
-
+        required Set<int> selectedWalletIds,
+        required Set<int> selectedCustomerIds,
+        required Set<int> selectedSupplierIds,
         required DateTime? startDate,
         required DateTime? endDate,
       }) = _PaymentsSetting;
@@ -20,8 +20,9 @@ class PaymentsSetting with _$PaymentsSetting {
 
   factory PaymentsSetting.getDefault() => PaymentsSetting(
       selectedCategoryIds: {},
-      //selectedCategoryId : null,
-      selectedWalletId : null,
+      selectedWalletIds : {},
+      selectedCustomerIds: {},
+      selectedSupplierIds: {},
       startDate: null,
       endDate: null
   );

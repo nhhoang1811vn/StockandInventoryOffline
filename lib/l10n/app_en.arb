@@ -140,6 +140,7 @@
     "menu_item_language_desc": "Change Language",
     "menu_item_passcode_title" : "Pass code lock",
     "menu_item_passcode_desc" : "Desc",
+    "menu_item_reset_numeration_documents_title" : "Reset numeration of documents",
 
     "settings_title": "Settings",
     "dialog_title_change_language": "Select language",
@@ -213,8 +214,8 @@
     "payment_due_pending": "Due/pending",
     "payment_paid": "Paid",
     "empty_payment": "No Payment",
-    "title_outbound_payment": "Outbound Payments",
-    "title_inbound_payment": "Inbound Payments",
+    "title_outbound_payment": "Outbound",
+    "title_inbound_payment": "Inbound",
     "save_outbound_payment_title": "Save Outbound Payment",
     "save_inbound_payment_title": "Save Inbound Payment",
     "menu_back_up": "Back up data",
@@ -323,9 +324,15 @@
     "action_apply": "Apply",
     "by_category": "By category",
     "by_wallet": "By wallet",
+    "by_customer": "By customer",
+    "by_supplier": "By supplier",
     "by_date": "By date",
     "show_all": "Show all",
     "start_date": "Start date",
     "end_date": "End date",
-    "hint_tap_first_column": "Tap items in the first column to see details"
+    "hint_tap_first_column": "Tap items in the first column to see details",
+
+    "by_status": "By status",
+    "status_paid": "Paid",
+    "status_unpaid": "Unpaid"
 }
