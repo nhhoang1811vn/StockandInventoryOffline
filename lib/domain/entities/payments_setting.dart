@@ -7,7 +7,8 @@ part 'payments_setting.g.dart';
 class PaymentsSetting with _$PaymentsSetting {
   factory PaymentsSetting(
       {
-        required int? selectedCategoryId,
+        required Set<int?> selectedCategoryIds,
+        //required int? selectedCategoryId,
         required int? selectedWalletId,
 
         required DateTime? startDate,
@@ -18,7 +19,8 @@ class PaymentsSetting with _$PaymentsSetting {
       _$PaymentsSettingFromJson(json);
 
   factory PaymentsSetting.getDefault() => PaymentsSetting(
-      selectedCategoryId : null,
+      selectedCategoryIds: {},
+      //selectedCategoryId : null,
       selectedWalletId : null,
       startDate: null,
       endDate: null

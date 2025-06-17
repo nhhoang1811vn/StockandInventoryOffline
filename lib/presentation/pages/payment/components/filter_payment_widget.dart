@@ -13,7 +13,7 @@ import 'category_selection.dart';
 
 class FilterPaymentWidget extends StatefulWidget{
   final void Function() onResetAllPressed;
-  final List<PaymentCategory> categories;
+  final List<PaymentCategory?> categories;
   final List<Wallet> wallets;
   final void Function(PaymentsSetting setting) onApplyPressed;
   final PaymentsSetting setting;
@@ -31,7 +31,7 @@ class FilterPaymentWidget extends StatefulWidget{
   }
 }
 class FilterPaymentWidgetState extends State<FilterPaymentWidget>{
-  int? _selectedCategoryId;
+  Set<int?> _selectedCategoryIds = {};
   int? _selectedWalletId;
 
   DateTime? _startDate;
@@ -41,7 +41,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget>{
   @override
   void initState() {
     super.initState();
-    _selectedCategoryId = widget.setting.selectedCategoryId;
+    _selectedCategoryIds = widget.setting.selectedCategoryIds;
     _selectedWalletId = widget.setting.selectedWalletId;
 
 
@@ -79,7 +79,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget>{
             Expanded(child: PrimaryButton(AppLocalizations.of(context)!.action_apply, () {
               widget.onApplyPressed(
                   widget.setting.copyWith(
-                      selectedCategoryId: _selectedCategoryId,
+                      selectedCategoryIds: _selectedCategoryIds,
                       selectedWalletId: _selectedWalletId,
                       startDate: _startDate,
                       endDate: _endDate
@@ -93,7 +93,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget>{
     );
   }
 
-  Widget buildCategoriesGridView(List<PaymentCategory> categories){
+  Widget buildCategoriesGridView(List<PaymentCategory?> categories){
     return GridView.builder(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
@@ -107,19 +107,35 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget>{
         itemCount: categories.length + 1,
         itemBuilder: (context, index) {
           if (index == 0)
-            return AppTextSelection(item: AppLocalizations.of(context)!.show_all, isSelected: (_selectedCategoryId == null), onPressed: (){
+            return AppTextSelection(item: AppLocalizations.of(context)!.show_all, isSelected: _selectedCategoryIds.isEmpty, onPressed: (){
               setState(() {
-                _selectedCategoryId = null;
+                _selectedCategoryIds = {};
               });
             });
-          return CategorySelection(
-              item: categories[index - 1],
-              isSelected: categories[index - 1].id == _selectedCategoryId,
-              onPressed: () {
-                setState(() {
-                  _selectedCategoryId = categories[index - 1].id;
+          var item = categories[index - 1];
+          if (item != null){
+            return CategorySelection(
+                item: item,
+                isSelected: _selectedCategoryIds.contains(item.id),
+                onPressed: () {
+                  setState(() {
+                    if (_selectedCategoryIds.contains(item.id)){
+                      _selectedCategoryIds.remove(item.id);
+                    }else{
+                      _selectedCategoryIds.add(item.id);
+                    }
+                    //_selectedCategoryId = item.id;
+                  });
                 });
-              });
+          }else{
+            return AppTextSelection(
+                item: AppLocalizations.of(context)!.no_category,
+                isSelected: true,
+                onPressed: (){
+
+                });
+          }
+
         });
   }
   Widget buildWalletsGridView(List<Wallet> items){

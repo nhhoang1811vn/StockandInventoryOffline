@@ -59,7 +59,7 @@ class PaymentsPageState extends State<PaymentsPage>
   }
 
   Widget _buildFilterMenu(PaymentsState state) {
-    bool showWarning = (state.setting?.selectedCategoryId != null ||
+    bool showWarning = (state.setting!.selectedCategoryIds.isNotEmpty ||
         state.setting?.selectedWalletId != null);
     return Stack(
       children: [

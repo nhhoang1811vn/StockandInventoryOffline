@@ -66,9 +66,9 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   void loadItems() async {
     int storeId = storage.getSelectedStoreId();
     List<Payment> payments = await useCase.getAllByStoreId(storeId);
-    List<PaymentCategory> categories = payments
-        .where((payment) => payment.category != null)
-        .map((payment) => payment.category!)
+    List<PaymentCategory?> categories = payments
+        //.where((payment) => payment.category != null)
+        .map((payment) => payment.category)
         .toSet()
         .toList();
     List<Wallet> wallets = payments
@@ -102,8 +102,14 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   }
   void update(){
     List<Criteria<Payment>> commonCriteria = [];
-    if (state.setting?.selectedCategoryId != null){
-      commonCriteria.add(ByCategoryCriteria(state.setting!.selectedCategoryId!));
+    //if (state.setting?.selectedCategoryId != null){
+    //  commonCriteria.add(ByCategoryCriteria(state.setting!.selectedCategoryId!));
+    //}
+    if (state.setting?.selectedCategoryIds != null && state.setting!.selectedCategoryIds.isNotEmpty){
+      List<Criteria>
+      state.setting!.selectedCategoryIds.map((id) => )
+
+      commonCriteria.add(value)
     }
     if (state.setting?.selectedWalletId != null){
       commonCriteria.add(ByWalletCriteria(state.setting!.selectedWalletId!));

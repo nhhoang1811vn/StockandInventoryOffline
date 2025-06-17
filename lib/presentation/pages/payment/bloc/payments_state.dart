@@ -6,7 +6,7 @@ class PaymentsState with _$PaymentsState{
     required BaseState state,
     @Default([]) List<Payment> payments,
     @Default([]) List<ListItem> items,
-    @Default([]) List<PaymentCategory> categories,
+    @Default([]) List<PaymentCategory?> categories,
     @Default([]) List<Wallet> wallets,
     @Default([]) List<Payment> inboundPayments,
     @Default([]) List<ListItem> inboundItems,
