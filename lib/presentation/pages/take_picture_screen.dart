@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;

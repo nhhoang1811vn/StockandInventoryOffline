@@ -11,8 +11,9 @@ class GroupItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle? primaryTextStyle = Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700);
+    TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
     return Card(
-      color: Theme.of(context).colorScheme.surface,
       margin: EdgeInsets.only(left: 16, right: 16, top: 16),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
@@ -22,7 +23,7 @@ class GroupItemRow extends StatelessWidget {
           padding: EdgeInsets.all(16),
           child: Row(
             children: [
-              Icon(UIConstants.groupIconData, size: 32, color: Theme.of(context).colorScheme.onPrimary),
+              Icon(UIConstants.groupIconData, size: 32, color: Theme.of(context).colorScheme.primary),
               SizedBox(
                 width: 16,
               ),
@@ -30,32 +31,23 @@ class GroupItemRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(item.name,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+                      style: primaryTextStyle),
                   Visibility(
                     visible: item.description.isNotEmpty,
                     child: Text(
                       item.description,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                      style: secondaryTextStyle,
                     ),
                   ),
                   if (item.barCode != null)
                     Row(children: [
-                      Icon(UIConstants.barcodeIconData, size: 24, color: UIConstants.primaryColor),
+                      Icon(UIConstants.barcodeIconData, size: 24, color: Theme.of(context).colorScheme.primary),
                       SizedBox(
                         width: 8,
                       ),
                       Text(
                         item.barCode!,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                        style: secondaryTextStyle,
                       )
                     ])
                 ],

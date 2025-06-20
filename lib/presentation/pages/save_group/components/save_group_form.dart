@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
-
 import '../../../../presentation/widgets/snackbar_widgets.dart';
 import '../../../utils.dart';
 import '../../../widgets/circle_button_widget.dart';
@@ -40,45 +38,43 @@ class SaveGroupForm extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
             Navigator.of(context).pop(state.item);
           } else if (state.state is OpenBarcodeScannerPageState){
-            var result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SimpleBarcodeScannerPage(),
-                ));
-            if (result != "-1"){
-              Utils.handleABarcodeFound();
+            var result = await Utils.scanBarcode(context);
+            // var result = await Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //       builder: (context) => const SimpleBarcodeScannerPage(),
+            //     ));
+            if (result != null && result != -1){
+              //Utils.handleABarcodeFound();
               barcodeTextController.text = result;
               context.read<SaveGroupCubit>().barCodeChanged(result);
             }
           }
         },
         builder: (context, state) =>
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  AppTextField(
-                      labelText: AppLocalizations.of(context)!.label_group_name,
-                      hintText: AppLocalizations.of(context)!.hint_name,
-                      initialValue: state.name.value,
-                      onChanged: (value) => context.read<SaveGroupCubit>().nameChanged(value),
-                      keyboardType: TextInputType.name,
-                      error: state.name.displayError?.text(context)),
-                  SizedBox(height: 16,),
-                  AppTextField(
-                      labelText: AppLocalizations.of(context)!.label_description,
-                      hintText: AppLocalizations.of(context)!.hint_description,
-                      initialValue: state.description,
-                      maxLines: null,
-                      minLines: 2,
-                      onChanged: (value) => context.read<SaveGroupCubit>().descriptionChanged(value),
-                      keyboardType: TextInputType.name),
-                  SizedBox(height: 16,),
-                  _buildBarCode(context, state),
-                ],
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                AppTextField(
+                    labelText: AppLocalizations.of(context)!.label_group_name,
+                    hintText: AppLocalizations.of(context)!.hint_name,
+                    initialValue: state.name.value,
+                    onChanged: (value) => context.read<SaveGroupCubit>().nameChanged(value),
+                    keyboardType: TextInputType.name,
+                    error: state.name.displayError?.text(context)),
+                SizedBox(height: 16,),
+                AppTextField(
+                    labelText: AppLocalizations.of(context)!.label_description,
+                    hintText: AppLocalizations.of(context)!.hint_description,
+                    initialValue: state.description,
+                    maxLines: null,
+                    minLines: 2,
+                    onChanged: (value) => context.read<SaveGroupCubit>().descriptionChanged(value),
+                    keyboardType: TextInputType.name),
+                SizedBox(height: 16,),
+                _buildBarCode(context, state),
+              ],
             ));
   }
 

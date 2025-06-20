@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
-import 'package:good_manager/domain/entities/search_documents_type.dart';
-import 'package:good_manager/main.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
-import 'package:good_manager/presentation/pages/documents/components/document_date_row.dart';
-import 'package:good_manager/presentation/pages/documents/document_ui.dart';
+import 'package:good_manager/presentation/models/list_item.dart';
+import 'package:good_manager/presentation/pages/documents/components/filter_document_widget.dart';
 import 'package:good_manager/presentation/pages/documents/sort_documents_dialog.dart';
+import 'package:good_manager/presentation/utils.dart';
 import 'package:sprintf/sprintf.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
-import '../../app_style.dart';
+import '../../widgets/date_item_row.dart';
+import '../../widgets/search_bar_widget.dart';
 import '../../widgets/selected_store_view.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
@@ -23,19 +23,30 @@ import 'components/add_document_dialog.dart';
 import 'components/document_item_row.dart';
 
 class DocumentsPage extends StatefulWidget {
-  const DocumentsPage({required Key? key}) : super(key: key);
+  final bool isSelection;
+  final DocumentType? documentType;
+  final DocumentsSetting? setting;
+  const DocumentsPage(
+      {
+        required Key? key,
+        this.documentType,
+        this.isSelection = false,
+        this.setting
+      }) : super();
+
+  //const DocumentsPage({required Key? key}) : super(key: key);
 
   @override
   DocumentPageState createState() => DocumentPageState();
 }
 
-class DocumentPageState extends BaseStateWidget<DocumentsPage> with SingleTickerProviderStateMixin {
+class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final TextEditingController searchTextController = TextEditingController();
-
+  final FocusNode searchTextFocusNode = FocusNode();
   @override
   void initState() {
-    context.read<DocumentsCubit>().initState();
+    context.read<DocumentsCubit>().init(widget.setting);
+    //context.read<DocumentsCubit>().initState();
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
@@ -46,22 +57,17 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> with SingleTicker
     super.dispose();
   }
 
-  @override
-  bool hasDrawer() {
-    return true;
-  }
-
   Widget _buildAllDocumentView(DocumentsState state) => Column(
         children: [
           Expanded(
               child: Stack(children: [
             Visibility(
               child: _buildEmptyView(state),
-              visible: state.items.isEmpty,
+              visible: state.documents.isEmpty,
             ),
             Visibility(
-              child: _buildListView(state.items),
-              visible: state.items.isNotEmpty,
+              child: _buildStickyListView(state.documents),
+              visible: state.documents.isNotEmpty,
             )
           ]))
         ],
@@ -71,8 +77,8 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> with SingleTicker
         children: [
           Expanded(
             child: Stack(children: [
-              Visibility(child: _buildEmptyView(state), visible: state.incomingItems.isEmpty),
-              Visibility(child: _buildListView(state.incomingItems), visible: state.incomingItems.isNotEmpty)
+              Visibility(child: _buildEmptyView(state), visible: state.incomingDocuments.isEmpty),
+              Visibility(child: _buildStickyListView(state.incomingDocuments), visible: state.incomingDocuments.isNotEmpty)
             ]),
           )
         ],
@@ -83,25 +89,34 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> with SingleTicker
           Expanded(
             child: Stack(
               children: [
-                Visibility(child: _buildEmptyView(state), visible: state.outgoingItems.isEmpty),
-                Visibility(child: _buildListView(state.outgoingItems), visible: state.outgoingItems.isNotEmpty)
+                Visibility(child: _buildEmptyView(state), visible: state.outgoingDocuments.isEmpty),
+                Visibility(child: _buildStickyListView(state.outgoingDocuments), visible: state.outgoingDocuments.isNotEmpty)
               ],
             ),
           )
         ],
       );
-
+  Widget _buildBody(DocumentsState state){
+    if (widget.isSelection){
+       if (widget.documentType == DocumentType.incoming){
+         return Container(width: double.infinity, child: _buildIncomingDocumentView(context, state));
+       }else if (widget.documentType == DocumentType.outgoing){
+         return Container(width: double.infinity, child: _buildOutgoingDocumentView(context, state));
+         //return
+       }
+    }
+    return TabBarView(controller: _tabController, children: [
+      _buildAllDocumentView(state),
+      _buildIncomingDocumentView(context, state),
+      _buildOutgoingDocumentView(context, state),
+    ]);
+  }
   @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     return BlocConsumer<DocumentsCubit, DocumentsState>(
         builder: (context, state) => Scaffold(
-          backgroundColor: Colors.grey.shade200,
               appBar: _buildAppBar(state),
-              body: TabBarView(controller: _tabController, children: [
-                _buildAllDocumentView(state),
-                _buildIncomingDocumentView(context, state),
-                _buildOutgoingDocumentView(context, state),
-              ]),
+              body: _buildBody(state),
               floatingActionButton: FloatingActionButton(
                 onPressed: () async{
                   if (_tabController.index == 1){
@@ -129,47 +144,75 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> with SingleTicker
               "title": AppLocalizations.of(context)!.documents_title,
               "content": MDProviderFactory.get().getHelpText(HelpType.DOCUMENTS)
             });
-          } else if (state.state is OpenSortDialogListState) {
-            DocumentsSetting? settings = await showDialog(
-                context: context, builder: (_) => SortDocumentsDialog(state.settings), barrierDismissible: true);
-            if (settings != null) {
-              context.read<DocumentsCubit>().setSettings(settings);
-            }
           }
+          // else if (state.state is OpenSortDialogListState) {
+          //   DocumentsSetting? settings = await showDialog(
+          //       context: context, builder: (_) => SortDocumentsDialog(state.settings), barrierDismissible: true);
+          //   if (settings != null) {
+          //     context.read<DocumentsCubit>().setSettings(settings);
+          //   }
+          // }
         });
   }
 
   void _onAddDocumentWithType(DocumentType type) async {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = context.read<DocumentsCubit>().getSelectedStoreId();
+    String autoDocumentNo = context.read<DocumentsCubit>().getAutoDocumentNo();
     Document item = Document();
     item.storeId = storeId;
     item.type = type;
-    item.name = AppLocalizations.of(context)!.document_name_no + storage.getAutoDocumentNo(storeId).toString();
+    item.name = AppLocalizations.of(context)!.document_name_no + autoDocumentNo;
     await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
     context.read<DocumentsCubit>().loadItems();
   }
 
   PreferredSize _buildAppBar(DocumentsState state) {
+    double topHeight = 58;
+    double storeHeight = 32;
+    double searchBarHeight = 58 + 16;
+    double tabBarHeight = 58;
     return PreferredSize(
-      preferredSize: Size.fromHeight(58.0 + 20 + 58.0 + (state.showSearchBar ? 65 : 0)),
+      preferredSize: Size.fromHeight(topHeight + storeHeight +  (widget.isSelection ? 0 : tabBarHeight) + (state.showSearchBar ? searchBarHeight : 0)),
       child: AppBar(
-        actions: [_buildSearchMenu(state), _buildSortMenu(), _buildHelpMenu()],
-        title: Text(AppLocalizations.of(context)!.documents_title),
+        actions: [
+          _buildSearchMenu(state),
+          _buildFilterMenu(state),
+          //_buildSortMenu(),
+          _buildHelpMenu()],
+        title: widget.isSelection ? Text(AppLocalizations.of(context)!.title_select_document) : Text(AppLocalizations.of(context)!.documents_title),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(20 + 58 + (state.showSearchBar ? 65 : 0)),
+          preferredSize: Size.fromHeight(storeHeight + (widget.isSelection ? 0 : tabBarHeight) + (state.showSearchBar ? searchBarHeight : 0)),
           child: Column(
             children: [
-              SelectedStoreView(),
-              Visibility(child: _buildSearchBar(context, state), visible: state.showSearchBar),
-              TabBar(
-                controller: _tabController,
-                indicatorColor: Theme.of(context).colorScheme.onPrimary,
-                tabs: [
-                  Tab(text: AppLocalizations.of(context)!.document_list_tab_all.toUpperCase()),
-                  Tab(text: AppLocalizations.of(context)!.incoming_document_text.toUpperCase()),
-                  Tab(text: AppLocalizations.of(context)!.outgoing_document_text.toUpperCase()),
-                ],
-              )
+              Container(height: storeHeight, child: SelectedStoreView()),
+              Visibility(
+                visible: state.showSearchBar,
+                child: Container(
+                  height: searchBarHeight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SearchBarWidget(
+                      onTextChanged: (newValue) {
+                        context.read<DocumentsCubit>().onSearchTextChanged(newValue);
+                      },
+                      focusNode: searchTextFocusNode,
+                    ),
+                  ),
+                ),
+              ),
+              if (!widget.isSelection)
+                Container(
+                  height: tabBarHeight,
+                  child: TabBar(
+                    controller: _tabController,
+                    indicatorColor: Theme.of(context).colorScheme.primary,
+                    tabs: [
+                      Tab(text: AppLocalizations.of(context)!.document_list_tab_all.toUpperCase()),
+                      Tab(text: AppLocalizations.of(context)!.incoming_document_text.toUpperCase()),
+                      Tab(text: AppLocalizations.of(context)!.outgoing_document_text.toUpperCase()),
+                    ],
+                  ),
+                )
             ],
           ),
         ),
@@ -181,44 +224,137 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> with SingleTicker
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(UIConstants.documentIconData, size: 64, color: Colors.orange.shade700),
+          Icon(UIConstants.documentIconData, size: 64, color: Theme.of(context).colorScheme.primary),
           SizedBox(height: 16),
           Text(AppLocalizations.of(context)!.empty_document,
-              textAlign: TextAlign.center, style: AppStyle.getEmptyTextStyle())
+              textAlign: TextAlign.center)
         ],
       );
 
-  Widget _buildListView(List<DocumentUI> items) => ListView.builder(
-      itemBuilder: (BuildContext context, index) {
-        DocumentUI item = items[index];
-        if (item.type == DocumentUIType.data) {
-          return DocumentItemRow(
-              false, item.document!, (item) => onPressedDocument(item), (item) => onLongPressedDocument(item));
-        } else {
-          return DocumentDateRow(item.dateText);
-        }
+  // Widget _buildListView(List<ListItem> items) {
+  //   var flag = true;
+  //   return ListView.builder(
+  //       itemBuilder: (BuildContext context, index) {
+  //         ListItem item = items[index];
+  //         if (item is HeaderItem) {
+  //           flag = true;
+  //           return DateItemRow(item.date);
+  //         } else if (item is DocumentListItem) {
+  //           flag = !flag;
+  //           return DocumentItemRow(
+  //               item.document, flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context), (item) {
+  //             onPressedDocument(item);
+  //           }, (item) {
+  //             onLongPressedDocument(item);
+  //           });
+  //         } else {
+  //           return SizedBox();
+  //         }
+  //       },
+  //       itemCount: items.length);
+  // }
+  Widget _buildStickyListView(List<Document> documents) {
+    var flag = true;
+    return StickyGroupedListView<Document, DateTime>(
+      elements: List.of(documents),
+      groupBy: (Document payment) => DateTime(
+        payment.date.year,
+        payment.date.month,
+        payment.date.day,
+      ),
+      groupSeparatorBuilder: (Document document) => DateItemRow(document.date),
+      itemBuilder: (context, Document document) {
+        flag = !flag;
+        return DocumentItemRow(
+                          document, flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context), (item) {
+                        onPressedDocument(item);
+                      }, (item) {
+                        onLongPressedDocument(item);
+                      });
       },
-      itemCount: items.length);
+      itemComparator: (a, b) => b.date.compareTo(a.date),
+      order: StickyGroupedListOrder.DESC,
+    );
+  }
 
   Widget _buildSearchMenu(DocumentsState state) {
     return IconButton(
         onPressed: () {
-          searchTextController.text = "";
+          if (!state.showSearchBar) {
+            searchTextFocusNode.requestFocus();
+          }
+          //searchTextController.text = "";
           context.read<DocumentsCubit>().onSearchMenuClicked();
         },
         icon: Icon(Icons.search,
-            color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
+            color: state.showSearchBar ? Theme.of(context).colorScheme.primary : Theme.of(context).iconTheme.color));
   }
 
-  Widget _buildSortMenu() {
-    return IconButton(
-        onPressed: () {
-          context.read<DocumentsCubit>().onMenuSortClicked();
-        },
-        icon: Icon(Icons.sort,
-            color: context.read<DocumentsCubit>().hasSortOptions()
-                ? UIConstants.highlightMenuColor
-                : UIConstants.normalMenuColor));
+  // Widget _buildSortMenu() {
+  //   return IconButton(
+  //       onPressed: () {
+  //         context.read<DocumentsCubit>().onMenuSortClicked();
+  //       },
+  //       icon: Icon(Icons.sort,
+  //           color: context.read<DocumentsCubit>().hasSortOptions()
+  //               ? Theme.of(context).colorScheme.primary
+  //               : Theme.of(context).iconTheme.color));
+  // }
+
+  Widget _buildFilterMenu(DocumentsState state) {
+    bool showWarning = (
+        state.setting!.isPaid != null
+        //    state.setting!.selectedWalletIds.isNotEmpty ||
+        //    state.setting!.selectedCustomerIds.isNotEmpty ||
+        //    state.setting!.selectedSupplierIds.isNotEmpty
+    );
+    return Stack(
+      children: [
+        IconButton(
+            onPressed: () {
+              showFilterBottomSheet(state);
+            },
+            icon: Icon(Icons.filter_alt)),
+        if (showWarning)
+          Positioned(
+            right: 4,
+            top: 4,
+            child: Icon(
+              Icons.error,
+              color: Colors.red,
+              size: 16,
+            ),
+          )
+      ],
+    );
+  }
+  void showFilterBottomSheet(DocumentsState state) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        builder: (BuildContext mContext) {
+          return DraggableScrollableSheet(
+              expand: false,
+              builder: (mContext, scrollController) {
+                return SingleChildScrollView(
+                    controller: scrollController,
+                    padding: EdgeInsets.all(16),
+                    child: FilterDocumentWidget(
+                      onResetAllPressed: () {
+                        context.read<DocumentsCubit>().resetAllFilter();
+                        Navigator.of(context).pop();
+                      },
+                      onApplyPressed: (setting) {
+                        context.read<DocumentsCubit>().applyFilter(setting);
+                        Navigator.of(context).pop();
+                      },
+                      setting: state.setting!,
+                    ));
+              });
+        });
   }
 
   Widget _buildHelpMenu() {
@@ -229,45 +365,14 @@ class DocumentPageState extends BaseStateWidget<DocumentsPage> with SingleTicker
         icon: Icon(Icons.help));
   }
 
-  Widget _buildSearchBar(BuildContext context, DocumentsState state) => Row(children: [
-        Expanded(
-            child: Card(
-          child: ListTile(
-            title: TextField(
-              decoration: InputDecoration(
-                  hintText: state.settings.searchDocumentsType.getText(context), border: InputBorder.none),
-              onChanged: context.read<DocumentsCubit>().onSearchTextChanged,
-              controller: searchTextController,
-            ),
-            trailing: Visibility(
-              child: IconButton(
-                  icon: Icon(UIConstants.cancelIconData),
-                  onPressed: () {
-                    searchTextController.text = "";
-                    context.read<DocumentsCubit>().resetSearchText();
-                  }),
-              visible: state.textSearch.isNotEmpty,
-            ),
-          ),
-        )),
-        PopupMenuButton<SearchDocumentsType>(
-          itemBuilder: (BuildContext a) => <PopupMenuEntry<SearchDocumentsType>>[
-            PopupMenuItem<SearchDocumentsType>(
-                value: SearchDocumentsType.byName, child: Text(AppLocalizations.of(context)!.search_by_name)),
-            PopupMenuItem<SearchDocumentsType>(
-                value: SearchDocumentsType.byDescription,
-                child: Text(AppLocalizations.of(context)!.search_by_description)),
-            PopupMenuItem<SearchDocumentsType>(
-                value: SearchDocumentsType.byCustomerSupplier,
-                child: Text(AppLocalizations.of(context)!.search_by_customer_supplier)),
-          ],
-          onSelected: context.read<DocumentsCubit>().setSearchDocumentsType,
-        )
-      ]);
-
   void onPressedDocument(Document item) async {
-    await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
-    context.read<DocumentsCubit>().loadItems();
+    if (widget.isSelection){
+      Navigator.of(context).pop(item);
+    }else{
+      await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
+      context.read<DocumentsCubit>().loadItems();
+    }
+
   }
 
   void onLongPressedDocument(Document item) {

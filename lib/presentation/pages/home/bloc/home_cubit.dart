@@ -76,5 +76,12 @@ class HomeCubit extends Cubit<HomeState> {
   void deleteWallet(Wallet item) async{
     walletUseCases.delete(item.id!);
   }
+  getSelectedStoreId(){
+    return storage.getSelectedStoreId();
+  }
+
+  String getAutoDocumentNo() {
+    return storage.getAutoDocumentNo(getSelectedStoreId()).toString();
+  }
 
 }

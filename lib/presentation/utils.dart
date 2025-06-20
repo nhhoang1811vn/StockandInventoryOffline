@@ -1,8 +1,10 @@
 
-import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 //import 'package:flutter_beep/flutter_beep.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
 import 'package:good_manager/main.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:vibration/vibration.dart';
 
 class DateTimeUtils{
@@ -52,12 +54,34 @@ class Utils{
     RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
     return num.toString().replaceAll(regex, '');
   }
-
+  static AudioPlayer _audioPlayer = AudioPlayer();
+  static Future<String?> scanBarcode(BuildContext context) async{
+    String? result = await SimpleBarcodeScanner.scanBarcode(
+      context,
+      barcodeAppBar: const BarcodeAppBar(
+        appBarTitle: 'Scan Bar code',
+        centerTitle: false,
+        enableBackButton: true,
+        backButtonIcon: Icon(Icons.arrow_back_ios),
+      ),
+      isShowFlashIcon: false,
+      delayMillis: 2000,
+      cameraFace: CameraFace.back,
+    );
+    if (result != null && result != "-1"){
+      handleABarcodeFound();
+    }
+    if ("-1" == result){
+      return null;
+    }
+    return result;
+  }
   static void handleABarcodeFound() async{
     var enableSound = storage.getBarcodeScannerEnableBeep();
     var enableVibrate = storage.getBarcodeScannerEnableVibrate();
     if (enableSound){
       //FlutterBeep.beep();
+      await _audioPlayer.play(AssetSource('sounds/beep.mp3'));
     }
     if (enableVibrate){
       var vibrationCapabilities = await Vibration.hasVibrator();
@@ -99,4 +123,19 @@ class Utils{
           return SizedBox(height: MediaQuery.of(context).size.height * 0.75, child: calc);
         });
   }
+}
+class ColorUtils{
+  static Color getItemBgColor1(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+          ? Colors.grey.shade900
+          : Colors.white;
+
+  static Color getItemBgColor2(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+          ? Colors.blueGrey.shade800
+          : Colors.blue.shade50;
+  static Color getHeaderBgColor(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+          ? Colors.blueGrey.shade900
+          : Colors.blue.shade100;
 }

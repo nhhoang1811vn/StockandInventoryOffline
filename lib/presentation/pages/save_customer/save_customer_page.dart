@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/customer.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/save_customer/components/save_customer_form.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 
@@ -17,12 +16,11 @@ class SaveCustomerPage extends StatefulWidget{
     return SaveCustomerPageState();
   }
 }
-class SaveCustomerPageState extends BaseStateWidget<SaveCustomerPage> {
+class SaveCustomerPageState extends State<SaveCustomerPage> {
   @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     context.read<SaveCustomerCubit>().init(widget.item);
     return Scaffold(
-        backgroundColor: Colors.grey[200],
       appBar: _buildAppBar(context),
       body: Column(children: [
         SelectedStoreView(),
@@ -32,7 +30,6 @@ class SaveCustomerPageState extends BaseStateWidget<SaveCustomerPage> {
               child: Column(
                 children: [
                   Card(
-                    color: Theme.of(context).colorScheme.surface,
                     child: SaveCustomerForm(item: widget.item),
                   )
                 ],

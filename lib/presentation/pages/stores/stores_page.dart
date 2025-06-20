@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/store.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
 import 'package:good_manager/presentation/pages/stores/components/sort_store_dialog.dart';
 import 'package:good_manager/presentation/widgets/snackbar_widgets.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../domain/entities/stores_setting.dart';
-import '../../app_style.dart';
+import '../../widgets/search_bar_widget.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
@@ -28,23 +27,15 @@ class StoresPage extends StatefulWidget {
   StoresPageState createState() => StoresPageState();
 }
 
-class StoresPageState extends BaseStateWidget<StoresPage> {
-  @override
-  bool hasDrawer() {
-    return !widget.isSelection;
-  }
-  final TextEditingController searchTextController = TextEditingController();
+class StoresPageState extends State<StoresPage> {
   final FocusNode searchTextFocusNode = FocusNode();
   @override
   void initState() {
     super.initState();
-    //if (widget.isSelection){
-    //  searchTextFocusNode.requestFocus();
-    //}
     context.read<StoresCubit>().initState(widget.isSelection);
   }
   @override
-  Widget buildWidget(BuildContext context){
+  Widget build(BuildContext context){
     return BlocConsumer<StoresCubit, StoresState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async{
@@ -74,8 +65,7 @@ class StoresPageState extends BaseStateWidget<StoresPage> {
           }
         },
         builder: (context, state) =>  Scaffold(
-          key: ScaffoldKey,
-            backgroundColor: Colors.grey.shade200,
+            
             //drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 7, storeName: storage.getSelectedStoreName()),
             appBar: _buildAppBar(state),
             body: _buildBody(state),
@@ -109,7 +99,19 @@ class StoresPageState extends BaseStateWidget<StoresPage> {
   }
   Widget _buildContent(StoresState data){
     List<Widget> children = [
-      Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
+      Visibility(
+        visible: data.showSearchBar,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 16, top : 16),
+          child: SearchBarWidget(
+            onTextChanged: (newValue) {
+              context.read<StoresCubit>().searchTextChanged(newValue);
+            },
+            focusNode: searchTextFocusNode,
+          ),
+        ),
+      ),
+      //Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
       Expanded(
           child: Stack(children: [
             Visibility(
@@ -125,43 +127,22 @@ class StoresPageState extends BaseStateWidget<StoresPage> {
     return Column(children: children);
   }
 
-  Widget _buildSearchBar(StoresState data) => Card(
-    child: ListTile(
-      title: TextField(
-        focusNode: searchTextFocusNode,
-        decoration: InputDecoration(
-            hintText: AppLocalizations.of(context)!.search_by_name, border: InputBorder.none),
-        onChanged: context.read<StoresCubit>().searchTextChanged,
-        controller: searchTextController,
-      ),
-      trailing: Visibility(
-        child: IconButton(
-            icon: Icon(UIConstants.cancelIconData),
-            onPressed: (){
-              searchTextController.text = "";
-              context.read<StoresCubit>().resetSearchText();
-            }
-        ),
-        visible: data.textSearch.isNotEmpty,
-      ),
-    ),
-  );
+
 
 
   Widget get emptyView => Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Icon(UIConstants.storeIconData, size: 60,color: AppColors.primaryColor),
+        Icon(UIConstants.storeIconData, size: 60,color: Theme.of(context).colorScheme.primary),
         Padding(
             padding: EdgeInsets.only(top: 16),
             child: Text(AppLocalizations.of(context)!.empty_stores,
                 textAlign: TextAlign.center,
-                style: AppStyle.getEmptyTextStyle()))
+                ))
       ]);
 
   Widget _buildListView(StoresState data) {
-    //return GridView.builder(gridDelegate: gridDelegate, itemBuilder: itemBuilder)
     return  ListView.builder(
         itemBuilder: (BuildContext context, index) {
           Store item = data.items[index];
@@ -226,17 +207,16 @@ class StoresPageState extends BaseStateWidget<StoresPage> {
   }
   Widget _buildSearchMenu(StoresState state) {
     return IconButton(onPressed: () {
-      searchTextController.text = "";
       if (!state.showSearchBar) {
         searchTextFocusNode.requestFocus();
       }
       context.read<StoresCubit>().onShowSearchBarMenuClicked();
-    }, icon: Icon(Icons.search, color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
+    }, icon: Icon(Icons.search, color: state.showSearchBar ? Theme.of(context).colorScheme.primary: Theme.of(context).iconTheme.color));
   }
   Widget _buildSortMenu() {
     return IconButton(onPressed: (){
       context.read<StoresCubit>().onSortMenuClicked();
-    }, icon: Icon(Icons.sort, color: context.read<StoresCubit>().hasSortOptions() ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor ));
+    }, icon: Icon(Icons.sort, color: context.read<StoresCubit>().hasSortOptions() ? Theme.of(context).colorScheme.primary: Theme.of(context).iconTheme.color ));
   }
   Widget _buildHelpMenu(){
     return IconButton(onPressed: (){

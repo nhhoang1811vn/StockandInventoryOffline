@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/batch_mode_scan.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/change_batch_mode_scan_dialog.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 
 import '../../constants.dart';
 
@@ -15,26 +14,25 @@ class BarcodeScannerPage extends StatefulWidget {
     return BarcodeScannerPageState();
   }
 }
-class BarcodeScannerPageState extends BaseStateWidget<BarcodeScannerPage> {
+class BarcodeScannerPageState extends State<BarcodeScannerPage> {
   @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     return BlocConsumer<BarcodeScannerCubit, BarcodeScannerState>(
       listener: (context, state) async {
 
       },
       builder: (context, state) => Scaffold(
-          backgroundColor: Colors.grey[100],
       appBar: _buildAppBar(context),
       body:  ListView(children: [
-        Card(color: Colors.white, margin: EdgeInsets.all(16), child: Column(
+        Card(margin: EdgeInsets.all(16), child: Column(
           children: [
             ListTile(
-                textColor: UIConstants.primaryColor,
+                textColor: Theme.of(context).colorScheme.primary,
                 title: Text(AppLocalizations.of(context)!.batch_mode_scan)
             ),
             _buildAfterEachScan(context, state),
             ListTile(
-                textColor: UIConstants.primaryColor,
+                textColor: Theme.of(context).colorScheme.primary,
                 title: Text(AppLocalizations.of(context)!.when_a_barcode_is_found)
             ),
             _buildBeep(context,state),
@@ -47,7 +45,7 @@ class BarcodeScannerPageState extends BaseStateWidget<BarcodeScannerPage> {
   PreferredSize _buildAppBar(BuildContext context) {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(title: new Text(AppLocalizations.of(context)!.menu_item_barcode_scanner_title)),
+      child: AppBar(title: new Text(AppLocalizations.of(context)!.menu_item_barcode_scanner)),
     );
   }
   Widget _buildAfterEachScan(BuildContext context, BarcodeScannerState state){

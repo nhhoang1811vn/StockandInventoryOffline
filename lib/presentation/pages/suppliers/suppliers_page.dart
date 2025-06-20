@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/suppliers_setting.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/suppliers/widgets/supplier_item_row.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../app_style.dart';
+import '../../widgets/search_bar_widget.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
@@ -26,23 +25,16 @@ class SuppliersPage extends StatefulWidget {
   SuppliersPageState createState() => SuppliersPageState();
 }
 
-class SuppliersPageState extends BaseStateWidget<SuppliersPage> {
-  final TextEditingController searchTextController = TextEditingController();
+class SuppliersPageState extends State<SuppliersPage> {
   final FocusNode searchTextFocusNode = FocusNode();
   @override
   void initState() {
     super.initState();
-    //if (widget.isSelection){
-    //  searchTextFocusNode.requestFocus();
-    //}
     context.read<SuppliersCubit>().initState(widget.isSelection);
   }
+  
   @override
-  bool hasDrawer() {
-    return !widget.isSelection;
-  }
-  @override
-  Widget buildWidget(BuildContext context){
+  Widget build(BuildContext context){
     return BlocConsumer<SuppliersCubit, SuppliersState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async{
@@ -73,8 +65,7 @@ class SuppliersPageState extends BaseStateWidget<SuppliersPage> {
         },
 
         builder: (context, state) =>  Scaffold(
-            key: ScaffoldKey,
-        backgroundColor: Colors.grey.shade200,
+        
         //drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 5, storeName: storage.getSelectedStoreName(),),
         appBar: _buildAppBar(state),
         body: _buildBody(state),
@@ -109,7 +100,20 @@ class SuppliersPageState extends BaseStateWidget<SuppliersPage> {
   Widget _buildContent(SuppliersState data){
     List<Widget> children = [
       SelectedStoreView(),
-       Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
+      Visibility(
+        visible: data.showSearchBar,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 16, top : 16),
+          child: SearchBarWidget(
+            onTextChanged: (newValue) {
+              context.read<SuppliersCubit>().searchTextChanged(newValue);
+            },
+            focusNode: searchTextFocusNode,
+          ),
+        ),
+      ),
+
+      // Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
        Expanded(
                 child: Stack(children: [
                   Visibility(
@@ -124,40 +128,15 @@ class SuppliersPageState extends BaseStateWidget<SuppliersPage> {
     ];
     return Column(children: children);
   }
-
-  Widget _buildSearchBar(SuppliersState data) => Card(
-          child: ListTile(
-            title: TextField(
-              focusNode: searchTextFocusNode,
-              decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.search_by_name, border: InputBorder.none),
-              onChanged: context.read<SuppliersCubit>().searchTextChanged,
-              controller: searchTextController,
-            ),
-            trailing: Visibility(
-              child: IconButton(
-                icon: Icon(UIConstants.cancelIconData),
-                onPressed: (){
-                  searchTextController.text = "";
-                  context.read<SuppliersCubit>().resetSearchText();
-                }
-              ),
-              visible: data.textSearch.isNotEmpty,
-            ),
-          ),
-        );
-
-
   Widget get emptyView => Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Icon(UIConstants.supplierIconData, size: 60,color: AppColors.primaryColor),
+            Icon(UIConstants.supplierIconData, size: 60,color: Theme.of(context).colorScheme.primary),
             Padding(
                 padding: EdgeInsets.only(top: 16),
                 child: Text(AppLocalizations.of(context)!.empty_suppliers,
-                    textAlign: TextAlign.center,
-                    style: AppStyle.getEmptyTextStyle()))
+                    textAlign: TextAlign.center))
           ]);
 
   Widget _buildListView(SuppliersState data) {
@@ -234,17 +213,16 @@ class SuppliersPageState extends BaseStateWidget<SuppliersPage> {
   }
   Widget _buildSearchMenu(SuppliersState state) {
     return IconButton(onPressed: () {
-      searchTextController.text = "";
       if (!state.showSearchBar) {
         searchTextFocusNode.requestFocus();
       }
       context.read<SuppliersCubit>().onShowSearchBarMenuClicked();
-    }, icon: Icon(Icons.search, color: state.showSearchBar ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor));
+    }, icon: Icon(Icons.search, color: state.showSearchBar ?Theme.of(context).colorScheme.primary : Theme.of(context).iconTheme.color));
   }
   Widget _buildSortMenu() {
     return IconButton(onPressed: (){
       context.read<SuppliersCubit>().onSortMenuClicked();
-    }, icon: Icon(Icons.sort, color: context.read<SuppliersCubit>().hasSortOptions() ? UIConstants.highlightMenuColor : UIConstants.normalMenuColor ));
+    }, icon: Icon(Icons.sort, color: context.read<SuppliersCubit>().hasSortOptions() ?Theme.of(context).colorScheme.primary : Theme.of(context).iconTheme.color ));
   }
   Widget _buildHelpMenu(){
     return IconButton(onPressed: (){

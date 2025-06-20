@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
 
 class ColumnDisplayDialog extends StatefulWidget {
@@ -23,6 +23,7 @@ class ColumnDisplayDialogState extends State<ColumnDisplayDialog> {
     return Column(
       children: column.values.map((value) {
         return CheckboxListTile(
+          dense: true,
           value: column.selectedValues.contains(value),
           onChanged: (isChecked) {
             // This will require setState to trigger UI update if used in a StatefulWidget
@@ -51,6 +52,7 @@ class ColumnDisplayDialogState extends State<ColumnDisplayDialog> {
           return Column(
             children: [
               SwitchListTile(
+                dense: true,
                 title: Text(widget.columns[index].title),
                 value: visibilityStates[index],
                 onChanged: (bool? value) {

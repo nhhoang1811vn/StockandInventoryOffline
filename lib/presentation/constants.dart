@@ -23,21 +23,11 @@ class Palette {
   static const Color neutral900 = Color(0xFF171A1F);
   static const Color yellow = Color(0xFFD1D100);
 }
-class AppColors{
-  static Color primaryColor = Colors.blue;
-  static const Color secondaryColor = Color(0xFF616161);
-}
 
 class Config {
   static String supportEmail = "nhhoang1811vn@gmail.com";
   static DateTime minTime = DateTime(1900, 1, 1);
   static DateTime maxTime = DateTime(2101, 1, 1);
-
-  //static DateFormat dateFormat = DateFormat('dd/MM/yyyy');
-  //static DateFormat dateFormat = DateFormat('MMMM d, yyyy');
-  //static DateFormat dateTimeFormat = DateFormat('dd/MM/yyyy HH:mm');
-  //static NumberFormat doubleFormat =  NumberFormat("0.##");
-
   static NumberFormat currencyFormat = NumberFormat.currency(locale: "en_US", symbol: "",decimalDigits: 0);
   static NumberFormat simpleCurrencyFormat = NumberFormat.decimalPattern("en_US");
 }
@@ -72,10 +62,7 @@ class DateFormatFactory{
       return monthFormatEnglish;
     }
   }
-
-
 }
-
 class UIConstants {
   //dimension
   static const double appBarHeight = 58.0;
@@ -110,16 +97,10 @@ class UIConstants {
   static String searchBarcodeIconPath = "assets/images/search_barcode.png";
   //dimension
   static const double drawerMenuSize = 20.0;
-
-  static const TextStyle fieldHintStyle =
-      TextStyle(fontWeight: FontWeight.w300, color: Colors.black);
-  static const double progressBarOpacity = 0.6;
-  static const Color progressBarColor = Colors.black;
-  static Color primaryColor = Colors.blue[600]!;
-  static Color primaryDarkColor = Colors.blue[800]!;
-
-  static Color normalMenuColor = Colors.black;
-  static Color highlightMenuColor = Colors.blue[700]!;
+  // static const TextStyle fieldHintStyle =
+  //     TextStyle(fontWeight: FontWeight.w300, color: Colors.black);
+  // static const double progressBarOpacity = 0.6;
+  // static const Color progressBarColor = Colors.black;
 }
 
 void showInfoToast(msg) {
@@ -128,7 +109,7 @@ void showInfoToast(msg) {
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.CENTER,
       timeInSecForIosWeb: 1,
-      backgroundColor: UIConstants.primaryColor,
+      backgroundColor: Colors.blue,
       textColor: Colors.white,
       fontSize: 16.0);
 }

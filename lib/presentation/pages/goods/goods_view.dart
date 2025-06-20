@@ -1,26 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/goods_setting.dart';
 import 'package:good_manager/domain/entities/group.dart';
-import 'package:good_manager/domain/entities/search_goods_type.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/list_settings_dialog.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/sort_goods_dialog.dart';
 import 'package:good_manager/presentation/style_size.dart';
-import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../../app_style.dart';
 import '../../widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
+import '../../widgets/search_bar_widget.dart';
 import '../../widgets/snackbar_widgets.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
@@ -40,8 +36,7 @@ class GoodsPage extends StatefulWidget {
 
 enum OverflowMenuItem { listSettings, help }
 
-class GoodsPageState extends BaseStateWidget<GoodsPage> {
-  final TextEditingController searchTextController = TextEditingController();
+class GoodsPageState extends State<GoodsPage> {
   final FocusNode searchTextFocusNode = FocusNode();
   final _key = GlobalKey<ExpandableFabState>();
 
@@ -51,10 +46,6 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
     context.read<GoodsCubit>().initState(widget.isSelection, widget.document);
   }
 
-  @override
-  bool hasDrawer() {
-    return !widget.isSelection;
-  }
 
   Widget _buildBody(BuildContext context, GoodsState state) {
     if (state.state is LoadingState) {
@@ -63,7 +54,20 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
     List<Widget> children = [
       SelectedStoreView(),
       _buildSelectedGroupView(state),
-      _buildSearchBar(context, state),
+      Visibility(
+        visible: state.showSearchBar,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 16, top : 16),
+          child: SearchBarWidget(
+            onTextChanged: (newValue) {
+              context.read<GoodsCubit>().onSearchTextChanged(newValue);
+            },
+            focusNode: searchTextFocusNode,
+            showCamera: true,
+          ),
+        ),
+      ),
+      //_buildSearchBar(context, state),
       Expanded(
           child: Stack(children: [
         Visibility(
@@ -86,20 +90,20 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
   Widget _buildSummaryInfoWidget(GoodsState state) {
     return Container(
         height: 32,
-        color: Colors.blue,
+        color: Theme.of(context).colorScheme.primary,
         child: IntrinsicHeight(
             child: Row(
           children: [
             SizedBox(width: 16),
             Text(
                 "${AppLocalizations.of(context)!.field_quantity_short_form}:  ${state.quantityTotal.toString()}",
-                style: TextStyle(color: Colors.white)),
+                style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
             SizedBox(width: 16),
-            VerticalDivider(width: 2, color: Colors.white),
+            VerticalDivider(width: 2, color: Theme.of(context).colorScheme.onPrimary),
             SizedBox(width: 16),
             Text(
                 "${AppLocalizations.of(context)!.field_total_short_form}: ${Config.currencyFormat.format(state.purchasePriceTotal)}/${Config.currencyFormat.format(state.salePriceTotal)}",
-                style: TextStyle(color: Colors.white))
+                style: TextStyle(color: Theme.of(context).colorScheme.onPrimary))
           ],
         )));
   }
@@ -143,11 +147,9 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(UIConstants.goodIconData, size: 64, color: Theme.of(context).colorScheme.onPrimary),
+          Icon(UIConstants.goodIconData, size: 64, color: Theme.of(context).colorScheme.primary),
           SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.empty_goods,
-              textAlign: TextAlign.center,
-              style: AppStyle.getEmptyTextStyle())
+          Text(AppLocalizations.of(context)!.empty_goods, textAlign: TextAlign.center)
         ],
       );
 
@@ -165,21 +167,20 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
                 quantity: good.quantity,
                 showBarcode: state.settings.showBarcode,
                 showDescription: state.settings.showDescription,
+                showMinQuantity: state.showMinQuantity,
+                minQuantityColor: state.minQuantityColor??Colors.black,
                 onGoodTapped: (item) => onPressedGood(good),
                 onGoodLongPressed: (item) => onLongPressedGood(good),
                 isSelection: state.isSelection);
           }
         },
-        //separatorBuilder: (context, index) {
-        //  return Divider(color: Colors.grey[500]);
-        //},
         itemCount: state.groups.length + state.goods.length);
   }
 
   Widget _buildSearchMenu(GoodsState state) {
     return IconButton(
         onPressed: () {
-          searchTextController.text = "";
+          //searchTextController.text = "";
           if (!state.showSearchBar) {
             searchTextFocusNode.requestFocus();
           }
@@ -187,8 +188,8 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
         },
         icon: Icon(Icons.search,
             color: state.showSearchBar
-                ? UIConstants.highlightMenuColor
-                : UIConstants.normalMenuColor));
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).iconTheme.color));
   }
 
   Widget _buildSortMenu(GoodsState state) {
@@ -198,73 +199,60 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
         },
         icon: Icon(Icons.sort,
             color: context.read<GoodsCubit>().hasSortOptions()
-                ? UIConstants.highlightMenuColor
-                : UIConstants.normalMenuColor));
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).iconTheme.color));
   }
 
-  Widget _buildSearchBar(BuildContext context, GoodsState state) {
-    return Visibility(
-        child: Row(children: [
-          Expanded(
-              child: Card(
-            child: ListTile(
-              title: TextField(
-                controller: searchTextController,
-                decoration: InputDecoration(
-                    hintText:
-                        context.read<GoodsCubit>().getSearchTextHint(context),
-                    border: InputBorder.none),
-                onChanged: context.read<GoodsCubit>().onSearchTextChanged,
-                //controller: controller.searchTextController,
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Visibility(
-                    child: IconButton(
-                      icon: Icon(UIConstants.cancelIconData),
-                      onPressed: () {
-                        searchTextController.text = "";
-                        context.read<GoodsCubit>().onSearchTextChanged("");
-                      },
-                    ),
-                    visible: state.textSearch.isNotEmpty,
-                  ),
-                  IconButton(
-                    //icon: Icon(Icons.barcode_reader),
-                    icon: Image.asset(
-                      UIConstants.searchBarcodeIconPath,
-                      width: 24,
-                    ),
-                    onPressed:
-                        context.read<GoodsCubit>().onSearchBarcodeClicked,
-                  )
-                ],
-              ),
-            ),
-          )),
-          PopupMenuButton<SearchGoodsType>(
-            itemBuilder: (BuildContext a) => <PopupMenuEntry<SearchGoodsType>>[
-              PopupMenuItem<SearchGoodsType>(
-                  value: SearchGoodsType.byName,
-                  child: Text(AppLocalizations.of(context)!.search_by_name)),
-              PopupMenuItem<SearchGoodsType>(
-                  value: SearchGoodsType.byDescription,
-                  child: Text(
-                      AppLocalizations.of(context)!.search_by_description)),
-              PopupMenuItem<SearchGoodsType>(
-                  value: SearchGoodsType.byBarcode,
-                  child: Text(AppLocalizations.of(context)!.search_by_barcode)),
-              PopupMenuItem<SearchGoodsType>(
-                  value: SearchGoodsType.everywhere,
-                  child:
-                      Text(AppLocalizations.of(context)!.search_by_everywhere)),
-            ],
-            onSelected: context.read<GoodsCubit>().setSearchGoodsType,
-          )
-        ]),
-        visible: state.showSearchBar);
-  }
+  // Widget _buildSearchBar(BuildContext context, GoodsState state) {
+  //   return Visibility(
+  //       child: Padding(
+  //         padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+  //         child: Container(
+  //             decoration: BoxDecoration(
+  //             color: Colors.white,
+  //             borderRadius: BorderRadius.circular(8), // Rounded corners
+  //           ),
+  //           child: ListTile(
+  //                   leading: Icon(Icons.search),
+  //                   title: TextField(
+  //
+  //                     controller: searchTextController,
+  //                     decoration: InputDecoration(
+  //                         hintText: AppLocalizations.of(context)!.hint_search_by,
+  //                         border: InputBorder.none
+  //                         ),
+  //                     onChanged: context.read<GoodsCubit>().onSearchTextChanged,
+  //
+  //                   ),
+  //                   trailing: Row(
+  //                     mainAxisSize: MainAxisSize.min,
+  //                     children: [
+  //                       Visibility(
+  //                         child: IconButton(
+  //                           icon: Icon(UIConstants.cancelIconData),
+  //                           onPressed: () {
+  //                             searchTextController.text = "";
+  //                             context.read<GoodsCubit>().onSearchTextChanged("");
+  //                           },
+  //                         ),
+  //                         visible: state.textSearch.isNotEmpty,
+  //                       ),
+  //                       IconButton(
+  //                         //icon: Icon(Icons.barcode_reader),
+  //                         icon: Image.asset(
+  //                           UIConstants.searchBarcodeIconPath,
+  //                           width: 24,
+  //                         ),
+  //                         onPressed:
+  //                             context.read<GoodsCubit>().onSearchBarcodeClicked,
+  //                       )
+  //                     ],
+  //                   ),
+  //           ),
+  //         ),
+  //       ),
+  //       visible: state.showSearchBar);
+  // }
 
   Widget _buildLoading() {
     return const Center(
@@ -419,7 +407,7 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
   }
 
   @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     return BlocConsumer<GoodsCubit, GoodsState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async {
@@ -463,19 +451,8 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
             ScaffoldMessenger.of(context).showSnackBar(
                 snackBarWhenFailureWithText(
                     AppLocalizations.of(context)!.insert_transaction_fail));
-          } else if (state.state is OpenBarcodeScannerToSearchState) {
-            //open bar code scanner to fill search text box
-            var result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SimpleBarcodeScannerPage(),
-                ));
-            if (result != "-1") {
-              Utils.handleABarcodeFound();
-              searchTextController.text = result;
-              context.read<GoodsCubit>().onSearchTextChanged(result);
-            }
-          } else if (state.state is OpenListSettingsDialogState){
+          }
+          else if (state.state is OpenListSettingsDialogState){
             GoodsSetting? settings = await showDialog(
                 context: context,
                 builder: (_) => ListSettingsDialog(state.settings),
@@ -486,8 +463,7 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
           }
         },
         builder: (context, state) => Scaffold(
-          backgroundColor: Colors.grey.shade200,
-            key: ScaffoldKey,
+
             appBar: new AppBar(
                 title: new Text(widget.isSelection
                     ? AppLocalizations.of(context)!.goods_select_title
@@ -527,11 +503,11 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
             //childrenAnimation: ExpandableFabAnimation.none,
             distance: 70,
             overlayStyle: ExpandableFabOverlayStyle(
-              color: Colors.white.withOpacity(0.9),
+              color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
             ),
             children: [
               FloatingActionButton.extended(
-                icon:  Icon(UIConstants.goodIconData, size: 24, color: Theme.of(context).colorScheme.onPrimary),
+                icon:  Icon(UIConstants.goodIconData, size: 24, color: Theme.of(context).colorScheme.primary),
                 label: Text(AppLocalizations.of(context)!.action_add_good),
                 heroTag: null,
                 onPressed: () {
@@ -544,7 +520,7 @@ class GoodsPageState extends BaseStateWidget<GoodsPage> {
                 },
               ),
               FloatingActionButton.extended(
-                icon: Icon(UIConstants.groupIconData, size: 24, color: Theme.of(context).colorScheme.onPrimary),
+                icon: Icon(UIConstants.groupIconData, size: 24, color: Theme.of(context).colorScheme.primary),
                 label: Text(AppLocalizations.of(context)!.action_add_group),
                 onPressed: (){
                   final state = _key.currentState;

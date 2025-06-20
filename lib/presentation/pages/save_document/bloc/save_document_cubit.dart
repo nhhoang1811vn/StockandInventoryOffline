@@ -2,7 +2,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/data/storage.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/batch_mode_scan.dart';
+import 'package:good_manager/domain/entities/my_company.dart';
 import 'package:good_manager/domain/entities/save_document_setting.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
@@ -29,12 +31,18 @@ part 'save_document_state.dart';
 @injectable
 class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   final Storage storage;
+  final AppSettings appSettings;
   final DocumentUseCases useCase;
   final PaymentUseCases paymentUseCase;
   final GoodsUseCases goodUseCases;
 
-  SaveDocumentCubit({required this.useCase, required this.paymentUseCase, required this.goodUseCases, required this.storage})
-      : super(SaveDocumentState.initial(state: InitialState(), setting: storage.getSaveDocumentSetting()));
+  SaveDocumentCubit({
+    required this.useCase,
+    required this.paymentUseCase,
+    required this.goodUseCases,
+    required this.storage,
+    required this.appSettings,})
+      : super(SaveDocumentState.initial(state: InitialState(), setting: appSettings.getSaveDocumentSetting()));
 
   void init(Document item) {
     SaveDocumentState initState = state.copyWith(
@@ -205,7 +213,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   }
 
   void setSettings(SaveDocumentSetting setting) {
-    storage.setSaveDocumentSetting(setting);
+    appSettings.setSaveDocumentSetting(setting);
     emit(state.copyWith(setting: setting));
     sort();
     filter();
@@ -307,7 +315,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
       loadTransactions();
     }
   }
-  void onSearchBarcodeClicked(){
-    emit(state.copyWith(state: OpenBarcodeScannerToSearchState()));
+  MyCompany? getMyCompany(){
+    return appSettings.getMyCompany();
   }
 }

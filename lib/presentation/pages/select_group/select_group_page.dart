@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 import 'package:good_manager/domain/entities/group.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 
 import '../../widgets/selected_store_view.dart';
@@ -21,12 +20,12 @@ class SelectGroupPage extends StatefulWidget{
     return SelectGroupPageState();
   }
 }
-class SelectGroupPageState extends BaseStateWidget<SelectGroupPage> {
+class SelectGroupPageState extends State<SelectGroupPage> {
   final TreeController _treeController =
       TreeController(allNodesExpanded: false);
 
   @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     context.read<SelectGroupCubit>().init(widget.id, widget.groupId);
     return BlocConsumer<SelectGroupCubit, SelectGroupState>(
         builder: (context, state) => Scaffold(
@@ -96,7 +95,7 @@ class SelectGroupPageState extends BaseStateWidget<SelectGroupPage> {
                   : null,
               child: Row(
                 children: [
-                  Icon(UIConstants.groupIconData, size: 24, color: Theme.of(context).colorScheme.onPrimary),
+                  Icon(UIConstants.groupIconData, size: 24, color: Theme.of(context).colorScheme.primary),
                   SizedBox(
                     width: 16,
                   ),
@@ -109,7 +108,7 @@ class SelectGroupPageState extends BaseStateWidget<SelectGroupPage> {
                               .titleMedium!
                               .copyWith(
                                   color:
-                                      Theme.of(context).colorScheme.onPrimary)),
+                                      Theme.of(context).colorScheme.primary)),
                       if (item?.description != '')...[
 
                         Text(item?.description ?? '',

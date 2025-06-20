@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/save_payment_category/bloc/save_payment_category_cubit.dart';
 import 'package:good_manager/presentation/pages/save_payment_category/components/select_symbols_widget.dart';
@@ -39,7 +39,7 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
         },
         builder: (BuildContext context, SavePaymentCategoryState state) {
           return Scaffold(
-            backgroundColor: Colors.grey.shade200,
+            
             appBar: _buildAppBar(context),
             body: _buildBody(state),
           );
@@ -60,65 +60,56 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
         Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(16),
-              child: Card(
-                color: Theme
-                    .of(context)
-                    .colorScheme
-                    .surface,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          showModalBottomSheet(context: context,
-                          isScrollControlled: true,
-                          builder: (builderContext) {
-                            return SelectSymbolsWidget(symbol: state.icon!,onPressed: (symbol) {
-                              Navigator.of(context).pop();
-                              context.read<SavePaymentCategoryCubit>().onIconChanged(symbol);
-                            });
-                          });
-                        },
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(color: Colors.grey[100], shape: BoxShape.circle),
-                          child: Center(child: Text(state.icon!, style: TextStyle(fontSize: 36),)),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text(AppLocalizations.of(context)!.change_icon, style: Theme
-                          .of(context)
-                          .textTheme
-                          .titleSmall
-                          ?.copyWith(color: Colors.blue),),
-                      SizedBox(
-                        height: 32,
-                      ),
-                      AppTextField(
-                          labelText: AppLocalizations.of(context)!.label_category_name,
-                          hintText: AppLocalizations.of(context)!.hint_name,
-                          keyboardType: TextInputType.name,
-                          initialValue: state.name.value,
-                          onChanged: (value) => context.read<SavePaymentCategoryCubit>().nameChanged(value),
-                          error: state.name.displayError?.text(context)
-                      ),
-                      SizedBox(height: 16),
-                      AppTextField(
-                        labelText: AppLocalizations.of(context)!.label_description,
-                        hintText: AppLocalizations.of(context)!.hint_description,
-                        maxLines: null,
-                        minLines: 2,
-                        keyboardType: TextInputType.name,
-                        initialValue: state.description,
-                        onChanged: (value) => context.read<SavePaymentCategoryCubit>().descriptionChanged(value),
-                      )
-                    ],
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(context: context,
+                      isScrollControlled: true,
+                      builder: (builderContext) {
+                        return SelectSymbolsWidget(symbol: state.icon!,onPressed: (symbol) {
+                          Navigator.of(context).pop();
+                          context.read<SavePaymentCategoryCubit>().onIconChanged(symbol);
+                        });
+                      });
+                    },
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(color: Colors.grey[100], shape: BoxShape.circle),
+                      child: Center(child: Text(state.icon!, style: TextStyle(fontSize: 36),)),
+                    ),
                   ),
-                ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Text(AppLocalizations.of(context)!.change_icon, style: Theme
+                      .of(context)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(color: Colors.blue),),
+                  SizedBox(
+                    height: 32,
+                  ),
+                  AppTextField(
+                      labelText: AppLocalizations.of(context)!.label_category_name,
+                      hintText: AppLocalizations.of(context)!.hint_name,
+                      keyboardType: TextInputType.name,
+                      initialValue: state.name.value,
+                      onChanged: (value) => context.read<SavePaymentCategoryCubit>().nameChanged(value),
+                      error: state.name.displayError?.text(context)
+                  ),
+                  SizedBox(height: 16),
+                  AppTextField(
+                    labelText: AppLocalizations.of(context)!.label_description,
+                    hintText: AppLocalizations.of(context)!.hint_description,
+                    maxLines: null,
+                    minLines: 2,
+                    keyboardType: TextInputType.name,
+                    initialValue: state.description,
+                    onChanged: (value) => context.read<SavePaymentCategoryCubit>().descriptionChanged(value),
+                  )
+                ],
               ),
             )),
         Container(

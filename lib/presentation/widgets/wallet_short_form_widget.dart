@@ -10,7 +10,7 @@ class WalletShortFormWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      Icon(UIConstants.walletIconData, size: 20, color: Color(item.color)),
+      Icon(UIConstants.walletIconData, size: 18, color: Color(item.color)),
       SizedBox(width: 8),
       Expanded(child: Text(item.name, style: Theme.of(context).textTheme.bodyMedium, maxLines: 1, overflow: TextOverflow.ellipsis,))
     ]);

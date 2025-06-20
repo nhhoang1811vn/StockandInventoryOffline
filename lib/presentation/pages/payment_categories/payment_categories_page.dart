@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/payment_categories/bloc/payment_categories_cubit.dart';
 import 'package:good_manager/presentation/widgets/categories_grid_view.dart';
 
@@ -38,15 +38,15 @@ class PaymentCategoriesPageState extends State<PaymentCategoriesPage> {
   }
   _buildScaffold(PaymentCategoriesState state){
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      
       appBar: _buildAppBar(),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(AppLocalizations.of(context)!.inbound_categories, style: Theme.of(context).textTheme.titleMedium,),
-            CategoriesGridView(categories: state.inboundCategories, onAddNewButtonPressed: () async{
+            //Text(, style: Theme.of(context).textTheme.titleMedium,),
+            CategoriesGridView(header: AppLocalizations.of(context)!.inbound_categories,categories: state.inboundCategories, onAddNewButtonPressed: () async{
               PaymentCategory item = PaymentCategory();
               item.type = PaymentType.inbound;
               funcA(item);
@@ -56,8 +56,8 @@ class PaymentCategoriesPageState extends State<PaymentCategoriesPage> {
               _showCategoryOptionsDialog(category);
             },),
             SizedBox(height: 16,),
-            Text(AppLocalizations.of(context)!.outbound_categories,  style: Theme.of(context).textTheme.titleMedium),
-            CategoriesGridView(categories: state.outboundCategories,onAddNewButtonPressed:  () async{
+            //Text(,  style: Theme.of(context).textTheme.titleMedium),
+            CategoriesGridView(header: AppLocalizations.of(context)!.outbound_categories, categories: state.outboundCategories,onAddNewButtonPressed:  () async{
               PaymentCategory item = PaymentCategory();
               item.type = PaymentType.outbound;
               funcA(item);

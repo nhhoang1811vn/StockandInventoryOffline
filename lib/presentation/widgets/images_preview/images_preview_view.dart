@@ -2,8 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/widgets/images_preview/images_preview_state.dart';
 
 import '../../pages/pages.dart';
@@ -145,9 +144,9 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
       shape: CircleBorder());
 
   Widget buildEmptyView() => Container(
+        width: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [_buildAddPhotoButton(), _buildTakePhotoButton()],
         ),
       );
@@ -196,7 +195,7 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
     return Container(
       height: 120,
       padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(border: Border.all(color: AppColors.secondaryColor)),
+      decoration: BoxDecoration(border: Border.all(color: Color(0xFF616161))),
       child: Row(
         children: [
           Expanded(
@@ -211,7 +210,7 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
                             alignment: Alignment.center,
                             child: Image.memory(data.items[position]),
                             decoration: BoxDecoration(
-                                border: position == data.selectedPosition ? Border.all(color: AppColors.primaryColor, width: 2) : null,
+                                border: position == data.selectedPosition ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2) : null,
                                 ))
                     );
                   },

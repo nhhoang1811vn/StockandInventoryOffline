@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/domain/usecases/stores/stores_usecases.dart';
 import 'package:injectable/injectable.dart';
@@ -17,7 +18,11 @@ part 'stores_state.dart';
 class StoresCubit extends Cubit<StoresState> {
   final StoresUseCase useCase;
   final Storage storage;
-  StoresCubit({required this.storage,required this.useCase}) : super(StoresState.initial(state: InitialState(), settings: storage.getStoresSetting()));
+  final AppSettings appSettings;
+  StoresCubit({
+    required this.storage,
+    required this.appSettings,
+    required this.useCase}) : super(StoresState.initial(state: InitialState(), settings: appSettings.getStoresSetting()));
 
   void initState(bool isSelection){
     emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection));
@@ -53,7 +58,7 @@ class StoresCubit extends Cubit<StoresState> {
   }
 
   void setSettings(StoresSetting settings) {
-    storage.setStoresSetting(settings);
+    appSettings.setStoresSetting(settings);
     emit(state.copyWith(settings: settings));
     sort();
     filter();

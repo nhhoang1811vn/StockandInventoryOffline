@@ -17,4 +17,12 @@ class PaymentCategory extends BaseModel{
     map["type"] = type.index;
     return map;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is PaymentCategory && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

@@ -150,7 +150,8 @@ class AuthCubit extends Cubit<AuthState> {
       final appleProvider = AppleAuthProvider();
       appleProvider.addScope('email');
       appleProvider.addScope('name');
-      final userCredential = await _auth.signInWithProvider(appleProvider);
+      await _auth.signInWithProvider(appleProvider);
+      //final userCredential = await _auth.signInWithProvider(appleProvider);
       //print(userCredential.credential?.accessToken);
       //print(userCredential.user?.email);
       //print(userCredential.user?.emailVerified);
@@ -170,11 +171,13 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
   Future<void> signInWithGoogle() async {
-    final String googleClientId = "617423800641-s9j7uem4h2u0751pc1im6o34e4resoi4.apps.googleusercontent.com";
+    //final String googleClientId = "617423800641-s9j7uem4h2u0751pc1im6o34e4resoi4.apps.googleusercontent.com";
     emit(AuthLoading());
     try {
       await GoogleSignIn().signOut();
-      final GoogleSignInAccount? googleUser = await GoogleSignIn(clientId: googleClientId).signIn();
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(
+          //clientId: googleClientId
+      ).signIn();
       if (googleUser == null) {
         //emit(AuthError('Google Sign In Failed'));
         emit(AuthStopped());

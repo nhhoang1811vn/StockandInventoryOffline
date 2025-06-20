@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/dialog_utils.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/login/components/background.dart';
 import 'package:good_manager/presentation/pages/login/components/do_not_have_account.dart';
 import 'package:good_manager/presentation/pages/login/components/sign_in_with_google_text.dart';
@@ -22,7 +21,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends BaseStateWidget<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool _emailValidate = false;
@@ -31,7 +30,7 @@ class _LoginScreenState extends BaseStateWidget<LoginScreen> {
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 
   @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(body: _loginPage(context));
   }
 

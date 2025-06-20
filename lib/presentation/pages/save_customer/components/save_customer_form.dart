@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_customer/bloc/save_customer_cubit.dart';

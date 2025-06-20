@@ -1,31 +1,32 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
 class DocumentTransactionItemRow extends StatelessWidget {
   final DocumentTransaction item;
+  final Color bgColor;
   final void Function(DocumentTransaction item) onTransactionPressed;
   final void Function(DocumentTransaction item) onTransactionLongPressed;
   final bool isSelection;
 
   DocumentTransactionItemRow(
-      this.item, this.onTransactionPressed, this.onTransactionLongPressed,
+      this.item, this.bgColor,this.onTransactionPressed, this.onTransactionLongPressed,
       [this.isSelection = false]);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+    return Container(
+      color: bgColor,
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
         onTap: () => onTransactionPressed(item),
         onLongPress : () => onTransactionLongPressed(item),
-        child: Padding(padding: EdgeInsets.all(16.0), child: Row(children: [
+        child: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16.0), child: Row(children: [
           _buildLeadingWidget(context),
-          SizedBox(width: 8,),
+          SizedBox(width: 16),
           Expanded(child: _buildWidget(context))
         ],),),),
     );
@@ -46,11 +47,11 @@ class DocumentTransactionItemRow extends StatelessWidget {
       children: [
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
           Text(item.good.name, style:
-          Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+          Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.primary)),
           SizedBox(height: 4),
           if (item.good.barCode != null)
             Row(children: [
-              Icon(UIConstants.barcodeIconData, size: 24,color: UIConstants.primaryColor),
+              Icon(UIConstants.barcodeIconData, size: 24,color: Theme.of(context).colorScheme.primary),
               SizedBox(
                 width: 8,
               ),
@@ -93,9 +94,9 @@ class DocumentTransactionItemRow extends StatelessWidget {
     ]));
   }
   Widget getAvatarWidget(Uint8List bytes) {
-    return SizedBox(width: 48, height: 48, child: Image.memory(bytes));
+    return SizedBox(width: 36, height: 48, child: Image.memory(bytes, fit: BoxFit.cover,));
   }
   Widget _buildEmptyAvatarWidget(BuildContext context){
-    return Icon(UIConstants.goodIconData, size: 32, color: Theme.of(context).colorScheme.onPrimary);
+    return Icon(UIConstants.goodIconData, size: 36, color: Theme.of(context).colorScheme.primary);
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/payment.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 
 
 class SelectDestObjectWidget extends StatefulWidget{
@@ -34,7 +34,7 @@ class SelectDestObjectWidgetState extends State<SelectDestObjectWidget>{
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16),
-      color: Colors.grey.shade200,
+      //color: Colors.grey.shade200,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/components/select_date_range_dialog.dart';
 import 'package:good_manager/presentation/pages/report/report_date_range_type.dart';
@@ -17,16 +16,12 @@ class ReportPage extends StatefulWidget{
     return ReportPageState();
   }
 }
-class ReportPageState extends BaseStateWidget<ReportPage> {
+class ReportPageState extends State<ReportPage> {
+
   @override
-  bool hasDrawer() {
-    return true;
-  }
-  @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     return BlocConsumer<ReportCubit, ReportState>(
         builder: (context, state) => Scaffold(
-          key: ScaffoldKey,
             appBar: _buildAppBar(context),
             body: _buildBody()),
         listenWhen: (p1, p2) => p1.state != p2.state,
@@ -51,8 +46,8 @@ class ReportPageState extends BaseStateWidget<ReportPage> {
             type.getTitle(context),
           ),
           onTap: () {
-            if (type == ReportType.LIST_OF_GOODS){
-              onReportListOfGood(context);
+            if (type == ReportType.RE_ORDER){
+              onReportReorder(context);
             }else{
               onReportTypeClicked(context, type);
             }
@@ -73,20 +68,12 @@ class ReportPageState extends BaseStateWidget<ReportPage> {
       Navigator.of(context).pushNamed(Pages.report_detail, arguments: {'type': reportType, 'start': start, 'end': end});
     }
   }
-  void onReportListOfGood(BuildContext context) async{
-    Map? result = await showSelectDateRangeDialog(context, ReportDateRangeType.CURRENT_MONTH);
-    if (result != null){
-      DateTime start = result["start"];
-      DateTime end = result["end"];
-
-      Navigator.of(context).pushNamed(
-          Pages.report_detail,
-          arguments: {
-            'type': ReportType.LIST_OF_GOODS,
-            'start': start,
-            'end': end
-          });
-    }
+  void onReportReorder(BuildContext context) async{
+    Navigator.of(context).pushNamed(
+        Pages.report_detail,
+        arguments: {
+          'type': ReportType.RE_ORDER,
+        });
   }
 
   Future<Map?> showSelectDateRangeDialog(BuildContext context, ReportDateRangeType type) async {

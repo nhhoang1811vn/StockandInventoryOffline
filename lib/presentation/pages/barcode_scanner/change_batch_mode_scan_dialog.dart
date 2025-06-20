@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 
 import '../../../domain/entities/batch_mode_scan.dart';
 

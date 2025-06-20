@@ -1,15 +1,16 @@
+import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/db/db_helper.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/domain/repositories/document_repositories.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../domain/entities/document.dart';
-import '../../main.dart';
 
 
 @Injectable(as: DocumentRepository)
 class DocumentRepositoryImpl implements DocumentRepository {
-  DocumentRepositoryImpl();
+  final Storage storage;
+  DocumentRepositoryImpl(this.storage);
 
   var db = new DBHelper();
   @override
@@ -26,8 +27,7 @@ class DocumentRepositoryImpl implements DocumentRepository {
 
   @override
   Future<Document> get(int id) {
-    // TODO: implement get
-    throw UnimplementedError();
+    return db.getDocument(id);
   }
 
   @override
@@ -78,5 +78,17 @@ class DocumentRepositoryImpl implements DocumentRepository {
   @override
   Future<int> getCount(int storeId) {
     return db.getCountDocument(storeId);
+  }
+
+  @override
+  Future<List<Document>> getInRangeByCustomerId(int id, DateTime start, DateTime end) {
+    int storeId = storage.getSelectedStoreId();
+    return db.getDocumentsInRangeByCustomerId(storeId, id, start, end);
+  }
+
+  @override
+  Future<List<Document>> getInRangeBySupplierId(int id, DateTime start, DateTime end) {
+    int storeId = storage.getSelectedStoreId();
+    return db.getDocumentsInRangeBySupplierId(storeId, id, start, end);
   }
 }

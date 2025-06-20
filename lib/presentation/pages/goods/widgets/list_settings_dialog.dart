@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/goods_setting.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 
 class ListSettingsDialog extends StatefulWidget{
   final GoodsSetting settings;

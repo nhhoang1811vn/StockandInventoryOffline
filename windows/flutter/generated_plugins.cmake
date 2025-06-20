@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  audioplayers_windows
   camera_windows
   desktop_webview_auth
   firebase_auth
@@ -10,6 +11,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   firebase_storage
   permission_handler_windows
   printing
+  share_plus
   url_launcher_windows
   webview_windows
 )

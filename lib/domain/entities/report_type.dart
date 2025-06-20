@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 enum ReportType{
   LIST_OF_GOODS,
   LIST_OF_DOCUMENT,
@@ -11,6 +11,8 @@ enum ReportType{
   LIST_OF_WALLETS,
   LIST_OF_CUSTOMER_PAYMENTS,
   LIST_OF_SUPPLIER_PAYMENTS,
+
+  RE_ORDER
 
 }
 extension ReportTypeExtension on ReportType{
@@ -34,7 +36,8 @@ extension ReportTypeExtension on ReportType{
         return AppLocalizations.of(context)!.report_type_list_of_supplier_payments;
       case ReportType.LIST_OF_CUSTOMER_PAYMENTS:
         return AppLocalizations.of(context)!.report_type_list_of_customer_payments;
-
+      case ReportType.RE_ORDER:
+        return AppLocalizations.of(context)!.report_type_reorder;
     }
   }
 }

@@ -5,21 +5,24 @@ import 'package:good_manager/domain/entities/good_history.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 class ItemHistoryRow extends StatelessWidget{
   final GoodHistory item;
+  final Color bgColor;
   final void Function(Document document) onDocumentTapped;
-  ItemHistoryRow(this.item, this.onDocumentTapped);
+  ItemHistoryRow(this.item, this.bgColor, this.onDocumentTapped);
 
   @override
   Widget build(BuildContext context) {
     String quantityText;
     if (item.document!.type == DocumentType.incoming){
-      quantityText = "+ " + Utils.getQuantityText(item.quantity);
+      quantityText = "+" + Utils.getQuantityText(item.quantity);
     }else{
-      quantityText = "- " + Utils.getQuantityText(item.quantity);
+      quantityText = "-" + Utils.getQuantityText(item.quantity);
     }
-    return Card(
-      margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+    return Container(
+      color: bgColor,
       child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () => onDocumentTapped(item.document!),
@@ -33,10 +36,10 @@ class ItemHistoryRow extends StatelessWidget{
                   child: Container(
                     decoration: BoxDecoration(
                       color: getIndicatorColor(item.document!.type), // Change color as needed
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        bottomLeft: Radius.circular(8),
-                      ),
+                      //borderRadius: BorderRadius.only(
+                        //topLeft: Radius.circular(8),
+                        //bottomLeft: Radius.circular(8),
+                      //),
                     ),
                   ),
                 ),
@@ -51,7 +54,7 @@ class ItemHistoryRow extends StatelessWidget{
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium!
-                                .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                                .copyWith(color: Theme.of(context).colorScheme.primary),
                           ),
                           //SizedBox(height: 4),
                           Text(DateFormatFactory.getDateFormat().format(item.document!.date),
@@ -84,7 +87,8 @@ class ItemHistoryRow extends StatelessWidget{
                     children: [
                       Text(quantityText, style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                       //Text("Paid/Amount"),
-                      Text(item.amount.toString())
+                      Text("${AppLocalizations.of(context)!.field_amount}: ${Config.currencyFormat.format(item.amount)}"),
+                      //Text(item.amount.toString())
                     ],
                   )
                 ],),))
@@ -99,8 +103,6 @@ class ItemHistoryRow extends StatelessWidget{
         return Colors.red;
       case DocumentType.outgoing:
         return Colors.green;
-      default:
-        return Colors.orange;
-    }
+      }
   }
 }

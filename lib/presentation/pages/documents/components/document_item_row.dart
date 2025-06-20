@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
 
 class DocumentItemRow extends StatelessWidget {
   final Document item;
-  final bool showAll;
+  final Color bgColor;
+  //final bool showAll;
   final void Function(Document document) onDocumentTapped;
   final void Function(Document document) onDocumentLongPressed;
 
-  DocumentItemRow(this.showAll, this.item, this.onDocumentTapped, this.onDocumentLongPressed);
+  DocumentItemRow(
+      //this.showAll
+      this.item,
+      this.bgColor,
+      this.onDocumentTapped, this.onDocumentLongPressed);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).colorScheme.surface,
-      margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+    TextStyle? primaryTextStyle = Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700);
+    TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
+    return Container(
+      color: bgColor,
       child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () => onDocumentTapped(item),
@@ -30,10 +36,10 @@ class DocumentItemRow extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       color: getIndicatorColor(item.type), // Change color as needed
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        bottomLeft: Radius.circular(8),
-                      ),
+                      //borderRadius: BorderRadius.only(
+                        //topLeft: Radius.circular(8),
+                        //bottomLeft: Radius.circular(8),
+                      //),
                     ),
                   ),
                 ),
@@ -45,33 +51,20 @@ class DocumentItemRow extends StatelessWidget {
                         children: [
                           Text(
                             item.name,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                            style: primaryTextStyle,
                           ),
                           //SizedBox(height: 4),
                           Text(DateFormatFactory.getDateFormat().format(item.date),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(color: Theme.of(context).colorScheme.onSurface)),
-                          //SizedBox(height: 4),
+                              style: secondaryTextStyle),
                           item.personName != null
                               ? Text(
                             item.personName!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                              style: secondaryTextStyle
                           )
                               : Container(),
                           item.description.isNotEmpty
                               ? Text(item.description,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(color: Theme.of(context).colorScheme.onSurface))
+                              style: secondaryTextStyle)
                               : Container()
                         ],
                       )),
@@ -79,11 +72,10 @@ class DocumentItemRow extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(Utils.getQuantityText(item.quantity), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
-                      Text("${AppLocalizations.of(context)!.field_paid} : ${Config.currencyFormat.format(item.paid)}"),
-                      Text("${AppLocalizations.of(context)!.field_amount} : ${Config.currencyFormat.format(item.amount)}")
-                      //Text("Paid/Amount"),
-                      //Text("${Config.currencyFormat.format(item.paid)}/${Config.currencyFormat.format(item.amount)}")
+                      Text(Utils.getQuantityText(item.quantity), style:primaryTextStyle ),
+                      Text("${AppLocalizations.of(context)!.field_amount}: ${Config.currencyFormat.format(item.amount)}", style: secondaryTextStyle),
+                      Text("${AppLocalizations.of(context)!.field_paid}: ${Config.currencyFormat.format(item.paid)}", style: secondaryTextStyle),
+                      Text("${AppLocalizations.of(context)!.field_remaining}: ${Config.currencyFormat.format(item.amount - item.paid)}", style: secondaryTextStyle),
                     ],
                   )
                 ],),))
@@ -92,20 +84,6 @@ class DocumentItemRow extends StatelessWidget {
           )),
     );
   }
-
-  String getTitleText(BuildContext context, DocumentType type, String name) {
-    if (showAll) {
-      switch (type) {
-        case DocumentType.incoming:
-          return "${AppLocalizations.of(context)!.incoming_document_text} $name";
-        default:
-          return "${AppLocalizations.of(context)!.outgoing_document_text} $name";
-      }
-    } else {
-      return name;
-    }
-  }
-
   Color getIndicatorColor(DocumentType type) {
     switch (type) {
       case DocumentType.incoming:

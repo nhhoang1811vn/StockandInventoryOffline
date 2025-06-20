@@ -9,12 +9,14 @@ class CurrencyAppTextField extends StatelessWidget{
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
   final bool readOnly;
+  final Widget? suffix;
   CurrencyAppTextField({
     Key? key,
     required this.labelText,
     this.controller,
     this.onChanged,
     this.readOnly = false,
+    this.suffix
   }) : super(key: key);
 
   @override
@@ -30,6 +32,7 @@ class CurrencyAppTextField extends StatelessWidget{
           FilteringTextInputFormatter.allow(RegExp("[0-9]")),
           CurrencyInputFormatter()
         ],
+        suffix: suffix,
     );
   }
 }

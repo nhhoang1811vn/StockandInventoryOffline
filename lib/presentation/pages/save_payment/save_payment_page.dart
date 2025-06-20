@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/customer.dart';
+import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/domain/entities/wallet.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/save_payment/components/select_wallet_widget.dart';
 import 'package:good_manager/presentation/widgets/category_short_form_widget.dart';
@@ -161,8 +162,12 @@ class SavePaymentPageState extends State<SavePaymentPage> {
           Navigator.of(context).pop(state.item);
         } else if (state.state is OpenDocumentListState) {
           var documentType = (widget.item.type == PaymentType.inbound) ? DocumentType.outgoing : DocumentType.incoming;
-          final result =
-              await Navigator.of(context).pushNamed(Pages.select_document, arguments: {"documentType": documentType});
+          //final result = await Navigator.of(context).pushNamed(Pages.select_document, arguments: {"documentType": documentType});
+          final result = await Navigator.of(context).pushNamed(Pages.document_list, arguments: {
+            "documentType": documentType, 
+            "isSelection" : true,
+            "setting": DocumentsSetting(isPaid: false)
+          });
           if (result != null) {
             Document item = result as Document;
             context.read<SavePaymentCubit>().onDocumentChanged(item);
@@ -197,7 +202,6 @@ class SavePaymentPageState extends State<SavePaymentPage> {
           amountController.text = "";
         }
         return Scaffold(
-            backgroundColor: Colors.grey[200],
             appBar: _buildAppBar(context),
             body: Column(
               children: [
@@ -208,119 +212,102 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Card(
-                        color: Theme.of(context).colorScheme.surface,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppTextField(
+                              labelText: AppLocalizations.of(context)!.label_select_payment_category,
+                              keyboardType: TextInputType.none,
+                              readOnly: true,
+                              onTapped: () {
+                                _showSelectCategoryBottomSheet(context);
+                              },
+                              prefix: state.selectedCategory == null
+                                  ? Text(AppLocalizations.of(context)!.hint_select)
+                                  : CategoryShortFormWidget(state.selectedCategory!),
+                              suffix: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 16,
+                              )),
+                          SizedBox(height: 16),
+                          AppTextField(
+                              labelText: AppLocalizations.of(context)!.label_select_wallet,
+                              keyboardType: TextInputType.none,
+                              readOnly: true,
+                              onTapped: () {
+                                _showSelectWalletBottomSheet(context);
+                              },
+                              prefix: state.selectedWallet == null
+                                  ? Text(AppLocalizations.of(context)!.hint_select)
+                                  : WalletShortFormWidget(state.selectedWallet!),
+                              suffix: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 16,
+                              )),
+                          SizedBox(height: 16),
+                          AppTextField(
+
+                              labelText: widget.item.type == PaymentType.inbound ? AppLocalizations.of(context)!.label_select_inbound_object : AppLocalizations.of(context)!.label_select_outbound_object,
+                            keyboardType: TextInputType.none,
+                              readOnly: true,
+                              onTapped: (){
+                                _showSelectObjectBottomSheet(context);
+                              },
+                              prefix: _buildPrefixObject(state),
+                              suffix: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 16,
+                              )
+                          ),
+                          SizedBox(height: 16),
+                          AppTextField(
+                              labelText: AppLocalizations.of(context)!.label_description,
+                              hintText: AppLocalizations.of(context)!.hint_description,
+                              controller: descriptionController,
+                              maxLines: null,
+                              minLines: 2,
+                              onChanged: (value) => context.read<SavePaymentCubit>().descriptionChanged(value),
+                              keyboardType: TextInputType.name),
+                          SizedBox(height: 16),
+                          AppTextField(
+                            controller: dateController,
+                            suffix: Icon(Icons.keyboard_arrow_down, size: 16),
+                            hintText: AppLocalizations.of(context)!.field_date,
+                            labelText: AppLocalizations.of(context)!.field_date,
+                            keyboardType: TextInputType.datetime,
+                            readOnly: true,
+                            onTapped: () => {
+                              DatePicker.showDatePicker(context,
+                                  showTitleActions: true,
+                                  minTime: Config.minTime,
+                                  maxTime: Config.maxTime, onChanged: (date) {
+                                print('change $date');
+                              }, onConfirm: (date) {
+                                context.read<SavePaymentCubit>().dateChanged(date);
+                                dateController.text = DateFormatFactory.getDateFormat().format(date);
+                              }, currentTime: state.date, locale: MyApp.getDatePickerLocaleType(context))
+                            },
+                          ),
+                          SizedBox(height: 16),
+
+                          Row(
                             children: [
-                              AppTextField(
-                                  labelText: AppLocalizations.of(context)!.label_select_payment_category,
-                                  keyboardType: TextInputType.none,
-                                  readOnly: true,
-                                  onTapped: () {
-                                    _showSelectCategoryBottomSheet(context);
-                                  },
-                                  prefix: state.selectedCategory == null
-                                      ? Text(AppLocalizations.of(context)!.hint_select)
-                                      : CategoryShortFormWidget(state.selectedCategory!),
-                                  suffix: Icon(
-                                    Icons.keyboard_arrow_down,
-                                    size: 16,
-                                  )),
-                              SizedBox(height: 16),
-                              AppTextField(
-                                  labelText: AppLocalizations.of(context)!.label_select_wallet,
-                                  keyboardType: TextInputType.none,
-                                  readOnly: true,
-                                  onTapped: () {
-                                    _showSelectWalletBottomSheet(context);
-                                  },
-                                  prefix: state.selectedWallet == null
-                                      ? Text(AppLocalizations.of(context)!.hint_select)
-                                      : WalletShortFormWidget(state.selectedWallet!),
-                                  suffix: Icon(
-                                    Icons.keyboard_arrow_down,
-                                    size: 16,
-                                  )),
-                              SizedBox(height: 16),
-                              AppTextField(
-
-                                  labelText: widget.item.type == PaymentType.inbound ? AppLocalizations.of(context)!.label_select_inbound_object : AppLocalizations.of(context)!.label_select_outbound_object,
-                                keyboardType: TextInputType.none,
-                                  readOnly: true,
-                                  onTapped: (){
-                                    _showSelectObjectBottomSheet(context);
-                                  },
-                                  prefix: _buildPrefixObject(state),
-                                  suffix: Icon(
-                                    Icons.keyboard_arrow_down,
-                                    size: 16,
-                                  )
-                              ),
-                              SizedBox(height: 16),
-                              AppTextField(
-                                  labelText: AppLocalizations.of(context)!.label_description,
-                                  hintText: AppLocalizations.of(context)!.hint_description,
-                                  controller: descriptionController,
-                                  maxLines: null,
-                                  minLines: 2,
-                                  onChanged: (value) => context.read<SavePaymentCubit>().descriptionChanged(value),
-                                  keyboardType: TextInputType.name),
-                              // SizedBox(
-                              //   height: 16,
-                              // ),
-                              // AppTextField(
-                              //     controller: documentNameController,
-                              //     suffix: Icon(Icons.keyboard_arrow_down, size: 16),
-                              //     labelText: AppLocalizations.of(context)!.label_select_document_no,
-                              //     hintText: AppLocalizations.of(context)!.hint_select,
-                              //     keyboardType: TextInputType.none,
-                              //     readOnly: true,
-                              //     onTapped: () => {context.read<SavePaymentCubit>().onDocumentNameClicked()}),
-                              SizedBox(height: 16),
-                              AppTextField(
-                                controller: dateController,
-                                suffix: Icon(Icons.keyboard_arrow_down, size: 16),
-                                hintText: AppLocalizations.of(context)!.field_date,
-                                labelText: AppLocalizations.of(context)!.field_date,
-                                keyboardType: TextInputType.datetime,
-                                readOnly: true,
-                                onTapped: () => {
-                                  DatePicker.showDatePicker(context,
-                                      showTitleActions: true,
-                                      minTime: Config.minTime,
-                                      maxTime: Config.maxTime, onChanged: (date) {
-                                    print('change $date');
-                                  }, onConfirm: (date) {
-                                    context.read<SavePaymentCubit>().dateChanged(date);
-                                    dateController.text = DateFormatFactory.getDateFormat().format(date);
-                                  }, currentTime: state.date, locale: MyApp.getDatePickerLocaleType(context))
-                                },
-                              ),
-                              SizedBox(height: 16),
-
-                              Row(
-                                children: [
-                                  Expanded(
-                                      child: CurrencyAppTextField(
-                                    labelText: AppLocalizations.of(context)!.field_amount,
-                                    controller: amountController,
-                                    onChanged: context.read<SavePaymentCubit>().onAmountChanged,
-                                  )),
-                                  CircleButton(UIConstants.calculatorIconData, () {
-                                    Utils.showCalculatorPopup(context, state.amount, (p0) {
-                                      NumberFormat format = new NumberFormat("0.#");
-                                      context.read<SavePaymentCubit>().onAmountChanged(format.format(p0));
-                                      amountController.text = Config.simpleCurrencyFormat.format(p0);
-                                    });
-                                  })
-                                ],
-                              ),
+                              Expanded(
+                                  child: CurrencyAppTextField(
+                                labelText: AppLocalizations.of(context)!.field_amount,
+                                controller: amountController,
+                                onChanged: context.read<SavePaymentCubit>().onAmountChanged,
+                              )),
+                              CircleButton(UIConstants.calculatorIconData, () {
+                                Utils.showCalculatorPopup(context, state.amount, (p0) {
+                                  NumberFormat format = new NumberFormat("0.#");
+                                  context.read<SavePaymentCubit>().onAmountChanged(format.format(p0));
+                                  amountController.text = Config.simpleCurrencyFormat.format(p0);
+                                });
+                              })
                             ],
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/domain/entities/store.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
 import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit.dart';
 import 'package:good_manager/presentation/pages/save_store/components/save_store_form.dart';
 
@@ -19,12 +18,12 @@ class SaveStorePage extends StatefulWidget {
     return SaveStorePageState();
   }
 }
-class SaveStorePageState extends BaseStateWidget<SaveStorePage> {
+class SaveStorePageState extends State<SaveStorePage> {
   @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     context.read<SaveStoreCubit>().init(widget.item);
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      
       appBar: _buildAppBar(context),
       body: Column(children: [
         Expanded(
@@ -32,16 +31,13 @@ class SaveStorePageState extends BaseStateWidget<SaveStorePage> {
               padding: const EdgeInsets.all(UIConstants.screenSpace),
               child: Column(
                 children: [
-                  Card(
-                    color: Theme.of(context).colorScheme.surface,
-                    child: SaveStoreForm(item: widget.item),
-                  )
+                  SaveStoreForm(item: widget.item)
                 ],
               ),
             )),
         Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.all(16),
           color: Theme.of(context).colorScheme.surface,
           child: PrimaryButton(AppLocalizations.of(context)!.action_save, () {
             context.read<SaveStoreCubit>().onSaveClicked();

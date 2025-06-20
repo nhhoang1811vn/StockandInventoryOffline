@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/help_content.dart';
 
 import '../../markdown/md_provider_factory.dart';
@@ -11,9 +10,9 @@ class HelpsPage extends StatefulWidget{
     return HelpsPageState();
   }
 }
-class HelpsPageState extends BaseStateWidget<HelpsPage> {
+class HelpsPageState extends State<HelpsPage> {
   @override
-  Widget buildWidget(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(AppLocalizations.of(context)!.help_title)),
         body: ListView.separated(

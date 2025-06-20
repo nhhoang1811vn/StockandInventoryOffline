@@ -1,9 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:good_manager/common/helpers/injection.container.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/sale_report/sale_report_cubit.dart';

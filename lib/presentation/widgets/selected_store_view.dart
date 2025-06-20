@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/main.dart';
 
-import '../constants.dart';
-
 class SelectedStoreView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -19,12 +17,12 @@ class SelectedStoreViewState extends State<SelectedStoreView> {
   Widget build(BuildContext context) {
     return Container(
       height: 30,
-      color: UIConstants.primaryDarkColor,
+      color: Theme.of(context).colorScheme.primary,
       child: Center(
         child: Text(
           storeName,
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.bold),
         ),
       ),
     );

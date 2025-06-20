@@ -9,11 +9,12 @@ class Good extends BaseModel {
 
   double? purchasePrice;
   double? salePrice;
-  //List<String> files = [];
-  List<Uint8List> files = [];
 
+  double? minQuantity;
   //todo take care quantity here, it mapping manual
+  List<Uint8List> files = [];
   double quantity = 0;
+
   Good();
 
   Good.map(dynamic obj) {
@@ -23,7 +24,7 @@ class Good extends BaseModel {
     this.salePrice = obj["salePrice"];
     this.storeId = obj["storeId"];
     this.groupId = obj["groupId"];
-    //this.files = (jsonDecode(obj["files"]) as List<dynamic>).cast<String>();
+    this.minQuantity = obj["minQuantity"];
   }
 
   Map<String, dynamic> toMap() {
@@ -33,7 +34,7 @@ class Good extends BaseModel {
     map["salePrice"] = salePrice;
     map["storeId"] = storeId;
     map["groupId"] = groupId;
-    //map["files"] = jsonEncode(files);
+    map["minQuantity"] = minQuantity;
     return map;
   }
 }

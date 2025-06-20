@@ -15,7 +15,7 @@ class Pages {
   static const String save_group = '/save_group';
 
   static const String document_list = "/document_list";
-  static const String select_document = "/select_document";
+  static const String documents_history = "/documents_history";
   static const String save_document = '/save_document';
 
   static const String store_list = '/store_list';
@@ -35,6 +35,13 @@ class Pages {
   static const String settings = "/settings";
   static const String subscriptions = "/subscriptions";
 
+  static const String settings_general = "/settings_general";
+  static const String settings_view = "/settings_view";
+  static const String settings_minimum_quantity = "/settings_minimum_quantity";
+  static const String settings_data = "/settings_data";
+  static const String settings_my_company = "/settings_my_company";
+
+
   static const String select_group = '/select_group';
   static const String barcode_scanner = "/barcode_scanner";
   static const String report = "/report";
@@ -43,4 +50,6 @@ class Pages {
   static const String signup = "/signup";
   static const String signIn = "/signIn";
   static const String forgotPassword = "/forgotPassword";
+
+  static const String payments = "/payments";
 }

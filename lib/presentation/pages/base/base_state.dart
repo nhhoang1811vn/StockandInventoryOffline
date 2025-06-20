@@ -139,6 +139,6 @@ class OpenInputQuantityDialogState extends BaseState{
   late Good good;
   OpenInputQuantityDialogState(this.good);
 }
-class OpenBarcodeScannerToSearchState extends BaseState{
+//class OpenBarcodeScannerToSearchState extends BaseState{
 
-}
+//}

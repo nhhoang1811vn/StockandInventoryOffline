@@ -3,11 +3,12 @@ import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/repositories/payment_repositories.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../main.dart';
+import '../storage.dart';
 
 @Injectable(as: PaymentRepository)
 class PaymentRepositoryImpl implements PaymentRepository {
-  PaymentRepositoryImpl();
+  final Storage storage;
+  PaymentRepositoryImpl(this.storage);
 
   var db = new DBHelper();
   @override

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
+import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
@@ -16,7 +16,6 @@ import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:intl/intl.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../../presentation/widgets/snackbar_widgets.dart';
@@ -31,6 +30,7 @@ class SaveGoodForm extends StatelessWidget {
 
   final purchasePriceTextController = TextEditingController();
   final salePriceTextController = TextEditingController();
+  final minQuantityTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -75,14 +75,8 @@ class SaveGoodForm extends StatelessWidget {
             salePriceTextController.text = Config.simpleCurrencyFormat.format(p0);
           });
         } else if (state.state is OpenBarcodeScannerPageState) {
-          var result = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SimpleBarcodeScannerPage(),
-              ));
-          if (result != "-1") {
-            Utils.handleABarcodeFound();
-            //barcodeTextController.text = result;
+          var result = await Utils.scanBarcode(context);
+          if (result != null) {
             context.read<SaveGoodCubit>().barCodeChanged(result);
           }
         } else if (state.state is OpenHistoryPageState) {
@@ -123,6 +117,11 @@ class SaveGoodForm extends StatelessWidget {
           salePriceTextController.text = Config.simpleCurrencyFormat.format(state.salePrice);
         } else {
           salePriceTextController.text = "";
+        }
+        if (state.minQuantity != null){
+          minQuantityTextController.text = Config.simpleCurrencyFormat.format(state.minQuantity);
+        }else{
+          minQuantityTextController.text = "";
         }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -177,6 +176,16 @@ class SaveGoodForm extends StatelessWidget {
                   Expanded(child: _buildPrice(context, state))
                 ],
               ),
+            SizedBox(
+              height: 16,
+            ),
+            if (state.showMinQuantity)
+            AppTextField(
+                labelText: AppLocalizations.of(context)!.field_min_quantity,
+                hintText: AppLocalizations.of(context)!.field_min_quantity,
+                controller: minQuantityTextController,
+                onChanged: (value) => context.read<SaveGoodCubit>().onMinQuantityChanged(value),
+                keyboardType: TextInputType.number),
           ],
         );
       },
