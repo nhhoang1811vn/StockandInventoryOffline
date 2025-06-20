@@ -19,6 +19,7 @@ class OpenSaveItemState extends BaseState {
 
 }
 class OpenHelpPageState extends BaseState {}
+class OpenBuySubscriptionDialogState  extends BaseState {}
 
 class OpenListSettingsDialogState extends BaseState {}
 class OpenSortDialogListState extends BaseState {}

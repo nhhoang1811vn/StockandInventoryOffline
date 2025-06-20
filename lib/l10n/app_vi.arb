@@ -81,6 +81,7 @@
   "action_view_transaction": "Xem hoá đơn",
   "action_edit": "Sửa",
   "action_delete": "Xoá",
+  "action_view_document": "Xem hoá đơn",
   "message_name_blank": "Tên không được để trống",
 
   "notification_dialog_title": "Thông báo",
@@ -376,7 +377,9 @@
                        "hint_tap_first_column": "Nhấn các đối tượng ở cột đầu tiên để xem chi tiết.",
                        "by_status": "Theo trạng thái",
                            "status_paid": "Đã thanh toán",
-                           "status_unpaid": "Chưa thanh toán"
+                           "status_unpaid": "Chưa thanh toán",
+                           "action_yes": "Có",
+                               "action_no": "Không"
 
 
 }

@@ -74,6 +74,7 @@
     "action_view_transaction": "View Transactions",
     "action_edit": "Edit",
     "action_delete": "Delete",
+    "action_view_document": "View documents",
     "message_name_blank": "Name can not be blank",
     "notification_dialog_title": "Notification",
     "question_push_data": "Would you like to save the data to Server?",
@@ -345,5 +346,8 @@
 
     "by_status": "By status",
     "status_paid": "Paid",
-    "status_unpaid": "Unpaid"
+    "status_unpaid": "Unpaid",
+    "action_yes": "Yes",
+    "action_no": "No",
+    "buy_subscription_to_add_more_entity": "Without the subscription you can add only %s entities. Upgrade to the premium version and unlock unlimited access!"
 }

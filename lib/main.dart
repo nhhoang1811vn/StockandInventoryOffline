@@ -42,7 +42,8 @@ void main() async {
   };
   FirebaseAuth.instance.authStateChanges().listen(
     (user) {
-      if (user == null || !user.emailVerified) {
+      //if (user == null || !user.emailVerified) {
+      if (user == null) {
         initialRoute = Pages.signIn;
       } else {
         initialRoute = Pages.loading_data;

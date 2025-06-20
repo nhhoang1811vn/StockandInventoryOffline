@@ -191,17 +191,17 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                   Expanded(
                     child: ListView(
                       children: [
-                        Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            //color: ColorUtils.getHeaderBgColor(context),
-                            child: Text(
-                                AppLocalizations.of(context)!
-                                    .document_information,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.bold))),
+                        // Container(
+                        //     padding: const EdgeInsets.symmetric(
+                        //         horizontal: 16, vertical: 8),
+                        //     //color: ColorUtils.getHeaderBgColor(context),
+                        //     child: Text(
+                        //         AppLocalizations.of(context)!
+                        //             .document_information,
+                        //         style: Theme.of(context)
+                        //             .textTheme
+                        //             .titleMedium
+                        //             ?.copyWith(fontWeight: FontWeight.bold))),
                         Padding(
                           padding: EdgeInsets.all(16),
                           child: Column(
@@ -704,21 +704,40 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
     );
   }
 
+  // Widget _buildTransactionsView(BuildContext context, SaveDocumentState state) {
+  //   return Column(
+  //     children: state.transactions.map((transaction) {
+  //       return DocumentTransactionItemRow(
+  //           transaction,
+  //           ColorUtils.getItemBgColor1(context),
+  //           (item) => context
+  //               .read<SaveDocumentCubit>()
+  //               .onPressedTransaction(transaction),
+  //           (item) => onLongPressedTransaction(context, transaction));
+  //     }).toList(),
+  //   );
+  // }
   Widget _buildTransactionsView(BuildContext context, SaveDocumentState state) {
-    bool flag = true;
-    return Column(
-      children: state.transactions.map((transaction) {
-        flag = !flag;
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(), // Prevents nested scrolling
+      itemCount: state.transactions.length,
+      itemBuilder: (context, index) {
+        final transaction = state.transactions[index];
         return DocumentTransactionItemRow(
-            transaction,
-            flag
-                ? ColorUtils.getItemBgColor1(context)
-                : ColorUtils.getItemBgColor2(context),
-            (item) => context
-                .read<SaveDocumentCubit>()
-                .onPressedTransaction(transaction),
-            (item) => onLongPressedTransaction(context, transaction));
-      }).toList(),
+          transaction,
+          ColorUtils.getItemBgColor1(context),
+              (item) => context.read<SaveDocumentCubit>().onPressedTransaction(transaction),
+              (item) => onLongPressedTransaction(context, transaction),
+        );
+      },
+      separatorBuilder: (context, index) => Divider(
+        height: 1,
+        thickness: 1,
+        indent: 68,
+        endIndent: 0,
+        color: Colors.grey.shade300,
+      ),
     );
   }
 

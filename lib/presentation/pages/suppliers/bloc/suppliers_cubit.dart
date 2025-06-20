@@ -9,7 +9,9 @@ import 'package:injectable/injectable.dart';
 import '../../../../data/storage.dart';
 import '../../../../domain/entities/sort_by_text.dart';
 import '../../../../domain/entities/suppliers_setting.dart';
+import '../../../../domain/free_limits.dart';
 import '../../../../domain/usecases/suppliers/suppliers_usecases.dart';
+import '../../../../purchase_manager.dart';
 import '../../base/base_sort_items.dart';
 
 part 'suppliers_cubit.freezed.dart';
@@ -25,6 +27,7 @@ class SuppliersCubit extends Cubit<SuppliersState> {
     required this.storage,
     required this.useCase}) : super(SuppliersState.initial(state: InitialState(), settings: appSettings.getSuppliersSetting()));
 
+  final purchaseManager = PurchaseManager();
   void initState(bool isSelection){
     emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection));
     loadItems();
@@ -71,11 +74,28 @@ class SuppliersCubit extends Cubit<SuppliersState> {
   bool filterItem(Supplier item, String textSearch) {
     return item.name.toLowerCase().contains(textSearch.toLowerCase());
   }
-  void onAddButtonClicked() {
-    Supplier item = Supplier();
-    item.storeId = storage.getSelectedStoreId();
-    onAddItem(item);
+  // void onAddButtonClicked() {
+  //   Supplier item = Supplier();
+  //   item.storeId = storage.getSelectedStoreId();
+  //   onAddItem(item);
+  // }
+
+  void onAddButtonClicked() async{
+    bool isValid = await isValidToAddMoreSupplier();
+    if (isValid){
+      Supplier item = Supplier();
+      item.storeId = storage.getSelectedStoreId();
+      onAddItem(item);
+    }else{
+      emit(state.copyWith(state: OpenBuySubscriptionDialogState()));
+    }
   }
+  Future<bool> isValidToAddMoreSupplier() async{
+    var storeId = storage.getSelectedStoreId();
+    int count = await useCase.getCount(storeId);
+    return count < FreeLimits.supplierLimit || purchaseManager.isPro;
+  }
+
   void onAddItem(Supplier item){
     emit(state.copyWith(state: OpenSaveSupplierPageState(item)));
   }

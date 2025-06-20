@@ -533,6 +533,12 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get action_delete;
 
+  /// No description provided for @action_view_document.
+  ///
+  /// In en, this message translates to:
+  /// **'View documents'**
+  String get action_view_document;
+
   /// No description provided for @message_name_blank.
   ///
   /// In en, this message translates to:
@@ -2092,6 +2098,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unpaid'**
   String get status_unpaid;
+
+  /// No description provided for @action_yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get action_yes;
+
+  /// No description provided for @action_no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get action_no;
+
+  /// No description provided for @buy_subscription_to_add_more_entity.
+  ///
+  /// In en, this message translates to:
+  /// **'Without the subscription you can add only %s entities. Upgrade to the premium version and unlock unlimited access!'**
+  String get buy_subscription_to_add_more_entity;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

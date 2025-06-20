@@ -19,9 +19,9 @@ class DocumentTransactionItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: bgColor,
+      //color: bgColor,
       child: InkWell(
-        borderRadius: BorderRadius.circular(8),
+       // borderRadius: BorderRadius.circular(8),
         onTap: () => onTransactionPressed(item),
         onLongPress : () => onTransactionLongPressed(item),
         child: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16.0), child: Row(children: [
@@ -43,11 +43,13 @@ class DocumentTransactionItemRow extends StatelessWidget {
     ],);
   }
   Widget _buildTop(BuildContext context){
+    TextStyle? primaryTextStyle = Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700);
+    TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
+
     return Row(
       children: [
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
-          Text(item.good.name, style:
-          Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.primary)),
+          Text(item.good.name, style: primaryTextStyle),
           SizedBox(height: 4),
           if (item.good.barCode != null)
             Row(children: [
@@ -55,28 +57,23 @@ class DocumentTransactionItemRow extends StatelessWidget {
               SizedBox(
                 width: 8,
               ),
-              Text(item.good.barCode!, style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onSurface))
+              Text(item.good.barCode!, style: secondaryTextStyle)
             ]),
           if (item.good.description.isNotEmpty)
             Column(children: [
               SizedBox(height: 4,),
-              Text(item.good.description, style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onSurface))
+              Text(item.good.description, style: secondaryTextStyle)
             ],)
 
 
         ]),),
 
-        Text(Utils.getQuantityText(item.quantity), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),)
+        Text(Utils.getQuantityText(item.quantity), style: primaryTextStyle,)
       ],
     );
   }
-  Widget _buildBottom(BuildContext con){
+  Widget _buildBottom(BuildContext context){
+    TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
     var leftValue = "";
     var rightValue = "";
     if (item.price == null){
@@ -89,12 +86,24 @@ class DocumentTransactionItemRow extends StatelessWidget {
     return Align(alignment: Alignment.centerRight, child: Column(
       crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-      Text(AppLocalizations.of(con)!.field_price + ": " + leftValue),
-      Text(AppLocalizations.of(con)!.field_amount + ": " + rightValue),
+      Text(AppLocalizations.of(context)!.field_price + ": " + leftValue, style: secondaryTextStyle),
+      Text(AppLocalizations.of(context)!.field_amount + ": " + rightValue, style: secondaryTextStyle),
     ]));
   }
+  // Widget getAvatarWidget(Uint8List bytes) {
+  //   return SizedBox(width: 36, height: 48, child: Image.memory(bytes, fit: BoxFit.cover,));
+  // }
   Widget getAvatarWidget(Uint8List bytes) {
-    return SizedBox(width: 36, height: 48, child: Image.memory(bytes, fit: BoxFit.cover,));
+    return SizedBox(
+      width: 36,
+      height: 36,
+      child: ClipOval(
+        child: Image.memory(
+          bytes,
+          fit: BoxFit.cover, // Ensures the image covers the entire circular area
+        ),
+      ),
+    );
   }
   Widget _buildEmptyAvatarWidget(BuildContext context){
     return Icon(UIConstants.goodIconData, size: 36, color: Theme.of(context).colorScheme.primary);

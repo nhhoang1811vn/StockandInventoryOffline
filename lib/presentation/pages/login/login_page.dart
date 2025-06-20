@@ -177,10 +177,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: size.width,
                         decoration: new BoxDecoration(
                             borderRadius: BorderRadius.circular(80.0),
+                            color: Colors.blue,
                             gradient: new LinearGradient(colors: [
                               Color.fromARGB(255, 255, 136, 34),
                               Color.fromARGB(255, 255, 177, 41)
-                            ])),
+                            ])
+                        ),
                         child: Text(
                           !_isAnonymous ? AppLocalizations.of(context)!.login : AppLocalizations.of(context)!.menu_item_upgrade_account,
                           //AppLocalizations.of(context)!.login,
@@ -249,6 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
+                  if (Platform.isIOS)
                   Container(
                     alignment: Alignment.centerRight,
                     margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),

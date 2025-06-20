@@ -8,6 +8,8 @@ import 'package:injectable/injectable.dart';
 import '../../../../data/storage.dart';
 import '../../../../domain/entities/sort_by_text.dart';
 import '../../../../domain/entities/stores_setting.dart';
+import '../../../../domain/free_limits.dart';
+import '../../../../purchase_manager.dart';
 import '../../base/base_sort_items.dart';
 import '../../base/base_state.dart';
 
@@ -24,6 +26,7 @@ class StoresCubit extends Cubit<StoresState> {
     required this.appSettings,
     required this.useCase}) : super(StoresState.initial(state: InitialState(), settings: appSettings.getStoresSetting()));
 
+  final purchaseManager = PurchaseManager();
   void initState(bool isSelection){
     emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection));
     loadItems();
@@ -49,10 +52,26 @@ class StoresCubit extends Cubit<StoresState> {
   void onHelpMenuClick(){
     emit(state.copyWith(state: OpenHelpPageState()));
   }
-  void onAddButtonClicked() {
-    Store item = Store();
-    onAddItem(item);
+  // void onAddButtonClicked() {
+  //   Store item = Store();
+  //   onAddItem(item);
+  // }
+
+  void onAddButtonClicked() async{
+    bool isValid = await isValidToAddMoreStore();
+    if (isValid){
+      Store item = Store();
+      onAddItem(item);
+    }else{
+      emit(state.copyWith(state: OpenBuySubscriptionDialogState()));
+    }
   }
+  Future<bool> isValidToAddMoreStore() async{
+
+    int count = await useCase.getCount();
+    return count < FreeLimits.storeLimit || purchaseManager.isPro;
+  }
+
   void onAddItem(Store item){
     emit(state.copyWith(state: OpenSaveStorePageState(item)));
   }

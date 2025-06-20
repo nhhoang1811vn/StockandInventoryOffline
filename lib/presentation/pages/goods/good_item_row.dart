@@ -30,24 +30,20 @@ class GoodItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return Card(
-      margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(8),
-        onTap: () => onGoodTapped(item),
-        onLongPress: () => onGoodLongPressed(item),
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              _buildLeadingWidget(context),
-              SizedBox(
-                width: 16,
-              ),
-              Expanded(child: _buildTop(context))
-            ],
-          ),
+    return InkWell(
+      //borderRadius: BorderRadius.circular(8),
+      onTap: () => onGoodTapped(item),
+      onLongPress: () => onGoodLongPressed(item),
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            _buildLeadingWidget(context),
+            SizedBox(
+              width: 16,
+            ),
+            Expanded(child: _buildTop(context))
+          ],
         ),
       ),
     );
@@ -137,11 +133,20 @@ class GoodItemRow extends StatelessWidget {
   }
 
   Widget getAvatarWidget(Uint8List bytes) {
-    return SizedBox(width: 32, height: 32, child: Image.memory(bytes));
+    return SizedBox(
+      width: 36,
+      height: 36,
+      child: ClipOval(
+        child: Image.memory(
+          bytes,
+          fit: BoxFit.cover, // Ensures the image covers the entire circular area
+        ),
+      ),
+    );
   }
 
   Widget _buildEmptyAvatarWidget(BuildContext context) {
     return Icon(UIConstants.goodIconData,
-        size: 32, color: Theme.of(context).colorScheme.primary);
+        size: 36, color: Theme.of(context).colorScheme.primary);
   }
 }

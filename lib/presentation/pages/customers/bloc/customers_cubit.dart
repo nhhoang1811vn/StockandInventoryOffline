@@ -4,12 +4,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/customers_setting.dart';
+import 'package:good_manager/domain/free_limits.dart';
 import 'package:good_manager/domain/usecases/customers/customers_usecases.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../data/storage.dart';
 import '../../../../domain/entities/sort_by_text.dart';
+import '../../../../purchase_manager.dart';
 import '../../base/base_sort_items.dart';
 
 part 'customers_cubit.freezed.dart';
@@ -22,6 +24,7 @@ class CustomersCubit extends Cubit<CustomersState> {
   final AppSettings appSettings;
   CustomersCubit({required this.appSettings,required this.storage,required this.useCase}) : super(CustomersState.initial(state: InitialState(), settings: appSettings.getCustomersSetting()));
 
+  final purchaseManager = PurchaseManager();
   void initState(bool isSelection){
     emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection));
     loadItems();
@@ -51,10 +54,20 @@ class CustomersCubit extends Cubit<CustomersState> {
   bool filterItem(Customer item, String textSearch) {
     return item.name.toLowerCase().contains(textSearch.toLowerCase());
   }
-  void onAddButtonClicked() {
-    Customer item = Customer();
-    item.storeId = storage.getSelectedStoreId();
-    onAddItem(item);
+  void onAddButtonClicked() async{
+    bool isValid = await isValidToAddMoreCustomer();
+    if (isValid){
+      Customer item = Customer();
+      item.storeId = storage.getSelectedStoreId();
+      onAddItem(item);
+    }else{
+      emit(state.copyWith(state: OpenBuySubscriptionDialogState()));
+    }
+  }
+  Future<bool> isValidToAddMoreCustomer() async{
+    var storeId = storage.getSelectedStoreId();
+    int count = await useCase.getCount(storeId);
+    return count < FreeLimits.customerLimit || purchaseManager.isPro;
   }
   void onAddItem(Customer item){
     emit(state.copyWith(state: OpenSaveCustomerPageState(item)));

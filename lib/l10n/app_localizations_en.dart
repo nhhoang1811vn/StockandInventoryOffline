@@ -228,6 +228,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get action_delete => 'Delete';
 
   @override
+  String get action_view_document => 'View documents';
+
+  @override
   String get message_name_blank => 'Name can not be blank';
 
   @override
@@ -1006,4 +1009,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get status_unpaid => 'Unpaid';
+
+  @override
+  String get action_yes => 'Yes';
+
+  @override
+  String get action_no => 'No';
+
+  @override
+  String get buy_subscription_to_add_more_entity => 'Without the subscription you can add only %s entities. Upgrade to the premium version and unlock unlimited access!';
 }

@@ -10,6 +10,7 @@ import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../domain/free_limits.dart';
 import '../../widgets/search_bar_widget.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
@@ -19,6 +20,7 @@ import 'widgets/sort_supplier_dialog.dart';
 
 class SuppliersPage extends StatefulWidget {
   final bool isSelection;
+
   SuppliersPage({Key? key, required this.isSelection});
 
   @override
@@ -27,63 +29,84 @@ class SuppliersPage extends StatefulWidget {
 
 class SuppliersPageState extends State<SuppliersPage> {
   final FocusNode searchTextFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
     context.read<SuppliersCubit>().initState(widget.isSelection);
   }
-  
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return BlocConsumer<SuppliersCubit, SuppliersState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
-        listener: (context, state) async{
-          if (state.state is OpenSortDialogListState){
+        listener: (context, state) async {
+          if (state.state is OpenSortDialogListState) {
             SuppliersSetting? settings = await showDialog(
-                context: context,
-                builder: (_) => SortSupplierDialog(state.settings),
-                barrierDismissible: true);
-            if (settings != null){
+                context: context, builder: (_) => SortSupplierDialog(state.settings), barrierDismissible: true);
+            if (settings != null) {
               context.read<SuppliersCubit>().setSettings(settings);
             }
-
-          }
-          else if (state.state is OpenSaveSupplierPageState){
+          } else if (state.state is OpenSaveSupplierPageState) {
             final currentState = state.state as OpenSaveSupplierPageState;
-            final result = await Navigator.of(context).pushNamed(Pages.save_supplier, arguments: {"item" : currentState.item});
-            if (result != null){
+            final result =
+                await Navigator.of(context).pushNamed(Pages.save_supplier, arguments: {"item": currentState.item});
+            if (result != null) {
               context.read<SuppliersCubit>().loadItems();
             }
-          }
-          else if (state.state is OpenHelpPageState){
+          } else if (state.state is OpenHelpPageState) {
             Navigator.of(context).pushNamed(Pages.help, arguments: {
               "title": AppLocalizations.of(context)?.suppliers_title,
               "content": MDProviderFactory.get().getHelpText(HelpType.SUPPLIER_AND_CUSTOMER)
             });
+          } else if (state.state is OpenBuySubscriptionDialogState) {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(AppLocalizations.of(context)!.notification_dialog_title),
+                    content: Text(sprintf(
+                        AppLocalizations.of(context)!.buy_subscription_to_add_more_entity, [FreeLimits.supplierLimit])),
+                    actions: [
+                      TextButton(
+                        child: Text(AppLocalizations.of(context)!.action_no),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Dismiss the dialog
+                        },
+                      ),
+                      TextButton(
+                        child: Text(AppLocalizations.of(context)!.action_yes),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pushNamed(Pages.subscriptions);
+                        },
+                      ),
+                    ],
+                  );
+                });
           }
-
         },
+        builder: (context, state) => Scaffold(
 
-        builder: (context, state) =>  Scaffold(
-        
-        //drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 5, storeName: storage.getSelectedStoreName(),),
-        appBar: _buildAppBar(state),
-        body: _buildBody(state),
-        floatingActionButton:  FloatingActionButton(
-                onPressed: () => context.read<SuppliersCubit>().onAddButtonClicked(),
-                child: Icon(Icons.add),
-              )
-            ));
+            //drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 5, storeName: storage.getSelectedStoreName(),),
+            appBar: _buildAppBar(state),
+            body: _buildBody(state),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => context.read<SuppliersCubit>().onAddButtonClicked(),
+              child: Icon(Icons.add),
+            )));
   }
-  PreferredSize _buildAppBar(SuppliersState data){
+
+  PreferredSize _buildAppBar(SuppliersState data) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight), child:  AppBar(
-        title: new Text(widget.isSelection?AppLocalizations.of(context)!.suppliers_select_title:AppLocalizations.of(context)!.suppliers_title),
-        actions: [_buildSearchMenu(data), _buildSortMenu(), _buildHelpMenu()]),
+      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
+      child: AppBar(
+          title: new Text(widget.isSelection
+              ? AppLocalizations.of(context)!.suppliers_select_title
+              : AppLocalizations.of(context)!.suppliers_title),
+          actions: [_buildSearchMenu(data), _buildSortMenu(), _buildHelpMenu()]),
     );
   }
-
-
 
   Widget _buildBody(SuppliersState data) {
     final state = data.state;
@@ -92,18 +115,20 @@ class SuppliersPageState extends State<SuppliersPage> {
     }
     return _buildContent(data);
   }
-  Widget _buildLoading(){
+
+  Widget _buildLoading() {
     return const Center(
       child: CircularProgressIndicator(),
     );
   }
-  Widget _buildContent(SuppliersState data){
+
+  Widget _buildContent(SuppliersState data) {
     List<Widget> children = [
       SelectedStoreView(),
       Visibility(
         visible: data.showSearchBar,
         child: Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16, top : 16),
+          padding: const EdgeInsets.only(left: 16.0, right: 16, top: 16),
           child: SearchBarWidget(
             onTextChanged: (newValue) {
               context.read<SuppliersCubit>().searchTextChanged(newValue);
@@ -114,60 +139,68 @@ class SuppliersPageState extends State<SuppliersPage> {
       ),
 
       // Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
-       Expanded(
-                child: Stack(children: [
-                  Visibility(
-                    child: emptyView,
-                    visible: data.items.isEmpty,
-                  ),
-                  Visibility(
-                    child: _buildListView(data),
-                    visible: data.items.isNotEmpty,
-                  )
-                ]))
+      Expanded(
+          child: Stack(children: [
+        Visibility(
+          child: emptyView,
+          visible: data.items.isEmpty,
+        ),
+        Visibility(
+          child: _buildListView(data),
+          visible: data.items.isNotEmpty,
+        )
+      ]))
     ];
     return Column(children: children);
   }
-  Widget get emptyView => Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Icon(UIConstants.supplierIconData, size: 60,color: Theme.of(context).colorScheme.primary),
-            Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Text(AppLocalizations.of(context)!.empty_suppliers,
-                    textAlign: TextAlign.center))
-          ]);
+
+  Widget get emptyView =>
+      Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Icon(UIConstants.supplierIconData, size: 60, color: Theme.of(context).colorScheme.primary),
+        Padding(
+            padding: EdgeInsets.only(top: 16),
+            child: Text(AppLocalizations.of(context)!.empty_suppliers, textAlign: TextAlign.center))
+      ]);
 
   Widget _buildListView(SuppliersState data) {
-    return  ListView.builder(
-          itemBuilder: (BuildContext context, index) {
-            Supplier item = data.items[index];
-            return SupplierItemRow(item, (item) {
-              onPressed(item);
-            }, (item) {
-              onLongPressed(item);
-            }, (item) {
-              _launchUrl("mailto:${item.email}");
-            }, (item) {
-              _launchUrl("sms:${item.phone}");
-            }, (item) {
-              _launchUrl("tel:${item.phone}");
-            });
-          },
-          //separatorBuilder: (context, index) {
-          //  return Divider(color: Colors.grey[500]);
-          //},
-          itemCount: data.items.length);
+    return ListView.separated(
+        separatorBuilder: (context, index) => Divider(
+              height: 1,
+              thickness: 1,
+              color: Colors.grey[200],
+              indent: 68,
+              // Adds 40 pixels of left padding
+              endIndent: 0, // Keeps the right edge flush (can adjust if needed)
+            ),
+        itemBuilder: (BuildContext context, index) {
+          Supplier item = data.items[index];
+          return SupplierItemRow(item, (item) {
+            onPressed(item);
+          }, (item) {
+            onLongPressed(item);
+          }, (item) {
+            _launchUrl("mailto:${item.email}");
+          }, (item) {
+            _launchUrl("sms:${item.phone}");
+          }, (item) {
+            _launchUrl("tel:${item.phone}");
+          });
+        },
+        //separatorBuilder: (context, index) {
+        //  return Divider(color: Colors.grey[500]);
+        //},
+        itemCount: data.items.length);
   }
+
   void onPressed(Supplier item) async {
-    if (widget.isSelection){
+    if (widget.isSelection) {
       Navigator.of(context).pop(item);
-    }else{
+    } else {
       context.read<SuppliersCubit>().onAddItem(item);
     }
   }
-  void onLongPressed(Supplier item){
+
+  void onLongPressed(Supplier item) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -181,27 +214,36 @@ class SuppliersPageState extends State<SuppliersPage> {
                 },
                 child: Text(AppLocalizations.of(context)!.action_delete),
               ),
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () async{
+                  Navigator.pop(context);
+                  await Navigator.of(context).pushNamed(Pages.documents_history, arguments: {
+                  'supplierId': item.id,
+                  });
+                },
+                child: Text(AppLocalizations.of(context)!.action_view_document),
+              ),
+
+
             ],
           );
         },
         barrierDismissible: true);
   }
-  void showDeleteConfirmPopup(Supplier item) async{
+
+  void showDeleteConfirmPopup(Supplier item) async {
     showDialog(
         context: context,
         builder: (BuildContext mContext) {
           return AlertDialog(
-            title: Text(
-                AppLocalizations.of(context)!.notification_dialog_title),
-            content: Text(sprintf(
-                AppLocalizations.of(context)!.message_confirm_delete,
-                [item.name])),
+            title: Text(AppLocalizations.of(context)!.notification_dialog_title),
+            content: Text(sprintf(AppLocalizations.of(context)!.message_confirm_delete, [item.name])),
             actions: [
               TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(AppLocalizations.of(context)!.action_cancel)),
+                  onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.action_cancel)),
               TextButton(
-                onPressed: () async{
+                onPressed: () async {
                   await context.read<SuppliersCubit>().delete(item.id!);
                   Navigator.pop(context);
                 },
@@ -211,24 +253,38 @@ class SuppliersPageState extends State<SuppliersPage> {
           );
         });
   }
+
   Widget _buildSearchMenu(SuppliersState state) {
-    return IconButton(onPressed: () {
-      if (!state.showSearchBar) {
-        searchTextFocusNode.requestFocus();
-      }
-      context.read<SuppliersCubit>().onShowSearchBarMenuClicked();
-    }, icon: Icon(Icons.search, color: state.showSearchBar ?Theme.of(context).colorScheme.primary : Theme.of(context).iconTheme.color));
+    return IconButton(
+        onPressed: () {
+          if (!state.showSearchBar) {
+            searchTextFocusNode.requestFocus();
+          }
+          context.read<SuppliersCubit>().onShowSearchBarMenuClicked();
+        },
+        icon: Icon(Icons.search,
+            color: state.showSearchBar ? Theme.of(context).colorScheme.primary : Theme.of(context).iconTheme.color));
   }
+
   Widget _buildSortMenu() {
-    return IconButton(onPressed: (){
-      context.read<SuppliersCubit>().onSortMenuClicked();
-    }, icon: Icon(Icons.sort, color: context.read<SuppliersCubit>().hasSortOptions() ?Theme.of(context).colorScheme.primary : Theme.of(context).iconTheme.color ));
+    return IconButton(
+        onPressed: () {
+          context.read<SuppliersCubit>().onSortMenuClicked();
+        },
+        icon: Icon(Icons.sort,
+            color: context.read<SuppliersCubit>().hasSortOptions()
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).iconTheme.color));
   }
-  Widget _buildHelpMenu(){
-    return IconButton(onPressed: (){
-      context.read<SuppliersCubit>().onHelpMenuClick();
-    }, icon: Icon(Icons.help));
+
+  Widget _buildHelpMenu() {
+    return IconButton(
+        onPressed: () {
+          context.read<SuppliersCubit>().onHelpMenuClick();
+        },
+        icon: Icon(Icons.help));
   }
+
   Future<void> _launchUrl(String value) async {
     Uri url = Uri.parse(value);
     if (!await launchUrl(url)) {

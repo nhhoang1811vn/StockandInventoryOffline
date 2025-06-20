@@ -53,4 +53,8 @@ class StoresUseCaseImpl implements StoresUseCase{
     // TODO: implement get
     throw UnimplementedError();
   }
+  @override
+  Future<int> getCount() {
+    return repository.getCount();
+  }
 }

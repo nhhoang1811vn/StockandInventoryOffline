@@ -10,6 +10,7 @@ import 'package:good_manager/presentation/widgets/snackbar_widgets.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../domain/entities/stores_setting.dart';
+import '../../../domain/free_limits.dart';
 import '../../widgets/search_bar_widget.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
@@ -62,6 +63,28 @@ class StoresPageState extends State<StoresPage> {
             });
           }else if(state.state is DeleteItemError){
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.delete_store_error));
+          }else if (state.state is OpenBuySubscriptionDialogState){
+            showDialog(context: context, builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(AppLocalizations.of(context)!.notification_dialog_title),
+                content: Text(sprintf(AppLocalizations.of(context)!.buy_subscription_to_add_more_entity, [FreeLimits.storeLimit])),
+                actions: [
+                  TextButton(
+                    child: Text(AppLocalizations.of(context)!.action_no),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Dismiss the dialog
+                    },
+                  ),
+                  TextButton(
+                    child: Text(AppLocalizations.of(context)!.action_yes),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed(Pages.subscriptions);
+                    },
+                  ),
+                ],
+              );
+            });
           }
         },
         builder: (context, state) =>  Scaffold(

@@ -154,7 +154,14 @@ class GoodsPageState extends State<GoodsPage> {
       );
 
   Widget _buildListView(GoodsState state) {
-    return ListView.builder(
+    return ListView.separated(
+        separatorBuilder: (context, index) => Divider(
+          height: 1,
+          thickness: 1,
+          color: Colors.grey[200],
+          indent: 68,     // Adds 40 pixels of left padding
+          endIndent: 0,   // Keeps the right edge flush (can adjust if needed)
+        ),
         itemBuilder: (BuildContext context, index) {
           if (index < state.groups.length) {
             var group = state.groups[index];

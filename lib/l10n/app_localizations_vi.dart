@@ -228,6 +228,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get action_delete => 'Xoá';
 
   @override
+  String get action_view_document => 'Xem hoá đơn';
+
+  @override
   String get message_name_blank => 'Tên không được để trống';
 
   @override
@@ -1006,4 +1009,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get status_unpaid => 'Chưa thanh toán';
+
+  @override
+  String get action_yes => 'Có';
+
+  @override
+  String get action_no => 'Không';
+
+  @override
+  String get buy_subscription_to_add_more_entity => 'Without the subscription you can add only %s entities. Upgrade to the premium version and unlock unlimited access!';
 }

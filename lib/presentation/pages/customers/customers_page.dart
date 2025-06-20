@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/customers_setting.dart';
+import 'package:good_manager/domain/free_limits.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
@@ -62,6 +63,28 @@ class CustomersPageState extends State<CustomersPage> {
               "title": AppLocalizations.of(context)?.customers_title,
               "content": MDProviderFactory.get()
                   .getHelpText(HelpType.SUPPLIER_AND_CUSTOMER)
+            });
+          } else if (state.state is OpenBuySubscriptionDialogState){
+            showDialog(context: context, builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(AppLocalizations.of(context)!.notification_dialog_title),
+                content: Text(sprintf(AppLocalizations.of(context)!.buy_subscription_to_add_more_entity, [FreeLimits.customerLimit])),
+                actions: [
+                  TextButton(
+                    child: Text(AppLocalizations.of(context)!.action_no),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Dismiss the dialog
+                    },
+                  ),
+                  TextButton(
+                    child: Text(AppLocalizations.of(context)!.action_yes),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed(Pages.subscriptions);
+                    },
+                  ),
+                ],
+              );
             });
           }
         },
@@ -178,7 +201,14 @@ class CustomersPageState extends State<CustomersPage> {
           ]);
 
   Widget _buildListView(CustomersState data) {
-    return ListView.builder(
+    return ListView.separated(
+        separatorBuilder: (context, index) => Divider(
+          height: 1,
+          thickness: 1,
+          color: Colors.grey[200],
+          indent: 68,     // Adds 40 pixels of left padding
+          endIndent: 0,   // Keeps the right edge flush (can adjust if needed)
+        ),
         itemBuilder: (BuildContext context, index) {
           Customer item = data.items[index];
           return CustomerItemRow(item, (item) {
@@ -217,6 +247,16 @@ class CustomersPageState extends State<CustomersPage> {
                   showDeleteConfirmPopup(item);
                 },
                 child: Text(AppLocalizations.of(context)!.action_delete),
+              ),
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () async{
+                  Navigator.pop(context);
+                  await Navigator.of(context).pushNamed(Pages.documents_history, arguments: {
+                    'customerId': item.id,
+                  });
+                },
+                child: Text(AppLocalizations.of(context)!.action_view_document),
               ),
             ],
           );

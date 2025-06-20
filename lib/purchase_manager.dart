@@ -4,15 +4,13 @@ import 'package:collection/collection.dart';
 
 class PurchaseManager {
   static final PurchaseManager _instance = PurchaseManager._internal();
-
   factory PurchaseManager() => _instance;
-
   PurchaseManager._internal();
-
   final InAppPurchase _iap = InAppPurchase.instance;
-  static const String _proMonthlyProductId = "pro_monthly";
-  static const String _proYearlyProductId = "pro_yearly";
-  static const String _proLifeTimeProductId = "pro_lifetime";
+  static const String _proMonthlyProductId = "stockandinventory_pro_monthly";
+  static const String _proYearlyProductId = "stockandinventory_pro_yearly";
+  static const String _proLifeTimeProductId = "stockandinventory_pro_lifetime";
+
   final Set<String> productionIds = {
     _proMonthlyProductId,
     _proYearlyProductId,
@@ -23,11 +21,11 @@ class PurchaseManager {
 
   List<ProductDetails> get products => _products;
 
-  ProductDetails? get proMonthlyProductDetail =>
-      _products.firstWhereOrNull((product) => product.id == _proMonthlyProductId);
+  //ProductDetails? get proMonthlyProductDetail =>
+  //    _products.firstWhereOrNull((product) => product.id == _proMonthlyProductId);
 
-  ProductDetails? get proYearlyProductDetail =>
-      _products.firstWhereOrNull((product) => product.id == _proYearlyProductId);
+  //ProductDetails? get proYearlyProductDetail =>
+  //    _products.firstWhereOrNull((product) => product.id == _proYearlyProductId);
 
   ProductDetails? get proLifeTimeProductDetail =>
       _products.firstWhereOrNull((product) => product.id == _proLifeTimeProductId);
@@ -50,6 +48,10 @@ class PurchaseManager {
           || purchase.status == PurchaseStatus.restored
       ) {
         _verifyAndDeliver(purchase);
+        //_iap.completePurchase(purchase)
+      }
+      if (purchase.pendingCompletePurchase) {
+        _iap.completePurchase(purchase);
       }
     }
   }
@@ -57,6 +59,7 @@ class PurchaseManager {
   Future<void> _loadProducts() async {
     final response = await _iap.queryProductDetails(productionIds);
     _products = response.productDetails.toList();
+    print(_products);
   }
 
   Future<void> _loadPurchaseStatus() async {
@@ -64,6 +67,8 @@ class PurchaseManager {
     _purchasedProLifeTime = prefs.getBool('purchasedProLifeTime') ?? false;
     _purchasedProMonthly = prefs.getBool('purchasedProMonthly') ?? false;
     _purchasedProYearly = prefs.getBool('purchasedProYearly') ?? false;
+
+
   }
 
   void _verifyAndDeliver(PurchaseDetails purchase) async {
@@ -100,4 +105,6 @@ class PurchaseManager {
     final purchaseParam = PurchaseParam(productDetails: product);
     _iap.buyNonConsumable(purchaseParam: purchaseParam);
   }
+
+  bool get isPro => _purchasedProLifeTime || _purchasedProMonthly || _purchasedProYearly;
 }
