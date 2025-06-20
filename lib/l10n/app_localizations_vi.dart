@@ -321,6 +321,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get menu_item_delete_account => 'Xoá tài khoản';
 
   @override
+  String get menu_item_upgrade_account => 'Nâng cấp tài khoản';
+
+  @override
+  String get menu_item_upgrade_account_subtitle => 'Bạn đang ở chế độ Khách, nâng cấp lên TK thường để đồng bộ dữ liệu';
+
+  @override
   String get menu_item_sign_out => 'Đăng xuất';
 
   @override
@@ -427,6 +433,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get settings_title => 'Cài đặt';
+
+  @override
+  String get subscriptions_title => 'Gói đăng ký';
 
   @override
   String get dialog_title_change_language => 'Chọn ngôn ngữ';
@@ -925,6 +934,21 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get select_object_type => 'Chọn loại đối tượng';
+
+  @override
+  String get pro_benefits_description => 'Bao gồm tất cả tính năng nâng cao của ứng dụng (không giới hạn khách hàng, không giới hạn nhà cung cấp, không giới hạn cửa hàng.)';
+
+  @override
+  String get pro_lifetime_benefits_description => 'Với một lần mua bạn có thể sử dụng tất cả tính năng nâng cao của ứng dụng';
+
+  @override
+  String get monthly => 'Hàng tháng';
+
+  @override
+  String get yearly => 'Hàng năm';
+
+  @override
+  String get payonce => 'Trả 1 lần, sử dụng mãi mãi';
 
   @override
   String get title_report_list_of_wallet => 'Danh sách ví tiền';

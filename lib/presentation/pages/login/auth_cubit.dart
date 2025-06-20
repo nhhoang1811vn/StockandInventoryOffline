@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:desktop_webview_auth/desktop_webview_auth.dart';
 import 'package:desktop_webview_auth/google.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/domain/usecases/stores/stores_usecases.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../db/db_helper.dart';
 
@@ -108,70 +110,112 @@ class AuthCubit extends Cubit<AuthState> {
   }
   Future<void> signInWithEmail(String email, String password) async {
     emit(AuthLoading());
+    User? currentUser = FirebaseAuth.instance.currentUser;
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      if (userCredential.user!.emailVerified) {
-        emit(UserSignIn());
+      if (currentUser != null && currentUser.isAnonymous) {
+        final credential = EmailAuthProvider.credential(email: email, password: password);
+        await currentUser.linkWithCredential(credential);
       } else {
-        await _auth.signOut();
-        emit(UserNotVerified());
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
       }
-    } catch (e) {
-      emit(AuthError(e.toString()));
-    }
-  }
-  Future<void> signInWithGoogleInWindowPlatform() async{
-    final googleSignInArgs = GoogleSignInArgs(
-      clientId:
-      '617423800641-s9j7uem4h2u0751pc1im6o34e4resoi4.apps.googleusercontent.com',
-      redirectUri:
-      'https://quanlykho-4818e.firebaseapp.com/__/auth/handler',
-      scope: 'email',
-    );
-    try {
-      final result = await DesktopWebviewAuth.signIn(googleSignInArgs);
-
-      final newCredential = GoogleAuthProvider.credential(
-        accessToken: result?.accessToken,
-        idToken: result?.idToken,
-      );
-      await _auth.signInWithCredential(newCredential);
       emit(UserSignIn());
-    } catch (err) {
-      emit(AuthError(err.toString()));
+    }
+    on FirebaseAuthException catch (e) {
+      handleFirebaseAuthError(e);
     }
   }
+  void handleFirebaseAuthError(e){
+    String error = "";
+    switch (e.code) {
+      case "provider-already-linked":
+        error = "The provider has already been linked to the user.";
+        break;
+      case "invalid-credential":
+        error = "The provider's credential is not valid.";
+        break;
+      case "credential-already-in-use":
+        error = "The account corresponding to the credential already exists, or is already linked to a Firebase User.";
+        break;
+      case "email-already-in-use":
+        error = "The email is already in used";
+        break;
+      default:
+        error = "Unknown error.";
+    }
+    emit(AuthError(error));
+  }
+  // Future<void> signInWithGoogleInWindowPlatform() async{
+  //   final googleSignInArgs = GoogleSignInArgs(
+  //     clientId:
+  //     '617423800641-s9j7uem4h2u0751pc1im6o34e4resoi4.apps.googleusercontent.com',
+  //     redirectUri:
+  //     'https://quanlykho-4818e.firebaseapp.com/__/auth/handler',
+  //     scope: 'email',
+  //   );
+  //   try {
+  //     final result = await DesktopWebviewAuth.signIn(googleSignInArgs);
+  //
+  //     final newCredential = GoogleAuthProvider.credential(
+  //       accessToken: result?.accessToken,
+  //       idToken: result?.idToken,
+  //     );
+  //     await _auth.signInWithCredential(newCredential);
+  //     emit(UserSignIn());
+  //   } catch (err) {
+  //     emit(AuthError(err.toString()));
+  //   }
+  // }
   Future<void> signInWithApple() async{
     emit(AuthLoading());
     try {
-      final appleProvider = AppleAuthProvider();
-      appleProvider.addScope('email');
-      appleProvider.addScope('name');
-      await _auth.signInWithProvider(appleProvider);
-      //final userCredential = await _auth.signInWithProvider(appleProvider);
-      //print(userCredential.credential?.accessToken);
-      //print(userCredential.user?.email);
-      //print(userCredential.user?.emailVerified);
-      emit(UserSignIn());
-      /*if (userCredential.user!.emailVerified) {
-        emit(UserSignIn());
+      // final appleProvider = AppleAuthProvider();
+      // appleProvider.addScope('email');
+      // appleProvider.addScope('name');
+      // var credential = await _auth.signInWithProvider(appleProvider);
+      //
+      //
+      // final user = FirebaseAuth.instance.currentUser;
+      //
+      // if (user != null && user.isAnonymous) {
+      //   await user.linkWithCredential(credential);
+      //   //print("Anonymous account linked to Apple ID.");
+      // } else {
+      //   //print("User is not anonymous or not logged in.");
+      // }
+      // emit(UserSignIn());
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null && user.isAnonymous) {
+        await user.linkWithCredential(oauthCredential);
       } else {
-        await _auth.signOut();
-        emit(UserNotVerified());
-      }*/
-    } catch (e) {
-      if (e.toString().contains("An unknown error has occurred")){
-        emit(AuthStopped());
-      }else{
-        emit(AuthError(e.toString()));
       }
+      emit(UserSignIn());
+    }on FirebaseAuthException catch (e) {
+      handleFirebaseAuthError(e);
+    }
+  }
+  Future<void> signInWithGuest() async{
+    emit(AuthLoading());
+    try{
+      UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
+      emit(UserSignIn());
+    }on FirebaseAuthException catch (e) {
+      handleFirebaseAuthError(e);
     }
   }
   Future<void> signInWithGoogle() async {
-    //final String googleClientId = "617423800641-s9j7uem4h2u0751pc1im6o34e4resoi4.apps.googleusercontent.com";
     emit(AuthLoading());
     try {
       await GoogleSignIn().signOut();
@@ -191,12 +235,15 @@ class AuthCubit extends Cubit<AuthState> {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      await _auth.signInWithCredential(credential);
-
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user != null && user.isAnonymous) {
+        await user.linkWithCredential(credential);
+      } else {
+        await _auth.signInWithCredential(credential);
+      }
       emit(UserSignIn());
-      //downloadUserData();
-    } catch (e) {
-      emit(AuthError(e.toString()));
+    } on FirebaseAuthException catch (e) {
+      handleFirebaseAuthError(e);
     }
   }
 
@@ -216,8 +263,8 @@ class AuthCubit extends Cubit<AuthState> {
       await _auth.currentUser!.sendEmailVerification();
       await _auth.signOut();
       emit(UserSingupButNotVerified());
-    } catch (e) {
-      emit(AuthError(e.toString()));
+    } on FirebaseAuthException catch (e) {
+    handleFirebaseAuthError(e);
     }
   }
 }

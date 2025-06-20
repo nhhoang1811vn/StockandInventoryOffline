@@ -284,6 +284,8 @@ class AppRouter {
 
       case Pages.signIn:
         return _buildRoute(settings, BlocProvider(create: (context) => getIt<AuthCubit>(), child: LoginScreen()));
+      case Pages.upgrade_account:
+        return _buildRoute(settings, BlocProvider(create: (context) => getIt<AuthCubit>(), child: LoginScreen()));
 
       case Pages.forgotPassword:
         return _buildRoute(

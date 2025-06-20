@@ -50,6 +50,7 @@ class Pages {
   static const String signup = "/signup";
   static const String signIn = "/signIn";
   static const String forgotPassword = "/forgotPassword";
+  static const String upgrade_account = "/upgrade_account";
 
   static const String payments = "/payments";
 }

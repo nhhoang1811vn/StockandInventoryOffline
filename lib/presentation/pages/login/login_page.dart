@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,12 +17,12 @@ import 'auth_cubit.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool _isAnonymous = false;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool _emailValidate = false;
@@ -38,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     BlocProvider.of<AuthCubit>(context);
+    _isAnonymous = FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
   }
 
   Widget _loginPage(BuildContext context) {
@@ -87,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.symmetric(horizontal: 40),
                     child: Text(
-                      AppLocalizations.of(context)!.login,
+                      !_isAnonymous ? AppLocalizations.of(context)!.login : AppLocalizations.of(context)!.menu_item_upgrade_account,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF2661FA),
@@ -132,6 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       obscureText: true,
                     ),
                   ),
+                  if (!_isAnonymous)
                   Container(
                     alignment: Alignment.centerRight,
                     margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
@@ -179,7 +182,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               Color.fromARGB(255, 255, 177, 41)
                             ])),
                         child: Text(
-                          AppLocalizations.of(context)!.login,
+                          !_isAnonymous ? AppLocalizations.of(context)!.login : AppLocalizations.of(context)!.menu_item_upgrade_account,
+                          //AppLocalizations.of(context)!.login,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
@@ -191,19 +195,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       margin:
                           EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                       child: SigninWithGoogleText()),
+
                   Container(
                     alignment: Alignment.centerRight,
                     margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                     child: ElevatedButton(
                       onPressed: () {
                         justLogin = true;
-                        if (Platform.isWindows) {
-                          context
-                              .read<AuthCubit>()
-                              .signInWithGoogleInWindowPlatform();
-                        } else {
-                          context.read<AuthCubit>().signInWithGoogle();
-                        }
+                        context.read<AuthCubit>().signInWithGoogle();
+                        // if (Platform.isWindows) {
+                        //   context
+                        //       .read<AuthCubit>()
+                        //       .signInWithGoogleInWindowPlatform();
+                        // } else {
+                        //   context.read<AuthCubit>().signInWithGoogle();
+                        // }
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.all(0),
@@ -284,6 +290,49 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
+                  if (!_isAnonymous)
+                  Container(
+                    alignment: Alignment.centerRight,
+                    margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        //justLogin = true;
+                        context.read<AuthCubit>().signInWithGuest();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.all(0),
+                      ),
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 50.0,
+                        width: size.width,
+                        decoration: new BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(80.0),
+                          color: Colors.white,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // SvgPicture.asset(
+                            //   'assets/svgs/apple_logo.svg',
+                            //   height: 24,
+                            //   width: 24,
+                            // ),
+                            // SizedBox(width: 16),
+                            Text(
+                              "Continue with Guest",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (!_isAnonymous)
                   Container(
                       alignment: Alignment.centerRight,
                       margin:

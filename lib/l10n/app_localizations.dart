@@ -719,6 +719,18 @@ abstract class AppLocalizations {
   /// **'Delete my account'**
   String get menu_item_delete_account;
 
+  /// No description provided for @menu_item_upgrade_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade account'**
+  String get menu_item_upgrade_account;
+
+  /// No description provided for @menu_item_upgrade_account_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You are on guest mode, upgrade to normal account to sync progress'**
+  String get menu_item_upgrade_account_subtitle;
+
   /// No description provided for @menu_item_sign_out.
   ///
   /// In en, this message translates to:
@@ -934,6 +946,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings_title;
+
+  /// No description provided for @subscriptions_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions'**
+  String get subscriptions_title;
 
   /// No description provided for @dialog_title_change_language.
   ///
@@ -1930,6 +1948,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select object types'**
   String get select_object_type;
+
+  /// No description provided for @pro_benefits_description.
+  ///
+  /// In en, this message translates to:
+  /// **'All premium features of the app (Unlimited customers, suppliers, stores)'**
+  String get pro_benefits_description;
+
+  /// No description provided for @pro_lifetime_benefits_description.
+  ///
+  /// In en, this message translates to:
+  /// **'With one-time purchase you will be able to use all advanced features forever'**
+  String get pro_lifetime_benefits_description;
+
+  /// No description provided for @monthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get monthly;
+
+  /// No description provided for @yearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get yearly;
+
+  /// No description provided for @payonce.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay once use forever'**
+  String get payonce;
 
   /// No description provided for @title_report_list_of_wallet.
   ///

@@ -321,6 +321,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menu_item_delete_account => 'Delete my account';
 
   @override
+  String get menu_item_upgrade_account => 'Upgrade account';
+
+  @override
+  String get menu_item_upgrade_account_subtitle => 'You are on guest mode, upgrade to normal account to sync progress';
+
+  @override
   String get menu_item_sign_out => 'Sign out';
 
   @override
@@ -427,6 +433,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings_title => 'Settings';
+
+  @override
+  String get subscriptions_title => 'Subscriptions';
 
   @override
   String get dialog_title_change_language => 'Select language';
@@ -925,6 +934,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get select_object_type => 'Select object types';
+
+  @override
+  String get pro_benefits_description => 'All premium features of the app (Unlimited customers, suppliers, stores)';
+
+  @override
+  String get pro_lifetime_benefits_description => 'With one-time purchase you will be able to use all advanced features forever';
+
+  @override
+  String get monthly => 'Monthly';
+
+  @override
+  String get yearly => 'Yearly';
+
+  @override
+  String get payonce => 'Pay once use forever';
 
   @override
   String get title_report_list_of_wallet => 'List of wallets';

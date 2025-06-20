@@ -61,7 +61,7 @@ class MorePageState extends State<MorePage> {
       displayName = FirebaseAuth.instance.currentUser?.uid ?? "";
     }
     String email = FirebaseAuth.instance.currentUser?.email ?? "";
-
+    bool isAnonymous = FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
     return Scaffold(
       appBar: LogoAppBar(),
       body: ListView(children: [
@@ -81,8 +81,19 @@ class MorePageState extends State<MorePage> {
                     Text(email, style: Theme.of(context).textTheme.bodyMedium),
               ),
               Divider(height: 1,),
+              if (isAnonymous)
+                Column(
+                  children: [
+                    ListTile(
+                      leading: Icon(Icons.upgrade, size: UIConstants.drawerMenuSize),
+                      title: Text(AppLocalizations.of(context)!.menu_item_upgrade_account),
+                      subtitle: Text(AppLocalizations.of(context)!.menu_item_upgrade_account_subtitle),
+                      onTap: () => onUpgradeAccountItemPressed(),
+                    ),
+                    Divider(height: 1,),
+                  ],
+                ),
               ListTile(
-
                 leading: Icon(Icons.close, size: UIConstants.drawerMenuSize),
                 title: Text(
                     AppLocalizations.of(context)!.menu_item_delete_account),
@@ -119,15 +130,12 @@ class MorePageState extends State<MorePage> {
               ),
               Divider(height: 1,),
               ListTile(
-                tileColor: Colors.white,
                 leading: Icon(Icons.production_quantity_limits,
                     size: UIConstants.drawerMenuSize),
                 title: Text(AppLocalizations.of(context)!.subscriptions_title),
                 trailing: Icon(Icons.navigate_next),
                 onTap: () => onSubscriptionItemPressed(context),
               ),
-              Divider(height: 1,),
-              SizedBox(height: 4),
             ],
           ),
         ),
@@ -182,7 +190,9 @@ class MorePageState extends State<MorePage> {
       ]),
     );
   }
-
+  void onUpgradeAccountItemPressed(){
+    Navigator.of(context).pushNamed(Pages.upgrade_account);
+  }
   void onDeleteAccountItemPressed() {
     DialogUtils.showCustomDialog(context,
         title: AppLocalizations.of(context)!.notification_dialog_title,

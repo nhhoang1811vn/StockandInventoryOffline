@@ -105,6 +105,9 @@
     "menu_item_community_description": "Join our app community",
     "menu_item_donation": "Donation!",
     "menu_item_delete_account": "Delete my account",
+    "menu_item_upgrade_account": "Upgrade account",
+    "menu_item_upgrade_account_subtitle": "You are on guest mode, upgrade to normal account to sync progress",
+
     "menu_item_sign_out": "Sign out",
     "menu_item_whats_new_header": "What's new",
     "menu_item_whats_new_description": "What's new information",
@@ -315,13 +318,14 @@
                                      "outbound_categories": "Outbound Categories",
                                           "select_object_type": "Select object types",
 
-                                         "title_report_list_of_wallet": "List of wallets",
+
                                          "pro_benefits_description": "All premium features of the app (Unlimited customers, suppliers, stores)",
                                          "pro_lifetime_benefits_description": "With one-time purchase you will be able to use all advanced features forever",
                                          "monthly": "Monthly",
                                          "yearly": "Yearly",
-                                         "payonce": "Pay once use forever"
-                                         "title_report_list_of_wallet": "List of wallets",
+                                         "payonce": "Pay once use forever",
+
+                                    "title_report_list_of_wallet": "List of wallets",
                                          "hint_search_by": "Search...",
                                          "field_my_company_name": "Company name",
                                          "field_reorder": "Reorder",
