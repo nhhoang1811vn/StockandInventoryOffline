@@ -351,7 +351,9 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                             SizedBox(width: 16),
                             VerticalDivider(width: 2, color: Colors.white),
                             SizedBox(width: 16),
-                            Text(state.totalQuantity.toString(),
+                            Text(
+                                Config.currencyFormat.format(state.totalQuantity),
+                               // .toString(),
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: TextSize.medium)),

@@ -81,7 +81,10 @@ class MainPageState extends State<MainPage> {
             ),
             BlocProvider(
               create: (context) => getIt<DocumentsCubit>(),
-              child: DocumentsPage(key: UniqueKey()),
+              child: DocumentsPage(
+              //    key: UniqueKey()
+
+              ),
             ),
             BlocProvider(
                 create: (context) => getIt<PaymentsCubit>(),

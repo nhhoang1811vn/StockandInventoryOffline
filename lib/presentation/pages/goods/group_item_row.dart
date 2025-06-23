@@ -37,7 +37,7 @@ class GroupItemRow extends StatelessWidget {
                     style: secondaryTextStyle,
                   ),
                 ),
-                if (item.barCode != null)
+                if (item.barCode != null && item.barCode!.isNotEmpty)
                   Row(children: [
                     Icon(UIConstants.barcodeIconData, size: 24, color: Theme.of(context).colorScheme.primary),
                     SizedBox(

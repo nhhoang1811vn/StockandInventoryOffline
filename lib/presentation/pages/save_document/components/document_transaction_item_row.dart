@@ -19,9 +19,7 @@ class DocumentTransactionItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      //color: bgColor,
       child: InkWell(
-       // borderRadius: BorderRadius.circular(8),
         onTap: () => onTransactionPressed(item),
         onLongPress : () => onTransactionLongPressed(item),
         child: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16.0), child: Row(children: [

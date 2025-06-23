@@ -28,7 +28,7 @@ class DocumentsPage extends StatefulWidget {
   final DocumentsSetting? setting;
   const DocumentsPage(
       {
-        required Key? key,
+        //required Key? key,
         this.documentType,
         this.isSelection = false,
         this.setting

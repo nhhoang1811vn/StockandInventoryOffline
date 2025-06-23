@@ -105,7 +105,7 @@ class AppRouter {
             builder: (_) => BlocProvider(
                   create: (context) => getIt<DocumentsCubit>(),
                   child: DocumentsPage(
-                    key: UniqueKey(),
+                    //key: UniqueKey(),
                     documentType: args["documentType"],
                     isSelection: args["isSelection"],
                     setting: args["setting"],

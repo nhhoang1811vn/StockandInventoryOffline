@@ -21,11 +21,11 @@ class PurchaseManager {
 
   List<ProductDetails> get products => _products;
 
-  //ProductDetails? get proMonthlyProductDetail =>
-  //    _products.firstWhereOrNull((product) => product.id == _proMonthlyProductId);
+  ProductDetails? get proMonthlyProductDetail =>
+     _products.firstWhereOrNull((product) => product.id == _proMonthlyProductId);
 
-  //ProductDetails? get proYearlyProductDetail =>
-  //    _products.firstWhereOrNull((product) => product.id == _proYearlyProductId);
+  ProductDetails? get proYearlyProductDetail =>
+     _products.firstWhereOrNull((product) => product.id == _proYearlyProductId);
 
   ProductDetails? get proLifeTimeProductDetail =>
       _products.firstWhereOrNull((product) => product.id == _proLifeTimeProductId);
@@ -107,4 +107,8 @@ class PurchaseManager {
   }
 
   bool get isPro => _purchasedProLifeTime || _purchasedProMonthly || _purchasedProYearly;
+
+  bool get isPurchasedProLifeTine => _purchasedProLifeTime;
+  bool get isPurchasedProMonthly => _purchasedProMonthly;
+  bool get isPurchasedProYearly => _purchasedProYearly;
 }

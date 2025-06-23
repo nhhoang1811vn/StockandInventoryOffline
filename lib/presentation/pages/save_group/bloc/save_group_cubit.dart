@@ -36,9 +36,11 @@ class SaveGroupCubit extends Cubit<SaveGroupState>{
         Group item = state.item!;
         item.name = state.name.value;
         item.description = state.description;
-        if (state.barCode.trim().isNotEmpty){
-          item.barCode = state.barCode.trim();
-        }
+        //if (state.barCode.trim().isNotEmpty){
+        //  item.barCode = state.barCode.trim();
+        //}
+
+        item.barCode = state.barCode;
         item.files = state.files;
         if (item.id == null){
           await useCase.insert(item);
