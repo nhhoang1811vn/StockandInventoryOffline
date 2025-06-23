@@ -30,65 +30,62 @@ class SaveCustomerForm extends StatelessWidget {
             Navigator.of(context).pop(state.item);
           }
         },
-        builder: (context, state) => Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  AppTextField(
-                      labelText: AppLocalizations.of(context)!.label_customer_name,
-                      hintText: AppLocalizations.of(context)!.hint_name,
-                      initialValue: item?.name,
-                      onChanged: (value) => context.read<SaveCustomerCubit>().nameChanged(value),
-                      keyboardType: TextInputType.name,
-                      error: state.name.displayError?.text(context)),
-                  SizedBox(height: 16),
-                  AppTextField(
-                      labelText: AppLocalizations.of(context)!.label_description,
-                      hintText: AppLocalizations.of(context)!.hint_description,
-                      maxLines: null,
-                      minLines: 2,
-                      initialValue: item?.description,
-                      onChanged: (value) => context.read<SaveCustomerCubit>().descriptionChanged(value),
-                      keyboardType: TextInputType.name),
-                  SizedBox(height: 16),
-                  AppTextField(
-                      labelText: AppLocalizations.of(context)!.label_address,
-                      hintText: AppLocalizations.of(context)!.hint_address,
-                      initialValue: item?.address,
-                      onChanged: (value) => context.read<SaveCustomerCubit>().addressChanged(value),
-                      keyboardType: TextInputType.name),
-                  SizedBox(height: 16),
-                  AppTextField(
-                      labelText: AppLocalizations.of(context)!.label_email,
-                      hintText: AppLocalizations.of(context)!.hint_email,
-                      initialValue: item?.email,
-                      onChanged: (value) => context.read<SaveCustomerCubit>().emailChanged(value),
-                      keyboardType: TextInputType.emailAddress),
-                  SizedBox(height: 16),
-                  AppTextField(
-                      labelText: AppLocalizations.of(context)!.label_phone_number,
-                      hintText: AppLocalizations.of(context)!.hint_phone_number,
-                      initialValue: item?.phone,
-                      onChanged: (value) => context.read<SaveCustomerCubit>().phoneChanged(value),
-                      keyboardType: TextInputType.number),
-                  SizedBox(height: 16),
-                  AppTextField(
-                      labelText: AppLocalizations.of(context)!.label_tax_id,
-                      hintText: AppLocalizations.of(context)!.hint_tax_id,
-                      initialValue: item?.taxID,
-                      onChanged: (value) => context.read<SaveCustomerCubit>().taxIDChanged(value),
-                      keyboardType: TextInputType.text),
-                  SizedBox(height: 16),
-                  AppTextField(
-                      labelText: AppLocalizations.of(context)!.label_bank_details,
-                      hintText: AppLocalizations.of(context)!.hint_bank_details,
-                      initialValue: item?.bankDetail,
-                      onChanged: (value) => context.read<SaveCustomerCubit>().bankDetailsChanged(value),
-                      keyboardType: TextInputType.text),
-                ],
-              ),
-            ));
+        builder: (context, state) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            AppTextField(
+                labelText: AppLocalizations.of(context)!.label_customer_name,
+                hintText: AppLocalizations.of(context)!.hint_name,
+                initialValue: item?.name,
+                onChanged: (value) => context.read<SaveCustomerCubit>().nameChanged(value),
+                keyboardType: TextInputType.name,
+                error: state.name.displayError?.text(context)),
+            SizedBox(height: 16),
+            AppTextField(
+                labelText: AppLocalizations.of(context)!.label_description,
+                hintText: AppLocalizations.of(context)!.hint_description,
+                maxLines: null,
+                minLines: 2,
+                initialValue: item?.description,
+                onChanged: (value) => context.read<SaveCustomerCubit>().descriptionChanged(value),
+                keyboardType: TextInputType.name),
+            SizedBox(height: 16),
+            AppTextField(
+                labelText: AppLocalizations.of(context)!.label_address,
+                hintText: AppLocalizations.of(context)!.hint_address,
+                initialValue: item?.address,
+                onChanged: (value) => context.read<SaveCustomerCubit>().addressChanged(value),
+                keyboardType: TextInputType.name),
+            SizedBox(height: 16),
+            AppTextField(
+                labelText: AppLocalizations.of(context)!.label_email,
+                hintText: AppLocalizations.of(context)!.hint_email,
+                initialValue: item?.email,
+                onChanged: (value) => context.read<SaveCustomerCubit>().emailChanged(value),
+                keyboardType: TextInputType.emailAddress),
+            SizedBox(height: 16),
+            AppTextField(
+                labelText: AppLocalizations.of(context)!.label_phone_number,
+                hintText: AppLocalizations.of(context)!.hint_phone_number,
+                initialValue: item?.phone,
+                onChanged: (value) => context.read<SaveCustomerCubit>().phoneChanged(value),
+                keyboardType: TextInputType.number),
+            SizedBox(height: 16),
+            AppTextField(
+                labelText: AppLocalizations.of(context)!.label_tax_id,
+                hintText: AppLocalizations.of(context)!.hint_tax_id,
+                initialValue: item?.taxID,
+                onChanged: (value) => context.read<SaveCustomerCubit>().taxIDChanged(value),
+                keyboardType: TextInputType.text),
+            SizedBox(height: 16),
+            AppTextField(
+                labelText: AppLocalizations.of(context)!.label_bank_details,
+                hintText: AppLocalizations.of(context)!.hint_bank_details,
+                initialValue: item?.bankDetail,
+                onChanged: (value) => context.read<SaveCustomerCubit>().bankDetailsChanged(value),
+                keyboardType: TextInputType.text),
+          ],
+        ));
   }
 }

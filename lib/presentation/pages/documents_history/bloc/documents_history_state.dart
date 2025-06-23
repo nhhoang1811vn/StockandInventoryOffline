@@ -9,6 +9,9 @@ class DocumentsHistoryState with _$DocumentsHistoryState{
     int? customerId,
 
   @Default([]) List<GoodHistory> goodHistories,
-    @Default([]) List<ListItem> items
+    @Default([]) List<ListItem> items,
+
+    Color? incomingColor,
+    Color? outgoingColor
     }) = _Initial;
 }

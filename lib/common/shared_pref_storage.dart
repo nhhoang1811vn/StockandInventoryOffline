@@ -23,4 +23,17 @@ class SharedPrefStorage implements Storage2 {
   void remove(String key){
     prefs.remove(key);
   }
+
+  @override
+  int readInt(String key, int defaultValue) {
+    int? value = prefs.getInt(key);
+    if (value == null)
+      return defaultValue;
+    return value;
+  }
+
+  @override
+  void writeInt(String key, int value) {
+    prefs.setInt(key, value);
+  }
 }

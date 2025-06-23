@@ -29,9 +29,7 @@ class SaveCustomerPageState extends State<SaveCustomerPage> {
               padding: const EdgeInsets.all(UIConstants.screenSpace),
               child: Column(
                 children: [
-                  Card(
-                    child: SaveCustomerForm(item: widget.item),
-                  )
+                  SaveCustomerForm(item: widget.item)
                 ],
               ),
             )),

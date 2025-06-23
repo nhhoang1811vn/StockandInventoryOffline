@@ -59,6 +59,7 @@ import 'package:good_manager/presentation/pages/settings/minimum_quantity/minimu
 import 'package:good_manager/presentation/pages/settings/my_company/bloc/my_company_cubit.dart';
 import 'package:good_manager/presentation/pages/settings/my_company/my_company_page.dart';
 import 'package:good_manager/presentation/pages/settings/settings_page.dart';
+import 'package:good_manager/presentation/pages/settings/view/bloc/settings_view_cubit.dart';
 import 'package:good_manager/presentation/pages/settings/view/settings_view_page.dart';
 import 'package:good_manager/presentation/pages/signup/signup_page.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
@@ -149,7 +150,7 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
                   create: (context) => getIt<GoodsCubit>(),
-                  child: GoodsPage(isSelection: args['isSelection'], document: args['document'], key: UniqueKey()),
+                  child: GoodsPage(isSelection: args['isSelection'], document: args['document']),
                 ));
       case Pages.save_good:
         Map<dynamic, dynamic> args = settings.arguments as Map;
@@ -243,7 +244,11 @@ class AppRouter {
       case Pages.subscriptions:
         return _buildRoute(settings, SubscriptionPage());
       case Pages.settings_view:
-        return _buildRoute(settings, SettingsViewPage());
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<SettingsViewCubit>(),
+              child: SettingsViewPage(),
+            ));
       case Pages.settings_minimum_quantity:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(

@@ -4,6 +4,7 @@ import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/entities/payments_setting.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/presentation/pages/payment/components/add_payment_dialog.dart';
 import 'package:good_manager/presentation/pages/payment/components/filter_payment_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
@@ -342,13 +343,31 @@ class PaymentsPageState extends State<PaymentsPage>
               _buildOutboundPayment(state),
             ]),
             floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                if (_tabController.index == 0 || _tabController.index == 1) {
+              onPressed: () async {
+                if (_tabController.index == 1) {
                   context.read<PaymentsCubit>().onAddInboundPayment();
-                } else {
+                } else if (_tabController.index == 2) {
                   context.read<PaymentsCubit>().onAddOutboundPayment();
+                } else {
+                  //show dialog
+                  PaymentType? type = await showDialog(
+                      context: context, builder: (_) => AddPaymentDialog(), barrierDismissible: true);
+                  if (type != null) {
+                    if (type == PaymentType.inbound){
+                      context.read<PaymentsCubit>().onAddInboundPayment();
+                    }else{
+                      context.read<PaymentsCubit>().onAddOutboundPayment();
+                    }
+                  }
                 }
               },
+              // onPressed: () {
+              //   if (_tabController.index == 0 || _tabController.index == 1) {
+              //     context.read<PaymentsCubit>().onAddInboundPayment();
+              //   } else {
+              //     context.read<PaymentsCubit>().onAddOutboundPayment();
+              //   }
+              // },
               child: Icon(Icons.add),
             )),
         listenWhen: (p1, p2) => p1.state != p2.state,

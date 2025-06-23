@@ -7,15 +7,18 @@ import 'package:good_manager/presentation/utils.dart';
 class DocumentItemRow extends StatelessWidget {
   final Document item;
   final Color bgColor;
-  //final bool showAll;
+  final Color? incomingColor;
+  final Color? outgoingColor;
   final void Function(Document document) onDocumentTapped;
   final void Function(Document document) onDocumentLongPressed;
 
-  DocumentItemRow(
-      //this.showAll
-      this.item,
-      this.bgColor,
-      this.onDocumentTapped, this.onDocumentLongPressed);
+  DocumentItemRow({
+      required this.item,
+      required this.bgColor,
+      required this.incomingColor,
+      required this.outgoingColor,
+      required this.onDocumentTapped,
+    required this.onDocumentLongPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -84,12 +87,12 @@ class DocumentItemRow extends StatelessWidget {
           )),
     );
   }
-  Color getIndicatorColor(DocumentType type) {
+  Color? getIndicatorColor(DocumentType type) {
     switch (type) {
       case DocumentType.incoming:
-        return Colors.red;
+        return incomingColor;
     default:
-        return Colors.green;
+        return outgoingColor;
     }
   }
 }

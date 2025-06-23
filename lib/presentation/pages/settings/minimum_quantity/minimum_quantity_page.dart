@@ -110,7 +110,10 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
               trailing: Container(
                 width: 20, // Circle diameter
                 height: 20,
-                color: state.color,
+                decoration: BoxDecoration(
+                  color: state.color, // use your color here
+                  shape: BoxShape.circle,
+                ),
               ),
             ),
             Divider(

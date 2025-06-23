@@ -150,6 +150,8 @@ import 'package:good_manager/presentation/pages/settings/minimum_quantity/bloc/m
     as _i194;
 import 'package:good_manager/presentation/pages/settings/my_company/bloc/my_company_cubit.dart'
     as _i920;
+import 'package:good_manager/presentation/pages/settings/view/bloc/settings_view_cubit.dart'
+    as _i684;
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart'
     as _i989;
 import 'package:good_manager/presentation/pages/suppliers/bloc/suppliers_cubit.dart'
@@ -287,6 +289,12 @@ extension GetItInjectableX on _i174.GetIt {
           suppliersUseCase: gh<_i331.SuppliersUseCase>(),
           storage: gh<_i72.Storage>(),
         ));
+    gh.factory<_i928.SaveGoodCubit>(() => _i928.SaveGoodCubit(
+          useCase: gh<_i31.GoodsUseCases>(),
+          documentsUseCases: gh<_i231.DocumentUseCases>(),
+          storage: gh<_i72.Storage>(),
+          appSettings: gh<_i39.AppSettings>(),
+        ));
     gh.factory<_i0.HomeCubit>(() => _i0.HomeCubit(
           storage: gh<_i72.Storage>(),
           goodsUseCases: gh<_i31.GoodsUseCases>(),
@@ -294,11 +302,6 @@ extension GetItInjectableX on _i174.GetIt {
           supplierUseCases: gh<_i331.SuppliersUseCase>(),
           customerUseCase: gh<_i236.CustomersUseCase>(),
           walletUseCases: gh<_i322.WalletUseCases>(),
-        ));
-    gh.factory<_i928.SaveGoodCubit>(() => _i928.SaveGoodCubit(
-          useCase: gh<_i31.GoodsUseCases>(),
-          documentsUseCases: gh<_i231.DocumentUseCases>(),
-          storage: gh<_i72.Storage>(),
           appSettings: gh<_i39.AppSettings>(),
         ));
     gh.factory<_i436.GoodsCubit>(() => _i436.GoodsCubit(
@@ -308,6 +311,8 @@ extension GetItInjectableX on _i174.GetIt {
           groupsUseCase: gh<_i984.GroupsUseCases>(),
           documentsUseCases: gh<_i231.DocumentUseCases>(),
         ));
+    gh.factory<_i684.SettingsViewCubit>(
+        () => _i684.SettingsViewCubit(appSettings: gh<_i39.AppSettings>()));
     gh.factory<_i920.MyCompanyCubit>(
         () => _i920.MyCompanyCubit(appSettings: gh<_i39.AppSettings>()));
     gh.factory<_i194.MinimumQuantityCubit>(
@@ -316,10 +321,6 @@ extension GetItInjectableX on _i174.GetIt {
           appSettings: gh<_i39.AppSettings>(),
           storage: gh<_i72.Storage>(),
           useCase: gh<_i236.CustomersUseCase>(),
-        ));
-    gh.factory<_i420.DocumentsHistoryCubit>(() => _i420.DocumentsHistoryCubit(
-          documentUseCases: gh<_i231.DocumentUseCases>(),
-          paymentUseCases: gh<_i886.PaymentUseCases>(),
         ));
     gh.factory<_i984.ReportDetailCubit>(() => _i984.ReportDetailCubit(
           storage: gh<_i72.Storage>(),
@@ -356,6 +357,11 @@ extension GetItInjectableX on _i174.GetIt {
           appSettings: gh<_i39.AppSettings>(),
           storage: gh<_i72.Storage>(),
           useCase: gh<_i331.SuppliersUseCase>(),
+        ));
+    gh.factory<_i420.DocumentsHistoryCubit>(() => _i420.DocumentsHistoryCubit(
+          documentUseCases: gh<_i231.DocumentUseCases>(),
+          paymentUseCases: gh<_i886.PaymentUseCases>(),
+          appSettings: gh<_i39.AppSettings>(),
         ));
     gh.factory<_i989.StoresCubit>(() => _i989.StoresCubit(
           storage: gh<_i72.Storage>(),

@@ -88,13 +88,10 @@ class DocumentTransactionItemRow extends StatelessWidget {
       Text(AppLocalizations.of(context)!.field_amount + ": " + rightValue, style: secondaryTextStyle),
     ]));
   }
-  // Widget getAvatarWidget(Uint8List bytes) {
-  //   return SizedBox(width: 36, height: 48, child: Image.memory(bytes, fit: BoxFit.cover,));
-  // }
   Widget getAvatarWidget(Uint8List bytes) {
     return SizedBox(
-      width: 36,
-      height: 36,
+      width: 48,
+      height: 48,
       child: ClipOval(
         child: Image.memory(
           bytes,
@@ -103,7 +100,13 @@ class DocumentTransactionItemRow extends StatelessWidget {
       ),
     );
   }
-  Widget _buildEmptyAvatarWidget(BuildContext context){
-    return Icon(UIConstants.goodIconData, size: 36, color: Theme.of(context).colorScheme.primary);
+
+  Widget _buildEmptyAvatarWidget(BuildContext context) {
+    return SizedBox(
+      width: 48,
+      height: 48,
+      child: Center(child: Icon(UIConstants.goodIconData,
+          size: 36, color: Theme.of(context).colorScheme.primary)),
+    );
   }
 }

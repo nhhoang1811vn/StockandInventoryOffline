@@ -26,15 +26,8 @@ class DocumentsPage extends StatefulWidget {
   final bool isSelection;
   final DocumentType? documentType;
   final DocumentsSetting? setting;
-  const DocumentsPage(
-      {
-        //required Key? key,
-        this.documentType,
-        this.isSelection = false,
-        this.setting
-      }) : super();
 
-  //const DocumentsPage({required Key? key}) : super(key: key);
+  const DocumentsPage({this.documentType, this.isSelection = false, this.setting}) : super();
 
   @override
   DocumentPageState createState() => DocumentPageState();
@@ -43,10 +36,10 @@ class DocumentsPage extends StatefulWidget {
 class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final FocusNode searchTextFocusNode = FocusNode();
+
   @override
   void initState() {
-    context.read<DocumentsCubit>().init(widget.setting);
-    //context.read<DocumentsCubit>().initState();
+    context.read<DocumentsCubit>().initState(setting: widget.setting);
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
@@ -66,7 +59,7 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
               visible: state.documents.isEmpty,
             ),
             Visibility(
-              child: _buildStickyListView(state.documents),
+              child: _buildStickyListView(state.documents, state),
               visible: state.documents.isNotEmpty,
             )
           ]))
@@ -78,7 +71,9 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
           Expanded(
             child: Stack(children: [
               Visibility(child: _buildEmptyView(state), visible: state.incomingDocuments.isEmpty),
-              Visibility(child: _buildStickyListView(state.incomingDocuments), visible: state.incomingDocuments.isNotEmpty)
+              Visibility(
+                  child: _buildStickyListView(state.incomingDocuments, state),
+                  visible: state.incomingDocuments.isNotEmpty)
             ]),
           )
         ],
@@ -90,20 +85,23 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
             child: Stack(
               children: [
                 Visibility(child: _buildEmptyView(state), visible: state.outgoingDocuments.isEmpty),
-                Visibility(child: _buildStickyListView(state.outgoingDocuments), visible: state.outgoingDocuments.isNotEmpty)
+                Visibility(
+                    child: _buildStickyListView(state.outgoingDocuments, state),
+                    visible: state.outgoingDocuments.isNotEmpty)
               ],
             ),
           )
         ],
       );
-  Widget _buildBody(DocumentsState state){
-    if (widget.isSelection){
-       if (widget.documentType == DocumentType.incoming){
-         return Container(width: double.infinity, child: _buildIncomingDocumentView(context, state));
-       }else if (widget.documentType == DocumentType.outgoing){
-         return Container(width: double.infinity, child: _buildOutgoingDocumentView(context, state));
-         //return
-       }
+
+  Widget _buildBody(DocumentsState state) {
+    if (widget.isSelection) {
+      if (widget.documentType == DocumentType.incoming) {
+        return Container(width: double.infinity, child: _buildIncomingDocumentView(context, state));
+      } else if (widget.documentType == DocumentType.outgoing) {
+        return Container(width: double.infinity, child: _buildOutgoingDocumentView(context, state));
+        //return
+      }
     }
     return TabBarView(controller: _tabController, children: [
       _buildAllDocumentView(state),
@@ -111,6 +109,7 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
       _buildOutgoingDocumentView(context, state),
     ]);
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<DocumentsCubit, DocumentsState>(
@@ -118,21 +117,19 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
               appBar: _buildAppBar(state),
               body: _buildBody(state),
               floatingActionButton: FloatingActionButton(
-                onPressed: () async{
-                  if (_tabController.index == 1){
+                onPressed: () async {
+                  if (_tabController.index == 1) {
                     _onAddDocumentWithType(DocumentType.incoming);
-                  }else if (_tabController.index == 2){
+                  } else if (_tabController.index == 2) {
                     _onAddDocumentWithType(DocumentType.outgoing);
-                  }else{
+                  } else {
                     //show dialog
-                    DocumentType? type =
-                        await showDialog(context: context, builder: (_) => AddDocumentDialogWidget(), barrierDismissible: true);
+                    DocumentType? type = await showDialog(
+                        context: context, builder: (_) => AddDocumentDialogWidget(), barrierDismissible: true);
                     if (type != null) {
                       _onAddDocumentWithType(type);
                     }
-
                   }
-
                 },
                 child: Icon(Icons.add),
               ),
@@ -168,20 +165,27 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
 
   PreferredSize _buildAppBar(DocumentsState state) {
     double topHeight = 58;
-    double storeHeight = 32;
+    double storeHeight = 30;
     double searchBarHeight = 58 + 16;
     double tabBarHeight = 58;
     return PreferredSize(
-      preferredSize: Size.fromHeight(topHeight + storeHeight +  (widget.isSelection ? 0 : tabBarHeight) + (state.showSearchBar ? searchBarHeight : 0)),
+      preferredSize: Size.fromHeight(topHeight +
+          storeHeight +
+          (widget.isSelection ? 0 : tabBarHeight) +
+          (state.showSearchBar ? searchBarHeight : 0)),
       child: AppBar(
         actions: [
           _buildSearchMenu(state),
           _buildFilterMenu(state),
           //_buildSortMenu(),
-          _buildHelpMenu()],
-        title: widget.isSelection ? Text(AppLocalizations.of(context)!.title_select_document) : Text(AppLocalizations.of(context)!.documents_title),
+          _buildHelpMenu()
+        ],
+        title: widget.isSelection
+            ? Text(AppLocalizations.of(context)!.title_select_document)
+            : Text(AppLocalizations.of(context)!.documents_title),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(storeHeight + (widget.isSelection ? 0 : tabBarHeight) + (state.showSearchBar ? searchBarHeight : 0)),
+          preferredSize: Size.fromHeight(
+              storeHeight + (widget.isSelection ? 0 : tabBarHeight) + (state.showSearchBar ? searchBarHeight : 0)),
           child: Column(
             children: [
               Container(height: storeHeight, child: SelectedStoreView()),
@@ -226,8 +230,7 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
         children: [
           Icon(UIConstants.documentIconData, size: 64, color: Theme.of(context).colorScheme.primary),
           SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.empty_document,
-              textAlign: TextAlign.center)
+          Text(AppLocalizations.of(context)!.empty_document, textAlign: TextAlign.center)
         ],
       );
 
@@ -253,7 +256,7 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
   //       },
   //       itemCount: items.length);
   // }
-  Widget _buildStickyListView(List<Document> documents) {
+  Widget _buildStickyListView(List<Document> documents, DocumentsState state) {
     var flag = true;
     return StickyGroupedListView<Document, DateTime>(
       elements: List.of(documents),
@@ -266,11 +269,16 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
       itemBuilder: (context, Document document) {
         flag = !flag;
         return DocumentItemRow(
-                          document, flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context), (item) {
-                        onPressedDocument(item);
-                      }, (item) {
-                        onLongPressedDocument(item);
-                      });
+            item: document,
+            bgColor: flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context),
+            incomingColor: state.incomingColor,
+            outgoingColor: state.outgoingColor,
+            onDocumentTapped: (item) {
+              onPressedDocument(item);
+            },
+            onDocumentLongPressed: (item) {
+              onLongPressedDocument(item);
+            });
       },
       itemComparator: (a, b) => b.date.compareTo(a.date),
       order: StickyGroupedListOrder.DESC,
@@ -302,12 +310,11 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
   // }
 
   Widget _buildFilterMenu(DocumentsState state) {
-    bool showWarning = (
-        state.setting!.isPaid != null
+    bool showWarning = (state.setting!.isPaid != null
         //    state.setting!.selectedWalletIds.isNotEmpty ||
         //    state.setting!.selectedCustomerIds.isNotEmpty ||
         //    state.setting!.selectedSupplierIds.isNotEmpty
-    );
+        );
     return Stack(
       children: [
         IconButton(
@@ -328,6 +335,7 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
       ],
     );
   }
+
   void showFilterBottomSheet(DocumentsState state) {
     showModalBottomSheet(
         context: context,
@@ -366,13 +374,12 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
   }
 
   void onPressedDocument(Document item) async {
-    if (widget.isSelection){
+    if (widget.isSelection) {
       Navigator.of(context).pop(item);
-    }else{
+    } else {
       await Navigator.of(context).pushNamed(Pages.save_document, arguments: {'item': item});
       context.read<DocumentsCubit>().loadItems();
     }
-
   }
 
   void onLongPressedDocument(Document item) {

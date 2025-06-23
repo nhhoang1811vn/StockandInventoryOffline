@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/app_settings.dart';
@@ -28,13 +30,22 @@ class DocumentsCubit extends Cubit<DocumentsState> {
     required this.storage,
     required this.appSettings,
     required this.useCase})
-      : super(DocumentsState.initial(state: InitialState()));
-  void init(DocumentsSetting? setting) {
-    if (setting != null){
-      emit(state.copyWith(state: LoadingState(), setting: setting));
+      : super(DocumentsState.initial(
+      state: InitialState()
+  ));
+  void initState({DocumentsSetting? setting = null}) {
+    DocumentsSetting applySetting;
+    if (setting == null){
+      applySetting = appSettings.getDocumentsSetting();
     }else{
-      emit(state.copyWith(state: LoadingState(), setting: appSettings.getDocumentsSetting()));
+      applySetting = setting;
     }
+    emit(state.copyWith(
+        state: LoadingState(),
+        setting: applySetting,
+        incomingColor: appSettings.getIncomingDocumentColor(),
+        outgoingColor: appSettings.getOutgoingDocumentColor()
+    ));
     loadItems();
   }
   void loadItems() async {

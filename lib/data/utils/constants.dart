@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Constants {
   //Local Storage
   //Stores
@@ -31,4 +33,8 @@ class Constants {
       "barcodeScannerEnableBeepKey";
   static const String barcodeScannerEnableVibrateKey =
       "barcodeScannerEnableVibrateKey";
+
+  static const Color incomingDocumentColor = Colors.red;
+  static const Color outgoingDocumentColor = Colors.green;
+
 }

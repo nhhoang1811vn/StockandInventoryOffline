@@ -22,6 +22,7 @@ late List<CameraDescription> cameras;
 late Storage storage;
 bool justLogin = false;
 late String initialRoute;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
@@ -54,8 +55,8 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-
   MyApp({Key? key}) : super(key: key);
+
   @override
   MyAppState createState() => MyAppState();
 
@@ -70,6 +71,7 @@ class MyApp extends StatefulWidget {
     return LocaleType.en;
   }
 }
+
 class MyAppState extends State<MyApp> {
   final purchaseManager = PurchaseManager();
   String? _languageCode;
@@ -77,16 +79,18 @@ class MyAppState extends State<MyApp> {
 
   static const String _themeKey = 'user_theme_mode';
   final AppRouter _router;
+
   MyAppState() : _router = AppRouter() {
     _languageCode = storage.getLanguageCode();
   }
+
   @override
   void initState() {
     super.initState();
     purchaseManager.init();
     _loadTheme();
-
   }
+
   Future<void> _loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
     final themeString = prefs.getString(_themeKey);
@@ -105,6 +109,7 @@ class MyAppState extends State<MyApp> {
       }
     });
   }
+
   Future<void> changeTheme(ThemeMode mode) async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -123,7 +128,6 @@ class MyAppState extends State<MyApp> {
         break;
     }
   }
-
 
   Locale locale(String languageCode) {
     Locale _temp;
@@ -145,22 +149,32 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final TextTheme customTextTheme = TextTheme(
+
+      titleMedium: ThemeData.light().textTheme.titleMedium?.copyWith(
+        fontWeight: FontWeight.w700,
+      ),
+      //bodyMedium:
+    );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue.shade700,
+          brightness: Brightness.light,
+          seedColor: Colors.blue.shade700,
           primary: Colors.blue.shade700,
           onPrimary: Colors.white,
-            //brightness: Brightness.light
+          //brightness: Brightness.light
         ),
+        //textTheme: customTextTheme
       ),
       darkTheme: ThemeData.dark().copyWith(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue.shade700,
-            primary: Colors.blue.shade700,
-            onPrimary: Colors.white,
+            seedColor: Colors.blue,
+            //primary: Colors.blue.shade700,
+            //onPrimary: Colors.white,
             brightness: Brightness.dark),
+          //textTheme: customTextTheme
       ),
       themeMode: _themeMode,
       onGenerateRoute: _router.getRoute,

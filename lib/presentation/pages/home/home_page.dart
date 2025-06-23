@@ -20,8 +20,8 @@ class HomePage extends StatefulWidget {
       {required this.onOpenGoodsPage,
       required this.onOpenDocumentsPage,
       required this.onOpenPaymentsPage,
-      required Key? key})
-      : super(key: key);
+      })
+      : super();
 
   @override
   HomePageState createState() => HomePageState();
@@ -168,7 +168,7 @@ class HomePageState extends State<HomePage> {
                                     width: 6,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: Colors.red, // Change color as need,
+                                        color: state.incomingColor, // Change color as need,
                                       ),
                                     ),
                                   ),
@@ -201,7 +201,7 @@ class HomePageState extends State<HomePage> {
                                     width: 6,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: Colors.green, // Change color as need,
+                                        color: state.outgoingColor,
                                       ),
                                     ),
                                   ),
@@ -364,7 +364,7 @@ class HomePageState extends State<HomePage> {
               children: [
                 Text(
                   AppLocalizations.of(context)!.title_wallet,
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleMedium,
                   textAlign: TextAlign.center,
                 ),
                 Spacer(),
@@ -378,8 +378,8 @@ class HomePageState extends State<HomePage> {
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("${Config.simpleCurrencyFormat.format(state.totalBalance)}", style: Theme.of(context).textTheme.titleLarge),
-                    Text(AppLocalizations.of(context)!.total_balance, style: Theme.of(context).textTheme.bodyMedium),
+                    Text("${Config.simpleCurrencyFormat.format(state.totalBalance)}", style: Theme.of(context).textTheme.titleMedium),
+                    Text(AppLocalizations.of(context)!.total_balance),
                   ],
                 )),
                 OutlinedButton(
@@ -470,7 +470,7 @@ class HomePageState extends State<HomePage> {
                   Expanded(
                     child: Text(
                       item.name,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -485,7 +485,7 @@ class HomePageState extends State<HomePage> {
               ),
               //SizedBox(height: 8),
               Text(Config.simpleCurrencyFormat.format(item.balance),
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white)),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white)),
             ],
           ),
         ),

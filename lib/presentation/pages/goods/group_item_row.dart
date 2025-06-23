@@ -9,6 +9,14 @@ class GroupItemRow extends StatelessWidget {
 
   GroupItemRow(this.item, this.onGroupTapped, this.onGroupLongPressed);
 
+  Widget _buildLeadingWidget(BuildContext context) {
+    return SizedBox(
+      width: 48,
+      height: 48,
+      child: Center(child: Icon(UIConstants.groupIconData,
+          size: 36, color: Theme.of(context).colorScheme.primary)),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     TextStyle? primaryTextStyle = Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700);
@@ -21,7 +29,7 @@ class GroupItemRow extends StatelessWidget {
         padding: EdgeInsets.all(16),
         child: Row(
           children: [
-            Icon(UIConstants.groupIconData, size: 36, color: Theme.of(context).colorScheme.primary),
+            _buildLeadingWidget(context),
             SizedBox(
               width: 16,
             ),

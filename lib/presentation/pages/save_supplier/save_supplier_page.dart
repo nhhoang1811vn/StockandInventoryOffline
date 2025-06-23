@@ -31,10 +31,7 @@ class SaveSupplierPageState extends State<SaveSupplierPage> {
               padding: const EdgeInsets.all(UIConstants.screenSpace),
               child: Column(
                 children: [
-                  Card(
-
-                    child: SaveSupplierForm(item: widget.item),
-                  )
+                  SaveSupplierForm(item: widget.item)
                 ],
               ),
             )),

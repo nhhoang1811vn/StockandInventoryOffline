@@ -25,10 +25,20 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
-  void _onItemTapped(int index) {
+  void _onItemTappedWithContext(int index, BuildContext context) {
     setState(() {
       _selectedIndex = index;
     });
+
+    if (index == 0) {
+      context.read<HomeCubit>().initState();
+    }else if (index == 1){
+      context.read<GoodsCubit>().initState(false, null);
+    }else if (index == 2){
+      context.read<DocumentsCubit>().initState();
+    }else if (index == 3){
+      context.read<PaymentsCubit>().init(null);
+    }
   }
 
   @override
@@ -59,63 +69,59 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: IndexedStack(
-          index: _selectedIndex,
-          children: [
-            BlocProvider(
-              create: (context) => getIt<HomeCubit>(),
-              child: HomePage(
-                key: UniqueKey(),
-                onOpenGoodsPage: () => _onItemTapped(1),
-                onOpenDocumentsPage: () => _onItemTapped(2),
-                onOpenPaymentsPage: () => _onItemTapped(3),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<HomeCubit>(create: (_) => getIt<HomeCubit>()),
+        BlocProvider<GoodsCubit>(create: (_) => getIt<GoodsCubit>()),
+        BlocProvider<DocumentsCubit>(create: (_) => getIt<DocumentsCubit>()),
+        BlocProvider<PaymentsCubit>(create: (_) => getIt<PaymentsCubit>()),
+      ],
+      child: Builder(
+        builder: (mContext) {
+          return Scaffold(
+              body: IndexedStack(
+                index: _selectedIndex,
+                children: [
+                  HomePage(
+                    onOpenGoodsPage: () => _onItemTappedWithContext(1, mContext),
+                    onOpenDocumentsPage: () => _onItemTappedWithContext(2, mContext),
+                    onOpenPaymentsPage: () => _onItemTappedWithContext(3, mContext),
+                  ),
+                  GoodsPage(isSelection: false),
+                  DocumentsPage(),
+                  PaymentsPage(),
+                  MorePage()
+                ],
               ),
-            ),
-            BlocProvider(
-              create: (context) => getIt<GoodsCubit>(),
-              child: GoodsPage(
-                key: UniqueKey(),
-                isSelection: false,
-              ),
-            ),
-            BlocProvider(
-              create: (context) => getIt<DocumentsCubit>(),
-              child: DocumentsPage(
-              //    key: UniqueKey()
-
-              ),
-            ),
-            BlocProvider(
-                create: (context) => getIt<PaymentsCubit>(),
-                child: PaymentsPage()),
-            MorePage()
-          ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: AppLocalizations.of(context)!.home_title),
-            BottomNavigationBarItem(
-                icon: Icon(UIConstants.goodIconData),
-                label: AppLocalizations.of(context)!.goods_title),
-            BottomNavigationBarItem(
-                icon: Icon(UIConstants.documentIconData),
-                label: AppLocalizations.of(context)!.documents_title),
-            BottomNavigationBarItem(
-                icon: Icon(UIConstants.paymentIconData),
-                label: AppLocalizations.of(context)!.payments_title),
-            BottomNavigationBarItem(
-                icon: Icon(UIConstants.moreIconData),
-                label: AppLocalizations.of(context)!.more_title),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
-          showUnselectedLabels: true,
-          onTap: _onItemTapped,
-        ));
+              bottomNavigationBar: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                items: <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.home),
+                      label: AppLocalizations.of(context)!.home_title),
+                  BottomNavigationBarItem(
+                      icon: Icon(UIConstants.goodIconData),
+                      label: AppLocalizations.of(context)!.goods_title),
+                  BottomNavigationBarItem(
+                      icon: Icon(UIConstants.documentIconData),
+                      label: AppLocalizations.of(context)!.documents_title),
+                  BottomNavigationBarItem(
+                      icon: Icon(UIConstants.paymentIconData),
+                      label: AppLocalizations.of(context)!.payments_title),
+                  BottomNavigationBarItem(
+                      icon: Icon(UIConstants.moreIconData),
+                      label: AppLocalizations.of(context)!.more_title),
+                ],
+                currentIndex: _selectedIndex,
+                selectedItemColor: Colors.blue,
+                unselectedItemColor: Colors.grey,
+                //showUnselectedLabels: true,
+                onTap: (index){
+                  _onItemTappedWithContext(index, mContext);
+                },
+              ));
+        }
+      ),
+    );
   }
 }

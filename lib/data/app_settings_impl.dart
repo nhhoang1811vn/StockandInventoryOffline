@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:good_manager/data/utils/constants.dart';
 import 'package:good_manager/domain/entities/minimum_quantity_settings.dart';
 import 'package:good_manager/domain/entities/my_company.dart';
 import 'package:good_manager/domain/entities/payments_setting.dart';
@@ -31,6 +32,11 @@ class AppSettingsImpl implements AppSettings {
   static const String _saveDocumentSettingKey = "SaveDocumentSetting";
   static const String _PaymentsSettingKey = "PaymentsSetting4";
 
+  static const String _incomingDocumentColorKey = "_incomingDocumentColorKey";
+  static const String _outgoingDocumentColorKey = "_outgoingDocumentColorKey";
+
+  //int incomingDocumentColorDefault = Colors.red.value;
+  //int _
 
   @override
   MyCompany getMyCompany(){
@@ -150,5 +156,23 @@ class AppSettingsImpl implements AppSettings {
   @override
   void setPaymentsSetting(PaymentsSetting obj) {
     storage.write(_PaymentsSettingKey, jsonEncode(obj.toJson()));
+  }
+  
+  @override
+  Color getIncomingDocumentColor() {
+    return Color(storage.readInt(_incomingDocumentColorKey, Constants.incomingDocumentColor.value));
+  }
+  @override
+  void setIncomingDocumentColor(Color color) {
+    storage.writeInt(_incomingDocumentColorKey, color.value);
+  }
+
+  @override
+  Color getOutgoingDocumentColor() {
+    return Color(storage.readInt(_outgoingDocumentColorKey, Constants.outgoingDocumentColor.value));
+  }
+  @override
+  void setOutgoingDocumentColor(Color color) {
+    storage.writeInt(_outgoingDocumentColorKey, color.value);
   }
 }

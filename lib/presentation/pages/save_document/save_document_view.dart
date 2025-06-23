@@ -736,7 +736,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       separatorBuilder: (context, index) => Divider(
         height: 1,
         thickness: 1,
-        indent: 68,
+        indent: 80,
         endIndent: 0,
         color: Colors.grey.shade300,
       ),

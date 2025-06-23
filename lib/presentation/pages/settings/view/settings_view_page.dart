@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
+import 'package:good_manager/presentation/pages/settings/view/bloc/settings_view_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../main.dart';
@@ -15,12 +18,14 @@ class SettingsViewPage extends StatefulWidget {
 
 class SettingsViewPageState extends State<SettingsViewPage> {
   String _subTitle = "";
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     fetch();
   }
-  Future<void> fetch() async{
+
+  Future<void> fetch() async {
     final prefs = await SharedPreferences.getInstance();
     final themeString = prefs.getString("user_theme_mode");
     switch (themeString) {
@@ -34,33 +39,118 @@ class SettingsViewPageState extends State<SettingsViewPage> {
       default:
         _subTitle = "System";
     }
-    setState(() {
-
-    });
+    setState(() {});
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: new AppBar(title: new Text(AppLocalizations.of(context)!.menu_item_view)),
-      body: _buildBody(),
-    );
+    return BlocConsumer<SettingsViewCubit, SettingsViewState>(
+        listener: (context, state) async {},
+        builder: (BuildContext context, SettingsViewState state) {
+          return Scaffold(
+            appBar: new AppBar(title: new Text(AppLocalizations.of(context)!.menu_item_view)),
+            body: _buildBody(state),
+          );
+        });
   }
-  Widget _buildBody() {
 
+  Widget _buildBody(SettingsViewState state) {
     return ListView(padding: EdgeInsets.all(16), children: [
+      Text("Themes", style: Theme.of(context).textTheme.titleMedium,),
       Card(
           clipBehavior: Clip.antiAlias,
           child: Column(children: [
-
-      ListTile(
-        leading: Icon(Icons.brightness_6),
-        title: Text("AppTheme"),
-        subtitle: Text(_subTitle),
-        onTap: () => _showThemeDialog(context),
-        trailing: Icon(Icons.navigate_next),
-      ),
-    ]))]);
+            ListTile(
+              leading: Icon(Icons.brightness_6),
+              title: Text("AppTheme"),
+              subtitle: Text(_subTitle),
+              onTap: () => _showThemeDialog(context),
+              trailing: Icon(Icons.navigate_next),
+            ),
+          ])),
+      SizedBox(height: 16,),
+      Text("Documents colors", style: Theme.of(context).textTheme.titleMedium,),
+      Card(
+          clipBehavior: Clip.antiAlias,
+          child: Column(children: [
+            ListTile(
+                title: Text(AppLocalizations.of(context)!.incoming_document_text),
+                trailing: Container(
+                  width: 20, // Circle diameter
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: state.incomingColor, // use your color here
+                    shape: BoxShape.circle,
+                  ),
+                  //color: state.color,
+                ),
+                onTap: (){
+                  _showChoiceColorDialog(state.incomingColor!, (color){
+                    context.read<SettingsViewCubit>().onIncomingColorChanged(color);
+                  });
+                },
+            ),
+            Divider(height: 1,),
+            ListTile(
+                title: Text(AppLocalizations.of(context)!.outgoing_document_text),
+                trailing: Container(
+                  width: 20, // Circle diameter
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: state.outgoingColor, // use your color here
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                onTap: (){
+                  _showChoiceColorDialog(state.outgoingColor!, (color){
+                    context.read<SettingsViewCubit>().onOutgoingColorChanged(color);
+                  });
+                })
+          ])),
+      SizedBox(height: 16,),
+      Text(AppLocalizations.of(context)!.menu_item_min_quantity_color_title, style: Theme.of(context).textTheme.titleMedium),
+      Card(clipBehavior: Clip.antiAlias, child: Column(children: [
+        ListTile(
+            title: Text(AppLocalizations.of(context)!.menu_item_min_quantity_color_title),
+            trailing: Container(
+              width: 20, // Circle diameter
+              height: 20,
+              decoration: BoxDecoration(
+                color: state.reorderColor, // use your color here
+                shape: BoxShape.circle,
+              ),
+            ),
+            onTap: (){
+              _showChoiceColorDialog(state.reorderColor!, (color){
+                context.read<SettingsViewCubit>().onReorderColorChanged(color);
+              });
+            })
+      ],),)
+    ]);
   }
+
+  void _showChoiceColorDialog(Color pickerColor, ValueChanged<Color> callback) {
+    showDialog(
+        context: context,
+        builder: (builder) => AlertDialog(
+              title: Text(AppLocalizations.of(context)!.title_pick_color),
+              content: SingleChildScrollView(
+                child: BlockPicker(
+                  pickerColor: pickerColor,
+                  onColorChanged: callback,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                  child: Text(AppLocalizations.of(context)!.action_ok),
+                ),
+              ],
+            ));
+  }
+
   void _showThemeDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -101,5 +191,4 @@ class SettingsViewPageState extends State<SettingsViewPage> {
       ),
     );
   }
-
 }

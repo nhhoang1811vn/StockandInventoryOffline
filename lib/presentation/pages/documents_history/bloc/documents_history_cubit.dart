@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/good_history.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
@@ -20,12 +23,17 @@ part 'documents_history_state.dart';
 class DocumentsHistoryCubit extends Cubit<DocumentsHistoryState>{
   final DocumentUseCases documentUseCases;
   final PaymentUseCases paymentUseCases;
-  //final DocumentTransactionRepository documentTransactionRepository;
+  final AppSettings appSettings;
   DocumentsHistoryCubit({
     required this.documentUseCases,
-    required this.paymentUseCases
+    required this.paymentUseCases,
+    required this.appSettings
     //required this.documentTransactionRepository
-  }) : super(DocumentsHistoryState.initial(state: InitialState()));
+  }) : super(DocumentsHistoryState.initial(
+      state: InitialState(),
+      incomingColor: appSettings.getIncomingDocumentColor(),
+    outgoingColor: appSettings.getOutgoingDocumentColor()
+  ));
   void initState(int? supplierId, int? customerId, DateTime? start, DateTime? end){
     emit(state.copyWith(supplierId: supplierId, customerId: customerId, start: start, end: end));
     loadItems();

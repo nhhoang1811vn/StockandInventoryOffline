@@ -98,11 +98,15 @@ class DocumentsHistoryPageState extends State<DocumentsHistoryPage> {
             return DateItemRow(item.date);
           }else if (item is DocumentListItem){
             //flag = !flag;
-            return DocumentItemRow(item.document, ColorUtils.getItemBgColor1(context),(item) async {
+            return DocumentItemRow(item: item.document,
+                bgColor: ColorUtils.getItemBgColor1(context),
+                incomingColor: data.incomingColor!,
+                outgoingColor: data.outgoingColor!,
+                onDocumentTapped: (item) async {
               await Navigator.of(context).pushNamed(
                   Pages.save_document, arguments: {'item': item});
               context.read<DocumentsHistoryCubit>().loadItems();
-            }, (item){});
+            }, onDocumentLongPressed: (item){});
           }else if (item is PaymentListItem){
             return Padding(padding: EdgeInsets.symmetric(vertical: 1), child: PaymentItemRow(item.payment, ColorUtils.getItemBgColor2(context), (item) async{
               await Navigator.of(context).pushNamed(

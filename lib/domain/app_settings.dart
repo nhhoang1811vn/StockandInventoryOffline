@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:good_manager/domain/entities/customers_setting.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/domain/entities/goods_setting.dart';
@@ -34,4 +36,10 @@ abstract class AppSettings{
   PaymentsSetting getPaymentsSetting();
   void setPaymentsSetting(PaymentsSetting obj);
 
+  Color getIncomingDocumentColor();
+  void setIncomingDocumentColor(Color color);
+
+
+  Color getOutgoingDocumentColor();
+  void setOutgoingDocumentColor(Color color);
 }

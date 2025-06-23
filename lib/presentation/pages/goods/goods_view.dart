@@ -28,7 +28,7 @@ class GoodsPage extends StatefulWidget {
   final bool isSelection;
   final Document? document;
 
-  GoodsPage({required this.isSelection, this.document, required Key? key}) : super(key: key);
+  GoodsPage({required this.isSelection, this.document}) : super();
 
   @override
   GoodsPageState createState() => GoodsPageState();
@@ -96,7 +96,7 @@ class GoodsPageState extends State<GoodsPage> {
           children: [
             SizedBox(width: 16),
             Text(
-                "${AppLocalizations.of(context)!.field_quantity_short_form}:  ${state.quantityTotal.toString()}",
+                "${AppLocalizations.of(context)!.field_quantity_short_form}:  ${Config.currencyFormat.format(state.quantityTotal)}",
                 style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
             SizedBox(width: 16),
             VerticalDivider(width: 2, color: Theme.of(context).colorScheme.onPrimary),
@@ -159,7 +159,7 @@ class GoodsPageState extends State<GoodsPage> {
           height: 1,
           thickness: 1,
           color: Colors.grey[200],
-          indent: 68,     // Adds 40 pixels of left padding
+          indent: 80,     // Adds 40 pixels of left padding
           endIndent: 0,   // Keeps the right edge flush (can adjust if needed)
         ),
         itemBuilder: (BuildContext context, index) {
