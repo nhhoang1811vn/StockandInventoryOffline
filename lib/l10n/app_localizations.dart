@@ -146,7 +146,7 @@ abstract class AppLocalizations {
   /// No description provided for @documents_title.
   ///
   /// In en, this message translates to:
-  /// **'Document'**
+  /// **'Documents'**
   String get documents_title;
 
   /// No description provided for @save_expense_title.
@@ -1133,6 +1133,18 @@ abstract class AppLocalizations {
   /// **'What\'s New'**
   String get whats_new_title;
 
+  /// No description provided for @terms_of_use_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Use'**
+  String get terms_of_use_title;
+
+  /// No description provided for @privacy_policy_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacy_policy_title;
+
   /// No description provided for @your_subscriptions_title.
   ///
   /// In en, this message translates to:
@@ -1958,7 +1970,7 @@ abstract class AppLocalizations {
   /// No description provided for @pro_benefits_description.
   ///
   /// In en, this message translates to:
-  /// **'All premium features of the app (Unlimited customers, suppliers, stores)'**
+  /// **'All premium features of the app (Unlimited stores, customers, suppliers, wallets)'**
   String get pro_benefits_description;
 
   /// No description provided for @pro_lifetime_benefits_description.

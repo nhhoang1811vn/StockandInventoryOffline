@@ -1,4 +1,5 @@
 class Pages {
+  static const String splash = 'splash';
   static const String onboarding = 'onboarding';
 
   //static const String payment_list = 'payment_list';
@@ -33,7 +34,7 @@ class Pages {
 
   static const String take_picture = '/take_picture';
   static const String settings = "/settings";
-  static const String subscriptions = "/subscriptions";
+  //static const String subscriptions = "/subscriptions";
 
   static const String settings_general = "/settings_general";
   static const String settings_view = "/settings_view";

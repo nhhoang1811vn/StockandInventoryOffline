@@ -11,7 +11,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../data/storage.dart';
 import '../../../../domain/entities/sort_by_text.dart';
-import '../../../../purchase_manager.dart';
+import '../../../../revenuecat_purchase_manager.dart';
 import '../../base/base_sort_items.dart';
 
 part 'customers_cubit.freezed.dart';
@@ -24,7 +24,7 @@ class CustomersCubit extends Cubit<CustomersState> {
   final AppSettings appSettings;
   CustomersCubit({required this.appSettings,required this.storage,required this.useCase}) : super(CustomersState.initial(state: InitialState(), settings: appSettings.getCustomersSetting()));
 
-  final purchaseManager = PurchaseManager();
+  //final purchaseManager = PurchaseManager();
   void initState(bool isSelection){
     emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection));
     loadItems();
@@ -67,7 +67,8 @@ class CustomersCubit extends Cubit<CustomersState> {
   Future<bool> isValidToAddMoreCustomer() async{
     var storeId = storage.getSelectedStoreId();
     int count = await useCase.getCount(storeId);
-    return count < FreeLimits.customerLimit || purchaseManager.isPro;
+    bool isPro = await RevenueCatService.isPro();
+    return count < FreeLimits.customerLimit || isPro;
   }
   void onAddItem(Customer item){
     emit(state.copyWith(state: OpenSaveCustomerPageState(item)));

@@ -67,117 +67,112 @@ class SaveWalletPageState extends State<SaveWalletPage> {
         Expanded(
             child: SingleChildScrollView(
           padding: EdgeInsets.all(16),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (builder) => AlertDialog(
-                                title: Text(AppLocalizations.of(context)!
-                                    .title_pick_color),
-                                content: SingleChildScrollView(
-                                  child: BlockPicker(
-                                    pickerColor: state.color,
-                                    onColorChanged: context
-                                        .read<SaveWalletCubit>()
-                                        .onColorChanged,
-                                  ),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Close the dialog
-                                    },
-                                    child: Text(AppLocalizations.of(context)!
-                                        .action_ok),
-                                  ),
-                                ],
-                              ));
-                    },
-                    child: Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                          color: state.color, shape: BoxShape.circle),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.change_color,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleSmall
-                        ?.copyWith(color: Colors.blue),
-                  ),
-                  SizedBox(
-                    height: 32,
-                  ),
-                  AppTextField(
-                    labelText: AppLocalizations.of(context)!.label_wallet_name,
-                    hintText: AppLocalizations.of(context)!.hint_name,
-                    keyboardType: TextInputType.name,
-                    initialValue: state.name.value,
-                    error: state.name.displayError?.text(context),
-                    onChanged: (value) =>
-                        context.read<SaveWalletCubit>().nameChanged(value),
-                  ),
-                  SizedBox(height: 16),
-                  AppTextField(
-                    labelText: AppLocalizations.of(context)!.label_description,
-                    hintText: AppLocalizations.of(context)!.hint_description,
-                    maxLines: null,
-                    minLines: 2,
-                    keyboardType: TextInputType.name,
-                    initialValue: state.description,
-                    onChanged: (value) => context
-                        .read<SaveWalletCubit>()
-                        .descriptionChanged(value),
-                  ),
-                  if (widget.item.id == null)
-                    Column(
-                      children: [
-                        SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: CurrencyAppTextField(
-                              labelText:
-                                  AppLocalizations.of(context)!.field_amount,
-                              controller: amountController,
-                              onChanged: context
-                                  .read<SaveWalletCubit>()
-                                  .onAmountChanged,
-                            )),
-                            CircleButton(UIConstants.calculatorIconData, () {
-                              Utils.showCalculatorPopup(context, state.amount,
-                                  (p0) {
-                                NumberFormat format = new NumberFormat("0.#");
-                                context
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (builder) => AlertDialog(
+                            title: Text(AppLocalizations.of(context)!
+                                .title_pick_color),
+                            content: SingleChildScrollView(
+                              child: BlockPicker(
+                                pickerColor: state.color,
+                                onColorChanged: context
                                     .read<SaveWalletCubit>()
-                                    .onAmountChanged(format.format(p0));
-                                amountController.text =
-                                    Config.simpleCurrencyFormat.format(p0);
-                              });
-                            })
-                          ],
-                        ),
-                      ],
-                    )
-                ],
+                                    .onColorChanged,
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(); // Close the dialog
+                                },
+                                child: Text(AppLocalizations.of(context)!
+                                    .action_ok),
+                              ),
+                            ],
+                          ));
+                },
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                      color: state.color, shape: BoxShape.circle),
+                ),
               ),
-            ),
+              SizedBox(
+                height: 8,
+              ),
+              Text(
+                AppLocalizations.of(context)!.change_color,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall
+                    ?.copyWith(color: Colors.blue),
+              ),
+              SizedBox(
+                height: 32,
+              ),
+              AppTextField(
+                labelText: AppLocalizations.of(context)!.label_wallet_name,
+                hintText: AppLocalizations.of(context)!.hint_name,
+                keyboardType: TextInputType.name,
+                initialValue: state.name.value,
+                error: state.name.displayError?.text(context),
+                onChanged: (value) =>
+                    context.read<SaveWalletCubit>().nameChanged(value),
+              ),
+              SizedBox(height: 16),
+              AppTextField(
+                labelText: AppLocalizations.of(context)!.label_description,
+                hintText: AppLocalizations.of(context)!.hint_description,
+                maxLines: null,
+                minLines: 2,
+                keyboardType: TextInputType.name,
+                initialValue: state.description,
+                onChanged: (value) => context
+                    .read<SaveWalletCubit>()
+                    .descriptionChanged(value),
+              ),
+              if (widget.item.id == null)
+                Column(
+                  children: [
+                    SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: CurrencyAppTextField(
+                          labelText:
+                              AppLocalizations.of(context)!.field_amount,
+                          controller: amountController,
+                          onChanged: context
+                              .read<SaveWalletCubit>()
+                              .onAmountChanged,
+                        )),
+                        CircleButton(UIConstants.calculatorIconData, () {
+                          Utils.showCalculatorPopup(context, state.amount,
+                              (p0) {
+                            NumberFormat format = new NumberFormat("0.#");
+                            context
+                                .read<SaveWalletCubit>()
+                                .onAmountChanged(format.format(p0));
+                            amountController.text =
+                                Config.simpleCurrencyFormat.format(p0);
+                          });
+                        })
+                      ],
+                    ),
+                  ],
+                )
+            ],
           ),
         )),
         Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.all(16),
           color: Theme.of(context).colorScheme.surface,
           child: PrimaryButton(AppLocalizations.of(context)!.action_save, () {
             context.read<SaveWalletCubit>().onSaveClicked();

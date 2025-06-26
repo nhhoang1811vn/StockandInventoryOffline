@@ -528,6 +528,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get whats_new_title => 'Thông tin cập nhật mới';
 
   @override
+  String get terms_of_use_title => 'Điều khoản Sử dụng';
+
+  @override
+  String get privacy_policy_title => 'Chính sách Bảo mật';
+
+  @override
   String get your_subscriptions_title => 'Thông tin đăng ký PRO';
 
   @override

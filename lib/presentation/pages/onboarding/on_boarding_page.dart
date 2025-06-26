@@ -97,12 +97,14 @@ class OnBoardingPage extends StatelessWidget {
                   style: bodyStyle),
               TextFormField(
                 textAlign: TextAlign.center,
+                initialValue: "My Store",
                 decoration: InputDecoration(
-                  hintText: "Main Store",
+                  hintText: "Input store name",
                 ),
+                onFieldSubmitted: (value){
+                  context.read<OnBoardingCubit>().onAddStore();
+                },
                 onChanged: context.read<OnBoardingCubit>().nameChanged,
-                //decoration: InputDecoration(
-                //    labelText: AppLocalizations.of(context)!.field_name),
               ),
             ],
           ),

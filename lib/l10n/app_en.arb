@@ -7,7 +7,7 @@
     "good": "Good",
     "folder": "Group",
     "save_goods_title": "Save Good",
-    "documents_title": "Document",
+    "documents_title": "Documents",
     "save_expense_title": "Save Expense",
     "empty_expense": "No Expenses",
     "empty_document": "No documents",
@@ -177,6 +177,8 @@
     "question_or_suggestion_title": "Question or suggestion",
     "help_title": "Help",
     "whats_new_title": "What's New",
+    "terms_of_use_title":"Terms of Use",
+    "privacy_policy_title": "Privacy Policy",
     "your_subscriptions_title": "Your subscriptions",
     "document_name_no": "No.",
     "insert_transaction_success": "Added item successful!",
@@ -320,7 +322,7 @@
                                           "select_object_type": "Select object types",
 
 
-                                         "pro_benefits_description": "All premium features of the app (Unlimited customers, suppliers, stores)",
+                                         "pro_benefits_description": "All premium features of the app (Unlimited stores, customers, suppliers, wallets)",
                                          "pro_lifetime_benefits_description": "With one-time purchase you will be able to use all advanced features forever",
                                          "monthly": "Monthly",
                                          "yearly": "Yearly",

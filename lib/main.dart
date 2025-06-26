@@ -10,8 +10,7 @@ import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/router.dart';
-import 'package:good_manager/purchase_manager.dart';
-
+import 'package:good_manager/revenuecat_purchase_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../common/helpers/injection.container.dart';
@@ -21,13 +20,14 @@ late List<CameraDescription> cameras;
 //Storage storage = getIt<Storage>();
 late Storage storage;
 bool justLogin = false;
-late String initialRoute;
+String initialRoute = "";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
   storage = getIt<Storage>();
   await storage.init();
+  await RevenueCatService.init();
   cameras = await availableCameras();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -41,16 +41,17 @@ void main() async {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
   };
-  FirebaseAuth.instance.authStateChanges().listen(
-    (user) {
-      //if (user == null || !user.emailVerified) {
-      if (user == null) {
-        initialRoute = Pages.signIn;
-      } else {
-        initialRoute = Pages.loading_data;
-      }
-    },
-  );
+  // FirebaseAuth.instance.authStateChanges().listen(
+  //   (user) async{
+  //     if (user == null) {
+  //       await RevenueCatService.logoutUser();
+  //       initialRoute = Pages.signIn;
+  //     } else {
+  //       await RevenueCatService.updateUser(user.uid);
+  //       initialRoute = Pages.loading_data;
+  //     }
+  //   },
+  // );
   runApp(MyApp());
 }
 
@@ -73,7 +74,6 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  final purchaseManager = PurchaseManager();
   String? _languageCode;
   ThemeMode _themeMode = ThemeMode.system;
 
@@ -87,8 +87,26 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    purchaseManager.init();
     _loadTheme();
+
+    FirebaseAuth.instance.authStateChanges().listen((user) async {
+      print("authStateChanges: ${user?.uid}");
+      if (user == null) {
+        try{
+          await RevenueCatService.logoutUser();
+        }catch(e){
+
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _router.navigatorKey.currentState?.pushReplacementNamed(Pages.signIn);
+        });
+      } else {
+        await RevenueCatService.updateUser(user.uid);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _router.navigatorKey.currentState?.pushReplacementNamed(Pages.loading_data);
+        });
+      }
+    });
   }
 
   Future<void> _loadTheme() async {
@@ -149,21 +167,18 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final TextTheme customTextTheme = TextTheme(
-
-      titleMedium: ThemeData.light().textTheme.titleMedium?.copyWith(
-        fontWeight: FontWeight.w700,
-      ),
-      //bodyMedium:
-    );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
+        scaffoldBackgroundColor: Color.fromARGB(255, 230, 230, 236),
+        cardTheme: CardTheme(
+          color: Colors.white,
+        ),
         colorScheme: ColorScheme.fromSeed(
           brightness: Brightness.light,
-          seedColor: Colors.blue.shade700,
-          primary: Colors.blue.shade700,
-          onPrimary: Colors.white,
+          seedColor: Colors.blue,
+          //primary: Colors.blue.shade700,
+          //onPrimary: Colors.white,
           //brightness: Brightness.light
         ),
         //textTheme: customTextTheme
@@ -173,16 +188,18 @@ class MyAppState extends State<MyApp> {
             seedColor: Colors.blue,
             //primary: Colors.blue.shade700,
             //onPrimary: Colors.white,
-            brightness: Brightness.dark),
+            brightness: Brightness.dark
+        ),
           //textTheme: customTextTheme
       ),
       themeMode: _themeMode,
       onGenerateRoute: _router.getRoute,
+      navigatorKey: _router.navigatorKey,
       navigatorObservers: [_router.routeObserver],
       locale: locale(_languageCode!),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      initialRoute: initialRoute,
+      initialRoute: Pages.splash,
     );
   }
 }

@@ -175,4 +175,20 @@ class AppSettingsImpl implements AppSettings {
   void setOutgoingDocumentColor(Color color) {
     storage.writeInt(_outgoingDocumentColorKey, color.value);
   }
+
+
+  @override
+  int? getSavePaymentLastSelectedWalletId() {
+    var result = storage.readInt("SavePaymentLastSelectedWalletId", -1);
+    if (result == -1){
+      return null;
+    }
+    return result;
+  }
+  @override
+  void setSavePaymentLastSelectedWalletId(int? walletId) {
+    if (walletId != null){
+      storage.writeInt("SavePaymentLastSelectedWalletId", walletId);
+    }
+  }
 }

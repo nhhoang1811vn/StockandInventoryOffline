@@ -113,8 +113,8 @@ class MainPageState extends State<MainPage> {
                       label: AppLocalizations.of(context)!.more_title),
                 ],
                 currentIndex: _selectedIndex,
-                selectedItemColor: Colors.blue,
-                unselectedItemColor: Colors.grey,
+                //selectedItemColor: Colors.blue,
+                //unselectedItemColor: Colors.grey,
                 //showUnselectedLabels: true,
                 onTap: (index){
                   _onItemTappedWithContext(index, mContext);

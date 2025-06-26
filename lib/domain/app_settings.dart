@@ -42,4 +42,7 @@ abstract class AppSettings{
 
   Color getOutgoingDocumentColor();
   void setOutgoingDocumentColor(Color color);
+
+  void setSavePaymentLastSelectedWalletId(int? walletId);
+  int? getSavePaymentLastSelectedWalletId();
 }

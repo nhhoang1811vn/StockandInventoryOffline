@@ -10,6 +10,7 @@ import 'package:good_manager/presentation/pages/customers/widgets/customer_item_
 import 'package:good_manager/presentation/pages/customers/widgets/sort_customer_dialog.dart';
 import 'package:good_manager/presentation/widgets/search_bar_widget.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
+import 'package:good_manager/presentation/widgets/views.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -17,6 +18,7 @@ import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'bloc/bloc.dart';
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 
 class CustomersPage extends StatefulWidget {
   final bool isSelection;
@@ -78,9 +80,10 @@ class CustomersPageState extends State<CustomersPage> {
                   ),
                   TextButton(
                     child: Text(AppLocalizations.of(context)!.action_yes),
-                    onPressed: () {
+                    onPressed: () async{
                       Navigator.of(context).pop();
-                      Navigator.of(context).pushNamed(Pages.subscriptions);
+                      await RevenueCatUI.presentPaywall();
+                      //Navigator.of(context).pushNamed(Pages.subscriptions);
                     },
                   ),
                 ],
@@ -202,13 +205,7 @@ class CustomersPageState extends State<CustomersPage> {
 
   Widget _buildListView(CustomersState data) {
     return ListView.separated(
-        separatorBuilder: (context, index) => Divider(
-          height: 1,
-          thickness: 1,
-          color: Colors.grey[200],
-          indent: 68,     // Adds 40 pixels of left padding
-          endIndent: 0,   // Keeps the right edge flush (can adjust if needed)
-        ),
+        separatorBuilder: (context, index) => buildDivider(),
         itemBuilder: (BuildContext context, index) {
           Customer item = data.items[index];
           return CustomerItemRow(item, (item) {

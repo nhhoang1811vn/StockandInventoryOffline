@@ -3,6 +3,7 @@ import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/payment/components/text_selection.dart';
 import 'package:good_manager/presentation/widgets/outline_button.dart';
+
 import '../../../widgets/primary_button.dart';
 
 

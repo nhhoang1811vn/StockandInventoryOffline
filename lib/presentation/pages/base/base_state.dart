@@ -5,6 +5,7 @@ import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
+import 'package:good_manager/domain/entities/wallet.dart';
 
 import '../../../domain/entities/good.dart';
 import '../../../domain/entities/supplier.dart';
@@ -62,7 +63,11 @@ class OpenSaveCustomerPageState extends BaseState{
   late Customer item;
   OpenSaveCustomerPageState(this.item);
 }
-
+//wallet
+class OpenSaveWalletPageState extends BaseState{
+  late Wallet item;
+  OpenSaveWalletPageState(this.item);
+}
 //Expenses
 class OpenSaveExpensePageState extends BaseState{
   late Expense item;

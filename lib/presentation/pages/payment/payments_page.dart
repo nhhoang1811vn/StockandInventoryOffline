@@ -11,7 +11,6 @@ import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 import '../../markdown/md_provider_factory.dart';
-import '../../models/list_item.dart';
 import '../../widgets/date_item_row.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
@@ -150,13 +149,13 @@ class PaymentsPageState extends State<PaymentsPage>
                     tabs: [
                       Tab(
                           text: AppLocalizations.of(context)!
-                              .document_list_tab_all),
+                              .document_list_tab_all.toUpperCase()),
                       Tab(
                           text: AppLocalizations.of(context)!
-                              .title_inbound_payment),
+                              .title_inbound_payment.toUpperCase()),
                       Tab(
                           text: AppLocalizations.of(context)!
-                              .title_outbound_payment),
+                              .title_outbound_payment.toUpperCase()),
                     ],
                   )
                 ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:good_manager/common/helpers/injection.container.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/goods_setting.dart';
@@ -11,8 +12,11 @@ import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/list_settings_dialog.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/sort_goods_dialog.dart';
+import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
+import 'package:good_manager/presentation/pages/save_group/save_group_view.dart';
 import 'package:good_manager/presentation/style_size.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
+import 'package:good_manager/presentation/widgets/views.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
@@ -155,13 +159,7 @@ class GoodsPageState extends State<GoodsPage> {
 
   Widget _buildListView(GoodsState state) {
     return ListView.separated(
-        separatorBuilder: (context, index) => Divider(
-          height: 1,
-          thickness: 1,
-          color: Colors.grey[200],
-          indent: 80,     // Adds 40 pixels of left padding
-          endIndent: 0,   // Keeps the right edge flush (can adjust if needed)
-        ),
+        separatorBuilder: (context, index) => buildDivider(indent: 80),
         itemBuilder: (BuildContext context, index) {
           if (index < state.groups.length) {
             var group = state.groups[index];
@@ -412,7 +410,11 @@ class GoodsPageState extends State<GoodsPage> {
         },
         barrierDismissible: true);
   }
-
+  // void showSaveGroupBottomSheet(Group item){
+  //   showModalBottomSheet(context: context, isScrollControlled: true ,builder: (BuildContext mContext){
+  //     return SafeArea(child: BlocProvider(create: (_) => getIt<SaveGroupCubit>(),child: SaveGroupPage(item: item)));
+  //   });
+  // }
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<GoodsCubit, GoodsState>(
@@ -436,16 +438,15 @@ class GoodsPageState extends State<GoodsPage> {
             await Navigator.of(context).pushNamed(Pages.save_good,
                 arguments: {"item": currentState.item});
             context.read<GoodsCubit>().loadData();
-            //context.read<GoodsCubit>().loadItems();
           } else if (state.state is AddGroupState) {
-            final currentState = state.state as AddGroupState;
+             final currentState = state.state as AddGroupState;
             final result = await Navigator.of(context).pushNamed(
                 Pages.save_group,
                 arguments: {"item": currentState.item});
             if (result != null) {
               context.read<GoodsCubit>().loadData();
-              //context.read<GoodsCubit>().loadItems();
             }
+            //showSaveGroupBottomSheet(currentState.item);
           } else if (state.state is InsertTransactionSuccessState) {
             final currentState = state.state as InsertTransactionSuccessState;
             ScaffoldMessenger.of(context).showSnackBar(
@@ -516,7 +517,7 @@ class GoodsPageState extends State<GoodsPage> {
               FloatingActionButton.extended(
                 icon:  Icon(UIConstants.goodIconData, size: 24, color: Theme.of(context).colorScheme.primary),
                 label: Text(AppLocalizations.of(context)!.action_add_good),
-                heroTag: null,
+                heroTag: 'add_good_tab',
                 onPressed: () {
                   final state = _key.currentState;
                   if (state != null) {

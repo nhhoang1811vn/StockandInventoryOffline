@@ -81,8 +81,8 @@ class UIConstants {
   static IconData customerIconData = FontAwesomeIcons.userGroup;
   static IconData expenseIconData = FontAwesomeIcons.handHoldingDollar;
   static IconData reportIconData = FontAwesomeIcons.chartSimple;
-  static IconData storeIconData = FontAwesomeIcons.shop;
-  static IconData settingIconData = FontAwesomeIcons.gear;
+  static IconData storeIconData = Icons.store;
+  static IconData settingIconData = Icons.settings;
   static IconData paymentIconData = FontAwesomeIcons.moneyBill;
   static IconData walletIconData = FontAwesomeIcons.wallet;
 
@@ -96,7 +96,7 @@ class UIConstants {
   //static String appIconPath = "images/good.png";
   static String searchBarcodeIconPath = "assets/images/search_barcode.png";
   //dimension
-  static const double drawerMenuSize = 20.0;
+  //static const double drawerMenuSize = 20.0;
   // static const TextStyle fieldHintStyle =
   //     TextStyle(fontWeight: FontWeight.w300, color: Colors.black);
   // static const double progressBarOpacity = 0.6;

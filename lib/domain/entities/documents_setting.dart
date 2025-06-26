@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/entities/sort_by_number.dart';
 
 part 'documents_setting.freezed.dart';
 part 'documents_setting.g.dart';

@@ -33,7 +33,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save_goods_title => 'Save Good';
 
   @override
-  String get documents_title => 'Document';
+  String get documents_title => 'Documents';
 
   @override
   String get save_expense_title => 'Save Expense';
@@ -528,6 +528,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get whats_new_title => 'What\'s New';
 
   @override
+  String get terms_of_use_title => 'Terms of Use';
+
+  @override
+  String get privacy_policy_title => 'Privacy Policy';
+
+  @override
   String get your_subscriptions_title => 'Your subscriptions';
 
   @override
@@ -939,7 +945,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_object_type => 'Select object types';
 
   @override
-  String get pro_benefits_description => 'All premium features of the app (Unlimited customers, suppliers, stores)';
+  String get pro_benefits_description => 'All premium features of the app (Unlimited stores, customers, suppliers, wallets)';
 
   @override
   String get pro_lifetime_benefits_description => 'With one-time purchase you will be able to use all advanced features forever';

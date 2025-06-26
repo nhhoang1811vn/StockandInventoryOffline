@@ -329,6 +329,13 @@ class DBHelper {
     int? count = Sqflite.firstIntValue(result);
     return count == null ? 0 : count;
   }
+  Future<int> getCountWallet(int storeId) async {
+    var dbClient = await db;
+    var result = await dbClient.rawQuery("SELECT COUNT(*) FROM $WALLET_TABLE_NAME WHERE storeId = ?", [storeId]);
+
+    int? count = Sqflite.firstIntValue(result);
+    return count == null ? 0 : count;
+  }
 
   Future<int> getCountDocumentByCustomerId(int customerId) async {
     var dbClient = await db;

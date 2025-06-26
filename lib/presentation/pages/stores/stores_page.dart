@@ -16,6 +16,7 @@ import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'components/store_item_row.dart';
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 
 class StoresPage extends StatefulWidget {
   final bool isSelection;
@@ -77,9 +78,10 @@ class StoresPageState extends State<StoresPage> {
                   ),
                   TextButton(
                     child: Text(AppLocalizations.of(context)!.action_yes),
-                    onPressed: () {
+                    onPressed: () async{
                       Navigator.of(context).pop();
-                      Navigator.of(context).pushNamed(Pages.subscriptions);
+                      await RevenueCatUI.presentPaywall();
+                      //Navigator.of(context).pushNamed(Pages.subscriptions);
                     },
                   ),
                 ],

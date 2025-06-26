@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
+import 'package:good_manager/presentation/widgets/views.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -51,18 +52,14 @@ class SettingsDataPageState extends State<SettingsDataPage> {
               subtitle: Text(AppLocalizations.of(context)!.menu_back_up_desc),
               onTap: () => onBackUpPressed(context),
             ),
-            Divider(
-              height: 1,
-            ),
+            buildDivider(),
             ListTile(
               leading: Icon(Icons.restore),
               title: Text(AppLocalizations.of(context)!.menu_restore),
               subtitle: Text(AppLocalizations.of(context)!.menu_restore_desc),
               onTap: () => onRestorePressed(context),
             ),
-            Divider(
-              height: 1,
-            ),
+            buildDivider(),
             //Divider(color: Colors.grey[500]),
             ListTile(
               leading: Icon(Icons.cloud),
@@ -73,9 +70,7 @@ class SettingsDataPageState extends State<SettingsDataPage> {
                   : Text(cloudFileUpdatedTime),
               onTap: () => onCloudPressed(context),
             ),
-            Divider(
-              height: 1,
-            ),
+            buildDivider(),
             ListTile(
               leading: Icon(Icons.sync),
               title: Text("Quick Sync"),

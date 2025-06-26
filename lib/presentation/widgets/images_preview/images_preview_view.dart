@@ -6,6 +6,7 @@ import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/widgets/images_preview/images_preview_state.dart';
 
 import '../../pages/pages.dart';
+import '../circle_button_widget.dart';
 import 'images_preview_cubit.dart';
 
 class ImagesPreviewView extends StatefulWidget {
@@ -80,74 +81,27 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
   }
 
   Widget _buildAddPhotoButton() {
-    return MaterialButton(
-        minWidth: 24,
-        onPressed: cubit.onAddPhotoPressed,
-        color: Colors.blue,
-        textColor: Colors.white,
-        child: Icon(
-          Icons.add_photo_alternate,
-          size: 24,
-        ),
-        padding: EdgeInsets.all(8),
-        shape: CircleBorder());
+    return CircleButton(Icons.add_photo_alternate, cubit.onAddPhotoPressed);
   }
 
   Widget _buildTakePhotoButton() {
-    return MaterialButton(
-        minWidth: 24,
-        onPressed: cubit.onTakePhotoPressed,
-        color: Colors.blue,
-        textColor: Colors.white,
-        child: Icon(
-          Icons.add_a_photo,
-          size: 24,
-        ),
-        padding: EdgeInsets.all(8),
-        shape: CircleBorder());
+    return CircleButton(Icons.add_a_photo, cubit.onTakePhotoPressed);
   }
 
-  Widget get previousButton => MaterialButton(
-      minWidth: 24,
-      onPressed: cubit.onPrevButtonPressed,
-      color: Colors.blue,
-      textColor: Colors.white,
-      child: Icon(
-        Icons.navigate_before,
-        size: 24,
-      ),
-      padding: EdgeInsets.all(8),
-      shape: CircleBorder());
+  Widget get previousButton => CircleButton(Icons.navigate_before, cubit.onPrevButtonPressed);
 
-  Widget get nextButton => MaterialButton(
-      minWidth: 24,
-      onPressed: cubit.onNextButtonPressed,
-      color: Colors.blue,
-      textColor: Colors.white,
-      child: Icon(
-        Icons.navigate_next,
-        size: 24,
-      ),
-      padding: EdgeInsets.all(8),
-      shape: CircleBorder());
+  Widget get nextButton => CircleButton(Icons.navigate_next, cubit.onNextButtonPressed);
 
-  Widget get deleteButton => MaterialButton(
-      minWidth: 24,
-      onPressed: cubit.onDeleteButtonClicked,
-      color: Colors.blue,
-      textColor: Colors.white,
-      child: Icon(
-        Icons.clear,
-        size: 24,
-      ),
-      padding: EdgeInsets.all(8),
-      shape: CircleBorder());
+  Widget get deleteButton => CircleButton(Icons.clear, cubit.onDeleteButtonClicked);
 
   Widget buildEmptyView() => Container(
         width: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [_buildAddPhotoButton(), _buildTakePhotoButton()],
+          children: [
+            _buildAddPhotoButton(),
+            _buildTakePhotoButton()
+          ],
         ),
       );
 
@@ -174,12 +128,6 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
       ],
     ));
   }
-
-  /*Widget createPage(String path) {
-    return Container(
-        alignment: Alignment.center,
-        decoration: new BoxDecoration(image: DecorationImage(image: FileImage(File(path)), fit: BoxFit.contain)));
-  }*/
   Widget createPage(Uint8List bytes){
     return Image.memory(bytes);
   }

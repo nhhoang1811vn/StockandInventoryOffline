@@ -25,10 +25,12 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
+
 import '../../../domain/entities/supplier.dart';
 import '../../style_size.dart';
 import '../../widgets/search_bar_widget.dart';
 import '../../widgets/snackbar_widgets.dart';
+import '../../widgets/views.dart';
 import '../app_text_field.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
@@ -733,13 +735,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
               (item) => onLongPressedTransaction(context, transaction),
         );
       },
-      separatorBuilder: (context, index) => Divider(
-        height: 1,
-        thickness: 1,
-        indent: 80,
-        endIndent: 0,
-        color: Colors.grey.shade300,
-      ),
+      separatorBuilder: (context, index) => buildDivider(indent: 80),
     );
   }
 

@@ -6,15 +6,12 @@ import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/good_history.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
-import 'package:good_manager/domain/usecases/goods/goods_history_usecases.dart';
 import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
-import 'package:good_manager/extension/date_time_apis.dart';
 import 'package:good_manager/presentation/models/list_item.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../domain/entities/document.dart';
-import '../../../../domain/repositories/document_transaction_repositories.dart';
 
 part 'documents_history_cubit.freezed.dart';
 part 'documents_history_state.dart';

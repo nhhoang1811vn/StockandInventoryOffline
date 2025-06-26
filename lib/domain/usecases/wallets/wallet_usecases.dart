@@ -4,6 +4,5 @@ import '../../entities/wallet.dart';
 
 abstract class WalletUseCases extends ItemsUseCase<Wallet>{
   Future<List<Wallet>> getAllByStoreId(int storeId);
-  //Future<double> getSum(int storeId);
-  //Future<List<Expense>> getExpensesInRange(DateTime start, DateTime end);
+  Future<int> getCount(int storeId);
 }

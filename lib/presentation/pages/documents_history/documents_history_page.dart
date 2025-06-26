@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
@@ -8,8 +6,6 @@ import 'package:good_manager/presentation/models/list_item.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/documents/components/document_item_row.dart';
 import 'package:good_manager/presentation/pages/documents_history/bloc/documents_history_cubit.dart';
-import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.dart';
-import 'package:good_manager/presentation/pages/history/widget/item_history_row.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/payment/components/payment_item_row.dart';
 import 'package:good_manager/presentation/utils.dart';

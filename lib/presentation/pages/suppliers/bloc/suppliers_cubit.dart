@@ -11,7 +11,7 @@ import '../../../../domain/entities/sort_by_text.dart';
 import '../../../../domain/entities/suppliers_setting.dart';
 import '../../../../domain/free_limits.dart';
 import '../../../../domain/usecases/suppliers/suppliers_usecases.dart';
-import '../../../../purchase_manager.dart';
+import '../../../../revenuecat_purchase_manager.dart';
 import '../../base/base_sort_items.dart';
 
 part 'suppliers_cubit.freezed.dart';
@@ -27,7 +27,7 @@ class SuppliersCubit extends Cubit<SuppliersState> {
     required this.storage,
     required this.useCase}) : super(SuppliersState.initial(state: InitialState(), settings: appSettings.getSuppliersSetting()));
 
-  final purchaseManager = PurchaseManager();
+  //final purchaseManager = PurchaseManager();
   void initState(bool isSelection){
     emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection));
     loadItems();
@@ -93,7 +93,8 @@ class SuppliersCubit extends Cubit<SuppliersState> {
   Future<bool> isValidToAddMoreSupplier() async{
     var storeId = storage.getSelectedStoreId();
     int count = await useCase.getCount(storeId);
-    return count < FreeLimits.supplierLimit || purchaseManager.isPro;
+    bool isPro = await RevenueCatService.isPro();
+    return count < FreeLimits.supplierLimit || isPro;
   }
 
   void onAddItem(Supplier item){

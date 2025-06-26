@@ -40,4 +40,8 @@ class WalletRepositoryImpl implements WalletRepository {
     item.updatedDate = DateTime.now();
     return db.updateWallet(item);
   }
+  @override
+  Future<int> getCount(int storeId) {
+    return db.getCountWallet(storeId);
+  }
 }

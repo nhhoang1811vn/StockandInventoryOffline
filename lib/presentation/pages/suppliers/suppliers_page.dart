@@ -12,12 +12,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../domain/free_limits.dart';
 import '../../widgets/search_bar_widget.dart';
+import '../../widgets/views.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'bloc/bloc.dart';
 import 'widgets/sort_supplier_dialog.dart';
-
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 class SuppliersPage extends StatefulWidget {
   final bool isSelection;
 
@@ -76,9 +77,10 @@ class SuppliersPageState extends State<SuppliersPage> {
                       ),
                       TextButton(
                         child: Text(AppLocalizations.of(context)!.action_yes),
-                        onPressed: () {
+                        onPressed: () async{
                           Navigator.of(context).pop();
-                          Navigator.of(context).pushNamed(Pages.subscriptions);
+                          await RevenueCatUI.presentPaywall();
+                          //Navigator.of(context).pushNamed(Pages.subscriptions);
                         },
                       ),
                     ],
@@ -164,14 +166,7 @@ class SuppliersPageState extends State<SuppliersPage> {
 
   Widget _buildListView(SuppliersState data) {
     return ListView.separated(
-        separatorBuilder: (context, index) => Divider(
-              height: 1,
-              thickness: 1,
-              color: Colors.grey[200],
-              indent: 68,
-              // Adds 40 pixels of left padding
-              endIndent: 0, // Keeps the right edge flush (can adjust if needed)
-            ),
+        separatorBuilder: (context, index) => buildDivider(),
         itemBuilder: (BuildContext context, index) {
           Supplier item = data.items[index];
           return SupplierItemRow(item, (item) {

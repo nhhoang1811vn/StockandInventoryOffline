@@ -62,9 +62,9 @@ import 'package:good_manager/presentation/pages/settings/settings_page.dart';
 import 'package:good_manager/presentation/pages/settings/view/bloc/settings_view_cubit.dart';
 import 'package:good_manager/presentation/pages/settings/view/settings_view_page.dart';
 import 'package:good_manager/presentation/pages/signup/signup_page.dart';
+import 'package:good_manager/presentation/pages/splash_page.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
 import 'package:good_manager/presentation/pages/stores/stores_page.dart';
-import 'package:good_manager/presentation/pages/subscription/subscription_page.dart';
 import 'package:good_manager/presentation/pages/suppliers/bloc/bloc.dart';
 import 'package:good_manager/presentation/pages/suppliers/suppliers_page.dart';
 import 'package:good_manager/presentation/pages/take_picture_screen.dart';
@@ -73,11 +73,15 @@ import '../main.dart';
 
 class AppRouter {
   final RouteObserver<PageRoute> routeObserver;
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   AppRouter() : routeObserver = RouteObserver<PageRoute>();
 
   Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
+      case Pages.splash:
+        return MaterialPageRoute(
+            builder: (_) => SplashScreen());
       case Pages.store_list:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
@@ -241,8 +245,8 @@ class AppRouter {
                 ));
       case Pages.settings:
         return _buildRoute(settings, SettingsPage());
-      case Pages.subscriptions:
-        return _buildRoute(settings, SubscriptionPage());
+      // case Pages.subscriptions:
+      //   return _buildRoute(settings, SubscriptionPage());
       case Pages.settings_view:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(

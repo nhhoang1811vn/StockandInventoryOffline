@@ -11,6 +11,7 @@ import 'package:good_manager/presentation/pages/login/components/background.dart
 import 'package:good_manager/presentation/pages/login/components/do_not_have_account.dart';
 import 'package:good_manager/presentation/pages/login/components/sign_in_with_google_text.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
+import 'package:good_manager/revenuecat_purchase_manager.dart';
 
 import '../../widgets/progress_indicaror.dart';
 import 'auth_cubit.dart';
@@ -66,7 +67,6 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         }
         else if (state is UserSignIn) {
-          Navigator.of(context).popAndPushNamed(Pages.loading_data);
         } else if (state is UserNotVerified) {
           Navigator.of(context).pop();
           String title = AppLocalizations.of(context)!.email_not_verified_title;

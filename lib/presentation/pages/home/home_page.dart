@@ -7,9 +7,13 @@ import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/logo_app_bar.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
+import 'package:sprintf/sprintf.dart';
 
 import '../../../domain/entities/document.dart';
+import '../../../domain/free_limits.dart';
+import '../base/base_state.dart';
 import '../pages.dart';
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 
 class HomePage extends StatefulWidget {
   final VoidCallback onOpenGoodsPage;
@@ -38,7 +42,37 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
-        listener: (context, state) async {},
+        listener: (context, state) async {
+          if (state.state is OpenSaveWalletPageState){
+            final currentState = state.state as OpenSaveWalletPageState;
+            Navigator.of(context).pushNamed(Pages.save_wallet,
+                arguments: {'item': currentState.item}).then((value) => context.read<HomeCubit>().initState());
+
+          }else if (state.state is OpenBuySubscriptionDialogState){
+            showDialog(context: context, builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(AppLocalizations.of(context)!.notification_dialog_title),
+                content: Text(sprintf(AppLocalizations.of(context)!.buy_subscription_to_add_more_entity, [FreeLimits.walletLimit])),
+                actions: [
+                  TextButton(
+                    child: Text(AppLocalizations.of(context)!.action_no),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Dismiss the dialog
+                    },
+                  ),
+                  TextButton(
+                    child: Text(AppLocalizations.of(context)!.action_yes),
+                    onPressed: () async{
+                      Navigator.of(context).pop();
+                      await RevenueCatUI.presentPaywall();
+                      //Navigator.of(context).pushNamed(Pages.subscriptions);
+                    },
+                  ),
+                ],
+              );
+            });
+          }
+        },
         builder: (context, state) => Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: LogoAppBar(),
@@ -384,12 +418,7 @@ class HomePageState extends State<HomePage> {
                 )),
                 OutlinedButton(
                   onPressed: () {
-                    int storeId = context.read<HomeCubit>().getSelectedStoreId();
-                    Wallet item = Wallet();
-                    item.color = Colors.blue.toARGB32();
-                    item.storeId = storeId;
-                    Navigator.of(context).pushNamed(Pages.save_wallet,
-                        arguments: {'item': item}).then((value) => context.read<HomeCubit>().initState());
+                    context.read<HomeCubit>().onAddWalletClicked();
                   },
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Colors.grey, width: 1),

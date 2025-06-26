@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -215,11 +216,8 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       await GoogleSignIn().signOut();
-      final GoogleSignInAccount? googleUser = await GoogleSignIn(
-          //clientId: googleClientId
-      ).signIn();
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
-        //emit(AuthError('Google Sign In Failed'));
         emit(AuthStopped());
         return;
       }

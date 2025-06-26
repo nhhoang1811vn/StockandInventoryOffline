@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-//import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 
+import '../../widgets/views.dart';
 import '../pages.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -24,7 +24,7 @@ class SettingsPageState extends State<SettingsPage> {
       );
   }
 
-
+  
   Widget _buildBody() {
     return ListView(
       padding: EdgeInsets.all(16),
@@ -43,9 +43,7 @@ class SettingsPageState extends State<SettingsPage> {
                 },
                 trailing: Icon(Icons.navigate_next),
               ),
-              Divider(
-                height: 1,
-              ),
+              buildDivider(),
               ListTile(
                 leading: Icon(Icons.visibility),
                 title: Text(
@@ -55,9 +53,7 @@ class SettingsPageState extends State<SettingsPage> {
                 },
                 trailing: Icon(Icons.navigate_next),
               ),
-              Divider(
-                height: 1,
-              ),
+              buildDivider(),
               ListTile(
                 leading: Icon(UIConstants.barcodeIconData),
                 title: Text(AppLocalizations.of(context)!
@@ -65,9 +61,7 @@ class SettingsPageState extends State<SettingsPage> {
                 onTap: () => onBarcodeScannerPressed(context),
                 trailing: Icon(Icons.navigate_next),
               ),
-              Divider(
-                height: 1,
-              ),
+              buildDivider(),
               ListTile(
                 leading: Icon(Icons.warning),
                 title: Text(AppLocalizations.of(context)!
@@ -77,9 +71,7 @@ class SettingsPageState extends State<SettingsPage> {
                 },
                 trailing: Icon(Icons.navigate_next),
               ),
-              Divider(
-                height: 1,
-              ),
+              buildDivider(),
               ListTile(
                 leading: Icon(Icons.business),
                 title: Text(AppLocalizations.of(context)!
@@ -89,9 +81,7 @@ class SettingsPageState extends State<SettingsPage> {
                   Navigator.of(context).pushNamed(Pages.settings_my_company);
                 },
               ),
-              Divider(
-                height: 1,
-              ),
+              buildDivider(),
               ListTile(
                 leading: Icon(Icons.backup),
                 title: Text(AppLocalizations.of(context)!

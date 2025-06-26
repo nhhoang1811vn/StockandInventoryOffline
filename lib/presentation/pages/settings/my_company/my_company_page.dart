@@ -110,7 +110,7 @@ class MyCompanyPageState extends State<MyCompanyPage> {
                 ]))),
         Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.all(16),
           color: Theme.of(context).colorScheme.surface,
           child: PrimaryButton(AppLocalizations.of(context)!.action_save, () {
             context.read<MyCompanyCubit>().onSaveButtonClicked();

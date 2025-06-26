@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/app_settings.dart';
@@ -10,14 +11,15 @@ import 'package:injectable/injectable.dart';
 import '../../../../data/storage.dart';
 import '../../../../domain/entities/document.dart';
 import '../../../../domain/entities/good.dart';
+import '../../../../domain/free_limits.dart';
 import '../../../../domain/usecases/customers/customers_usecases.dart';
 import '../../../../domain/usecases/documents/document_usecases.dart';
 import '../../../../domain/usecases/goods/goods_usercases.dart';
 import '../../../../domain/usecases/suppliers/suppliers_usecases.dart';
+import '../../../../revenuecat_purchase_manager.dart';
 import '../../base/base_state.dart';
 
 part 'home_cubit.freezed.dart';
-
 part 'home_state.dart';
 
 @injectable
@@ -87,6 +89,26 @@ class HomeCubit extends Cubit<HomeState> {
   getSelectedStoreId() {
     return storage.getSelectedStoreId();
   }
+  Future<bool> isValidToAddMoreWallet() async{
+    var storeId = storage.getSelectedStoreId();
+    int count = await walletUseCases.getCount(storeId);
+    bool isPro = await RevenueCatService.isPro();
+    return count < FreeLimits.walletLimit || isPro;
+  }
+  void onAddWalletClicked() async{
+    bool isValid = await isValidToAddMoreWallet();
+    if (isValid){
+      int storeId = storage.getSelectedStoreId();
+      Wallet item = Wallet();
+      item.color = Colors.blue.toARGB32();
+      item.storeId = storeId;
+
+      emit(state.copyWith(state: OpenSaveWalletPageState(item)));
+    }else{
+      emit(state.copyWith(state: OpenBuySubscriptionDialogState()));
+    }
+  }
+  //void on
 
   String getAutoDocumentNo() {
     return storage.getAutoDocumentNo(getSelectedStoreId()).toString();

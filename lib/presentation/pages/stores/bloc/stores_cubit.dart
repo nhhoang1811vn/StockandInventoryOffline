@@ -3,13 +3,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/store.dart';
 import 'package:good_manager/domain/usecases/stores/stores_usecases.dart';
+import 'package:good_manager/revenuecat_purchase_manager.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../data/storage.dart';
 import '../../../../domain/entities/sort_by_text.dart';
 import '../../../../domain/entities/stores_setting.dart';
 import '../../../../domain/free_limits.dart';
-import '../../../../purchase_manager.dart';
 import '../../base/base_sort_items.dart';
 import '../../base/base_state.dart';
 
@@ -26,7 +26,7 @@ class StoresCubit extends Cubit<StoresState> {
     required this.appSettings,
     required this.useCase}) : super(StoresState.initial(state: InitialState(), settings: appSettings.getStoresSetting()));
 
-  final purchaseManager = PurchaseManager();
+  //final purchaseManager = PurchaseManager();
   void initState(bool isSelection){
     emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection));
     loadItems();
@@ -67,9 +67,9 @@ class StoresCubit extends Cubit<StoresState> {
     }
   }
   Future<bool> isValidToAddMoreStore() async{
-
     int count = await useCase.getCount();
-    return count < FreeLimits.storeLimit || purchaseManager.isPro;
+    bool isPro = await RevenueCatService.isPro();
+    return count < FreeLimits.storeLimit || isPro;
   }
 
   void onAddItem(Store item){

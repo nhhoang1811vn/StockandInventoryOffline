@@ -206,7 +206,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
           String fileName = '${getExportFileName(context, state)}.csv';
           saveAndExportCSV(context, state, fileName);
         },
-        icon: FaIcon(FontAwesomeIcons.fileCsv));
+        icon: Icon(FontAwesomeIcons.fileCsv));
   }
 
   Future<void> saveAndExportCSV(

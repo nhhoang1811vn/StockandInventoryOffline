@@ -10,7 +10,6 @@ import 'package:good_manager/domain/usecases/payment_category/payment_category_u
 import 'package:good_manager/presentation/criteria/and_criteria.dart';
 import 'package:good_manager/presentation/criteria/criteria.dart';
 import 'package:good_manager/presentation/criteria/or_criteria.dart';
-import 'package:good_manager/presentation/models/list_item.dart';
 import 'package:good_manager/presentation/pages/payment/criteria/by_category_criteria.dart';
 import 'package:good_manager/presentation/pages/payment/criteria/by_customer_criteria.dart';
 import 'package:good_manager/presentation/pages/payment/criteria/by_supplier_criteria.dart';
@@ -57,12 +56,14 @@ class PaymentsCubit extends Cubit<PaymentsState> {
     Payment item = Payment();
     item.type = PaymentType.inbound;
     item.storeId = storage.getSelectedStoreId();
+    item.walletId = appSettings.getSavePaymentLastSelectedWalletId();
     emit(state.copyWith(state: OpenSavePaymentPageState(item)));
   }
   void onAddOutboundPayment() {
     Payment item = Payment();
     item.type = PaymentType.outbound;
     item.storeId = storage.getSelectedStoreId();
+    item.walletId = appSettings.getSavePaymentLastSelectedWalletId();
     emit(state.copyWith(state: OpenSavePaymentPageState(item)));
   }
   void onPaymentPressed(Payment item) {

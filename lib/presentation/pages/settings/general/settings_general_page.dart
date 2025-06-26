@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screen_lock/flutter_screen_lock.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/settings/general/bloc/settings_general_cubit.dart';
-
 import '../../../../main.dart';
+import '../../../widgets/views.dart';
 
 class SettingsGeneralPage extends StatefulWidget {
   SettingsGeneralPage({Key? key}) : super(key: key);
@@ -43,7 +42,7 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
           child: Column(children: [
 
             ListTile(
-              leading: Icon(FontAwesomeIcons.language),
+              leading: Icon(Icons.language_outlined),
               title: Text(
                   AppLocalizations.of(context)!.menu_item_language_title),
               subtitle:
@@ -52,11 +51,9 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
                 _showLanguageDialog(context);
               },
             ),
-            Divider(
-              height: 1,
-            ),
+            buildDivider(),
             ListTile(
-              leading: Icon(FontAwesomeIcons.lock),
+              leading: Icon(Icons.lock_outline),
               title: Text(
                   AppLocalizations.of(context)!.menu_item_passcode_title),
               subtitle:
@@ -70,11 +67,9 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
                 _handlePasscodeToggle(context, !state.enablePasscode, state.passcode);
               },
             ),
-            Divider(
-              height: 1,
-            ),
+            buildDivider(),
             ListTile(
-              leading: Icon(FontAwesomeIcons.refresh),
+              leading: Icon(Icons.refresh_outlined),
               title: Text(
                   AppLocalizations.of(context)!.menu_item_reset_numeration_documents_title),
               onTap: (){

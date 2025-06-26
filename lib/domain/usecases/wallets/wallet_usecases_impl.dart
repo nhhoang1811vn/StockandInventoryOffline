@@ -40,5 +40,9 @@ class WalletUseCasesImpl implements WalletUseCases{
     // TODO: implement get
     throw UnimplementedError();
   }
+  @override
+  Future<int> getCount(int storeId) {
+    return repository.getCount(storeId);
+  }
 
 }
