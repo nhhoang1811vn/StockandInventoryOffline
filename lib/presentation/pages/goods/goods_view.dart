@@ -6,10 +6,13 @@ import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/goods_setting.dart';
 import 'package:good_manager/domain/entities/group.dart';
+import 'package:good_manager/domain/entities/sort_by_number.dart';
+import 'package:good_manager/domain/entities/sort_by_text.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
+import 'package:good_manager/presentation/pages/goods/components/filter_good_widget.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/list_settings_dialog.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/sort_goods_dialog.dart';
 import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
@@ -197,67 +200,70 @@ class GoodsPageState extends State<GoodsPage> {
                 : Theme.of(context).iconTheme.color));
   }
 
-  Widget _buildSortMenu(GoodsState state) {
-    return IconButton(
-        onPressed: () {
-          context.read<GoodsCubit>().onSortMenuClicked();
-        },
-        icon: Icon(Icons.sort,
-            color: context.read<GoodsCubit>().hasSortOptions()
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).iconTheme.color));
-  }
-
-  // Widget _buildSearchBar(BuildContext context, GoodsState state) {
-  //   return Visibility(
-  //       child: Padding(
-  //         padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-  //         child: Container(
-  //             decoration: BoxDecoration(
-  //             color: Colors.white,
-  //             borderRadius: BorderRadius.circular(8), // Rounded corners
-  //           ),
-  //           child: ListTile(
-  //                   leading: Icon(Icons.search),
-  //                   title: TextField(
-  //
-  //                     controller: searchTextController,
-  //                     decoration: InputDecoration(
-  //                         hintText: AppLocalizations.of(context)!.hint_search_by,
-  //                         border: InputBorder.none
-  //                         ),
-  //                     onChanged: context.read<GoodsCubit>().onSearchTextChanged,
-  //
-  //                   ),
-  //                   trailing: Row(
-  //                     mainAxisSize: MainAxisSize.min,
-  //                     children: [
-  //                       Visibility(
-  //                         child: IconButton(
-  //                           icon: Icon(UIConstants.cancelIconData),
-  //                           onPressed: () {
-  //                             searchTextController.text = "";
-  //                             context.read<GoodsCubit>().onSearchTextChanged("");
-  //                           },
-  //                         ),
-  //                         visible: state.textSearch.isNotEmpty,
-  //                       ),
-  //                       IconButton(
-  //                         //icon: Icon(Icons.barcode_reader),
-  //                         icon: Image.asset(
-  //                           UIConstants.searchBarcodeIconPath,
-  //                           width: 24,
-  //                         ),
-  //                         onPressed:
-  //                             context.read<GoodsCubit>().onSearchBarcodeClicked,
-  //                       )
-  //                     ],
-  //                   ),
-  //           ),
-  //         ),
-  //       ),
-  //       visible: state.showSearchBar);
+  // Widget _buildSortMenu(GoodsState state) {
+  //   return IconButton(
+  //       onPressed: () {
+  //         context.read<GoodsCubit>().onSortMenuClicked();
+  //       },
+  //       icon: Icon(Icons.sort,
+  //           color: context.read<GoodsCubit>().hasSortOptions()
+  //               ? Theme.of(context).colorScheme.primary
+  //               : Theme.of(context).iconTheme.color));
   // }
+  Widget _buildFilterMenu(GoodsState state) {
+    bool showWarning = (
+        state.settings.sortByName != SortByText.no_sort
+            || state.settings.sortByBarcode != SortByNumber.no_sort
+            || state.settings.sortByQuantity != SortByNumber.no_sort
+    );
+    return Stack(
+      children: [
+        IconButton(
+            onPressed: () {
+              showFilterBottomSheet(state);
+            },
+            icon: Icon(Icons.filter_alt)),
+        if (showWarning)
+          Positioned(
+            right: 4,
+            top: 4,
+            child: Icon(
+              Icons.error,
+              color: Colors.red,
+              size: 16,
+            ),
+          )
+      ],
+    );
+  }
+  void showFilterBottomSheet(GoodsState state){
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        builder: (BuildContext mContext) {
+          return DraggableScrollableSheet(
+              expand: false,
+              builder: (mContext, scrollController) {
+                return SingleChildScrollView(
+                    controller: scrollController,
+                    padding: EdgeInsets.all(16),
+                    child: FilterGoodWidget(
+                      onResetAllPressed: () {
+                        context.read<GoodsCubit>().resetAllFilter();
+                        Navigator.of(context).pop();
+                      },
+                      onApplyPressed: (setting) {
+                        context.read<GoodsCubit>().applyFilter(setting);
+                        Navigator.of(context).pop();
+                      },
+                      setting: state.settings,
+                    ));
+              });
+        });
+  }
 
   Widget _buildLoading() {
     return const Center(
@@ -478,7 +484,8 @@ class GoodsPageState extends State<GoodsPage> {
                     : AppLocalizations.of(context)!.goods_title),
                 actions: [
                   _buildSearchMenu(state),
-                  _buildSortMenu(state),
+                  _buildFilterMenu(state),
+                  //_buildSortMenu(state),
                   PopupMenuButton<OverflowMenuItem>(
                       onSelected: (OverflowMenuItem item) {
                         if (item == OverflowMenuItem.listSettings){

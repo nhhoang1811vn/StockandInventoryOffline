@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/domain/entities/customer.dart';
-import 'package:good_manager/domain/entities/customers_setting.dart';
+import 'package:good_manager/domain/entities/sort_by_text.dart';
 import 'package:good_manager/domain/free_limits.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
-import 'package:good_manager/presentation/pages/customers/widgets/customer_item_row.dart';
-import 'package:good_manager/presentation/pages/customers/widgets/sort_customer_dialog.dart';
+import 'package:good_manager/presentation/pages/customers/components/customer_item_row.dart';
 import 'package:good_manager/presentation/widgets/search_bar_widget.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:good_manager/presentation/widgets/views.dart';
@@ -19,6 +18,8 @@ import '../help_content.dart';
 import '../pages.dart';
 import 'bloc/bloc.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
+
+import 'components/filter_customer_widget.dart';
 
 class CustomersPage extends StatefulWidget {
   final bool isSelection;
@@ -44,15 +45,7 @@ class CustomersPageState extends State<CustomersPage> {
     return BlocConsumer<CustomersCubit, CustomersState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async {
-          if (state.state is OpenSortDialogListState) {
-            CustomersSetting? settings = await showDialog(
-                context: context,
-                builder: (_) => SortCustomerDialog(state.settings),
-                barrierDismissible: true);
-            if (settings != null) {
-              context.read<CustomersCubit>().setSettings(settings);
-            }
-          } else if (state.state is OpenSaveCustomerPageState) {
+          if (state.state is OpenSaveCustomerPageState) {
             final currentState = state.state as OpenSaveCustomerPageState;
             final result = await Navigator.of(context).pushNamed(
                 Pages.save_customer,
@@ -101,7 +94,7 @@ class CustomersPageState extends State<CustomersPage> {
             )));
   }
 
-  PreferredSize _buildAppBar(CustomersState data) {
+  PreferredSize _buildAppBar(CustomersState state) {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
@@ -109,8 +102,8 @@ class CustomersPageState extends State<CustomersPage> {
               ? AppLocalizations.of(context)!.customers_select_title
               : AppLocalizations.of(context)!.customers_title),
           actions: [
-            _buildSearchMenu(data),
-            _buildSortMenu(),
+            _buildSearchMenu(state),
+            _buildFilterMenu(state),
             _buildHelpMenu()
           ]),
     );
@@ -300,16 +293,55 @@ class CustomersPageState extends State<CustomersPage> {
                 ? Theme.of(context).colorScheme.primary
                 : Theme.of(context).iconTheme.color));
   }
-
-  Widget _buildSortMenu() {
-    return IconButton(
-        onPressed: () {
-          context.read<CustomersCubit>().onSortMenuClicked();
-        },
-        icon: Icon(Icons.sort,
-            color: context.read<CustomersCubit>().hasSortOptions()
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).iconTheme.color));
+  Widget _buildFilterMenu(CustomersState state) {
+    bool showWarning = state.settings.sortByName != SortByText.no_sort;
+    return Stack(
+      children: [
+        IconButton(
+            onPressed: () {
+              showFilterBottomSheet(state);
+            },
+            icon: Icon(Icons.filter_alt)),
+        if (showWarning)
+          Positioned(
+            right: 4,
+            top: 4,
+            child: Icon(
+              Icons.error,
+              color: Colors.red,
+              size: 16,
+            ),
+          )
+      ],
+    );
+  }
+  void showFilterBottomSheet(CustomersState state) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        builder: (BuildContext mContext) {
+          return DraggableScrollableSheet(
+              expand: false,
+              builder: (mContext, scrollController) {
+                return SingleChildScrollView(
+                    controller: scrollController,
+                    padding: EdgeInsets.all(16),
+                    child: FilterCustomerWidget(
+                      onResetAllPressed: () {
+                        context.read<CustomersCubit>().resetAllFilter();
+                        Navigator.of(context).pop();
+                      },
+                      onApplyPressed: (setting) {
+                        context.read<CustomersCubit>().applyFilter(setting);
+                        Navigator.of(context).pop();
+                      },
+                      setting: state.settings,
+                    ));
+              });
+        });
   }
 
   Widget _buildHelpMenu() {

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/domain/entities/supplier.dart';
-import 'package:good_manager/domain/entities/suppliers_setting.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
-import 'package:good_manager/presentation/pages/suppliers/widgets/supplier_item_row.dart';
+import 'package:good_manager/presentation/pages/suppliers/components/supplier_item_row.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../domain/entities/sort_by_text.dart';
 import '../../../domain/free_limits.dart';
 import '../../widgets/search_bar_widget.dart';
 import '../../widgets/views.dart';
@@ -17,7 +17,7 @@ import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'bloc/bloc.dart';
-import 'widgets/sort_supplier_dialog.dart';
+import 'components/filter_supplier_widget.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 class SuppliersPage extends StatefulWidget {
   final bool isSelection;
@@ -42,13 +42,7 @@ class SuppliersPageState extends State<SuppliersPage> {
     return BlocConsumer<SuppliersCubit, SuppliersState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async {
-          if (state.state is OpenSortDialogListState) {
-            SuppliersSetting? settings = await showDialog(
-                context: context, builder: (_) => SortSupplierDialog(state.settings), barrierDismissible: true);
-            if (settings != null) {
-              context.read<SuppliersCubit>().setSettings(settings);
-            }
-          } else if (state.state is OpenSaveSupplierPageState) {
+          if (state.state is OpenSaveSupplierPageState) {
             final currentState = state.state as OpenSaveSupplierPageState;
             final result =
                 await Navigator.of(context).pushNamed(Pages.save_supplier, arguments: {"item": currentState.item});
@@ -99,14 +93,14 @@ class SuppliersPageState extends State<SuppliersPage> {
             )));
   }
 
-  PreferredSize _buildAppBar(SuppliersState data) {
+  PreferredSize _buildAppBar(SuppliersState state) {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
           title: new Text(widget.isSelection
               ? AppLocalizations.of(context)!.suppliers_select_title
               : AppLocalizations.of(context)!.suppliers_title),
-          actions: [_buildSearchMenu(data), _buildSortMenu(), _buildHelpMenu()]),
+          actions: [_buildSearchMenu(state), _buildFilterMenu(state), _buildHelpMenu()]),
     );
   }
 
@@ -261,15 +255,55 @@ class SuppliersPageState extends State<SuppliersPage> {
             color: state.showSearchBar ? Theme.of(context).colorScheme.primary : Theme.of(context).iconTheme.color));
   }
 
-  Widget _buildSortMenu() {
-    return IconButton(
-        onPressed: () {
-          context.read<SuppliersCubit>().onSortMenuClicked();
-        },
-        icon: Icon(Icons.sort,
-            color: context.read<SuppliersCubit>().hasSortOptions()
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).iconTheme.color));
+  Widget _buildFilterMenu(SuppliersState state) {
+    bool showWarning = state.settings.sortByName != SortByText.no_sort;
+    return Stack(
+      children: [
+        IconButton(
+            onPressed: () {
+              showFilterBottomSheet(state);
+            },
+            icon: Icon(Icons.filter_alt)),
+        if (showWarning)
+          Positioned(
+            right: 4,
+            top: 4,
+            child: Icon(
+              Icons.error,
+              color: Colors.red,
+              size: 16,
+            ),
+          )
+      ],
+    );
+  }
+  void showFilterBottomSheet(SuppliersState state) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        builder: (BuildContext mContext) {
+          return DraggableScrollableSheet(
+              expand: false,
+              builder: (mContext, scrollController) {
+                return SingleChildScrollView(
+                    controller: scrollController,
+                    padding: EdgeInsets.all(16),
+                    child: FilterSupplierWidget(
+                      onResetAllPressed: () {
+                        context.read<SuppliersCubit>().resetAllFilter();
+                        Navigator.of(context).pop();
+                      },
+                      onApplyPressed: (setting) {
+                        context.read<SuppliersCubit>().applyFilter(setting);
+                        Navigator.of(context).pop();
+                      },
+                      setting: state.settings,
+                    ));
+              });
+        });
   }
 
   Widget _buildHelpMenu() {

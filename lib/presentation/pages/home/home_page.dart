@@ -202,7 +202,8 @@ class HomePageState extends State<HomePage> {
                                     width: 6,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: state.incomingColor, // Change color as need,
+                                        color: state.incomingColor,
+                                        borderRadius: BorderRadius.all(Radius.circular(8))
                                       ),
                                     ),
                                   ),
@@ -236,6 +237,7 @@ class HomePageState extends State<HomePage> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                         color: state.outgoingColor,
+                                          borderRadius: BorderRadius.all(Radius.circular(8))
                                       ),
                                     ),
                                   ),

@@ -2128,6 +2128,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Without the subscription you can add only %s entities. Upgrade to the premium version and unlock unlimited access!'**
   String get buy_subscription_to_add_more_entity;
+
+  /// No description provided for @sort_by_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by date'**
+  String get sort_by_date;
+
+  /// No description provided for @newest_to_oldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest first'**
+  String get newest_to_oldest;
+
+  /// No description provided for @oldest_to_newest.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest first'**
+  String get oldest_to_newest;
+
+  /// No description provided for @sort_by_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by name'**
+  String get sort_by_name;
+
+  /// No description provided for @sort_by_barcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by barcode'**
+  String get sort_by_barcode;
+
+  /// No description provided for @sort_by_quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by quantity'**
+  String get sort_by_quantity;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -7,6 +7,7 @@ part 'payments_setting.g.dart';
 class PaymentsSetting with _$PaymentsSetting {
   factory PaymentsSetting(
       {
+        required bool sortByDateNewestFirst,
         required Set<int?> selectedCategoryIds,
         required Set<int> selectedWalletIds,
         required Set<int> selectedCustomerIds,
@@ -19,6 +20,7 @@ class PaymentsSetting with _$PaymentsSetting {
       _$PaymentsSettingFromJson(json);
 
   factory PaymentsSetting.getDefault() => PaymentsSetting(
+      sortByDateNewestFirst: true,
       selectedCategoryIds: {},
       selectedWalletIds : {},
       selectedCustomerIds: {},

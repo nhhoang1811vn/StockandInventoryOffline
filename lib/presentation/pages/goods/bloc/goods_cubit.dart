@@ -114,21 +114,10 @@ class GoodsCubit extends Cubit<GoodsState> {
   void onListSettingsMenuClicked(){
     emit(state.copyWith(state: OpenListSettingsDialogState()));
   }
-  // String getSearchTextHint(BuildContext context) {
-  //   return state.settings.searchGoodsType.getText(context);
-  // }
-  //void onSearchBarcodeClicked(){
-  //  emit(state.copyWith(state: OpenBarcodeScannerToSearchState()));
-  //}
   
   void onSearchTextChanged(String newValue) {
     emit(state.copyWith(textSearch: newValue));
     refresh();
-  }
-  bool hasSortOptions() {
-    return (state.settings.sortByName != SortByText.no_sort
-          || state.settings.sortByBarcode != SortByNumber.no_sort
-        ||state.settings.sortByQuantity != SortByNumber.no_sort);
   }
 
   void setSettings(GoodsSetting settings) {
@@ -589,4 +578,14 @@ class GoodsCubit extends Cubit<GoodsState> {
     refresh();
     //filter();
   }
+
+  void resetAllFilter() {
+    applyFilter(GoodsSetting.getDefault());
+  }
+  void applyFilter(GoodsSetting setting){
+    emit(state.copyWith(settings: setting));
+    appSettings.setGoodsSetting(setting);
+    refresh();
+  }
+
 }

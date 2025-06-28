@@ -1024,4 +1024,22 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get buy_subscription_to_add_more_entity => 'Without the subscription you can add only %s entities. Upgrade to the premium version and unlock unlimited access!';
+
+  @override
+  String get sort_by_date => 'Sắp xếp theo ngày';
+
+  @override
+  String get newest_to_oldest => 'Mới nhất trướct';
+
+  @override
+  String get oldest_to_newest => 'Cũ nhất trước';
+
+  @override
+  String get sort_by_name => 'Sắp xếp theo tên';
+
+  @override
+  String get sort_by_barcode => 'Sắp xếp theo mã vạch';
+
+  @override
+  String get sort_by_quantity => 'Sắp xếp theo số lượng';
 }

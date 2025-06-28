@@ -15,6 +15,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../data/storage.dart';
 import '../../../criteria/and_criteria.dart';
 import '../../../criteria/criteria.dart';
+import '../../../criteria/or_criteria.dart';
 import '../../base/base_state.dart';
 import '../criteria/by_type_criteria.dart';
 
@@ -111,9 +112,14 @@ class DocumentsCubit extends Cubit<DocumentsState> {
   }
   void update(){
     List<Criteria<Document>> commonCriteria = [];
-    if (state.setting!.isPaid != null){
-      commonCriteria.add(ByStatusCriteria(state.setting!.isPaid!));
+    if (state.setting!.selectedStatus.isNotEmpty){
+      List<Criteria<Document>> statusCriteria = [];
+      state.setting!.selectedStatus.forEach((status) {
+        statusCriteria.add(ByStatusCriteria(status));;
+      });
+      commonCriteria.add(OrCriteria(statusCriteria));
     }
+
     if (state.textSearch.isNotEmpty){
       commonCriteria.add(BySearchTextCriteria(state.textSearch));
     }

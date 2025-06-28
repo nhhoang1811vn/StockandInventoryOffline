@@ -9,13 +9,13 @@ import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/my_company.dart';
-import 'package:good_manager/domain/entities/save_document_setting.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
+import 'package:good_manager/presentation/pages/save_document/components/filter_transaction_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
@@ -36,7 +36,6 @@ import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'components/document_transaction_item_row.dart';
-import 'components/sort_save_document_dialog.dart';
 
 enum OverflowItemMenu { search, sort_by, export_csv, export_pdf, help }
 
@@ -129,15 +128,17 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
               "title": AppLocalizations.of(context)?.documents_title,
               "content": MDProviderFactory.get().getHelpText(HelpType.DOCUMENTS)
             });
-          } else if (state.state is OpenSortDialogListState) {
-            SaveDocumentSetting? setting = await showDialog(
-                context: context,
-                builder: (_) => SortSaveDocumentDialog(state.setting),
-                barrierDismissible: true);
-            if (setting != null) {
-              context.read<SaveDocumentCubit>().setSettings(setting);
-            }
-          } else if (state.state is OpenSaveGoodPageWithBarcodeState) {
+          }
+          // else if (state.state is OpenSortDialogListState) {
+          //   SaveDocumentSetting? setting = await showDialog(
+          //       context: context,
+          //       builder: (_) => SortSaveDocumentDialog(state.setting),
+          //       barrierDismissible: true);
+          //   if (setting != null) {
+          //     context.read<SaveDocumentCubit>().setSettings(setting);
+          //   }
+          // }
+          else if (state.state is OpenSaveGoodPageWithBarcodeState) {
             final finalState = state.state as OpenSaveGoodPageWithBarcodeState;
             final barcode = finalState.barcode;
             final good = Good();
@@ -427,7 +428,8 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
         //search
         break;
       case OverflowItemMenu.sort_by:
-        context.read<SaveDocumentCubit>().onSortByMenuClicked();
+        showFilterBottomSheet(state);
+        //context.read<SaveDocumentCubit>().onSortByMenuClicked();
         //sort by
         break;
       case OverflowItemMenu.export_csv:
@@ -441,6 +443,34 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
         break;
       //help
     }
+  }
+  void showFilterBottomSheet(SaveDocumentState state){
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        builder: (BuildContext mContext) {
+          return DraggableScrollableSheet(
+              expand: false,
+              builder: (mContext, scrollController) {
+                return SingleChildScrollView(
+                    controller: scrollController,
+                    padding: EdgeInsets.all(16),
+                    child: FilterTransactionWidget(
+                      onResetAllPressed: () {
+                        context.read<SaveDocumentCubit>().resetAllFilter();
+                        Navigator.of(context).pop();
+                      },
+                      onApplyPressed: (setting) {
+                        context.read<SaveDocumentCubit>().applyFilter(setting);
+                        Navigator.of(context).pop();
+                      },
+                      setting: state.setting,
+                    ));
+              });
+        });
   }
 
   void onExportCSV(SaveDocumentState state) async {

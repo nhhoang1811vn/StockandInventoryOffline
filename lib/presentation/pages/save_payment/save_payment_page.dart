@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:good_manager/domain/entities/customer.dart';
+import 'package:good_manager/domain/entities/document_paid_status.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/entities/payment_category.dart';
@@ -166,7 +167,11 @@ class SavePaymentPageState extends State<SavePaymentPage> {
           final result = await Navigator.of(context).pushNamed(Pages.document_list, arguments: {
             "documentType": documentType, 
             "isSelection" : true,
-            "setting": DocumentsSetting(isPaid: false)
+            "setting": DocumentsSetting(sortByDateNewestFirst: true, selectedStatus: {
+              DocumentPaidStatus.unpaid,
+              DocumentPaidStatus.partial,
+            })
+
           });
           if (result != null) {
             Document item = result as Document;

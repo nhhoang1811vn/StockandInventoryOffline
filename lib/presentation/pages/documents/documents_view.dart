@@ -279,7 +279,7 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
             });
       },
       itemComparator: (a, b) => b.date.compareTo(a.date),
-      order: StickyGroupedListOrder.DESC,
+      order: state.setting!.sortByDateNewestFirst ? StickyGroupedListOrder.DESC :StickyGroupedListOrder.ASC,
     );
   }
 
@@ -308,11 +308,7 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
   // }
 
   Widget _buildFilterMenu(DocumentsState state) {
-    bool showWarning = (state.setting!.isPaid != null
-        //    state.setting!.selectedWalletIds.isNotEmpty ||
-        //    state.setting!.selectedCustomerIds.isNotEmpty ||
-        //    state.setting!.selectedSupplierIds.isNotEmpty
-        );
+    bool showWarning = (state.setting!.selectedStatus.isNotEmpty || !state.setting!.sortByDateNewestFirst);
     return Stack(
       children: [
         IconButton(

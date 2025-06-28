@@ -381,7 +381,13 @@
                            "status_paid": "Đã thanh toán",
                            "status_unpaid": "Chưa thanh toán",
                            "action_yes": "Có",
-                               "action_no": "Không"
+                               "action_no": "Không",
+                                   "sort_by_date": "Sắp xếp theo ngày",
+                               "newest_to_oldest": "Mới nhất trướct",
+                                   "oldest_to_newest": "Cũ nhất trước",
+                                   "sort_by_name": "Sắp xếp theo tên",
+                                       "sort_by_barcode": "Sắp xếp theo mã vạch",
+                                       "sort_by_quantity": "Sắp xếp theo số lượng"
 
 
 }

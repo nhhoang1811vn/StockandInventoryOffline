@@ -41,17 +41,6 @@ void main() async {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
   };
-  // FirebaseAuth.instance.authStateChanges().listen(
-  //   (user) async{
-  //     if (user == null) {
-  //       await RevenueCatService.logoutUser();
-  //       initialRoute = Pages.signIn;
-  //     } else {
-  //       await RevenueCatService.updateUser(user.uid);
-  //       initialRoute = Pages.loading_data;
-  //     }
-  //   },
-  // );
   runApp(MyApp());
 }
 
@@ -184,6 +173,10 @@ class MyAppState extends State<MyApp> {
         //textTheme: customTextTheme
       ),
       darkTheme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color.fromARGB(255, 18, 18, 18), // or any dark background you prefer
+        cardTheme: const CardTheme(
+          color: Colors.black, // Black cards
+        ),
         colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.blue,
             //primary: Colors.blue.shade700,

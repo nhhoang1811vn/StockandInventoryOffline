@@ -143,4 +143,15 @@ class CustomersCubit extends Cubit<CustomersState> {
     await useCase.delete(id);
     loadItems();
   }
+
+  void resetAllFilter() {
+    applyFilter(CustomersSetting.getDefault());
+  }
+
+  void applyFilter(CustomersSetting setting) {
+    emit(state.copyWith(settings: setting));
+    appSettings.setCustomersSetting(setting);
+    sort();
+    filter();
+  }
 }

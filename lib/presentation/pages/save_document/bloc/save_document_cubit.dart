@@ -197,26 +197,12 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
         item.good.description.contains(state.textSearch) ||
         (item.good.barCode != null && item.good.barCode!.contains(state.textSearch));
   }
-
-  void onSortByMenuClicked() {
-    emit(state.copyWith(state: OpenSortDialogListState()));
-  }
-  void onExportMenuClicked() {
-    //emit(state.copyWith(state: OpenSortDialogListState()));
-  }
   void onBatchScanMenuClicked() {
     emit(state.copyWith(state: OpenBarcodeScannerPageState()));
   }
 
   void onHelpMenuClicked() {
     emit(state.copyWith(state: OpenHelpPageState()));
-  }
-
-  void setSettings(SaveDocumentSetting setting) {
-    appSettings.setSaveDocumentSetting(setting);
-    emit(state.copyWith(setting: setting));
-    sort();
-    filter();
   }
 
   void sort() {
@@ -317,5 +303,16 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   }
   MyCompany? getMyCompany(){
     return appSettings.getMyCompany();
+  }
+
+  void resetAllFilter() {
+    applyFilter(SaveDocumentSetting.getDefault());
+  }
+
+  void applyFilter(SaveDocumentSetting setting) {
+    emit(state.copyWith(setting: setting));
+    appSettings.setSaveDocumentSetting(setting);
+    sort();
+    filter();
   }
 }

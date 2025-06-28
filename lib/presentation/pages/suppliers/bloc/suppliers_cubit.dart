@@ -100,15 +100,6 @@ class SuppliersCubit extends Cubit<SuppliersState> {
   void onAddItem(Supplier item){
     emit(state.copyWith(state: OpenSaveSupplierPageState(item)));
   }
-
-  void setSettings(SuppliersSetting settings) {
-    appSettings.setSuppliersSetting(settings);
-    emit(state.copyWith(settings: settings));
-    sort();
-    filter();
-  }
-
-
   void loadItems() async{
     final storeId = storage.getSelectedStoreId();
     List<Supplier> allItems = await useCase.getAllByStoreId(storeId);
@@ -169,5 +160,16 @@ class SuppliersCubit extends Cubit<SuppliersState> {
   delete(int id) async{
     await useCase.delete(id);
     loadItems();
+  }
+
+  void resetAllFilter() {
+    applyFilter(SuppliersSetting.getDefault());
+  }
+
+  void applyFilter(SuppliersSetting setting) {
+    emit(state.copyWith(settings: setting));
+    appSettings.setSuppliersSetting(setting);
+    sort();
+    filter();
   }
 }

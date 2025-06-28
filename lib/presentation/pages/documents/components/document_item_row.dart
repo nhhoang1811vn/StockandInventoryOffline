@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/document_paid_status.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
@@ -26,6 +27,7 @@ class DocumentItemRow extends StatelessWidget {
     TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
     return Container(
       color: bgColor,
+      padding: EdgeInsets.all(16),
       child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () => onDocumentTapped(item),
@@ -35,18 +37,19 @@ class DocumentItemRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 8,
+                  width: 6,
                   child: Container(
                     decoration: BoxDecoration(
                       color: getIndicatorColor(item.type), // Change color as needed
-                      //borderRadius: BorderRadius.only(
-                        //topLeft: Radius.circular(8),
+                      borderRadius: BorderRadius.all(Radius.circular(8))
+                        //topLeft: R,
                         //bottomLeft: Radius.circular(8),
                       //),
                     ),
                   ),
                 ),
-                Expanded(child: Padding(padding: EdgeInsets.all(16), child: Row(children: [
+                SizedBox(width: 8,),
+                Expanded(child: Row(children: [
                   Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,13 +78,11 @@ class DocumentItemRow extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(Utils.getQuantityText(item.quantity), style:primaryTextStyle ),
-                      Text("${AppLocalizations.of(context)!.field_amount}: ${Config.currencyFormat.format(item.amount)}", style: secondaryTextStyle),
-                      Text("${AppLocalizations.of(context)!.field_paid}: ${Config.currencyFormat.format(item.paid)}", style: secondaryTextStyle),
-                      Text("${AppLocalizations.of(context)!.field_remaining}: ${Config.currencyFormat.format(item.amount - item.paid)}", style: secondaryTextStyle),
-                    ],
+                      Text(Utils.getQuantityText(item.quantity), style:primaryTextStyle),
+                      _buildStatusWidget(context, item),
+                      ],
                   )
-                ],),))
+                ],))
               ],
             ),
           )),
@@ -94,5 +95,38 @@ class DocumentItemRow extends StatelessWidget {
     default:
         return outgoingColor;
     }
+  }
+  Widget _buildStatusWidget(BuildContext context, Document item){
+    var bgColor;
+    var statusText = "";
+    var status = Utils.getStatus(item);
+    if (status == DocumentPaidStatus.paid) {
+      bgColor = Colors.green.shade700;
+      statusText = AppLocalizations.of(context)!.payment_status_paid;
+    } else if (status == DocumentPaidStatus.unpaid) {
+      bgColor = Colors.red.shade700;
+      statusText = AppLocalizations.of(context)!.payment_status_unpaid;
+    } else{
+      bgColor = Colors.orange.shade700;
+      statusText = AppLocalizations.of(context)!.payment_status_partial;
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Container(
+          padding: EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.all(Radius.circular(8))
+          ),
+          child: Text(statusText, style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700,color: Colors.white),),
+        ),
+        if (status == DocumentPaidStatus.partial)
+          Text("${Config.currencyFormat.format(item.paid)}/${Config.currencyFormat.format(item.amount)}")
+        else
+          Text("${Config.currencyFormat.format(item.amount)}")
+
+      ],
+    );
   }
 }

@@ -86,6 +86,7 @@ AppViet Team
  
   * First Release.
  """;
+
  static const String helpDocuments = """
   ## Document Management Guide  
 
@@ -191,8 +192,7 @@ You can organize and track items by **Stores** (e.g. Shops, Warehouses).
 ### 💡 Store Limits & Subscriptions  
 - The **free version** supports up to **2 Stores**.  
 - To unlock more, upgrade to:  
-  - **"Multiple Stores"** or  
-  - **"Complete Pro"**  
+  - **"Stock Premium"**  
 - Each subscription includes a **7-day free trial**.
 
 Managing stores separately helps you maintain accurate stock tracking across multiple locations. ✅  
@@ -219,36 +219,78 @@ Add their details manually or **import directly from your device's Contacts**.
 
 Keeping your supplier and customer information organized ensures smoother transactions and accurate reporting. ✅  
 """;
-
  static const String helpPayments = """
-  ## Payment Saving Guide  
+  ## Payment Management Guide  
 
-This page helps you accurately record your payments.  
+There are two types of payments:
 
-### 📂 Select a Payment Category  
-- Choose the appropriate category to easily track expenses or income.  
-- Examples: **Food, Transportation, Salaries, Sales Revenue**, etc.  
-- If no suitable category exists, you can create a new one.  
+### 💰 Inbound (Received)  
+- Record this when you **receive money** from a customer.  
+- Typically linked to a **sale** or **outgoing document**.  
+- Helps track **incoming cash flow**.
 
-### ✏️ Edit or Delete a Category  
-- **Long-press** on a category in the list to show the options to **edit** or **delete**.  
-- If a category is deleted, related payments will be assigned to a default category.  
+### 💸 Outbound (Paid)  
+- Record this when you **make a payment** to a supplier.  
+- Typically linked to a **purchase** or **incoming document**.  
+- Helps track **expenses and outgoing cash flow**.
 
-### 🧾 Select an Invoice  
-- You can **link a payment to an invoice** for better tracking.  
-- If the invoice is not in the list, check again or create a new one.  
-- The system will automatically assign the payment amount based on the selected invoice.  
+---
 
-### 💾 Save Payment  
-- Enter all required details: **Amount, Payment Date, Notes (if any)**.  
-- Double-check before clicking **Save** to avoid mistakes.  
+### ➕ Adding a Payment  
+- Go to the **Payments** section or use the shortcut from a document detail screen.  
+- Choose the **type** (Inbound or Outbound).  
+- Enter the **amount**, **date**, **payer/payee**, and optional **notes**.
+- You can link it to an existing **document** for better tracking.
 
-### 🗑️ Delete a Payment  
-- To delete a payment, **long-press** on the item in the list.  
+---
 
-Ensure accurate entries for better financial tracking! ✅  
+### 📄 Linked Documents  
+- Payments can be linked to **documents** to show what the payment is for.
+- If a payment covers part of a document's total, it will be marked as **Partial**.
+- Fully paid documents will be marked as **Paid**.
 
+---
+
+### 📝 Edit or Delete Payments  
+- **Long-press** a payment to edit or delete it.  
+- Be careful: deleting payments may affect document payment status.
+
+---
+
+### 📊 Filter and Sort  
+- Use the toolbar buttons at the top to **filter** or **sort** payments.
+
+Keep your payment records up to date to ensure accurate financial tracking! ✅  
 """;
+//  static const String helpSavePayment = """
+//   ## Payment Saving Guide
+//
+// This page helps you accurately record your payments.
+//
+// ### 📂 Select a Payment Category
+// - Choose the appropriate category to easily track expenses or income.
+// - Examples: **Food, Transportation, Salaries, Sales Revenue**, etc.
+// - If no suitable category exists, you can create a new one.
+//
+// ### ✏️ Edit or Delete a Category
+// - **Long-press** on a category in the list to show the options to **edit** or **delete**.
+// - If a category is deleted, related payments will be assigned to a default category.
+//
+// ### 🧾 Select an Invoice
+// - You can **link a payment to an invoice** for better tracking.
+// - If the invoice is not in the list, check again or create a new one.
+// - The system will automatically assign the payment amount based on the selected invoice.
+//
+// ### 💾 Save Payment
+// - Enter all required details: **Amount, Payment Date, Notes (if any)**.
+// - Double-check before clicking **Save** to avoid mistakes.
+//
+// ### 🗑️ Delete a Payment
+// - To delete a payment, **long-press** on the item in the list.
+//
+// Ensure accurate entries for better financial tracking! ✅
+//
+// """;
 
  static const String helpMinQuan = """
   ## Minimum Quantity Guide  

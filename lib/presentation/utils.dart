@@ -3,6 +3,8 @@ import 'package:audioplayers/audioplayers.dart';
 //import 'package:flutter_beep/flutter_beep.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
+import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/document_paid_status.dart';
 import 'package:good_manager/main.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:vibration/vibration.dart';
@@ -35,6 +37,17 @@ class DateTimeUtils{
   }
 }
 class Utils{
+  static DocumentPaidStatus getStatus(Document document){
+    var amount = document.amount;
+    var paid = document.paid;
+    if (amount == 0.0 || paid >= amount) {
+      return DocumentPaidStatus.paid;
+    } else if (paid == 0.0) {
+      return DocumentPaidStatus.unpaid;
+    } else {
+      return DocumentPaidStatus.partial;
+    }
+  }
   static String formatNumber(double value) {
     if (value >= 1e9) {
       // Billions (1e9 = 1,000,000,000)

@@ -173,7 +173,7 @@ class PaymentsPageState extends State<PaymentsPage>
                   visible: state.payments.isEmpty,
                 ),
                 Visibility(
-                  child: _buildStickyListView(state.payments),
+                  child: _buildStickyListView(state.payments, state),
                   visible: state.payments.isNotEmpty,
                 )
               ],
@@ -192,7 +192,7 @@ class PaymentsPageState extends State<PaymentsPage>
               visible: state.inboundPayments.isEmpty,
             ),
             Visibility(
-              child: _buildStickyListView(state.inboundPayments),
+              child: _buildStickyListView(state.inboundPayments, state),
               visible: state.inboundPayments.isNotEmpty,
             )
           ],
@@ -212,7 +212,7 @@ class PaymentsPageState extends State<PaymentsPage>
               visible: state.outboundPayments.isEmpty,
             ),
             Visibility(
-              child: _buildStickyListView(state.outboundPayments),
+              child: _buildStickyListView(state.outboundPayments, state),
               visible: state.outboundPayments.isNotEmpty,
             )
           ],
@@ -235,7 +235,7 @@ class PaymentsPageState extends State<PaymentsPage>
                 child: Text(AppLocalizations.of(context)!.empty_payment,
                     textAlign: TextAlign.center))
           ]);
-  Widget _buildStickyListView(List<Payment> payments) {
+  Widget _buildStickyListView(List<Payment> payments, PaymentsState state) {
     var flag = true;
     return StickyGroupedListView<Payment, DateTime>(
       elements: List.of(payments),
@@ -256,30 +256,9 @@ class PaymentsPageState extends State<PaymentsPage>
         );
       },
       itemComparator: (a, b) => b.date.compareTo(a.date),
-      order: StickyGroupedListOrder.DESC,
+      order: state.setting!.sortByDateNewestFirst ? StickyGroupedListOrder.DESC :StickyGroupedListOrder.ASC,
     );
   }
-  // Widget _buildListView(List<ListItem> items) {
-  //   var flag = true;
-  //   return ListView.builder(
-  //       itemBuilder: (BuildContext context, index) {
-  //         final item = items[index];
-  //         if (item is HeaderItem){
-  //           flag = true;
-  //           return DateItemRow(item.date);
-  //         }else if (item is PaymentListItem){
-  //           flag = !flag;
-  //           return PaymentItemRow(item.payment, flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context) , (item) {
-  //             onPressed(item);
-  //           }, (item) {
-  //             onLongPressed(item);
-  //           });
-  //         }else{
-  //           return SizedBox();
-  //         }
-  //       },
-  //       itemCount: items.length);
-  // }
 
   void onPressed(Payment item) async {
     context.read<PaymentsCubit>().onPaymentPressed(item);

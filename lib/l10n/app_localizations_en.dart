@@ -1024,4 +1024,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get buy_subscription_to_add_more_entity => 'Without the subscription you can add only %s entities. Upgrade to the premium version and unlock unlimited access!';
+
+  @override
+  String get sort_by_date => 'Sort by date';
+
+  @override
+  String get newest_to_oldest => 'Newest first';
+
+  @override
+  String get oldest_to_newest => 'Oldest first';
+
+  @override
+  String get sort_by_name => 'Sort by name';
+
+  @override
+  String get sort_by_barcode => 'Sort by barcode';
+
+  @override
+  String get sort_by_quantity => 'Sort by quantity';
 }

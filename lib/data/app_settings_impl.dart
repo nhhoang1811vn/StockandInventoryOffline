@@ -27,10 +27,10 @@ class AppSettingsImpl implements AppSettings {
   static const _suppliersSettingKey = "SuppliersSetting";
   static const _customersSettingKey = "CustomersSetting";
   static const _goodsSettingKey = "GoodsSetting";
-  static const _documentsSettingKey = "DocumentsSetting1";
+  static const _documentsSettingKey = "DocumentsSetting3";
   static const _storesSettingKey = "StoresSetting";
   static const String _saveDocumentSettingKey = "SaveDocumentSetting";
-  static const String _PaymentsSettingKey = "PaymentsSetting4";
+  static const String _PaymentsSettingKey = "PaymentsSetting5";
 
   static const String _incomingDocumentColorKey = "_incomingDocumentColorKey";
   static const String _outgoingDocumentColorKey = "_outgoingDocumentColorKey";

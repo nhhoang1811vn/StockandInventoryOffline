@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class AppTextSelection extends StatelessWidget {
+  final Widget? icon;
   final String item;
   final bool isSelected;
   final void Function() onPressed;
 
   AppTextSelection({
+    this.icon,
     required this.item,
     required this.isSelected,
     required this.onPressed});
@@ -15,42 +17,50 @@ class AppTextSelection extends StatelessWidget {
     final isDarkMode = Theme
         .of(context)
         .brightness == Brightness.dark;
+    var bgColor;
+    var textColor;
+    if (isSelected){
+      bgColor = Theme.of(context).colorScheme.primary;
+      textColor = Theme.of(context).colorScheme.onPrimary;
+    }else{
+      bgColor = isDarkMode
+          ? Colors.grey[800]
+          : Colors.grey[300];
 
-    final bgColor = isDarkMode
-        ? Colors.grey[800] // Darker background for dark mode
-        : Colors.grey[300];
+      textColor = isDarkMode
+          ? Colors.white
+          : Colors.black;
 
+    }
     return InkWell(
       onTap: () {
         onPressed();
       },
       borderRadius: BorderRadius.circular(16),
       child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          decoration: isSelected
-              ? BoxDecoration(
-            color: bgColor,
-                  border: Border.all(
-                    color: Colors.blue.shade700,
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                )
-              : BoxDecoration(
-            color: bgColor,
+          height: 40,
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-          ), // No decoration if not selected
-
-          child: Column(
+            color: bgColor,
+          ),
+          child: Row(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                if (icon != null)
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: icon!),
                 Text(
                   item,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textColor),
                   textAlign: TextAlign.center,
-                )
+                ),
+                if (isSelected)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Icon(Icons.check, color: textColor, size: 20,),
+                  )
               ])),
     );
   }

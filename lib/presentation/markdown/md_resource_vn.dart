@@ -137,41 +137,50 @@ Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Ho
  * Lần đầu tiên ra mắt chưa có gì để nói cả :), mọi người chọn nút trợ giúp ở từng màn hình để hiểu rõ nhé.
  """;
 
-  static const String helpPayments = """
-  ## Hướng dẫn Lưu Giao dịch
+ static const String helpPayments = """
+  ## Hướng Dẫn Quản Lý Thanh Toán  
 
-Trang này giúp bạn ghi lại các khoản giao dịch một cách chính xác.  
+Có hai loại thanh toán:
 
-### 🔹 Chọn loại Giao dịch
-Có hai loại:  
-- **Giao dịch chi** – Khi bạn **trả tiền** cho nhà cung cấp, nhân viên, hóa đơn, v.v.  
-- **Giao dịch thu** – Khi bạn **nhận tiền** từ khách hàng hoặc các nguồn khác.  
+### 💰 Thanh Toán Thu (Inbound)  
+- Tạo khi bạn **nhận tiền** từ khách hàng.  
+- Thường liên kết với **phiếu xuất kho**.  
+- Giúp theo dõi **dòng tiền vào**.
 
-### 📂 Chọn danh mục  
-- Chọn danh mục phù hợp để dễ dàng quản lý và theo dõi chi tiêu hoặc thu nhập.  
-- Ví dụ: **Ăn uống, Đi lại, Tiền lương, Thu nhập từ bán hàng**, v.v.  
-- Nếu không có danh mục phù hợp, bạn có thể tạo danh mục mới.  
+### 💸 Thanh Toán Chi (Outbound)  
+- Tạo khi bạn **trả tiền** cho nhà cung cấp.  
+- Thường liên kết với **phiếu nhập kho**.  
+- Giúp theo dõi **dòng tiền ra**.
 
-### ✏️ Sửa hoặc Xóa danh mục  
-- **Nhấn giữ** vào danh mục trong danh sách để hiển thị tùy chọn **sửa** hoặc **xóa**.  
-- Nếu xóa danh mục, các khoản GD liên quan sẽ được chuyển về danh mục mặc định.  
+---
 
-### 🧾 Chọn đối tượng thu/chi  
-- Bạn có thể **liên kết GD với một hóa đơn** để theo dõi chính xác.  
-- Bạn có thể **liên kết GD với một đối tượng**. 
-- Nếu hóa đơn chưa có trong danh sách, hãy kiểm tra lại hoặc tạo mới.  
-- Hệ thống sẽ tự động gán số tiền GD theo hóa đơn đã chọn.  
+### ➕ Thêm Thanh Toán  
+- Vào phần **Thanh Toán** hoặc sử dụng phím tắt từ màn hình chi tiết phiếu.  
+- Chọn **loại thanh toán** (Thu hoặc Chi).  
+- Nhập **số tiền**, **ngày**, **người trả/người nhận**, và ghi chú nếu có.  
+- Bạn có thể liên kết với **phiếu chứng từ** để dễ quản lý hơn.
 
-### 💾 Lưu GD  
-- Nhập đầy đủ thông tin: **Số tiền, Ngày GD, Ghi chú (nếu có)**.  
-- Kiểm tra lại trước khi bấm **Lưu** để tránh sai sót.  
+---
 
-### 🗑️ Xóa GD 
-- Nếu cần xóa một khoản GD, **nhấn giữ** vào mục trong danh sách để thực hiện.  
+### 📄 Liên Kết Với Phiếu  
+- Thanh toán có thể liên kết với **phiếu nhập/xuất** để hiển thị rõ mục đích.  
+- Nếu thanh toán chỉ một phần, phiếu sẽ được đánh dấu là **Thanh Toán Một Phần**.  
+- Khi đã thanh toán đủ, phiếu sẽ được đánh dấu là **Đã Thanh Toán**.
 
-Hãy đảm bảo nhập chính xác để theo dõi tài chính hiệu quả! ✅  
+---
 
-  """;
+### 📝 Sửa hoặc Xóa Thanh Toán  
+- **Nhấn giữ** vào một thanh toán để chỉnh sửa hoặc xóa.  
+- ⚠️ Lưu ý: Xóa thanh toán có thể ảnh hưởng đến trạng thái thanh toán của phiếu liên quan.
+
+---
+
+### 📊 Lọc và Theo Dõi  
+- Sử dụng bộ lọc phía trên để xem **chỉ thanh toán Thu, Chi**, hoặc các phiếu **Chưa thanh toán/Thanh toán một phần**.  
+- Theo dõi thường xuyên để đảm bảo quản lý tài chính chính xác.
+
+Giữ thông tin thanh toán rõ ràng để kiểm soát dòng tiền hiệu quả! ✅  
+""";
 
  static const String helpMinQuan = """
   ## Hướng Dẫn Sử Dụng Số Lượng Tối Thiểu  

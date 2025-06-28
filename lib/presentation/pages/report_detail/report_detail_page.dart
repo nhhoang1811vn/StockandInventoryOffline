@@ -364,6 +364,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
                 } else if (state.type == ReportType.INBOUND_PAYMENTS) {
                   PaymentsSetting setting = PaymentsSetting(
+                      sortByDateNewestFirst: true,
                       selectedCategoryIds: {id},
                       selectedWalletIds: {},
                       selectedCustomerIds: {},
@@ -375,6 +376,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
                 } else if (state.type == ReportType.OUTBOUND_PAYMENTS) {
                   PaymentsSetting setting = PaymentsSetting(
+                      sortByDateNewestFirst: true,
                       selectedCategoryIds: {id},
                       selectedWalletIds: {},
                       selectedCustomerIds: {},
@@ -386,6 +388,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
                 } else if (state.type == ReportType.LIST_OF_WALLETS) {
                   PaymentsSetting setting = PaymentsSetting(
+                      sortByDateNewestFirst: true,
                       selectedCategoryIds: {},
                       selectedWalletIds: {id!},
                       selectedCustomerIds: {},
@@ -403,6 +406,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
                 } else if (state.type == ReportType.LIST_OF_CUSTOMER_PAYMENTS && id != null){
                   PaymentsSetting setting = PaymentsSetting(
+                      sortByDateNewestFirst: true,
                       selectedCategoryIds: {},
                       selectedWalletIds: {},
                       selectedCustomerIds: {id},
@@ -414,6 +418,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   context.read<ReportDetailCubit>().refresh(AppLocalizations.of(context)!);
                 } else if (state.type == ReportType.LIST_OF_SUPPLIER_PAYMENTS && id != null){
                   PaymentsSetting setting = PaymentsSetting(
+                      sortByDateNewestFirst: true,
                       selectedCategoryIds: {},
                       selectedWalletIds: {},
                       selectedCustomerIds: {},
