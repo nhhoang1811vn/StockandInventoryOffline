@@ -78,6 +78,10 @@ class OpenSavePaymentPageState extends BaseState{
   late Payment item;
   OpenSavePaymentPageState(this.item);
 }
+class OpenPaymentHistoryPageState extends BaseState{
+  final int documentId;
+  OpenPaymentHistoryPageState(this.documentId);
+}
 class OpenDocumentListState extends BaseState{
   OpenDocumentListState();
 }

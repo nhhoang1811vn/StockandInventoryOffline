@@ -10,6 +10,7 @@ import 'package:good_manager/presentation/pages/customers/components/customer_it
 import 'package:good_manager/presentation/widgets/search_bar_widget.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:good_manager/presentation/widgets/views.dart';
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -17,8 +18,6 @@ import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'bloc/bloc.dart';
-import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
-
 import 'components/filter_customer_widget.dart';
 
 class CustomersPage extends StatefulWidget {
@@ -31,7 +30,6 @@ class CustomersPage extends StatefulWidget {
 }
 
 class CustomersPageState extends State<CustomersPage> {
-  //final TextEditingController searchTextController = TextEditingController();
   final FocusNode searchTextFocusNode = FocusNode();
 
   @override
@@ -152,35 +150,6 @@ class CustomersPageState extends State<CustomersPage> {
     ];
     return Column(children: children);
   }
-
-  /* Widget _buildSearchBar(CustomersState data) => Padding(
-    padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-    child: Container(
-      decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8), // Rounded corners
-            ),
-      child: ListTile(
-        title: TextField(
-          focusNode: searchTextFocusNode,
-          decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.hint_search_by, border: InputBorder.none),
-          onChanged:
-          controller: searchTextController,
-        ),
-        trailing: Visibility(
-          child: IconButton(
-            icon: Icon(UIConstants.cancelIconData),
-            onPressed: (){
-              searchTextController.text = "";
-              context.read<CustomersCubit>().resetSearchText();
-            }
-          ),
-          visible: data.textSearch.isNotEmpty,
-        ),
-      ),
-    ),
-  );*/
 
   Widget get emptyView => Column(
           mainAxisAlignment: MainAxisAlignment.center,

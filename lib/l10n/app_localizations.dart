@@ -2164,6 +2164,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sort by quantity'**
   String get sort_by_quantity;
+
+  /// No description provided for @action_create_payment.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a payment'**
+  String get action_create_payment;
+
+  /// No description provided for @action_view_payments.
+  ///
+  /// In en, this message translates to:
+  /// **'View linked payments'**
+  String get action_view_payments;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -11,7 +11,6 @@ import 'package:good_manager/presentation/pages/login/components/background.dart
 import 'package:good_manager/presentation/pages/login/components/do_not_have_account.dart';
 import 'package:good_manager/presentation/pages/login/components/sign_in_with_google_text.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
-import 'package:good_manager/revenuecat_purchase_manager.dart';
 
 import '../../widgets/progress_indicaror.dart';
 import 'auth_cubit.dart';

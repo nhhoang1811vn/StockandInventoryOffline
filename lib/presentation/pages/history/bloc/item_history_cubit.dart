@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/good_history.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
 import 'package:good_manager/domain/usecases/goods/goods_history_usecases.dart';
@@ -16,17 +19,25 @@ part 'item_history_state.dart';
 
 @injectable
 class ItemHistoryCubit extends Cubit<ItemHistoryState>{
+  final AppSettings appSettings;
   final GoodHistoryUseCases useCases;
   final DocumentUseCases documentUseCases;
   final DocumentTransactionRepository documentTransactionRepository;
   ItemHistoryCubit({
+    required this.appSettings,
     required this.useCases,
     required this.documentUseCases,
     required this.documentTransactionRepository
   }) : super(ItemHistoryState.initial(state: InitialState()));
 
   void initState(int goodId, DateTime? start, DateTime? end){
-    emit(state.copyWith(goodId: goodId, start: start, end: end));
+    emit(state.copyWith(
+        goodId: goodId,
+        start: start,
+        end: end,
+      incomingColor: appSettings.getIncomingDocumentColor(),
+      outgoingColor: appSettings.getOutgoingDocumentColor()
+    ));
     loadItems();
   }
   loadItems() async{

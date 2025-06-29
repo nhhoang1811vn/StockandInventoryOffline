@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/domain/entities/wallet.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
+import 'package:good_manager/presentation/pages/home/wallet_card.dart';
+import 'package:good_manager/presentation/pages/payment/components/payment_item_row.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/logo_app_bar.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../domain/entities/document.dart';
 import '../../../domain/free_limits.dart';
 import '../base/base_state.dart';
 import '../pages.dart';
-import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 
 class HomePage extends StatefulWidget {
   final VoidCallback onOpenGoodsPage;
@@ -83,6 +84,18 @@ class HomePageState extends State<HomePage> {
   double iconSize = 20;
 
   Widget _buildContent(HomeState state) {
+    final wallets = [
+      {'balance': '\$5,000', 'name': 'Main Wallet'},
+      {'balance': '\$1,250', 'name': 'Savings'},
+      {'balance': '\$300', 'name': 'Crypto'},
+    ];
+
+    final transactions = [
+      {'title': 'Sent to John', 'amount': '-\$50'},
+      {'title': 'Received Salary', 'amount': '+\$2,000'},
+      {'title': 'Paid Electric Bill', 'amount': '-\$100'},
+    ];
+
     List<Widget> children = [
       SelectedStoreView(),
       Padding(
@@ -129,12 +142,50 @@ class HomePageState extends State<HomePage> {
               //SizedBox(height: 16),
               //SaleReportWidget(),
               SizedBox(height: 16),
-              _walletsCard(state)
+              _walletsCard(state),
             ],
           )),
     ];
     return SingleChildScrollView(child: Column(children: children));
   }
+
+  Widget _buildCardStack() {
+    return SizedBox(
+      height: 250,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: List.generate(3, (index) {
+          return Positioned(
+            top: index * 50,
+            left: 0,
+            right: 0,
+            child: Card(
+              elevation: 8,
+              color: Colors.blue[(300 + index * 200)],
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Balance", style: TextStyle(color: Colors.white70)),
+                    const SizedBox(height: 10),
+                    Text("\$${1000 * (index + 1)}.00",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        )),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }).reversed.toList(),
+      ),
+    );
+  }
+
 
   Widget _buildGoods(HomeState state) {
     return Card(
@@ -390,6 +441,17 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget _walletsCard(HomeState state) {
+    final transactions = [
+      {'title': 'Sent to John', 'amount': '-\$50'},
+      {'title': 'Received Salary', 'amount': '+\$2,000'},
+      {'title': 'Paid Electric Bill', 'amount': '-\$100'},
+    ];
+    final double cardHeight = 160;
+    final double overlap = 50;
+    final int walletCount = state.wallets.length;
+    final double totalHeight = walletCount > 0
+        ? cardHeight + overlap * (walletCount - 1) + 20
+        : 0;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -442,83 +504,42 @@ class HomePageState extends State<HomePage> {
               ],
             ),
             SizedBox(height: 16),
-            GridView.builder(
-                itemCount: state.wallets.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Two columns
-                  mainAxisSpacing: 8,
-                  crossAxisSpacing: 8,
-                  childAspectRatio: 1.4, // Adjust height vs width
-                ),
-                itemBuilder: (context, index) {
-                  return _walletCard(state.wallets[index]);
-                })
-          ],
-        ),
-      ),
-    );
-  }
-  void _showWalletOptionsDialog(Wallet item) {
-    showDialog(
-        context: context,
-        builder: (BuildContext mContext) {
-          return SimpleDialog(
-            children: <Widget>[
-              SimpleDialogOption(
-                padding: EdgeInsets.all(16.0),
-                onPressed: (){
-                  Navigator.pop(context);
-                  context.read<HomeCubit>().deleteWallet(item);
-                  context.read<HomeCubit>().initState();
-                },
-                child: Text(AppLocalizations.of(context)!.action_delete),
-              ),
-            ],
-          );
-        },
-        barrierDismissible: true);
-  }
-  Widget _walletCard(Wallet item) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      color: Color(item.color),
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).pushNamed(Pages.save_wallet,
-              arguments: {'item': item}).then((value) => context.read<HomeCubit>().initState());
-        },
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      item.name,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+            Container(
+              height: totalHeight,
+              child: Stack(
+                children: List.generate(state.wallets.length, (index) {
+                  final wallet = state.wallets[index];
+                  return AnimatedPositioned(
+                    key: ValueKey(wallet.id),
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    left: 0,
+                    right: 0,
+                    top: overlap * (state.wallets.length - index - 1),
+                    child: GestureDetector(
+                      onTap: (){
+                          context.read<HomeCubit>().onWalletTapped(index);
+                      },
+                      child: WalletCard(wallet: wallet)
                     ),
-                  ),
-                  IconButton(onPressed: (){
-                    _showWalletOptionsDialog(item);
-                  }, icon:  Icon(
-                    Icons.more_horiz,
-                    color: Colors.white,
-                  ))
-                ],
+                  );
+                }),
               ),
-              //SizedBox(height: 8),
-              Text(Config.simpleCurrencyFormat.format(item.balance),
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white)),
-            ],
-          ),
+            ),
+            if (state.payments.isNotEmpty)
+              Column(children: [
+                const Divider(),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text("Recent Payments", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                ),
+                Column(children: state.payments.map((payment) {
+                  return PaymentItemRow(payment, ColorUtils.getItemBgColor1(context), (item){}, (item){});
+                }).toList())
+              ],)
+
+
+          ],
         ),
       ),
     );

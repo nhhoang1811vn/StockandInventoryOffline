@@ -76,12 +76,12 @@ class StoresCubit extends Cubit<StoresState> {
     emit(state.copyWith(state: OpenSaveStorePageState(item)));
   }
 
-  void setSettings(StoresSetting settings) {
-    appSettings.setStoresSetting(settings);
-    emit(state.copyWith(settings: settings));
-    sort();
-    filter();
-  }
+  // void setSettings(StoresSetting settings) {
+  //   appSettings.setStoresSetting(settings);
+  //   emit(state.copyWith(settings: settings));
+  //   sort();
+  //   filter();
+  // }
   void loadItems() async{
     List<Store> allItems = await useCase.getAll();
     emit(state.copyWith(allItems: allItems));
@@ -147,5 +147,15 @@ class StoresCubit extends Cubit<StoresState> {
     }else{
       loadItems();
     }
+  }
+  void resetAllFilter() {
+    applyFilter(StoresSetting.getDefault());
+  }
+
+  void applyFilter(StoresSetting setting) {
+    emit(state.copyWith(settings: setting));
+    appSettings.setStoresSetting(setting);
+    sort();
+    filter();
   }
 }

@@ -12,6 +12,9 @@ class ItemHistoryState with _$ItemHistoryState{
     @Default(0) double outQuantity,
     @Default(0) double endPeriodQuantity,
   @Default([]) List<GoodHistory> goodHistories,
-    @Default([]) List<ListItem> items
+    @Default([]) List<ListItem> items,
+
+    Color? incomingColor,
+    Color? outgoingColor
     }) = _Initial;
 }

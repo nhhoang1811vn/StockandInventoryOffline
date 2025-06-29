@@ -75,7 +75,7 @@ class PaymentItemRow extends StatelessWidget {
                   ],
                 )),
                 Text("${item.type == PaymentType.inbound? "+" : "-"}${Config.currencyFormat.format(item.amount ?? 0)}",
-                  style: primaryTextStyle
+                  style: primaryTextStyle?.copyWith(color: item.type == PaymentType.inbound ? Colors.green : Colors.red)
                 )
               ],
             ),

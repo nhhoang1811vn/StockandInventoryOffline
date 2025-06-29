@@ -91,6 +91,12 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
       }
     }
   }
+  void onCancelDocument(){
+    emit(state.copyWith(documentId: null, document: null, customerId: null, customer: null, supplierId: null, supplier: null));
+  }
+  void onCancelPerson(){
+    emit(state.copyWith(documentId: null, document: null, customerId: null, customer: null, supplierId: null, supplier: null));
+  }
   void onSupplierChanged(Supplier item){
     emit(state.copyWith(documentId: null, document: null, customerId: null, customer: null, supplierId: null, supplier: null));
     emit(state.copyWith(supplierId : item.id, supplier: item));
@@ -172,4 +178,5 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     );
     emit(state.copyWith(wallets: wallets, selectedWallet: selectedWallet));
   }
+
 }

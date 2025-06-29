@@ -357,5 +357,7 @@
     "oldest_to_newest": "Oldest first",
     "sort_by_name": "Sort by name",
     "sort_by_barcode": "Sort by barcode",
-    "sort_by_quantity": "Sort by quantity"
+    "sort_by_quantity": "Sort by quantity",
+    "action_create_payment": "Create a payment",
+    "action_view_payments": "View linked payments"
 }

@@ -6,6 +6,7 @@ import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/suppliers/components/supplier_item_row.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,7 +19,6 @@ import '../help_content.dart';
 import '../pages.dart';
 import 'bloc/bloc.dart';
 import 'components/filter_supplier_widget.dart';
-import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 class SuppliersPage extends StatefulWidget {
   final bool isSelection;
 

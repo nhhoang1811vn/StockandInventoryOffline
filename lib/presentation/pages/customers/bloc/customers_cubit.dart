@@ -23,8 +23,6 @@ class CustomersCubit extends Cubit<CustomersState> {
   final Storage storage;
   final AppSettings appSettings;
   CustomersCubit({required this.appSettings,required this.storage,required this.useCase}) : super(CustomersState.initial(state: InitialState(), settings: appSettings.getCustomersSetting()));
-
-  //final purchaseManager = PurchaseManager();
   void initState(bool isSelection){
     emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection));
     loadItems();

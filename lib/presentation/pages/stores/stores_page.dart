@@ -5,18 +5,18 @@ import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
-import 'package:good_manager/presentation/pages/stores/components/sort_store_dialog.dart';
 import 'package:good_manager/presentation/widgets/snackbar_widgets.dart';
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../../../domain/entities/stores_setting.dart';
+import '../../../domain/entities/sort_by_text.dart';
 import '../../../domain/free_limits.dart';
 import '../../widgets/search_bar_widget.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
+import 'components/filter_store_widget.dart';
 import 'components/store_item_row.dart';
-import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 
 class StoresPage extends StatefulWidget {
   final bool isSelection;
@@ -41,16 +41,7 @@ class StoresPageState extends State<StoresPage> {
     return BlocConsumer<StoresCubit, StoresState>(
         listenWhen: (p1, p2) => p1.state != p2.state,
         listener: (context, state) async{
-          if (state.state is OpenSortDialogListState){
-            StoresSetting? settings = await showDialog(
-                context: context,
-                builder: (_) => SortStoreDialog(state.settings),
-                barrierDismissible: true);
-            if (settings != null){
-              context.read<StoresCubit>().setSettings(settings);
-            }
-          }
-          else if (state.state is OpenSaveStorePageState){
+         if (state.state is OpenSaveStorePageState){
             final currentState = state.state as OpenSaveStorePageState;
             final result = await Navigator.of(context).pushNamed(Pages.save_store, arguments: {"item" : currentState.item});
             if (result != null){
@@ -104,7 +95,7 @@ class StoresPageState extends State<StoresPage> {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight), child:  AppBar(
         title: new Text(widget.isSelection?AppLocalizations.of(context)!.stores_select_title:AppLocalizations.of(context)!.stores_title),
-        actions: [_buildSearchMenu(data), _buildSortMenu(), _buildHelpMenu()]),
+        actions: [_buildSearchMenu(data), _buildFilterMenu(data), _buildHelpMenu()]),
     );
   }
 
@@ -238,10 +229,55 @@ class StoresPageState extends State<StoresPage> {
       context.read<StoresCubit>().onShowSearchBarMenuClicked();
     }, icon: Icon(Icons.search, color: state.showSearchBar ? Theme.of(context).colorScheme.primary: Theme.of(context).iconTheme.color));
   }
-  Widget _buildSortMenu() {
-    return IconButton(onPressed: (){
-      context.read<StoresCubit>().onSortMenuClicked();
-    }, icon: Icon(Icons.sort, color: context.read<StoresCubit>().hasSortOptions() ? Theme.of(context).colorScheme.primary: Theme.of(context).iconTheme.color ));
+  Widget _buildFilterMenu(StoresState state) {
+    bool showWarning = state.settings.sortByName != SortByText.no_sort;
+    return Stack(
+      children: [
+        IconButton(
+            onPressed: () {
+              showFilterBottomSheet(state);
+            },
+            icon: Icon(Icons.filter_alt)),
+        if (showWarning)
+          Positioned(
+            right: 4,
+            top: 4,
+            child: Icon(
+              Icons.error,
+              color: Colors.red,
+              size: 16,
+            ),
+          )
+      ],
+    );
+  }
+  void showFilterBottomSheet(StoresState state) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        builder: (BuildContext mContext) {
+          return DraggableScrollableSheet(
+              expand: false,
+              builder: (mContext, scrollController) {
+                return SingleChildScrollView(
+                    controller: scrollController,
+                    padding: EdgeInsets.all(16),
+                    child: FilterStoreWidget(
+                      onResetAllPressed: () {
+                        context.read<StoresCubit>().resetAllFilter();
+                        Navigator.of(context).pop();
+                      },
+                      onApplyPressed: (setting) {
+                        context.read<StoresCubit>().applyFilter(setting);
+                        Navigator.of(context).pop();
+                      },
+                      setting: state.settings,
+                    ));
+              });
+        });
   }
   Widget _buildHelpMenu(){
     return IconButton(onPressed: (){

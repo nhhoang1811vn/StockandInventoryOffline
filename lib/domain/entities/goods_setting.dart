@@ -3,7 +3,6 @@ import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
 
 part 'goods_setting.freezed.dart';
-
 part 'goods_setting.g.dart';
 
 @freezed

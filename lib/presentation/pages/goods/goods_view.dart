@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:good_manager/common/helpers/injection.container.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/goods_setting.dart';
@@ -15,8 +14,6 @@ import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/components/filter_good_widget.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/list_settings_dialog.dart';
 import 'package:good_manager/presentation/pages/goods/widgets/sort_goods_dialog.dart';
-import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
-import 'package:good_manager/presentation/pages/save_group/save_group_view.dart';
 import 'package:good_manager/presentation/style_size.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:good_manager/presentation/widgets/views.dart';
@@ -308,6 +305,15 @@ class GoodsPageState extends State<GoodsPage> {
                 },
                 child: Text(AppLocalizations.of(context)!.action_move_to_group),
               ),
+              SimpleDialogOption(
+                padding: EdgeInsets.all(16.0),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': item.id});
+                },
+                child: Text(AppLocalizations.of(context)!.item_history_title),
+              ),
+
               SimpleDialogOption(
                 padding: EdgeInsets.all(16.0),
                 onPressed: () {

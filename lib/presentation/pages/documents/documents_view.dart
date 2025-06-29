@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/domain/entities/document.dart';
+import 'package:good_manager/domain/entities/document_paid_status.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
@@ -139,14 +140,19 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
               "title": AppLocalizations.of(context)!.documents_title,
               "content": MDProviderFactory.get().getHelpText(HelpType.DOCUMENTS)
             });
+          }else if (state.state is OpenSavePaymentPageState) {
+            final currentState = state.state as OpenSavePaymentPageState;
+            final result = await Navigator.of(context).pushNamed(
+                Pages.save_payment,
+                arguments: {"item": currentState.item});
+            if (result != null) {
+              context.read<DocumentsCubit>().loadItems();
+            }
+          }else if (state.state is OpenPaymentHistoryPageState){
+            final currentState = state.state as OpenPaymentHistoryPageState;
+            final result = await Navigator.of(context).pushNamed(Pages.payment_history, arguments: {"documentId" : currentState.documentId});
+            context.read<DocumentsCubit>().loadItems();
           }
-          // else if (state.state is OpenSortDialogListState) {
-          //   DocumentsSetting? settings = await showDialog(
-          //       context: context, builder: (_) => SortDocumentsDialog(state.settings), barrierDismissible: true);
-          //   if (settings != null) {
-          //     context.read<DocumentsCubit>().setSettings(settings);
-          //   }
-          // }
         });
   }
 
@@ -377,9 +383,18 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
   }
 
   void onLongPressedDocument(Document item) {
+    var status = Utils.getStatus(item);
+    var showCreatePaymentOption = false;
+    var showViewPaymentOption = false;
+    if (status == DocumentPaidStatus.partial || status == DocumentPaidStatus.unpaid){
+      showCreatePaymentOption = true;
+    }
+    if (status == DocumentPaidStatus.partial || status == DocumentPaidStatus.paid){
+      showViewPaymentOption = true;
+    }
     showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (BuildContext mcontext) {
           return SimpleDialog(
             children: <Widget>[
               SimpleDialogOption(
@@ -390,6 +405,24 @@ class DocumentPageState extends State<DocumentsPage> with SingleTickerProviderSt
                 },
                 child: Text(AppLocalizations.of(context)!.action_delete),
               ),
+              if (showCreatePaymentOption)
+                SimpleDialogOption(
+                  padding: EdgeInsets.all(16.0),
+                  onPressed: () async{
+                    Navigator.pop(context);
+                    await context.read<DocumentsCubit>().onCreateAPayment(item);
+                  },
+                  child: Text(AppLocalizations.of(context)!.action_create_payment),
+                ),
+              if (showViewPaymentOption)
+                SimpleDialogOption(
+                  padding: EdgeInsets.all(16.0),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    context.read<DocumentsCubit>().onViewLinkedPayments(item);
+                  },
+                  child: Text(AppLocalizations.of(context)!.action_view_payments),
+                ),
             ],
           );
         },

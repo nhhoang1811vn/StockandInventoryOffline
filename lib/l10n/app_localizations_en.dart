@@ -1042,4 +1042,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sort_by_quantity => 'Sort by quantity';
+
+  @override
+  String get action_create_payment => 'Create a payment';
+
+  @override
+  String get action_view_payments => 'View linked payments';
 }

@@ -1,12 +1,14 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/app_settings.dart';
+import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/entities/wallet.dart';
+import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
 import 'package:good_manager/domain/usecases/wallets/wallet_usecases.dart';
+import 'package:good_manager/extension/date_time_apis.dart';
 import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../data/storage.dart';
 import '../../../../domain/entities/document.dart';
@@ -30,6 +32,7 @@ class HomeCubit extends Cubit<HomeState> {
   final SuppliersUseCase supplierUseCases;
   final CustomersUseCase customerUseCase;
   final WalletUseCases walletUseCases;
+  final PaymentUseCases paymentUseCases;
   final AppSettings appSettings;
 
   HomeCubit({
@@ -39,6 +42,7 @@ class HomeCubit extends Cubit<HomeState> {
     required this.supplierUseCases,
     required this.customerUseCase,
     required this.walletUseCases,
+    required this.paymentUseCases,
     required this.appSettings,
   }) : super(HomeState.initial(state: InitialState()));
 
@@ -67,6 +71,14 @@ class HomeCubit extends Cubit<HomeState> {
       quantityTotal += good.quantity;
     }
     List<Wallet> wallets = await walletUseCases.getAllByStoreId(storeId);
+    final savedOrder = await loadWalletOrder();
+    final orderedWallets = await reorderWallets(wallets, savedOrder);
+
+    List<Payment> payments = [];
+    if (orderedWallets.isNotEmpty){
+      var lastWallet = orderedWallets.last;
+      payments = await getPayments(lastWallet.id!);
+    }
     emit(state.copyWith(
         incomingColor: appSettings.getIncomingDocumentColor(),
         outgoingColor: appSettings.getOutgoingDocumentColor(),
@@ -78,8 +90,10 @@ class HomeCubit extends Cubit<HomeState> {
         sumPriceOutgoingDocument: sumPriceOutgoingDocument,
         countSupplier: countSupplier,
         countCustomer: countCustomer,
-        wallets: wallets,
-        totalBalance: wallets.fold(0.0, (sum, wallet) => sum + wallet.balance)));
+        wallets: orderedWallets,
+        totalBalance: wallets.fold(0.0, (sum, wallet) => sum + wallet.balance),
+        payments: payments
+    ));
   }
 
   void deleteWallet(Wallet item) async {
@@ -108,9 +122,47 @@ class HomeCubit extends Cubit<HomeState> {
       emit(state.copyWith(state: OpenBuySubscriptionDialogState()));
     }
   }
-  //void on
-
   String getAutoDocumentNo() {
     return storage.getAutoDocumentNo(getSelectedStoreId()).toString();
+  }
+  void onWalletTapped(int index) async{
+    List<Wallet> wallets = List.from(state.wallets);
+    final wallet = wallets[index];
+    wallets.removeAt(index);
+    wallets.add(wallet);
+
+    // Save the new order
+    await saveWalletOrder(wallets);
+
+    var payments = await getPayments(wallet.id!);
+    emit(state.copyWith(wallets: wallets, payments: payments));
+  }
+  Future<List<Payment>> getPayments(int walletId) async{
+    DateTime startDateTime = DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime endDateTime = DateTime.now().endOfDay();
+    var payments = await paymentUseCases.getInRangeByWalletId(walletId, startDateTime, endDateTime);
+    return payments.take(3).toList();
+  }
+
+  Future<void> saveWalletOrder(List<Wallet> wallets) async {
+    final prefs = await SharedPreferences.getInstance();
+    final walletIds = wallets.map((w) => w.id!.toString()).toList();
+    await prefs.setStringList('wallet_order', walletIds);
+  }
+  Future<List<String>> loadWalletOrder() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('wallet_order') ?? [];
+  }
+  Future<List<Wallet>> reorderWallets(List<Wallet> wallets, List<String> savedOrder) async {
+    final walletMap = {for (var w in wallets) w.id.toString(): w};
+    final ordered = <Wallet>[];
+    for (final id in savedOrder) {
+      if (walletMap.containsKey(id)) {
+        ordered.add(walletMap[id]!);
+        walletMap.remove(id);
+      }
+    }
+    ordered.addAll(walletMap.values);
+    return ordered;
   }
 }

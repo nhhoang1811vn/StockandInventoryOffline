@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/main/main_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,6 +14,7 @@ import '../../../common/path_utils.dart';
 import '../../../db/db_helper.dart';
 import '../../../domain/entities/store.dart';
 import '../../../main.dart';
+import '../../../revenuecat_purchase_manager.dart';
 import '../../constants.dart';
 import '../../dialog_utils.dart';
 import '../../markdown/md_provider_factory.dart';
@@ -21,7 +22,6 @@ import '../../widgets/logo_app_bar.dart';
 import '../../widgets/select_message_type_dialog.dart';
 import '../../widgets/views.dart';
 import '../pages.dart';
-import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 
 class MorePage extends StatefulWidget {
   @override
@@ -39,21 +39,42 @@ class MorePageState extends State<MorePage> {
     buildSignature: 'Unknown',
     installerStore: 'Unknown',
   );
-
-  //var _storeName = "";
-
+  bool _isPro = false;
   @override
   void initState() {
     super.initState();
     _initPackageInfo();
-    //_storeName = widget.storeName;
+    _loadIsPro();
   }
+  void _loadIsPro() async{
+    bool isPro = await RevenueCatService.isPro();
+    setState(() {
+      _isPro = isPro;
+    });
+  }
+
 
   Future<void> _initPackageInfo() async {
     final info = await PackageInfo.fromPlatform();
     setState(() {
       _packageInfo = info;
     });
+  }
+
+  Widget _buildStockPremiumBadge() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary,
+          borderRadius: BorderRadius.circular(8.0)),
+      child: Text(
+        "Stock Premium Active",
+        style: Theme.of(context)
+            .textTheme
+            .bodySmall
+            ?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+      ),
+    );
   }
 
   @override
@@ -75,8 +96,18 @@ class MorePageState extends State<MorePage> {
               ListTile(
                 onTap: () => {},
                 title: Text(displayName,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
-                subtitle: Text(email, style: Theme.of(context).textTheme.bodyMedium),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.bold)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(email, style: Theme.of(context).textTheme.bodyMedium),
+                    if (_isPro)
+                      _buildStockPremiumBadge(),
+                  ],
+                ),
               ),
               buildDivider(),
               if (isAnonymous)
@@ -84,8 +115,10 @@ class MorePageState extends State<MorePage> {
                   children: [
                     ListTile(
                       leading: Icon(Icons.upgrade),
-                      title: Text(AppLocalizations.of(context)!.menu_item_upgrade_account),
-                      subtitle: Text(AppLocalizations.of(context)!.menu_item_upgrade_account_subtitle),
+                      title: Text(AppLocalizations.of(context)!
+                          .menu_item_upgrade_account),
+                      subtitle: Text(AppLocalizations.of(context)!
+                          .menu_item_upgrade_account_subtitle),
                       onTap: () => onUpgradeAccountItemPressed(),
                     ),
                     buildDivider(),
@@ -93,7 +126,8 @@ class MorePageState extends State<MorePage> {
                 ),
               ListTile(
                 leading: Icon(Icons.close),
-                title: Text(AppLocalizations.of(context)!.menu_item_delete_account),
+                title: Text(
+                    AppLocalizations.of(context)!.menu_item_delete_account),
                 onTap: () => onDeleteAccountItemPressed(),
               ),
               buildDivider(),
@@ -106,7 +140,8 @@ class MorePageState extends State<MorePage> {
               buildDivider(),
               ListTile(
                 leading: Icon(Icons.change_circle),
-                title: Text(AppLocalizations.of(context)!.change_tracking_store),
+                title:
+                    Text(AppLocalizations.of(context)!.change_tracking_store),
                 subtitle: Text("${storage.getSelectedStoreName()}"),
                 trailing: Icon(Icons.navigate_next),
                 onTap: () => onChangeTrackingStoreItemPressed(context),
@@ -135,13 +170,15 @@ class MorePageState extends State<MorePage> {
             children: [
               ListTile(
                 leading: Icon(Icons.mail_outline),
-                title: Text(AppLocalizations.of(context)!.menu_item_invite_friend_header),
+                title: Text(AppLocalizations.of(context)!
+                    .menu_item_invite_friend_header),
                 onTap: () => onInviteFriend(context),
               ),
               buildDivider(),
               ListTile(
                 leading: Icon(Icons.question_answer_outlined),
-                title: Text(AppLocalizations.of(context)!.question_or_suggestion_title),
+                title: Text(
+                    AppLocalizations.of(context)!.question_or_suggestion_title),
                 onTap: () => onSelectMessageType(context),
               ),
               buildDivider(),
@@ -182,7 +219,9 @@ class MorePageState extends State<MorePage> {
             ],
           ),
         ),
-        Center(child: Text(sprintf(AppLocalizations.of(context)!.version, [_packageInfo.version]))),
+        Center(
+            child: Text(sprintf(AppLocalizations.of(context)!.version,
+                [_packageInfo.version]))),
         SizedBox(height: 16),
       ]),
     );
@@ -197,7 +236,8 @@ class MorePageState extends State<MorePage> {
         title: AppLocalizations.of(context)!.notification_dialog_title,
         message: AppLocalizations.of(context)!.message_confirm_delete_account,
         cancelBtnText: AppLocalizations.of(context)!.action_cancel,
-        okBtnText: AppLocalizations.of(context)!.action_ok, cancelBtnFunction: () {
+        okBtnText: AppLocalizations.of(context)!.action_ok,
+        cancelBtnFunction: () {
       Navigator.of(context).pop();
     }, okBtnFunction: () {
       Navigator.of(context).pop();
@@ -213,11 +253,13 @@ class MorePageState extends State<MorePage> {
   }
 
   void onStoresItemPressed(BuildContext context) {
-    Navigator.of(context).pushNamed(Pages.store_list, arguments: {"isSelection": false});
+    Navigator.of(context)
+        .pushNamed(Pages.store_list, arguments: {"isSelection": false});
   }
 
   void onChangeTrackingStoreItemPressed(BuildContext context) async {
-    final result = await Navigator.of(context).pushNamed(Pages.store_list, arguments: {"isSelection": true});
+    final result = await Navigator.of(context)
+        .pushNamed(Pages.store_list, arguments: {"isSelection": true});
     if (result != null) {
       Store store = result as Store;
 
@@ -242,14 +284,18 @@ class MorePageState extends State<MorePage> {
 
   void onInviteFriend(BuildContext context) {
     String encodeQueryParameters(Map<String, String> params) {
-      return params.entries.map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}').join('&');
+      return params.entries
+          .map((e) =>
+              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+          .join('&');
     }
 
     final Uri emailLaunchUri = Uri(
       scheme: 'mailto',
       path: '',
       query: encodeQueryParameters(<String, String>{
-        'subject': AppLocalizations.of(context)!.send_mail_invite_friend_subject,
+        'subject':
+            AppLocalizations.of(context)!.send_mail_invite_friend_subject,
         'body': AppLocalizations.of(context)!.send_mail_invite_friend_content,
       }),
     );
@@ -301,13 +347,17 @@ class MorePageState extends State<MorePage> {
 
   void onSendMail(String subject) {
     String encodeQueryParameters(Map<String, String> params) {
-      return params.entries.map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}').join('&');
+      return params.entries
+          .map((e) =>
+              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+          .join('&');
     }
 
     final Uri emailLaunchUri = Uri(
       scheme: 'mailto',
       path: Config.supportEmail,
-      query: encodeQueryParameters(<String, String>{'subject': subject, 'body': ""}),
+      query: encodeQueryParameters(
+          <String, String>{'subject': subject, 'body': ""}),
     );
     launchUrl(emailLaunchUri);
   }
@@ -326,12 +376,14 @@ class MorePageState extends State<MorePage> {
   }
 
   void onTermsOfUse() async {
-    var eulaLink = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/";
+    var eulaLink =
+        "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/";
     _launchUrl(Uri.parse(eulaLink));
   }
 
   void onPrivacyPolicy() async {
-    var link = "https://www.freeprivacypolicy.com/live/441fa2be-af36-49e4-8dd2-880a7d5f19c0";
+    var link =
+        "https://www.freeprivacypolicy.com/live/441fa2be-af36-49e4-8dd2-880a7d5f19c0";
     _launchUrl(Uri.parse(link));
   }
 
@@ -355,7 +407,8 @@ class MorePageState extends State<MorePage> {
         Navigator.of(context).pop();
         DialogUtils.showCustomDialog(context,
             title: AppLocalizations.of(context)!.notification_dialog_title,
-            message: AppLocalizations.of(context)!.question_push_data, okBtnFunction: () async {
+            message: AppLocalizations.of(context)!.question_push_data,
+            okBtnFunction: () async {
           String dbPath = await PathUtils().getDatabasePath();
           File file = File(dbPath);
           final storageRef = FirebaseStorage.instance.ref();

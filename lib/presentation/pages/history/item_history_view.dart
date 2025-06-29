@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:good_manager/domain/entities/good_history.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/models/list_item.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.dart';
 import 'package:good_manager/presentation/pages/history/widget/item_history_row.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 import '../../widgets/date_item_row.dart';
 
@@ -65,7 +66,7 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
     List<Widget> children = [
       SelectedStoreView(),
       if (state.items.isNotEmpty)
-        Expanded(child: _buildListView(state))
+        Expanded(child: _buildStickyListView(state))
       else
         Expanded(child: Center(child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -80,48 +81,91 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
     ];
     return Column(children: children);
   }
-  Widget _buildListView(ItemHistoryState data) {
-    bool flag = true;
-    return ListView.builder(
-        itemBuilder: (BuildContext context, index) {
-          ListItem item = data.items[index];
-          flag = !flag;
-          if (item is HeaderItem){
-            flag = true;
-            return DateItemRow(item.date);
-          }else if (item is GoodHistoryListItem){
-            flag = !flag;
-            return ItemHistoryRow(item.goodHistory, flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context),(item) async {
-              await Navigator.of(context).pushNamed(
-                  Pages.save_document, arguments: {'item': item});
-              context.read<ItemHistoryCubit>().loadItems();
-            });
-          }else{
-            return SizedBox();
-          }
-
-        },
-        itemCount: data.items.length);
+  Widget _buildStickyListView(ItemHistoryState state) {
+    var flag = true;
+    return StickyGroupedListView<GoodHistory, DateTime>(
+      elements: List.of(state.goodHistories),
+      groupBy: (GoodHistory item) => DateTime(
+        item.document!.date.year,
+        item.document!.date.month,
+        item.document!.date.day,
+      ),
+      groupSeparatorBuilder: (GoodHistory item) => DateItemRow(item.document!.date),
+      itemBuilder: (context, GoodHistory item) {
+        flag = !flag;
+        return ItemHistoryRow(
+                          item,
+                          flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context),
+                          state.incomingColor,
+                          state.outgoingColor,
+                              (item) async {
+                        await Navigator.of(context).pushNamed(
+                            Pages.save_document, arguments: {'item': item});
+                        context.read<ItemHistoryCubit>().loadItems();
+                      });
+      },
+      itemComparator: (a, b) => b.document!.date.compareTo(a.document!.date),
+      order:  StickyGroupedListOrder.DESC,
+    );
   }
+  // Widget _buildListView(ItemHistoryState state) {
+  //   bool flag = true;
+  //   return ListView.builder(
+  //       itemBuilder: (BuildContext context, index) {
+  //         ListItem item = state.items[index];
+  //         flag = !flag;
+  //         if (item is HeaderItem){
+  //           flag = true;
+  //           return DateItemRow(item.date);
+  //         }else if (item is GoodHistoryListItem){
+  //           flag = !flag;
+  //           return ItemHistoryRow(
+  //               item.goodHistory,
+  //               flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context),
+  //               state.incomingColor,
+  //               state.outgoingColor,
+  //                   (item) async {
+  //             await Navigator.of(context).pushNamed(
+  //                 Pages.save_document, arguments: {'item': item});
+  //             context.read<ItemHistoryCubit>().loadItems();
+  //           });
+  //         }else{
+  //           return SizedBox();
+  //         }
+  //       },
+  //       itemCount: state.items.length);
+  // }
   Widget _buildSummaryView(ItemHistoryState state){
+    var textColor = Theme.of(context).colorScheme.onPrimary;
+    var textStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+      color: Theme.of(context).colorScheme.onPrimary
+    );
     return Container(
       width: double.infinity,
-      color: ColorUtils.getHeaderBgColor(context),
+      color: Theme.of(context).colorScheme.primary,
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
         if (state.start != null)
           Text("${AppLocalizations.of(context)!.start_date}:${DateFormatFactory.getDateFormat().format(state.start!)}"),
         if (state.end != null)
           Text("${AppLocalizations.of(context)!.end_date}:${DateFormatFactory.getDateFormat().format(state.end!)}"),
-        Row(children: [
-          Text("${AppLocalizations.of(context)!.field_start_period}: ${Config.currencyFormat.format(state.startPeriodQuantity)}"),
-          SizedBox(width: 4,),
-          Text("${AppLocalizations.of(context)!.field_in}: ${Config.currencyFormat.format(state.inQuantity)}"),
-          SizedBox(width: 4,),
-          Text("${AppLocalizations.of(context)!.field_out}: ${Config.currencyFormat.format(state.outQuantity)}"),
-          SizedBox(width: 4,),
-          Text("${AppLocalizations.of(context)!.field_end_period}: ${Config.currencyFormat.format(state.endPeriodQuantity)}"),
-        ],)
+        IntrinsicHeight(
+          child: Row(children: [
+            Text("${AppLocalizations.of(context)!.field_start_period}: ${Config.currencyFormat.format(state.startPeriodQuantity)}", style: textStyle,),
+            SizedBox(width: 4,),
+            VerticalDivider(width: 2,color: Colors.white,),
+            SizedBox(width: 4,),
+            Text("${AppLocalizations.of(context)!.field_in}: ${Config.currencyFormat.format(state.inQuantity)}", style: textStyle,),
+            SizedBox(width: 4,),
+            VerticalDivider(width: 2,color: Colors.white,),
+            SizedBox(width: 4,),
+            Text("${AppLocalizations.of(context)!.field_out}: ${Config.currencyFormat.format(state.outQuantity)}", style: textStyle,),
+            SizedBox(width: 4,),
+            VerticalDivider(width: 2,color: Colors.white,),
+            SizedBox(width: 4,),
+            Text("${AppLocalizations.of(context)!.field_end_period}: ${Config.currencyFormat.format(state.endPeriodQuantity)}", style: textStyle,),
+          ],),
+        )
       ],) 
     );
   }

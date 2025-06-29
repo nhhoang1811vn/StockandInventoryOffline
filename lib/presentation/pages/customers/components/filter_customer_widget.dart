@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/customers_setting.dart';
-import 'package:good_manager/domain/entities/documents_setting.dart';
-import 'package:good_manager/domain/entities/goods_setting.dart';
-import 'package:good_manager/domain/entities/sort_by_number.dart';
 import 'package:good_manager/domain/entities/sort_by_text.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/payment/components/text_selection.dart';

@@ -27,6 +27,8 @@ import 'package:good_manager/presentation/pages/payment/bloc/payments_cubit.dart
 import 'package:good_manager/presentation/pages/payment/payments_page.dart';
 import 'package:good_manager/presentation/pages/payment_categories/bloc/payment_categories_cubit.dart';
 import 'package:good_manager/presentation/pages/payment_categories/payment_categories_page.dart';
+import 'package:good_manager/presentation/pages/payment_history/bloc/payment_history_cubit.dart';
+import 'package:good_manager/presentation/pages/payment_history/payment_history_view.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/report_page.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
@@ -79,6 +81,17 @@ class AppRouter {
 
   Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
+      case Pages.payment_history:
+        Map<dynamic, dynamic> args = settings.arguments as Map;
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<PaymentHistoryCubit>(),
+              child: PaymentHistoryPage(
+                documentId: args['documentId'],
+                //start: args['start'],
+                //end: args['end'],
+              ),
+            ));
       case Pages.splash:
         return MaterialPageRoute(
             builder: (_) => SplashScreen());

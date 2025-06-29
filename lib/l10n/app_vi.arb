@@ -387,7 +387,9 @@
                                    "oldest_to_newest": "Cũ nhất trước",
                                    "sort_by_name": "Sắp xếp theo tên",
                                        "sort_by_barcode": "Sắp xếp theo mã vạch",
-                                       "sort_by_quantity": "Sắp xếp theo số lượng"
+                                       "sort_by_quantity": "Sắp xếp theo số lượng",
+                                       "action_create_payment": "Tạo giao dịch",
+                                       "action_view_payments": "Xem các giao dịch liên kết"
 
 
 }

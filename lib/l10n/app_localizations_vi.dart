@@ -1042,4 +1042,10 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get sort_by_quantity => 'Sắp xếp theo số lượng';
+
+  @override
+  String get action_create_payment => 'Tạo giao dịch';
+
+  @override
+  String get action_view_payments => 'Xem các giao dịch liên kết';
 }

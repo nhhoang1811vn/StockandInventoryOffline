@@ -4,6 +4,7 @@ import 'package:flutter_screen_lock/flutter_screen_lock.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/settings/general/bloc/settings_general_cubit.dart';
+
 import '../../../../main.dart';
 import '../../../widgets/views.dart';
 

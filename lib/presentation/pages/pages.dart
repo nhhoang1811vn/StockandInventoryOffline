@@ -2,7 +2,7 @@ class Pages {
   static const String splash = 'splash';
   static const String onboarding = 'onboarding';
 
-  //static const String payment_list = 'payment_list';
+  static const String payment_history = 'payment_history';
   static const String save_payment = 'save_payment';
   static const String save_payment_category = 'save_payment_category';
   static const String payment_categories = 'payment_categories';

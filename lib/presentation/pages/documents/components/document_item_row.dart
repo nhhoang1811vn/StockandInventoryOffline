@@ -42,8 +42,6 @@ class DocumentItemRow extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: getIndicatorColor(item.type), // Change color as needed
                       borderRadius: BorderRadius.all(Radius.circular(8))
-                        //topLeft: R,
-                        //bottomLeft: Radius.circular(8),
                       //),
                     ),
                   ),

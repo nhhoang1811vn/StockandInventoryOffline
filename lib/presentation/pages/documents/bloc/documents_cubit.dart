@@ -5,7 +5,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/documents_setting.dart';
+import 'package:good_manager/domain/usecases/customers/customers_usecases.dart';
 import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
+import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/models/list_item.dart';
 import 'package:good_manager/presentation/pages/documents/criteria/by_search_text_criteria.dart';
@@ -13,6 +15,7 @@ import 'package:good_manager/presentation/pages/documents/criteria/by_status_cri
 import 'package:injectable/injectable.dart';
 
 import '../../../../data/storage.dart';
+import '../../../../domain/entities/payment.dart';
 import '../../../criteria/and_criteria.dart';
 import '../../../criteria/criteria.dart';
 import '../../../criteria/or_criteria.dart';
@@ -25,12 +28,18 @@ part 'documents_state.dart';
 @injectable
 class DocumentsCubit extends Cubit<DocumentsState> {
   final DocumentUseCases useCase;
+  final CustomersUseCase customersUseCase;
+  final SuppliersUseCase suppliersUseCase;
   final Storage storage;
   final AppSettings appSettings;
   DocumentsCubit({
     required this.storage,
     required this.appSettings,
-    required this.useCase})
+    required this.useCase,
+    required this.customersUseCase,
+    required this.suppliersUseCase
+
+  })
       : super(DocumentsState.initial(
       state: InitialState()
   ));
@@ -142,4 +151,28 @@ class DocumentsCubit extends Cubit<DocumentsState> {
     ));
   }
 
+  Future<void> onCreateAPayment(Document item) async{
+    var payment = Payment();
+    payment.type = item.type == DocumentType.incoming ? PaymentType.outbound : PaymentType.inbound;
+    payment.storeId = storage.getSelectedStoreId();
+    payment.walletId = appSettings.getSavePaymentLastSelectedWalletId();
+    payment.documentId = item.id;
+    payment.document = item;
+
+    if (item.type == DocumentType.incoming){
+      if (item.personId != null){
+        payment.supplierId = item.personId;
+        payment.supplier = await suppliersUseCase.get(item.personId!);
+      }
+    }else{
+      if (item.personId != null){
+        payment.customerId = item.personId;
+        payment.customer = await customersUseCase.get(item.personId!);
+      }
+    }
+    emit(state.copyWith(state: OpenSavePaymentPageState(payment)));
+  }
+  void onViewLinkedPayments(Document item){
+    emit(state.copyWith(state: OpenPaymentHistoryPageState(item.id!)));
+  }
 }

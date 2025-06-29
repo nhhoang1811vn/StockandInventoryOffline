@@ -913,15 +913,15 @@ class DBHelper {
 
   Future<List<Payment>> getPaymentsInRangeByWalletId(int walletId, DateTime start, DateTime end) async {
     var dbClient = await db;
-    int startInt = start.millisecondsSinceEpoch;
-    int endInt = DateTime(end.year, end.month, end.day, 23, 59, 59, 999).millisecondsSinceEpoch;
+    int startInt = start.startOfDay().millisecondsSinceEpoch;
+    int endInt = end.endOfDay().millisecondsSinceEpoch;
     List<Map> list = await dbClient.rawQuery(
         "SELECT * FROM $PAYMENTS_TABLE_NAME where walletId = ? AND date BETWEEN ? AND ? ORDER BY date DESC",
         [walletId, startInt, endInt]);
     List<Payment> items = [];
     for (int i = 0; i < list.length; i++) {
       Payment item = Payment.map(list[i]);
-      /*if (item.categoryId != null) {
+      if (item.categoryId != null) {
         item.category = await getCategory(item.categoryId!);
       }
       if (item.walletId != null){
@@ -929,7 +929,7 @@ class DBHelper {
       }
       if (item.documentId != null){
         item.document = await getDocument(item.documentId!);;
-      }*/
+      }
       items.add(item);
     }
     return items;

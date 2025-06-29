@@ -5,16 +5,25 @@ import 'package:good_manager/domain/entities/good_history.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/utils.dart';
 
-import '../../../../l10n/app_localizations.dart';
-
 class ItemHistoryRow extends StatelessWidget{
   final GoodHistory item;
   final Color bgColor;
+  final Color? incomingColor;
+  final Color? outgoingColor;
   final void Function(Document document) onDocumentTapped;
-  ItemHistoryRow(this.item, this.bgColor, this.onDocumentTapped);
+  ItemHistoryRow(
+      this.item,
+      this.bgColor,
+      this.incomingColor,
+      this.outgoingColor,
+      this.onDocumentTapped);
 
   @override
   Widget build(BuildContext context) {
+
+    TextStyle? primaryTextStyle = Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700);
+    TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
+
     String quantityText;
     if (item.document!.type == DocumentType.incoming){
       quantityText = "+" + Utils.getQuantityText(item.quantity);
@@ -23,6 +32,7 @@ class ItemHistoryRow extends StatelessWidget{
     }
     return Container(
       color: bgColor,
+      padding: EdgeInsets.all(16),
       child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () => onDocumentTapped(item.document!),
@@ -36,14 +46,15 @@ class ItemHistoryRow extends StatelessWidget{
                   child: Container(
                     decoration: BoxDecoration(
                       color: getIndicatorColor(item.document!.type), // Change color as needed
-                      //borderRadius: BorderRadius.only(
+                      borderRadius: BorderRadius.all(Radius.circular(8)
                         //topLeft: Radius.circular(8),
                         //bottomLeft: Radius.circular(8),
-                      //),
+                      ),
                     ),
                   ),
                 ),
-                Expanded(child: Padding(padding: EdgeInsets.all(16), child: Row(children: [
+                SizedBox(width: 8),
+                Expanded(child: Row(children: [
                   Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,33 +62,21 @@ class ItemHistoryRow extends StatelessWidget{
                         children: [
                           Text(
                             item.document?.name ?? "",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(color: Theme.of(context).colorScheme.primary),
+                            style: primaryTextStyle,
                           ),
                           //SizedBox(height: 4),
                           Text(DateFormatFactory.getDateFormat().format(item.document!.date),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                              style: secondaryTextStyle),
                           //SizedBox(height: 4),
                           item.document!.personName != null
                               ? Text(
                             item.document!.personName!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                            style: secondaryTextStyle,
                           )
                               : Container(),
                           item.document!.description.isNotEmpty
                               ? Text(item.document!.description,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(color: Theme.of(context).colorScheme.onSurface))
+                              style: secondaryTextStyle)
                               : Container()
                         ],
                       )),
@@ -85,24 +84,23 @@ class ItemHistoryRow extends StatelessWidget{
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(quantityText, style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface)),
-                      //Text("Paid/Amount"),
-                      Text("${AppLocalizations.of(context)!.field_amount}: ${Config.currencyFormat.format(item.amount)}"),
+                      Text(quantityText, style: primaryTextStyle),
+                      Text("${Config.currencyFormat.format(item.amount)}", style: secondaryTextStyle),
                       //Text(item.amount.toString())
                     ],
                   )
-                ],),))
+                ],))
               ],
             ),
           )),
     );
   }
-  Color getIndicatorColor(DocumentType type) {
+  Color? getIndicatorColor(DocumentType type) {
     switch (type) {
       case DocumentType.incoming:
-        return Colors.red;
-      case DocumentType.outgoing:
-        return Colors.green;
-      }
+        return incomingColor;
+      default:
+        return outgoingColor;
+    }
   }
 }
