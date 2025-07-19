@@ -27,6 +27,9 @@ With gratitude,
 AppViet Team
   """;
  static const String whatNews = """
+  ### Version 1.0.45 - 2025 Jul 12  
+  * Fixed reported bugs.  
+ 
  ### Version 1.0.30 - 2025 May 30  
   * Fixed reported bugs.  
   * Added Minimum quantity feature

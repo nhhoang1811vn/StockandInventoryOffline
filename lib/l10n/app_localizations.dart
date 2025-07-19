@@ -2176,6 +2176,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View linked payments'**
   String get action_view_payments;
+
+  /// No description provided for @action_back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get action_back;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

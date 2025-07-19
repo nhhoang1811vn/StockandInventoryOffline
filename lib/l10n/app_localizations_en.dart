@@ -1048,4 +1048,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get action_view_payments => 'View linked payments';
+
+  @override
+  String get action_back => 'Back';
 }

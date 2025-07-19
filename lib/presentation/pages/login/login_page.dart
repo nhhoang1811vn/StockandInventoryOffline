@@ -340,6 +340,41 @@ class _LoginScreenState extends State<LoginScreen> {
                       margin:
                           EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                       child: DoNotHaveAccountText())
+                  else
+                    Container(
+                      alignment: Alignment.centerRight,
+                      margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.all(0),
+                        ),
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 50.0,
+                          width: size.width,
+                          decoration: new BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(80.0),
+                            color: Colors.white,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.action_back,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),

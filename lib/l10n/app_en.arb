@@ -359,5 +359,6 @@
     "sort_by_barcode": "Sort by barcode",
     "sort_by_quantity": "Sort by quantity",
     "action_create_payment": "Create a payment",
-    "action_view_payments": "View linked payments"
+    "action_view_payments": "View linked payments",
+    "action_back": "Back"
 }

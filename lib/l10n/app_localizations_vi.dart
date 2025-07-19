@@ -1048,4 +1048,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get action_view_payments => 'Xem các giao dịch liên kết';
+
+  @override
+  String get action_back => 'Trở về';
 }

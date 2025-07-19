@@ -142,7 +142,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Back",
+                              AppLocalizations.of(context)!.action_back,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.black,

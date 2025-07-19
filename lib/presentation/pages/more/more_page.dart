@@ -76,7 +76,30 @@ class MorePageState extends State<MorePage> {
       ),
     );
   }
+  Widget _buildAnonymousWidget(){
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Image(
+          image: AssetImage('assets/images/user.png'),
+          width: 80,
+        ),
+        SizedBox(height: 8,),
+        InkWell(onTap: (){
+          onUpgradeAccountItemPressed();
+        },child: Column(children: [
+          Row(mainAxisSize: MainAxisSize.min,children: [
+            Text("Upgrade account", style: Theme.of(context).textTheme.titleLarge),
+            SizedBox(width: 8),
+            Icon(Icons.navigate_next)
+          ],),
+          SizedBox(height: 8,),
+          Text("You are currently on guess mode")
+        ],),)
 
+      ],),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     String displayName = FirebaseAuth.instance.currentUser?.displayName ?? "";
@@ -93,37 +116,31 @@ class MorePageState extends State<MorePage> {
           margin: EdgeInsets.all(16),
           child: Column(
             children: [
-              ListTile(
-                onTap: () => {},
-                title: Text(displayName,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.bold)),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(email, style: Theme.of(context).textTheme.bodyMedium),
-                    if (_isPro)
-                      _buildStockPremiumBadge(),
-                  ],
-                ),
-              ),
-              buildDivider(),
               if (isAnonymous)
-                Column(
-                  children: [
-                    ListTile(
-                      leading: Icon(Icons.upgrade),
-                      title: Text(AppLocalizations.of(context)!
-                          .menu_item_upgrade_account),
-                      subtitle: Text(AppLocalizations.of(context)!
-                          .menu_item_upgrade_account_subtitle),
-                      onTap: () => onUpgradeAccountItemPressed(),
+                _buildAnonymousWidget()
+              else
+              Column(
+                children: [
+                  ListTile(
+                    onTap: () => {},
+                    title: Text(displayName,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.bold)),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(email, style: Theme.of(context).textTheme.bodyMedium),
+                        if (_isPro)
+                          _buildStockPremiumBadge(),
+                      ],
                     ),
-                    buildDivider(),
-                  ],
-                ),
+                  ),
+                  buildDivider(),
+                ],
+              ),
+
               ListTile(
                 leading: Icon(Icons.close),
                 title: Text(
