@@ -2,6 +2,7 @@ import 'package:good_manager/domain/entities/batch_mode_scan.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+//deprecate
 @singleton
 class Storage {
   late SharedPreferences prefs;
@@ -15,29 +16,29 @@ class Storage {
     }
   }
 
-  int getSelectedStoreId() {
-    return prefs.getInt(StorageKeys.SelectedStoreId) ?? -1;
-  }
+  // int getSelectedStoreId() {
+  //   return prefs.getInt(StorageKeys.SelectedStoreId) ?? -1;
+  // }
+  //
+  // void setSelectedStoreId(int storeId) {
+  //   prefs.setInt(StorageKeys.SelectedStoreId, storeId);
+  // }
 
-  void setSelectedStoreId(int storeId) {
-    prefs.setInt(StorageKeys.SelectedStoreId, storeId);
-  }
+  // String getSelectedStoreName() {
+  //   return prefs.getString(StorageKeys.SelectedStoreName) ?? "";
+  // }
+  //
+  // void setSelectedStoreName(String value) {
+  //   prefs.setString(StorageKeys.SelectedStoreName, value);
+  // }
 
-  String getSelectedStoreName() {
-    return prefs.getString(StorageKeys.SelectedStoreName) ?? "";
-  }
-
-  void setSelectedStoreName(String value) {
-    prefs.setString(StorageKeys.SelectedStoreName, value);
-  }
-
-  bool getFirstTime() {
-    return prefs.getBool(StorageKeys.FirstTime) ?? true;
-  }
-
-  void setFirstTime(bool value) {
-    prefs.setBool(StorageKeys.FirstTime, value);
-  }
+  // bool getFirstTime() {
+  //   return prefs.getBool(StorageKeys.FirstTime) ?? true;
+  // }
+  //
+  // void setFirstTime(bool value) {
+  //   prefs.setBool(StorageKeys.FirstTime, value);
+  // }
 
   void setLanguageCode(String value) {
     prefs.setString(StorageKeys.LanguageCode, value);
@@ -46,29 +47,29 @@ class Storage {
   String getLanguageCode() {
     return prefs.getString(StorageKeys.LanguageCode) ?? "en";
   }
-  int getAutoDocumentNo(int storeId) {
-    int? value =
-        prefs.getInt(StorageKeys.AutoDocumentName + storeId.toString());
-    if (value == null) {
-      return 1;
-    } else {
-      return value + 1;
-    }
-  }
-  void resetAutoDocumentNo(int storeId, ){
-    prefs.setInt(StorageKeys.AutoDocumentName + storeId.toString(), 0);
-  }
+  // int getAutoDocumentNo(int storeId) {
+  //   int? value =
+  //       prefs.getInt(StorageKeys.AutoDocumentName + storeId.toString());
+  //   if (value == null) {
+  //     return 1;
+  //   } else {
+  //     return value + 1;
+  //   }
+  // }
+  // void resetAutoDocumentNo(int storeId, ){
+  //   prefs.setInt(StorageKeys.AutoDocumentName + storeId.toString(), 0);
+  // }
 
-  void increaseAutoDocumentNo(int storeId) {
-    int? value =
-        prefs.getInt(StorageKeys.AutoDocumentName + storeId.toString());
-    if (value == null) {
-      prefs.setInt(StorageKeys.AutoDocumentName + storeId.toString(), 1);
-    } else {
-      prefs.setInt(
-          StorageKeys.AutoDocumentName + storeId.toString(), value + 1);
-    }
-  }
+  // void increaseAutoDocumentNo(int storeId) {
+  //   int? value =
+  //       prefs.getInt(StorageKeys.AutoDocumentName + storeId.toString());
+  //   if (value == null) {
+  //     prefs.setInt(StorageKeys.AutoDocumentName + storeId.toString(), 1);
+  //   } else {
+  //     prefs.setInt(
+  //         StorageKeys.AutoDocumentName + storeId.toString(), value + 1);
+  //   }
+  // }
 
   void setBarcodeScannerEnableBeep(bool value) {
     prefs.setBool(StorageKeys.BarcodeScannerEnableBeep, value);
@@ -123,9 +124,9 @@ class StorageKeys {
   static const String BarcodeScannerEnableVibrate =
       "BarcodeScannerEnableVibrate";
 
-  static const String SelectedStoreId = "SelectedStoreId";
-  static const String SelectedStoreName = "SelectedStoreName";
-  static const String FirstTime = "FirstTime";
+  //static const String SelectedStoreId = "SelectedStoreId";
+  //static const String SelectedStoreName = "SelectedStoreName";
+  //static const String FirstTime = "FirstTime";
   static const String LanguageCode = "LanguageCode";
 
   static const String AutoDocumentName = "AutoDocumentName";

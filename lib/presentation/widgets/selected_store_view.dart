@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/main.dart';
+import 'package:good_manager/common/helpers/injection.container.dart';
+import 'package:good_manager/domain/app_settings.dart';
 
 class SelectedStoreView extends StatefulWidget {
   @override
@@ -9,12 +10,12 @@ class SelectedStoreView extends StatefulWidget {
 }
 
 class SelectedStoreViewState extends State<SelectedStoreView> {
-  String storeName = storage.getSelectedStoreName();
-
+  var appSettings = getIt<AppSettings>();
   SelectedStoreViewState();
 
   @override
   Widget build(BuildContext context) {
+    String storeName = appSettings.getSelectedStoreName();
     return Container(
       height: 30,
       color: Theme.of(context).colorScheme.primary,

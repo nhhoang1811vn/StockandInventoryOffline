@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:good_manager/data/storage.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/good_history.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
@@ -14,14 +14,14 @@ import '../../repositories/document_transaction_repositories.dart';
 
 @Injectable(as: GoodHistoryUseCases)
 class GoodHistoryUseCasesIpm implements GoodHistoryUseCases{
-  final Storage storage;
+  final AppSettings appSettings;
   final DocumentRepository documentRepository;
   final DocumentTransactionRepository documentTransactionRepository;
-  GoodHistoryUseCasesIpm({required this.storage,required this.documentRepository, required this.documentTransactionRepository});
+  GoodHistoryUseCasesIpm({required this.appSettings,required this.documentRepository, required this.documentTransactionRepository});
 
   @override
   Future<List<GoodHistory>> getAll(int goodId) async{
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     var documents = await documentRepository.getAllByStoreId(storeId);
     var sortedDocuments = sortDocuments(documents);
     return getData(sortedDocuments, goodId);

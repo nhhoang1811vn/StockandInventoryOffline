@@ -10,7 +10,6 @@ import 'package:good_manager/extension/date_time_apis.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../data/storage.dart';
 import '../../../../domain/entities/document.dart';
 import '../../../../domain/entities/good.dart';
 import '../../../../domain/free_limits.dart';
@@ -26,7 +25,7 @@ part 'home_state.dart';
 
 @injectable
 class HomeCubit extends Cubit<HomeState> {
-  final Storage storage;
+  //final Storage storage;
   final GoodsUseCases goodsUseCases;
   final DocumentUseCases documentsUseCases;
   final SuppliersUseCase supplierUseCases;
@@ -36,7 +35,7 @@ class HomeCubit extends Cubit<HomeState> {
   final AppSettings appSettings;
 
   HomeCubit({
-    required this.storage,
+    //required this.storage,
     required this.goodsUseCases,
     required this.documentsUseCases,
     required this.supplierUseCases,
@@ -47,7 +46,7 @@ class HomeCubit extends Cubit<HomeState> {
   }) : super(HomeState.initial(state: InitialState()));
 
   void initState() async {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     List<Good> goods = await goodsUseCases.getAllByStoreId(storeId);
     int countSupplier = await supplierUseCases.getCount(storeId);
     int countCustomer = await customerUseCase.getCount(storeId);
@@ -101,10 +100,10 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   getSelectedStoreId() {
-    return storage.getSelectedStoreId();
+    return appSettings.getSelectedStoreId();
   }
   Future<bool> isValidToAddMoreWallet() async{
-    var storeId = storage.getSelectedStoreId();
+    var storeId = appSettings.getSelectedStoreId();
     int count = await walletUseCases.getCount(storeId);
     bool isPro = await RevenueCatService.isPro();
     return count < FreeLimits.walletLimit || isPro;
@@ -112,7 +111,7 @@ class HomeCubit extends Cubit<HomeState> {
   void onAddWalletClicked() async{
     bool isValid = await isValidToAddMoreWallet();
     if (isValid){
-      int storeId = storage.getSelectedStoreId();
+      int storeId = appSettings.getSelectedStoreId();
       Wallet item = Wallet();
       item.color = Colors.blue.toARGB32();
       item.storeId = storeId;
@@ -123,7 +122,7 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
   String getAutoDocumentNo() {
-    return storage.getAutoDocumentNo(getSelectedStoreId()).toString();
+    return appSettings.getAutoDocumentNo(getSelectedStoreId()).toString();
   }
   void onWalletTapped(int index) async{
     List<Wallet> wallets = List.from(state.wallets);
@@ -164,5 +163,8 @@ class HomeCubit extends Cubit<HomeState> {
     }
     ordered.addAll(walletMap.values);
     return ordered;
+  }
+  bool isShowLowStockAlert(){
+    return appSettings.getMinimumQuantitySettings().showAlert;
   }
 }

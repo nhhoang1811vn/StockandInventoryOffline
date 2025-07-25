@@ -279,6 +279,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
         emit(state.copyWith(state: OpenInputQuantityDialogState(good)));
       }else{
         saveThenAddTransaction(good, 1, state.item!.type == DocumentType.incoming ? good.purchasePrice : good.salePrice);
+        await Future.delayed(Duration(seconds: 2));
         onBatchScanMenuClicked();
       }
 
@@ -296,7 +297,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
       transaction.quantity = quantity;
       transaction.price = price;
       transaction.type = state.item!.type;
-      transaction.storeId = storage.getSelectedStoreId();
+      transaction.storeId = appSettings.getSelectedStoreId();
       await useCase.insertTransaction(transaction);
       loadTransactions();
     }
@@ -314,5 +315,9 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
     appSettings.setSaveDocumentSetting(setting);
     sort();
     filter();
+  }
+
+  int getSelectedStoreId() {
+    return appSettings.getSelectedStoreId();
   }
 }

@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:good_manager/core/services/notification_service.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
@@ -11,6 +15,8 @@ import 'package:good_manager/presentation/widgets/selected_store_view.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:sprintf/sprintf.dart';
 
+import '../../../common/helpers/injection.container.dart';
+import '../../../core/services/low_stock_service.dart';
 import '../../../domain/entities/document.dart';
 import '../../../domain/free_limits.dart';
 import '../base/base_state.dart';
@@ -33,10 +39,46 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  static final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   @override
   void initState() {
     super.initState();
     context.read<HomeCubit>().initState();
+    _requestPermissions();
+    var isShowLowStockAlert = context.read<HomeCubit>().isShowLowStockAlert();
+    if (isShowLowStockAlert){
+      _checkLowStockAndShowAlert();
+    }
+  }
+  Future<void> _requestPermissions() async {
+    if (Platform.isIOS) {
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    } else if (Platform.isAndroid) {
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+      flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+
+      final bool? grantedNotificationPermission =
+      await androidImplementation?.requestNotificationsPermission();
+      setState(() {
+        //_notificationsEnabled = grantedNotificationPermission ?? false;
+      });
+    }
+  }
+  Future<void> _checkLowStockAndShowAlert() async {
+    final lowStockService = getIt<LowStockService>();
+    final hasLowStock = await lowStockService.hasLowStock();
+
+    if (hasLowStock && context.mounted) {
+      NotificationService.showNotification(id: 0, title: AppLocalizations.of(context)!.notification_low_stock_alert_title, body: AppLocalizations.of(context)!.notification_low_stock_alert_message, payload: "reorder");
+    }
   }
 
   @override
@@ -84,18 +126,6 @@ class HomePageState extends State<HomePage> {
   double iconSize = 20;
 
   Widget _buildContent(HomeState state) {
-    final wallets = [
-      {'balance': '\$5,000', 'name': 'Main Wallet'},
-      {'balance': '\$1,250', 'name': 'Savings'},
-      {'balance': '\$300', 'name': 'Crypto'},
-    ];
-
-    final transactions = [
-      {'title': 'Sent to John', 'amount': '-\$50'},
-      {'title': 'Received Salary', 'amount': '+\$2,000'},
-      {'title': 'Paid Electric Bill', 'amount': '-\$100'},
-    ];
-
     List<Widget> children = [
       SelectedStoreView(),
       Padding(
@@ -142,7 +172,7 @@ class HomePageState extends State<HomePage> {
               //SizedBox(height: 16),
               //SaleReportWidget(),
               SizedBox(height: 16),
-              _walletsCard(state),
+              _walletsCard(context, state),
             ],
           )),
     ];
@@ -206,14 +236,14 @@ class HomePageState extends State<HomePage> {
                       height: 4,
                     ),
                     Text(AppLocalizations.of(context)!.title_good_count + ": ${state.countGoods}",
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                        style: Theme.of(context).textTheme.bodyMedium),
                     SizedBox(
                       height: 4,
                     ),
                     Text(
                         AppLocalizations.of(context)!.title_total_quantity +
                             ": ${Utils.getQuantityText(state.quantityTotal)}",
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                        style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 )),
                 Icon(UIConstants.goodIconData, color: Theme.of(context).colorScheme.primary)
@@ -440,12 +470,7 @@ class HomePageState extends State<HomePage> {
         ));
   }
 
-  Widget _walletsCard(HomeState state) {
-    final transactions = [
-      {'title': 'Sent to John', 'amount': '-\$50'},
-      {'title': 'Received Salary', 'amount': '+\$2,000'},
-      {'title': 'Paid Electric Bill', 'amount': '-\$100'},
-    ];
+  Widget _walletsCard(BuildContext context,HomeState state) {
     final double cardHeight = 160;
     final double overlap = 50;
     final int walletCount = state.wallets.length;
@@ -529,9 +554,9 @@ class HomePageState extends State<HomePage> {
             if (state.payments.isNotEmpty)
               Column(children: [
                 const Divider(),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.all(8.0),
-                  child: Text("Recent Payments", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  child: Text("Recent Payments",style : Theme.of(context).textTheme.titleMedium)
                 ),
                 Column(children: state.payments.map((payment) {
                   return PaymentItemRow(payment, ColorUtils.getItemBgColor1(context), (item){}, (item){});

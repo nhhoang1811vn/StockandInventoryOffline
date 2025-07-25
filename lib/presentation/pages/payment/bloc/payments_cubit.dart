@@ -17,7 +17,6 @@ import 'package:good_manager/presentation/pages/payment/criteria/by_type_criteri
 import 'package:good_manager/presentation/pages/payment/criteria/by_wallet_criteria.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../data/storage.dart';
 import '../../../../domain/entities/payment.dart';
 import '../../../../domain/entities/payments_setting.dart';
 import '../../../../domain/usecases/payment/payment_usercases.dart';
@@ -29,14 +28,15 @@ part 'payments_state.dart';
 
 @injectable
 class PaymentsCubit extends Cubit<PaymentsState> {
-  final Storage storage;
+  //final Storage storage;
   final AppSettings appSettings;
   final DocumentUseCases documentUseCases;
   final PaymentUseCases useCase;
   final PaymentCategoryUseCases paymentCategoryUseCases;
 
   PaymentsCubit(
-      {required this.storage,
+      {
+        //required this.storage,
       required this.appSettings,
       required this.useCase,
       required this.documentUseCases,
@@ -55,14 +55,14 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   void onAddInboundPayment() {
     Payment item = Payment();
     item.type = PaymentType.inbound;
-    item.storeId = storage.getSelectedStoreId();
+    item.storeId = appSettings.getSelectedStoreId();
     item.walletId = appSettings.getSavePaymentLastSelectedWalletId();
     emit(state.copyWith(state: OpenSavePaymentPageState(item)));
   }
   void onAddOutboundPayment() {
     Payment item = Payment();
     item.type = PaymentType.outbound;
-    item.storeId = storage.getSelectedStoreId();
+    item.storeId = appSettings.getSelectedStoreId();
     item.walletId = appSettings.getSavePaymentLastSelectedWalletId();
     emit(state.copyWith(state: OpenSavePaymentPageState(item)));
   }
@@ -70,7 +70,7 @@ class PaymentsCubit extends Cubit<PaymentsState> {
     emit(state.copyWith(state: OpenSavePaymentPageState(item)));
   }
   void loadItems() async {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     List<Payment> payments = await useCase.getAllByStoreId(storeId);
     List<PaymentCategory?> categories = payments
         //.where((payment) => payment.category != null)

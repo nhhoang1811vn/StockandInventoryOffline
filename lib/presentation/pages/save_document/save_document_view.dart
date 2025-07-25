@@ -19,7 +19,6 @@ import 'package:good_manager/presentation/pages/save_document/components/filter_
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/add_quantity_and_price/add_quantity_and_price_dialog.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -27,7 +26,7 @@ import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../domain/entities/supplier.dart';
-import '../../style_size.dart';
+import '../../review_manager.dart';
 import '../../widgets/search_bar_widget.dart';
 import '../../widgets/snackbar_widgets.dart';
 import '../../widgets/views.dart';
@@ -67,10 +66,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
             ScaffoldMessenger.of(context).showSnackBar(
                 snackBarWhenFailureWithText(state.exceptionError));
           } else if (state.state is SaveDocumentSuccessfulState) {
-            final InAppReview inAppReview = InAppReview.instance;
-            if (await inAppReview.isAvailable()) {
-              inAppReview.requestReview();
-            }
+            ReviewManager.maybeRequestReview();
             ScaffoldMessenger.of(context)
                 .showSnackBar(snackBarWhenSuccess(context));
             Navigator.of(context).pop();
@@ -144,13 +140,13 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
             final good = Good();
             good.name = barcode;
             good.barCode = barcode;
-            good.storeId = storage.getSelectedStoreId();
+            good.storeId = context.read<SaveDocumentCubit>().getSelectedStoreId();
 
             DocumentTransaction transaction = DocumentTransaction();
             transaction.quantity = 1;
             transaction.price = 0.0;
             transaction.type = widget.item.type;
-            transaction.storeId = storage.getSelectedStoreId();
+            transaction.storeId = context.read<SaveDocumentCubit>().getSelectedStoreId();
 
             final result = await Navigator.of(context)
                 .pushNamed(Pages.save_good, arguments: {
@@ -338,39 +334,39 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                       ],
                     ),
                   ),
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        height: 32,
-                        color: Colors.blue,
-                        child: IntrinsicHeight(
-                            child: Row(
-                          children: [
-                            SizedBox(width: 16),
-                            Text(state.transactions.length.toString(),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: TextSize.medium)),
-                            SizedBox(width: 16),
-                            VerticalDivider(width: 2, color: Colors.white),
-                            SizedBox(width: 16),
-                            Text(
-                                Config.currencyFormat.format(state.totalQuantity),
-                               // .toString(),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: TextSize.medium)),
-                            SizedBox(width: 16),
-                            VerticalDivider(width: 2, color: Colors.white),
-                            SizedBox(width: 16),
-                            Text(
-                                Config.currencyFormat.format(state.totalAmount),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: TextSize.medium)),
-                          ],
-                        )),
-                      ))
+                  _buildSummaryView(state)
+                  // Align(
+                  //     alignment: Alignment.bottomCenter,
+                  //     child: Container(
+                  //       height: 30,
+                  //       color: Theme.of(context).colorScheme.primary,
+                  //       child: IntrinsicHeight(
+                  //           child: Row(
+                  //         children: [
+                  //           SizedBox(width: 16),
+                  //           Text(state.transactions.length.toString(),
+                  //               style: TextStyle(
+                  //                   color: Colors.white,
+                  //                   fontSize: TextSize.medium)),
+                  //           SizedBox(width: 16),
+                  //           VerticalDivider(width: 2, color: Colors.white),
+                  //           SizedBox(width: 16),
+                  //           Text(
+                  //               Config.currencyFormat.format(state.totalQuantity),
+                  //               style: TextStyle(
+                  //                   color: Colors.white,
+                  //                   fontSize: TextSize.medium)),
+                  //           SizedBox(width: 16),
+                  //           VerticalDivider(width: 2, color: Colors.white),
+                  //           SizedBox(width: 16),
+                  //           Text(
+                  //               Config.currencyFormat.format(state.totalAmount),
+                  //               style: TextStyle(
+                  //                   color: Colors.white,
+                  //                   fontSize: TextSize.medium)),
+                  //         ],
+                  //       )),
+                  //     ))
                 ],
               ),
               floatingActionButton: FloatingActionButton(
@@ -379,6 +375,32 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                     context.read<SaveDocumentCubit>().onAddGoodClicked(),
               ),
             ));
+  }
+
+  Widget _buildSummaryView(SaveDocumentState state){
+    var textStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+        color: Theme.of(context).colorScheme.onPrimary
+    );
+    return Container(
+        width: double.infinity,
+        color: Theme.of(context).colorScheme.primary,
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
+          IntrinsicHeight(
+            child: Row(children: [
+              Text("${AppLocalizations.of(context)!.title_good_count}: ${state.transactions.length.toString()}", style: textStyle,),
+              SizedBox(width: 4,),
+              VerticalDivider(width: 2,color: Colors.white,),
+              SizedBox(width: 4,),
+              Text("${AppLocalizations.of(context)!.field_quantity}: ${Config.currencyFormat.format(state.totalQuantity)}", style: textStyle,),
+              SizedBox(width: 4,),
+              VerticalDivider(width: 2,color: Colors.white,),
+              SizedBox(width: 4,),
+              Text("${AppLocalizations.of(context)!.field_amount}: ${Config.currencyFormat.format(state.totalAmount)}", style: textStyle,),
+            ],),
+          )
+        ],)
+    );
   }
 
   PreferredSize _buildAppBar(BuildContext context, SaveDocumentState state) {

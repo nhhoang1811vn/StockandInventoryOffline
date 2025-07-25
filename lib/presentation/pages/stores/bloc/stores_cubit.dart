@@ -158,4 +158,8 @@ class StoresCubit extends Cubit<StoresState> {
     sort();
     filter();
   }
+
+  int getSelectedStoreId() {
+    return appSettings.getSelectedStoreId();
+  }
 }

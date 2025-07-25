@@ -5,16 +5,16 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../data/storage.dart';
 
-part 'barcode_scanner_cubit.freezed.dart';
-part 'barcode_scanner_state.dart';
+part 'barcode_scanner_settings_cubit.freezed.dart';
+part 'barcode_scanner_settings_state.dart';
 
 @injectable
-class BarcodeScannerCubit extends Cubit<BarcodeScannerState>{
+class BarcodeScannerSettingsCubit extends Cubit<BarcodeScannerSettingsState>{
   final Storage storage;
 
-  BarcodeScannerCubit({
+  BarcodeScannerSettingsCubit({
     required this.storage
-  }) : super(BarcodeScannerState.initial(
+  }) : super(BarcodeScannerSettingsState.initial(
       batchModeScan: storage.getBatchModeScan(),
       enableBeep: storage.getBarcodeScannerEnableBeep(),
       enableVibrate: storage.getBarcodeScannerEnableVibrate()));

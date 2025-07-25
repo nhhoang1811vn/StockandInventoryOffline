@@ -143,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       child: Text(
                         AppLocalizations.of(context)!.forgot_your_password,
-                        style: TextStyle(color: Color(0XFF2661FA)),
+                        style:  Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.primary),
                       ),
                     ),
                   ),

@@ -14,16 +14,18 @@ import 'package:good_manager/revenuecat_purchase_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../common/helpers/injection.container.dart';
+import 'core/services/notification_service.dart';
 import 'firebase_options.dart';
 
 late List<CameraDescription> cameras;
-//Storage storage = getIt<Storage>();
+//on the way remove this reference
 late Storage storage;
 bool justLogin = false;
-String initialRoute = "";
+//String initialRoute = "";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //await NotificationService.init();
   await configureDependencies();
   storage = getIt<Storage>();
   await storage.init();
@@ -76,6 +78,7 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    NotificationService.init(navigatorKey: _router.navigatorKey);
     _loadTheme();
 
     FirebaseAuth.instance.authStateChanges().listen((user) async {
@@ -137,15 +140,16 @@ class MyAppState extends State<MyApp> {
   }
 
   Locale locale(String languageCode) {
-    Locale _temp;
-    switch (languageCode) {
-      case "vi":
-        _temp = Locale("vi", "VN");
-        break;
-      default:
-        _temp = Locale("en", "US");
-    }
-    return _temp;
+    // Locale _temp;
+    // switch (languageCode) {
+    //   case "vi":
+    //     _temp = Locale("vi", "VN");
+    //     break;
+    //   default:
+    //     _temp = Locale("en", "US");
+    // }
+    return Locale(languageCode);
+    //return _temp;
   }
 
   changeLanguage(String code) {
@@ -156,6 +160,19 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
+    final baseLight = ThemeData.light();
+    final baseDark = ThemeData.dark();
+
+    final boldTextTheme = baseLight.textTheme.copyWith(
+      titleSmall: baseLight.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+      titleMedium: baseLight.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+    );
+
+    final boldDarkTextTheme = baseDark.textTheme.copyWith(
+      titleSmall: baseDark.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+      titleMedium: baseDark.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+    );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
@@ -166,11 +183,8 @@ class MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(
           brightness: Brightness.light,
           seedColor: Colors.blue,
-          //primary: Colors.blue.shade700,
-          //onPrimary: Colors.white,
-          //brightness: Brightness.light
         ),
-        //textTheme: customTextTheme
+        textTheme: boldTextTheme
       ),
       darkTheme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color.fromARGB(255, 18, 18, 18), // or any dark background you prefer
@@ -179,11 +193,9 @@ class MyAppState extends State<MyApp> {
         ),
         colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.blue,
-            //primary: Colors.blue.shade700,
-            //onPrimary: Colors.white,
             brightness: Brightness.dark
         ),
-          //textTheme: customTextTheme
+        textTheme: boldDarkTextTheme
       ),
       themeMode: _themeMode,
       onGenerateRoute: _router.getRoute,

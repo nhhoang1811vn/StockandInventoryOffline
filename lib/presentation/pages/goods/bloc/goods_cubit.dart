@@ -12,7 +12,6 @@ import 'package:good_manager/presentation/criteria/group_by_everywhere_criteria.
 import 'package:good_manager/presentation/pages/goods/sort/sort_by_barcode_goods.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../data/storage.dart';
 import '../../../../domain/entities/good.dart';
 import '../../../../domain/entities/goods_setting.dart';
 import '../../../../domain/entities/group.dart';
@@ -30,13 +29,13 @@ part 'goods_state.dart';
 
 @injectable
 class GoodsCubit extends Cubit<GoodsState> {
-  final Storage storage;
+  //final Storage storage;
   final GoodsUseCases goodsUseCase;
   final GroupsUseCases groupsUseCase;
   final DocumentUseCases documentsUseCases;
   final AppSettings appSettings;
   GoodsCubit({
-    required this.storage,
+    //required this.storage,
     required this.appSettings,
     required this.goodsUseCase,
     required this.groupsUseCase,
@@ -84,7 +83,7 @@ class GoodsCubit extends Cubit<GoodsState> {
   void onAddGood(){
     Good item = Good();
     item.groupId = getSelectedGroupId();
-    item.storeId = storage.getSelectedStoreId();
+    item.storeId = appSettings.getSelectedStoreId();
 
     emit(state.copyWith(state: OpenSaveGoodPageState(item)));
   }
@@ -97,7 +96,7 @@ class GoodsCubit extends Cubit<GoodsState> {
   void onAddGroup() async {
     Group item = Group();
     item.groupId = getSelectedGroupId();
-    item.storeId = storage.getSelectedStoreId();
+    item.storeId = appSettings.getSelectedStoreId();
 
     emit(state.copyWith(state: AddGroupState(item)));
   }
@@ -126,7 +125,7 @@ class GoodsCubit extends Cubit<GoodsState> {
     refresh();
   }
   void loadData() async{
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     List<Group> allGroups = await groupsUseCase.getAllByStoreId(storeId);
     List<Good> allGoods = await goodsUseCase.getAllByStoreId(storeId);
     emit(state.copyWith(allGroups: allGroups, allGoods: allGoods));
@@ -552,7 +551,7 @@ class GoodsCubit extends Cubit<GoodsState> {
       transaction.quantity = quantity;
       transaction.price = price;
       transaction.type = state.document!.type;
-      transaction.storeId = storage.getSelectedStoreId();
+      transaction.storeId = appSettings.getSelectedStoreId();
       int transactionId = await documentsUseCases.insertTransaction(transaction);
       if (transactionId > 0){
         if (transaction.type == DocumentType.incoming){

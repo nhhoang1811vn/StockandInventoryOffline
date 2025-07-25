@@ -4,7 +4,6 @@ import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/entities/payments_setting.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/pages/payment/components/add_payment_dialog.dart';
 import 'package:good_manager/presentation/pages/payment/components/filter_payment_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/selected_store_view.dart';
@@ -128,39 +127,15 @@ class PaymentsPageState extends State<PaymentsPage>
         icon: Icon(Icons.category));
   }
 
-  PreferredSize _buildAppBar(PaymentsState state) {
-    return PreferredSize(
-        preferredSize: Size.fromHeight(UIConstants.appBarHeight * 2 + 20),
-        child: AppBar(
-            title: new Text(AppLocalizations.of(context)!.payments_title),
-            actions: [
-              _buildFilterMenu(state),
-              _buildCategoriesMenu(),
-              _buildHelpMenu()
-            ],
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(UIConstants.appBarHeight + 20),
-              child: Column(
-                children: [
-                  SelectedStoreView(),
-                  TabBar(
-                    controller: _tabController,
-                    indicatorColor: Theme.of(context).colorScheme.primary,
-                    tabs: [
-                      Tab(
-                          text: AppLocalizations.of(context)!
-                              .document_list_tab_all.toUpperCase()),
-                      Tab(
-                          text: AppLocalizations.of(context)!
-                              .title_inbound_payment.toUpperCase()),
-                      Tab(
-                          text: AppLocalizations.of(context)!
-                              .title_outbound_payment.toUpperCase()),
-                    ],
-                  )
-                ],
-              ),
-            )));
+  AppBar _buildAppBar(PaymentsState state) {
+    return new AppBar(
+        title: new Text(AppLocalizations.of(context)!.payments_title),
+        actions: [
+          _buildFilterMenu(state),
+          _buildCategoriesMenu(),
+          _buildHelpMenu()
+        ],
+        );
   }
   Widget _buildAllItems(PaymentsState state) {
     return Column(
@@ -315,37 +290,42 @@ class PaymentsPageState extends State<PaymentsPage>
     return BlocConsumer<PaymentsCubit, PaymentsState>(
         builder: (context, state) => Scaffold(
             appBar: _buildAppBar(state),
-            body: TabBarView(controller: _tabController, children: [
-              _buildAllItems(state),
-              _buildInboundPayment(state),
-              _buildOutboundPayment(state),
-            ]),
+            body: Column(
+              children: [
+                SelectedStoreView(),
+                TabBar(
+                    controller: _tabController,
+                    indicatorColor: Theme.of(context).colorScheme.primary,
+                    tabs: [
+                      Tab(
+                          text: AppLocalizations.of(context)!
+                              .document_list_tab_all.toUpperCase()),
+                      Tab(
+                          text: AppLocalizations.of(context)!
+                              .title_inbound_payment.toUpperCase()),
+                      Tab(
+                          text: AppLocalizations.of(context)!
+                              .title_outbound_payment.toUpperCase()),
+                    ],
+                ),
+                Expanded(child: TabBarView(controller: _tabController, children: [
+                  _buildAllItems(state),
+                  _buildInboundPayment(state),
+                  _buildOutboundPayment(state),
+                ]))
+              ],
+            ),
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
-                if (_tabController.index == 1) {
-                  context.read<PaymentsCubit>().onAddInboundPayment();
-                } else if (_tabController.index == 2) {
-                  context.read<PaymentsCubit>().onAddOutboundPayment();
-                } else {
-                  //show dialog
-                  PaymentType? type = await showDialog(
-                      context: context, builder: (_) => AddPaymentDialog(), barrierDismissible: true);
-                  if (type != null) {
-                    if (type == PaymentType.inbound){
-                      context.read<PaymentsCubit>().onAddInboundPayment();
-                    }else{
-                      context.read<PaymentsCubit>().onAddOutboundPayment();
-                    }
+                PaymentType? type = await showAddPaymentBottomSheet(context);
+                if (type != null) {
+                  if (type == PaymentType.inbound){
+                    context.read<PaymentsCubit>().onAddInboundPayment();
+                  }else{
+                    context.read<PaymentsCubit>().onAddOutboundPayment();
                   }
                 }
               },
-              // onPressed: () {
-              //   if (_tabController.index == 0 || _tabController.index == 1) {
-              //     context.read<PaymentsCubit>().onAddInboundPayment();
-              //   } else {
-              //     context.read<PaymentsCubit>().onAddOutboundPayment();
-              //   }
-              // },
               child: Icon(Icons.add),
             )),
         listenWhen: (p1, p2) => p1.state != p2.state,
@@ -360,5 +340,37 @@ class PaymentsPageState extends State<PaymentsPage>
             }
           }
         });
+  }
+  Future<PaymentType?> showAddPaymentBottomSheet(BuildContext context) async {
+    return await showModalBottomSheet<PaymentType>(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                AppLocalizations.of(context)!.select_payment_type,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            ListTile(
+              title: Text(AppLocalizations.of(context)!.title_inbound_payment),
+              onTap: () => Navigator.pop(context, PaymentType.inbound),
+            ),
+            ListTile(
+              title: Text(AppLocalizations.of(context)!.title_outbound_payment),
+              onTap: () => Navigator.pop(context, PaymentType.outbound),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

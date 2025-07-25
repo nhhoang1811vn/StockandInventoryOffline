@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/common/helpers/injection.container.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/barcode_scanner_page.dart';
-import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart';
+import 'package:good_manager/presentation/pages/barcode_scanner_settings/barcode_scanner_settings_page.dart';
+import 'package:good_manager/presentation/pages/barcode_scanner_settings/bloc/barcode_scanner_settings_cubit.dart';
 import 'package:good_manager/presentation/pages/customers/bloc/bloc.dart';
 import 'package:good_manager/presentation/pages/customers/customers_page.dart';
 import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.dart';
@@ -297,10 +298,12 @@ class AppRouter {
                   ),
                 ));
       case Pages.barcode_scanner:
-        //Map<dynamic, dynamic> args = settings.arguments as Map;
+        return MaterialPageRoute(
+            builder: (_) => BarcodeScannerPage());
+      case Pages.barcode_scanner_settings:
         return MaterialPageRoute(
             builder: (_) =>
-                BlocProvider(create: (context) => getIt<BarcodeScannerCubit>(), child: BarcodeScannerPage()));
+                BlocProvider(create: (context) => getIt<BarcodeScannerSettingsCubit>(), child: BarcodeScannerSettingsPage()));
       case Pages.signup:
         return _buildRoute(settings, BlocProvider(create: (context) => getIt<AuthCubit>(), child: SignUpScreen()));
 

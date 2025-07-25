@@ -63,7 +63,7 @@ class MainPageState extends State<MainPage> {
         Navigator.of(context).pop();
       },
       canCancel: false,
-      title: Text('Enter PIN to unlock'),
+      title: Text(AppLocalizations.of(context)!.enter_pin_to_unlock),
     );
   }
 

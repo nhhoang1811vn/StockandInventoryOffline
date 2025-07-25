@@ -23,7 +23,6 @@ class DialogUtils{
             child: ListBody(
               children: <Widget>[
                 Text(message),
-                //Text('Would you like to approve of this message?'),
               ],
             ),
           ),

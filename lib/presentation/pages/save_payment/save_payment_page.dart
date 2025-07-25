@@ -19,6 +19,7 @@ import 'package:intl/intl.dart';
 import '../../../domain/entities/document.dart';
 import '../../../main.dart';
 import '../../markdown/md_provider_factory.dart';
+import '../../review_manager.dart';
 import '../../utils.dart';
 import '../../widgets/circle_button_widget.dart';
 import '../../widgets/snackbar_widgets.dart';
@@ -81,7 +82,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
               context.read<SavePaymentCubit>().onWalletChanged(item);
             },
             onAddButtonPressed: () async {
-              int storeId = storage.getSelectedStoreId();
+              int storeId = context.read<SavePaymentCubit>().getSelectedStoreId();
               Wallet item = Wallet();
               item.storeId = storeId;
               item.color = Colors.blue.toARGB32();
@@ -174,6 +175,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
           ScaffoldMessenger.of(context)
               .showSnackBar(snackBarWhenFailure(context));
         } else if (state.state is SaveItemSuccessful) {
+          ReviewManager.maybeRequestReview();
           ScaffoldMessenger.of(context)
               .showSnackBar(snackBarWhenSuccess(context));
           Navigator.of(context).pop(state.item);

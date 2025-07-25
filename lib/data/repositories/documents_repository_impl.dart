@@ -1,5 +1,5 @@
-import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/db/db_helper.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/domain/repositories/document_repositories.dart';
 import 'package:injectable/injectable.dart';
@@ -9,8 +9,8 @@ import '../../domain/entities/document.dart';
 
 @Injectable(as: DocumentRepository)
 class DocumentRepositoryImpl implements DocumentRepository {
-  final Storage storage;
-  DocumentRepositoryImpl(this.storage);
+  final AppSettings appSettings;
+  DocumentRepositoryImpl(this.appSettings);
 
   var db = new DBHelper();
   @override
@@ -41,7 +41,7 @@ class DocumentRepositoryImpl implements DocumentRepository {
   }
   @override
   Future<List<Document>> getInRange(DateTime start, DateTime end) {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     return db.getDocumentsInRange(storeId, start, end);
   }
 
@@ -82,13 +82,13 @@ class DocumentRepositoryImpl implements DocumentRepository {
 
   @override
   Future<List<Document>> getInRangeByCustomerId(int id, DateTime start, DateTime end) {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     return db.getDocumentsInRangeByCustomerId(storeId, id, start, end);
   }
 
   @override
   Future<List<Document>> getInRangeBySupplierId(int id, DateTime start, DateTime end) {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     return db.getDocumentsInRangeBySupplierId(storeId, id, start, end);
   }
 }

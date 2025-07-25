@@ -45,6 +45,7 @@ class Pages {
 
   static const String select_group = '/select_group';
   static const String barcode_scanner = "/barcode_scanner";
+  static const String barcode_scanner_settings = "/barcode_scanner_settings";
   static const String report = "/report";
   static const String report_detail = "/report_detail";
 

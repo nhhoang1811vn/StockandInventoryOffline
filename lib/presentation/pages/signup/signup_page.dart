@@ -4,7 +4,6 @@ import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/dialog_utils.dart';
 import 'package:good_manager/presentation/pages/login/auth_cubit.dart';
 import 'package:good_manager/presentation/pages/login/components/background.dart';
-import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/widgets/progress_indicaror.dart';
 
 
@@ -55,11 +54,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
           }else if (state is UserSingupButNotVerified) {
             Navigator.of(context).pop();
-            String title =  AppLocalizations.of(context)!.sign_up_successful; //'Sign up Success';
-            String message = AppLocalizations.of(context)!.email_not_verified_desc;
-            DialogUtils.showCustomDialog(context, title: title, message: message, okBtnFunction: (){
-              Navigator.of(context).pushNamedAndRemoveUntil(Pages.signIn, (route) => false);
-            });
+            // String title =  AppLocalizations.of(context)!.sign_up_successful; //'Sign up Success';
+            // String message = AppLocalizations.of(context)!.email_not_verified_desc;
+            // DialogUtils.showCustomDialog(context, title: title, message: message, okBtnFunction: (){
+            //   Navigator.of(context).pushNamedAndRemoveUntil(Pages.signIn, (route) => false);
+            // });
           }
         },
         builder: (context, state) {

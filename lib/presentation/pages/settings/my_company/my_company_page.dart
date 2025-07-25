@@ -54,7 +54,7 @@ class MyCompanyPageState extends State<MyCompanyPage> {
       children: [
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Text("This data will be displayed in printed form (invoices, sales, receipts, etc..."),
+          child: Text(AppLocalizations.of(context)!.company_info_message),
         ),
         Expanded(
             child: SingleChildScrollView(

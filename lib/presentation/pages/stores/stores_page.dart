@@ -118,7 +118,7 @@ class StoresPageState extends State<StoresPage> {
       Visibility(
         visible: data.showSearchBar,
         child: Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16, top : 16),
+          padding: EdgeInsets.all(16),
           child: SearchBarWidget(
             onTextChanged: (newValue) {
               context.read<StoresCubit>().searchTextChanged(newValue);
@@ -162,11 +162,15 @@ class StoresPageState extends State<StoresPage> {
     return  ListView.builder(
         itemBuilder: (BuildContext context, index) {
           Store item = data.items[index];
-          return StoreItemRow(item, (item) {
+          return StoreItemRow(item,
+              context.read<StoresCubit>().getSelectedStoreId(),
+              widget.isSelection,
+
+                  (item) {
             onPressed(item);
           }, (item) {
             onLongPressed(item);
-          }, widget.isSelection);
+          });
         },
         itemCount: data.items.length);
   }

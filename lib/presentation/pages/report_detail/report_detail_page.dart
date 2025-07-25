@@ -7,10 +7,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/domain/entities/payments_setting.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
-import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
+import 'package:good_manager/presentation/review_manager.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -43,6 +43,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
       List<ColumnReport> columns = getColumns(widget.type);
       context.read<ReportDetailCubit>().initColumn(columns);
     });
+    ReviewManager.maybeRequestReview();
   }
 
   List<ColumnReport> getColumns(ReportType type) {
@@ -549,7 +550,11 @@ class ReportDetailPageState extends State<ReportDetailPage> {
 
   String getStoreInfoText() {
     return sprintf(AppLocalizations.of(context)!.report_detail_store,
-        [storage.getSelectedStoreName()]);
+        [
+        context
+        .read<ReportDetailCubit>()
+        .getSelectedStoreName()
+          ]);
   }
 
   String getPeriodInfoText(ReportDetailState state) {

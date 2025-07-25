@@ -18,12 +18,11 @@ class DoNotHaveAccountText extends StatelessWidget {
           children: [
             TextSpan(
               text: AppLocalizations.of(context)!.dont_have_an_account_yet,
-              style: TextStyle(color: Colors.black),
+              style: Theme.of(context).textTheme.bodyMedium
             ),
             TextSpan(
               text: ' ' + AppLocalizations.of(context)!.sign_up_text,
-              style: TextStyle(color: Color(0xFF2661FA)),
-              //style: TextStyles.font11Blue600Weight,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.primary),
             ),
           ],
         ),

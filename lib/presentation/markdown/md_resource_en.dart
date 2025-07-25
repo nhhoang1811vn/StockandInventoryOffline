@@ -27,6 +27,12 @@ With gratitude,
 AppViet Team
   """;
  static const String whatNews = """
+ ### Version 1.0.40 - 2025 Jul 25    
+  * Fixed issue can not scan barcode on Android platform.
+  * Fixed issue low stock alert not displayed when start app. 
+  * Fixed reported bugs.
+  * Updated UI/UX.  
+ 
   ### Version 1.0.45 - 2025 Jul 12  
   * Fixed reported bugs.  
  

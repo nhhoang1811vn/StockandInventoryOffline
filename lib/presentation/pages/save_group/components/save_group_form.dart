@@ -6,9 +6,9 @@ import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
-import 'package:in_app_review/in_app_review.dart';
 
 import '../../../../presentation/widgets/snackbar_widgets.dart';
+import '../../../review_manager.dart';
 import '../../../utils.dart';
 import '../../../widgets/circle_button_widget.dart';
 
@@ -32,21 +32,12 @@ class SaveGroupForm extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.error_same_barcode));
           }
           else if (state.state is SaveItemSuccessful) {
-            final InAppReview inAppReview = InAppReview.instance;
-            if (await inAppReview.isAvailable()) {
-              inAppReview.requestReview();
-            }
+            ReviewManager.maybeRequestReview();
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
             Navigator.of(context).pop(state.item);
           } else if (state.state is OpenBarcodeScannerPageState){
             var result = await Utils.scanBarcode(context);
-            // var result = await Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //       builder: (context) => const SimpleBarcodeScannerPage(),
-            //     ));
             if (result != null && result != -1){
-              //Utils.handleABarcodeFound();
               barcodeTextController.text = result;
               context.read<SaveGroupCubit>().barCodeChanged(result);
             }

@@ -12,6 +12,7 @@ import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
 import 'package:intl/intl.dart';
 
 import '../../constants.dart';
+import '../../review_manager.dart';
 import '../../widgets/primary_button.dart';
 import '../../widgets/snackbar_widgets.dart';
 import '../base/base_state.dart';
@@ -39,6 +40,7 @@ class SaveWalletPageState extends State<SaveWalletPage> {
             ScaffoldMessenger.of(context)
                 .showSnackBar(snackBarWhenFailure(context));
           } else if (state.state is SaveItemSuccessful) {
+            ReviewManager.maybeRequestReview();
             ScaffoldMessenger.of(context)
                 .showSnackBar(snackBarWhenSuccess(context));
             Navigator.of(context).pop(state.item);
@@ -79,21 +81,24 @@ class SaveWalletPageState extends State<SaveWalletPage> {
                             content: SingleChildScrollView(
                               child: BlockPicker(
                                 pickerColor: state.color,
-                                onColorChanged: context
-                                    .read<SaveWalletCubit>()
-                                    .onColorChanged,
+                                onColorChanged: (newColor){
+                                  context
+                                      .read<SaveWalletCubit>()
+                                      .onColorChanged(newColor);
+                                  Navigator.of(context).pop();
+                                }
                               ),
                             ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(); // Close the dialog
-                                },
-                                child: Text(AppLocalizations.of(context)!
-                                    .action_ok),
-                              ),
-                            ],
+                            // actions: [
+                            //   TextButton(
+                            //     onPressed: () {
+                            //       Navigator.of(context)
+                            //           .pop(); // Close the dialog
+                            //     },
+                            //     child: Text(AppLocalizations.of(context)!
+                            //         .action_ok),
+                            //   ),
+                            // ],
                           ));
                 },
                 child: Container(

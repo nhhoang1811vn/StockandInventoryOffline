@@ -66,5 +66,16 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app needs access to the microphone for speech recognition.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>This app uses speech recognition to process your voice commands.</string>
+
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>fetch</string>
+      <string>remote-notification</string>
+    </array>
 </dict>
 </plist>

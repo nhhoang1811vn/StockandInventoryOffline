@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/entities/report_type.dart';
@@ -17,7 +18,6 @@ import 'package:good_manager/presentation/constants.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../data/storage.dart';
 import '../../../../domain/entities/document.dart';
 import '../../../../domain/entities/group.dart';
 import '../../../../domain/entities/payment.dart';
@@ -42,7 +42,7 @@ class ColumnReport {
 
 @injectable
 class ReportDetailCubit extends Cubit<ReportDetailState> {
-  final Storage storage;
+  final AppSettings appSettings;
   final GoodsUseCases goodsUseCase;
   final GroupsUseCases groupsUseCases;
   final PaymentUseCases paymentUseCases;
@@ -53,7 +53,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
   final WalletUseCases walletUseCases;
 
   ReportDetailCubit({
-    required this.storage,
+    required this.appSettings,
     required this.goodsUseCase,
     required this.groupsUseCases,
     required this.paymentUseCases,
@@ -230,7 +230,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
   }
   Future<void> initReorder() async{
     List<List<String>> rows = [];
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     List<Good> allGoods = await goodsUseCase.getAllByStoreId(storeId);
     allGoods.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
@@ -266,7 +266,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
   }
   Future<void> initListOfGoods(AppLocalizations localizations) async {
     List<List<String>> rows = [];
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     List<Good> allGoods = await goodsUseCase.getAllByStoreId(storeId);
     allGoods.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
@@ -319,7 +319,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
 
   Future<void> initDebtBySupplier() async {
     List<List<String>> rows = [];
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     List<Supplier> suppliers = await suppliersUseCase.getAllByStoreId(storeId);
     List<Document> allDocuments = await documentUseCases.getInRange(state.start!, state.end!);
     List<Document> incomingDocuments = allDocuments.where((item) => item.type == DocumentType.incoming).toList();
@@ -349,7 +349,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
 
   Future<void> initDebtByCustomer() async {
     List<List<String>> rows = [];
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     List<Customer> customers = await customersUseCase.getAllByStoreId(storeId);
     List<Document> allDocuments = await documentUseCases.getInRange(state.start!, state.end!);
     List<Document> outgoingDocuments = allDocuments.where((item) => item.type == DocumentType.outgoing).toList();
@@ -405,7 +405,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
 
   Future<void> initListOfWallets() async {
     List<List<String>> rows = [];
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     List<Wallet> wallets = await walletUseCases.getAllByStoreId(storeId);
     for (Wallet wallet in wallets) {
       List<Payment> prePayments = await paymentUseCases.getInRangeByWalletId(
@@ -433,7 +433,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
   }
   Future<void> initListOfSupplierPayments() async {
     List<List<String>> rows = [];
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     List<Supplier> suppliers = await suppliersUseCase.getAllByStoreId(storeId);
     for (Supplier supplier in suppliers){
       List<Payment> payments = await paymentUseCases.getInRangeBySupplierId(supplier.id!, state.start!, state.end!);
@@ -446,7 +446,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
   }
   Future<void> initListOfCustomerPayments() async {
     List<List<String>> rows = [];
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     List<Customer> customers = await customersUseCase.getAllByStoreId(storeId);
     for (Customer customer in customers){
       List<Payment> payments = await paymentUseCases.getInRangeByCustomerId(customer.id!, state.start!, state.end!);
@@ -503,5 +503,9 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
   }
   Future<Customer> getCustomer(int id){
     return customersUseCase.get(id);
+  }
+
+  getSelectedStoreName() {
+    return appSettings.getSelectedStoreName();
   }
 }

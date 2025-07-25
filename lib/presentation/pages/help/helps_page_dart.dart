@@ -15,25 +15,34 @@ class HelpsPageState extends State<HelpsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(AppLocalizations.of(context)!.help_title)),
-        body: ListView.separated(
-            itemCount: HelpType.values.length,
-            itemBuilder: (BuildContext context, int index) {
-              HelpType type = HelpType.values[index];
-              return ListTile(
-                trailing: Icon(Icons.navigate_next),
-                //visualDensity: VisualDensity(vertical: -3), // to compact
-                title: Text(type.getTitle(context),),
-                onTap: (){
-                  Navigator.of(context).pushNamed(Pages.help, arguments: {
-                    "title": type.getTitle(context),
-                    "content": MDProviderFactory.get().getHelpText(type)
-                  });
-                },
-              );
-            },
-          separatorBuilder: (context, index) {
-            return Divider(height: 1,);
-          },
-        ));
+        body: _buildBody());
   }
+  Widget _buildBody() {
+    return ListView(children: [
+      Card(
+        clipBehavior: Clip.antiAlias,
+        margin: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            for (int i = 0; i < HelpType.values.length; i++) ...[
+              ListTile(
+                title: Text(HelpType.values[i].getTitle(context)),
+                trailing: Icon(Icons.navigate_next),
+                onTap: () {
+                  Navigator.of(context).pushNamed(Pages.help, arguments: {
+                    "title": HelpType.values[i].getTitle(context),
+                    "content": MDProviderFactory.get().getHelpText(HelpType.values[i])
+                  });
+
+                  //onReportTypeTapped(HelpType.values[i]);
+                },
+              ),
+              if (i < HelpType.values.length - 1) Divider(height: 1),
+            ]
+          ],
+        ),
+      )
+    ]);
+  }
+
 }

@@ -1,5 +1,5 @@
 
-import 'package:good_manager/data/storage.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/domain/repositories/document_repositories.dart';
@@ -10,11 +10,11 @@ import '../../repositories/document_transaction_repositories.dart';
 
 @Injectable(as: DocumentUseCases)
 class DocumentUseCasesImpl implements DocumentUseCases{
-  final Storage storage;
+  final AppSettings appSettings;
   final DocumentRepository repository;
   final DocumentTransactionRepository transactionRepository;
 
-  DocumentUseCasesImpl({required this.storage,required this.repository, required this.transactionRepository});
+  DocumentUseCasesImpl({required this.appSettings,required this.repository, required this.transactionRepository});
 
   @override
   Future<bool> delete(int id) {
@@ -46,8 +46,8 @@ class DocumentUseCasesImpl implements DocumentUseCases{
 
   @override
   Future<int> insert(Document item) {
-    int storeId = storage.getSelectedStoreId();
-    storage.increaseAutoDocumentNo(storeId);
+    int storeId = appSettings.getSelectedStoreId();
+    appSettings.increaseAutoDocumentNo(storeId);
     return repository.insert(item);
   }
 

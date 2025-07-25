@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/data/storage.dart';
 import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/customer.dart';
 import 'package:good_manager/domain/entities/document.dart';
@@ -29,7 +28,7 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
   final WalletUseCases walletUseCases;
   final CustomersUseCase customersUseCase;
   final SuppliersUseCase suppliersUseCase;
-  final Storage storage;
+  //final Storage storage;
   final AppSettings appSettings;
 
   SavePaymentCubit({
@@ -38,7 +37,6 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     required this.walletUseCases,
     required this.customersUseCase,
     required this.suppliersUseCase,
-    required this.storage,
     required this.appSettings
 
   })
@@ -50,7 +48,7 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     PaymentCategory? selectedCategory = categories.firstWhereOrNull(
       (category) => category.id == item.categoryId,
     );
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     var wallets = await walletUseCases.getAllByStoreId(storeId);
     Wallet? selectedWallet = wallets.firstWhereOrNull((wallet) => wallet.id == item.walletId);
     emit(state.copyWith(
@@ -169,7 +167,7 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     emit(state.copyWith(categories: categories, selectedCategory: selectedCategory));
   }
   void onRefreshWallets() async {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     var wallets = await walletUseCases.getAllByStoreId(storeId);
     //var categories = allCategories.where((category) => category.type == state.item!.type).toList();
 
@@ -177,6 +175,10 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
           (wallet) => wallet.id == state.selectedWallet?.id,
     );
     emit(state.copyWith(wallets: wallets, selectedWallet: selectedWallet));
+  }
+
+  int getSelectedStoreId() {
+    return appSettings.getSelectedStoreId();
   }
 
 }

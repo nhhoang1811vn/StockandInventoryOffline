@@ -44,12 +44,7 @@ class AppTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-
-
     final borderColor = isDark ? Colors.white70 : Colors.black;
-    //final textColor = isDark ? Colors.white : Colors.black;
-    //final hintColor = isDark ? Colors.white54 : Colors.black54;
-
     OutlineInputBorder border = OutlineInputBorder(
       borderSide: BorderSide(color: borderColor, width: 1.0),
       borderRadius: BorderRadius.circular(8),
@@ -68,7 +63,6 @@ class AppTextField extends StatelessWidget {
     );
 
     return TextFormField(
-      //cursorColor: Colors.black,
       onTap: onTapped,
       controller: controller,
       initialValue: initialValue,
@@ -88,9 +82,8 @@ class AppTextField extends StatelessWidget {
           labelText: labelText,
           floatingLabelBehavior: FloatingLabelBehavior.always,
           errorText: error,
-          //labelStyle: TextStyle(fontSize: 17, color: Colors.black),
           hintText: hintText,
-          //hintStyle: TextStyle(fontSize: 17, color: Colors.black)
+
         ),
       autocorrect: false,
       textInputAction: TextInputAction.done,

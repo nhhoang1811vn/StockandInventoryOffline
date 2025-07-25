@@ -68,14 +68,13 @@ class SettingsDataPageState extends State<SettingsDataPage> {
               subtitle: cloudFileUpdatedTime.isEmpty
                   ? Text(AppLocalizations.of(context)!.cloud_file_no_updated)
                   : Text(cloudFileUpdatedTime),
-              onTap: () => onCloudPressed(context),
+              onTap: () => onCloudPressed(),
             ),
             buildDivider(),
             ListTile(
               leading: Icon(Icons.sync),
-              title: Text("Quick Sync"),
-              subtitle: Text(
-                  "It will restart the app, and sync the latest app data"),
+              title: Text(AppLocalizations.of(context)!.menu_quick_sync_title),
+              subtitle: Text(AppLocalizations.of(context)!.menu_quick_sync_desc),
               onTap: () => onQuickSyncPressed(context),
             ),
           ],
@@ -198,7 +197,7 @@ class SettingsDataPageState extends State<SettingsDataPage> {
     }
   }
 
-  void onCloudPressed(BuildContext context) async {
+  void onCloudPressed() async {
     //upload
     String dbPath = await PathUtils().getDatabasePath();
     File file = File(dbPath);
@@ -208,13 +207,24 @@ class SettingsDataPageState extends State<SettingsDataPage> {
       final ref = storageRef.child("$uid/database.db");
       try {
         await ref.putFile(file);
+        if (!mounted) {
+          return;
+        }
         ScaffoldMessenger.of(context)
             .showSnackBar(snackBarWhenSuccess(context));
         loadCloudFileUpdatedTime();
-      } on FirebaseException {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(snackBarWhenFailure(context));
-      } catch (e) {
+      }
+      // on FirebaseException {
+      //   if (!mounted) {
+      //     return;
+      //   }
+      //   ScaffoldMessenger.of(context)
+      //       .showSnackBar(snackBarWhenFailure(context));
+      // }
+      catch (e) {
+        if (!mounted) {
+          return;
+        }
         ScaffoldMessenger.of(context)
             .showSnackBar(snackBarWhenFailure(context));
       }

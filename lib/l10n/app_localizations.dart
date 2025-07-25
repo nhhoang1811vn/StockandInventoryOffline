@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
 import 'app_localizations_vi.dart';
 
 // ignore_for_file: type=lint
@@ -92,6 +93,7 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
+    Locale('es'),
     Locale('vi')
   ];
 
@@ -197,11 +199,11 @@ abstract class AppLocalizations {
   /// **'Outgoing'**
   String get outgoing_document_text;
 
-  /// No description provided for @add_document_title.
+  /// No description provided for @select_document_type.
   ///
   /// In en, this message translates to:
-  /// **'Add A Document'**
-  String get add_document_title;
+  /// **'Select document type'**
+  String get select_document_type;
 
   /// No description provided for @document_information.
   ///
@@ -1007,11 +1009,11 @@ abstract class AppLocalizations {
   /// **'Select group'**
   String get select_group_title;
 
-  /// No description provided for @message_type.
+  /// No description provided for @select_message_type.
   ///
   /// In en, this message translates to:
-  /// **'Message Type'**
-  String get message_type;
+  /// **'Select Message Type'**
+  String get select_message_type;
 
   /// No description provided for @message_type_bug_report.
   ///
@@ -1120,6 +1122,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Question or suggestion'**
   String get question_or_suggestion_title;
+
+  /// No description provided for @review_the_app_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Review the app'**
+  String get review_the_app_title;
 
   /// No description provided for @help_title.
   ///
@@ -1456,6 +1464,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save the data to cloud'**
   String get menu_push_data_to_cloud;
+
+  /// No description provided for @menu_quick_sync_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick sync'**
+  String get menu_quick_sync_title;
+
+  /// No description provided for @menu_quick_sync_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'It will restart the app, and sync the latest app data'**
+  String get menu_quick_sync_desc;
 
   /// No description provided for @login.
   ///
@@ -2182,6 +2202,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get action_back;
+
+  /// No description provided for @select_payment_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Select payment type'**
+  String get select_payment_type;
+
+  /// No description provided for @notification_low_stock_alert_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Low Stock Alert'**
+  String get notification_low_stock_alert_title;
+
+  /// No description provided for @notification_low_stock_alert_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Some items are low in stock. Please review them.'**
+  String get notification_low_stock_alert_message;
+
+  /// No description provided for @text_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get text_cancel;
+
+  /// No description provided for @scan_bar_code_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Bar code'**
+  String get scan_bar_code_title;
+
+  /// No description provided for @enter_pin_to_unlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter PIN to unlock'**
+  String get enter_pin_to_unlock;
+
+  /// No description provided for @notification_permission.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Permission'**
+  String get notification_permission;
+
+  /// No description provided for @notification_permission_content.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enable notifications in system settings.'**
+  String get notification_permission_content;
+
+  /// No description provided for @open_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get open_settings;
+
+  /// No description provided for @notification_permission_required_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification permission is required to enable alerts.'**
+  String get notification_permission_required_message;
+
+  /// No description provided for @company_info_message.
+  ///
+  /// In en, this message translates to:
+  /// **'This data will be displayed in printed form (invoices, sales, receipts, etc...'**
+  String get company_info_message;
+
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Themes'**
+  String get theme;
+
+  /// No description provided for @app_theme.
+  ///
+  /// In en, this message translates to:
+  /// **'App Theme'**
+  String get app_theme;
+
+  /// No description provided for @documents_colors.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents colors'**
+  String get documents_colors;
+
+  /// No description provided for @choose_theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose theme'**
+  String get choose_theme;
+
+  /// No description provided for @theme_system.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get theme_system;
+
+  /// No description provided for @theme_light.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get theme_light;
+
+  /// No description provided for @theme_dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get theme_dark;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -2193,7 +2321,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'vi'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'es', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -2205,6 +2333,7 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'en': return AppLocalizationsEn();
+    case 'es': return AppLocalizationsEs();
     case 'vi': return AppLocalizationsVi();
   }
 

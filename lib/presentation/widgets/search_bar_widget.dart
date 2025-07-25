@@ -23,18 +23,47 @@ class SearchBarWidget extends StatefulWidget {
 
 class SearchBarWidgetState extends State<SearchBarWidget> {
   late TextEditingController controller = TextEditingController();
+  //late stt.SpeechToText _speech;
+  //bool _isListening = false;
 
   @override
   void initState() {
     super.initState();
+    //_speech = stt.SpeechToText();
     controller.addListener(_onTextChanged);
   }
 
   @override
   void dispose() {
     controller.removeListener(_onTextChanged);
+    controller.dispose();
     super.dispose();
   }
+  // Future<void> _listen() async {
+  //   final micStatus = await Permission.microphone.request();
+  //   if (micStatus != PermissionStatus.granted) return;
+  //
+  //   bool available = await _speech.initialize(
+  //     onStatus: (val) {
+  //       if (val == 'done' || val == 'notListening') {
+  //         setState(() => _isListening = false);
+  //       }
+  //     },
+  //     onError: (val) => setState(() => _isListening = false),
+  //   );
+  //
+  //   if (available) {
+  //     setState(() => _isListening = true);
+  //     _speech.listen(
+  //       onResult: (val) {
+  //         setState(() {
+  //           controller.text = val.recognizedWords;
+  //         });
+  //       },
+  //       localeId: 'en_US',
+  //     );
+  //   }
+  // }
 
   void _onTextChanged() {
     setState(() {}); // Triggers rebuild on text change
@@ -80,7 +109,12 @@ class SearchBarWidgetState extends State<SearchBarWidget> {
                 if (result != null) {
                   controller.text = result;
                 }
-              }, icon: Icon(Icons.barcode_reader),)
+              }, icon: Icon(Icons.barcode_reader),),
+
+            // IconButton(
+            //   icon: Icon(_isListening ? Icons.mic_off : Icons.mic),
+            //   onPressed: _isListening ? _speech.stop : _listen,
+            // ),
           ],)
       ),
     );

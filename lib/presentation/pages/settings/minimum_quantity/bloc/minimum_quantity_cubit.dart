@@ -45,8 +45,8 @@ class MinimumQuantityCubit extends Cubit<MinimumQuantityState> {
     save();
   }
 
-  void onShowAlertChanged() {
-    emit(state.copyWith(showAlert: !state.showAlert));
+  void onShowAlertChanged(bool value) {
+    emit(state.copyWith(showAlert: value));
     save();
   }
 

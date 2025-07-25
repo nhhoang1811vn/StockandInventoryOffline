@@ -6,9 +6,9 @@ import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_customer/bloc/save_customer_cubit.dart';
-import 'package:in_app_review/in_app_review.dart';
 
 import '../../../../presentation/widgets/snackbar_widgets.dart';
+import '../../../review_manager.dart';
 
 class SaveCustomerForm extends StatelessWidget {
   final Customer? item;
@@ -22,10 +22,7 @@ class SaveCustomerForm extends StatelessWidget {
           if (state.state is SaveItemError) {
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
           } else if (state.state is SaveItemSuccessful) {
-            final InAppReview inAppReview = InAppReview.instance;
-            if (await inAppReview.isAvailable()) {
-              inAppReview.requestReview();
-            }
+            ReviewManager.maybeRequestReview();
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
             Navigator.of(context).pop(state.item);
           }

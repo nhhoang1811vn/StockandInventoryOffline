@@ -3,17 +3,19 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/main/main_page.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../common/helpers/injection.container.dart';
 import '../../../common/path_utils.dart';
 import '../../../db/db_helper.dart';
 import '../../../domain/entities/store.dart';
-import '../../../main.dart';
 import '../../../revenuecat_purchase_manager.dart';
 import '../../constants.dart';
 import '../../dialog_utils.dart';
@@ -31,6 +33,7 @@ class MorePage extends StatefulWidget {
 }
 
 class MorePageState extends State<MorePage> {
+  var appSettings = getIt<AppSettings>();
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
     packageName: 'Unknown',
@@ -40,19 +43,20 @@ class MorePageState extends State<MorePage> {
     installerStore: 'Unknown',
   );
   bool _isPro = false;
+
   @override
   void initState() {
     super.initState();
     _initPackageInfo();
     _loadIsPro();
   }
-  void _loadIsPro() async{
+
+  void _loadIsPro() async {
     bool isPro = await RevenueCatService.isPro();
     setState(() {
       _isPro = isPro;
     });
   }
-
 
   Future<void> _initPackageInfo() async {
     final info = await PackageInfo.fromPlatform();
@@ -76,37 +80,9 @@ class MorePageState extends State<MorePage> {
       ),
     );
   }
-  Widget _buildAnonymousWidget(){
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 16),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Image(
-          image: AssetImage('assets/images/user.png'),
-          width: 80,
-        ),
-        SizedBox(height: 8,),
-        InkWell(onTap: (){
-          onUpgradeAccountItemPressed();
-        },child: Column(children: [
-          Row(mainAxisSize: MainAxisSize.min,children: [
-            Text("Upgrade account", style: Theme.of(context).textTheme.titleLarge),
-            SizedBox(width: 8),
-            Icon(Icons.navigate_next)
-          ],),
-          SizedBox(height: 8,),
-          Text("You are currently on guess mode")
-        ],),)
 
-      ],),
-    );
-  }
   @override
   Widget build(BuildContext context) {
-    String displayName = FirebaseAuth.instance.currentUser?.displayName ?? "";
-    if (displayName.isEmpty) {
-      displayName = FirebaseAuth.instance.currentUser?.uid ?? "";
-    }
-    String email = FirebaseAuth.instance.currentUser?.email ?? "";
     bool isAnonymous = FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
     return Scaffold(
       appBar: LogoAppBar(),
@@ -116,53 +92,22 @@ class MorePageState extends State<MorePage> {
           margin: EdgeInsets.all(16),
           child: Column(
             children: [
+              SizedBox(height: 16),
+              _buildProfile(),
+              SizedBox(height: 16),
+              buildDivider(indent: 0),
               if (isAnonymous)
-                _buildAnonymousWidget()
-              else
-              Column(
-                children: [
-                  ListTile(
-                    onTap: () => {},
-                    title: Text(displayName,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.bold)),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(email, style: Theme.of(context).textTheme.bodyMedium),
-                        if (_isPro)
-                          _buildStockPremiumBadge(),
-                      ],
+                Column(
+                  children: [
+                    ListTile(
+                      leading: Icon(Icons.upgrade),
+                      title: Text(AppLocalizations.of(context)!.menu_item_upgrade_account),
+                      onTap: () => onUpgradeAccountItemPressed(),
                     ),
-                  ),
-                  buildDivider(),
-                ],
-              ),
+                    buildDivider(),
+                  ],
+                ),
 
-              ListTile(
-                leading: Icon(Icons.close),
-                title: Text(
-                    AppLocalizations.of(context)!.menu_item_delete_account),
-                onTap: () => onDeleteAccountItemPressed(),
-              ),
-              buildDivider(),
-              ListTile(
-                leading: Icon(UIConstants.storeIconData),
-                title: Text(AppLocalizations.of(context)!.stores_title),
-                trailing: Icon(Icons.navigate_next),
-                onTap: () => onStoresItemPressed(context),
-              ),
-              buildDivider(),
-              ListTile(
-                leading: Icon(Icons.change_circle),
-                title:
-                    Text(AppLocalizations.of(context)!.change_tracking_store),
-                subtitle: Text("${storage.getSelectedStoreName()}"),
-                trailing: Icon(Icons.navigate_next),
-                onTap: () => onChangeTrackingStoreItemPressed(context),
-              ),
               buildDivider(),
               ListTile(
                 leading: Icon(UIConstants.settingIconData),
@@ -183,8 +128,27 @@ class MorePageState extends State<MorePage> {
         Card(
           clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.all(16),
-          child: Column(
-            children: [
+          child: Column(children: [
+            ListTile(
+              leading: Icon(UIConstants.storeIconData),
+              title: Text(AppLocalizations.of(context)!.stores_title),
+              trailing: Icon(Icons.navigate_next),
+              onTap: () => onStoresItemPressed(context),
+            ),
+            buildDivider(),
+            ListTile(
+              leading: Icon(Icons.change_circle),
+              title:
+              Text(AppLocalizations.of(context)!.change_tracking_store),
+              subtitle: Text("${appSettings.getSelectedStoreName()}"),
+              trailing: Icon(Icons.navigate_next),
+              onTap: () => onChangeTrackingStoreItemPressed(context),
+            ),
+          ])),
+        Card(
+            clipBehavior: Clip.antiAlias,
+            margin: EdgeInsets.all(16),
+            child: Column(children: [
               ListTile(
                 leading: Icon(Icons.mail_outline),
                 title: Text(AppLocalizations.of(context)!
@@ -199,6 +163,39 @@ class MorePageState extends State<MorePage> {
                 onTap: () => onSelectMessageType(context),
               ),
               buildDivider(),
+              ListTile(
+                leading: Icon(Icons.star),
+                title: Text(AppLocalizations.of(context)!.review_the_app_title),
+                onTap: () async{
+                  //NotificationService.showNotification(id: 1, title: "title", body: "body");
+                  final InAppReview inAppReview = InAppReview.instance;
+                  if (await inAppReview.isAvailable()) {
+                    inAppReview.requestReview();
+                  } else{
+                    await inAppReview.openStoreListing();
+                  }
+                },
+              ),
+            ])),
+        Card(
+          clipBehavior: Clip.antiAlias,
+          margin: EdgeInsets.all(16),
+          child: Column(
+            children: [
+              // ListTile(
+              //   leading: Icon(Icons.mail_outline),
+              //   title: Text(AppLocalizations.of(context)!
+              //       .menu_item_invite_friend_header),
+              //   onTap: () => onInviteFriend(context),
+              // ),
+              // buildDivider(),
+              // ListTile(
+              //   leading: Icon(Icons.question_answer_outlined),
+              //   title: Text(
+              //       AppLocalizations.of(context)!.question_or_suggestion_title),
+              //   onTap: () => onSelectMessageType(context),
+              // ),
+              // buildDivider(),
               ListTile(
                 leading: Icon(Icons.help_outline),
                 title: Text(AppLocalizations.of(context)!.help_title),
@@ -226,21 +223,91 @@ class MorePageState extends State<MorePage> {
                 onTap: () => onPrivacyPolicy(),
                 trailing: Icon(Icons.navigate_next),
               ),
-              buildDivider(),
-              ListTile(
-                leading: Icon(Icons.logout),
-                title: Text(AppLocalizations.of(context)!.menu_item_sign_out),
-                //trailing: Icon(Icons.navigate_next),
-                onTap: () => onLogoutItemPressed(),
-              ),
+
             ],
           ),
         ),
+        Card(
+          clipBehavior: Clip.antiAlias,
+          margin: EdgeInsets.all(16),
+          child: Column(
+              children: [
+                ListTile(
+                  leading: Icon(Icons.close),
+                  title: Text(
+                      AppLocalizations.of(context)!.menu_item_delete_account),
+                  onTap: () => onDeleteAccountItemPressed(),
+                ),
+                buildDivider(),
+                ListTile(
+                  leading: Icon(Icons.logout),
+                  title: Text(AppLocalizations.of(context)!.menu_item_sign_out),
+                  //trailing: Icon(Icons.navigate_next),
+                  onTap: () => onLogoutItemPressed(),
+                ),
+              ])),
+
         Center(
             child: Text(sprintf(AppLocalizations.of(context)!.version,
                 [_packageInfo.version]))),
         SizedBox(height: 16),
       ]),
+    );
+  }
+
+  Widget _buildProfile() {
+    final user = FirebaseAuth.instance.currentUser;
+    bool isAnonymous = FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
+    String? photoUrl = null;
+    String? displayName = null;
+    String? email = null;
+    if (isAnonymous) {
+      photoUrl = null;
+      displayName = user?.uid;
+      email = "You are currently on guess mode";
+    } else {
+      photoUrl = user?.photoURL;
+      displayName = user?.displayName;
+
+      if (photoUrl == null && user?.providerData.isNotEmpty == true) {
+        photoUrl = user!.providerData.first.photoURL;
+      }
+
+      if (displayName == null ||
+          displayName.isEmpty && user?.providerData.isNotEmpty == true) {
+        displayName = user!.providerData.first.displayName;
+      }
+      email = user?.email ?? "";
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        photoUrl != null
+            ? CircleAvatar(
+                radius: 30,
+                backgroundImage: NetworkImage(photoUrl),
+              )
+            : CircleAvatar(
+                radius: 30,
+                child: Image(
+                  image: AssetImage('assets/images/user.png'),
+                ),
+              ),
+        SizedBox(height: 8),
+        Text(
+          displayName ?? "",
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        SizedBox(height: 8),
+        Text(email),
+        if (_isPro)
+          Column(
+            children: [
+              SizedBox(height: 8),
+              _buildStockPremiumBadge(),
+            ],
+          )
+      ],
     );
   }
 
@@ -280,8 +347,8 @@ class MorePageState extends State<MorePage> {
     if (result != null) {
       Store store = result as Store;
 
-      storage.setSelectedStoreId(store.id!);
-      storage.setSelectedStoreName(store.name);
+      appSettings.setSelectedStoreId(store.id!);
+      appSettings.setSelectedStoreName(store.name);
 
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => MainPage()),
@@ -320,45 +387,79 @@ class MorePageState extends State<MorePage> {
     launchUrl(emailLaunchUri);
   }
 
-  void onSelectMessageType(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (_) => SelectMessageTypeDialog((messageType) {
-              switch (messageType) {
-                case MessageType.BUG_REPORT:
-                  onBugReport(context);
-                  break;
-                case MessageType.FEEDBACK:
-                  onFeedback(context);
-                  break;
-                case MessageType.SUGGESTION:
-                  onSuggestion(context);
-                  break;
-                case MessageType.QUESTION:
-                  onQuestion(context);
-                  break;
-              }
-            }),
-        barrierDismissible: true);
+  void onSelectMessageType(BuildContext context) async {
+    var type = await showSelectMessageType(context);
+    if (type != null) {
+      switch (type) {
+        case MessageType.BUG_REPORT:
+          onBugReport(context);
+          break;
+        case MessageType.FEEDBACK:
+          onFeedback(context);
+          break;
+        case MessageType.SUGGESTION:
+          onSuggestion(context);
+          break;
+        case MessageType.QUESTION:
+          onQuestion(context);
+          break;
+      }
+    }
   }
 
+  Future<MessageType?> showSelectMessageType(BuildContext context) async {
+    return await showModalBottomSheet<MessageType>(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                AppLocalizations.of(context)!.select_message_type,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            Column(
+              children: MessageType.values
+                  .map(
+                    (type) => ListTile(
+                      title: Text(type.getText(context)),
+                      onTap: () => Navigator.pop(context, type),
+                    ),
+                  )
+                  .toList(),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  final platformInfo = Platform.operatingSystem;
   void onBugReport(BuildContext context) {
-    String subject = AppLocalizations.of(context)!.send_mail_bug_report_subject;
+    String subject = AppLocalizations.of(context)!.send_mail_bug_report_subject + " $platformInfo";
     onSendMail(subject);
   }
 
   void onSuggestion(BuildContext context) {
-    String subject = AppLocalizations.of(context)!.send_mail_suggestion_subject;
+    String subject = AppLocalizations.of(context)!.send_mail_suggestion_subject + " $platformInfo";
     onSendMail(subject);
   }
 
   void onQuestion(BuildContext context) {
-    String subject = AppLocalizations.of(context)!.send_mail_question_subject;
+    String subject = AppLocalizations.of(context)!.send_mail_question_subject + " $platformInfo";
     onSendMail(subject);
   }
 
   void onFeedback(BuildContext context) {
-    String subject = AppLocalizations.of(context)!.send_mail_feedback_subject;
+    String subject = AppLocalizations.of(context)!.send_mail_feedback_subject + " $platformInfo";
     onSendMail(subject);
   }
 

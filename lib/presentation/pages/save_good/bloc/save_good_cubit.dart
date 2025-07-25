@@ -227,12 +227,19 @@ class SaveGoodCubit extends Cubit<SaveGoodState>{
     }
   }
   onMinQuantityChanged(String value){
-    if (value.isNotEmpty){
-      num numValue = Config.simpleCurrencyFormat.parse(value);
-      double number = numValue.toDouble();
-      emit(state.copyWith(minQuantity: number));
+    num? numValue = Config.simpleCurrencyFormat.tryParse(value);
+    if (numValue != null){
+      emit(state.copyWith(minQuantity: numValue.toDouble()));
     }else{
       emit(state.copyWith(minQuantity: null));
     }
+  }
+
+  int getSelectedStoreId() {
+    return appSettings.getSelectedStoreId();
+  }
+
+  getAutoDocumentNo(int storeId) {
+    return appSettings.getAutoDocumentNo(storeId);
   }
 }

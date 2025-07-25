@@ -1,4 +1,5 @@
 import 'package:good_manager/db/db_helper.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/domain/repositories/goods_repositories.dart';
 import 'package:injectable/injectable.dart';
@@ -8,8 +9,8 @@ import '../storage.dart';
 
 @Injectable(as: GoodsRepository)
 class GoodsRepositoryImpl implements GoodsRepository {
-  final Storage storage;
-  GoodsRepositoryImpl(this.storage);
+  final AppSettings appSettings;
+  GoodsRepositoryImpl(this.appSettings);
 
   var db = new DBHelper();
 
@@ -27,7 +28,7 @@ class GoodsRepositoryImpl implements GoodsRepository {
   }
   @override
   Future<List<Good>> getGoodsByGroupId(int? groupId) {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     return db.getGoodsByGroupId(storeId,groupId);
   }
 

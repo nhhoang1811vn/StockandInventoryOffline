@@ -45,4 +45,16 @@ abstract class AppSettings{
 
   void setSavePaymentLastSelectedWalletId(int? walletId);
   int? getSavePaymentLastSelectedWalletId();
+
+  int getSelectedStoreId();
+  void setSelectedStoreId(int storeId);
+
+  void increaseAutoDocumentNo(int storeId);
+  int getAutoDocumentNo(int storeId);
+
+  String getSelectedStoreName();
+  void setSelectedStoreName(String storeName);
+
+  void resetAutoDocumentNo() {}
+
 }

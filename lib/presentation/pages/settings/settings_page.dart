@@ -96,6 +96,6 @@ class SettingsPageState extends State<SettingsPage> {
     );
   }
   void onBarcodeScannerPressed(BuildContext context) {
-    Navigator.of(context).pushNamed(Pages.barcode_scanner);
+    Navigator.of(context).pushNamed(Pages.barcode_scanner_settings);
   }
 }

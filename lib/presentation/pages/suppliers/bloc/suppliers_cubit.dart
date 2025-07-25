@@ -6,7 +6,6 @@ import 'package:good_manager/domain/entities/supplier.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../data/storage.dart';
 import '../../../../domain/entities/sort_by_text.dart';
 import '../../../../domain/entities/suppliers_setting.dart';
 import '../../../../domain/free_limits.dart';
@@ -21,10 +20,10 @@ part 'suppliers_state.dart';
 class SuppliersCubit extends Cubit<SuppliersState> {
   final SuppliersUseCase useCase;
   final AppSettings appSettings;
-  final Storage storage;
+  //final Storage storage;
   SuppliersCubit({
     required this.appSettings,
-    required this.storage,
+    //required this.storage,
     required this.useCase}) : super(SuppliersState.initial(state: InitialState(), settings: appSettings.getSuppliersSetting()));
 
   //final purchaseManager = PurchaseManager();
@@ -55,20 +54,6 @@ class SuppliersCubit extends Cubit<SuppliersState> {
   }
 
   void showCanNotDeleteDialog() {
-    /*showDialog(
-              content: Text(AppLocalizations.of(getContext())
-        context: getContext(),
-        builder: (BuildContext builder) => AlertDialog(
-              title: Text(
-                  AppLocalizations.of(getContext()).notification_dialog_title),
-                  .message_delete_supplier_error_having_document),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.pop(getContext()),
-                  child: const Text('OK'),
-                )
-              ],
-            ));*/
   }
 
   bool filterItem(Supplier item, String textSearch) {
@@ -84,14 +69,14 @@ class SuppliersCubit extends Cubit<SuppliersState> {
     bool isValid = await isValidToAddMoreSupplier();
     if (isValid){
       Supplier item = Supplier();
-      item.storeId = storage.getSelectedStoreId();
+      item.storeId = appSettings.getSelectedStoreId();
       onAddItem(item);
     }else{
       emit(state.copyWith(state: OpenBuySubscriptionDialogState()));
     }
   }
   Future<bool> isValidToAddMoreSupplier() async{
-    var storeId = storage.getSelectedStoreId();
+    var storeId = appSettings.getSelectedStoreId();
     int count = await useCase.getCount(storeId);
     bool isPro = await RevenueCatService.isPro();
     return count < FreeLimits.supplierLimit || isPro;
@@ -101,7 +86,7 @@ class SuppliersCubit extends Cubit<SuppliersState> {
     emit(state.copyWith(state: OpenSaveSupplierPageState(item)));
   }
   void loadItems() async{
-    final storeId = storage.getSelectedStoreId();
+    final storeId = appSettings.getSelectedStoreId();
     List<Supplier> allItems = await useCase.getAllByStoreId(storeId);
     emit(state.copyWith(allItems: allItems));
     sort();

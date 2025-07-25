@@ -5,7 +5,6 @@ import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/models/name.dart';
 import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
-import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
@@ -14,11 +13,11 @@ import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.d
 import 'package:good_manager/presentation/pages/save_good/components/quick_insert_document_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'package:intl/intl.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../../presentation/widgets/snackbar_widgets.dart';
+import '../../../review_manager.dart';
 import '../../currency_app_text_field.dart';
 
 class SaveGoodForm extends StatelessWidget {
@@ -45,10 +44,7 @@ class SaveGoodForm extends StatelessWidget {
           ScaffoldMessenger.of(context)
               .showSnackBar(snackBarWhenFailureWithText(AppLocalizations.of(context)!.error_same_barcode));
         } else if (state.state is SaveItemSuccessful) {
-          final InAppReview inAppReview = InAppReview.instance;
-          if (await inAppReview.isAvailable()) {
-            inAppReview.requestReview();
-          }
+          ReviewManager.maybeRequestReview();
           ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
           Navigator.of(context).pop({"item": state.item, "document": state.document});
         } else if (state.state is OpenCalculatorToInputQuantityState) {
@@ -277,12 +273,12 @@ class SaveGoodForm extends StatelessWidget {
   }
 
   saveTransaction(BuildContext context, DocumentType type, SaveGoodState state, Map result) async {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = context.read<SaveGoodCubit>().getSelectedStoreId();
 
     Document document = Document();
     document.storeId = storeId;
     document.type = type;
-    document.name = AppLocalizations.of(context)!.document_name_no + storage.getAutoDocumentNo(storeId).toString();
+    document.name = AppLocalizations.of(context)!.document_name_no + context.read<SaveGoodCubit>().getAutoDocumentNo(storeId).toString();
     document.date = result["date"] ?? DateTime.now();
     document.description = result["description"] ?? "";
     document.personId = result["personId"] ?? null;

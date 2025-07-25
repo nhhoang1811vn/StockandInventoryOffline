@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/domain/entities/store.dart';
-import 'package:good_manager/main.dart';
 import 'package:good_manager/presentation/constants.dart';
 
 class StoreItemRow extends StatelessWidget{
   final Store item;
+  final int selectedStoreId;
+  final bool isSelection;
   final void Function(Store item) onPressed;
   final void Function(Store item) onLongPressed;
-  final bool isSelection;
-  StoreItemRow(this.item, this.onPressed, this.onLongPressed, this.isSelection);
+
+  StoreItemRow(
+      this.item,
+  this.selectedStoreId,
+  this.isSelection,
+      this.onPressed, this.onLongPressed);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: isSelection && item.id == storage.getSelectedStoreId() ? Colors.blue[50] : null,
+      color: isSelection && item.id == selectedStoreId ? Colors.blue[50] : null,
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
         onTap: () => onPressed(item),

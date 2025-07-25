@@ -9,7 +9,6 @@ import 'package:good_manager/domain/usecases/customers/customers_usecases.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../data/storage.dart';
 import '../../../../domain/entities/sort_by_text.dart';
 import '../../../../revenuecat_purchase_manager.dart';
 import '../../base/base_sort_items.dart';
@@ -20,9 +19,11 @@ part 'customers_state.dart';
 @injectable
 class CustomersCubit extends Cubit<CustomersState> {
   final CustomersUseCase useCase;
-  final Storage storage;
+  //final Storage storage;
   final AppSettings appSettings;
-  CustomersCubit({required this.appSettings,required this.storage,required this.useCase}) : super(CustomersState.initial(state: InitialState(), settings: appSettings.getCustomersSetting()));
+  CustomersCubit({required this.appSettings,
+    //required this.storage,
+    required this.useCase}) : super(CustomersState.initial(state: InitialState(), settings: appSettings.getCustomersSetting()));
   void initState(bool isSelection){
     emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection));
     loadItems();
@@ -56,14 +57,14 @@ class CustomersCubit extends Cubit<CustomersState> {
     bool isValid = await isValidToAddMoreCustomer();
     if (isValid){
       Customer item = Customer();
-      item.storeId = storage.getSelectedStoreId();
+      item.storeId = appSettings.getSelectedStoreId();
       onAddItem(item);
     }else{
       emit(state.copyWith(state: OpenBuySubscriptionDialogState()));
     }
   }
   Future<bool> isValidToAddMoreCustomer() async{
-    var storeId = storage.getSelectedStoreId();
+    var storeId = appSettings.getSelectedStoreId();
     int count = await useCase.getCount(storeId);
     bool isPro = await RevenueCatService.isPro();
     return count < FreeLimits.customerLimit || isPro;
@@ -81,7 +82,7 @@ class CustomersCubit extends Cubit<CustomersState> {
 
 
   void loadItems() async{
-    final storeId = storage.getSelectedStoreId();
+    final storeId = appSettings.getSelectedStoreId();
     List<Customer> allItems = await useCase.getAllByStoreId(storeId);
     emit(state.copyWith(allItems: allItems));
     sort();

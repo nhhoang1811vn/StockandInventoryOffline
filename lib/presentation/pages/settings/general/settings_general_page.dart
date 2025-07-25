@@ -4,6 +4,7 @@ import 'package:flutter_screen_lock/flutter_screen_lock.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/settings/general/bloc/settings_general_cubit.dart';
+import 'package:good_manager/presentation/pages/settings/general/language_model.dart';
 
 import '../../../../main.dart';
 import '../../../widgets/views.dart';
@@ -74,12 +75,19 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
               title: Text(
                   AppLocalizations.of(context)!.menu_item_reset_numeration_documents_title),
               onTap: (){
-                storage.resetAutoDocumentNo(storage.getSelectedStoreId());
+                context.read<SettingsGeneralCubit>().resetAutoDocumentNo();
+                //storage.resetAutoDocumentNo(storage.getSelectedStoreId());
                 showInfoToast(AppLocalizations.of(context)!.success);
               },
             )
     ]))]);
   }
+  //final languages = getSupportedLanguages(context);
+  List<LanguageModel> languages = [
+    LanguageModel("en", "English"),
+    LanguageModel("es", "Español"),
+    LanguageModel("vi", "Tiếng Việt"),
+  ];
   void _showLanguageDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -87,42 +95,30 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
         title: Text(AppLocalizations.of(context)!.dialog_title_change_language),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text(AppLocalizations.of(context)!.english_text),
+          children: languages.map((language) {
+            return ListTile(
+              title: Text(language.name), // Native name
               onTap: () {
                 MyAppState? state = context.findAncestorStateOfType<MyAppState>();
-                storage.setLanguageCode("en");
-                state?.changeLanguage("en");
+                state?.changeLanguage(language.code);
+                storage.setLanguageCode(language.code);
                 Navigator.of(context).pop();
                 setState(() {
-                  _code = "en";
+                  _code = language.code;
                 });
               },
-            ),
-            ListTile(
-              title: Text(AppLocalizations.of(context)!.vietnamese_text),
-              onTap: () {
-                MyAppState? state = context.findAncestorStateOfType<MyAppState>();
-                storage.setLanguageCode("vi");
-                state?.changeLanguage("vi");
-                Navigator.of(context).pop();
-                setState(() {
-                  _code = "vi";
-                });
-              },
-            ),
-          ],
+            );
+          }).toList(),
         ),
       ),
     );
   }
+
   void _handlePasscodeToggle(BuildContext context, bool newValue, String currentPasscode) {
     if (newValue) {
       // Turning ON passcode
       screenLockCreate(
         context: context,
-        //title: Text("abc"),
         onConfirmed: (passcode) {
           Navigator.pop(context);
           context

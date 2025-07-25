@@ -8,6 +8,7 @@ import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart';
 
 import '../../../../presentation/widgets/snackbar_widgets.dart';
+import '../../../review_manager.dart';
 
 class SaveSupplierForm extends StatelessWidget {
   final Supplier? item;
@@ -21,6 +22,7 @@ class SaveSupplierForm extends StatelessWidget {
           if (state.state is SaveItemError) {
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
           } else if (state.state is SaveItemSuccessful) {
+            ReviewManager.maybeRequestReview();
             ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
             Navigator.of(context).pop(state.item);
           }

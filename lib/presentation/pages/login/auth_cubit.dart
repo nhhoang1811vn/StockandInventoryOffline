@@ -5,7 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/common/path_utils.dart';
-import 'package:good_manager/data/storage.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/usecases/stores/stores_usecases.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
@@ -19,9 +19,10 @@ part 'auth_state.dart';
 @injectable
 class AuthCubit extends Cubit<AuthState> {
   final StoresUseCase useCase;
-  final Storage storage;
+  //final Storage storage;
+  final AppSettings appSettings;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  AuthCubit({required this.useCase, required this.storage}) : super(AuthInitial());
+  AuthCubit({required this.useCase, required this.appSettings}) : super(AuthInitial());
 
   void downloadUserData() async{
     downloadDBFile((state){
@@ -53,7 +54,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
   Future<void> updateSelectedStore() async {
-    final storeId = storage.getSelectedStoreId();
+    final storeId = appSettings.getSelectedStoreId();
     final stores = await useCase.getAll();
     var matched = false;
     for (var store in stores){
@@ -63,8 +64,8 @@ class AuthCubit extends Cubit<AuthState> {
       }
     }
     if (!matched){
-      storage.setSelectedStoreId(stores.first.id!);
-      storage.setSelectedStoreName(stores.first.name);
+      appSettings.setSelectedStoreId(stores.first.id!);
+      appSettings.setSelectedStoreName(stores.first.name);
     }
   }
   String getCloudFilePath(){
@@ -254,8 +255,9 @@ class AuthCubit extends Cubit<AuthState> {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       await _auth.currentUser!.updateDisplayName(name);
-      await _auth.currentUser!.sendEmailVerification();
-      await _auth.signOut();
+      //await _auth.currentUser!.sendEmailVerification();
+      //await _auth.signOut();
+      if (isClosed) return;
       emit(UserSingupButNotVerified());
     } on FirebaseAuthException catch (e) {
     handleFirebaseAuthError(e);

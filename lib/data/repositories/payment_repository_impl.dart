@@ -1,14 +1,13 @@
 import 'package:good_manager/db/db_helper.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/domain/repositories/payment_repositories.dart';
 import 'package:injectable/injectable.dart';
 
-import '../storage.dart';
-
 @Injectable(as: PaymentRepository)
 class PaymentRepositoryImpl implements PaymentRepository {
-  final Storage storage;
-  PaymentRepositoryImpl(this.storage);
+  final AppSettings appSettings;
+  PaymentRepositoryImpl(this.appSettings);
 
   var db = new DBHelper();
   @override
@@ -51,7 +50,7 @@ class PaymentRepositoryImpl implements PaymentRepository {
   }
   @override
   Future<List<Payment>> getInRange(DateTime start, DateTime end) {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     return db.getPaymentsInRange(storeId, start, end);
   }
 

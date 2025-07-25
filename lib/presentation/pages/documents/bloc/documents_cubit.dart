@@ -14,7 +14,6 @@ import 'package:good_manager/presentation/pages/documents/criteria/by_search_tex
 import 'package:good_manager/presentation/pages/documents/criteria/by_status_criteria.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../data/storage.dart';
 import '../../../../domain/entities/payment.dart';
 import '../../../criteria/and_criteria.dart';
 import '../../../criteria/criteria.dart';
@@ -30,10 +29,9 @@ class DocumentsCubit extends Cubit<DocumentsState> {
   final DocumentUseCases useCase;
   final CustomersUseCase customersUseCase;
   final SuppliersUseCase suppliersUseCase;
-  final Storage storage;
   final AppSettings appSettings;
   DocumentsCubit({
-    required this.storage,
+
     required this.appSettings,
     required this.useCase,
     required this.customersUseCase,
@@ -59,7 +57,7 @@ class DocumentsCubit extends Cubit<DocumentsState> {
     loadItems();
   }
   void loadItems() async {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     List<Document> items = await useCase.getAllByStoreId(storeId);
     emit(state.copyWith(allDocuments: items));
     update();
@@ -67,7 +65,9 @@ class DocumentsCubit extends Cubit<DocumentsState> {
 
   void onSearchMenuClicked() {
     emit(state.copyWith(showSearchBar: !state.showSearchBar, textSearch: ""));
-    update();
+    if (state.showSearchBar == false){
+      update();
+    }
   }
 
   void resetSearchText() {
@@ -102,10 +102,10 @@ class DocumentsCubit extends Cubit<DocumentsState> {
   }
 
   getSelectedStoreId(){
-    return storage.getSelectedStoreId();
+    return appSettings.getSelectedStoreId();
   }
   String getAutoDocumentNo() {
-    return storage.getAutoDocumentNo(getSelectedStoreId()).toString();
+    return appSettings.getAutoDocumentNo(getSelectedStoreId()).toString();
   }
 
   void resetAllFilter() {
@@ -154,7 +154,7 @@ class DocumentsCubit extends Cubit<DocumentsState> {
   Future<void> onCreateAPayment(Document item) async{
     var payment = Payment();
     payment.type = item.type == DocumentType.incoming ? PaymentType.outbound : PaymentType.inbound;
-    payment.storeId = storage.getSelectedStoreId();
+    payment.storeId = appSettings.getSelectedStoreId();
     payment.walletId = appSettings.getSavePaymentLastSelectedWalletId();
     payment.documentId = item.id;
     payment.document = item;

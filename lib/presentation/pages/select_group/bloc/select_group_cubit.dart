@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/data/storage.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../domain/entities/group.dart';
@@ -13,9 +13,9 @@ part 'select_group_state.dart';
 @injectable
 class SelectGroupCubit extends Cubit<SelectGroupState> {
   final GroupsUseCases groupsUseCase;
-  final Storage storage;
+  final AppSettings appSettings;
 
-  SelectGroupCubit({required this.groupsUseCase, required this.storage})
+  SelectGroupCubit({required this.groupsUseCase, required this.appSettings})
       : super(SelectGroupState.initial(state: InitialState()));
 
   select(Group? item) {
@@ -25,7 +25,7 @@ class SelectGroupCubit extends Cubit<SelectGroupState> {
   }
 
   void init(int? id, int? groupId) async {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     List<Group> groups = await groupsUseCase.getAllByStoreId(storeId);
     Map<int, Group> items = {};
     Group rootGroup = Group();

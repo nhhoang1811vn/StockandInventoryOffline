@@ -60,7 +60,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get outgoing_document_text => 'Bán hàng';
 
   @override
-  String get add_document_title => 'Thêm Hoá đơn';
+  String get select_document_type => 'Chọn loại hóa đơn';
 
   @override
   String get document_information => 'Thông tin hoá đơn';
@@ -465,7 +465,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get select_group_title => 'Chọn nhóm';
 
   @override
-  String get message_type => 'Loại tin nhắn';
+  String get select_message_type => 'Chọn loại tin nhắn';
 
   @override
   String get message_type_bug_report => 'Báo cáo lỗi';
@@ -520,6 +520,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get question_or_suggestion_title => 'Câu hỏi và đề xuất';
+
+  @override
+  String get review_the_app_title => 'Review the app';
 
   @override
   String get help_title => 'Trợ giúp';
@@ -688,6 +691,12 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get menu_push_data_to_cloud => 'Lưu dữ liệu trên cloud';
+
+  @override
+  String get menu_quick_sync_title => 'Quick sync';
+
+  @override
+  String get menu_quick_sync_desc => 'It will restart the app, and sync the latest app data';
 
   @override
   String get login => 'ĐĂNG NHẬP';
@@ -1051,4 +1060,58 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get action_back => 'Trở về';
+
+  @override
+  String get select_payment_type => 'Chọn loại thanh toán';
+
+  @override
+  String get notification_low_stock_alert_title => 'Low Stock Alert';
+
+  @override
+  String get notification_low_stock_alert_message => 'Some items are low in stock. Please review them.';
+
+  @override
+  String get text_cancel => 'Cancel';
+
+  @override
+  String get scan_bar_code_title => 'Scan Bar code';
+
+  @override
+  String get enter_pin_to_unlock => 'Enter PIN to unlock';
+
+  @override
+  String get notification_permission => 'Notification Permission';
+
+  @override
+  String get notification_permission_content => 'Please enable notifications in system settings.';
+
+  @override
+  String get open_settings => 'Open settings';
+
+  @override
+  String get notification_permission_required_message => 'Notification permission is required to enable alerts.';
+
+  @override
+  String get company_info_message => 'This data will be displayed in printed form (invoices, sales, receipts, etc...';
+
+  @override
+  String get theme => 'Themes';
+
+  @override
+  String get app_theme => 'App Theme';
+
+  @override
+  String get documents_colors => 'Documents colors';
+
+  @override
+  String get choose_theme => 'Choose theme';
+
+  @override
+  String get theme_system => 'System';
+
+  @override
+  String get theme_light => 'Light';
+
+  @override
+  String get theme_dark => 'Dark';
 }

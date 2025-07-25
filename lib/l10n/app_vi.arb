@@ -17,7 +17,7 @@
   "document_list_tab_all": "TẤT CẢ",
   "incoming_document_text": "Nhập hàng",
   "outgoing_document_text": "Bán hàng",
-  "add_document_title": "Thêm Hoá đơn",
+  "select_document_type": "Chọn loại hóa đơn",
   "document_information": "Thông tin hoá đơn",
   "goods_information": "Thông tin hàng hoá",
   "save_document_batch_scan": "Quét trùm",
@@ -178,7 +178,7 @@
   "select_store_title": "Chọn cửa hàng",
   "select_group_title": "Chọn nhóm",
 
-  "message_type": "Loại tin nhắn",
+  "select_message_type": "Chọn loại tin nhắn",
   "message_type_bug_report": "Báo cáo lỗi",
   "message_type_feedback": "Phản hồi",
   "message_type_suggestion": "Gợi ý",
@@ -390,7 +390,8 @@
                                        "sort_by_quantity": "Sắp xếp theo số lượng",
                                        "action_create_payment": "Tạo giao dịch",
                                        "action_view_payments": "Xem các giao dịch liên kết",
-                                       "action_back": "Trở về"
+                                       "action_back": "Trở về",
+                                       "select_payment_type": "Chọn loại thanh toán"
 
 
 }

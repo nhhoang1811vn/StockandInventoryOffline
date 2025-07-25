@@ -30,14 +30,14 @@ class SettingsViewPageState extends State<SettingsViewPage> {
     final themeString = prefs.getString("user_theme_mode");
     switch (themeString) {
       case 'light':
-        _subTitle = "Light";
+        _subTitle = AppLocalizations.of(context)!.theme_light;
         break;
       case 'dark':
-        _subTitle = "Dark";
+        _subTitle = AppLocalizations.of(context)!.theme_dark;
         break;
       case 'system':
       default:
-        _subTitle = "System";
+        _subTitle = AppLocalizations.of(context)!.theme_system;
     }
     setState(() {});
   }
@@ -56,20 +56,20 @@ class SettingsViewPageState extends State<SettingsViewPage> {
 
   Widget _buildBody(SettingsViewState state) {
     return ListView(padding: EdgeInsets.all(16), children: [
-      Text("Themes", style: Theme.of(context).textTheme.titleMedium,),
+      Text(AppLocalizations.of(context)!.theme, style: Theme.of(context).textTheme.titleMedium,),
       Card(
           clipBehavior: Clip.antiAlias,
           child: Column(children: [
             ListTile(
               leading: Icon(Icons.brightness_6),
-              title: Text("AppTheme"),
+              title: Text(AppLocalizations.of(context)!.app_theme),
               subtitle: Text(_subTitle),
               onTap: () => _showThemeDialog(context),
               trailing: Icon(Icons.navigate_next),
             ),
           ])),
       SizedBox(height: 16,),
-      Text("Documents colors", style: Theme.of(context).textTheme.titleMedium,),
+      Text(AppLocalizations.of(context)!.documents_colors, style: Theme.of(context).textTheme.titleMedium,),
       Card(
           clipBehavior: Clip.antiAlias,
           child: Column(children: [
@@ -137,17 +137,20 @@ class SettingsViewPageState extends State<SettingsViewPage> {
               content: SingleChildScrollView(
                 child: BlockPicker(
                   pickerColor: pickerColor,
-                  onColorChanged: callback,
+                  onColorChanged: (newColor){
+                    callback(newColor);
+                    Navigator.of(context).pop();
+                  }
                 ),
               ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog
-                  },
-                  child: Text(AppLocalizations.of(context)!.action_ok),
-                ),
-              ],
+              // actions: [
+              //   TextButton(
+              //     onPressed: () {
+              //       Navigator.of(context).pop(); // Close the dialog
+              //     },
+              //     child: Text(AppLocalizations.of(context)!.action_ok),
+              //   ),
+              // ],
             ));
   }
 
@@ -155,12 +158,12 @@ class SettingsViewPageState extends State<SettingsViewPage> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Choose Theme'),
+        title: Text(AppLocalizations.of(context)!.choose_theme),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: Text('System'),
+              title: Text(AppLocalizations.of(context)!.theme_system),
               onTap: () {
                 MyAppState? state = context.findAncestorStateOfType<MyAppState>();
                 state?.changeTheme(ThemeMode.system);
@@ -169,7 +172,7 @@ class SettingsViewPageState extends State<SettingsViewPage> {
               },
             ),
             ListTile(
-              title: Text('Light'),
+              title: Text(AppLocalizations.of(context)!.theme_light),
               onTap: () {
                 MyAppState? state = context.findAncestorStateOfType<MyAppState>();
                 state?.changeTheme(ThemeMode.light);
@@ -178,7 +181,7 @@ class SettingsViewPageState extends State<SettingsViewPage> {
               },
             ),
             ListTile(
-              title: Text('Dark'),
+              title: Text(AppLocalizations.of(context)!.theme_dark),
               onTap: () {
                 MyAppState? state = context.findAncestorStateOfType<MyAppState>();
                 state?.changeTheme(ThemeMode.dark);

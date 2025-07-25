@@ -1,13 +1,10 @@
 
-import 'package:audioplayers/audioplayers.dart';
 //import 'package:flutter_beep/flutter_beep.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
 import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/domain/entities/document_paid_status.dart';
-import 'package:good_manager/main.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
-import 'package:vibration/vibration.dart';
+import 'package:good_manager/presentation/pages/pages.dart';
 
 class DateTimeUtils{
   static DateTime addMonths(DateTime currentDate, int monthsToAdd) {
@@ -67,43 +64,11 @@ class Utils{
     RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
     return num.toString().replaceAll(regex, '');
   }
-  static AudioPlayer _audioPlayer = AudioPlayer();
   static Future<String?> scanBarcode(BuildContext context) async{
-    String? result = await SimpleBarcodeScanner.scanBarcode(
-      context,
-      barcodeAppBar: const BarcodeAppBar(
-        appBarTitle: 'Scan Bar code',
-        centerTitle: false,
-        enableBackButton: true,
-        backButtonIcon: Icon(Icons.arrow_back_ios),
-      ),
-      isShowFlashIcon: false,
-      delayMillis: 2000,
-      cameraFace: CameraFace.back,
-    );
-    if (result != null && result != "-1"){
-      handleABarcodeFound();
-    }
-    if ("-1" == result){
-      return null;
-    }
-    return result;
+    Object? result = await Navigator.of(context).pushNamed(Pages.barcode_scanner);
+    return result?.toString();
   }
-  static void handleABarcodeFound() async{
-    var enableSound = storage.getBarcodeScannerEnableBeep();
-    var enableVibrate = storage.getBarcodeScannerEnableVibrate();
-    if (enableSound){
-      //FlutterBeep.beep();
-      await _audioPlayer.play(AssetSource('sounds/beep.mp3'));
-    }
-    if (enableVibrate){
-      var vibrationCapabilities = await Vibration.hasVibrator();
 
-      if (vibrationCapabilities == true) {
-        Vibration.vibrate();
-      }
-    }
-  }
 
   static bool sameFiles(List<String> files1, List<String> files2){
     if (files1.length != files2.length){
@@ -124,9 +89,21 @@ class Utils{
           callback(value);
         }
       },
-      theme: const CalculatorThemeData(
-        displayColor: Colors.white,
-        displayStyle: const TextStyle(fontSize: 20, color: Colors.blue),
+      theme: CalculatorThemeData(
+        //borderColor: Colors.black,
+        borderWidth: 2,
+        //displayColor: Colors.black,
+        //displayStyle: TextStyle(fontSize: 80, color: Colors.yellow),
+        //expressionColor: Colors.indigo,
+        //expressionStyle: TextStyle(fontSize: 20, color: Colors.white),
+        operatorColor: Theme.of(context).colorScheme.primary,
+        operatorStyle: TextStyle(fontSize: 24, color: Theme.of(context).colorScheme.onPrimary),
+        commandColor: Theme.of(context).colorScheme.primary,
+        commandStyle: TextStyle(fontSize: 24, color: Theme.of(context).colorScheme.onPrimary),
+        //numColor: Colors.grey,
+        //numStyle: TextStyle(fontSize: 50, color: Colors.white),
+        //equalColor: Colors.blue,
+        //equalStyle: TextStyle(fontSize: 50, color: Colors.black),
       ),
     );
     showModalBottomSheet(

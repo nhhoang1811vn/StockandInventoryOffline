@@ -1,4 +1,5 @@
 import 'package:good_manager/db/db_helper.dart';
+import 'package:good_manager/domain/app_settings.dart';
 import 'package:good_manager/domain/entities/group.dart';
 import 'package:good_manager/domain/repositories/groups_repositories.dart';
 import 'package:injectable/injectable.dart';
@@ -9,8 +10,8 @@ import '../storage.dart';
 class GroupsRepositoryImpl implements GroupsRepository {
 
 
-  final Storage storage;
-  GroupsRepositoryImpl(this.storage);
+  final AppSettings appSettings;
+  GroupsRepositoryImpl(this.appSettings);
 
   var db = new DBHelper();
 
@@ -50,7 +51,7 @@ class GroupsRepositoryImpl implements GroupsRepository {
   }
   @override
   Future<List<Group>> getGroupsByGroupId(int? groupId) {
-    int storeId = storage.getSelectedStoreId();
+    int storeId = appSettings.getSelectedStoreId();
     return db.getGroupsByGroupId(storeId, groupId);
   }
   @override
