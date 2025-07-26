@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -173,6 +175,9 @@ class MyAppState extends State<MyApp> {
       titleSmall: baseDark.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
       titleMedium: baseDark.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
     );
+    FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+    FirebaseAnalyticsObserver analyticsObserver = FirebaseAnalyticsObserver(analytics: analytics);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
@@ -187,7 +192,7 @@ class MyAppState extends State<MyApp> {
         textTheme: boldTextTheme
       ),
       darkTheme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 18, 18, 18), // or any dark background you prefer
+        scaffoldBackgroundColor: const Color.fromARGB(255, 18, 18, 18),
         cardTheme: const CardTheme(
           color: Colors.black, // Black cards
         ),
@@ -200,7 +205,7 @@ class MyAppState extends State<MyApp> {
       themeMode: _themeMode,
       onGenerateRoute: _router.getRoute,
       navigatorKey: _router.navigatorKey,
-      navigatorObservers: [_router.routeObserver],
+      navigatorObservers: [_router.routeObserver, analyticsObserver],
       locale: locale(_languageCode!),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
