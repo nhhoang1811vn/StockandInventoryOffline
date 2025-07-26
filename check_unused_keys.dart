@@ -15,7 +15,7 @@ void main() {
   for (final key in keys) {
     bool used = sourceFiles.any((file) {
       final content = file.readAsStringSync();
-      return content.contains('"$key"') || content.contains("'$key'");
+      return content.contains(key) || content.contains('"$key"') || content.contains("'$key'");
     });
 
     if (!used) {

@@ -84,16 +84,24 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
   }
   //final languages = getSupportedLanguages(context);
   List<LanguageModel> languages = [
-    LanguageModel("en", "English"),
-    LanguageModel("es", "Español"),
-    LanguageModel("vi", "Tiếng Việt"),
+    LanguageModel("en", "English"),            // English
+    LanguageModel("es", "Español"),            // Spanish
+    LanguageModel("zh", "简体中文"),             // Chinese (Simplified)
+    LanguageModel("hi", "हिन्दी"),              // Hindi
+    LanguageModel("ar", "العربية"),            // Arabic
+    LanguageModel("pt", "Português"),          // Portuguese
+    LanguageModel("ru", "Русский"),            // Russian
+    LanguageModel("ja", "日本語"),               // Japanese
+    LanguageModel("de", "Deutsch"),            // German
+    LanguageModel("fr", "Français"),           // French
+    LanguageModel("vi", "Tiếng Việt"),         // Vietnamese (optional local addition)
   ];
   void _showLanguageDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         title: Text(AppLocalizations.of(context)!.dialog_title_change_language),
-        content: Column(
+        content: SingleChildScrollView(child: Column(
           mainAxisSize: MainAxisSize.min,
           children: languages.map((language) {
             return ListTile(
@@ -109,7 +117,7 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
               },
             );
           }).toList(),
-        ),
+        )),
       ),
     );
   }

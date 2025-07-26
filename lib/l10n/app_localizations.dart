@@ -5,9 +5,17 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_ar.dart';
+import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
+import 'app_localizations_hi.dart';
+import 'app_localizations_ja.dart';
+import 'app_localizations_pt.dart';
+import 'app_localizations_ru.dart';
 import 'app_localizations_vi.dart';
+import 'app_localizations_zh.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,9 +100,17 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
+    Locale('ar'),
+    Locale('de'),
     Locale('en'),
     Locale('es'),
-    Locale('vi')
+    Locale('fr'),
+    Locale('hi'),
+    Locale('ja'),
+    Locale('pt'),
+    Locale('ru'),
+    Locale('vi'),
+    Locale('zh')
   ];
 
   /// No description provided for @home_title.
@@ -676,7 +692,7 @@ abstract class AppLocalizations {
   /// No description provided for @send_mail_invite_friend_content.
   ///
   /// In en, this message translates to:
-  /// **'This is a good application, I use it everyday and recommend it for you. \nDownload for Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter\nDownload for iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293'**
+  /// **'This is a good application, I use it everyday and recommend it for you. Download for Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter. Download for iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293'**
   String get send_mail_invite_friend_content;
 
   /// No description provided for @menu_item_write_review_header.
@@ -2321,7 +2337,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'es', 'vi'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ar', 'de', 'en', 'es', 'fr', 'hi', 'ja', 'pt', 'ru', 'vi', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -2332,9 +2348,17 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
 
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'ar': return AppLocalizationsAr();
+    case 'de': return AppLocalizationsDe();
     case 'en': return AppLocalizationsEn();
     case 'es': return AppLocalizationsEs();
+    case 'fr': return AppLocalizationsFr();
+    case 'hi': return AppLocalizationsHi();
+    case 'ja': return AppLocalizationsJa();
+    case 'pt': return AppLocalizationsPt();
+    case 'ru': return AppLocalizationsRu();
     case 'vi': return AppLocalizationsVi();
+    case 'zh': return AppLocalizationsZh();
   }
 
   throw FlutterError(

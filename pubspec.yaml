@@ -121,6 +121,7 @@ dev_dependencies:
   build: ^2.4.0
   #copy_with_extension_gen: ^6.0.1
   json_serializable: ^6.7.1
+  #translations_cleaner: ^0.0.5
   #custom_lint: ^0.7.6
   #flutter_lints: ^5.0.0
   #json_serializable: ^6.7.0

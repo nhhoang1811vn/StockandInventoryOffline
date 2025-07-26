@@ -297,7 +297,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get send_mail_invite_friend_subject => 'Invitation using App';
 
   @override
-  String get send_mail_invite_friend_content => 'This is a good application, I use it everyday and recommend it for you. \nDownload for Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter\nDownload for iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
+  String get send_mail_invite_friend_content => 'This is a good application, I use it everyday and recommend it for you. Download for Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter. Download for iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
 
   @override
   String get menu_item_write_review_header => 'Write a review';
