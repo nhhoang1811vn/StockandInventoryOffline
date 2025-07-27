@@ -96,7 +96,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get empty_stores => 'Không có cửa hàng';
 
   @override
-  String get delete_store_error => 'Đây là cửa hàng duy nhất của bạn, không thể thực hiện hành động này';
+  String get delete_store_error =>
+      'Đây là cửa hàng duy nhất của bạn, không thể thực hiện hành động này';
 
   @override
   String get suppliers_title => 'Nhà cung cấp';
@@ -207,7 +208,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get home_menu_item_more => 'Hơn';
 
   @override
-  String get message_error_negative_quantity_save_document => 'Không thể thực hiện hành động này, số lượng của %s là tiêu cực';
+  String get message_error_negative_quantity_save_document =>
+      'Không thể thực hiện hành động này, số lượng của %s là tiêu cực';
 
   @override
   String get action_send_email => 'Gửi e-mail';
@@ -243,10 +245,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get title_store_selecting => 'Cửa hàng lựa chọn';
 
   @override
-  String get message_delete_supplier_error_having_document => 'Bạn có tài liệu gắn liền với nhà cung cấp, không thể thực hiện hành động này';
+  String get message_delete_supplier_error_having_document =>
+      'Bạn có tài liệu gắn liền với nhà cung cấp, không thể thực hiện hành động này';
 
   @override
-  String get message_delete_customer_error_having_document => 'Bạn có tài liệu gắn liền với nhà cung cấp, không thể thực hiện hành động này';
+  String get message_delete_customer_error_having_document =>
+      'Bạn có tài liệu gắn liền với nhà cung cấp, không thể thực hiện hành động này';
 
   @override
   String get action_ok => 'ĐƯỢC RỒI';
@@ -297,25 +301,29 @@ class AppLocalizationsVi extends AppLocalizations {
   String get send_mail_invite_friend_subject => 'Lời mời sử dụng ứng dụng';
 
   @override
-  String get send_mail_invite_friend_content => 'Đây là một ứng dụng tốt, tôi sử dụng nó hàng ngày và giới thiệu nó cho bạn.\nTải xuống cho Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter\nTải xuống cho iOS: https://apps.apple.com/us/app/stock-and-erfentory/id6670546293';
+  String get send_mail_invite_friend_content =>
+      'Đây là một ứng dụng tốt, tôi sử dụng nó hàng ngày và giới thiệu nó cho bạn.\nTải xuống cho Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter\nTải xuống cho iOS: https://apps.apple.com/us/app/stock-and-erfentory/id6670546293';
 
   @override
   String get menu_item_write_review_header => 'Viết một đánh giá';
 
   @override
-  String get menu_item_write_review_description => 'Chia sẻ đánh giá của bạn cho mọi người';
+  String get menu_item_write_review_description =>
+      'Chia sẻ đánh giá của bạn cho mọi người';
 
   @override
   String get menu_item_feedback_header => 'Nhận xét';
 
   @override
-  String get menu_item_feedback_description => 'Chia sẻ phản hồi của bạn để cải thiện ứng dụng';
+  String get menu_item_feedback_description =>
+      'Chia sẻ phản hồi của bạn để cải thiện ứng dụng';
 
   @override
   String get menu_item_community_header => 'Cộng đồng';
 
   @override
-  String get menu_item_community_description => 'Tham gia cộng đồng ứng dụng của chúng tôi';
+  String get menu_item_community_description =>
+      'Tham gia cộng đồng ứng dụng của chúng tôi';
 
   @override
   String get menu_item_donation => 'Đóng góp!';
@@ -327,7 +335,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get menu_item_upgrade_account => 'Tài khoản nâng cấp';
 
   @override
-  String get menu_item_upgrade_account_subtitle => 'Bạn đang ở chế độ khách, nâng cấp lên tài khoản bình thường để đồng bộ hóa tiến trình';
+  String get menu_item_upgrade_account_subtitle =>
+      'Bạn đang ở chế độ khách, nâng cấp lên tài khoản bình thường để đồng bộ hóa tiến trình';
 
   @override
   String get menu_item_sign_out => 'Đăng xuất';
@@ -342,19 +351,22 @@ class AppLocalizationsVi extends AppLocalizations {
   String get on_boarding_title_1 => 'Cửa hàng quản lý';
 
   @override
-  String get on_boarding_content_1 => 'Bạn có thể tạo rất nhiều cửa hàng để quản lý hàng hóa của bạn và theo dõi thông tin của họ.ví dụ: cửa hàng trái cây, cửa hàng rau ....';
+  String get on_boarding_content_1 =>
+      'Bạn có thể tạo rất nhiều cửa hàng để quản lý hàng hóa của bạn và theo dõi thông tin của họ.ví dụ: cửa hàng trái cây, cửa hàng rau ....';
 
   @override
   String get on_boarding_title_2 => 'Quản lý hàng hóa';
 
   @override
-  String get on_boarding_content_2 => 'Nó chứa danh sách (danh mục) của tất cả hàng hóa của bạn bao gồm thông tin về số lượng trong kho.ví dụ: bóng đèn, TODO';
+  String get on_boarding_content_2 =>
+      'Nó chứa danh sách (danh mục) của tất cả hàng hóa của bạn bao gồm thông tin về số lượng trong kho.ví dụ: bóng đèn, TODO';
 
   @override
   String get on_boarding_title_3 => 'Tài liệu quản lý';
 
   @override
-  String get on_boarding_content_3 => 'Bạn có thể tạo các tài liệu đến/đi để tăng/giảm số lượng hàng hóa của bạn trong kho';
+  String get on_boarding_content_3 =>
+      'Bạn có thể tạo các tài liệu đến/đi để tăng/giảm số lượng hàng hóa của bạn trong kho';
 
   @override
   String get on_boarding_title_4 => 'Bắt đầu ngay bây giờ';
@@ -375,7 +387,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get message_confirm_delete => 'Bạn có chắc chắn xóa %s không?';
 
   @override
-  String get message_confirm_delete_account => 'Bạn có chắc chắn xóa tài khoản của mình không?';
+  String get message_confirm_delete_account =>
+      'Bạn có chắc chắn xóa tài khoản của mình không?';
 
   @override
   String get delete_account_successful => 'Tài khoản của bạn đã bị xóa';
@@ -399,19 +412,24 @@ class AppLocalizationsVi extends AppLocalizations {
   String get menu_item_minimum_quantity => 'Số lượng tối thiểu';
 
   @override
-  String get menu_item_show_min_quantity_items_page_title => 'Hiển thị số lượng tối thiểu trong trang của mục';
+  String get menu_item_show_min_quantity_items_page_title =>
+      'Hiển thị số lượng tối thiểu trong trang của mục';
 
   @override
-  String get menu_item_show_min_quantity_list_page_title => 'Hiển thị số lượng tối thiểu trong trang danh sách';
+  String get menu_item_show_min_quantity_list_page_title =>
+      'Hiển thị số lượng tối thiểu trong trang danh sách';
 
   @override
-  String get menu_item_min_quantity_color_title => 'Màu sắc cho hàng hóa cần sắp xếp lại';
+  String get menu_item_min_quantity_color_title =>
+      'Màu sắc cho hàng hóa cần sắp xếp lại';
 
   @override
-  String get menu_item_show_low_stock_alert_title => 'Hiển thị cảnh báo chứng khoán thấp';
+  String get menu_item_show_low_stock_alert_title =>
+      'Hiển thị cảnh báo chứng khoán thấp';
 
   @override
-  String get menu_item_show_low_stock_alert_desc => 'Khi bạn mở ứng dụng, chúng tôi sẽ gửi cho bạn thông báo để cảnh báo bạn';
+  String get menu_item_show_low_stock_alert_desc =>
+      'Khi bạn mở ứng dụng, chúng tôi sẽ gửi cho bạn thông báo để cảnh báo bạn';
 
   @override
   String get menu_item_my_company => 'Thông tin công ty';
@@ -432,7 +450,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get menu_item_passcode_desc => 'Desc';
 
   @override
-  String get menu_item_reset_numeration_documents_title => 'Đặt lại số tài liệu';
+  String get menu_item_reset_numeration_documents_title =>
+      'Đặt lại số tài liệu';
 
   @override
   String get settings_title => 'Cài đặt';
@@ -480,10 +499,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get message_type_question => 'Câu hỏi';
 
   @override
-  String get send_mail_bug_report_subject => 'Cổ phiếu và hàng tồn kho - Báo cáo lỗi';
+  String get send_mail_bug_report_subject =>
+      'Cổ phiếu và hàng tồn kho - Báo cáo lỗi';
 
   @override
-  String get send_mail_feedback_subject => 'Cổ phiếu và hàng tồn kho - Phản hồi';
+  String get send_mail_feedback_subject =>
+      'Cổ phiếu và hàng tồn kho - Phản hồi';
 
   @override
   String get send_mail_suggestion_subject => 'Cổ phiếu và hàng tồn kho - Gợi ý';
@@ -597,10 +618,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get report_type_outbound_payments => 'Thanh toán bên ngoài';
 
   @override
-  String get report_type_list_of_supplier_payments => 'Thanh toán của các nhà cung cấp';
+  String get report_type_list_of_supplier_payments =>
+      'Thanh toán của các nhà cung cấp';
 
   @override
-  String get report_type_list_of_customer_payments => 'Thanh toán theo khách hàng';
+  String get report_type_list_of_customer_payments =>
+      'Thanh toán theo khách hàng';
 
   @override
   String get report_type_reorder => 'Sắp xếp lại';
@@ -687,7 +710,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get backup_error => 'Dữ liệu sao lưu không thành công !!';
 
   @override
-  String get error_wrong_email_password => 'Email hoặc mật khẩu sai, vui lòng thử lại';
+  String get error_wrong_email_password =>
+      'Email hoặc mật khẩu sai, vui lòng thử lại';
 
   @override
   String get menu_push_data_to_cloud => 'Lưu dữ liệu vào đám mây';
@@ -696,7 +720,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get menu_quick_sync_title => 'Đồng bộ hóa nhanh';
 
   @override
-  String get menu_quick_sync_desc => 'Nó sẽ khởi động lại ứng dụng và đồng bộ hóa dữ liệu ứng dụng mới nhất';
+  String get menu_quick_sync_desc =>
+      'Nó sẽ khởi động lại ứng dụng và đồng bộ hóa dữ liệu ứng dụng mới nhất';
 
   @override
   String get login => 'Đăng nhập';
@@ -738,7 +763,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get email_not_verified_title => 'Email không được xác minh';
 
   @override
-  String get email_not_verified_desc => 'Vui lòng kiểm tra email của bạn và xác minh email của bạn.';
+  String get email_not_verified_desc =>
+      'Vui lòng kiểm tra email của bạn và xác minh email của bạn.';
 
   @override
   String get sign_up_successful => 'Đăng ký thành công';
@@ -954,10 +980,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get select_object_type => 'Chọn loại đối tượng';
 
   @override
-  String get pro_benefits_description => 'Tất cả các tính năng cao cấp của ứng dụng (cửa hàng không giới hạn, khách hàng, nhà cung cấp, ví)';
+  String get pro_benefits_description =>
+      'Tất cả các tính năng cao cấp của ứng dụng (cửa hàng không giới hạn, khách hàng, nhà cung cấp, ví)';
 
   @override
-  String get pro_lifetime_benefits_description => 'Với mua một lần, bạn sẽ có thể sử dụng tất cả các tính năng nâng cao mãi mãi';
+  String get pro_lifetime_benefits_description =>
+      'Với mua một lần, bạn sẽ có thể sử dụng tất cả các tính năng nâng cao mãi mãi';
 
   @override
   String get monthly => 'Hàng tháng';
@@ -1014,7 +1042,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get end_date => 'Ngày kết thúc';
 
   @override
-  String get hint_tap_first_column => 'Nhấn vào các mục trong cột đầu tiên để xem chi tiết';
+  String get hint_tap_first_column =>
+      'Nhấn vào các mục trong cột đầu tiên để xem chi tiết';
 
   @override
   String get by_status => 'Theo trạng thái';
@@ -1032,7 +1061,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get action_no => 'KHÔNG';
 
   @override
-  String get buy_subscription_to_add_more_entity => 'Nếu không có đăng ký, bạn chỉ có thể thêm các thực thể %s.Nâng cấp lên phiên bản cao cấp và mở khóa truy cập không giới hạn!';
+  String get buy_subscription_to_add_more_entity =>
+      'Nếu không có đăng ký, bạn chỉ có thể thêm các thực thể %s.Nâng cấp lên phiên bản cao cấp và mở khóa truy cập không giới hạn!';
 
   @override
   String get sort_by_date => 'Sắp xếp theo ngày';
@@ -1068,7 +1098,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get notification_low_stock_alert_title => 'Cảnh báo chứng khoán thấp';
 
   @override
-  String get notification_low_stock_alert_message => 'Một số mặt hàng thấp trong kho.Vui lòng xem lại chúng.';
+  String get notification_low_stock_alert_message =>
+      'Một số mặt hàng thấp trong kho.Vui lòng xem lại chúng.';
 
   @override
   String get text_cancel => 'Hủy bỏ';
@@ -1083,16 +1114,19 @@ class AppLocalizationsVi extends AppLocalizations {
   String get notification_permission => 'Giấy phép thông báo';
 
   @override
-  String get notification_permission_content => 'Vui lòng kích hoạt thông báo trong cài đặt hệ thống.';
+  String get notification_permission_content =>
+      'Vui lòng kích hoạt thông báo trong cài đặt hệ thống.';
 
   @override
   String get open_settings => 'Mở cài đặt';
 
   @override
-  String get notification_permission_required_message => 'Cần có sự cho phép thông báo để kích hoạt cảnh báo.';
+  String get notification_permission_required_message =>
+      'Cần có sự cho phép thông báo để kích hoạt cảnh báo.';
 
   @override
-  String get company_info_message => 'Dữ liệu này sẽ được hiển thị ở dạng in (hóa đơn, bán hàng, biên lai, v.v.';
+  String get company_info_message =>
+      'Dữ liệu này sẽ được hiển thị ở dạng in (hóa đơn, bán hàng, biên lai, v.v.';
 
   @override
   String get theme => 'Chủ đề';

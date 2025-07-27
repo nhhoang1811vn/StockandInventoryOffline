@@ -96,7 +96,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get empty_stores => 'Нет магазина';
 
   @override
-  String get delete_store_error => 'Это ваш единственный магазин, не могу выполнить это действие';
+  String get delete_store_error =>
+      'Это ваш единственный магазин, не могу выполнить это действие';
 
   @override
   String get suppliers_title => 'Поставщики';
@@ -129,7 +130,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get field_name => 'Имя';
 
   @override
-  String get error_field_name_empty => 'Пожалуйста, убедитесь, что введенное имя является действительным.';
+  String get error_field_name_empty =>
+      'Пожалуйста, убедитесь, что введенное имя является действительным.';
 
   @override
   String get field_bar_code => 'Штрихкод';
@@ -207,7 +209,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get home_menu_item_more => 'Более';
 
   @override
-  String get message_error_negative_quantity_save_document => 'Невозможно выполнить это действие, количество %s отрицательное';
+  String get message_error_negative_quantity_save_document =>
+      'Невозможно выполнить это действие, количество %s отрицательное';
 
   @override
   String get action_send_email => 'Отправить электронное письмо';
@@ -243,10 +246,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get title_store_selecting => 'Магазин выбора';
 
   @override
-  String get message_delete_supplier_error_having_document => 'У вас есть документы, прикрепленные к поставщику, не можете выполнить это действие';
+  String get message_delete_supplier_error_having_document =>
+      'У вас есть документы, прикрепленные к поставщику, не можете выполнить это действие';
 
   @override
-  String get message_delete_customer_error_having_document => 'У вас есть документы, прикрепленные к поставщику, не можете выполнить это действие';
+  String get message_delete_customer_error_having_document =>
+      'У вас есть документы, прикрепленные к поставщику, не можете выполнить это действие';
 
   @override
   String get action_ok => 'ХОРОШО';
@@ -297,25 +302,29 @@ class AppLocalizationsRu extends AppLocalizations {
   String get send_mail_invite_friend_subject => 'Приглашение через приложение';
 
   @override
-  String get send_mail_invite_friend_content => 'Это хорошее приложение, я пользуюсь им каждый день и рекомендую его вам. Скачать для Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter. Скачать для iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
+  String get send_mail_invite_friend_content =>
+      'Это хорошее приложение, я пользуюсь им каждый день и рекомендую его вам. Скачать для Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter. Скачать для iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
 
   @override
   String get menu_item_write_review_header => 'Написать отзыв';
 
   @override
-  String get menu_item_write_review_description => 'Поделитесь своим отзывом со всеми';
+  String get menu_item_write_review_description =>
+      'Поделитесь своим отзывом со всеми';
 
   @override
   String get menu_item_feedback_header => 'Обратная связь';
 
   @override
-  String get menu_item_feedback_description => 'Поделитесь своим мнением, чтобы улучшить приложение';
+  String get menu_item_feedback_description =>
+      'Поделитесь своим мнением, чтобы улучшить приложение';
 
   @override
   String get menu_item_community_header => 'Сообщество';
 
   @override
-  String get menu_item_community_description => 'Присоединяйтесь к нашему сообществу приложений';
+  String get menu_item_community_description =>
+      'Присоединяйтесь к нашему сообществу приложений';
 
   @override
   String get menu_item_donation => 'Пожертвование!';
@@ -327,7 +336,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get menu_item_upgrade_account => 'Обновить аккаунт';
 
   @override
-  String get menu_item_upgrade_account_subtitle => 'Вы находитесь в гостевом режиме. Перейдите на обычную учетную запись, чтобы синхронизировать прогресс.';
+  String get menu_item_upgrade_account_subtitle =>
+      'Вы находитесь в гостевом режиме. Перейдите на обычную учетную запись, чтобы синхронизировать прогресс.';
 
   @override
   String get menu_item_sign_out => 'выход';
@@ -342,19 +352,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get on_boarding_title_1 => 'Управление магазинами';
 
   @override
-  String get on_boarding_content_1 => 'Вы можете создать множество магазинов для управления своими товарами и отслеживания информации о них. Например: Фруктовый магазин, Овощной магазин....';
+  String get on_boarding_content_1 =>
+      'Вы можете создать множество магазинов для управления своими товарами и отслеживания информации о них. Например: Фруктовый магазин, Овощной магазин....';
 
   @override
   String get on_boarding_title_2 => 'Управление товарами';
 
   @override
-  String get on_boarding_content_2 => 'Он содержит список (каталог) всех ваших товаров, включая информацию об их количестве на складе. Например: лампочки, список дел.';
+  String get on_boarding_content_2 =>
+      'Он содержит список (каталог) всех ваших товаров, включая информацию об их количестве на складе. Например: лампочки, список дел.';
 
   @override
   String get on_boarding_title_3 => 'Управление документами';
 
   @override
-  String get on_boarding_content_3 => 'Вы можете создавать входящие/исходящие документы для увеличения/уменьшения количества товара на складе.';
+  String get on_boarding_content_3 =>
+      'Вы можете создавать входящие/исходящие документы для увеличения/уменьшения количества товара на складе.';
 
   @override
   String get on_boarding_title_4 => 'Начните сейчас';
@@ -369,13 +382,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get action_skip => 'Пропускать';
 
   @override
-  String get message_confirm_delete_no_args => 'Вы уверены, что хотите его удалить?';
+  String get message_confirm_delete_no_args =>
+      'Вы уверены, что хотите его удалить?';
 
   @override
   String get message_confirm_delete => 'Вы уверены, что хотите удалить %s?';
 
   @override
-  String get message_confirm_delete_account => 'Вы уверены, что хотите удалить свою учетную запись?';
+  String get message_confirm_delete_account =>
+      'Вы уверены, что хотите удалить свою учетную запись?';
 
   @override
   String get delete_account_successful => 'Ваш аккаунт был удален';
@@ -399,25 +414,31 @@ class AppLocalizationsRu extends AppLocalizations {
   String get menu_item_minimum_quantity => 'Минимальное количество';
 
   @override
-  String get menu_item_show_min_quantity_items_page_title => 'Показывать минимальное количество на странице товара';
+  String get menu_item_show_min_quantity_items_page_title =>
+      'Показывать минимальное количество на странице товара';
 
   @override
-  String get menu_item_show_min_quantity_list_page_title => 'Показать минимальное количество на странице списка';
+  String get menu_item_show_min_quantity_list_page_title =>
+      'Показать минимальное количество на странице списка';
 
   @override
-  String get menu_item_min_quantity_color_title => 'Цвет для товаров, требующих повторного заказа';
+  String get menu_item_min_quantity_color_title =>
+      'Цвет для товаров, требующих повторного заказа';
 
   @override
-  String get menu_item_show_low_stock_alert_title => 'Показывать оповещения о низком уровне запасов';
+  String get menu_item_show_low_stock_alert_title =>
+      'Показывать оповещения о низком уровне запасов';
 
   @override
-  String get menu_item_show_low_stock_alert_desc => 'Когда вы откроете приложение, мы отправим вам уведомление с предупреждением.';
+  String get menu_item_show_low_stock_alert_desc =>
+      'Когда вы откроете приложение, мы отправим вам уведомление с предупреждением.';
 
   @override
   String get menu_item_my_company => 'Информация о компании';
 
   @override
-  String get menu_item_backup_and_restore => 'Резервное копирование и восстановление';
+  String get menu_item_backup_and_restore =>
+      'Резервное копирование и восстановление';
 
   @override
   String get menu_item_language_title => 'Язык';
@@ -432,7 +453,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get menu_item_passcode_desc => 'Описание';
 
   @override
-  String get menu_item_reset_numeration_documents_title => 'Сбросить нумерацию документов';
+  String get menu_item_reset_numeration_documents_title =>
+      'Сбросить нумерацию документов';
 
   @override
   String get settings_title => 'Настройки';
@@ -480,10 +502,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get message_type_question => 'Вопрос';
 
   @override
-  String get send_mail_bug_report_subject => 'Запасы и инвентарь — отчет об ошибках';
+  String get send_mail_bug_report_subject =>
+      'Запасы и инвентарь — отчет об ошибках';
 
   @override
-  String get send_mail_feedback_subject => 'Запасы и инвентарь - Обратная связь';
+  String get send_mail_feedback_subject =>
+      'Запасы и инвентарь - Обратная связь';
 
   @override
   String get send_mail_suggestion_subject => 'Запасы и инвентарь - Предложение';
@@ -504,7 +528,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get after_each_scan => 'После каждого сканирования';
 
   @override
-  String get after_each_scan_auto => 'Автоматическое увеличение количества на 1';
+  String get after_each_scan_auto =>
+      'Автоматическое увеличение количества на 1';
 
   @override
   String get after_each_scan_manually => 'Установить количество вручную';
@@ -681,13 +706,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get menu_restore_desc => 'Импорт файла базы данных';
 
   @override
-  String get backup_successful => 'Резервное копирование данных успешно завершено';
+  String get backup_successful =>
+      'Резервное копирование данных успешно завершено';
 
   @override
   String get backup_error => 'Резервное копирование данных не удалось!!';
 
   @override
-  String get error_wrong_email_password => 'Неправильный адрес электронной почты или пароль, попробуйте еще раз.';
+  String get error_wrong_email_password =>
+      'Неправильный адрес электронной почты или пароль, попробуйте еще раз.';
 
   @override
   String get menu_push_data_to_cloud => 'Сохраните данные в облаке';
@@ -696,7 +723,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get menu_quick_sync_title => 'Быстрая синхронизация';
 
   @override
-  String get menu_quick_sync_desc => 'Приложение перезапустится и синхронизируется с последними данными.';
+  String get menu_quick_sync_desc =>
+      'Приложение перезапустится и синхронизируется с последними данными.';
 
   @override
   String get login => 'АВТОРИЗОВАТЬСЯ';
@@ -705,7 +733,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get email => 'Электронная почта';
 
   @override
-  String get error_email => 'Пожалуйста, введите действительный адрес электронной почты';
+  String get error_email =>
+      'Пожалуйста, введите действительный адрес электронной почты';
 
   @override
   String get password => 'Пароль';
@@ -738,7 +767,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get email_not_verified_title => 'Электронная почта не подтверждена';
 
   @override
-  String get email_not_verified_desc => 'Пожалуйста, проверьте свою электронную почту и подтвердите ее.';
+  String get email_not_verified_desc =>
+      'Пожалуйста, проверьте свою электронную почту и подтвердите ее.';
 
   @override
   String get sign_up_successful => 'Успешная регистрация';
@@ -786,7 +816,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get title_select_document => 'Выбрать документ';
 
   @override
-  String get title_chart_sale_report => 'Отчет о продажах за последние 6 месяцев';
+  String get title_chart_sale_report =>
+      'Отчет о продажах за последние 6 месяцев';
 
   @override
   String get label_select_payment_category => 'Выберите категорию';
@@ -954,10 +985,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get select_object_type => 'Выберите типы объектов';
 
   @override
-  String get pro_benefits_description => 'Все премиум-функции приложения (неограниченное количество магазинов, клиентов, поставщиков, кошельков)';
+  String get pro_benefits_description =>
+      'Все премиум-функции приложения (неограниченное количество магазинов, клиентов, поставщиков, кошельков)';
 
   @override
-  String get pro_lifetime_benefits_description => 'При единовременной покупке вы сможете пользоваться всеми расширенными функциями навсегда.';
+  String get pro_lifetime_benefits_description =>
+      'При единовременной покупке вы сможете пользоваться всеми расширенными функциями навсегда.';
 
   @override
   String get monthly => 'Ежемесячно';
@@ -1014,7 +1047,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get end_date => 'Дата окончания';
 
   @override
-  String get hint_tap_first_column => 'Нажмите на элементы в первом столбце, чтобы увидеть подробности.';
+  String get hint_tap_first_column =>
+      'Нажмите на элементы в первом столбце, чтобы увидеть подробности.';
 
   @override
   String get by_status => 'По статусу';
@@ -1032,7 +1066,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get action_no => 'Нет';
 
   @override
-  String get buy_subscription_to_add_more_entity => 'Без подписки вы сможете добавить только %s сущностей. Перейдите на премиум-версию и получите неограниченный доступ!';
+  String get buy_subscription_to_add_more_entity =>
+      'Без подписки вы сможете добавить только %s сущностей. Перейдите на премиум-версию и получите неограниченный доступ!';
 
   @override
   String get sort_by_date => 'Сортировать по дате';
@@ -1065,10 +1100,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get select_payment_type => 'Выберите тип оплаты';
 
   @override
-  String get notification_low_stock_alert_title => 'Оповещение о низком уровне запасов';
+  String get notification_low_stock_alert_title =>
+      'Оповещение о низком уровне запасов';
 
   @override
-  String get notification_low_stock_alert_message => 'Некоторых товаров мало на складе. Пожалуйста, проверьте наличие.';
+  String get notification_low_stock_alert_message =>
+      'Некоторых товаров мало на складе. Пожалуйста, проверьте наличие.';
 
   @override
   String get text_cancel => 'Отмена';
@@ -1083,16 +1120,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get notification_permission => 'Разрешение на уведомление';
 
   @override
-  String get notification_permission_content => 'Пожалуйста, включите уведомления в настройках системы.';
+  String get notification_permission_content =>
+      'Пожалуйста, включите уведомления в настройках системы.';
 
   @override
   String get open_settings => 'Открыть настройки';
 
   @override
-  String get notification_permission_required_message => 'Для включения оповещений требуется разрешение на отправку уведомлений.';
+  String get notification_permission_required_message =>
+      'Для включения оповещений требуется разрешение на отправку уведомлений.';
 
   @override
-  String get company_info_message => 'Эти данные будут отображаться в печатном виде (счета-фактуры, продажи, квитанции и т. д.).';
+  String get company_info_message =>
+      'Эти данные будут отображаться в печатном виде (счета-фактуры, продажи, квитанции и т. д.).';
 
   @override
   String get theme => 'Темы';

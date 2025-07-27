@@ -207,7 +207,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get home_menu_item_more => '更多的';
 
   @override
-  String get message_error_negative_quantity_save_document => '无法执行此操作，%s 的数量为负数';
+  String get message_error_negative_quantity_save_document =>
+      '无法执行此操作，%s 的数量为负数';
 
   @override
   String get action_send_email => '发送电子邮件';
@@ -243,10 +244,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get title_store_selecting => '精选商店';
 
   @override
-  String get message_delete_supplier_error_having_document => '您有附上供应商的文件，无法执行此操作';
+  String get message_delete_supplier_error_having_document =>
+      '您有附上供应商的文件，无法执行此操作';
 
   @override
-  String get message_delete_customer_error_having_document => '您有附上供应商的文件，无法执行此操作';
+  String get message_delete_customer_error_having_document =>
+      '您有附上供应商的文件，无法执行此操作';
 
   @override
   String get action_ok => '好的';
@@ -297,7 +300,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get send_mail_invite_friend_subject => '使用应用程序邀请';
 
   @override
-  String get send_mail_invite_friend_content => '这是一款很棒的应用，我每天都用，推荐给大家。安卓下载：https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter。iOS下载：https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
+  String get send_mail_invite_friend_content =>
+      '这是一款很棒的应用，我每天都用，推荐给大家。安卓下载：https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter。iOS下载：https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
 
   @override
   String get menu_item_write_review_header => '撰写评论';
@@ -1032,7 +1036,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get action_no => '不';
 
   @override
-  String get buy_subscription_to_add_more_entity => '如果没有订阅，您只能添加 %s 个实体。升级到高级版即可解锁无限访问权限！';
+  String get buy_subscription_to_add_more_entity =>
+      '如果没有订阅，您只能添加 %s 个实体。升级到高级版即可解锁无限访问权限！';
 
   @override
   String get sort_by_date => '按日期排序';

@@ -96,7 +96,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get empty_stores => 'لا يوجد متجر';
 
   @override
-  String get delete_store_error => 'هذا هو متجرك الوحيد، لا يمكنك تنفيذ هذا الإجراء';
+  String get delete_store_error =>
+      'هذا هو متجرك الوحيد، لا يمكنك تنفيذ هذا الإجراء';
 
   @override
   String get suppliers_title => 'الموردين';
@@ -207,7 +208,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get home_menu_item_more => 'أكثر';
 
   @override
-  String get message_error_negative_quantity_save_document => 'لا يمكن تنفيذ هذا الإجراء، كمية %s سلبية';
+  String get message_error_negative_quantity_save_document =>
+      'لا يمكن تنفيذ هذا الإجراء، كمية %s سلبية';
 
   @override
   String get action_send_email => 'إرسال بريد إلكتروني';
@@ -243,10 +245,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get title_store_selecting => 'متجر الاختيار';
 
   @override
-  String get message_delete_supplier_error_having_document => 'لديك مستندات مرفقة بالمورد، لا يمكنك تنفيذ هذا الإجراء';
+  String get message_delete_supplier_error_having_document =>
+      'لديك مستندات مرفقة بالمورد، لا يمكنك تنفيذ هذا الإجراء';
 
   @override
-  String get message_delete_customer_error_having_document => 'لديك مستندات مرفقة بالمورد، لا يمكنك تنفيذ هذا الإجراء';
+  String get message_delete_customer_error_having_document =>
+      'لديك مستندات مرفقة بالمورد، لا يمكنك تنفيذ هذا الإجراء';
 
   @override
   String get action_ok => 'نعم';
@@ -297,7 +301,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get send_mail_invite_friend_subject => 'دعوة باستخدام التطبيق';
 
   @override
-  String get send_mail_invite_friend_content => 'هذا تطبيق جيد، أستخدمه يوميًا وأوصي به. حمّله لأجهزة أندرويد: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter. حمّله لأجهزة iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
+  String get send_mail_invite_friend_content =>
+      'هذا تطبيق جيد، أستخدمه يوميًا وأوصي به. حمّله لأجهزة أندرويد: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter. حمّله لأجهزة iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
 
   @override
   String get menu_item_write_review_header => 'اكتب مراجعة';
@@ -315,7 +320,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get menu_item_community_header => 'مجتمع';
 
   @override
-  String get menu_item_community_description => 'انضم إلى مجتمع التطبيقات لدينا';
+  String get menu_item_community_description =>
+      'انضم إلى مجتمع التطبيقات لدينا';
 
   @override
   String get menu_item_donation => 'هبة!';
@@ -327,7 +333,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get menu_item_upgrade_account => 'ترقية الحساب';
 
   @override
-  String get menu_item_upgrade_account_subtitle => 'أنت في وضع الضيف، قم بالترقية إلى الحساب العادي لمزامنة التقدم';
+  String get menu_item_upgrade_account_subtitle =>
+      'أنت في وضع الضيف، قم بالترقية إلى الحساب العادي لمزامنة التقدم';
 
   @override
   String get menu_item_sign_out => 'تسجيل الخروج';
@@ -342,19 +349,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get on_boarding_title_1 => 'إدارة المتاجر';
 
   @override
-  String get on_boarding_content_1 => 'يمكنك إنشاء العديد من المتاجر لإدارة بضائعك وتتبع معلوماتها. على سبيل المثال: متجر الفاكهة، متاجر الخضار....';
+  String get on_boarding_content_1 =>
+      'يمكنك إنشاء العديد من المتاجر لإدارة بضائعك وتتبع معلوماتها. على سبيل المثال: متجر الفاكهة، متاجر الخضار....';
 
   @override
   String get on_boarding_title_2 => 'إدارة البضائع';
 
   @override
-  String get on_boarding_content_2 => 'يحتوي على قائمة (كتالوج) لجميع البضائع لديك بما في ذلك معلومات حول الكمية الموجودة في المخزون. على سبيل المثال: المصباح الكهربائي، المهام';
+  String get on_boarding_content_2 =>
+      'يحتوي على قائمة (كتالوج) لجميع البضائع لديك بما في ذلك معلومات حول الكمية الموجودة في المخزون. على سبيل المثال: المصباح الكهربائي، المهام';
 
   @override
   String get on_boarding_title_3 => 'إدارة المستندات';
 
   @override
-  String get on_boarding_content_3 => 'يمكنك إنشاء مستندات واردة/صادرة لزيادة/تقليل كمية البضائع الموجودة في المخزون';
+  String get on_boarding_content_3 =>
+      'يمكنك إنشاء مستندات واردة/صادرة لزيادة/تقليل كمية البضائع الموجودة في المخزون';
 
   @override
   String get on_boarding_title_4 => 'ابدأ الآن';
@@ -399,19 +409,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get menu_item_minimum_quantity => 'الحد الأدنى للكمية';
 
   @override
-  String get menu_item_show_min_quantity_items_page_title => 'إظهار الحد الأدنى للكمية في صفحة العنصر';
+  String get menu_item_show_min_quantity_items_page_title =>
+      'إظهار الحد الأدنى للكمية في صفحة العنصر';
 
   @override
-  String get menu_item_show_min_quantity_list_page_title => 'إظهار الحد الأدنى للكمية في صفحة القائمة';
+  String get menu_item_show_min_quantity_list_page_title =>
+      'إظهار الحد الأدنى للكمية في صفحة القائمة';
 
   @override
-  String get menu_item_min_quantity_color_title => 'لون البضائع التي تحتاج إلى إعادة الطلب';
+  String get menu_item_min_quantity_color_title =>
+      'لون البضائع التي تحتاج إلى إعادة الطلب';
 
   @override
-  String get menu_item_show_low_stock_alert_title => 'إظهار تنبيهات انخفاض المخزون';
+  String get menu_item_show_low_stock_alert_title =>
+      'إظهار تنبيهات انخفاض المخزون';
 
   @override
-  String get menu_item_show_low_stock_alert_desc => 'عند فتح التطبيق، سنرسل إليك إشعارًا لتحذيرك';
+  String get menu_item_show_low_stock_alert_desc =>
+      'عند فتح التطبيق، سنرسل إليك إشعارًا لتحذيرك';
 
   @override
   String get menu_item_my_company => 'معلومات الشركة';
@@ -432,7 +447,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get menu_item_passcode_desc => 'الوصف';
 
   @override
-  String get menu_item_reset_numeration_documents_title => 'إعادة تعيين ترقيم المستندات';
+  String get menu_item_reset_numeration_documents_title =>
+      'إعادة تعيين ترقيم المستندات';
 
   @override
   String get settings_title => 'إعدادات';
@@ -597,7 +613,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get report_type_outbound_payments => 'المدفوعات الصادرة';
 
   @override
-  String get report_type_list_of_supplier_payments => 'المدفوعات من قبل الموردين';
+  String get report_type_list_of_supplier_payments =>
+      'المدفوعات من قبل الموردين';
 
   @override
   String get report_type_list_of_customer_payments => 'المدفوعات من قبل العميل';
@@ -687,7 +704,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get backup_error => 'فشل النسخ الاحتياطي للبيانات!!';
 
   @override
-  String get error_wrong_email_password => 'البريد الإلكتروني أو كلمة المرور خاطئة، يرجى المحاولة مرة أخرى';
+  String get error_wrong_email_password =>
+      'البريد الإلكتروني أو كلمة المرور خاطئة، يرجى المحاولة مرة أخرى';
 
   @override
   String get menu_push_data_to_cloud => 'حفظ البيانات في السحابة';
@@ -696,7 +714,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get menu_quick_sync_title => 'المزامنة السريعة';
 
   @override
-  String get menu_quick_sync_desc => 'سيتم إعادة تشغيل التطبيق ومزامنة أحدث بيانات التطبيق';
+  String get menu_quick_sync_desc =>
+      'سيتم إعادة تشغيل التطبيق ومزامنة أحدث بيانات التطبيق';
 
   @override
   String get login => 'تسجيل الدخول';
@@ -738,7 +757,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get email_not_verified_title => 'البريد الإلكتروني غير مُتحقق';
 
   @override
-  String get email_not_verified_desc => 'يرجى التحقق من بريدك الإلكتروني والتحقق من بريدك الإلكتروني.';
+  String get email_not_verified_desc =>
+      'يرجى التحقق من بريدك الإلكتروني والتحقق من بريدك الإلكتروني.';
 
   @override
   String get sign_up_successful => 'تم التسجيل بنجاح';
@@ -786,7 +806,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get title_select_document => 'حدد المستند';
 
   @override
-  String get title_chart_sale_report => 'تقرير المبيعات في الأشهر الستة الماضية';
+  String get title_chart_sale_report =>
+      'تقرير المبيعات في الأشهر الستة الماضية';
 
   @override
   String get label_select_payment_category => 'اختر الفئة';
@@ -954,10 +975,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get select_object_type => 'تحديد أنواع الكائنات';
 
   @override
-  String get pro_benefits_description => 'جميع الميزات المميزة للتطبيق (متاجر غير محدودة، عملاء، موردين، محافظ)';
+  String get pro_benefits_description =>
+      'جميع الميزات المميزة للتطبيق (متاجر غير محدودة، عملاء، موردين، محافظ)';
 
   @override
-  String get pro_lifetime_benefits_description => 'من خلال الشراء لمرة واحدة، ستتمكن من استخدام جميع الميزات المتقدمة إلى الأبد';
+  String get pro_lifetime_benefits_description =>
+      'من خلال الشراء لمرة واحدة، ستتمكن من استخدام جميع الميزات المتقدمة إلى الأبد';
 
   @override
   String get monthly => 'شهريا';
@@ -1014,7 +1037,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get end_date => 'تاريخ الانتهاء';
 
   @override
-  String get hint_tap_first_column => 'انقر على العناصر في العمود الأول لرؤية التفاصيل';
+  String get hint_tap_first_column =>
+      'انقر على العناصر في العمود الأول لرؤية التفاصيل';
 
   @override
   String get by_status => 'حسب الحالة';
@@ -1032,7 +1056,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get action_no => 'لا';
 
   @override
-  String get buy_subscription_to_add_more_entity => 'بدون الاشتراك، يمكنك إضافة %s كيان فقط. ارتقِ إلى الإصدار المميز واحصل على وصول غير محدود!';
+  String get buy_subscription_to_add_more_entity =>
+      'بدون الاشتراك، يمكنك إضافة %s كيان فقط. ارتقِ إلى الإصدار المميز واحصل على وصول غير محدود!';
 
   @override
   String get sort_by_date => 'فرز حسب التاريخ';
@@ -1068,7 +1093,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notification_low_stock_alert_title => 'تنبيه انخفاض المخزون';
 
   @override
-  String get notification_low_stock_alert_message => 'بعض المنتجات متوفرة بكميات قليلة. يُرجى مراجعتها.';
+  String get notification_low_stock_alert_message =>
+      'بعض المنتجات متوفرة بكميات قليلة. يُرجى مراجعتها.';
 
   @override
   String get text_cancel => 'يلغي';
@@ -1083,16 +1109,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notification_permission => 'إذن الإشعار';
 
   @override
-  String get notification_permission_content => 'يرجى تفعيل الإشعارات في إعدادات النظام.';
+  String get notification_permission_content =>
+      'يرجى تفعيل الإشعارات في إعدادات النظام.';
 
   @override
   String get open_settings => 'افتح الإعدادات';
 
   @override
-  String get notification_permission_required_message => 'مطلوب إذن الإشعار لتمكين التنبيهات.';
+  String get notification_permission_required_message =>
+      'مطلوب إذن الإشعار لتمكين التنبيهات.';
 
   @override
-  String get company_info_message => 'سيتم عرض هذه البيانات في شكل مطبوع (الفواتير، المبيعات، الإيصالات، الخ...)';
+  String get company_info_message =>
+      'سيتم عرض هذه البيانات في شكل مطبوع (الفواتير، المبيعات، الإيصالات، الخ...)';
 
   @override
   String get theme => 'المواضيع';

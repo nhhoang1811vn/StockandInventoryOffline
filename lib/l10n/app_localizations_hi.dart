@@ -96,7 +96,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get empty_stores => 'कोई स्टोर नहीं';
 
   @override
-  String get delete_store_error => 'यह आपका एकमात्र स्टोर है, यह क्रिया नहीं की जा सकती';
+  String get delete_store_error =>
+      'यह आपका एकमात्र स्टोर है, यह क्रिया नहीं की जा सकती';
 
   @override
   String get suppliers_title => 'आपूर्तिकर्ताओं';
@@ -129,7 +130,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get field_name => 'नाम';
 
   @override
-  String get error_field_name_empty => 'कृपया सुनिश्चित करें कि दर्ज किया गया नाम वैध है';
+  String get error_field_name_empty =>
+      'कृपया सुनिश्चित करें कि दर्ज किया गया नाम वैध है';
 
   @override
   String get field_bar_code => 'बारकोड';
@@ -207,7 +209,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get home_menu_item_more => 'अधिक';
 
   @override
-  String get message_error_negative_quantity_save_document => 'यह क्रिया नहीं की जा सकती, %s की मात्रा ऋणात्मक है';
+  String get message_error_negative_quantity_save_document =>
+      'यह क्रिया नहीं की जा सकती, %s की मात्रा ऋणात्मक है';
 
   @override
   String get action_send_email => 'ईमेल भेजें';
@@ -243,10 +246,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get title_store_selecting => 'चयन स्टोर';
 
   @override
-  String get message_delete_supplier_error_having_document => 'आपके पास आपूर्तिकर्ता से जुड़े दस्तावेज़ हैं, इसलिए यह कार्रवाई नहीं की जा सकती';
+  String get message_delete_supplier_error_having_document =>
+      'आपके पास आपूर्तिकर्ता से जुड़े दस्तावेज़ हैं, इसलिए यह कार्रवाई नहीं की जा सकती';
 
   @override
-  String get message_delete_customer_error_having_document => 'आपके पास आपूर्तिकर्ता से जुड़े दस्तावेज़ हैं, इसलिए यह कार्रवाई नहीं की जा सकती';
+  String get message_delete_customer_error_having_document =>
+      'आपके पास आपूर्तिकर्ता से जुड़े दस्तावेज़ हैं, इसलिए यह कार्रवाई नहीं की जा सकती';
 
   @override
   String get action_ok => 'ठीक है';
@@ -297,19 +302,22 @@ class AppLocalizationsHi extends AppLocalizations {
   String get send_mail_invite_friend_subject => 'ऐप का उपयोग करके आमंत्रण';
 
   @override
-  String get send_mail_invite_friend_content => 'यह एक अच्छा एप्लिकेशन है, मैं इसे रोज़ाना इस्तेमाल करता हूँ और आपके लिए भी इसकी सिफ़ारिश करता हूँ। Android के लिए डाउनलोड करें: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter. iOS के लिए डाउनलोड करें: https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
+  String get send_mail_invite_friend_content =>
+      'यह एक अच्छा एप्लिकेशन है, मैं इसे रोज़ाना इस्तेमाल करता हूँ और आपके लिए भी इसकी सिफ़ारिश करता हूँ। Android के लिए डाउनलोड करें: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter. iOS के लिए डाउनलोड करें: https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
 
   @override
   String get menu_item_write_review_header => 'एक समीक्षा लिखे';
 
   @override
-  String get menu_item_write_review_description => 'अपनी समीक्षा सभी के साथ साझा करें';
+  String get menu_item_write_review_description =>
+      'अपनी समीक्षा सभी के साथ साझा करें';
 
   @override
   String get menu_item_feedback_header => 'प्रतिक्रिया';
 
   @override
-  String get menu_item_feedback_description => 'ऐप को बेहतर बनाने के लिए अपनी प्रतिक्रिया साझा करें';
+  String get menu_item_feedback_description =>
+      'ऐप को बेहतर बनाने के लिए अपनी प्रतिक्रिया साझा करें';
 
   @override
   String get menu_item_community_header => 'समुदाय';
@@ -327,7 +335,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get menu_item_upgrade_account => 'खाते को अपग्रेड करें';
 
   @override
-  String get menu_item_upgrade_account_subtitle => 'आप अतिथि मोड पर हैं, प्रगति को सिंक करने के लिए सामान्य खाते में अपग्रेड करें';
+  String get menu_item_upgrade_account_subtitle =>
+      'आप अतिथि मोड पर हैं, प्रगति को सिंक करने के लिए सामान्य खाते में अपग्रेड करें';
 
   @override
   String get menu_item_sign_out => 'साइन आउट';
@@ -342,19 +351,22 @@ class AppLocalizationsHi extends AppLocalizations {
   String get on_boarding_title_1 => 'स्टोर प्रबंधन';
 
   @override
-  String get on_boarding_content_1 => 'आप अपने सामान का प्रबंधन करने और उनकी जानकारी ट्रैक करने के लिए बहुत सारे स्टोर बना सकते हैं। उदाहरण: फल की दुकान, सब्जी की दुकान....';
+  String get on_boarding_content_1 =>
+      'आप अपने सामान का प्रबंधन करने और उनकी जानकारी ट्रैक करने के लिए बहुत सारे स्टोर बना सकते हैं। उदाहरण: फल की दुकान, सब्जी की दुकान....';
 
   @override
   String get on_boarding_title_2 => 'माल प्रबंधन';
 
   @override
-  String get on_boarding_content_2 => 'इसमें आपके सभी सामानों की सूची (कैटलॉग) शामिल है जिसमें स्टॉक में मात्रा के बारे में जानकारी शामिल है। उदाहरण: लाइट बल्ब, टूडू';
+  String get on_boarding_content_2 =>
+      'इसमें आपके सभी सामानों की सूची (कैटलॉग) शामिल है जिसमें स्टॉक में मात्रा के बारे में जानकारी शामिल है। उदाहरण: लाइट बल्ब, टूडू';
 
   @override
   String get on_boarding_title_3 => 'दस्तावेज़ प्रबंधन';
 
   @override
-  String get on_boarding_content_3 => 'आप स्टॉक में अपने माल की मात्रा बढ़ाने/घटाने के लिए इनकमिंग/आउटगोइंग दस्तावेज़ बना सकते हैं';
+  String get on_boarding_content_3 =>
+      'आप स्टॉक में अपने माल की मात्रा बढ़ाने/घटाने के लिए इनकमिंग/आउटगोइंग दस्तावेज़ बना सकते हैं';
 
   @override
   String get on_boarding_title_4 => 'शुरू करें';
@@ -375,7 +387,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get message_confirm_delete => 'क्या आप %s को हटाना चाहते हैं?';
 
   @override
-  String get message_confirm_delete_account => 'क्या आप अपना खाता हटाना चाहते हैं?';
+  String get message_confirm_delete_account =>
+      'क्या आप अपना खाता हटाना चाहते हैं?';
 
   @override
   String get delete_account_successful => 'आपका खाता हटा दिया गया है';
@@ -399,19 +412,23 @@ class AppLocalizationsHi extends AppLocalizations {
   String get menu_item_minimum_quantity => 'न्यूनतम मात्रा';
 
   @override
-  String get menu_item_show_min_quantity_items_page_title => 'आइटम के पृष्ठ पर न्यूनतम मात्रा दिखाएँ';
+  String get menu_item_show_min_quantity_items_page_title =>
+      'आइटम के पृष्ठ पर न्यूनतम मात्रा दिखाएँ';
 
   @override
-  String get menu_item_show_min_quantity_list_page_title => 'सूची पृष्ठ में न्यूनतम मात्रा दिखाएँ';
+  String get menu_item_show_min_quantity_list_page_title =>
+      'सूची पृष्ठ में न्यूनतम मात्रा दिखाएँ';
 
   @override
-  String get menu_item_min_quantity_color_title => 'पुनः ऑर्डर की आवश्यकता वाले सामान के लिए रंग';
+  String get menu_item_min_quantity_color_title =>
+      'पुनः ऑर्डर की आवश्यकता वाले सामान के लिए रंग';
 
   @override
   String get menu_item_show_low_stock_alert_title => 'कम स्टॉक अलर्ट दिखाएं';
 
   @override
-  String get menu_item_show_low_stock_alert_desc => 'जब आप ऐप खोलेंगे, तो हम आपको चेतावनी देने के लिए सूचना भेजेंगे';
+  String get menu_item_show_low_stock_alert_desc =>
+      'जब आप ऐप खोलेंगे, तो हम आपको चेतावनी देने के लिए सूचना भेजेंगे';
 
   @override
   String get menu_item_my_company => 'कारखाना की जानकारी';
@@ -432,7 +449,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get menu_item_passcode_desc => 'वर्णन';
 
   @override
-  String get menu_item_reset_numeration_documents_title => 'दस्तावेज़ों का क्रमांकन रीसेट करें';
+  String get menu_item_reset_numeration_documents_title =>
+      'दस्तावेज़ों का क्रमांकन रीसेट करें';
 
   @override
   String get settings_title => 'सेटिंग्स';
@@ -597,7 +615,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get report_type_outbound_payments => 'आउटबाउंड भुगतान';
 
   @override
-  String get report_type_list_of_supplier_payments => 'आपूर्तिकर्ताओं द्वारा भुगतान';
+  String get report_type_list_of_supplier_payments =>
+      'आपूर्तिकर्ताओं द्वारा भुगतान';
 
   @override
   String get report_type_list_of_customer_payments => 'ग्राहक द्वारा भुगतान';
@@ -687,7 +706,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get backup_error => 'डेटा का बैकअप विफल!!';
 
   @override
-  String get error_wrong_email_password => 'ईमेल या पासवर्ड ग़लत है, कृपया पुनः प्रयास करें';
+  String get error_wrong_email_password =>
+      'ईमेल या पासवर्ड ग़लत है, कृपया पुनः प्रयास करें';
 
   @override
   String get menu_push_data_to_cloud => 'डेटा को क्लाउड पर सहेजें';
@@ -696,7 +716,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get menu_quick_sync_title => 'त्वरित सिंक';
 
   @override
-  String get menu_quick_sync_desc => 'यह ऐप को पुनः प्रारंभ करेगा, और नवीनतम ऐप डेटा को सिंक करेगा';
+  String get menu_quick_sync_desc =>
+      'यह ऐप को पुनः प्रारंभ करेगा, और नवीनतम ऐप डेटा को सिंक करेगा';
 
   @override
   String get login => 'लॉग इन करें';
@@ -738,7 +759,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get email_not_verified_title => 'ईमेल सत्यापित नहीं है';
 
   @override
-  String get email_not_verified_desc => 'कृपया अपना ईमेल जांचें और अपना ईमेल सत्यापित करें।';
+  String get email_not_verified_desc =>
+      'कृपया अपना ईमेल जांचें और अपना ईमेल सत्यापित करें।';
 
   @override
   String get sign_up_successful => 'साइन अप सफल';
@@ -954,10 +976,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get select_object_type => 'ऑब्जेक्ट प्रकार चुनें';
 
   @override
-  String get pro_benefits_description => 'ऐप की सभी प्रीमियम सुविधाएँ (असीमित स्टोर, ग्राहक, आपूर्तिकर्ता, वॉलेट)';
+  String get pro_benefits_description =>
+      'ऐप की सभी प्रीमियम सुविधाएँ (असीमित स्टोर, ग्राहक, आपूर्तिकर्ता, वॉलेट)';
 
   @override
-  String get pro_lifetime_benefits_description => 'एक बार की खरीदारी से आप सभी उन्नत सुविधाओं का हमेशा के लिए उपयोग कर सकेंगे';
+  String get pro_lifetime_benefits_description =>
+      'एक बार की खरीदारी से आप सभी उन्नत सुविधाओं का हमेशा के लिए उपयोग कर सकेंगे';
 
   @override
   String get monthly => 'महीने के';
@@ -1014,7 +1038,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get end_date => 'अंतिम तिथि';
 
   @override
-  String get hint_tap_first_column => 'विवरण देखने के लिए पहले कॉलम में आइटम टैप करें';
+  String get hint_tap_first_column =>
+      'विवरण देखने के लिए पहले कॉलम में आइटम टैप करें';
 
   @override
   String get by_status => 'स्थिति के अनुसार';
@@ -1032,7 +1057,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get action_no => 'नहीं';
 
   @override
-  String get buy_subscription_to_add_more_entity => 'सदस्यता के बिना आप केवल %s इकाइयाँ ही जोड़ सकते हैं। प्रीमियम संस्करण में अपग्रेड करें और असीमित पहुँच प्राप्त करें!';
+  String get buy_subscription_to_add_more_entity =>
+      'सदस्यता के बिना आप केवल %s इकाइयाँ ही जोड़ सकते हैं। प्रीमियम संस्करण में अपग्रेड करें और असीमित पहुँच प्राप्त करें!';
 
   @override
   String get sort_by_date => 'तिथि के अनुसार क्रमबद्ध करें';
@@ -1068,7 +1094,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get notification_low_stock_alert_title => 'कम स्टॉक अलर्ट';
 
   @override
-  String get notification_low_stock_alert_message => 'कुछ आइटम स्टॉक में कम हैं। कृपया उनकी समीक्षा करें।';
+  String get notification_low_stock_alert_message =>
+      'कुछ आइटम स्टॉक में कम हैं। कृपया उनकी समीक्षा करें।';
 
   @override
   String get text_cancel => 'रद्द करना';
@@ -1083,16 +1110,19 @@ class AppLocalizationsHi extends AppLocalizations {
   String get notification_permission => 'अधिसूचना अनुमति';
 
   @override
-  String get notification_permission_content => 'कृपया सिस्टम सेटिंग्स में सूचनाएं सक्षम करें।';
+  String get notification_permission_content =>
+      'कृपया सिस्टम सेटिंग्स में सूचनाएं सक्षम करें।';
 
   @override
   String get open_settings => 'खुली सेटिंग';
 
   @override
-  String get notification_permission_required_message => 'अलर्ट सक्षम करने के लिए अधिसूचना अनुमति आवश्यक है.';
+  String get notification_permission_required_message =>
+      'अलर्ट सक्षम करने के लिए अधिसूचना अनुमति आवश्यक है.';
 
   @override
-  String get company_info_message => 'यह डेटा मुद्रित रूप में प्रदर्शित किया जाएगा (चालान, बिक्री, रसीदें, आदि...)';
+  String get company_info_message =>
+      'यह डेटा मुद्रित रूप में प्रदर्शित किया जाएगा (चालान, बिक्री, रसीदें, आदि...)';
 
   @override
   String get theme => 'विषय-वस्तु';

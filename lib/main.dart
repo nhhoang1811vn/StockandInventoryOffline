@@ -182,7 +182,7 @@ class MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor: Color.fromARGB(255, 230, 230, 236),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           color: Colors.white,
         ),
         colorScheme: ColorScheme.fromSeed(
@@ -193,7 +193,7 @@ class MyAppState extends State<MyApp> {
       ),
       darkTheme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color.fromARGB(255, 18, 18, 18),
-        cardTheme: const CardTheme(
+        cardTheme: const CardThemeData(
           color: Colors.black, // Black cards
         ),
         colorScheme: ColorScheme.fromSeed(

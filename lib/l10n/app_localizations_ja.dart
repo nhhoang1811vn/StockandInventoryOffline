@@ -207,7 +207,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get home_menu_item_more => 'もっと';
 
   @override
-  String get message_error_negative_quantity_save_document => 'このアクションを実行できません。%s の数量が負です';
+  String get message_error_negative_quantity_save_document =>
+      'このアクションを実行できません。%s の数量が負です';
 
   @override
   String get action_send_email => 'メールを送信';
@@ -243,10 +244,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get title_store_selecting => 'セレクションストア';
 
   @override
-  String get message_delete_supplier_error_having_document => 'サプライヤーに文書が添付されているため、このアクションを実行できません';
+  String get message_delete_supplier_error_having_document =>
+      'サプライヤーに文書が添付されているため、このアクションを実行できません';
 
   @override
-  String get message_delete_customer_error_having_document => 'サプライヤーに文書が添付されているため、このアクションを実行できません';
+  String get message_delete_customer_error_having_document =>
+      'サプライヤーに文書が添付されているため、このアクションを実行できません';
 
   @override
   String get action_ok => 'わかりました';
@@ -297,7 +300,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get send_mail_invite_friend_subject => 'アプリを使った招待';
 
   @override
-  String get send_mail_invite_friend_content => 'これは良いアプリです。毎日使っていますし、皆さんにもお勧めします。Android版のダウンロード：https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter。iOS版のダウンロード：https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
+  String get send_mail_invite_friend_content =>
+      'これは良いアプリです。毎日使っていますし、皆さんにもお勧めします。Android版のダウンロード：https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter。iOS版のダウンロード：https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
 
   @override
   String get menu_item_write_review_header => 'レビューを書く';
@@ -327,7 +331,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get menu_item_upgrade_account => 'アカウントをアップグレード';
 
   @override
-  String get menu_item_upgrade_account_subtitle => 'ゲストモードになっています。進行状況を同期するには、通常のアカウントにアップグレードしてください。';
+  String get menu_item_upgrade_account_subtitle =>
+      'ゲストモードになっています。進行状況を同期するには、通常のアカウントにアップグレードしてください。';
 
   @override
   String get menu_item_sign_out => 'サインアウト';
@@ -342,13 +347,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get on_boarding_title_1 => '店舗管理';
 
   @override
-  String get on_boarding_content_1 => '商品を管理し、その情報を追跡するために、多数のストアを作成できます。例: 果物店、野菜店...';
+  String get on_boarding_content_1 =>
+      '商品を管理し、その情報を追跡するために、多数のストアを作成できます。例: 果物店、野菜店...';
 
   @override
   String get on_boarding_title_2 => '商品管理';
 
   @override
-  String get on_boarding_content_2 => '在庫数量の情報を含むすべての商品のリスト（カタログ）が含まれています。例：電球、todo';
+  String get on_boarding_content_2 =>
+      '在庫数量の情報を含むすべての商品のリスト（カタログ）が含まれています。例：電球、todo';
 
   @override
   String get on_boarding_title_3 => 'ドキュメント管理';
@@ -687,7 +694,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backup_error => 'データのバックアップに失敗しました!!';
 
   @override
-  String get error_wrong_email_password => 'メールアドレスまたはパスワードが間違っています。もう一度お試しください。';
+  String get error_wrong_email_password =>
+      'メールアドレスまたはパスワードが間違っています。もう一度お試しください。';
 
   @override
   String get menu_push_data_to_cloud => 'データをクラウドに保存する';
@@ -954,10 +962,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get select_object_type => 'オブジェクトの種類を選択';
 
   @override
-  String get pro_benefits_description => 'アプリのすべてのプレミアム機能（無制限のストア、顧客、サプライヤー、ウォレット）';
+  String get pro_benefits_description =>
+      'アプリのすべてのプレミアム機能（無制限のストア、顧客、サプライヤー、ウォレット）';
 
   @override
-  String get pro_lifetime_benefits_description => '一度購入すれば、すべての高度な機能を永久に利用できるようになります';
+  String get pro_lifetime_benefits_description =>
+      '一度購入すれば、すべての高度な機能を永久に利用できるようになります';
 
   @override
   String get monthly => '月次';
@@ -1032,7 +1042,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get action_no => 'いいえ';
 
   @override
-  String get buy_subscription_to_add_more_entity => 'サブスクリプションをお持ちでない場合、追加できるエンティティは%s個のみです。プレミアム版にアップグレードすると、無制限にアクセスできます！';
+  String get buy_subscription_to_add_more_entity =>
+      'サブスクリプションをお持ちでない場合、追加できるエンティティは%s個のみです。プレミアム版にアップグレードすると、無制限にアクセスできます！';
 
   @override
   String get sort_by_date => '日付で並べ替え';
@@ -1068,7 +1079,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get notification_low_stock_alert_title => '在庫不足アラート';
 
   @override
-  String get notification_low_stock_alert_message => '在庫が少なくなっている商品がございます。ご確認ください。';
+  String get notification_low_stock_alert_message =>
+      '在庫が少なくなっている商品がございます。ご確認ください。';
 
   @override
   String get text_cancel => 'キャンセル';
@@ -1089,7 +1101,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get open_settings => '設定を開く';
 
   @override
-  String get notification_permission_required_message => 'アラートを有効にするには通知権限が必要です。';
+  String get notification_permission_required_message =>
+      'アラートを有効にするには通知権限が必要です。';
 
   @override
   String get company_info_message => 'このデータは印刷された形式（請求書、売上、領収書など）で表示されます。';

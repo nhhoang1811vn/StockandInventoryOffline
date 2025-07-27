@@ -96,7 +96,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get empty_stores => 'Sem loja';
 
   @override
-  String get delete_store_error => 'Esta é sua única loja, não é possível realizar esta ação';
+  String get delete_store_error =>
+      'Esta é sua única loja, não é possível realizar esta ação';
 
   @override
   String get suppliers_title => 'Fornecedores';
@@ -129,7 +130,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get field_name => 'Nome';
 
   @override
-  String get error_field_name_empty => 'Certifique-se de que o nome inserido é válido';
+  String get error_field_name_empty =>
+      'Certifique-se de que o nome inserido é válido';
 
   @override
   String get field_bar_code => 'Código de barras';
@@ -207,7 +209,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get home_menu_item_more => 'Mais';
 
   @override
-  String get message_error_negative_quantity_save_document => 'Não é possível executar esta ação, a quantidade de %s é negativa';
+  String get message_error_negative_quantity_save_document =>
+      'Não é possível executar esta ação, a quantidade de %s é negativa';
 
   @override
   String get action_send_email => 'Enviar e-mail';
@@ -243,10 +246,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get title_store_selecting => 'Loja de seleção';
 
   @override
-  String get message_delete_supplier_error_having_document => 'Você tem documentos anexados ao fornecedor, não pode executar esta ação';
+  String get message_delete_supplier_error_having_document =>
+      'Você tem documentos anexados ao fornecedor, não pode executar esta ação';
 
   @override
-  String get message_delete_customer_error_having_document => 'Você tem documentos anexados ao fornecedor, não pode executar esta ação';
+  String get message_delete_customer_error_having_document =>
+      'Você tem documentos anexados ao fornecedor, não pode executar esta ação';
 
   @override
   String get action_ok => 'OK';
@@ -297,25 +302,29 @@ class AppLocalizationsPt extends AppLocalizations {
   String get send_mail_invite_friend_subject => 'Convite usando aplicativo';
 
   @override
-  String get send_mail_invite_friend_content => 'Este é um ótimo aplicativo, eu o uso todos os dias e recomendo para você. Baixe para Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter. Baixe para iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
+  String get send_mail_invite_friend_content =>
+      'Este é um ótimo aplicativo, eu o uso todos os dias e recomendo para você. Baixe para Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter. Baixe para iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
 
   @override
   String get menu_item_write_review_header => 'Escreva uma avaliação';
 
   @override
-  String get menu_item_write_review_description => 'Compartilhe sua avaliação com todos';
+  String get menu_item_write_review_description =>
+      'Compartilhe sua avaliação com todos';
 
   @override
   String get menu_item_feedback_header => 'Opinião';
 
   @override
-  String get menu_item_feedback_description => 'Compartilhe seu feedback para melhorar o aplicativo';
+  String get menu_item_feedback_description =>
+      'Compartilhe seu feedback para melhorar o aplicativo';
 
   @override
   String get menu_item_community_header => 'Comunidade';
 
   @override
-  String get menu_item_community_description => 'Junte-se à nossa comunidade de aplicativos';
+  String get menu_item_community_description =>
+      'Junte-se à nossa comunidade de aplicativos';
 
   @override
   String get menu_item_donation => 'Doação!';
@@ -327,7 +336,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get menu_item_upgrade_account => 'Atualizar conta';
 
   @override
-  String get menu_item_upgrade_account_subtitle => 'Você está no modo convidado, atualize para a conta normal para sincronizar o progresso';
+  String get menu_item_upgrade_account_subtitle =>
+      'Você está no modo convidado, atualize para a conta normal para sincronizar o progresso';
 
   @override
   String get menu_item_sign_out => 'sair';
@@ -342,19 +352,22 @@ class AppLocalizationsPt extends AppLocalizations {
   String get on_boarding_title_1 => 'Gerenciar Lojas';
 
   @override
-  String get on_boarding_content_1 => 'Você pode criar várias lojas para gerenciar seus produtos e rastrear suas informações. Por exemplo: Loja de frutas, Loja de vegetais...';
+  String get on_boarding_content_1 =>
+      'Você pode criar várias lojas para gerenciar seus produtos e rastrear suas informações. Por exemplo: Loja de frutas, Loja de vegetais...';
 
   @override
   String get on_boarding_title_2 => 'Gerenciamento de mercadorias';
 
   @override
-  String get on_boarding_content_2 => 'Ele contém uma lista (catálogo) de todos os seus produtos, incluindo informações sobre a quantidade em estoque. Por exemplo: lâmpada, lista de tarefas';
+  String get on_boarding_content_2 =>
+      'Ele contém uma lista (catálogo) de todos os seus produtos, incluindo informações sobre a quantidade em estoque. Por exemplo: lâmpada, lista de tarefas';
 
   @override
   String get on_boarding_title_3 => 'Gerenciar documentos';
 
   @override
-  String get on_boarding_content_3 => 'Você pode criar documentos de entrada/saída para aumentar/diminuir a quantidade de mercadorias em estoque';
+  String get on_boarding_content_3 =>
+      'Você pode criar documentos de entrada/saída para aumentar/diminuir a quantidade de mercadorias em estoque';
 
   @override
   String get on_boarding_title_4 => 'Comece agora';
@@ -369,13 +382,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get action_skip => 'Pular';
 
   @override
-  String get message_confirm_delete_no_args => 'Tem certeza de que deseja excluí-lo?';
+  String get message_confirm_delete_no_args =>
+      'Tem certeza de que deseja excluí-lo?';
 
   @override
   String get message_confirm_delete => 'Tem certeza de que deseja excluir %s?';
 
   @override
-  String get message_confirm_delete_account => 'Tem certeza de que deseja excluir sua conta?';
+  String get message_confirm_delete_account =>
+      'Tem certeza de que deseja excluir sua conta?';
 
   @override
   String get delete_account_successful => 'Sua conta foi excluída';
@@ -399,19 +414,24 @@ class AppLocalizationsPt extends AppLocalizations {
   String get menu_item_minimum_quantity => 'Quantidade mínima';
 
   @override
-  String get menu_item_show_min_quantity_items_page_title => 'Mostrar quantidade mínima na página do item';
+  String get menu_item_show_min_quantity_items_page_title =>
+      'Mostrar quantidade mínima na página do item';
 
   @override
-  String get menu_item_show_min_quantity_list_page_title => 'Mostrar quantidade mínima na página de lista';
+  String get menu_item_show_min_quantity_list_page_title =>
+      'Mostrar quantidade mínima na página de lista';
 
   @override
-  String get menu_item_min_quantity_color_title => 'Cor para produtos que precisam ser reordenados';
+  String get menu_item_min_quantity_color_title =>
+      'Cor para produtos que precisam ser reordenados';
 
   @override
-  String get menu_item_show_low_stock_alert_title => 'Mostrar alertas de estoque baixo';
+  String get menu_item_show_low_stock_alert_title =>
+      'Mostrar alertas de estoque baixo';
 
   @override
-  String get menu_item_show_low_stock_alert_desc => 'Ao abrir o aplicativo, enviaremos uma notificação para avisá-lo';
+  String get menu_item_show_low_stock_alert_desc =>
+      'Ao abrir o aplicativo, enviaremos uma notificação para avisá-lo';
 
   @override
   String get menu_item_my_company => 'Informações da empresa';
@@ -432,7 +452,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get menu_item_passcode_desc => 'Descrição';
 
   @override
-  String get menu_item_reset_numeration_documents_title => 'Redefinir numeração de documentos';
+  String get menu_item_reset_numeration_documents_title =>
+      'Redefinir numeração de documentos';
 
   @override
   String get settings_title => 'Configurações';
@@ -480,7 +501,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get message_type_question => 'Pergunta';
 
   @override
-  String get send_mail_bug_report_subject => 'Estoque e inventário - Relatório de bug';
+  String get send_mail_bug_report_subject =>
+      'Estoque e inventário - Relatório de bug';
 
   @override
   String get send_mail_feedback_subject => 'Estoque e inventário - Feedback';
@@ -510,7 +532,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get after_each_scan_manually => 'Definir quantidade manualmente';
 
   @override
-  String get when_a_barcode_is_found => 'Quando um código de barras é encontrado';
+  String get when_a_barcode_is_found =>
+      'Quando um código de barras é encontrado';
 
   @override
   String get beep => 'Bip';
@@ -597,7 +620,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get report_type_outbound_payments => 'Pagamentos de saída';
 
   @override
-  String get report_type_list_of_supplier_payments => 'Pagamentos por Fornecedores';
+  String get report_type_list_of_supplier_payments =>
+      'Pagamentos por Fornecedores';
 
   @override
   String get report_type_list_of_customer_payments => 'Pagamentos pelo Cliente';
@@ -672,7 +696,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get menu_back_up => 'Fazer backup de dados';
 
   @override
-  String get menu_back_up_desc => 'Exportar arquivo de banco de dados para o telefone';
+  String get menu_back_up_desc =>
+      'Exportar arquivo de banco de dados para o telefone';
 
   @override
   String get menu_restore => 'Restaurar dados';
@@ -687,7 +712,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get backup_error => 'Falha no backup dos dados!!';
 
   @override
-  String get error_wrong_email_password => 'E-mail ou senha incorretos, tente novamente';
+  String get error_wrong_email_password =>
+      'E-mail ou senha incorretos, tente novamente';
 
   @override
   String get menu_push_data_to_cloud => 'Salvar os dados na nuvem';
@@ -696,7 +722,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get menu_quick_sync_title => 'Sincronização rápida';
 
   @override
-  String get menu_quick_sync_desc => 'Ele reiniciará o aplicativo e sincronizará os dados mais recentes do aplicativo';
+  String get menu_quick_sync_desc =>
+      'Ele reiniciará o aplicativo e sincronizará os dados mais recentes do aplicativo';
 
   @override
   String get login => 'CONECTE-SE';
@@ -738,7 +765,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get email_not_verified_title => 'E-mail não verificado';
 
   @override
-  String get email_not_verified_desc => 'Por favor, verifique seu e-mail e confirme sua conta.';
+  String get email_not_verified_desc =>
+      'Por favor, verifique seu e-mail e confirme sua conta.';
 
   @override
   String get sign_up_successful => 'Inscrição bem-sucedida';
@@ -786,7 +814,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get title_select_document => 'Selecionar documento';
 
   @override
-  String get title_chart_sale_report => 'Relatório de vendas nos últimos 6 meses';
+  String get title_chart_sale_report =>
+      'Relatório de vendas nos últimos 6 meses';
 
   @override
   String get label_select_payment_category => 'Selecione a categoria';
@@ -954,10 +983,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get select_object_type => 'Selecione os tipos de objetos';
 
   @override
-  String get pro_benefits_description => 'Todos os recursos premium do aplicativo (lojas, clientes, fornecedores, carteiras ilimitadas)';
+  String get pro_benefits_description =>
+      'Todos os recursos premium do aplicativo (lojas, clientes, fornecedores, carteiras ilimitadas)';
 
   @override
-  String get pro_lifetime_benefits_description => 'Com uma compra única, você poderá usar todos os recursos avançados para sempre';
+  String get pro_lifetime_benefits_description =>
+      'Com uma compra única, você poderá usar todos os recursos avançados para sempre';
 
   @override
   String get monthly => 'Mensal';
@@ -1014,7 +1045,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get end_date => 'Data de término';
 
   @override
-  String get hint_tap_first_column => 'Toque nos itens da primeira coluna para ver detalhes';
+  String get hint_tap_first_column =>
+      'Toque nos itens da primeira coluna para ver detalhes';
 
   @override
   String get by_status => 'Por status';
@@ -1032,7 +1064,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get action_no => 'Não';
 
   @override
-  String get buy_subscription_to_add_more_entity => 'Sem a assinatura, você só pode adicionar %s entidades. Atualize para a versão premium e desbloqueie acesso ilimitado!';
+  String get buy_subscription_to_add_more_entity =>
+      'Sem a assinatura, você só pode adicionar %s entidades. Atualize para a versão premium e desbloqueie acesso ilimitado!';
 
   @override
   String get sort_by_date => 'Classificar por data';
@@ -1068,7 +1101,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get notification_low_stock_alert_title => 'Alerta de estoque baixo';
 
   @override
-  String get notification_low_stock_alert_message => 'Alguns itens estão com estoque baixo. Por favor, revise-os.';
+  String get notification_low_stock_alert_message =>
+      'Alguns itens estão com estoque baixo. Por favor, revise-os.';
 
   @override
   String get text_cancel => 'Cancelar';
@@ -1083,16 +1117,19 @@ class AppLocalizationsPt extends AppLocalizations {
   String get notification_permission => 'Permissão de Notificação';
 
   @override
-  String get notification_permission_content => 'Por favor, ative as notificações nas configurações do sistema.';
+  String get notification_permission_content =>
+      'Por favor, ative as notificações nas configurações do sistema.';
 
   @override
   String get open_settings => 'Abrir configurações';
 
   @override
-  String get notification_permission_required_message => 'É necessária permissão de notificação para habilitar alertas.';
+  String get notification_permission_required_message =>
+      'É necessária permissão de notificação para habilitar alertas.';
 
   @override
-  String get company_info_message => 'Esses dados serão exibidos em formato impresso (faturas, vendas, recibos, etc...';
+  String get company_info_message =>
+      'Esses dados serão exibidos em formato impresso (faturas, vendas, recibos, etc...';
 
   @override
   String get theme => 'Temas';

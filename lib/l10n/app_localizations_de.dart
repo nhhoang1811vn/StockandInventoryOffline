@@ -96,7 +96,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get empty_stores => 'Kein Geschäft';
 
   @override
-  String get delete_store_error => 'Dies ist Ihr einziger Shop. Diese Aktion kann nicht ausgeführt werden.';
+  String get delete_store_error =>
+      'Dies ist Ihr einziger Shop. Diese Aktion kann nicht ausgeführt werden.';
 
   @override
   String get suppliers_title => 'Lieferanten';
@@ -129,7 +130,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get field_name => 'Name';
 
   @override
-  String get error_field_name_empty => 'Bitte stellen Sie sicher, dass der eingegebene Name gültig ist';
+  String get error_field_name_empty =>
+      'Bitte stellen Sie sicher, dass der eingegebene Name gültig ist';
 
   @override
   String get field_bar_code => 'Barcode';
@@ -207,7 +209,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get home_menu_item_more => 'Mehr';
 
   @override
-  String get message_error_negative_quantity_save_document => 'Diese Aktion kann nicht ausgeführt werden, da die Menge von %s negativ ist';
+  String get message_error_negative_quantity_save_document =>
+      'Diese Aktion kann nicht ausgeführt werden, da die Menge von %s negativ ist';
 
   @override
   String get action_send_email => 'E-Mail senden';
@@ -237,16 +240,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get notification_dialog_title => 'Benachrichtigung';
 
   @override
-  String get question_push_data => 'Möchten Sie die Daten auf dem Server speichern?';
+  String get question_push_data =>
+      'Möchten Sie die Daten auf dem Server speichern?';
 
   @override
   String get title_store_selecting => 'Auswahlspeicher';
 
   @override
-  String get message_delete_supplier_error_having_document => 'Sie haben Dokumente an den Lieferanten angehängt, können diese Aktion nicht durchführen';
+  String get message_delete_supplier_error_having_document =>
+      'Sie haben Dokumente an den Lieferanten angehängt, können diese Aktion nicht durchführen';
 
   @override
-  String get message_delete_customer_error_having_document => 'Sie haben Dokumente an den Lieferanten angehängt, können diese Aktion nicht durchführen';
+  String get message_delete_customer_error_having_document =>
+      'Sie haben Dokumente an den Lieferanten angehängt, können diese Aktion nicht durchführen';
 
   @override
   String get action_ok => 'OK';
@@ -297,25 +303,29 @@ class AppLocalizationsDe extends AppLocalizations {
   String get send_mail_invite_friend_subject => 'Einladung per App';
 
   @override
-  String get send_mail_invite_friend_content => 'Dies ist eine gute Anwendung. Ich benutze sie täglich und empfehle sie Ihnen. Download für Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter. Download für iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
+  String get send_mail_invite_friend_content =>
+      'Dies ist eine gute Anwendung. Ich benutze sie täglich und empfehle sie Ihnen. Download für Android: https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter. Download für iOS: https://apps.apple.com/us/app/stock-and-inventory/id6670546293';
 
   @override
   String get menu_item_write_review_header => 'Schreiben Sie eine Rezension';
 
   @override
-  String get menu_item_write_review_description => 'Teilen Sie Ihre Bewertung mit allen';
+  String get menu_item_write_review_description =>
+      'Teilen Sie Ihre Bewertung mit allen';
 
   @override
   String get menu_item_feedback_header => 'Rückmeldung';
 
   @override
-  String get menu_item_feedback_description => 'Teilen Sie Ihr Feedback, um die App zu verbessern';
+  String get menu_item_feedback_description =>
+      'Teilen Sie Ihr Feedback, um die App zu verbessern';
 
   @override
   String get menu_item_community_header => 'Gemeinschaft';
 
   @override
-  String get menu_item_community_description => 'Treten Sie unserer App-Community bei';
+  String get menu_item_community_description =>
+      'Treten Sie unserer App-Community bei';
 
   @override
   String get menu_item_donation => 'Spende!';
@@ -327,7 +337,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get menu_item_upgrade_account => 'Konto upgraden';
 
   @override
-  String get menu_item_upgrade_account_subtitle => 'Sie befinden sich im Gastmodus. Aktualisieren Sie auf ein normales Konto, um den Fortschritt zu synchronisieren';
+  String get menu_item_upgrade_account_subtitle =>
+      'Sie befinden sich im Gastmodus. Aktualisieren Sie auf ein normales Konto, um den Fortschritt zu synchronisieren';
 
   @override
   String get menu_item_sign_out => 'Abmelden';
@@ -342,25 +353,29 @@ class AppLocalizationsDe extends AppLocalizations {
   String get on_boarding_title_1 => 'Geschäfte verwalten';
 
   @override
-  String get on_boarding_content_1 => 'Sie können viele Geschäfte erstellen, um Ihre Waren zu verwalten und ihre Informationen zu verfolgen. Z. B.: Obstgeschäft, Gemüsegeschäft ...';
+  String get on_boarding_content_1 =>
+      'Sie können viele Geschäfte erstellen, um Ihre Waren zu verwalten und ihre Informationen zu verfolgen. Z. B.: Obstgeschäft, Gemüsegeschäft ...';
 
   @override
   String get on_boarding_title_2 => 'Warenverwaltung';
 
   @override
-  String get on_boarding_content_2 => 'Es enthält eine Liste (Katalog) aller Ihrer Waren, einschließlich Informationen zur Lagermenge. zB: Glühbirne, todo';
+  String get on_boarding_content_2 =>
+      'Es enthält eine Liste (Katalog) aller Ihrer Waren, einschließlich Informationen zur Lagermenge. zB: Glühbirne, todo';
 
   @override
   String get on_boarding_title_3 => 'Dokumente verwalten';
 
   @override
-  String get on_boarding_content_3 => 'Sie können eingehende/ausgehende Dokumente erstellen, um Ihre Warenmenge im Lager zu erhöhen/verringern';
+  String get on_boarding_content_3 =>
+      'Sie können eingehende/ausgehende Dokumente erstellen, um Ihre Warenmenge im Lager zu erhöhen/verringern';
 
   @override
   String get on_boarding_title_4 => 'Jetzt starten';
 
   @override
-  String get on_boarding_header_4 => 'Geben Sie den Namen Ihres ersten Geschäfts ein';
+  String get on_boarding_header_4 =>
+      'Geben Sie den Namen Ihres ersten Geschäfts ein';
 
   @override
   String get action_done => 'Erledigt';
@@ -369,13 +384,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get action_skip => 'Überspringen';
 
   @override
-  String get message_confirm_delete_no_args => 'Möchten Sie es wirklich löschen?';
+  String get message_confirm_delete_no_args =>
+      'Möchten Sie es wirklich löschen?';
 
   @override
   String get message_confirm_delete => 'Möchten Sie %s wirklich löschen?';
 
   @override
-  String get message_confirm_delete_account => 'Möchten Sie Ihr Konto wirklich löschen?';
+  String get message_confirm_delete_account =>
+      'Möchten Sie Ihr Konto wirklich löschen?';
 
   @override
   String get delete_account_successful => 'Ihr Konto wurde gelöscht';
@@ -399,19 +416,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get menu_item_minimum_quantity => 'Mindestmenge';
 
   @override
-  String get menu_item_show_min_quantity_items_page_title => 'Mindestmenge auf der Artikelseite anzeigen';
+  String get menu_item_show_min_quantity_items_page_title =>
+      'Mindestmenge auf der Artikelseite anzeigen';
 
   @override
-  String get menu_item_show_min_quantity_list_page_title => 'Mindestmenge auf der Listenseite anzeigen';
+  String get menu_item_show_min_quantity_list_page_title =>
+      'Mindestmenge auf der Listenseite anzeigen';
 
   @override
-  String get menu_item_min_quantity_color_title => 'Farbe für nachzubestellende Ware';
+  String get menu_item_min_quantity_color_title =>
+      'Farbe für nachzubestellende Ware';
 
   @override
-  String get menu_item_show_low_stock_alert_title => 'Warnungen bei niedrigem Lagerbestand anzeigen';
+  String get menu_item_show_low_stock_alert_title =>
+      'Warnungen bei niedrigem Lagerbestand anzeigen';
 
   @override
-  String get menu_item_show_low_stock_alert_desc => 'Wenn Sie die App öffnen, senden wir Ihnen die Benachrichtigung, um Sie zu warnen';
+  String get menu_item_show_low_stock_alert_desc =>
+      'Wenn Sie die App öffnen, senden wir Ihnen die Benachrichtigung, um Sie zu warnen';
 
   @override
   String get menu_item_my_company => 'Informationen zum Unternehmen';
@@ -432,7 +454,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get menu_item_passcode_desc => 'Beschreibung';
 
   @override
-  String get menu_item_reset_numeration_documents_title => 'Nummerierung von Dokumenten zurücksetzen';
+  String get menu_item_reset_numeration_documents_title =>
+      'Nummerierung von Dokumenten zurücksetzen';
 
   @override
   String get settings_title => 'Einstellungen';
@@ -480,13 +503,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get message_type_question => 'Frage';
 
   @override
-  String get send_mail_bug_report_subject => 'Lagerbestand und Inventar - Fehlerbericht';
+  String get send_mail_bug_report_subject =>
+      'Lagerbestand und Inventar - Fehlerbericht';
 
   @override
-  String get send_mail_feedback_subject => 'Lagerbestand und Inventar - Feedback';
+  String get send_mail_feedback_subject =>
+      'Lagerbestand und Inventar - Feedback';
 
   @override
-  String get send_mail_suggestion_subject => 'Lagerbestand und Inventar - Vorschlag';
+  String get send_mail_suggestion_subject =>
+      'Lagerbestand und Inventar - Vorschlag';
 
   @override
   String get send_mail_question_subject => 'Lagerbestand und Inventar - Frage';
@@ -546,7 +572,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get insert_transaction_success => 'Artikel erfolgreich hinzugefügt!';
 
   @override
-  String get insert_transaction_fail => 'Hinzufügen des Elements fehlgeschlagen!';
+  String get insert_transaction_fail =>
+      'Hinzufügen des Elements fehlgeschlagen!';
 
   @override
   String get success => 'Erfolg!';
@@ -597,10 +624,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get report_type_outbound_payments => 'Ausgehende Zahlungen';
 
   @override
-  String get report_type_list_of_supplier_payments => 'Zahlungen durch Lieferanten';
+  String get report_type_list_of_supplier_payments =>
+      'Zahlungen durch Lieferanten';
 
   @override
-  String get report_type_list_of_customer_payments => 'Zahlungen durch den Kunden';
+  String get report_type_list_of_customer_payments =>
+      'Zahlungen durch den Kunden';
 
   @override
   String get report_type_reorder => 'Neu anordnen';
@@ -687,7 +716,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get backup_error => 'Datensicherung fehlgeschlagen!!';
 
   @override
-  String get error_wrong_email_password => 'Falsche E-Mail oder falsches Passwort. Bitte versuchen Sie es erneut.';
+  String get error_wrong_email_password =>
+      'Falsche E-Mail oder falsches Passwort. Bitte versuchen Sie es erneut.';
 
   @override
   String get menu_push_data_to_cloud => 'Speichern Sie die Daten in der Cloud';
@@ -696,7 +726,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get menu_quick_sync_title => 'Schnelle Synchronisierung';
 
   @override
-  String get menu_quick_sync_desc => 'Die App wird neu gestartet und die neuesten App-Daten werden synchronisiert.';
+  String get menu_quick_sync_desc =>
+      'Die App wird neu gestartet und die neuesten App-Daten werden synchronisiert.';
 
   @override
   String get login => 'LOGIN';
@@ -738,7 +769,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get email_not_verified_title => 'E-Mail nicht verifiziert';
 
   @override
-  String get email_not_verified_desc => 'Bitte überprüfen Sie Ihre E-Mail und bestätigen Sie Ihre E-Mail.';
+  String get email_not_verified_desc =>
+      'Bitte überprüfen Sie Ihre E-Mail und bestätigen Sie Ihre E-Mail.';
 
   @override
   String get sign_up_successful => 'Anmeldung erfolgreich';
@@ -954,10 +986,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get select_object_type => 'Objekttypen auswählen';
 
   @override
-  String get pro_benefits_description => 'Alle Premiumfunktionen der App (Unbegrenzte Anzahl an Geschäften, Kunden, Lieferanten, Geldbörsen)';
+  String get pro_benefits_description =>
+      'Alle Premiumfunktionen der App (Unbegrenzte Anzahl an Geschäften, Kunden, Lieferanten, Geldbörsen)';
 
   @override
-  String get pro_lifetime_benefits_description => 'Mit einem einmaligen Kauf können Sie alle erweiterten Funktionen dauerhaft nutzen';
+  String get pro_lifetime_benefits_description =>
+      'Mit einem einmaligen Kauf können Sie alle erweiterten Funktionen dauerhaft nutzen';
 
   @override
   String get monthly => 'Monatlich';
@@ -1014,7 +1048,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get end_date => 'Enddatum';
 
   @override
-  String get hint_tap_first_column => 'Tippen Sie auf Elemente in der ersten Spalte, um Details anzuzeigen';
+  String get hint_tap_first_column =>
+      'Tippen Sie auf Elemente in der ersten Spalte, um Details anzuzeigen';
 
   @override
   String get by_status => 'Nach Status';
@@ -1032,7 +1067,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get action_no => 'NEIN';
 
   @override
-  String get buy_subscription_to_add_more_entity => 'Ohne Abonnement können Sie nur %s Entitäten hinzufügen. Aktualisieren Sie auf die Premium-Version und erhalten Sie unbegrenzten Zugriff!';
+  String get buy_subscription_to_add_more_entity =>
+      'Ohne Abonnement können Sie nur %s Entitäten hinzufügen. Aktualisieren Sie auf die Premium-Version und erhalten Sie unbegrenzten Zugriff!';
 
   @override
   String get sort_by_date => 'Nach Datum sortieren';
@@ -1065,10 +1101,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get select_payment_type => 'Zahlungsart auswählen';
 
   @override
-  String get notification_low_stock_alert_title => 'Alarm bei niedrigem Lagerbestand';
+  String get notification_low_stock_alert_title =>
+      'Alarm bei niedrigem Lagerbestand';
 
   @override
-  String get notification_low_stock_alert_message => 'Einige Artikel sind nur noch in geringer Stückzahl verfügbar. Bitte überprüfen Sie sie.';
+  String get notification_low_stock_alert_message =>
+      'Einige Artikel sind nur noch in geringer Stückzahl verfügbar. Bitte überprüfen Sie sie.';
 
   @override
   String get text_cancel => 'Stornieren';
@@ -1083,16 +1121,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get notification_permission => 'Benachrichtigungsberechtigung';
 
   @override
-  String get notification_permission_content => 'Bitte aktivieren Sie Benachrichtigungen in den Systemeinstellungen.';
+  String get notification_permission_content =>
+      'Bitte aktivieren Sie Benachrichtigungen in den Systemeinstellungen.';
 
   @override
   String get open_settings => 'Einstellungen öffnen';
 
   @override
-  String get notification_permission_required_message => 'Zum Aktivieren von Warnmeldungen ist eine Benachrichtigungsberechtigung erforderlich.';
+  String get notification_permission_required_message =>
+      'Zum Aktivieren von Warnmeldungen ist eine Benachrichtigungsberechtigung erforderlich.';
 
   @override
-  String get company_info_message => 'Diese Daten werden in gedruckter Form angezeigt (Rechnungen, Verkäufe, Quittungen usw.).';
+  String get company_info_message =>
+      'Diese Daten werden in gedruckter Form angezeigt (Rechnungen, Verkäufe, Quittungen usw.).';
 
   @override
   String get theme => 'Themen';
