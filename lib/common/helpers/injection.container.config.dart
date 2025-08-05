@@ -194,12 +194,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i318.WalletRepository>(() => _i669.WalletRepositoryImpl());
     gh.lazySingleton<_i860.Storage2>(
         () => _i239.SharedPrefStorage(gh<_i460.SharedPreferences>()));
+    gh.factory<_i749.SettingsCubit>(
+        () => _i749.SettingsCubit(storage: gh<_i72.Storage>()));
     gh.factory<_i1052.BarcodeScannerSettingsCubit>(
         () => _i1052.BarcodeScannerSettingsCubit(storage: gh<_i72.Storage>()));
     gh.factory<_i638.ReportCubit>(
         () => _i638.ReportCubit(storage: gh<_i72.Storage>()));
-    gh.factory<_i749.SettingsCubit>(
-        () => _i749.SettingsCubit(storage: gh<_i72.Storage>()));
     gh.factory<_i769.DocumentTransactionRepository>(
         () => _i987.DocumentTransactionRepositoryImpl());
     gh.factory<_i236.CustomersUseCase>(() =>
@@ -240,12 +240,12 @@ extension GetItInjectableX on _i174.GetIt {
           repository: gh<_i811.DocumentRepository>(),
           transactionRepository: gh<_i769.DocumentTransactionRepository>(),
         ));
-    gh.factory<_i194.MinimumQuantityCubit>(
-        () => _i194.MinimumQuantityCubit(appSettings: gh<_i39.AppSettings>()));
-    gh.factory<_i920.MyCompanyCubit>(
-        () => _i920.MyCompanyCubit(appSettings: gh<_i39.AppSettings>()));
     gh.factory<_i684.SettingsViewCubit>(
         () => _i684.SettingsViewCubit(appSettings: gh<_i39.AppSettings>()));
+    gh.factory<_i920.MyCompanyCubit>(
+        () => _i920.MyCompanyCubit(appSettings: gh<_i39.AppSettings>()));
+    gh.factory<_i194.MinimumQuantityCubit>(
+        () => _i194.MinimumQuantityCubit(appSettings: gh<_i39.AppSettings>()));
     gh.factory<_i961.SettingsGeneralCubit>(() => _i961.SettingsGeneralCubit(
           appSettings: gh<_i39.AppSettings>(),
           storage: gh<_i72.Storage>(),

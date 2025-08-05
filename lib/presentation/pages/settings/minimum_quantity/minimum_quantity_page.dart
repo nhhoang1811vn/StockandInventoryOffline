@@ -22,25 +22,11 @@ class MinimumQuantityPage extends StatefulWidget {
 }
 
 class MinimumQuantityPageState extends State<MinimumQuantityPage> {
-  bool _isNotificationPermissionGranted = false;
+  //bool _isNotificationPermissionGranted = false;
   @override
   void initState() {
     super.initState();
     context.read<MinimumQuantityCubit>().init();
-    loadNotificationPermissionGranted();
-  }
-  void loadNotificationPermissionGranted() async{
-    _isNotificationPermissionGranted = await isNotificationPermissionGranted();
-    setState(() {
-
-    });
-  }
-
-  Future<bool> isNotificationPermissionGranted() async {
-    if (Platform.isAndroid || Platform.isIOS) {
-      return await Permission.notification.isGranted;
-    }
-    return false;
   }
 
   @override
@@ -70,29 +56,23 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
   Future<bool> requestNotificationPermission(BuildContext context) async {
     if (Platform.isAndroid) {
       final status = await Permission.notification.status;
-
-      if (status.isGranted) return true;
-
       if (status.isDenied) {
         final result = await Permission.notification.request();
         return result.isGranted;
       }
-
       if (status.isPermanentlyDenied) {
         _showPermissionDialog(context);
         return false;
       }
     } else if (Platform.isIOS) {
-      final plugin = FlutterLocalNotificationsPlugin();
-      await plugin
-          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(alert: true, badge: true, sound: true);
-
-      // iOS doesn't return status — recommend assuming they granted and showing a test notification
-      return true;
+      final result = await Permission.notification.request();
+      print(result);
+      if (result == PermissionStatus.denied || result == PermissionStatus.permanentlyDenied) {
+        _showPermissionDialog(context);
+        return false;
+      }
     }
-
-    return false;
+    return true;
   }
   void _showPermissionDialog(BuildContext context) {
     showDialog(
@@ -163,19 +143,7 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
                           } ,
                         ),
                       ),
-                      // actions: [
-                      //   TextButton(
-                      //     onPressed: () {
-                      //       Navigator.of(context)
-                      //           .pop(); // Close the dialog
-                      //     },
-                      //     child: Text(AppLocalizations.of(context)!
-                      //         .action_ok),
-                      //   ),
-                      // ],
                     ));
-
-                //context.read<MinimumQuantityCubit>().onShowInListChanged();
               },
               trailing: Container(
                 width: 20, // Circle diameter
@@ -190,24 +158,11 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
               height: 1,
             ),
             SwitchListTile(
-              value: (_isNotificationPermissionGranted && state.showAlert),
+              value: (state.showAlert),
               onChanged: (newValue) async{
-                if (newValue && !_isNotificationPermissionGranted){
-// Request permission first
+                if (newValue){
                   final granted = await requestNotificationPermission(context);
-
-                  if (granted) {
-                    setState(() {
-                      _isNotificationPermissionGranted = true;
-                    });
-                    context.read<MinimumQuantityCubit>().onShowAlertChanged(true);
-                  } else {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(AppLocalizations.of(context)!.notification_permission_required_message)),
-                      );
-                    }
-                  }
+                  context.read<MinimumQuantityCubit>().onShowAlertChanged(true);
                 }else{
                   context.read<MinimumQuantityCubit>().onShowAlertChanged(newValue);
                 }

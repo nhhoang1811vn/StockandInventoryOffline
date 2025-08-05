@@ -44,9 +44,9 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     context.read<HomeCubit>().initState();
-    _requestPermissions();
     var isShowLowStockAlert = context.read<HomeCubit>().isShowLowStockAlert();
     if (isShowLowStockAlert){
+      _requestPermissions();
       _checkLowStockAndShowAlert();
     }
   }
@@ -64,12 +64,7 @@ class HomePageState extends State<HomePage> {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
       flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>();
-
-      final bool? grantedNotificationPermission =
       await androidImplementation?.requestNotificationsPermission();
-      setState(() {
-        //_notificationsEnabled = grantedNotificationPermission ?? false;
-      });
     }
   }
   Future<void> _checkLowStockAndShowAlert() async {

@@ -12,3 +12,17 @@ Download the file and override it to lib/l10n/translation.xlsx
 python generate_arb_from_sheet.py
 
 3. cd to project root **flutter gen-l10n**
+# Clean up iOS 
+flutter clean
+flutter pub get
+cd ios
+pod install
+
+pod repo update
+cd ios
+pod install
+
+cd ios
+rm Podfile.lock
+rm -rf Pods
+pod install
