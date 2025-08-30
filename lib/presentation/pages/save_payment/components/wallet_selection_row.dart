@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/domain/entities/wallet.dart';
+
+import '../../../../domain/entity/entity.dart';
 
 class WalletSelectionRow extends StatelessWidget {
   final Wallet item;
-  final void Function(Wallet item) onPressed;
+  final Function(Wallet item) onPressed;
 
-  //final void Function(PaymentCategory item) onLongPressed;
+  //final Function(PaymentCategory item) onLongPressed;
   final bool isSelected;
 
   WalletSelectionRow(this.item, this.onPressed, this.isSelected);
@@ -21,7 +22,8 @@ class WalletSelectionRow extends StatelessWidget {
           leading: Container(
             width: 36,
             height: 36,
-            decoration: BoxDecoration(color: Color(item.color), shape: BoxShape.circle),
+            decoration:
+                BoxDecoration(color: Color(item.color), shape: BoxShape.circle),
           ),
           trailing: isSelected
               ? Icon(
@@ -34,7 +36,10 @@ class WalletSelectionRow extends StatelessWidget {
                 ),
           title: Text(
             item.name,
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.primary),
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium!
+                .copyWith(color: Theme.of(context).colorScheme.primary),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

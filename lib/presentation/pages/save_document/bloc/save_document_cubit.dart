@@ -1,26 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/data/storage.dart';
-import 'package:good_manager/domain/app_settings.dart';
-import 'package:good_manager/domain/entities/batch_mode_scan.dart';
-import 'package:good_manager/domain/entities/my_company.dart';
-import 'package:good_manager/domain/entities/save_document_setting.dart';
-import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
-import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
+import 'package:good_manager/domain/usecase/usecase.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_document/sort/sort_by_barcode_document_transaction.dart';
 import 'package:good_manager/presentation/pages/save_document/sort/sort_by_quantity_document_transaction.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../domain/entities/document.dart';
-import '../../../../domain/entities/good.dart';
-import '../../../../domain/entities/models/name.dart';
-import '../../../../domain/entities/payment.dart';
-import '../../../../domain/entities/sort_by_number.dart';
-import '../../../../domain/entities/sort_by_text.dart';
-import '../../../../domain/entities/transaction.dart';
-import '../../../../domain/usecases/goods/goods_usercases.dart';
+import '../../../../data/app_settings.dart';
+import '../../../../domain/entity/entity.dart';
 import '../sort/sort_by_created_date_document_transaction.dart';
 import '../sort/sort_by_name_document_transaction.dart';
 import '../sort/sort_transaction.dart';
@@ -30,8 +18,6 @@ part 'save_document_state.dart';
 
 @injectable
 class SaveDocumentCubit extends Cubit<SaveDocumentState> {
-  final Storage storage;
-  final AppSettings appSettings;
   final DocumentUseCases useCase;
   final PaymentUseCases paymentUseCase;
   final GoodsUseCases goodUseCases;
@@ -40,19 +26,22 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
     required this.useCase,
     required this.paymentUseCase,
     required this.goodUseCases,
-    required this.storage,
-    required this.appSettings,})
-      : super(SaveDocumentState.initial(state: InitialState(), setting: appSettings.getSaveDocumentSetting()));
+  }) : super(
+          SaveDocumentState.initial(
+            state: InitialState(),
+            setting: AppSettings.getSaveDocumentSetting(),
+          ),
+        );
 
   void init(Document item) {
     SaveDocumentState initState = state.copyWith(
-        item: item,
-        name: NameInput.dirty(value: item.name),
-        description: item.description,
-        date: item.date,
-        personId: item.personId,
-        personName: item.personName,
-        //paymentStatus: item.paymentStatus
+      item: item,
+      name: NameInput.dirty(value: item.name),
+      description: item.description,
+      date: item.date,
+      personId: item.personId,
+      personName: item.personName,
+      //paymentStatus: item.paymentStatus
     );
     emit(initState);
     if (item.id != null) {
@@ -77,6 +66,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   void dateChanged(DateTime date) {
     emit(state.copyWith(date: date));
   }
+
   //DateTime getDateOnly(DateTime dateTime){
   //  return DateTime(dateTime.year, dateTime.month, dateTime.day);
   //}
@@ -105,7 +95,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
 
   void onAddGoodClicked() async {
     final result = await save();
-    if (result){
+    if (result) {
       emit(state.copyWith(state: OpenGoodListState()));
     }
   }
@@ -127,30 +117,36 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
     filter();
   }
 
-  onPersonClicked() {
+  void onPersonClicked() {
     emit(state.copyWith(state: OpenPersonListState()));
   }
 
   void onPersonChanged(int id) {
     emit(state.copyWith(personId: id));
   }
-  void onPersonNameChanged(String name){
+
+  void onPersonNameChanged(String name) {
     emit(state.copyWith(personName: name));
   }
-  void loadPayments() async{
-    List<Payment> payments = await paymentUseCase.getByDocumentId(state.item!.id!);
+
+  void loadPayments() async {
+    List<Payment> payments =
+        await paymentUseCase.getByDocumentId(state.item!.id!);
     emit(state.copyWith(payments: payments));
   }
-  double getTotalPayments(List<Payment> payments){
+
+  double getTotalPayments(List<Payment> payments) {
     double total = 0.0;
     payments.forEach((element) {
-      total += element.amount??0;
+      total += element.amount ?? 0;
     });
     return total;
   }
+
   void loadTransactions() async {
-    if (state.item?.id != null){
-      List<DocumentTransaction> transactions = await useCase.getTransactionsByDocumentId(state.item!.id!);
+    if (state.item?.id != null) {
+      List<DocumentTransaction> transactions =
+          await useCase.getTransactionsByDocumentId(state.item!.id!);
       double totalQuantity = 0.0;
       double totalAmount = 0.0;
       transactions.forEach((element) {
@@ -158,7 +154,13 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
         totalAmount += (element.quantity * (element.price ?? 0.0));
       });
       totalQuantity = double.parse(totalQuantity.toStringAsFixed(2));
-      emit(state.copyWith(allTransactions: transactions, totalQuantity: totalQuantity, totalAmount: totalAmount));
+      emit(
+        state.copyWith(
+          allTransactions: transactions,
+          totalQuantity: totalQuantity,
+          totalAmount: totalAmount,
+        ),
+      );
       sort();
       filter();
     }
@@ -174,18 +176,21 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   void onPressedTransaction(DocumentTransaction transaction) {
     emit(state.copyWith(state: OpenSaveGoodState(transaction)));
   }
+
   void resetSearchText() {
     emit(state.copyWith(textSearch: ""));
     filter();
   }
+
   void onSearchTextChanged(String newValue) {
     emit(state.copyWith(textSearch: newValue));
     filter();
   }
 
   void filter() {
-    List<DocumentTransaction> transactions =
-        state.allTransactions.where((element) => filterTransaction(element)).toList();
+    List<DocumentTransaction> transactions = state.allTransactions
+        .where((element) => filterTransaction(element))
+        .toList();
     emit(state.copyWith(transactions: transactions));
   }
 
@@ -195,8 +200,10 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
     }
     return item.good.name.contains(state.textSearch) ||
         item.good.description.contains(state.textSearch) ||
-        (item.good.barCode != null && item.good.barCode!.contains(state.textSearch));
+        (item.good.barCode != null &&
+            item.good.barCode!.contains(state.textSearch));
   }
+
   void onBatchScanMenuClicked() {
     emit(state.copyWith(state: OpenBarcodeScannerPageState()));
   }
@@ -264,46 +271,54 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
       case SortByNumber.no_sort:
         break;
     }
-    if (options.isEmpty){
+    if (options.isEmpty) {
       options.add(SortByCreatedDateDocumentTransaction());
     }
     return options;
   }
-  void updateDocument(Document item){
+
+  void updateDocument(Document item) {
     emit(state.copyWith(item: item));
   }
-  void findGood(String barcode) async{
-    try{
+
+  void findGood(String barcode) async {
+    try {
       Good good = await goodUseCases.getGoodsByBarCode(barcode);
-      if (storage.getBatchModeScan() == BatchModeScan.MANUAL){
+      if (AppSettings.getBatchModeScan() == BatchModeScan.MANUAL) {
         emit(state.copyWith(state: OpenInputQuantityDialogState(good)));
-      }else{
-        saveThenAddTransaction(good, 1, state.item!.type == DocumentType.incoming ? good.purchasePrice : good.salePrice);
+      } else {
+        saveThenAddTransaction(
+          good,
+          1,
+          state.item!.type == DocumentType.incoming
+              ? good.purchasePrice
+              : good.salePrice,
+        );
         await Future.delayed(Duration(seconds: 2));
         onBatchScanMenuClicked();
       }
-
-    }catch(e){
+    } catch (e) {
       emit(state.copyWith(state: OpenSaveGoodPageWithBarcodeState(barcode)));
     }
   }
 
-  void saveThenAddTransaction(Good good, double quantity, double? price) async{
+  void saveThenAddTransaction(Good good, double quantity, double? price) async {
     bool result = await save();
-    if (result){
+    if (result) {
       DocumentTransaction transaction = DocumentTransaction();
       transaction.documentId = state.item!.id!;
       transaction.goodId = good.id!;
       transaction.quantity = quantity;
       transaction.price = price;
       transaction.type = state.item!.type;
-      transaction.storeId = appSettings.getSelectedStoreId();
+      transaction.storeId = AppSettings.getSelectedStoreId();
       await useCase.insertTransaction(transaction);
       loadTransactions();
     }
   }
-  MyCompany? getMyCompany(){
-    return appSettings.getMyCompany();
+
+  MyCompany? getMyCompany() {
+    return AppSettings.getMyCompany();
   }
 
   void resetAllFilter() {
@@ -312,12 +327,12 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
 
   void applyFilter(SaveDocumentSetting setting) {
     emit(state.copyWith(setting: setting));
-    appSettings.setSaveDocumentSetting(setting);
+    AppSettings.setSaveDocumentSetting(setting);
     sort();
     filter();
   }
 
   int getSelectedStoreId() {
-    return appSettings.getSelectedStoreId();
+    return AppSettings.getSelectedStoreId();
   }
 }

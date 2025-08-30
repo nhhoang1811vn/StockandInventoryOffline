@@ -1,28 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/app_settings.dart';
-import 'package:good_manager/domain/entities/customer.dart';
-import 'package:good_manager/domain/entities/good.dart';
-import 'package:good_manager/domain/entities/report_type.dart';
-import 'package:good_manager/domain/entities/supplier.dart';
-import 'package:good_manager/domain/entities/wallet.dart';
-import 'package:good_manager/domain/repositories/document_transaction_repositories.dart';
-import 'package:good_manager/domain/usecases/customers/customers_usecases.dart';
-import 'package:good_manager/domain/usecases/groups/groups_usecases.dart';
-import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
-import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart';
-import 'package:good_manager/domain/usecases/wallets/wallet_usecases.dart';
-import 'package:good_manager/extension/date_time_apis.dart';
+import 'package:good_manager/domain/usecase/usecase.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
-import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/repo/repo.dart';
+import 'package:good_manager/util/util.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../domain/entities/document.dart';
-import '../../../../domain/entities/group.dart';
-import '../../../../domain/entities/payment.dart';
-import '../../../../domain/usecases/documents/document_usecases.dart';
-import '../../../../domain/usecases/goods/goods_usercases.dart';
+import '../../../../constant/constant.dart';
+import '../../../../data/app_settings.dart';
+import '../../../../domain/entity/entity.dart';
 import '../../base/base_state.dart';
 
 part 'report_detail_cubit.freezed.dart';
@@ -37,12 +24,16 @@ class ColumnReport {
   bool showTotalText = false;
   bool showTotal = false;
 
-  ColumnReport(this.title, {this.isPickValues = false, this.showTotalText = false, this.showTotal = false});
+  ColumnReport(
+    this.title, {
+    this.isPickValues = false,
+    this.showTotalText = false,
+    this.showTotal = false,
+  });
 }
 
 @injectable
 class ReportDetailCubit extends Cubit<ReportDetailState> {
-  final AppSettings appSettings;
   final GoodsUseCases goodsUseCase;
   final GroupsUseCases groupsUseCases;
   final PaymentUseCases paymentUseCases;
@@ -53,7 +44,6 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
   final WalletUseCases walletUseCases;
 
   ReportDetailCubit({
-    required this.appSettings,
     required this.goodsUseCase,
     required this.groupsUseCases,
     required this.paymentUseCases,
@@ -63,27 +53,61 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     required this.customersUseCase,
     required this.walletUseCases,
   }) : super(ReportDetailState.initial(state: InitialState()));
-  void refresh(AppLocalizations localizations){
+
+  void refresh(AppLocalizations localizations) {
     init(localizations, false, state.type!, state.start, state.end);
   }
-  void init(AppLocalizations localizations, bool isNeedUpdateSelectedValue, ReportType type, DateTime? start, DateTime? end) {
-    emit(state.copyWith(state: LoadingState(), type: type, start: start, end: end));
+
+  void init(
+    AppLocalizations localizations,
+    bool isNeedUpdateSelectedValue,
+    ReportType type,
+    DateTime? start,
+    DateTime? end,
+  ) {
+    emit(
+      state.copyWith(
+        state: LoadingState(),
+        type: type,
+        start: start,
+        end: end,
+      ),
+    );
     load(localizations, isNeedUpdateSelectedValue);
   }
-  void initColumn(List<ColumnReport> columns){
+
+  void initColumn(List<ColumnReport> columns) {
     emit(state.copyWith(columns: columns));
   }
-  Future<double> getSumQuantityIncoming(int goodId, List<Document> documents) async{
+
+  Future<double> getSumQuantityIncoming(
+    int goodId,
+    List<Document> documents,
+  ) async {
     double incoming = 0.0;
     for (Document document in documents) {
-      incoming += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(DocumentType.incoming, goodId, document.id!);
+      incoming += await documentTransactionRepository
+          .getSumQuantityByGoodIdAndByDocumentId(
+        DocumentType.incoming,
+        goodId,
+        document.id!,
+      );
     }
     return incoming;
   }
-  Future<double> getSumQuantityOutgoing(int goodId, List<Document> documents) async{
+
+  Future<double> getSumQuantityOutgoing(
+    int goodId,
+    List<Document> documents,
+  ) async {
     double outgoing = 0.0;
     for (Document document in documents) {
-      outgoing += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(DocumentType.outgoing, goodId, document.id!);
+      outgoing += await documentTransactionRepository
+          .getSumQuantityByGoodIdAndByDocumentId(
+        DocumentType.outgoing,
+        goodId,
+        document.id!,
+      );
     }
     return outgoing;
   }
@@ -102,9 +126,12 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
 
   //DateTime getPreviousHour(DateTime date) {
   //  return DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch - 60 * 60 * 1000); //- 60 mins
- // }
+  // }
 
-  void load(AppLocalizations localizations, bool isNeedUpdateSelectedValue) async {
+  void load(
+    AppLocalizations localizations,
+    bool isNeedUpdateSelectedValue,
+  ) async {
     switch (state.type) {
       case ReportType.LIST_OF_GOODS:
         await initListOfGoods(localizations);
@@ -136,7 +163,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         break;
     }
     updateSetValuesForPickValuesColumn();
-    if (isNeedUpdateSelectedValue){
+    if (isNeedUpdateSelectedValue) {
       updateSelectedValueForPickValuesColumn();
     }
     update(localizations);
@@ -153,7 +180,8 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     }
     emit(state.copyWith(columns: newColumns));
   }
-  void updateSelectedValueForPickValuesColumn(){
+
+  void updateSelectedValueForPickValuesColumn() {
     List<ColumnReport> newColumns = state.columns;
     for (int i = 0; i < state.rows.length; i++) {
       for (int j = 0; j < newColumns.length; j++) {
@@ -177,7 +205,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     List<List<String>> rows = state.rows;
     List<List<String>> validRows = [];
     List<int?> ids = [];
-    for (int i =0; i< rows.length;i++){
+    for (int i = 0; i < rows.length; i++) {
       var row = rows[i];
       var valid = true;
       for (int j = 0; j < state.columns.length; j++) {
@@ -195,16 +223,15 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     if (validRows.length > 0) {
       List<String> totalRow = [];
       for (int i = 0; i < state.columns.length; i++) {
-        if (state.columns[i].showTotalText){
+        if (state.columns[i].showTotalText) {
           totalRow.add(localizations.field_total);
-        }
-        else if (state.columns[i].showTotal) {
+        } else if (state.columns[i].showTotal) {
           var sumAmount = 0.0;
           for (int j = 0; j < validRows.length; j++) {
             sumAmount += getDoubleFromFormattedText(validRows[j][i]);
           }
           totalRow.add(getDoubleText(sumAmount));
-        }else{
+        } else {
           totalRow.add("");
         }
       }
@@ -223,68 +250,87 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
   }
 
   bool isValid(ColumnReport column, String value) {
-    if (!column.isVisible)
-      return true;
-    if (column.isPickValues && !column.selectedValues.contains(value)) return false;
+    if (!column.isVisible) return true;
+    if (column.isPickValues && !column.selectedValues.contains(value))
+      return false;
     return true;
   }
-  Future<void> initReorder() async{
+
+  Future<void> initReorder() async {
     List<List<String>> rows = [];
-    int storeId = appSettings.getSelectedStoreId();
+    int storeId = AppSettings.getSelectedStoreId();
     List<Good> allGoods = await goodsUseCase.getAllByStoreId(storeId);
-    allGoods.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    allGoods
+        .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
     List<Good> items = [];
     for (Good good in allGoods) {
       var minQuan = 0.0;
-      if (good.minQuantity != null){
+      if (good.minQuantity != null) {
         minQuan = good.minQuantity!;
       }
-      if (good.quantity < minQuan){
+      if (good.quantity < minQuan) {
         items.add(good);
       }
     }
-    for (Good item in items){
+    for (Good item in items) {
       var minQuan = 0.0;
-      if (item.minQuantity != null){
+      if (item.minQuantity != null) {
         minQuan = item.minQuantity!;
       }
       var reorder = minQuan - item.quantity;
-      var amount = reorder * (item.purchasePrice??0.0);
+      var amount = reorder * (item.purchasePrice ?? 0.0);
       List<String> row = [
         item.name,
         item.barCode ?? "",
         getDoubleText(item.quantity),
         getDoubleText(minQuan),
         getDoubleText(reorder),
-        getDoubleText(item.purchasePrice??0),
-        getDoubleText(amount)
+        getDoubleText(item.purchasePrice ?? 0),
+        getDoubleText(amount),
       ];
       rows.add(row);
     }
-    emit(state.copyWith(rows: rows,allIds: items.map((item) => item.id!).toList()));
+    emit(
+      state.copyWith(
+        rows: rows,
+        allIds: items.map((item) => item.id!).toList(),
+      ),
+    );
   }
+
   Future<void> initListOfGoods(AppLocalizations localizations) async {
     List<List<String>> rows = [];
-    int storeId = appSettings.getSelectedStoreId();
+    int storeId = AppSettings.getSelectedStoreId();
     List<Good> allGoods = await goodsUseCase.getAllByStoreId(storeId);
-    allGoods.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    allGoods
+        .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
-    List<Document> documentsPrePeriod = await documentUseCases.getInRange(DateTime.fromMillisecondsSinceEpoch(0), state.start!.endOfYesterday());
+    List<Document> documentsPrePeriod = await documentUseCases.getInRange(
+      DateTime.fromMillisecondsSinceEpoch(0),
+      state.start!.endOfYesterday(),
+    );
 
-    List<Document> documentsInPeriod = await documentUseCases.getInRange(state.start!.startOfDay(), state.end!.endOfDay());
+    List<Document> documentsInPeriod = await documentUseCases.getInRange(
+      state.start!.startOfDay(),
+      state.end!.endOfDay(),
+    );
     for (Good good in allGoods) {
       var groupName = localizations.no_group;
       if (good.groupId != null) {
         Group group = await groupsUseCases.getById(good.groupId!);
         groupName = group.name;
       }
-      double sumQuantityIncomingPre = await getSumQuantityIncoming(good.id!, documentsPrePeriod);
-      double sumQuantityOutgoingPre = await getSumQuantityOutgoing(good.id!, documentsPrePeriod);
+      double sumQuantityIncomingPre =
+          await getSumQuantityIncoming(good.id!, documentsPrePeriod);
+      double sumQuantityOutgoingPre =
+          await getSumQuantityOutgoing(good.id!, documentsPrePeriod);
       double startPeriodStock = sumQuantityIncomingPre - sumQuantityOutgoingPre;
 
-      double incoming = await getSumQuantityIncoming(good.id!, documentsInPeriod);
-      double outgoing = await getSumQuantityOutgoing(good.id!, documentsInPeriod);
+      double incoming =
+          await getSumQuantityIncoming(good.id!, documentsInPeriod);
+      double outgoing =
+          await getSumQuantityOutgoing(good.id!, documentsInPeriod);
 
       double endPeriodStock = startPeriodStock + incoming - outgoing;
       List<String> row = [
@@ -294,16 +340,22 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         getDoubleText(startPeriodStock),
         getDoubleText(incoming),
         getDoubleText(outgoing),
-        getDoubleText(endPeriodStock)
+        getDoubleText(endPeriodStock),
       ];
       rows.add(row);
     }
-    emit(state.copyWith(rows: rows, allIds: allGoods.map((good) => good.id!).toList()));
+    emit(
+      state.copyWith(
+        rows: rows,
+        allIds: allGoods.map((good) => good.id!).toList(),
+      ),
+    );
   }
 
   Future<void> initListOfDocuments(AppLocalizations localizations) async {
     List<List<String>> rows = [];
-    List<Document> items = await documentUseCases.getInRange(state.start!, state.end!);
+    List<Document> items =
+        await documentUseCases.getInRange(state.start!, state.end!);
     for (Document item in items) {
       List<String> row = [];
       row.add(DateFormatFactory.getDateFormat().format(item.date));
@@ -314,18 +366,28 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       row.add(getDoubleText(item.amount));
       rows.add(row);
     }
-    emit(state.copyWith(rows: rows, allIds: items.map((document) => document.id!).toList()));
+    emit(
+      state.copyWith(
+        rows: rows,
+        allIds: items.map((document) => document.id!).toList(),
+      ),
+    );
   }
 
   Future<void> initDebtBySupplier() async {
     List<List<String>> rows = [];
-    int storeId = appSettings.getSelectedStoreId();
+    int storeId = AppSettings.getSelectedStoreId();
     List<Supplier> suppliers = await suppliersUseCase.getAllByStoreId(storeId);
-    List<Document> allDocuments = await documentUseCases.getInRange(state.start!, state.end!);
-    List<Document> incomingDocuments = allDocuments.where((item) => item.type == DocumentType.incoming).toList();
+    List<Document> allDocuments =
+        await documentUseCases.getInRange(state.start!, state.end!);
+    List<Document> incomingDocuments = allDocuments
+        .where((item) => item.type == DocumentType.incoming)
+        .toList();
     for (Supplier supplier in suppliers) {
       String supplierName = supplier.name;
-      List<Document> documents = incomingDocuments.where((item) => item.personId == supplier.id).toList();
+      List<Document> documents = incomingDocuments
+          .where((item) => item.personId == supplier.id)
+          .toList();
 
       double personTotalAmount = 0.0;
       double personTotalPaid = 0.0;
@@ -344,18 +406,28 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       ]);
     }
 
-    emit(state.copyWith(rows: rows, allIds: suppliers.map((supplier) => supplier.id!).toList()));
+    emit(
+      state.copyWith(
+        rows: rows,
+        allIds: suppliers.map((supplier) => supplier.id!).toList(),
+      ),
+    );
   }
 
   Future<void> initDebtByCustomer() async {
     List<List<String>> rows = [];
-    int storeId = appSettings.getSelectedStoreId();
+    int storeId = AppSettings.getSelectedStoreId();
     List<Customer> customers = await customersUseCase.getAllByStoreId(storeId);
-    List<Document> allDocuments = await documentUseCases.getInRange(state.start!, state.end!);
-    List<Document> outgoingDocuments = allDocuments.where((item) => item.type == DocumentType.outgoing).toList();
+    List<Document> allDocuments =
+        await documentUseCases.getInRange(state.start!, state.end!);
+    List<Document> outgoingDocuments = allDocuments
+        .where((item) => item.type == DocumentType.outgoing)
+        .toList();
     for (Customer customer in customers) {
       String customerName = customer.name;
-      List<Document> documents = outgoingDocuments.where((item) => item.personId == customer.id).toList();
+      List<Document> documents = outgoingDocuments
+          .where((item) => item.personId == customer.id)
+          .toList();
       double personTotalAmount = 0.0;
       double personTotalPaid = 0.0;
       double personTotalRemaining = 0.0;
@@ -372,14 +444,24 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         getDoubleText(personTotalRemaining),
       ]);
     }
-    emit(state.copyWith(rows: rows, allIds: customers.map((customer) => customer.id!).toList()));
+    emit(
+      state.copyWith(
+        rows: rows,
+        allIds: customers.map((customer) => customer.id!).toList(),
+      ),
+    );
   }
 
-  Future<void> initPayments(AppLocalizations localizations, PaymentType type) async {
+  Future<void> initPayments(
+    AppLocalizations localizations,
+    PaymentType type,
+  ) async {
     List<List<String>> rows = [];
 
-    List<Payment> allItems = await paymentUseCases.getInRange(state.start!, state.end!);
-    List<Payment> outboundItems = allItems.where((item) => item.type == type).toList();
+    List<Payment> allItems =
+        await paymentUseCases.getInRange(state.start!, state.end!);
+    List<Payment> outboundItems =
+        allItems.where((item) => item.type == type).toList();
     var items = [...outboundItems]..sort((a, b) {
         if (a.category?.name == null) return 1;
         if (b.category?.name == null) return -1;
@@ -405,12 +487,19 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
 
   Future<void> initListOfWallets() async {
     List<List<String>> rows = [];
-    int storeId = appSettings.getSelectedStoreId();
+    int storeId = AppSettings.getSelectedStoreId();
     List<Wallet> wallets = await walletUseCases.getAllByStoreId(storeId);
     for (Wallet wallet in wallets) {
       List<Payment> prePayments = await paymentUseCases.getInRangeByWalletId(
-          wallet.id!, DateTime.fromMillisecondsSinceEpoch(0), state.start!.endOfYesterday());
-      List<Payment> payments = await paymentUseCases.getInRangeByWalletId(wallet.id!, state.start!, state.end!);
+        wallet.id!,
+        DateTime.fromMillisecondsSinceEpoch(0),
+        state.start!.endOfYesterday(),
+      );
+      List<Payment> payments = await paymentUseCases.getInRangeByWalletId(
+        wallet.id!,
+        state.start!,
+        state.end!,
+      );
 
       double preRev = getRevenue(prePayments);
       double inAmount = payments
@@ -429,33 +518,58 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         getDoubleText(preRev + inAmount - outAmount),
       ]);
     }
-    emit(state.copyWith(rows: rows, allIds: wallets.map((wallet) => wallet.id!).toList()));
+    emit(
+      state.copyWith(
+        rows: rows,
+        allIds: wallets.map((wallet) => wallet.id!).toList(),
+      ),
+    );
   }
+
   Future<void> initListOfSupplierPayments() async {
     List<List<String>> rows = [];
-    int storeId = appSettings.getSelectedStoreId();
+    int storeId = AppSettings.getSelectedStoreId();
     List<Supplier> suppliers = await suppliersUseCase.getAllByStoreId(storeId);
-    for (Supplier supplier in suppliers){
-      List<Payment> payments = await paymentUseCases.getInRangeBySupplierId(supplier.id!, state.start!, state.end!);
+    for (Supplier supplier in suppliers) {
+      List<Payment> payments = await paymentUseCases.getInRangeBySupplierId(
+        supplier.id!,
+        state.start!,
+        state.end!,
+      );
       rows.add([
         supplier.name,
         Config.simpleCurrencyFormat.format(getTotal(payments)),
       ]);
     }
-    emit(state.copyWith(rows: rows, allIds: suppliers.map((item) => item.id!).toList()));
+    emit(
+      state.copyWith(
+        rows: rows,
+        allIds: suppliers.map((item) => item.id!).toList(),
+      ),
+    );
   }
+
   Future<void> initListOfCustomerPayments() async {
     List<List<String>> rows = [];
-    int storeId = appSettings.getSelectedStoreId();
+    int storeId = AppSettings.getSelectedStoreId();
     List<Customer> customers = await customersUseCase.getAllByStoreId(storeId);
-    for (Customer customer in customers){
-      List<Payment> payments = await paymentUseCases.getInRangeByCustomerId(customer.id!, state.start!, state.end!);
+    for (Customer customer in customers) {
+      List<Payment> payments = await paymentUseCases.getInRangeByCustomerId(
+        customer.id!,
+        state.start!,
+        state.end!,
+      );
       rows.add([
         customer.name,
         getDoubleText(getTotal(payments)),
       ]);
     }
-    emit(state.copyWith(rows: rows, allIds: customers.map((item) => item.id!).toList()));
+    emit(
+      state.copyWith(
+        rows: rows,
+        allIds: customers.map((item) => item.id!).toList(),
+      ),
+    );
   }
 
   double getRevenue(List<Payment> payments) {
@@ -469,8 +583,9 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         .fold(0.0, (sum, payment) => sum + (payment.amount ?? 0.0));
     return inAmount - outAmount;
   }
-  double getTotal(List<Payment> payments){
-    return  payments
+
+  double getTotal(List<Payment> payments) {
+    return payments
         //.where((payment) => payment.type == PaymentType.inbound)
         .toList()
         .fold(0.0, (sum, payment) => sum + (payment.amount ?? 0.0));
@@ -485,27 +600,32 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     final formatter = NumberFormat('#,###');
     return formatter.format(input);
   }
-  double getDoubleFromFormattedText(String input){
-    return double.tryParse(input.replaceAll(",", ""))??0;
+
+  double getDoubleFromFormattedText(String input) {
+    return double.tryParse(input.replaceAll(",", "")) ?? 0;
   }
 
   void setColumns(List<ColumnReport> columns) {
     emit(state.copyWith(columns: columns));
   }
-  Future<Good> getGood(int id){
+
+  Future<Good> getGood(int id) {
     return goodsUseCase.get(id);
   }
-  Future<Document> getDocument(int id){
+
+  Future<Document> getDocument(int id) {
     return documentUseCases.get(id);
   }
-  Future<Supplier> getSupplier(int id){
+
+  Future<Supplier> getSupplier(int id) {
     return suppliersUseCase.get(id);
   }
-  Future<Customer> getCustomer(int id){
+
+  Future<Customer> getCustomer(int id) {
     return customersUseCase.get(id);
   }
 
-  getSelectedStoreName() {
-    return appSettings.getSelectedStoreName();
+  String getSelectedStoreName() {
+    return AppSettings.getSelectedStoreName();
   }
 }

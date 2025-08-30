@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 
-
 class SelectSymbolsWidget extends StatefulWidget {
   final String symbol;
-  final void Function(String symbol) onPressed;
+  final Function(String symbol) onPressed;
 
-  SelectSymbolsWidget({required this.symbol,required this.onPressed});
+  SelectSymbolsWidget({required this.symbol, required this.onPressed});
 
   @override
   State<StatefulWidget> createState() {
@@ -16,34 +15,34 @@ class SelectSymbolsWidget extends StatefulWidget {
 
 class SelectSymbolsWidgetState extends State<SelectSymbolsWidget> {
   List<String> symbols = [
-    "🏠",  // Rent
-    "💡",  // Electricity Bill
-    "💧",  // Water Bill
-    "📶",  // Internet Bill
-    "📱",  // Phone Recharge / Bill
-    "🛒",  // Supplier Payment
-    "📦",  // Packaging Supplies
-    "🚚",  // Delivery Charges
-    "🛠️",  // Maintenance / Repairs
-    "🧼",  // Cleaning Services
-    "💵",  // Staff Salaries
-    "🔒",  // Security Services
-    "💻",  // POS System / Software Subscription
-    "📣",  // Marketing / Advertising
-    "🚛",  // Transport / Logistics
-    "🏦",  // Bank Charges
-    "💳",  // Loan Repayment
-    "🛡️",  // Insurance (Shop / Stock)
-    "🐜",  // Pest Control
-    "🚮",  // Waste Disposal
-    "📜",  // Licenses & Permits
-    "💰",  // Tax Payment
-    "🛋️",  // Furniture & Fixtures
-    "👕",  // Uniforms / Staff Clothing
-    "🖨️",  // Printer Ink & Paper
-    "✏️",  // Stationery Supplies
-    "⛽",  // Fuel (if applicable)
-    "📑",  // Other Bills
+    "🏠", // Rent
+    "💡", // Electricity Bill
+    "💧", // Water Bill
+    "📶", // Internet Bill
+    "📱", // Phone Recharge / Bill
+    "🛒", // Supplier Payment
+    "📦", // Packaging Supplies
+    "🚚", // Delivery Charges
+    "🛠️", // Maintenance / Repairs
+    "🧼", // Cleaning Services
+    "💵", // Staff Salaries
+    "🔒", // Security Services
+    "💻", // POS System / Software Subscription
+    "📣", // Marketing / Advertising
+    "🚛", // Transport / Logistics
+    "🏦", // Bank Charges
+    "💳", // Loan Repayment
+    "🛡️", // Insurance (Shop / Stock)
+    "🐜", // Pest Control
+    "🚮", // Waste Disposal
+    "📜", // Licenses & Permits
+    "💰", // Tax Payment
+    "🛋️", // Furniture & Fixtures
+    "👕", // Uniforms / Staff Clothing
+    "🖨️", // Printer Ink & Paper
+    "✏️", // Stationery Supplies
+    "⛽", // Fuel (if applicable)
+    "📑", // Other Bills
   ];
 
   @override
@@ -55,30 +54,31 @@ class SelectSymbolsWidgetState extends State<SelectSymbolsWidget> {
     //bool selected = false;
     bool selected = symbol == widget.symbol;
     return InkWell(
-      onTap: (){
+      onTap: () {
         widget.onPressed(symbol);
       },
       borderRadius: BorderRadius.circular(16),
       child: Container(
         decoration: selected
             ? BoxDecoration(
-          color: Colors.blue.shade50,
-          border: Border.all(
-            color: Colors.blue.shade700,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(16),
-        )
+                color: Colors.blue.shade50,
+                border: Border.all(
+                  color: Colors.blue.shade700,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(16),
+              )
             : null, // No decoration if not selected
 
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             Text(symbol, style: TextStyle(fontSize: 28)),
-
-          ])),
+          ],
+        ),
+      ),
     );
   }
 
@@ -90,25 +90,28 @@ class SelectSymbolsWidgetState extends State<SelectSymbolsWidget> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(AppLocalizations.of(context)!.label_select_payment_category,
-              style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            AppLocalizations.of(context)!.label_select_payment_category,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           SizedBox(height: 16),
           Card(
             //color: Colors.white,
             child: Padding(
               padding: EdgeInsets.all(16),
               child: GridView.builder(
-                  itemCount: symbols.length,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 6,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                  ),
-                  itemBuilder: (context, index) {
-                      return _buildWidget(symbols[index]);
-                  }),
+                itemCount: symbols.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 6,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                ),
+                itemBuilder: (context, index) {
+                  return _buildWidget(symbols[index]);
+                },
+              ),
             ),
           ),
         ],

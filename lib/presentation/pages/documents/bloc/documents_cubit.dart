@@ -2,19 +2,15 @@ import 'dart:ui';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/app_settings.dart';
-import 'package:good_manager/domain/entities/document.dart';
-import 'package:good_manager/domain/entities/documents_setting.dart';
-import 'package:good_manager/domain/usecases/customers/customers_usecases.dart';
-import 'package:good_manager/domain/usecases/documents/document_usecases.dart';
-import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart';
-import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/domain/usecase/usecase.dart';
 import 'package:good_manager/presentation/models/list_item.dart';
 import 'package:good_manager/presentation/pages/documents/criteria/by_search_text_criteria.dart';
 import 'package:good_manager/presentation/pages/documents/criteria/by_status_criteria.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../domain/entities/payment.dart';
+import '../../../../constant/constant.dart';
+import '../../../../data/app_settings.dart';
+import '../../../../domain/entity/entity.dart';
 import '../../../criteria/and_criteria.dart';
 import '../../../criteria/criteria.dart';
 import '../../../criteria/or_criteria.dart';
@@ -29,35 +25,33 @@ class DocumentsCubit extends Cubit<DocumentsState> {
   final DocumentUseCases useCase;
   final CustomersUseCase customersUseCase;
   final SuppliersUseCase suppliersUseCase;
-  final AppSettings appSettings;
-  DocumentsCubit({
 
-    required this.appSettings,
+  DocumentsCubit({
     required this.useCase,
     required this.customersUseCase,
-    required this.suppliersUseCase
+    required this.suppliersUseCase,
+  }) : super(DocumentsState.initial(state: InitialState()));
 
-  })
-      : super(DocumentsState.initial(
-      state: InitialState()
-  ));
   void initState({DocumentsSetting? setting = null}) {
     DocumentsSetting applySetting;
-    if (setting == null){
-      applySetting = appSettings.getDocumentsSetting();
-    }else{
+    if (setting == null) {
+      applySetting = AppSettings.getDocumentsSetting();
+    } else {
       applySetting = setting;
     }
-    emit(state.copyWith(
+    emit(
+      state.copyWith(
         state: LoadingState(),
         setting: applySetting,
-        incomingColor: appSettings.getIncomingDocumentColor(),
-        outgoingColor: appSettings.getOutgoingDocumentColor()
-    ));
+        incomingColor: AppSettings.getIncomingDocumentColor(),
+        outgoingColor: AppSettings.getOutgoingDocumentColor(),
+      ),
+    );
     loadItems();
   }
+
   void loadItems() async {
-    int storeId = appSettings.getSelectedStoreId();
+    int storeId = AppSettings.getSelectedStoreId();
     List<Document> items = await useCase.getAllByStoreId(storeId);
     emit(state.copyWith(allDocuments: items));
     update();
@@ -65,7 +59,7 @@ class DocumentsCubit extends Cubit<DocumentsState> {
 
   void onSearchMenuClicked() {
     emit(state.copyWith(showSearchBar: !state.showSearchBar, textSearch: ""));
-    if (state.showSearchBar == false){
+    if (state.showSearchBar == false) {
       update();
     }
   }
@@ -86,50 +80,60 @@ class DocumentsCubit extends Cubit<DocumentsState> {
     for (var i = 0; i < data.length; i++) {
       String dateText = DateFormatFactory.getDateFormat().format(data[i].date);
       if (!set.contains(dateText)) {
-        results.add(HeaderItem(data[i].date));// DocumentUI(DocumentUIType.date, dateText, null));
+        results.add(
+          HeaderItem(
+            data[i].date,
+          ),
+        ); // DocumentUI(DocumentUIType.date, dateText, null));
         set.add(dateText);
       }
       results.add(DocumentListItem(data[i]));
     }
     return results;
   }
+
   void onMenuHelpClicked() {
     emit(state.copyWith(state: OpenHelpPageState()));
   }
+
   void delete(int id) async {
     await useCase.delete(id);
     loadItems();
   }
 
-  getSelectedStoreId(){
-    return appSettings.getSelectedStoreId();
+  int getSelectedStoreId() {
+    return AppSettings.getSelectedStoreId();
   }
+
   String getAutoDocumentNo() {
-    return appSettings.getAutoDocumentNo(getSelectedStoreId()).toString();
+    return AppSettings.getAutoDocumentNo(getSelectedStoreId()).toString();
   }
 
   void resetAllFilter() {
     var setting = DocumentsSetting.getDefault();
     emit(state.copyWith(setting: setting));
-    appSettings.setDocumentsSetting(setting);
+    AppSettings.setDocumentsSetting(setting);
     update();
   }
-  void applyFilter(DocumentsSetting setting){
+
+  void applyFilter(DocumentsSetting setting) {
     emit(state.copyWith(setting: setting));
-    appSettings.setDocumentsSetting(setting);
+    AppSettings.setDocumentsSetting(setting);
     update();
   }
-  void update(){
+
+  void update() {
     List<Criteria<Document>> commonCriteria = [];
-    if (state.setting!.selectedStatus.isNotEmpty){
+    if (state.setting!.selectedStatus.isNotEmpty) {
       List<Criteria<Document>> statusCriteria = [];
       state.setting!.selectedStatus.forEach((status) {
-        statusCriteria.add(ByStatusCriteria(status));;
+        statusCriteria.add(ByStatusCriteria(status));
+        ;
       });
       commonCriteria.add(OrCriteria(statusCriteria));
     }
 
-    if (state.textSearch.isNotEmpty){
+    if (state.textSearch.isNotEmpty) {
       commonCriteria.add(BySearchTextCriteria(state.textSearch));
     }
     List<Criteria<Document>> incomingCriteria = List.from(commonCriteria);
@@ -138,41 +142,48 @@ class DocumentsCubit extends Cubit<DocumentsState> {
     List<Criteria<Document>> outgoingCriteria = List.from(commonCriteria);
     outgoingCriteria.add(ByTypeCriteria(DocumentType.outgoing));
 
+    List<Document> documents =
+        AndCriteria<Document>(commonCriteria).meetCriteria(state.allDocuments);
+    List<Document> incomingDocuments = AndCriteria<Document>(incomingCriteria)
+        .meetCriteria(state.allDocuments);
+    List<Document> outgoingDocuments = AndCriteria<Document>(outgoingCriteria)
+        .meetCriteria(state.allDocuments);
 
-    List<Document> documents = AndCriteria<Document>(commonCriteria).meetCriteria(state.allDocuments);
-    List<Document> incomingDocuments = AndCriteria<Document>(incomingCriteria).meetCriteria(state.allDocuments);
-    List<Document> outgoingDocuments = AndCriteria<Document>(outgoingCriteria).meetCriteria(state.allDocuments);
-
-    emit(state.copyWith(
+    emit(
+      state.copyWith(
         state: LoadSuccessState(),
         documents: documents,
         incomingDocuments: incomingDocuments,
-        outgoingDocuments: outgoingDocuments
-    ));
+        outgoingDocuments: outgoingDocuments,
+      ),
+    );
   }
 
-  Future<void> onCreateAPayment(Document item) async{
+  Future<void> onCreateAPayment(Document item) async {
     var payment = Payment();
-    payment.type = item.type == DocumentType.incoming ? PaymentType.outbound : PaymentType.inbound;
-    payment.storeId = appSettings.getSelectedStoreId();
-    payment.walletId = appSettings.getSavePaymentLastSelectedWalletId();
+    payment.type = item.type == DocumentType.incoming
+        ? PaymentType.outbound
+        : PaymentType.inbound;
+    payment.storeId = AppSettings.getSelectedStoreId();
+    payment.walletId = AppSettings.getSavePaymentLastSelectedWalletId();
     payment.documentId = item.id;
     payment.document = item;
 
-    if (item.type == DocumentType.incoming){
-      if (item.personId != null){
+    if (item.type == DocumentType.incoming) {
+      if (item.personId != null) {
         payment.supplierId = item.personId;
         payment.supplier = await suppliersUseCase.get(item.personId!);
       }
-    }else{
-      if (item.personId != null){
+    } else {
+      if (item.personId != null) {
         payment.customerId = item.personId;
         payment.customer = await customersUseCase.get(item.personId!);
       }
     }
     emit(state.copyWith(state: OpenSavePaymentPageState(payment)));
   }
-  void onViewLinkedPayments(Document item){
+
+  void onViewLinkedPayments(Document item) {
     emit(state.copyWith(state: OpenPaymentHistoryPageState(item.id!)));
   }
 }

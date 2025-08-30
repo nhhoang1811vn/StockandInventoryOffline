@@ -1,8 +1,10 @@
-import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/presentation/criteria/criteria.dart';
 
-class ByWalletCriteria extends Criteria<Payment>{
+import '../../../../domain/entity/entity.dart';
+
+class ByWalletCriteria extends Criteria<Payment> {
   final int id;
+
   ByWalletCriteria(this.id);
 
   @override

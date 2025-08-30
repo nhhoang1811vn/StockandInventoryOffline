@@ -14,12 +14,10 @@ class GoodsState with _$GoodsState {
     @Default(false) bool showSearchBar,
     @Default(false) bool isSelection,
     Document? document,
-
     @Default(0) double quantityTotal,
     @Default(0) double purchasePriceTotal,
     @Default(0) double salePriceTotal,
-
     @Default(true) bool showMinQuantity,
-    Color? minQuantityColor
+    Color? minQuantityColor,
   }) = _Initial;
 }

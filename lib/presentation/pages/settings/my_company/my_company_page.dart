@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/settings/my_company/bloc/my_company_cubit.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../widgets/primary_button.dart';
-import '../../app_text_field.dart';
+import '../../../widget/app_text_field.dart';
+import '../../../widget/primary_button.dart';
 
 class MyCompanyPage extends StatefulWidget {
   MyCompanyPage({Key? key}) : super(key: key);
@@ -22,6 +22,7 @@ class MyCompanyPageState extends State<MyCompanyPage> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController taxIDController = TextEditingController();
   final TextEditingController bankDetailsController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -31,22 +32,25 @@ class MyCompanyPageState extends State<MyCompanyPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MyCompanyCubit, MyCompanyState>(
-        listener: (context, state) async {},
-        builder: (BuildContext context, MyCompanyState state) {
-          companyNameController.text = state.companyName;
-          addressController.text = state.address;
-          emailController.text = state.email;
+      listener: (context, state) async {},
+      builder: (BuildContext context, MyCompanyState state) {
+        companyNameController.text = state.companyName;
+        addressController.text = state.address;
+        emailController.text = state.email;
 
-          phoneController.text = state.phone;
-          taxIDController.text = state.taxID;
-          bankDetailsController.text = state.bankDetails;
-          return Scaffold(
-            appBar: new AppBar(
-                title:
-                    new Text(AppLocalizations.of(context)!.menu_item_my_company)),
-            body: _buildBody(state),
-          );
-        });
+        phoneController.text = state.phone;
+        taxIDController.text = state.taxID;
+        bankDetailsController.text = state.bankDetails;
+        return Scaffold(
+          appBar: new AppBar(
+            title: new Text(
+              AppLocalizations.of(context)!.menu_item_my_company,
+            ),
+          ),
+          body: _buildBody(state),
+        );
+      },
+    );
   }
 
   Widget _buildBody(MyCompanyState state) {
@@ -57,57 +61,78 @@ class MyCompanyPageState extends State<MyCompanyPage> {
           child: Text(AppLocalizations.of(context)!.company_info_message),
         ),
         Expanded(
-            child: SingleChildScrollView(
-                padding: EdgeInsets.all(16),
-                child: Column(children: [
-                  AppTextField(
-                    controller: companyNameController,
-                    labelText: AppLocalizations.of(context)!.field_my_company_name,
-                    hintText: AppLocalizations.of(context)!.field_my_company_name,
-                    keyboardType: TextInputType.name,
-                    onChanged: (value) => context.read<MyCompanyCubit>().companyNameChanged(value),
-                  ),
-                  SizedBox(height: 16,),
-                  AppTextField(
-                    controller: addressController,
-                    labelText: AppLocalizations.of(context)!.label_address,
-                    hintText: AppLocalizations.of(context)!.hint_address,
-                    keyboardType: TextInputType.name,
-                    onChanged: (value) => context.read<MyCompanyCubit>().addressChanged(value),
-                  ),
-                  SizedBox(height: 16,),
-                  AppTextField(
-                    controller: emailController,
-                    labelText: AppLocalizations.of(context)!.label_email,
-                    hintText: AppLocalizations.of(context)!.hint_email,
-                    keyboardType: TextInputType.name,
-                    onChanged: (value) => context.read<MyCompanyCubit>().emailChanged(value),
-                  ),
-                  SizedBox(height: 16,),
-                  AppTextField(
-                    controller: phoneController,
-                    labelText: AppLocalizations.of(context)!.label_phone_number,
-                    hintText: AppLocalizations.of(context)!.hint_phone_number,
-                    keyboardType: TextInputType.name,
-                    onChanged: (value) => context.read<MyCompanyCubit>().phoneNumberChanged(value),
-                  ),
-                  SizedBox(height: 16,),
-                  AppTextField(
-                    controller: taxIDController,
-                    labelText: AppLocalizations.of(context)!.label_tax_id,
-                    hintText: AppLocalizations.of(context)!.hint_tax_id,
-                    keyboardType: TextInputType.name,
-                    onChanged: (value) => context.read<MyCompanyCubit>().taxIDChanged(value),
-                  ),
-                  SizedBox(height: 16,),
-                  AppTextField(
-                    controller: bankDetailsController,
-                    labelText: AppLocalizations.of(context)!.label_bank_details,
-                    hintText: AppLocalizations.of(context)!.hint_bank_details,
-                    keyboardType: TextInputType.name,
-                    onChanged: (value) => context.read<MyCompanyCubit>().bankDetailsChanged(value),
-                  ),
-                ]))),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              children: [
+                AppTextField(
+                  controller: companyNameController,
+                  labelText:
+                      AppLocalizations.of(context)!.field_my_company_name,
+                  hintText: AppLocalizations.of(context)!.field_my_company_name,
+                  keyboardType: TextInputType.name,
+                  onChanged: (value) =>
+                      context.read<MyCompanyCubit>().companyNameChanged(value),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                AppTextField(
+                  controller: addressController,
+                  labelText: AppLocalizations.of(context)!.label_address,
+                  hintText: AppLocalizations.of(context)!.hint_address,
+                  keyboardType: TextInputType.name,
+                  onChanged: (value) =>
+                      context.read<MyCompanyCubit>().addressChanged(value),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                AppTextField(
+                  controller: emailController,
+                  labelText: AppLocalizations.of(context)!.label_email,
+                  hintText: AppLocalizations.of(context)!.hint_email,
+                  keyboardType: TextInputType.name,
+                  onChanged: (value) =>
+                      context.read<MyCompanyCubit>().emailChanged(value),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                AppTextField(
+                  controller: phoneController,
+                  labelText: AppLocalizations.of(context)!.label_phone_number,
+                  hintText: AppLocalizations.of(context)!.hint_phone_number,
+                  keyboardType: TextInputType.name,
+                  onChanged: (value) =>
+                      context.read<MyCompanyCubit>().phoneNumberChanged(value),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                AppTextField(
+                  controller: taxIDController,
+                  labelText: AppLocalizations.of(context)!.label_tax_id,
+                  hintText: AppLocalizations.of(context)!.hint_tax_id,
+                  keyboardType: TextInputType.name,
+                  onChanged: (value) =>
+                      context.read<MyCompanyCubit>().taxIDChanged(value),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                AppTextField(
+                  controller: bankDetailsController,
+                  labelText: AppLocalizations.of(context)!.label_bank_details,
+                  hintText: AppLocalizations.of(context)!.hint_bank_details,
+                  keyboardType: TextInputType.name,
+                  onChanged: (value) =>
+                      context.read<MyCompanyCubit>().bankDetailsChanged(value),
+                ),
+              ],
+            ),
+          ),
+        ),
         Container(
           width: double.infinity,
           padding: EdgeInsets.all(16),
@@ -116,7 +141,7 @@ class MyCompanyPageState extends State<MyCompanyPage> {
             context.read<MyCompanyCubit>().onSaveButtonClicked();
             Navigator.of(context).pop();
           }),
-        )
+        ),
       ],
     );
   }

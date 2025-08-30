@@ -1,4 +1,4 @@
-import 'package:good_manager/domain/entities/base_model.dart';
+import '../../../domain/entity/entity.dart';
 
 abstract class SortItems<T extends BaseModel> {
   int getResult(T item1, T item2);

@@ -1,16 +1,17 @@
 import 'package:flutter/widgets.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 
-enum ReportDateRangeType{
+enum ReportDateRangeType {
   CURRENT_MONTH,
   LAST_30_DAYS,
   LAST_90_DAYS,
   CURRENT_YEAR,
   CUSTOM
 }
-extension ReportDateRangeTypeExtension on ReportDateRangeType{
-  String getText(BuildContext context){
-    switch(this){
+
+extension ReportDateRangeTypeExtension on ReportDateRangeType {
+  String getText(BuildContext context) {
+    switch (this) {
       case ReportDateRangeType.CURRENT_MONTH:
         return AppLocalizations.of(context)!.report_type_current_month;
       case ReportDateRangeType.LAST_30_DAYS:

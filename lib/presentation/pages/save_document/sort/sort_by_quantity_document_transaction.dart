@@ -1,5 +1,6 @@
-import 'package:good_manager/domain/entities/transaction.dart';
 import 'package:good_manager/presentation/pages/save_document/sort/sort_transaction.dart';
+
+import '../../../../domain/entity/entity.dart';
 
 class SortByQuantityAscendingDocumentTransaction extends SortTransaction {
   @override

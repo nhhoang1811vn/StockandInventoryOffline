@@ -1,5 +1,5 @@
-class MarkdownResourceVN{
- static const String donationText = """
+class MarkdownResourceVN {
+  static const String donationText = """
  🌟 Hỗ Trợ Chúng Tôi Xây Dựng Ứng Dụng Tốt Hơn! 🌟
 
 Chào quý vị, những người sử dụng ứng dụng của chúng tôi,
@@ -139,7 +139,7 @@ Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Ho
  * Lần đầu tiên ra mắt chưa có gì để nói cả :), mọi người chọn nút trợ giúp ở từng màn hình để hiểu rõ nhé.
  """;
 
- static const String helpPayments = """
+  static const String helpPayments = """
   ## Hướng Dẫn Quản Lý Thanh Toán  
 
 Có hai loại thanh toán:
@@ -184,7 +184,7 @@ Có hai loại thanh toán:
 Giữ thông tin thanh toán rõ ràng để kiểm soát dòng tiền hiệu quả! ✅  
 """;
 
- static const String helpMinQuan = """
+  static const String helpMinQuan = """
   ## Hướng Dẫn Sử Dụng Số Lượng Tối Thiểu  
 
 Trang này giúp bạn quản lý tồn kho bằng cách thiết lập **Số lượng tối thiểu** cho từng sản phẩm.  
@@ -212,5 +212,4 @@ Trang này giúp bạn quản lý tồn kho bằng cách thiết lập **Số l�
 
 Quản lý tồn kho hiệu quả và tránh thiếu hàng bất ngờ! 🔔  
 """;
-
 }

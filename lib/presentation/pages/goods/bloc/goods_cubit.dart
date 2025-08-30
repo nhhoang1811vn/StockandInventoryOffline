@@ -2,23 +2,15 @@ import 'dart:ui';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/app_settings.dart';
-import 'package:good_manager/domain/entities/document.dart';
-import 'package:good_manager/domain/entities/sort_by_number.dart';
-import 'package:good_manager/domain/entities/transaction.dart';
+import 'package:good_manager/domain/usecase/usecase.dart';
 import 'package:good_manager/presentation/criteria/criteria.dart';
 import 'package:good_manager/presentation/criteria/filter_good_by_everywhere_criteria.dart';
 import 'package:good_manager/presentation/criteria/group_by_everywhere_criteria.dart';
 import 'package:good_manager/presentation/pages/goods/sort/sort_by_barcode_goods.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../domain/entities/good.dart';
-import '../../../../domain/entities/goods_setting.dart';
-import '../../../../domain/entities/group.dart';
-import '../../../../domain/entities/sort_by_text.dart';
-import '../../../../domain/usecases/documents/document_usecases.dart';
-import '../../../../domain/usecases/goods/goods_usercases.dart';
-import '../../../../domain/usecases/groups/groups_usecases.dart';
+import '../../../../data/app_settings.dart';
+import '../../../../domain/entity/entity.dart';
 import '../../base/base_sort_items.dart';
 import '../../base/base_state.dart';
 import '../sort/sort_by_barcode_groups.dart';
@@ -33,28 +25,33 @@ class GoodsCubit extends Cubit<GoodsState> {
   final GoodsUseCases goodsUseCase;
   final GroupsUseCases groupsUseCase;
   final DocumentUseCases documentsUseCases;
-  final AppSettings appSettings;
+
   GoodsCubit({
-    //required this.storage,
-    required this.appSettings,
     required this.goodsUseCase,
     required this.groupsUseCase,
     required this.documentsUseCases,
+  }) : super(
+          GoodsState.initial(
+            state: InitialState(),
+            settings: AppSettings.getGoodsSetting(),
+          ),
+        );
 
-
-  }) : super(GoodsState.initial(state: InitialState(), settings: appSettings.getGoodsSetting()));
   void initState(bool isSelection, Document? document) async {
-    var minQuantitySettings = await appSettings.getMinimumQuantitySettings();
+    var minQuantitySettings = await AppSettings.getMinimumQuantitySettings();
 
-    emit(state.copyWith(
+    emit(
+      state.copyWith(
         isSelection: isSelection,
         showSearchBar: isSelection,
         document: document,
         showMinQuantity: minQuantitySettings.showInList,
-        minQuantityColor: Color(minQuantitySettings.color)
-    ));
+        minQuantityColor: Color(minQuantitySettings.color),
+      ),
+    );
     loadData();
   }
+
   void onSelectedGroupTapped(int index) {
     if (index == -1) {
       emit(state.copyWith(selectedGroups: []));
@@ -64,83 +61,100 @@ class GoodsCubit extends Cubit<GoodsState> {
     }
     loadItemsInSelectedGroup();
   }
-  void onGroupTapped(Group group) async{
+
+  void onGroupTapped(Group group) async {
     var items = await getSelectedGroupValue(group);
-    emit(state.copyWith(selectedGroups: items, showSearchBar: false, textSearch: ""));
+    emit(
+      state.copyWith(
+        selectedGroups: items,
+        showSearchBar: false,
+        textSearch: "",
+      ),
+    );
     loadItemsInSelectedGroup();
   }
 
-  Future<List<Group>> getSelectedGroupValue(Group group) async{
+  Future<List<Group>> getSelectedGroupValue(Group group) async {
     List<Group> results = [];
     Group item = group;
     results.add(item);
-    while(item.groupId != null){
+    while (item.groupId != null) {
       item = await groupsUseCase.getById(item.groupId!);
       results.add(item);
     }
     return List.from(results.reversed);
   }
-  void onAddGood(){
+
+  void onAddGood() {
     Good item = Good();
     item.groupId = getSelectedGroupId();
-    item.storeId = appSettings.getSelectedStoreId();
+    item.storeId = AppSettings.getSelectedStoreId();
 
     emit(state.copyWith(state: OpenSaveGoodPageState(item)));
   }
-  int? getSelectedGroupId(){
-    if (state.selectedGroups.isEmpty){
+
+  int? getSelectedGroupId() {
+    if (state.selectedGroups.isEmpty) {
       return null;
     }
     return state.selectedGroups.last.id;
   }
+
   void onAddGroup() async {
     Group item = Group();
     item.groupId = getSelectedGroupId();
-    item.storeId = appSettings.getSelectedStoreId();
+    item.storeId = AppSettings.getSelectedStoreId();
 
     emit(state.copyWith(state: AddGroupState(item)));
   }
-  void onShowSearchBarMenuClicked(){
+
+  void onShowSearchBarMenuClicked() {
     emit(state.copyWith(showSearchBar: !state.showSearchBar));
     onSearchTextChanged("");
   }
-  void onSortMenuClicked(){
+
+  void onSortMenuClicked() {
     emit(state.copyWith(state: OpenSortDialogListState()));
   }
+
   void onHelpMenuClicked() async {
     emit(state.copyWith(state: OpenHelpPageState()));
   }
-  void onListSettingsMenuClicked(){
+
+  void onListSettingsMenuClicked() {
     emit(state.copyWith(state: OpenListSettingsDialogState()));
   }
-  
+
   void onSearchTextChanged(String newValue) {
     emit(state.copyWith(textSearch: newValue));
     refresh();
   }
 
   void setSettings(GoodsSetting settings) {
-    appSettings.setGoodsSetting(settings);
+    AppSettings.setGoodsSetting(settings);
     emit(state.copyWith(settings: settings));
     refresh();
   }
-  void loadData() async{
-    int storeId = appSettings.getSelectedStoreId();
+
+  void loadData() async {
+    int storeId = AppSettings.getSelectedStoreId();
     List<Group> allGroups = await groupsUseCase.getAllByStoreId(storeId);
     List<Good> allGoods = await goodsUseCase.getAllByStoreId(storeId);
     emit(state.copyWith(allGroups: allGroups, allGoods: allGoods));
     refresh();
   }
-  void refresh(){
-    if (state.textSearch.isNotEmpty){
+
+  void refresh() {
+    if (state.textSearch.isNotEmpty) {
       //show item match search text
       loadItemsMatchSearchText();
-    }else{
+    } else {
       //show item in selected group
       loadItemsInSelectedGroup();
     }
   }
-  Criteria<Group> getFilterGroupCriteria(){
+
+  Criteria<Group> getFilterGroupCriteria() {
     return GroupByEverywhereCriteria(state.textSearch);
     // switch(state.settings.searchGoodsType){
     //   case SearchGoodsType.byName:
@@ -153,7 +167,8 @@ class GoodsCubit extends Cubit<GoodsState> {
     //     return GroupByEverywhereCriteria(state.textSearch);
     // }
   }
-  Criteria<Good> getFilterGoodCriteria(){
+
+  Criteria<Good> getFilterGoodCriteria() {
     return FilterGoodByEverywhereCriteria(state.textSearch);
     // switch(state.settings.searchGoodsType){
     //   case SearchGoodsType.byName:
@@ -163,10 +178,11 @@ class GoodsCubit extends Cubit<GoodsState> {
     //   case SearchGoodsType.byBarcode:
     //     return FilterGoodByBarcodeCriteria(state.textSearch);
     //   default:
-        
+
     // }
   }
-  void loadItemsMatchSearchText(){
+
+  void loadItemsMatchSearchText() {
     Criteria<Group> groupCriteria = getFilterGroupCriteria();
     List<Group> groups = groupCriteria.meetCriteria(state.allGroups);
 
@@ -174,7 +190,7 @@ class GoodsCubit extends Cubit<GoodsState> {
     List<Good> goods = goodCriteria.meetCriteria(state.allGoods);
 
     //hide zero entries
-    if (!state.isSelection && state.settings.hideZeroEntries){
+    if (!state.isSelection && state.settings.hideZeroEntries) {
       goods = goods.where((item) => item.quantity > 0).toList();
     }
 
@@ -184,17 +200,19 @@ class GoodsCubit extends Cubit<GoodsState> {
     List<SortItems<Good>> goodSortOptions = getGoodSortOptions();
     goods = getGoodWithSortOption(goods, goodSortOptions);
 
-
     emit(state.copyWith(groups: groups, goods: goods));
     updateTotalInfo();
   }
-  void loadItemsInSelectedGroup(){
+
+  void loadItemsInSelectedGroup() {
     int? groupId = getSelectedGroupId();
-    List<Group> groups = state.allGroups.where((item) => item.groupId == groupId).toList();
-    List<Good> goods = state.allGoods.where((item) => item.groupId == groupId).toList();
+    List<Group> groups =
+        state.allGroups.where((item) => item.groupId == groupId).toList();
+    List<Good> goods =
+        state.allGoods.where((item) => item.groupId == groupId).toList();
 
     //hide zero entries
-    if (!state.isSelection && state.settings.hideZeroEntries){
+    if (!state.isSelection && state.settings.hideZeroEntries) {
       goods = goods.where((item) => item.quantity > 0).toList();
     }
 
@@ -204,23 +222,32 @@ class GoodsCubit extends Cubit<GoodsState> {
     List<SortItems<Good>> goodSortOptions = getGoodSortOptions();
     goods = getGoodWithSortOption(goods, goodSortOptions);
 
-
     emit(state.copyWith(groups: groups, goods: goods));
     updateTotalInfo();
   }
-  void updateTotalInfo(){
+
+  void updateTotalInfo() {
     double quantityTotal = 0;
     double purchasePriceTotal = 0.0;
     double salePriceTotal = 0.0;
     state.goods.forEach((element) {
       quantityTotal += element.quantity;
       purchasePriceTotal += (element.quantity * (element.purchasePrice ?? 0.0));
-      salePriceTotal += (element.quantity * (element.salePrice?? 0.0));
+      salePriceTotal += (element.quantity * (element.salePrice ?? 0.0));
     });
-    emit(state.copyWith(quantityTotal: quantityTotal,purchasePriceTotal: purchasePriceTotal,salePriceTotal: salePriceTotal));
-
+    emit(
+      state.copyWith(
+        quantityTotal: quantityTotal,
+        purchasePriceTotal: purchasePriceTotal,
+        salePriceTotal: salePriceTotal,
+      ),
+    );
   }
-  List<Group> getGroupWithSortOption(List<Group> items, List<SortItems> options){
+
+  List<Group> getGroupWithSortOption(
+    List<Group> items,
+    List<SortItems> options,
+  ) {
     List<Group> results = [];
     results.addAll(items);
     results.sort((item1, item2) {
@@ -233,7 +260,8 @@ class GoodsCubit extends Cubit<GoodsState> {
     });
     return results;
   }
-  List<Good> getGoodWithSortOption(List<Good> items, List<SortItems> options){
+
+  List<Good> getGoodWithSortOption(List<Good> items, List<SortItems> options) {
     List<Good> results = [];
     results.addAll(items);
     results.sort((item1, item2) {
@@ -247,8 +275,7 @@ class GoodsCubit extends Cubit<GoodsState> {
     return results;
   }
 
-
-  List<SortItems<Group>> getGroupSortOptions(){
+  List<SortItems<Group>> getGroupSortOptions() {
     List<SortItems<Group>> options = [];
     switch (state.settings.sortByName) {
       case SortByText.a_to_z:
@@ -283,7 +310,8 @@ class GoodsCubit extends Cubit<GoodsState> {
     }
     return options;
   }
-  List<SortItems<Good>> getGoodSortOptions(){
+
+  List<SortItems<Good>> getGoodSortOptions() {
     List<SortItems<Good>> options = [];
     switch (state.settings.sortByName) {
       case SortByText.a_to_z:
@@ -332,6 +360,7 @@ class GoodsCubit extends Cubit<GoodsState> {
     }
     return options;
   }
+
   /*void loadItems() async{
     int? groupId = getSelectedGroupId();
     List<Group> allGroups = await groupsUseCase.getGroupsByGroupId(groupId);
@@ -463,16 +492,18 @@ class GoodsCubit extends Cubit<GoodsState> {
     });
     return items;
   }*/
-  deleteGood(int id) async{
+  Future<void> deleteGood(int id) async {
     await goodsUseCase.delete(id);
     loadData();
     //loadItems();
   }
-  deleteGroup(int id) async {
+
+  Future<void> deleteGroup(int id) async {
     await groupsUseCase.delete(id);
     loadData();
     //loadItems();
   }
+
   /*List<Group> filterGroups(){
     List<Group> results = state.allGroups.where((element) => filterGroup(element)).toList();
     return results;
@@ -538,37 +569,47 @@ class GoodsCubit extends Cubit<GoodsState> {
     loadData();
     //loadItems();
   }
-  void moveGroupToGroup(Group item, int? groupId){
+
+  void moveGroupToGroup(Group item, int? groupId) {
     item.groupId = groupId;
     groupsUseCase.update(item);
     loadData();
     //loadItems();
   }
-  void addTransaction(int goodId, double quantity, double price) async{
-      DocumentTransaction transaction = DocumentTransaction();
-      transaction.documentId = state.document!.id!;
-      transaction.goodId = goodId;
-      transaction.quantity = quantity;
-      transaction.price = price;
-      transaction.type = state.document!.type;
-      transaction.storeId = appSettings.getSelectedStoreId();
-      int transactionId = await documentsUseCases.insertTransaction(transaction);
-      if (transactionId > 0){
-        if (transaction.type == DocumentType.incoming){
-          emit(state.copyWith(state: InsertTransactionSuccessState(goodId, quantity)));
-        }else{
-          emit(state.copyWith(state: InsertTransactionSuccessState(goodId, -quantity)));
-        }
-      }else{
-        emit(state.copyWith(state: InsertTransactionFailedState()));
+
+  void addTransaction(int goodId, double quantity, double price) async {
+    DocumentTransaction transaction = DocumentTransaction();
+    transaction.documentId = state.document!.id!;
+    transaction.goodId = goodId;
+    transaction.quantity = quantity;
+    transaction.price = price;
+    transaction.type = state.document!.type;
+    transaction.storeId = AppSettings.getSelectedStoreId();
+    int transactionId = await documentsUseCases.insertTransaction(transaction);
+    if (transactionId > 0) {
+      if (transaction.type == DocumentType.incoming) {
+        emit(
+          state.copyWith(
+            state: InsertTransactionSuccessState(goodId, quantity),
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            state: InsertTransactionSuccessState(goodId, -quantity),
+          ),
+        );
       }
+    } else {
+      emit(state.copyWith(state: InsertTransactionFailedState()));
+    }
   }
 
   void updateQuantity(int goodId, double quantity) {
     List<Good> goods = [];
     goods.addAll(state.allGoods);
-    for (Good item in goods){
-      if (item.id == goodId){
+    for (Good item in goods) {
+      if (item.id == goodId) {
         item.quantity += quantity;
         break;
       }
@@ -581,10 +622,10 @@ class GoodsCubit extends Cubit<GoodsState> {
   void resetAllFilter() {
     applyFilter(GoodsSetting.getDefault());
   }
-  void applyFilter(GoodsSetting setting){
+
+  void applyFilter(GoodsSetting setting) {
     emit(state.copyWith(settings: setting));
-    appSettings.setGoodsSetting(setting);
+    AppSettings.setGoodsSetting(setting);
     refresh();
   }
-
 }

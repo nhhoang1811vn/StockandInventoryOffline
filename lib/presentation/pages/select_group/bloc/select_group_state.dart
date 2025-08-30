@@ -1,4 +1,5 @@
 part of 'select_group_cubit.dart';
+
 @freezed
 class SelectGroupState with _$SelectGroupState {
   const factory SelectGroupState.initial({
@@ -6,6 +7,6 @@ class SelectGroupState with _$SelectGroupState {
     int? selectedGroupId,
     String? selectedGroupName,
     Map<int, Group>? items,
-    Map<int,dynamic>? treeMap
+    Map<int, dynamic>? treeMap,
   }) = _Initial;
 }

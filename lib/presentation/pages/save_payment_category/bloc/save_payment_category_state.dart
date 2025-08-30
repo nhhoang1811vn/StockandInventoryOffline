@@ -7,7 +7,6 @@ class SavePaymentCategoryState with _$SavePaymentCategoryState {
     @Default(NameInput.pure()) NameInput name,
     @Default('') String description,
     String? icon,
-    PaymentCategory? item
+    PaymentCategory? item,
   }) = _Initial;
 }
-

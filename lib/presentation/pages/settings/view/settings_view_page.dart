@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/settings/view/bloc/settings_view_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../main.dart';
+import '../../../../app.dart';
+import '../../../dialog/dialog.dart';
 
 class SettingsViewPage extends StatefulWidget {
   SettingsViewPage({Key? key}) : super(key: key);
@@ -45,36 +45,60 @@ class SettingsViewPageState extends State<SettingsViewPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SettingsViewCubit, SettingsViewState>(
-        listener: (context, state) async {},
-        builder: (BuildContext context, SettingsViewState state) {
-          return Scaffold(
-            appBar: new AppBar(title: new Text(AppLocalizations.of(context)!.menu_item_view)),
-            body: _buildBody(state),
-          );
-        });
+      listener: (context, state) async {},
+      builder: (BuildContext context, SettingsViewState state) {
+        return Scaffold(
+          appBar: new AppBar(
+            title: new Text(AppLocalizations.of(context)!.menu_item_view),
+          ),
+          body: _buildBody(state),
+        );
+      },
+    );
   }
 
   Widget _buildBody(SettingsViewState state) {
-    return ListView(padding: EdgeInsets.all(16), children: [
-      Text(AppLocalizations.of(context)!.theme, style: Theme.of(context).textTheme.titleMedium,),
-      Card(
+    return ListView(
+      padding: EdgeInsets.all(16),
+      children: [
+        Text(
+          AppLocalizations.of(context)!.theme,
+          style: Theme
+              .of(context)
+              .textTheme
+              .titleMedium,
+        ),
+        Card(
           clipBehavior: Clip.antiAlias,
-          child: Column(children: [
-            ListTile(
-              leading: Icon(Icons.brightness_6),
-              title: Text(AppLocalizations.of(context)!.app_theme),
-              subtitle: Text(_subTitle),
-              onTap: () => _showThemeDialog(context),
-              trailing: Icon(Icons.navigate_next),
-            ),
-          ])),
-      SizedBox(height: 16,),
-      Text(AppLocalizations.of(context)!.documents_colors, style: Theme.of(context).textTheme.titleMedium,),
-      Card(
+          child: Column(
+            children: [
+              ListTile(
+                leading: Icon(Icons.brightness_6),
+                title: Text(AppLocalizations.of(context)!.app_theme),
+                subtitle: Text(_subTitle),
+                onTap: () => _showThemeDialog(context),
+                trailing: Icon(Icons.navigate_next),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 16,
+        ),
+        Text(
+          AppLocalizations.of(context)!.documents_colors,
+          style: Theme
+              .of(context)
+              .textTheme
+              .titleMedium,
+        ),
+        Card(
           clipBehavior: Clip.antiAlias,
-          child: Column(children: [
-            ListTile(
-                title: Text(AppLocalizations.of(context)!.incoming_document_text),
+          child: Column(
+            children: [
+              ListTile(
+                title:
+                Text(AppLocalizations.of(context)!.incoming_document_text),
                 trailing: Container(
                   width: 20, // Circle diameter
                   height: 20,
@@ -84,15 +108,20 @@ class SettingsViewPageState extends State<SettingsViewPage> {
                   ),
                   //color: state.color,
                 ),
-                onTap: (){
-                  _showChoiceColorDialog(state.incomingColor!, (color){
-                    context.read<SettingsViewCubit>().onIncomingColorChanged(color);
+                onTap: () {
+                  _showChoiceColorDialog(state.incomingColor!, (color) {
+                    context
+                        .read<SettingsViewCubit>()
+                        .onIncomingColorChanged(color);
                   });
                 },
-            ),
-            Divider(height: 1,),
-            ListTile(
-                title: Text(AppLocalizations.of(context)!.outgoing_document_text),
+              ),
+              Divider(
+                height: 1,
+              ),
+              ListTile(
+                title:
+                Text(AppLocalizations.of(context)!.outgoing_document_text),
                 trailing: Container(
                   width: 20, // Circle diameter
                   height: 20,
@@ -101,97 +130,85 @@ class SettingsViewPageState extends State<SettingsViewPage> {
                     shape: BoxShape.circle,
                   ),
                 ),
-                onTap: (){
-                  _showChoiceColorDialog(state.outgoingColor!, (color){
-                    context.read<SettingsViewCubit>().onOutgoingColorChanged(color);
+                onTap: () {
+                  _showChoiceColorDialog(state.outgoingColor!, (color) {
+                    context
+                        .read<SettingsViewCubit>()
+                        .onOutgoingColorChanged(color);
                   });
-                })
-          ])),
-      SizedBox(height: 16,),
-      Text(AppLocalizations.of(context)!.menu_item_min_quantity_color_title, style: Theme.of(context).textTheme.titleMedium),
-      Card(clipBehavior: Clip.antiAlias, child: Column(children: [
-        ListTile(
-            title: Text(AppLocalizations.of(context)!.menu_item_min_quantity_color_title),
-            trailing: Container(
-              width: 20, // Circle diameter
-              height: 20,
-              decoration: BoxDecoration(
-                color: state.reorderColor, // use your color here
-                shape: BoxShape.circle,
+                },
               ),
-            ),
-            onTap: (){
-              _showChoiceColorDialog(state.reorderColor!, (color){
-                context.read<SettingsViewCubit>().onReorderColorChanged(color);
-              });
-            })
-      ],),)
-    ]);
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 16,
+        ),
+        Text(
+          AppLocalizations.of(context)!.menu_item_min_quantity_color_title,
+          style: Theme
+              .of(context)
+              .textTheme
+              .titleMedium,
+        ),
+        Card(
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            children: [
+              ListTile(
+                title: Text(
+                  AppLocalizations.of(context)!
+                      .menu_item_min_quantity_color_title,
+                ),
+                trailing: Container(
+                  width: 20, // Circle diameter
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: state.reorderColor, // use your color here
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                onTap: () {
+                  _showChoiceColorDialog(state.reorderColor!, (color) {
+                    context
+                        .read<SettingsViewCubit>()
+                        .onReorderColorChanged(color);
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   void _showChoiceColorDialog(Color pickerColor, ValueChanged<Color> callback) {
-    showDialog(
-        context: context,
-        builder: (builder) => AlertDialog(
-              title: Text(AppLocalizations.of(context)!.title_pick_color),
-              content: SingleChildScrollView(
-                child: BlockPicker(
-                  pickerColor: pickerColor,
-                  onColorChanged: (newColor){
-                    callback(newColor);
-                    Navigator.of(context).pop();
-                  }
-                ),
-              ),
-              // actions: [
-              //   TextButton(
-              //     onPressed: () {
-              //       Navigator.of(context).pop(); // Close the dialog
-              //     },
-              //     child: Text(AppLocalizations.of(context)!.action_ok),
-              //   ),
-              // ],
-            ));
+    showSelectColorDialog(context, color: pickerColor, onItemSelected: (item) {
+      hideDialog(context);
+      callback(item);
+    },);
   }
 
   void _showThemeDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.choose_theme),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text(AppLocalizations.of(context)!.theme_system),
-              onTap: () {
-                MyAppState? state = context.findAncestorStateOfType<MyAppState>();
-                state?.changeTheme(ThemeMode.system);
-                Navigator.of(context).pop();
-                fetch();
-              },
-            ),
-            ListTile(
-              title: Text(AppLocalizations.of(context)!.theme_light),
-              onTap: () {
-                MyAppState? state = context.findAncestorStateOfType<MyAppState>();
-                state?.changeTheme(ThemeMode.light);
-                Navigator.of(context).pop();
-                fetch();
-              },
-            ),
-            ListTile(
-              title: Text(AppLocalizations.of(context)!.theme_dark),
-              onTap: () {
-                MyAppState? state = context.findAncestorStateOfType<MyAppState>();
-                state?.changeTheme(ThemeMode.dark);
-                Navigator.of(context).pop();
-                fetch();
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+    var items = [
+      AppLocalizations.of(context)!.theme_system,
+      AppLocalizations.of(context)!.theme_light,
+      AppLocalizations.of(context)!.theme_dark,
+    ];
+    showSelectOptionDialog(context,
+      title: AppLocalizations.of(context)!.choose_theme,
+      items: items, onItemSelected: (index) {
+        MyAppState? state = context.findAncestorStateOfType<MyAppState>();
+        if (items[index] == AppLocalizations.of(context)!.theme_system) {
+          state?.changeTheme(ThemeMode.system);
+        } else if (items[index] == AppLocalizations.of(context)!.theme_light) {
+          state?.changeTheme(ThemeMode.light);
+        } else if (items[index] == AppLocalizations.of(context)!.theme_dark) {
+          state?.changeTheme(ThemeMode.dark);
+        }
+        hideDialog(context);
+        fetch();
+      },);
   }
 }

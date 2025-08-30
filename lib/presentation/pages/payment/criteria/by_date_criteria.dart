@@ -1,10 +1,13 @@
-import 'package:good_manager/domain/entities/payment.dart';
 import 'package:good_manager/presentation/criteria/criteria.dart';
 
-class ByDateCriteria extends Criteria<Payment>{
+import '../../../../domain/entity/entity.dart';
+
+class ByDateCriteria extends Criteria<Payment> {
   final DateTime startDate;
   final DateTime endDate;
+
   ByDateCriteria(this.startDate, this.endDate);
+
   DateTime _toDateOnly(DateTime date) {
     return DateTime(date.year, date.month, date.day);
   }

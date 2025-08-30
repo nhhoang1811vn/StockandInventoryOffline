@@ -1,22 +1,13 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/app_settings.dart';
-import 'package:good_manager/domain/entities/customer.dart';
-import 'package:good_manager/domain/entities/document.dart';
-import 'package:good_manager/domain/entities/payment_category.dart';
-import 'package:good_manager/domain/entities/supplier.dart';
-import 'package:good_manager/domain/entities/wallet.dart';
-import 'package:good_manager/domain/usecases/customers/customers_usecases.dart';
-import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
-import 'package:good_manager/domain/usecases/payment_category/payment_category_usercases.dart';
-import 'package:good_manager/domain/usecases/suppliers/suppliers_usecases.dart';
-import 'package:good_manager/domain/usecases/wallets/wallet_usecases.dart';
+import 'package:good_manager/domain/usecase/usecase.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../domain/entities/payment.dart';
-import '../../../constants.dart';
+import '../../../../constant/constant.dart';
+import '../../../../data/app_settings.dart';
+import '../../../../domain/entity/entity.dart';
 
 part 'save_payment_cubit.freezed.dart';
 part 'save_payment_state.dart';
@@ -28,8 +19,6 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
   final WalletUseCases walletUseCases;
   final CustomersUseCase customersUseCase;
   final SuppliersUseCase suppliersUseCase;
-  //final Storage storage;
-  final AppSettings appSettings;
 
   SavePaymentCubit({
     required this.useCase,
@@ -37,21 +26,21 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     required this.walletUseCases,
     required this.customersUseCase,
     required this.suppliersUseCase,
-    required this.appSettings
-
-  })
-      : super(SavePaymentState.initial(state: InitialState()));
+  }) : super(SavePaymentState.initial(state: InitialState()));
 
   void init(Payment item) async {
     var allCategories = await paymentCategoryUseCases.getAll();
-    var categories = allCategories.where((category) => category.type == item.type).toList();
+    var categories =
+        allCategories.where((category) => category.type == item.type).toList();
     PaymentCategory? selectedCategory = categories.firstWhereOrNull(
       (category) => category.id == item.categoryId,
     );
-    int storeId = appSettings.getSelectedStoreId();
+    int storeId = AppSettings.getSelectedStoreId();
     var wallets = await walletUseCases.getAllByStoreId(storeId);
-    Wallet? selectedWallet = wallets.firstWhereOrNull((wallet) => wallet.id == item.walletId);
-    emit(state.copyWith(
+    Wallet? selectedWallet =
+        wallets.firstWhereOrNull((wallet) => wallet.id == item.walletId);
+    emit(
+      state.copyWith(
         state: UpdateItemState(),
         categories: categories,
         selectedCategory: selectedCategory,
@@ -66,48 +55,100 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
         customerId: item.customerId,
         customer: item.customer,
         amount: item.amount,
-        date: item.date));
+        date: item.date,
+      ),
+    );
   }
 
   void descriptionChanged(String value) {
     emit(state.copyWith(description: value));
   }
 
-  void onDocumentChanged(Document item) async{
-    emit(state.copyWith(documentId: null, document: null, customerId: null, customer: null, supplierId: null, supplier: null));
+  void onDocumentChanged(Document item) async {
+    emit(
+      state.copyWith(
+        documentId: null,
+        document: null,
+        customerId: null,
+        customer: null,
+        supplierId: null,
+        supplier: null,
+      ),
+    );
     emit(state.copyWith(documentId: item.id, document: item));
 
-    if (state.item!.type == PaymentType.inbound){
-      if (item.personId != null){
+    if (state.item!.type == PaymentType.inbound) {
+      if (item.personId != null) {
         Customer customer = await customersUseCase.get(item.personId!);
         emit(state.copyWith(customerId: item.personId, customer: customer));
       }
-    }else{
-      if (item.personId != null){
+    } else {
+      if (item.personId != null) {
         Supplier supplier = await suppliersUseCase.get(item.personId!);
         emit(state.copyWith(supplierId: item.personId, supplier: supplier));
       }
     }
   }
-  void onCancelDocument(){
-    emit(state.copyWith(documentId: null, document: null, customerId: null, customer: null, supplierId: null, supplier: null));
+
+  void onCancelDocument() {
+    emit(
+      state.copyWith(
+        documentId: null,
+        document: null,
+        customerId: null,
+        customer: null,
+        supplierId: null,
+        supplier: null,
+      ),
+    );
   }
-  void onCancelPerson(){
-    emit(state.copyWith(documentId: null, document: null, customerId: null, customer: null, supplierId: null, supplier: null));
+
+  void onCancelPerson() {
+    emit(
+      state.copyWith(
+        documentId: null,
+        document: null,
+        customerId: null,
+        customer: null,
+        supplierId: null,
+        supplier: null,
+      ),
+    );
   }
-  void onSupplierChanged(Supplier item){
-    emit(state.copyWith(documentId: null, document: null, customerId: null, customer: null, supplierId: null, supplier: null));
-    emit(state.copyWith(supplierId : item.id, supplier: item));
+
+  void onSupplierChanged(Supplier item) {
+    emit(
+      state.copyWith(
+        documentId: null,
+        document: null,
+        customerId: null,
+        customer: null,
+        supplierId: null,
+        supplier: null,
+      ),
+    );
+    emit(state.copyWith(supplierId: item.id, supplier: item));
   }
-  void onCustomerChanged(Customer item){
-    emit(state.copyWith(documentId: null, document: null, customerId: null, customer: null, supplierId: null, supplier: null));
+
+  void onCustomerChanged(Customer item) {
+    emit(
+      state.copyWith(
+        documentId: null,
+        document: null,
+        customerId: null,
+        customer: null,
+        supplierId: null,
+        supplier: null,
+      ),
+    );
     emit(state.copyWith(customerId: item.id, customer: item));
   }
 
   void onSelectDocument() {
     emit(state.copyWith(state: OpenDocumentListState()));
   }
-  void onSelectPerson(){
+
+  void onSelectPerson() {
     emit(state.copyWith(state: OpenPersonListState()));
   }
 
@@ -141,7 +182,7 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     } else {
       await useCase.update(item);
     }
-    appSettings.setSavePaymentLastSelectedWalletId(item.walletId);
+    AppSettings.setSavePaymentLastSelectedWalletId(item.walletId);
     emit(state.copyWith(state: SaveItemSuccessful()));
   }
 
@@ -159,26 +200,33 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
 
   void onRefreshCategories() async {
     var allCategories = await paymentCategoryUseCases.getAll();
-    var categories = allCategories.where((category) => category.type == state.item!.type).toList();
+    var categories = allCategories
+        .where((category) => category.type == state.item!.type)
+        .toList();
 
     PaymentCategory? selectedCategory = categories.firstWhereOrNull(
       (category) => category.id == state.selectedCategory?.id,
     );
-    emit(state.copyWith(categories: categories, selectedCategory: selectedCategory));
+    emit(
+      state.copyWith(
+        categories: categories,
+        selectedCategory: selectedCategory,
+      ),
+    );
   }
+
   void onRefreshWallets() async {
-    int storeId = appSettings.getSelectedStoreId();
+    int storeId = AppSettings.getSelectedStoreId();
     var wallets = await walletUseCases.getAllByStoreId(storeId);
     //var categories = allCategories.where((category) => category.type == state.item!.type).toList();
 
     Wallet? selectedWallet = wallets.firstWhereOrNull(
-          (wallet) => wallet.id == state.selectedWallet?.id,
+      (wallet) => wallet.id == state.selectedWallet?.id,
     );
     emit(state.copyWith(wallets: wallets, selectedWallet: selectedWallet));
   }
 
   int getSelectedStoreId() {
-    return appSettings.getSelectedStoreId();
+    return AppSettings.getSelectedStoreId();
   }
-
 }

@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/domain/entities/customer.dart';
-import 'package:good_manager/domain/entities/sort_by_text.dart';
-import 'package:good_manager/domain/free_limits.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
-import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/customers/components/customer_item_row.dart';
-import 'package:good_manager/presentation/widgets/search_bar_widget.dart';
-import 'package:good_manager/presentation/widgets/selected_store_view.dart';
-import 'package:good_manager/presentation/widgets/views.dart';
-import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
+import 'package:good_manager/presentation/widget/widget.dart';
 import 'package:sprintf/sprintf.dart';
-import 'package:url_launcher/url_launcher.dart';
 
+import '../../../constant/constant.dart';
+import '../../../domain/entity/entity.dart';
+import '../../../domain/free_limits.dart';
+import '../../../util/util.dart';
+import '../../dialog/dialog.dart';
 import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
@@ -41,69 +38,62 @@ class CustomersPageState extends State<CustomersPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CustomersCubit, CustomersState>(
-        listenWhen: (p1, p2) => p1.state != p2.state,
-        listener: (context, state) async {
-          if (state.state is OpenSaveCustomerPageState) {
-            final currentState = state.state as OpenSaveCustomerPageState;
-            final result = await Navigator.of(context).pushNamed(
-                Pages.save_customer,
-                arguments: {"item": currentState.item});
-            if (result != null) {
-              context.read<CustomersCubit>().loadItems();
-            }
-          } else if (state.state is OpenHelpPageState) {
-            Navigator.of(context).pushNamed(Pages.help, arguments: {
+      listenWhen: (p1, p2) => p1.state != p2.state,
+      listener: (context, state) async {
+        if (state.state is OpenSaveCustomerPageState) {
+          final currentState = state.state as OpenSaveCustomerPageState;
+          final result = await Navigator.of(context).pushNamed(
+            Pages.save_customer,
+            arguments: {"item": currentState.item},
+          );
+          if (result != null) {
+            context.read<CustomersCubit>().loadItems();
+          }
+        } else if (state.state is OpenHelpPageState) {
+          Navigator.of(context).pushNamed(
+            Pages.help,
+            arguments: {
               "title": AppLocalizations.of(context)?.customers_title,
               "content": MDProviderFactory.get()
-                  .getHelpText(HelpType.SUPPLIER_AND_CUSTOMER)
-            });
-          } else if (state.state is OpenBuySubscriptionDialogState){
-            showDialog(context: context, builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(AppLocalizations.of(context)!.notification_dialog_title),
-                content: Text(sprintf(AppLocalizations.of(context)!.buy_subscription_to_add_more_entity, [FreeLimits.customerLimit])),
-                actions: [
-                  TextButton(
-                    child: Text(AppLocalizations.of(context)!.action_no),
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Dismiss the dialog
-                    },
-                  ),
-                  TextButton(
-                    child: Text(AppLocalizations.of(context)!.action_yes),
-                    onPressed: () async{
-                      Navigator.of(context).pop();
-                      await RevenueCatUI.presentPaywall();
-                      //Navigator.of(context).pushNamed(Pages.subscriptions);
-                    },
-                  ),
-                ],
-              );
-            });
-          }
-        },
-        builder: (context, state) => Scaffold(
-            appBar: _buildAppBar(state),
-            body: _buildBody(state),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () =>
-                  context.read<CustomersCubit>().onAddButtonClicked(),
-              child: Icon(Icons.add),
-            )));
+                  .getHelpText(HelpType.SUPPLIER_AND_CUSTOMER),
+            },
+          );
+        } else if (state.state is OpenBuySubscriptionDialogState) {
+          showBuySubscriptionDialog(
+            context,
+            message: sprintf(
+              AppLocalizations.of(context)!.buy_subscription_to_add_more_entity,
+              [FreeLimits.customerLimit],
+            ),
+          );
+        }
+      },
+      builder: (context, state) => Scaffold(
+        appBar: _buildAppBar(state),
+        body: _buildBody(state),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => context.read<CustomersCubit>().onAddButtonClicked(),
+          child: Icon(Icons.add),
+        ),
+      ),
+    );
   }
 
   PreferredSize _buildAppBar(CustomersState state) {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
-          title: new Text(widget.isSelection
+        title: new Text(
+          widget.isSelection
               ? AppLocalizations.of(context)!.customers_select_title
-              : AppLocalizations.of(context)!.customers_title),
-          actions: [
-            _buildSearchMenu(state),
-            _buildFilterMenu(state),
-            _buildHelpMenu()
-          ]),
+              : AppLocalizations.of(context)!.customers_title,
+        ),
+        actions: [
+          _buildSearchMenu(state),
+          _buildFilterMenu(state),
+          _buildHelpMenu(),
+        ],
+      ),
     );
   }
 
@@ -127,7 +117,7 @@ class CustomersPageState extends State<CustomersPage> {
       Visibility(
         visible: data.showSearchBar,
         child: Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16, top : 16),
+          padding: const EdgeInsets.only(left: 16.0, right: 16, top: 16),
           child: SearchBarWidget(
             onTextChanged: (newValue) {
               context.read<CustomersCubit>().searchTextChanged(newValue);
@@ -137,52 +127,61 @@ class CustomersPageState extends State<CustomersPage> {
         ),
       ),
       Expanded(
-          child: Stack(children: [
-        Visibility(
-          child: emptyView,
-          visible: data.items.isEmpty,
+        child: Stack(
+          children: [
+            Visibility(
+              child: emptyView,
+              visible: data.items.isEmpty,
+            ),
+            Visibility(
+              child: _buildListView(data),
+              visible: data.items.isNotEmpty,
+            ),
+          ],
         ),
-        Visibility(
-          child: _buildListView(data),
-          visible: data.items.isNotEmpty,
-        )
-      ]))
+      ),
     ];
     return Column(children: children);
   }
 
   Widget get emptyView => Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Icon(UIConstants.supplierIconData,
-                size: 60, color: Theme.of(context).colorScheme.primary),
-            Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Text(
-                  AppLocalizations.of(context)!.empty_customers,
-                  textAlign: TextAlign.center,
-                ))
-          ]);
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Icon(
+            UIConstants.supplierIconData,
+            size: 60,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 16),
+            child: Text(
+              AppLocalizations.of(context)!.empty_customers,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      );
 
   Widget _buildListView(CustomersState data) {
     return ListView.separated(
-        separatorBuilder: (context, index) => buildDivider(),
-        itemBuilder: (BuildContext context, index) {
-          Customer item = data.items[index];
-          return CustomerItemRow(item, (item) {
-            onPressed(item);
-          }, (item) {
-            onLongPressed(item);
-          }, (item) {
-            _launchUrl("mailto:${item.email}");
-          }, (item) {
-            _launchUrl("sms:${item.phone}");
-          }, (item) {
-            _launchUrl("tel:${item.phone}");
-          });
-        },
-        itemCount: data.items.length);
+      separatorBuilder: (context, index) => buildDivider(),
+      itemBuilder: (BuildContext context, index) {
+        Customer item = data.items[index];
+        return CustomerItemRow(item, (item) {
+          onPressed(item);
+        }, (item) {
+          onLongPressed(item);
+        }, (item) {
+          NavigatorUtils.openUrl("mailto:${item.email}");
+        }, (item) {
+          NavigatorUtils.openUrl("sms:${item.phone}");
+        }, (item) {
+          NavigatorUtils.openUrl("tel:${item.phone}");
+        });
+      },
+      itemCount: data.items.length,
+    );
   }
 
   void onPressed(Customer item) async {
@@ -194,83 +193,71 @@ class CustomersPageState extends State<CustomersPage> {
   }
 
   void onLongPressed(Customer item) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            children: <Widget>[
-              SimpleDialogOption(
-                padding: EdgeInsets.all(16.0),
-                onPressed: () {
-                  Navigator.pop(context);
-                  showDeleteConfirmPopup(item);
-                },
-                child: Text(AppLocalizations.of(context)!.action_delete),
-              ),
-              SimpleDialogOption(
-                padding: EdgeInsets.all(16.0),
-                onPressed: () async{
-                  Navigator.pop(context);
-                  await Navigator.of(context).pushNamed(Pages.documents_history, arguments: {
-                    'customerId': item.id,
-                  });
-                },
-                child: Text(AppLocalizations.of(context)!.action_view_document),
-              ),
-            ],
+    var items = [
+      AppLocalizations.of(context)!.action_view_document,
+      AppLocalizations.of(context)!.action_delete,
+    ];
+    showSelectOptionDialog(
+      context,
+      items: items,
+      onItemSelected: (index) async {
+        if (items[index] ==
+            AppLocalizations.of(context)!.action_view_document) {
+          await Navigator.of(context).pushNamed(
+            Pages.documents_history,
+            arguments: {
+              'customerId': item.id,
+            },
           );
-        },
-        barrierDismissible: true);
+        } else if (items[index] ==
+            AppLocalizations.of(context)!.action_delete) {
+          showDeleteConfirmPopup(item);
+        }
+      },
+    );
   }
 
   void showDeleteConfirmPopup(Customer item) async {
-    showDialog(
-        context: context,
-        builder: (BuildContext mContext) {
-          return AlertDialog(
-            title:
-                Text(AppLocalizations.of(context)!.notification_dialog_title),
-            content: Text(sprintf(
-                AppLocalizations.of(context)!.message_confirm_delete,
-                [item.name])),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(AppLocalizations.of(context)!.action_cancel)),
-              TextButton(
-                onPressed: () async {
-                  await context.read<CustomersCubit>().delete(item.id!);
-                  Navigator.pop(context);
-                },
-                child: Text(AppLocalizations.of(context)!.action_ok),
-              )
-            ],
-          );
-        });
+    showCustomAlertDialog(
+      context,
+      message: sprintf(
+        AppLocalizations.of(context)!.message_confirm_delete,
+        [item.name],
+      ),
+      onPositivePressed: () async {
+        hideDialog(context);
+        await context.read<CustomersCubit>().delete(item.id!);
+      },
+    );
   }
 
   Widget _buildSearchMenu(CustomersState state) {
     return IconButton(
-        onPressed: () {
-          if (!state.showSearchBar) {
-            searchTextFocusNode.requestFocus();
-          }
-          context.read<CustomersCubit>().onShowSearchBarMenuClicked();
-        },
-        icon: Icon(Icons.search,
-            color: state.showSearchBar
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).iconTheme.color));
+      onPressed: () {
+        if (!state.showSearchBar) {
+          searchTextFocusNode.requestFocus();
+        }
+        context.read<CustomersCubit>().onShowSearchBarMenuClicked();
+      },
+      icon: Icon(
+        Icons.search,
+        color: state.showSearchBar
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).iconTheme.color,
+      ),
+    );
   }
+
   Widget _buildFilterMenu(CustomersState state) {
     bool showWarning = state.settings.sortByName != SortByText.no_sort;
     return Stack(
       children: [
         IconButton(
-            onPressed: () {
-              showFilterBottomSheet(state);
-            },
-            icon: Icon(Icons.filter_alt)),
+          onPressed: () {
+            showFilterBottomSheet(state);
+          },
+          icon: Icon(Icons.filter_alt),
+        ),
         if (showWarning)
           Positioned(
             right: 4,
@@ -280,51 +267,49 @@ class CustomersPageState extends State<CustomersPage> {
               color: Colors.red,
               size: 16,
             ),
-          )
+          ),
       ],
     );
   }
+
   void showFilterBottomSheet(CustomersState state) {
     showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-        ),
-        builder: (BuildContext mContext) {
-          return DraggableScrollableSheet(
-              expand: false,
-              builder: (mContext, scrollController) {
-                return SingleChildScrollView(
-                    controller: scrollController,
-                    padding: EdgeInsets.all(16),
-                    child: FilterCustomerWidget(
-                      onResetAllPressed: () {
-                        context.read<CustomersCubit>().resetAllFilter();
-                        Navigator.of(context).pop();
-                      },
-                      onApplyPressed: (setting) {
-                        context.read<CustomersCubit>().applyFilter(setting);
-                        Navigator.of(context).pop();
-                      },
-                      setting: state.settings,
-                    ));
-              });
-        });
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext mContext) {
+        return DraggableScrollableSheet(
+          expand: false,
+          builder: (mContext, scrollController) {
+            return SingleChildScrollView(
+              controller: scrollController,
+              padding: EdgeInsets.all(16),
+              child: FilterCustomerWidget(
+                onResetAllPressed: () {
+                  context.read<CustomersCubit>().resetAllFilter();
+                  Navigator.of(context).pop();
+                },
+                onApplyPressed: (setting) {
+                  context.read<CustomersCubit>().applyFilter(setting);
+                  Navigator.of(context).pop();
+                },
+                setting: state.settings,
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   Widget _buildHelpMenu() {
     return IconButton(
-        onPressed: () {
-          context.read<CustomersCubit>().onHelpMenuClick();
-        },
-        icon: Icon(Icons.help));
-  }
-
-  Future<void> _launchUrl(String value) async {
-    Uri url = Uri.parse(value);
-    if (!await launchUrl(url)) {
-      throw Exception('Could not launch $url');
-    }
+      onPressed: () {
+        context.read<CustomersCubit>().onHelpMenuClick();
+      },
+      icon: Icon(Icons.help),
+    );
   }
 }

@@ -1,14 +1,12 @@
-import 'criteria.dart';
+import 'composite_criteria.dart';
 
-class AndCriteria<T> implements Criteria<T> {
-  final List<Criteria<T>> criteriaList;
-
-  AndCriteria(this.criteriaList);
+class AndCriteria<T> extends CompositeCriteria<T> {
+  AndCriteria(super.items);
 
   @override
   List<T> meetCriteria(List<T> input) {
     var filtered = input;
-    for (final criteria in criteriaList) {
+    for (final criteria in items) {
       filtered = criteria.meetCriteria(filtered);
     }
     return filtered;

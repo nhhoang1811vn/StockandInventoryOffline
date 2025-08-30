@@ -6,13 +6,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
-import 'package:good_manager/presentation/widgets/views.dart';
+import 'package:good_manager/presentation/widget/views.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../common/path_utils.dart';
 import '../../../../main.dart';
-import '../../../widgets/snackbar_widgets.dart';
+import '../../../widget/snackbar_widgets.dart';
 import '../../pages.dart' show Pages;
 
 class SettingsDataPage extends StatefulWidget {
@@ -26,61 +26,70 @@ class SettingsDataPage extends StatefulWidget {
 
 class SettingsDataPageState extends State<SettingsDataPage> {
   var cloudFileUpdatedTime = "";
+
   @override
   void initState() {
     super.initState();
     loadCloudFileUpdatedTime();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(title: new Text(AppLocalizations.of(context)!.menu_item_backup_and_restore)),
+      appBar: new AppBar(
+        title: new Text(
+          AppLocalizations.of(context)!.menu_item_backup_and_restore,
+        ),
+      ),
       body: _buildBody(),
     );
   }
 
   Widget _buildBody() {
-    return ListView(padding: EdgeInsets.all(16), children: [
-      Card(
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          children: [
-
-            ListTile(
-              leading: Icon(Icons.backup),
-              title: Text(AppLocalizations.of(context)!.menu_back_up),
-              subtitle: Text(AppLocalizations.of(context)!.menu_back_up_desc),
-              onTap: () => onBackUpPressed(context),
-            ),
-            buildDivider(),
-            ListTile(
-              leading: Icon(Icons.restore),
-              title: Text(AppLocalizations.of(context)!.menu_restore),
-              subtitle: Text(AppLocalizations.of(context)!.menu_restore_desc),
-              onTap: () => onRestorePressed(context),
-            ),
-            buildDivider(),
-            //Divider(color: Colors.grey[500]),
-            ListTile(
-              leading: Icon(Icons.cloud),
-              title:
-              Text(AppLocalizations.of(context)!.menu_push_data_to_cloud),
-              subtitle: cloudFileUpdatedTime.isEmpty
-                  ? Text(AppLocalizations.of(context)!.cloud_file_no_updated)
-                  : Text(cloudFileUpdatedTime),
-              onTap: () => onCloudPressed(),
-            ),
-            buildDivider(),
-            ListTile(
-              leading: Icon(Icons.sync),
-              title: Text(AppLocalizations.of(context)!.menu_quick_sync_title),
-              subtitle: Text(AppLocalizations.of(context)!.menu_quick_sync_desc),
-              onTap: () => onQuickSyncPressed(context),
-            ),
-          ],
+    return ListView(
+      padding: EdgeInsets.all(16),
+      children: [
+        Card(
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            children: [
+              ListTile(
+                leading: Icon(Icons.backup),
+                title: Text(AppLocalizations.of(context)!.menu_back_up),
+                subtitle: Text(AppLocalizations.of(context)!.menu_back_up_desc),
+                onTap: () => onBackUpPressed(context),
+              ),
+              buildDivider(),
+              ListTile(
+                leading: Icon(Icons.restore),
+                title: Text(AppLocalizations.of(context)!.menu_restore),
+                subtitle: Text(AppLocalizations.of(context)!.menu_restore_desc),
+                onTap: () => onRestorePressed(context),
+              ),
+              buildDivider(),
+              //Divider(color: Colors.grey[500]),
+              ListTile(
+                leading: Icon(Icons.cloud),
+                title:
+                    Text(AppLocalizations.of(context)!.menu_push_data_to_cloud),
+                subtitle: cloudFileUpdatedTime.isEmpty
+                    ? Text(AppLocalizations.of(context)!.cloud_file_no_updated)
+                    : Text(cloudFileUpdatedTime),
+                onTap: () => onCloudPressed(),
+              ),
+              buildDivider(),
+              ListTile(
+                leading: Icon(Icons.sync),
+                title:
+                    Text(AppLocalizations.of(context)!.menu_quick_sync_title),
+                subtitle:
+                    Text(AppLocalizations.of(context)!.menu_quick_sync_desc),
+                onTap: () => onQuickSyncPressed(context),
+              ),
+            ],
+          ),
         ),
-      )
-    ]
+      ],
     );
   }
 
@@ -114,6 +123,7 @@ class SettingsDataPageState extends State<SettingsDataPage> {
       });
     }
   }
+
   Future<void> backup(BuildContext context, String filePath) async {
     try {
       String dbPath = await PathUtils().getDatabasePath();
@@ -140,15 +150,21 @@ class SettingsDataPageState extends State<SettingsDataPage> {
         }
       }
       await source.copy(filePath);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-            AppLocalizations.of(context)!.backup_successful + " " + filePath),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.backup_successful + " " + filePath,
+          ),
+        ),
+      );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-            AppLocalizations.of(context)!.backup_error + " " + e.toString()),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.backup_error + " " + e.toString(),
+          ),
+        ),
+      );
     }
   }
 
@@ -158,7 +174,9 @@ class SettingsDataPageState extends State<SettingsDataPage> {
     String fileName = "appviet_goodmanager_database_$timeStamp.db";
     if (Platform.isWindows) {
       String? outputFile = await FilePicker.platform.saveFile(
-          dialogTitle: 'Please select an output file:', fileName: fileName);
+        dialogTitle: 'Please select an output file:',
+        fileName: fileName,
+      );
       if (outputFile != null) {
         await backup(context, outputFile);
       }
@@ -191,9 +209,11 @@ class SettingsDataPageState extends State<SettingsDataPage> {
       await source.copy(dbPath);
       ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("restore error: " + e.toString()),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("restore error: " + e.toString()),
+        ),
+      );
     }
   }
 
@@ -234,6 +254,8 @@ class SettingsDataPageState extends State<SettingsDataPage> {
   void onQuickSyncPressed(BuildContext context) {
     justLogin = true;
     Navigator.of(context).pushNamedAndRemoveUntil(
-        Pages.loading_data, (Route<dynamic> route) => false);
+      Pages.loading_data,
+      (Route<dynamic> route) => false,
+    );
   }
 }

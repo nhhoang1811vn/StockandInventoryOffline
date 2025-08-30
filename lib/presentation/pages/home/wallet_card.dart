@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/presentation/constants.dart';
 
-import '../../../domain/entities/wallet.dart';
+import '../../../constant/constant.dart';
+import '../../../domain/entity/entity.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../dialog/dialog.dart';
 import '../pages.dart';
 import 'bloc/home_cubit.dart';
 
 class WalletCard extends StatelessWidget {
   final Wallet wallet;
 
-
-  const WalletCard({
-    super.key,
-    required this.wallet
-  });
+  const WalletCard({super.key, required this.wallet});
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +24,35 @@ class WalletCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(children: [
-                Text(wallet.name, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),),
-                Spacer(),
-                IconButton(onPressed: (){
-                  _showWalletOptionsDialog(context, wallet);
-                }, icon:  Icon(
-                  Icons.more_horiz,
-                  color: Colors.white,
-                ))
-              ],),
+              Row(
+                children: [
+                  Text(
+                    wallet.name,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(color: Colors.white),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      _showWalletOptionsDialog(context, wallet);
+                    },
+                    icon: Icon(
+                      Icons.more_horiz,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
               const Spacer(),
-              Text(Config.currencyFormat.format(wallet.balance), style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w700)),
+              Text(
+                Config.currencyFormat.format(wallet.balance),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
             ],
           ),
         ),
@@ -47,33 +61,24 @@ class WalletCard extends StatelessWidget {
   }
 
   void _showWalletOptionsDialog(BuildContext context, Wallet item) {
-    showDialog(
-        context: context,
-        builder: (BuildContext mContext) {
-          return SimpleDialog(
-            children: <Widget>[
-              SimpleDialogOption(
-                padding: EdgeInsets.all(16.0),
-                onPressed: () async{
-
-                  Navigator.pop(context);
-                  await Navigator.of(context).pushNamed(Pages.save_wallet, arguments: {"item" : item});
-                  context.read<HomeCubit>().initState();
-                },
-                child: Text(AppLocalizations.of(context)!.action_edit),
-              ),
-              SimpleDialogOption(
-                padding: EdgeInsets.all(16.0),
-                onPressed: (){
-                  Navigator.pop(context);
-                  context.read<HomeCubit>().deleteWallet(item);
-                  context.read<HomeCubit>().initState();
-                },
-                child: Text(AppLocalizations.of(context)!.action_delete),
-              ),
-            ],
-          );
-        },
-        barrierDismissible: true);
+    var items = [
+      AppLocalizations.of(context)!.action_edit,
+      AppLocalizations.of(context)!.action_delete,
+    ];
+    showSelectOptionDialog(
+      context,
+      items: items,
+      onItemSelected: (index) async {
+        if (items[index] == AppLocalizations.of(context)!.action_edit) {
+          await Navigator.of(context)
+              .pushNamed(Pages.save_wallet, arguments: {"item": item});
+          context.read<HomeCubit>().initState();
+        } else if (items[index] ==
+            AppLocalizations.of(context)!.action_delete) {
+          context.read<HomeCubit>().deleteWallet(item);
+          context.read<HomeCubit>().initState();
+        }
+      },
+    );
   }
 }

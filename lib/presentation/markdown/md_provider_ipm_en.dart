@@ -2,10 +2,10 @@ import 'package:good_manager/presentation/markdown/md_provider.dart';
 import 'package:good_manager/presentation/markdown/md_resource_en.dart';
 import 'package:good_manager/presentation/pages/help_content.dart';
 
-class MDProviderIpmEN extends MDProvider{
+class MDProviderIpmEN extends MDProvider {
   @override
   String getHelpText(HelpType type) {
-    switch(type){
+    switch (type) {
       case HelpType.STORE:
         return MarkdownResourceEN.helpStores;
       case HelpType.GOODS:
@@ -25,6 +25,7 @@ class MDProviderIpmEN extends MDProvider{
   String getWhatNews() {
     return MarkdownResourceEN.whatNews;
   }
+
   @override
   String getDonationText() {
     return MarkdownResourceEN.donationText;

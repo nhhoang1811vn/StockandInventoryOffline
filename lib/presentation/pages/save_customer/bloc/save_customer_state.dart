@@ -12,7 +12,6 @@ class SaveCustomerState with _$SaveCustomerState {
     @Default('') String taxID,
     @Default('') String bankDetails,
     @Default('') String exceptionError,
-    Customer? item
+    Customer? item,
   }) = _Initial;
 }
-

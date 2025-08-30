@@ -1,7 +1,7 @@
 part of 'payments_cubit.dart';
 
 @freezed
-class PaymentsState with _$PaymentsState{
+class PaymentsState with _$PaymentsState {
   const factory PaymentsState.initial({
     required BaseState state,
     @Default([]) List<Payment> allPayments,
@@ -12,6 +12,6 @@ class PaymentsState with _$PaymentsState{
     @Default([]) List<Supplier> suppliers,
     @Default([]) List<Payment> inboundPayments,
     @Default([]) List<Payment> outboundPayments,
-    PaymentsSetting? setting
+    PaymentsSetting? setting,
   }) = _Initial;
 }

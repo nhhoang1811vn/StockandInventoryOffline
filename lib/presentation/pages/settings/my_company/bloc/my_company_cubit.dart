@@ -1,56 +1,64 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/app_settings.dart';
-import 'package:good_manager/domain/entities/my_company.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../../../../data/app_settings.dart';
+import '../../../../../domain/entity/entity.dart';
 
 part 'my_company_cubit.freezed.dart';
 part 'my_company_state.dart';
 
-
-
 @injectable
 class MyCompanyCubit extends Cubit<MyCompanyState> {
-  final AppSettings appSettings;
-  MyCompanyCubit({required this.appSettings})
-      : super(
-      MyCompanyState.initial());
+  MyCompanyCubit() : super(MyCompanyState.initial());
 
-  Future<void> init() async{
-    final item = await appSettings.getMyCompany();
-    emit(state.copyWith(
+  Future<void> init() async {
+    final item = await AppSettings.getMyCompany();
+    emit(
+      state.copyWith(
         companyName: item.companyName,
         address: item.address,
-      email: item.email,
-      phone: item.phone,
-      taxID: item.taxId,
-      bankDetails: item.bankDetails,
-    ));
-    }
-  void onSaveButtonClicked(){
-    MyCompany obj = MyCompany(companyName: state.companyName, address: state.address, email: state.email, phone: state.phone, taxId: state.taxID, bankDetails: state.bankDetails);
-    appSettings.setMyCompany(obj);
+        email: item.email,
+        phone: item.phone,
+        taxID: item.taxId,
+        bankDetails: item.bankDetails,
+      ),
+    );
   }
 
-  companyNameChanged(String value) {
+  void onSaveButtonClicked() {
+    MyCompany obj = MyCompany(
+      companyName: state.companyName,
+      address: state.address,
+      email: state.email,
+      phone: state.phone,
+      taxId: state.taxID,
+      bankDetails: state.bankDetails,
+    );
+    AppSettings.setMyCompany(obj);
+  }
+
+  void companyNameChanged(String value) {
     emit(state.copyWith(companyName: value));
   }
-  addressChanged(String value){
+
+  void addressChanged(String value) {
     emit(state.copyWith(address: value));
   }
-  emailChanged(String value){
+
+  void emailChanged(String value) {
     emit(state.copyWith(email: value));
   }
 
-  phoneNumberChanged(String value) {
+  void phoneNumberChanged(String value) {
     emit(state.copyWith(phone: value));
   }
 
-  taxIDChanged(String value) {
+  void taxIDChanged(String value) {
     emit(state.copyWith(taxID: value));
   }
 
-  bankDetailsChanged(String value) {
+  void bankDetailsChanged(String value) {
     emit(state.copyWith(bankDetails: value));
   }
 }

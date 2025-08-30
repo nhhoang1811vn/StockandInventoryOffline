@@ -14,6 +14,6 @@ class SaveGoodState with _$SaveGoodState {
     @Default(true) bool showMinQuantity,
     Good? item,
     Document? document,
-    DocumentTransaction? transaction
+    DocumentTransaction? transaction,
   }) = _Initial;
 }

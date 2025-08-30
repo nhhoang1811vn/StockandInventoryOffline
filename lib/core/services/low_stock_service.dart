@@ -1,13 +1,13 @@
-import 'package:good_manager/domain/app_settings.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../domain/repositories/goods_repositories.dart';
+import '../../data/app_settings.dart';
+import '../../repo/repo.dart';
 
 @lazySingleton
 class LowStockService {
   final GoodsRepository _repository;
-  final AppSettings appSettings;
-  LowStockService(this._repository, this.appSettings);
+
+  LowStockService(this._repository);
 
   // Future<List<Good>> getLowStockItems() async {
   //   final goods = await _repository.getAllGoods();
@@ -15,8 +15,9 @@ class LowStockService {
   // }
 
   Future<bool> hasLowStock() async {
-    final storeId = appSettings.getSelectedStoreId();
+    final storeId = AppSettings.getSelectedStoreId();
     final goods = await _repository.getAllByStoreId(storeId);
-    return goods.any((g) => (g.minQuantity != null && g.quantity < g.minQuantity!));
+    return goods
+        .any((g) => (g.minQuantity != null && g.quantity < g.minQuantity!));
   }
 }
