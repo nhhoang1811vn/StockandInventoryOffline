@@ -1,15 +1,13 @@
-import 'criteria.dart';
+import 'composite_criteria.dart';
 
-class OrCriteria<T> implements Criteria<T> {
-  final List<Criteria<T>> criteriaList;
-
-  OrCriteria(this.criteriaList);
+class OrCriteria<T> extends CompositeCriteria<T> {
+  OrCriteria(super.items);
 
   @override
   List<T> meetCriteria(List<T> input) {
     final Set<T> resultSet = {};
 
-    for (final criteria in criteriaList) {
+    for (final criteria in items) {
       resultSet.addAll(criteria.meetCriteria(input));
     }
 

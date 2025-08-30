@@ -19,6 +19,7 @@ abstract class AuthState {}
 class IsNewUser extends AuthState {
   final GoogleSignInAccount googleUser;
   final OAuthCredential credential;
+
   IsNewUser({
     required this.googleUser,
     required this.credential,
@@ -37,5 +38,6 @@ class UserSingupAndLinkedWithGoogle extends AuthState {}
 
 class UserSingupButNotVerified extends AuthState {}
 
-class UserSignInSuccessfulWithStore extends AuthState{}
-class UserSignInSuccessfulWithNoStore extends AuthState{}
+class UserSignInSuccessfulWithStore extends AuthState {}
+
+class UserSignInSuccessfulWithNoStore extends AuthState {}

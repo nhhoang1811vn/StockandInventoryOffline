@@ -1,8 +1,10 @@
-import 'package:good_manager/domain/entities/document.dart';
 import 'package:good_manager/presentation/criteria/criteria.dart';
 
-class ByTypeCriteria extends Criteria<Document>{
+import '../../../../domain/entity/entity.dart';
+
+class ByTypeCriteria extends Criteria<Document> {
   final DocumentType type;
+
   ByTypeCriteria(this.type);
 
   @override

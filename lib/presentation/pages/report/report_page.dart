@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/domain/entities/report_type.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/report_date_range_type.dart';
 
-import '../../constants.dart';
+import '../../../constant/constant.dart';
+import '../../../domain/entity/entity.dart';
 import '../pages.dart';
 
 class ReportPage extends StatefulWidget {
@@ -21,10 +21,11 @@ class ReportPageState extends State<ReportPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ReportCubit, ReportState>(
-        builder: (context, state) =>
-            Scaffold(appBar: _buildAppBar(context), body: _buildBody2()),
-        listenWhen: (p1, p2) => p1.state != p2.state,
-        listener: (context, state) async {});
+      builder: (context, state) =>
+          Scaffold(appBar: _buildAppBar(context), body: _buildBody2()),
+      listenWhen: (p1, p2) => p1.state != p2.state,
+      listener: (context, state) async {},
+    );
   }
 
   PreferredSize _buildAppBar(BuildContext context) {
@@ -34,30 +35,33 @@ class ReportPageState extends State<ReportPage> {
           AppBar(title: new Text(AppLocalizations.of(context)!.report_title)),
     );
   }
+
   Widget _buildBody2() {
-    return ListView(children: [
-      Card(
-        clipBehavior: Clip.antiAlias,
-        margin: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            for (int i = 0; i < ReportType.values.length; i++) ...[
-              ListTile(
-                title: Text(ReportType.values[i].getTitle(context)),
-                trailing: Icon(Icons.navigate_next),
-                onTap: () {
-                  onReportTypeTapped(ReportType.values[i]);
-                },
-              ),
-              if (i < ReportType.values.length - 1) Divider(height: 1),
-            ]
-          ],
+    return ListView(
+      children: [
+        Card(
+          clipBehavior: Clip.antiAlias,
+          margin: EdgeInsets.all(16),
+          child: Column(
+            children: [
+              for (int i = 0; i < ReportType.values.length; i++) ...[
+                ListTile(
+                  title: Text(ReportType.values[i].getTitle(context)),
+                  trailing: Icon(Icons.navigate_next),
+                  onTap: () {
+                    onReportTypeTapped(ReportType.values[i]);
+                  },
+                ),
+                if (i < ReportType.values.length - 1) Divider(height: 1),
+              ],
+            ],
+          ),
         ),
-      )
-    ]);
+      ],
+    );
   }
 
-  void onReportTypeTapped(ReportType reportType) async{
+  void onReportTypeTapped(ReportType reportType) async {
     if (reportType == ReportType.RE_ORDER) {
       onReportReorder(context);
     } else {
@@ -96,58 +100,28 @@ class ReportPageState extends State<ReportPage> {
               ;
           }
         }
-        if (mStart != null && mEnd != null){
-          Navigator.of(context).pushNamed(Pages.report_detail, arguments: {'type': reportType, 'start': mStart, 'end': mEnd});
+        if (mStart != null && mEnd != null) {
+          Navigator.of(context).pushNamed(
+            Pages.report_detail,
+            arguments: {'type': reportType, 'start': mStart, 'end': mEnd},
+          );
         }
-
       }
     }
   }
-  // Widget _buildBody() {
-  //   return ListView.separated(
-  //     itemCount: ReportType.values.length,
-  //     itemBuilder: (BuildContext context, int index) {
-  //       ReportType reportType = ReportType.values[index];
-  //       return ListTile(
-  //         title: Text(
-  //           reportType.getTitle(context),
-  //         ),
-  //         onTap: () async {
-  //
-  //         },
-  //         trailing: Icon(Icons.navigate_next),
-  //       );
-  //     },
-  //     separatorBuilder: (context, index) {
-  //       return Divider(
-  //         height: 1,
-  //       );
-  //     },
-  //   );
-  // }
-
-  // void onReportTypeClicked(BuildContext context, ReportType reportType) async{
-  //   Map? result = await showSelectDateRangeDialog(context, ReportDateRangeType.CURRENT_MONTH);
-  //   if (result != null){
-  //     DateTime start = result["start"];
-  //     DateTime end = result["end"];
-  //     Navigator.of(context).pushNamed(Pages.report_detail, arguments: {'type': reportType, 'start': start, 'end': end});
-  //   }
-  // }
 
   void onReportReorder(BuildContext context) async {
-    Navigator.of(context).pushNamed(Pages.report_detail, arguments: {
-      'type': ReportType.RE_ORDER,
-    });
+    Navigator.of(context).pushNamed(
+      Pages.report_detail,
+      arguments: {
+        'type': ReportType.RE_ORDER,
+      },
+    );
   }
 
-  // Future<Map?> showSelectDateRangeDialog(BuildContext context, ReportDateRangeType type) async {
-  //   Map? result = await showDialog(context: context, builder: (_) => SelectDateRangeDialog(type));
-  //   return result;
-  // }
-
   Future<ReportDateRangeType?> showSelectDateRangeType(
-      BuildContext context) async {
+    BuildContext context,
+  ) async {
     return await showModalBottomSheet<ReportDateRangeType>(
       context: context,
       isScrollControlled: true,
@@ -175,7 +149,7 @@ class ReportPageState extends State<ReportPage> {
                     ),
                   )
                   .toList(),
-            )
+            ),
           ],
         );
       },
@@ -186,10 +160,11 @@ class ReportPageState extends State<ReportPage> {
     DateTimeRange dateRange =
         DateTimeRange(start: DateTime.now(), end: DateTime.now());
     DateTimeRange? result = await showDateRangePicker(
-        context: context,
-        initialDateRange: dateRange,
-        firstDate: DateTime(1900),
-        lastDate: DateTime(2100));
+      context: context,
+      initialDateRange: dateRange,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
     return result;
     if (result != null) {
       setState(() {

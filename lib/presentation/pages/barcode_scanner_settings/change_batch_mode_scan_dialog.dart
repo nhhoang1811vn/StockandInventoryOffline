@@ -1,11 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
 
-import '../../../domain/entities/batch_mode_scan.dart';
+import '../../../domain/entity/entity.dart';
 
 class ChangeBatchModeScanDialogWidget extends StatefulWidget {
   final BatchModeScan mode;
+
   ChangeBatchModeScanDialogWidget(this.mode);
 
   @override
@@ -32,13 +32,15 @@ class ChangeBatchModeScanDialogWidgetState
             Column(
               children: [
                 getRadioListTile(
-                    AppLocalizations.of(context)!.after_each_scan_auto,
-                    BatchModeScan.AUTO),
+                  AppLocalizations.of(context)!.after_each_scan_auto,
+                  BatchModeScan.AUTO,
+                ),
                 getRadioListTile(
-                    AppLocalizations.of(context)!.after_each_scan_manually,
-                    BatchModeScan.MANUAL),
+                  AppLocalizations.of(context)!.after_each_scan_manually,
+                  BatchModeScan.MANUAL,
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -55,7 +57,9 @@ class ChangeBatchModeScanDialogWidgetState
   }
 
   RadioListTile<BatchModeScan> getRadioListTile(
-      String text, BatchModeScan value) {
+    String text,
+    BatchModeScan value,
+  ) {
     return RadioListTile<BatchModeScan>(
       title: Text(text),
       value: value,
@@ -68,4 +72,3 @@ class ChangeBatchModeScanDialogWidgetState
     );
   }
 }
-

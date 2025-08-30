@@ -9,6 +9,5 @@ class MyCompanyState with _$MyCompanyState {
     @Default("") String phone,
     @Default("") String taxID,
     @Default("") String bankDetails,
-
   }) = _Initial;
 }

@@ -2,37 +2,38 @@ import 'dart:ui';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/app_settings.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../../../../data/app_settings.dart';
 
 part 'settings_view_cubit.freezed.dart';
 part 'settings_view_state.dart';
 
 @injectable
 class SettingsViewCubit extends Cubit<SettingsViewState> {
-  final AppSettings appSettings;
+  SettingsViewCubit()
+      : super(
+          SettingsViewState.initial(
+            incomingColor: AppSettings.getIncomingDocumentColor(),
+            outgoingColor: AppSettings.getOutgoingDocumentColor(),
+            reorderColor: Color(AppSettings.getMinimumQuantitySettings().color),
+          ),
+        );
 
-  SettingsViewCubit({required this.appSettings})
-      : super(SettingsViewState.initial(
-    incomingColor: appSettings.getIncomingDocumentColor(),
-    outgoingColor: appSettings.getOutgoingDocumentColor(),
-    reorderColor: Color(appSettings.getMinimumQuantitySettings().color)
-  ));
-
-  void onIncomingColorChanged(Color color){
+  void onIncomingColorChanged(Color color) {
     emit(state.copyWith(incomingColor: color));
-    appSettings.setIncomingDocumentColor(color);
+    AppSettings.setIncomingDocumentColor(color);
   }
-  void onOutgoingColorChanged(Color color){
+
+  void onOutgoingColorChanged(Color color) {
     emit(state.copyWith(outgoingColor: color));
-    appSettings.setOutgoingDocumentColor(color);
+    AppSettings.setOutgoingDocumentColor(color);
   }
-  void onReorderColorChanged(Color color){
+
+  void onReorderColorChanged(Color color) {
     emit(state.copyWith(reorderColor: color));
-    final settings = appSettings.getMinimumQuantitySettings();
-    final newSettings = settings.copyWith(
-      color: color.value
-    );
-    appSettings.setMinimumQuantitySettings(newSettings);
+    final settings = AppSettings.getMinimumQuantitySettings();
+    final newSettings = settings.copyWith(color: color.value);
+    AppSettings.setMinimumQuantitySettings(newSettings);
   }
 }

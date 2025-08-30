@@ -1,10 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:good_manager/domain/entities/good.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
-import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/utils.dart';
+
+import '../../../constant/constant.dart';
+import '../../../domain/entity/entity.dart';
+import '../../../util/util.dart';
 
 class GoodItemRow extends StatelessWidget {
   final Good item;
@@ -13,20 +14,21 @@ class GoodItemRow extends StatelessWidget {
   final bool showDescription;
   final bool showMinQuantity;
   final Color minQuantityColor;
-  final void Function(Good good) onGoodTapped;
-  final void Function(Good good) onGoodLongPressed;
+  final Function(Good good) onGoodTapped;
+  final Function(Good good) onGoodLongPressed;
   final bool isSelection;
 
-  GoodItemRow(
-      {required this.item,
-      required this.quantity,
-      required this.showBarcode,
-      required this.showDescription,
-      required this.showMinQuantity,
-      required this.minQuantityColor,
-      required this.onGoodTapped,
-      required this.onGoodLongPressed,
-      required this.isSelection});
+  GoodItemRow({
+    required this.item,
+    required this.quantity,
+    required this.showBarcode,
+    required this.showDescription,
+    required this.showMinQuantity,
+    required this.minQuantityColor,
+    required this.onGoodTapped,
+    required this.onGoodLongPressed,
+    required this.isSelection,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ class GoodItemRow extends StatelessWidget {
             SizedBox(
               width: 16,
             ),
-            Expanded(child: _buildTop(context))
+            Expanded(child: _buildTop(context)),
           ],
         ),
       ),
@@ -56,7 +58,10 @@ class GoodItemRow extends StatelessWidget {
   }
 
   Widget _buildTop(BuildContext context) {
-    TextStyle? primaryTextStyle = Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700);
+    TextStyle? primaryTextStyle = Theme.of(context)
+        .textTheme
+        .titleMedium
+        ?.copyWith(fontWeight: FontWeight.w700);
     TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
     var quantityColor = Theme.of(context).colorScheme.onSurface;
     if (item.minQuantity == null) {
@@ -71,63 +76,77 @@ class GoodItemRow extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(item.name,
-                style: primaryTextStyle),
-            SizedBox(height: 4),
-            if (showBarcode && item.barCode != null)
-              Row(children: [
-                Icon(UIConstants.barcodeIconData,
-                    size: 24, color: Theme.of(context).colorScheme.primary),
-                SizedBox(
-                  width: 8,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(item.name, style: primaryTextStyle),
+              SizedBox(height: 4),
+              if (showBarcode && item.barCode != null)
+                Row(
+                  children: [
+                    Icon(
+                      UIConstants.barcodeIconData,
+                      size: 24,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(item.barCode!, style: secondaryTextStyle),
+                  ],
                 ),
-                Text(item.barCode!,
-                    style: secondaryTextStyle),
-              ]),
-            if (showDescription && item.description.isNotEmpty)
-              Column(
-                children: [
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Text(item.description,
-                      style: secondaryTextStyle),
-                ],
-              )
-          ]),
+              if (showDescription && item.description.isNotEmpty)
+                Column(
+                  children: [
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Text(item.description, style: secondaryTextStyle),
+                  ],
+                ),
+            ],
+          ),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(Utils.getQuantityText(item.quantity),
-                style: primaryTextStyle?.copyWith(color: quantityColor)),
+            Text(
+              StringUtils.getQuantityText(item.quantity),
+              style: primaryTextStyle?.copyWith(color: quantityColor),
+            ),
             if (showMinQuantity)
               Row(
                 children: [
                   Text(
-                      AppLocalizations.of(context)!
-                          .field_min_quantity_short_form,
-                      style: secondaryTextStyle),
-                  Text(Utils.getQuantityText(item.minQuantity ?? 0),
-                      style: secondaryTextStyle),
+                    AppLocalizations.of(context)!.field_min_quantity_short_form,
+                    style: secondaryTextStyle,
+                  ),
+                  Text(
+                    StringUtils.getQuantityText(item.minQuantity ?? 0),
+                    style: secondaryTextStyle,
+                  ),
                 ],
               ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(Config.currencyFormat.format(item.purchasePrice ?? 0),
-                    style: secondaryTextStyle
-                        ?.copyWith(color: Colors.red.shade700)),
+                Text(
+                  Config.currencyFormat.format(item.purchasePrice ?? 0),
+                  style: secondaryTextStyle?.copyWith(
+                    color: Colors.red.shade700,
+                  ),
+                ),
                 Text("/"),
-                Text(Config.currencyFormat.format(item.salePrice ?? 0),
-                    style: secondaryTextStyle
-                        ?.copyWith(color: Colors.green.shade700)),
+                Text(
+                  Config.currencyFormat.format(item.salePrice ?? 0),
+                  style: secondaryTextStyle?.copyWith(
+                    color: Colors.green.shade700,
+                  ),
+                ),
               ],
-            )
+            ),
           ],
-        )
+        ),
       ],
     );
   }
@@ -139,7 +158,8 @@ class GoodItemRow extends StatelessWidget {
       child: ClipOval(
         child: Image.memory(
           bytes,
-          fit: BoxFit.cover, // Ensures the image covers the entire circular area
+          fit:
+              BoxFit.cover, // Ensures the image covers the entire circular area
         ),
       ),
     );
@@ -149,8 +169,13 @@ class GoodItemRow extends StatelessWidget {
     return SizedBox(
       width: 48,
       height: 48,
-      child: Center(child: Icon(UIConstants.goodIconData,
-          size: 36, color: Theme.of(context).colorScheme.primary)),
+      child: Center(
+        child: Icon(
+          UIConstants.goodIconData,
+          size: 36,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
     );
   }
 }

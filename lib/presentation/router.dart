@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/common/helpers/injection.container.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/barcode_scanner_page.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner_settings/barcode_scanner_settings_page.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner_settings/bloc/barcode_scanner_settings_cubit.dart';
@@ -72,6 +71,7 @@ import 'package:good_manager/presentation/pages/suppliers/bloc/bloc.dart';
 import 'package:good_manager/presentation/pages/suppliers/suppliers_page.dart';
 import 'package:good_manager/presentation/pages/take_picture_screen.dart';
 
+import '../di/di.dart';
 import '../main.dart';
 
 class AppRouter {
@@ -85,257 +85,336 @@ class AppRouter {
       case Pages.payment_history:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-              create: (context) => getIt<PaymentHistoryCubit>(),
-              child: PaymentHistoryPage(
-                documentId: args['documentId'],
-                //start: args['start'],
-                //end: args['end'],
-              ),
-            ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<PaymentHistoryCubit>(),
+            child: PaymentHistoryPage(
+              documentId: args['documentId'],
+              //start: args['start'],
+              //end: args['end'],
+            ),
+          ),
+        );
       case Pages.splash:
-        return MaterialPageRoute(
-            builder: (_) => SplashScreen());
+        return MaterialPageRoute(builder: (_) => SplashScreen());
       case Pages.store_list:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<StoresCubit>(),
-                  child: StoresPage(isSelection: args["isSelection"]),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<StoresCubit>(),
+            child: StoresPage(isSelection: args["isSelection"]),
+          ),
+        );
       case Pages.save_store:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<SaveStoreCubit>(),
-                  child: SaveStorePage(item: args["item"]),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<SaveStoreCubit>(),
+            child: SaveStorePage(item: args["item"]),
+          ),
+        );
       case Pages.loading_data:
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<AuthCubit>(),
-                  child: LoadingData(),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<AuthCubit>(),
+            child: LoadingData(),
+          ),
+        );
       case Pages.main:
         return MaterialPageRoute(builder: (_) => MainPage());
       case Pages.document_list:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<DocumentsCubit>(),
-                  child: DocumentsPage(
-                    //key: UniqueKey(),
-                    documentType: args["documentType"],
-                    isSelection: args["isSelection"],
-                    setting: args["setting"],
-                  ),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<DocumentsCubit>(),
+            child: DocumentsPage(
+              //key: UniqueKey(),
+              documentType: args["documentType"],
+              isSelection: args["isSelection"],
+              setting: args["setting"],
+            ),
+          ),
+        );
       case Pages.documents_history:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<DocumentsHistoryCubit>(),
-                  child: DocumentsHistoryPage(
-                    supplierId: args["supplierId"],
-                    customerId: args["customerId"],
-                    start: args['start'],
-                    end: args['end']
-                  ),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<DocumentsHistoryCubit>(),
+            child: DocumentsHistoryPage(
+              supplierId: args["supplierId"],
+              customerId: args["customerId"],
+              start: args['start'],
+              end: args['end'],
+            ),
+          ),
+        );
       case Pages.save_document:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<SaveDocumentCubit>(),
-                  child: SaveDocumentPage(args["item"]),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<SaveDocumentCubit>(),
+            child: SaveDocumentPage(args["item"]),
+          ),
+        );
       case Pages.save_payment:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<SavePaymentCubit>(),
-                  child: SavePaymentPage(args["item"]),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<SavePaymentCubit>(),
+            child: SavePaymentPage(args["item"]),
+          ),
+        );
       case Pages.save_payment_category:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<SavePaymentCategoryCubit>(),
-                  child: SavePaymentCategoryPage(args["item"]),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<SavePaymentCategoryCubit>(),
+            child: SavePaymentCategoryPage(args["item"]),
+          ),
+        );
       case Pages.good_list:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<GoodsCubit>(),
-                  child: GoodsPage(isSelection: args['isSelection'], document: args['document']),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<GoodsCubit>(),
+            child: GoodsPage(
+              isSelection: args['isSelection'],
+              document: args['document'],
+            ),
+          ),
+        );
       case Pages.save_good:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<SaveGoodCubit>(),
-                  child: SaveGoodPage(
-                      item: args['item'],
-                      //quickInsertDocument: args['quickInsertDocument'],
-                      document: args['document'],
-                      transaction: args['transaction']),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<SaveGoodCubit>(),
+            child: SaveGoodPage(
+              item: args['item'],
+              //quickInsertDocument: args['quickInsertDocument'],
+              document: args['document'],
+              transaction: args['transaction'],
+            ),
+          ),
+        );
       case Pages.good_history:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<ItemHistoryCubit>(),
-                  child: ItemHistoryPage(
-                    goodId: args['goodId'],
-                    start: args['start'],
-                    end: args['end'],
-                  ),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<ItemHistoryCubit>(),
+            child: ItemHistoryPage(
+              goodId: args['goodId'],
+              start: args['start'],
+              end: args['end'],
+            ),
+          ),
+        );
       case Pages.save_group:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<SaveGroupCubit>(),
-                  child: SaveGroupPage(item: args['item']),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<SaveGroupCubit>(),
+            child: SaveGroupPage(item: args['item']),
+          ),
+        );
       case Pages.supplier_list:
         Map<dynamic, dynamic>? args = settings.arguments as Map?;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<SuppliersCubit>(),
-                  child: SuppliersPage(isSelection: args?['isSelection'] ?? false),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<SuppliersCubit>(),
+            child: SuppliersPage(isSelection: args?['isSelection'] ?? false),
+          ),
+        );
       case Pages.save_supplier:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<SaveSupplierCubit>(),
-                  child: SaveSupplierPage(
-                    item: args['item'],
-                  ),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<SaveSupplierCubit>(),
+            child: SaveSupplierPage(
+              item: args['item'],
+            ),
+          ),
+        );
       case Pages.customer_list:
         Map<dynamic, dynamic>? args = settings.arguments as Map?;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<CustomersCubit>(),
-                  child: CustomersPage(isSelection: args?['isSelection'] ?? false),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<CustomersCubit>(),
+            child: CustomersPage(isSelection: args?['isSelection'] ?? false),
+          ),
+        );
       case Pages.save_customer:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<SaveCustomerCubit>(),
-                  child: SaveCustomerPage(
-                    item: args['item'],
-                  ),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<SaveCustomerCubit>(),
+            child: SaveCustomerPage(
+              item: args['item'],
+            ),
+          ),
+        );
       case Pages.helps:
         return _buildRoute(settings, HelpsPage());
       case Pages.help:
         Map<dynamic, dynamic> args = settings.arguments as Map;
-        return _buildRoute(settings, HelpPage(title: args['title'], content: args['content']));
+        return _buildRoute(
+          settings,
+          HelpPage(title: args['title'], content: args['content']),
+        );
       case Pages.take_picture:
         return _buildRoute(settings, TakePictureScreen(camera: cameras.first));
       case Pages.report:
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(create: (context) => getIt<ReportCubit>(), child: ReportPage()));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<ReportCubit>(),
+            child: ReportPage(),
+          ),
+        );
       case Pages.report_detail:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                create: (context) => getIt<ReportDetailCubit>(),
-                child: ReportDetailPage(args["type"], args["start"], args["end"])));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<ReportDetailCubit>(),
+            child: ReportDetailPage(
+              args["type"],
+              args["start"],
+              args["end"],
+            ),
+          ),
+        );
 
       case Pages.save_wallet:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<SaveWalletCubit>(),
-                  child: SaveWalletPage(
-                    args["item"],
-                  ),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<SaveWalletCubit>(),
+            child: SaveWalletPage(
+              args["item"],
+            ),
+          ),
+        );
       case Pages.settings:
         return _buildRoute(settings, SettingsPage());
       // case Pages.subscriptions:
       //   return _buildRoute(settings, SubscriptionPage());
       case Pages.settings_view:
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-              create: (context) => getIt<SettingsViewCubit>(),
-              child: SettingsViewPage(),
-            ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<SettingsViewCubit>(),
+            child: SettingsViewPage(),
+          ),
+        );
       case Pages.settings_minimum_quantity:
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<MinimumQuantityCubit>(),
-                  child: MinimumQuantityPage(),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<MinimumQuantityCubit>(),
+            child: MinimumQuantityPage(),
+          ),
+        );
       case Pages.settings_data:
         return _buildRoute(settings, SettingsDataPage());
       case Pages.settings_general:
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<SettingsGeneralCubit>(),
-                  child: SettingsGeneralPage(),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<SettingsGeneralCubit>(),
+            child: SettingsGeneralPage(),
+          ),
+        );
       case Pages.settings_my_company:
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<MyCompanyCubit>(),
-                  child: MyCompanyPage(),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<MyCompanyCubit>(),
+            child: MyCompanyPage(),
+          ),
+        );
       case Pages.select_group:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => getIt<SelectGroupCubit>(),
-                  child: SelectGroupPage(
-                    args["id"],
-                    args["groupId"],
-                  ),
-                ));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<SelectGroupCubit>(),
+            child: SelectGroupPage(
+              args["id"],
+              args["groupId"],
+            ),
+          ),
+        );
       case Pages.barcode_scanner:
-        return MaterialPageRoute(
-            builder: (_) => BarcodeScannerPage());
+        return MaterialPageRoute(builder: (_) => BarcodeScannerPage());
       case Pages.barcode_scanner_settings:
+        return _buildRoute(
+          settings,
+          BlocProvider(
+            create: (context) => getIt<BarcodeScannerSettingsCubit>(),
+            child: BarcodeScannerSettingsPage(),
+          ),
+        );
+
         return MaterialPageRoute(
-            builder: (_) =>
-                BlocProvider(create: (context) => getIt<BarcodeScannerSettingsCubit>(), child: BarcodeScannerSettingsPage()));
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<BarcodeScannerSettingsCubit>(),
+            child: BarcodeScannerSettingsPage(),
+          ),
+        );
       case Pages.signup:
-        return _buildRoute(settings, BlocProvider(create: (context) => getIt<AuthCubit>(), child: SignUpScreen()));
+        return _buildRoute(
+          settings,
+          BlocProvider(
+            create: (context) => getIt<AuthCubit>(),
+            child: SignUpScreen(),
+          ),
+        );
 
       case Pages.signIn:
-        return _buildRoute(settings, BlocProvider(create: (context) => getIt<AuthCubit>(), child: LoginScreen()));
+        return _buildRoute(
+          settings,
+          BlocProvider(
+            create: (context) => getIt<AuthCubit>(),
+            child: LoginScreen(),
+          ),
+        );
       case Pages.upgrade_account:
-        return _buildRoute(settings, BlocProvider(create: (context) => getIt<AuthCubit>(), child: LoginScreen()));
+        return _buildRoute(
+          settings,
+          BlocProvider(
+            create: (context) => getIt<AuthCubit>(),
+            child: LoginScreen(),
+          ),
+        );
 
       case Pages.forgotPassword:
         return _buildRoute(
-            settings, BlocProvider(create: (context) => getIt<AuthCubit>(), child: ForgotPasswordScreen()));
+          settings,
+          BlocProvider(
+            create: (context) => getIt<AuthCubit>(),
+            child: ForgotPasswordScreen(),
+          ),
+        );
       case Pages.onboarding:
         return _buildRoute(
-            settings, BlocProvider(create: (context) => getIt<OnBoardingCubit>(), child: OnBoardingPage()));
+          settings,
+          BlocProvider(
+            create: (context) => getIt<OnBoardingCubit>(),
+            child: OnBoardingPage(),
+          ),
+        );
       case Pages.payment_categories:
         return _buildRoute(
-            settings,
-            BlocProvider(
-              create: (context) => getIt<PaymentCategoriesCubit>(),
-              child: PaymentCategoriesPage(),
-            ));
+          settings,
+          BlocProvider(
+            create: (context) => getIt<PaymentCategoriesCubit>(),
+            child: PaymentCategoriesPage(),
+          ),
+        );
       case Pages.payments:
         Map<dynamic, dynamic> args = settings.arguments as Map;
         return _buildRoute(
-            settings,
-            BlocProvider(
-              create: (context) => getIt<PaymentsCubit>(),
-              child: PaymentsPage(
-                setting: args["setting"],
-                initialIndex: args["initialIndex"],
-              ),
-            ));
+          settings,
+          BlocProvider(
+            create: (context) => getIt<PaymentsCubit>(),
+            child: PaymentsPage(
+              setting: args["setting"],
+              initialIndex: args["initialIndex"],
+            ),
+          ),
+        );
       default:
         return _buildRoute(settings, Text("Loading data...."));
     }

@@ -5,6 +5,6 @@ class SettingsViewState with _$SettingsViewState {
   const factory SettingsViewState.initial({
     Color? incomingColor,
     Color? outgoingColor,
-    Color? reorderColor
+    Color? reorderColor,
   }) = _Initial;
 }

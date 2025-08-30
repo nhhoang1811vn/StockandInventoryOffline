@@ -1,7 +1,7 @@
 part of 'report_detail_cubit.dart';
 
 @freezed
-class ReportDetailState with _$ReportDetailState{
+class ReportDetailState with _$ReportDetailState {
   const factory ReportDetailState.initial({
     required BaseState state,
     ReportType? type,

@@ -2,10 +2,10 @@ import 'package:good_manager/presentation/markdown/md_provider.dart';
 import 'package:good_manager/presentation/markdown/md_resource_vn.dart';
 import 'package:good_manager/presentation/pages/help_content.dart';
 
-class MDProviderIpmVN extends MDProvider{
+class MDProviderIpmVN extends MDProvider {
   @override
   String getHelpText(HelpType type) {
-    switch(type){
+    switch (type) {
       case HelpType.STORE:
         return MarkdownResourceVN.helpStores;
       case HelpType.GOODS:
@@ -18,13 +18,14 @@ class MDProviderIpmVN extends MDProvider{
         return MarkdownResourceVN.helpPayments;
       case HelpType.MIN_QUAN:
         return MarkdownResourceVN.helpMinQuan;
-      }
+    }
   }
 
   @override
   String getWhatNews() {
     return MarkdownResourceVN.whatNews;
   }
+
   @override
   String getDonationText() {
     return MarkdownResourceVN.donationText;

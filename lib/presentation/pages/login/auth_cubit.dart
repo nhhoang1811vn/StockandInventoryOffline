@@ -5,80 +5,82 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/common/path_utils.dart';
-import 'package:good_manager/domain/app_settings.dart';
-import 'package:good_manager/domain/usecases/stores/stores_usecases.dart';
+import 'package:good_manager/domain/usecase/usecase.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-import '../../../db/db_helper.dart';
+import '../../../data/app_settings.dart';
+import '../../../data/data.dart';
 
 part 'auth_state.dart';
-
 
 @injectable
 class AuthCubit extends Cubit<AuthState> {
   final StoresUseCase useCase;
-  //final Storage storage;
-  final AppSettings appSettings;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  AuthCubit({required this.useCase, required this.appSettings}) : super(AuthInitial());
 
-  void downloadUserData() async{
-    downloadDBFile((state){
-      if (state == TaskState.success){
+  AuthCubit({required this.useCase}) : super(AuthInitial());
+
+  void downloadUserData() async {
+    downloadDBFile((state) {
+      if (state == TaskState.success) {
         print("taskstate success");
         checkStore();
-      }else if (state == TaskState.canceled || state == TaskState.error){
+      } else if (state == TaskState.canceled || state == TaskState.error) {
         print("taskstate error");
         checkStore();
       }
     });
   }
-  void checkStore() async{
+
+  void checkStore() async {
     await Future.delayed(Duration(seconds: 2));
-    try{
-      if (Platform.isIOS){
+    try {
+      if (Platform.isIOS) {
         DBHelper dbHelper = DBHelper();
         await dbHelper.reopen();
       }
       final stores = await useCase.getAll();
-      if (stores.isNotEmpty){
+      if (stores.isNotEmpty) {
         await updateSelectedStore();
         emit(UserSignInSuccessfulWithStore());
-      }else{
+      } else {
         emit(UserSignInSuccessfulWithNoStore());
       }
-    }catch (e) {
+    } catch (e) {
       emit(UserSignInSuccessfulWithNoStore());
     }
   }
+
   Future<void> updateSelectedStore() async {
-    final storeId = appSettings.getSelectedStoreId();
+    final storeId = AppSettings.getSelectedStoreId();
     final stores = await useCase.getAll();
     var matched = false;
-    for (var store in stores){
-      if (storeId != -1 && storeId == store.id){
+    for (var store in stores) {
+      if (storeId != -1 && storeId == store.id) {
         matched = true;
         break;
       }
     }
-    if (!matched){
-      appSettings.setSelectedStoreId(stores.first.id!);
-      appSettings.setSelectedStoreName(stores.first.name);
+    if (!matched) {
+      AppSettings.setSelectedStoreId(stores.first.id!);
+      AppSettings.setSelectedStoreName(stores.first.name);
     }
   }
-  String getCloudFilePath(){
+
+  String getCloudFilePath() {
     String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null){
+    if (uid != null) {
       return "$uid/database.db";
-    }else{
+    } else {
       throw Exception("file not found");
     }
   }
-  void downloadDBFile(Function(TaskState) callback) async{
+
+  void downloadDBFile(Function(TaskState) callback) async {
     final storageRef = FirebaseStorage.instance.ref();
-    try{
+    try {
       final filePath = getCloudFilePath();
       final fileRef = storageRef.child(filePath);
       String dbPath = await PathUtils().getDatabasePath();
@@ -88,11 +90,9 @@ class AuthCubit extends Cubit<AuthState> {
       downloadTask.snapshotEvents.listen((taskSnapshot) {
         callback(taskSnapshot.state);
       });
-    }
-    on FirebaseException{
+    } on FirebaseException {
       callback(TaskState.error);
-    }
-    on Exception{
+    } on Exception {
       callback(TaskState.canceled);
     }
   }
@@ -106,12 +106,14 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthError(e.toString()));
     }
   }
+
   Future<void> signInWithEmail(String email, String password) async {
     emit(AuthLoading());
     User? currentUser = FirebaseAuth.instance.currentUser;
     try {
       if (currentUser != null && currentUser.isAnonymous) {
-        final credential = EmailAuthProvider.credential(email: email, password: password);
+        final credential =
+            EmailAuthProvider.credential(email: email, password: password);
         await currentUser.linkWithCredential(credential);
       } else {
         UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -120,12 +122,12 @@ class AuthCubit extends Cubit<AuthState> {
         );
       }
       emit(UserSignIn());
-    }
-    on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e);
     }
   }
-  void handleFirebaseAuthError(e){
+
+  void handleFirebaseAuthError(e) {
     String error = "";
     switch (e.code) {
       case "provider-already-linked":
@@ -135,7 +137,8 @@ class AuthCubit extends Cubit<AuthState> {
         error = "The provider's credential is not valid.";
         break;
       case "credential-already-in-use":
-        error = "The account corresponding to the credential already exists, or is already linked to a Firebase User.";
+        error =
+            "The account corresponding to the credential already exists, or is already linked to a Firebase User.";
         break;
       case "email-already-in-use":
         error = "The email is already in used";
@@ -145,6 +148,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
     emit(AuthError(error));
   }
+
   // Future<void> signInWithGoogleInWindowPlatform() async{
   //   final googleSignInArgs = GoogleSignInArgs(
   //     clientId:
@@ -166,7 +170,7 @@ class AuthCubit extends Cubit<AuthState> {
   //     emit(AuthError(err.toString()));
   //   }
   // }
-  Future<void> signInWithApple() async{
+  Future<void> signInWithApple() async {
     emit(AuthLoading());
     try {
       // final appleProvider = AppleAuthProvider();
@@ -197,22 +201,24 @@ class AuthCubit extends Cubit<AuthState> {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null && user.isAnonymous) {
         await user.linkWithCredential(oauthCredential);
-      } else {
-      }
+      } else {}
       emit(UserSignIn());
-    }on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e);
     }
   }
-  Future<void> signInWithGuest() async{
+
+  Future<void> signInWithGuest() async {
     emit(AuthLoading());
-    try{
-      UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInAnonymously();
       emit(UserSignIn());
-    }on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e);
     }
   }
+
   Future<void> signInWithGoogle() async {
     emit(AuthLoading());
     try {
@@ -224,7 +230,7 @@ class AuthCubit extends Cubit<AuthState> {
       }
       // Obtain the auth details from the request
       final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
+          await googleUser.authentication;
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -249,18 +255,23 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> signUpWithEmail(
-      String name, String email, String password) async {
+    String name,
+    String email,
+    String password,
+  ) async {
     emit(AuthLoading());
     try {
       await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
       await _auth.currentUser!.updateDisplayName(name);
       //await _auth.currentUser!.sendEmailVerification();
       //await _auth.signOut();
       if (isClosed) return;
       emit(UserSingupButNotVerified());
     } on FirebaseAuthException catch (e) {
-    handleFirebaseAuthError(e);
+      handleFirebaseAuthError(e);
     }
   }
 }

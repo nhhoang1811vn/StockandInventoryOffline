@@ -1,16 +1,14 @@
-
+import 'package:good_manager/data/app_settings.dart';
 import 'package:good_manager/presentation/markdown/md_provider.dart';
 import 'package:good_manager/presentation/markdown/md_provider_ipm_en.dart';
 import 'package:good_manager/presentation/markdown/md_provider_ipm_vn.dart';
 
-import '../../main.dart';
-
-class MDProviderFactory{
-  static MDProvider get(){
-    String code = storage.getLanguageCode();
-    if (code == "vi"){
+class MDProviderFactory {
+  static MDProvider get() {
+    String code = AppSettings.getLanguageCode();
+    if (code == "vi") {
       return MDProviderIpmVN();
-    }else{
+    } else {
       return MDProviderIpmEN();
     }
     //add another language here.

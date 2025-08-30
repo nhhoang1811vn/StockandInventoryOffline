@@ -1,5 +1,5 @@
-class MarkdownResourceEN{
- static const String donationText = """
+class MarkdownResourceEN {
+  static const String donationText = """
  
  🌟 Help Us Build a Better App! 🌟
 
@@ -26,7 +26,7 @@ https://me.momo.vn/qr/nguyen-huy-hoang-z2kUuMD7go
 With gratitude,
 AppViet Team
   """;
- static const String whatNews = """
+  static const String whatNews = """
  ### Version 1.0.40 - 2025 Jul 25    
   * Fixed issue can not scan barcode on Android platform.
   * Fixed issue low stock alert not displayed when start app. 
@@ -97,7 +97,7 @@ AppViet Team
   * First Release.
  """;
 
- static const String helpDocuments = """
+  static const String helpDocuments = """
   ## Document Management Guide  
 
 There are two types of documents:
@@ -147,7 +147,7 @@ The app supports **Batch Scan Mode** for quick entry:
 Keep your documents organized for accurate inventory tracking and smooth operations! ✅  
 """;
 
- static const String helpGoods = """
+  static const String helpGoods = """
   ## Goods Management Guide  
 
 The **Goods** screen displays a catalog of all your products, along with their current stock levels.
@@ -176,7 +176,7 @@ Next time, you’ll be able to use the barcode scanner to add them instantly.
 Efficient goods management helps speed up your workflow and maintain accurate stock control. ✅  
 """;
 
- static const String helpStores = """
+  static const String helpStores = """
   ## Store Management Guide  
 
 You can organize and track items by **Stores** (e.g. Shops, Warehouses).
@@ -207,7 +207,7 @@ You can organize and track items by **Stores** (e.g. Shops, Warehouses).
 
 Managing stores separately helps you maintain accurate stock tracking across multiple locations. ✅  
 """;
- static const String helpSupplierCustomers = """
+  static const String helpSupplierCustomers = """
   ## Supplier & Customer Management Guide  
 
 You can manage and track both your **Suppliers** and **Customers** in one place.  
@@ -229,7 +229,7 @@ Add their details manually or **import directly from your device's Contacts**.
 
 Keeping your supplier and customer information organized ensures smoother transactions and accurate reporting. ✅  
 """;
- static const String helpPayments = """
+  static const String helpPayments = """
   ## Payment Management Guide  
 
 There are two types of payments:
@@ -272,6 +272,7 @@ There are two types of payments:
 
 Keep your payment records up to date to ensure accurate financial tracking! ✅  
 """;
+
 //  static const String helpSavePayment = """
 //   ## Payment Saving Guide
 //
@@ -302,7 +303,7 @@ Keep your payment records up to date to ensure accurate financial tracking! ✅
 //
 // """;
 
- static const String helpMinQuan = """
+  static const String helpMinQuan = """
   ## Minimum Quantity Guide  
 
 This page helps you manage stock levels by setting a **Minimum Quantity** for each product.  
@@ -330,5 +331,4 @@ This page helps you manage stock levels by setting a **Minimum Quantity** for ea
 
 Keep your stock levels under control and avoid unexpected shortages! 🔔  
 """;
-
 }

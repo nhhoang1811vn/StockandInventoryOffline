@@ -3,15 +3,12 @@ import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/app_settings.dart';
-import 'package:good_manager/domain/entities/payment.dart';
-import 'package:good_manager/domain/entities/wallet.dart';
-import 'package:good_manager/domain/usecases/payment/payment_usercases.dart';
-import 'package:good_manager/domain/usecases/wallets/wallet_usecases.dart';
-import 'package:good_manager/presentation/constants.dart';
+import 'package:good_manager/data/app_settings.dart';
+import 'package:good_manager/domain/usecase/usecase.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../domain/entities/models/name.dart';
+import '../../../../constant/constant.dart';
+import '../../../../domain/entity/entity.dart';
 import '../../base/base_state.dart';
 
 part 'save_wallet_cubit.freezed.dart';
@@ -21,20 +18,23 @@ part 'save_wallet_state.dart';
 class SaveWalletCubit extends Cubit<SaveWalletState> {
   final WalletUseCases useCase;
   final PaymentUseCases paymentUseCases;
-  final AppSettings appSettings;
-  SaveWalletCubit({required this.useCase, required this.paymentUseCases, required this.appSettings})
-      : super(SaveWalletState.initial(state: InitialState()));
+
+  SaveWalletCubit({
+    required this.useCase,
+    required this.paymentUseCases,
+  }) : super(SaveWalletState.initial(state: InitialState()));
 
   void init(Wallet item) {
     SaveWalletState initState;
     initState = state.copyWith(
-        item: item,
-        name: (item.name.isNotEmpty)
-            ? NameInput.dirty(value: item.name)
-            : NameInput.pure(),
-        //name: NameInput.dirty(value: item.name),
-        description: item.description,
-        color: Color(item.color));
+      item: item,
+      name: (item.name.isNotEmpty)
+          ? NameInput.dirty(value: item.name)
+          : NameInput.pure(),
+      //name: NameInput.dirty(value: item.name),
+      description: item.description,
+      color: Color(item.color),
+    );
     emit(initState);
   }
 
@@ -66,10 +66,10 @@ class SaveWalletCubit extends Cubit<SaveWalletState> {
       Wallet item = state.item!;
       item.name = state.name.value;
       item.description = state.description;
-      item.color = state.color!.toARGB32();
+      item.color = 0; //state.color;//todo
       if (item.id == null) {
         int id = await useCase.insert(item);
-        if (state.amount != 0 && state.amount != null){
+        if (state.amount != 0 && state.amount != null) {
           item.id = id;
           var payment = Payment();
           payment.description = "initial amount";
@@ -77,7 +77,7 @@ class SaveWalletCubit extends Cubit<SaveWalletState> {
           payment.date = DateTime.now();
           payment.walletId = id;
           payment.type = PaymentType.inbound;
-          payment.storeId = appSettings.getSelectedStoreId();
+          payment.storeId = AppSettings.getSelectedStoreId();
           paymentUseCases.insert(payment);
         }
       } else {

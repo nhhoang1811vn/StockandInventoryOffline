@@ -4,7 +4,7 @@ import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:vibration/vibration.dart';
 
-import '../../../main.dart';
+import '../../../data/app_settings.dart';
 
 class BarcodeScannerPage extends StatefulWidget {
   const BarcodeScannerPage({super.key});
@@ -39,7 +39,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
             final barcode = capture.barcodes.first;
             final String? rawValue = barcode.rawValue;
             setState(() => isScanned = true);
-            if (rawValue != null){
+            if (rawValue != null) {
               handleABarcodeFound();
             }
             Navigator.pop(context, rawValue);
@@ -48,14 +48,15 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
       ),
     );
   }
-  void handleABarcodeFound() async{
-    var enableSound = storage.getBarcodeScannerEnableBeep();
-    var enableVibrate = storage.getBarcodeScannerEnableVibrate();
-    if (enableSound){
+
+  void handleABarcodeFound() async {
+    var enableSound = AppSettings.getBarcodeScannerEnableBeep();
+    var enableVibrate = AppSettings.getBarcodeScannerEnableVibrate();
+    if (enableSound) {
       //FlutterBeep.beep();
       await _audioPlayer.play(AssetSource('sounds/beep.mp3'));
     }
-    if (enableVibrate){
+    if (enableVibrate) {
       var vibrationCapabilities = await Vibration.hasVibrator();
 
       if (vibrationCapabilities == true) {

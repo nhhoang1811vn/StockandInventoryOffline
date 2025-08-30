@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/app_settings.dart';
+import 'package:good_manager/domain/usecase/usecase.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../domain/entities/group.dart';
-import '../../../../domain/usecases/groups/groups_usecases.dart';
+import '../../../../data/app_settings.dart';
+import '../../../../domain/entity/entity.dart';
 import '../../base/base_state.dart';
 
 part 'select_group_cubit.freezed.dart';
@@ -13,19 +13,18 @@ part 'select_group_state.dart';
 @injectable
 class SelectGroupCubit extends Cubit<SelectGroupState> {
   final GroupsUseCases groupsUseCase;
-  final AppSettings appSettings;
 
-  SelectGroupCubit({required this.groupsUseCase, required this.appSettings})
+  SelectGroupCubit({required this.groupsUseCase})
       : super(SelectGroupState.initial(state: InitialState()));
 
-  select(Group? item) {
+  void select(Group? item) {
     emit(
       state.copyWith(selectedGroupId: item?.id, selectedGroupName: item?.name),
     );
   }
 
   void init(int? id, int? groupId) async {
-    int storeId = appSettings.getSelectedStoreId();
+    int storeId = AppSettings.getSelectedStoreId();
     List<Group> groups = await groupsUseCase.getAllByStoreId(storeId);
     Map<int, Group> items = {};
     Group rootGroup = Group();

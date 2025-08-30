@@ -15,8 +15,8 @@ class HomeState with _$HomeState {
     @Default(0) double sumExpense,
     @Default([]) List<Wallet> wallets,
     @Default(0) double totalBalance,
-        Color? incomingColor,
-      Color? outgoingColor,
-    @Default([]) List<Payment> payments
+    Color? incomingColor,
+    Color? outgoingColor,
+    @Default([]) List<Payment> payments,
   }) = _Initial;
 }

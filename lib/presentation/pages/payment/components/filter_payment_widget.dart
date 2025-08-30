@@ -1,33 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/domain/entities/customer.dart';
-import 'package:good_manager/domain/entities/payment_category.dart';
-import 'package:good_manager/domain/entities/payments_setting.dart';
-import 'package:good_manager/domain/entities/supplier.dart';
-import 'package:good_manager/domain/entities/wallet.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
-import 'package:good_manager/presentation/constants.dart';
 import 'package:good_manager/presentation/pages/payment/components/text_selection.dart';
-import 'package:good_manager/presentation/widgets/outline_button.dart';
+import 'package:good_manager/presentation/widget/widget.dart';
 
-import '../../../widgets/primary_button.dart';
+import '../../../../constant/constant.dart';
+import '../../../../domain/entity/entity.dart';
 
 class FilterPaymentWidget extends StatefulWidget {
-  final void Function() onResetAllPressed;
+  final Function() onResetAllPressed;
   final List<PaymentCategory?> categories;
   final List<Wallet> wallets;
   final List<Customer> customers;
   final List<Supplier> suppliers;
-  final void Function(PaymentsSetting setting) onApplyPressed;
+  final Function(PaymentsSetting setting) onApplyPressed;
   final PaymentsSetting setting;
 
-  FilterPaymentWidget(
-      {required this.onResetAllPressed,
-      required this.categories,
-      required this.wallets,
-      required this.customers,
-      required this.suppliers,
-      required this.onApplyPressed,
-      required this.setting});
+  FilterPaymentWidget({
+    required this.onResetAllPressed,
+    required this.categories,
+    required this.wallets,
+    required this.customers,
+    required this.suppliers,
+    required this.onApplyPressed,
+    required this.setting,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -45,7 +41,8 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
   DateTime? _startDate;
   DateTime? _endDate;
 
-  DateTimeRange dateRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
+  DateTimeRange dateRange =
+      DateTimeRange(start: DateTime.now(), end: DateTime.now());
 
   @override
   void initState() {
@@ -66,86 +63,136 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center( child: Text(AppLocalizations.of(context)!.title_filter, style: Theme.of(context).textTheme.titleLarge)),
+          Center(
+            child: Text(
+              AppLocalizations.of(context)!.title_filter,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
           SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.sort_by_date, style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            AppLocalizations.of(context)!.sort_by_date,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           SizedBox(height: 8),
           buildSortByDateOptions(),
           SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.by_category, style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            AppLocalizations.of(context)!.by_category,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           SizedBox(height: 8),
           buildCategoriesOptions(widget.categories),
           SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.by_wallet, style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            AppLocalizations.of(context)!.by_wallet,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           SizedBox(height: 8),
           buildWalletsOptions(widget.wallets),
           SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.by_customer, style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            AppLocalizations.of(context)!.by_customer,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           SizedBox(height: 8),
           buildCustomersOptions(widget.customers),
           SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.by_supplier, style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            AppLocalizations.of(context)!.by_supplier,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           SizedBox(height: 8),
           buildSuppliersOptions(widget.suppliers),
           SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.by_date, style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            AppLocalizations.of(context)!.by_date,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           SizedBox(height: 8),
           buildDatesWidget(),
           SizedBox(height: 16),
           Row(
             children: [
               Expanded(
-                child: MyOutlineButton(AppLocalizations.of(context)!.action_reset_all, () {
+                child: MyOutlineButton(
+                    AppLocalizations.of(context)!.action_reset_all, () {
                   widget.onResetAllPressed();
                 }),
               ),
               SizedBox(width: 16),
               Expanded(
-                child: PrimaryButton(AppLocalizations.of(context)!.action_apply, () {
-                  widget.onApplyPressed(widget.setting.copyWith(
+                child: PrimaryButton(AppLocalizations.of(context)!.action_apply,
+                    () {
+                  widget.onApplyPressed(
+                    widget.setting.copyWith(
                       sortByDateNewestFirst: _sortByDateNewestFirst,
                       selectedCategoryIds: _selectedCategoryIds,
                       selectedWalletIds: _selectedWalletIds,
                       selectedCustomerIds: _selectedCustomerIds,
                       selectedSupplierIds: _selectedSupplierIds,
                       startDate: _startDate,
-                      endDate: _endDate));
+                      endDate: _endDate,
+                    ),
+                  );
                 }),
-              )
+              ),
             ],
-          )
+          ),
         ],
       ),
     );
   }
-  Widget buildSortByDateOptions(){
+
+  Widget buildSortByDateOptions() {
     List<Widget> items = [];
-    items.add(AppTextSelection(item: AppLocalizations.of(context)!.newest_to_oldest, isSelected: _sortByDateNewestFirst, onPressed: (){
-      setState(() {
-        _sortByDateNewestFirst = true;
-      });
-    }));
-    items.add(AppTextSelection(item: AppLocalizations.of(context)!.oldest_to_newest, isSelected: !_sortByDateNewestFirst, onPressed: (){
-      setState(() {
-        _sortByDateNewestFirst = false;
-      });
-    }));
+    items.add(
+      AppTextSelection(
+        item: AppLocalizations.of(context)!.newest_to_oldest,
+        isSelected: _sortByDateNewestFirst,
+        onPressed: () {
+          setState(() {
+            _sortByDateNewestFirst = true;
+          });
+        },
+      ),
+    );
+    items.add(
+      AppTextSelection(
+        item: AppLocalizations.of(context)!.oldest_to_newest,
+        isSelected: !_sortByDateNewestFirst,
+        onPressed: () {
+          setState(() {
+            _sortByDateNewestFirst = false;
+          });
+        },
+      ),
+    );
     return Wrap(spacing: 8, runSpacing: 8, children: items);
   }
+
   Widget buildCategoriesOptions(List<PaymentCategory?> categories) {
     List<Widget> items = [];
-    items.add(AppTextSelection(
+    items.add(
+      AppTextSelection(
         item: AppLocalizations.of(context)!.show_all,
         isSelected: _selectedCategoryIds.isEmpty,
         onPressed: () {
           setState(() {
             _selectedCategoryIds = {};
           });
-        }));
+        },
+      ),
+    );
     for (var category in categories) {
-      items.add(AppTextSelection(
-          icon: category == null ? null : Text(category.icon, style: TextStyle(fontSize: 20)),
-          item: category == null ? AppLocalizations.of(context)!.no_category : category.name,
+      items.add(
+        AppTextSelection(
+          icon: category == null
+              ? null
+              : Text(category.icon, style: TextStyle(fontSize: 20)),
+          item: category == null
+              ? AppLocalizations.of(context)!.no_category
+              : category.name,
           isSelected: _selectedCategoryIds.contains(category?.id),
           onPressed: () {
             setState(() {
@@ -155,24 +202,34 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
                 _selectedCategoryIds.add(category?.id);
               }
             });
-          }));
+          },
+        ),
+      );
     }
     return Wrap(spacing: 8, runSpacing: 8, children: items);
   }
 
   Widget buildWalletsOptions(List<Wallet> wallets) {
     List<Widget> items = [];
-    items.add(AppTextSelection(
+    items.add(
+      AppTextSelection(
         item: AppLocalizations.of(context)!.show_all,
         isSelected: _selectedWalletIds.isEmpty,
         onPressed: () {
           setState(() {
             _selectedWalletIds = {};
           });
-        }));
-    for (var wallet in wallets){
-      items.add(AppTextSelection(
-          icon: Icon(UIConstants.walletIconData, color: Color(wallet.color), size: 20,),
+        },
+      ),
+    );
+    for (var wallet in wallets) {
+      items.add(
+        AppTextSelection(
+          icon: Icon(
+            UIConstants.walletIconData,
+            color: Color(wallet.color),
+            size: 20,
+          ),
           item: wallet.name,
           isSelected: _selectedWalletIds.contains(wallet.id),
           onPressed: () {
@@ -183,23 +240,29 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
                 _selectedWalletIds.add(wallet.id!);
               }
             });
-          }));
+          },
+        ),
+      );
     }
     return Wrap(spacing: 8, runSpacing: 8, children: items);
   }
 
   Widget buildCustomersOptions(List<Customer> customer) {
     List<Widget> items = [];
-    items.add(AppTextSelection(
+    items.add(
+      AppTextSelection(
         item: AppLocalizations.of(context)!.show_all,
         isSelected: _selectedCustomerIds.isEmpty,
         onPressed: () {
           setState(() {
             _selectedCustomerIds = {};
           });
-        }));
-    for (var customer in customer){
-      items.add(AppTextSelection(
+        },
+      ),
+    );
+    for (var customer in customer) {
+      items.add(
+        AppTextSelection(
           item: customer.name,
           isSelected: _selectedCustomerIds.contains(customer.id),
           onPressed: () {
@@ -210,23 +273,29 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
                 _selectedCustomerIds.add(customer.id!);
               }
             });
-          }));
+          },
+        ),
+      );
     }
     return Wrap(spacing: 8, runSpacing: 8, children: items);
   }
 
   Widget buildSuppliersOptions(List<Supplier> suppliers) {
     List<Widget> items = [];
-    items.add(AppTextSelection(
+    items.add(
+      AppTextSelection(
         item: AppLocalizations.of(context)!.show_all,
         isSelected: _selectedSupplierIds.isEmpty,
         onPressed: () {
           setState(() {
             _selectedSupplierIds = {};
           });
-        }));
-    for (var supplier in suppliers){
-      items.add(AppTextSelection(
+        },
+      ),
+    );
+    for (var supplier in suppliers) {
+      items.add(
+        AppTextSelection(
           item: supplier.name,
           isSelected: _selectedSupplierIds.contains(supplier.id),
           onPressed: () {
@@ -237,7 +306,9 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
                 _selectedSupplierIds.add(supplier.id!);
               }
             });
-          }));
+          },
+        ),
+      );
     }
     return Wrap(spacing: 8, runSpacing: 8, children: items);
   }
@@ -249,26 +320,28 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
         Row(
           children: [
             AppTextSelection(
-                item: AppLocalizations.of(context)!.show_all,
-                isSelected: isSelectedShowAll,
-                onPressed: () {
-                  setState(() {
-                    _startDate = null;
-                    _endDate = null;
-                  });
-                }),
+              item: AppLocalizations.of(context)!.show_all,
+              isSelected: isSelectedShowAll,
+              onPressed: () {
+                setState(() {
+                  _startDate = null;
+                  _endDate = null;
+                });
+              },
+            ),
             SizedBox(
               width: 8,
             ),
             AppTextSelection(
-                item: AppLocalizations.of(context)!.report_type_custom,
-                isSelected: !isSelectedShowAll,
-                onPressed: () {
-                  setState(() {
-                    _startDate = DateTime.now();
-                    _endDate = DateTime.now();
-                  });
-                }),
+              item: AppLocalizations.of(context)!.report_type_custom,
+              isSelected: !isSelectedShowAll,
+              onPressed: () {
+                setState(() {
+                  _startDate = DateTime.now();
+                  _endDate = DateTime.now();
+                });
+              },
+            ),
           ],
         ),
         if (!isSelectedShowAll)
@@ -278,49 +351,65 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
               children: [
                 Row(
                   children: [
-                    Expanded(child: Text(AppLocalizations.of(context)!.start_date)),
+                    Expanded(
+                      child: Text(AppLocalizations.of(context)!.start_date),
+                    ),
                     SizedBox(
                       width: 8,
                     ),
-                    Expanded(child: Text(AppLocalizations.of(context)!.end_date))
+                    Expanded(
+                      child: Text(AppLocalizations.of(context)!.end_date),
+                    ),
                   ],
                 ),
                 SizedBox(height: 4),
                 Row(
                   children: [
                     Expanded(
-                        child: SizedBox(
-                            height: 40,
-                            child: AppTextSelection(
-                                item: DateFormatFactory.getDateFormat().format(_startDate!),
-                                isSelected: false,
-                                onPressed: () {
-                                  pickDateRange();
-                                }))),
+                      child: SizedBox(
+                        height: 40,
+                        child: AppTextSelection(
+                          item: DateFormatFactory.getDateFormat()
+                              .format(_startDate!),
+                          isSelected: false,
+                          onPressed: () {
+                            pickDateRange();
+                          },
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       width: 8,
                     ),
                     Expanded(
-                        child: SizedBox(
-                            height: 40,
-                            child: AppTextSelection(
-                                item: DateFormatFactory.getDateFormat().format(_endDate!),
-                                isSelected: false,
-                                onPressed: () {
-                                  pickDateRange();
-                                }))),
+                      child: SizedBox(
+                        height: 40,
+                        child: AppTextSelection(
+                          item: DateFormatFactory.getDateFormat()
+                              .format(_endDate!),
+                          isSelected: false,
+                          onPressed: () {
+                            pickDateRange();
+                          },
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ],
             ),
-          )
+          ),
       ],
     );
   }
 
   Future pickDateRange() async {
     DateTimeRange? result = await showDateRangePicker(
-        context: context, initialDateRange: dateRange, firstDate: DateTime(1900), lastDate: DateTime(2100));
+      context: context,
+      initialDateRange: dateRange,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
 
     if (result != null) {
       setState(() {

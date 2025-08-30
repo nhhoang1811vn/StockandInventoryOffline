@@ -1,4 +1,1 @@
-enum ExportType{
-  TO_EXCEL,
-  TO_PDF
-}
+enum ExportType { TO_EXCEL, TO_PDF }

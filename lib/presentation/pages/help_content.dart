@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:good_manager/l10n/app_localizations.dart';
-enum HelpType{
+
+enum HelpType {
   STORE,
   SUPPLIER_AND_CUSTOMER,
   GOODS,
@@ -8,9 +9,10 @@ enum HelpType{
   PAYMENTS,
   MIN_QUAN
 }
-extension HelpTypeExtension on HelpType{
-  String getTitle(BuildContext context){
-    switch(this){
+
+extension HelpTypeExtension on HelpType {
+  String getTitle(BuildContext context) {
+    switch (this) {
       case HelpType.STORE:
         return AppLocalizations.of(context)!.stores_title;
       case HelpType.SUPPLIER_AND_CUSTOMER:
@@ -26,4 +28,3 @@ extension HelpTypeExtension on HelpType{
     }
   }
 }
-

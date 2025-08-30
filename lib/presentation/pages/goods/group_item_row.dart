@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/domain/entities/group.dart';
-import 'package:good_manager/presentation/constants.dart';
+
+import '../../../constant/constant.dart';
+import '../../../domain/entity/entity.dart';
 
 class GroupItemRow extends StatelessWidget {
   final Group item;
-  final void Function(Group item) onGroupTapped;
-  final void Function(Group item) onGroupLongPressed;
+  final Function(Group) onGroupTapped;
+  final Function(Group) onGroupLongPressed;
 
   GroupItemRow(this.item, this.onGroupTapped, this.onGroupLongPressed);
 
@@ -13,13 +14,22 @@ class GroupItemRow extends StatelessWidget {
     return SizedBox(
       width: 48,
       height: 48,
-      child: Center(child: Icon(UIConstants.groupIconData,
-          size: 36, color: Theme.of(context).colorScheme.primary)),
+      child: Center(
+        child: Icon(
+          UIConstants.groupIconData,
+          size: 36,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
-    TextStyle? primaryTextStyle = Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700);
+    TextStyle? primaryTextStyle = Theme.of(context)
+        .textTheme
+        .titleMedium
+        ?.copyWith(fontWeight: FontWeight.w700);
     TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
     return InkWell(
       //borderRadius: BorderRadius.circular(8),
@@ -36,8 +46,7 @@ class GroupItemRow extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(item.name,
-                    style: primaryTextStyle),
+                Text(item.name, style: primaryTextStyle),
                 Visibility(
                   visible: item.description.isNotEmpty,
                   child: Text(
@@ -46,18 +55,24 @@ class GroupItemRow extends StatelessWidget {
                   ),
                 ),
                 if (item.barCode != null && item.barCode!.isNotEmpty)
-                  Row(children: [
-                    Icon(UIConstants.barcodeIconData, size: 24, color: Theme.of(context).colorScheme.primary),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      item.barCode!,
-                      style: secondaryTextStyle,
-                    )
-                  ])
+                  Row(
+                    children: [
+                      Icon(
+                        UIConstants.barcodeIconData,
+                        size: 24,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        item.barCode!,
+                        style: secondaryTextStyle,
+                      ),
+                    ],
+                  ),
               ],
-            )
+            ),
           ],
         ),
       ),
