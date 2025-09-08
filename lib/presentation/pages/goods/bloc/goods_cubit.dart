@@ -113,10 +113,6 @@ class GoodsCubit extends Cubit<GoodsState> {
     onSearchTextChanged("");
   }
 
-  void onSortMenuClicked() {
-    emit(state.copyWith(state: OpenSortDialogListState()));
-  }
-
   void onHelpMenuClicked() async {
     emit(state.copyWith(state: OpenHelpPageState()));
   }

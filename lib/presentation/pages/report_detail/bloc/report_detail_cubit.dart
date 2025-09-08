@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/usecase/usecase.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/repo/repo.dart';
 import 'package:good_manager/util/util.dart';
 import 'package:injectable/injectable.dart';
@@ -54,12 +53,11 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     required this.walletUseCases,
   }) : super(ReportDetailState.initial(state: InitialState()));
 
-  void refresh(AppLocalizations localizations) {
-    init(localizations, false, state.type!, state.start, state.end);
+  void refresh() {
+    init(false, state.type!, state.start, state.end);
   }
 
   void init(
-    AppLocalizations localizations,
     bool isNeedUpdateSelectedValue,
     ReportType type,
     DateTime? start,
@@ -73,7 +71,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         end: end,
       ),
     );
-    load(localizations, isNeedUpdateSelectedValue);
+    load(isNeedUpdateSelectedValue);
   }
 
   void initColumn(List<ColumnReport> columns) {
@@ -112,32 +110,15 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     return outgoing;
   }
 
-  // Future<double> getQuantity(int goodId, List<Document> documents) async {
-  //   double incoming = 0.0;
-  //   double outgoing = 0.0;
-  //   for (Document document in documents) {
-  //     incoming += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(
-  //         DocumentType.incoming, goodId, document.id!);
-  //     outgoing += await documentTransactionRepository.getSumQuantityByGoodIdAndByDocumentId(
-  //         DocumentType.outgoing, goodId, document.id!);
-  //   }
-  //   return incoming - outgoing;
-  // }
-
-  //DateTime getPreviousHour(DateTime date) {
-  //  return DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch - 60 * 60 * 1000); //- 60 mins
-  // }
-
   void load(
-    AppLocalizations localizations,
     bool isNeedUpdateSelectedValue,
   ) async {
     switch (state.type) {
       case ReportType.LIST_OF_GOODS:
-        await initListOfGoods(localizations);
+        await initListOfGoods();
         break;
       case ReportType.LIST_OF_DOCUMENT:
-        await initListOfDocuments(localizations);
+        await initListOfDocuments();
         break;
       case ReportType.DEBTS_BY_SUPPLIER:
         await initDebtBySupplier();
@@ -146,10 +127,10 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         await initDebtByCustomer();
         break;
       case ReportType.OUTBOUND_PAYMENTS:
-        await initPayments(localizations, PaymentType.outbound);
+        await initPayments(PaymentType.outbound);
         break;
       case ReportType.INBOUND_PAYMENTS:
-        await initPayments(localizations, PaymentType.inbound);
+        await initPayments(PaymentType.inbound);
         break;
       case ReportType.LIST_OF_WALLETS:
         await initListOfWallets();
@@ -166,7 +147,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     if (isNeedUpdateSelectedValue) {
       updateSelectedValueForPickValuesColumn();
     }
-    update(localizations);
+    update();
   }
 
   void updateSetValuesForPickValuesColumn() {
@@ -193,7 +174,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     emit(state.copyWith(columns: newColumns));
   }
 
-  void update(AppLocalizations localizations) {
+  void update() {
     List<List<String>> data = [];
     List<String> header = [];
     for (var column in state.columns) {
@@ -224,7 +205,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       List<String> totalRow = [];
       for (int i = 0; i < state.columns.length; i++) {
         if (state.columns[i].showTotalText) {
-          totalRow.add(localizations.field_total);
+          totalRow.add("Total");
         } else if (state.columns[i].showTotal) {
           var sumAmount = 0.0;
           for (int j = 0; j < validRows.length; j++) {
@@ -299,7 +280,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     );
   }
 
-  Future<void> initListOfGoods(AppLocalizations localizations) async {
+  Future<void> initListOfGoods() async {
     List<List<String>> rows = [];
     int storeId = AppSettings.getSelectedStoreId();
     List<Good> allGoods = await goodsUseCase.getAllByStoreId(storeId);
@@ -316,7 +297,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       state.end!.endOfDay(),
     );
     for (Good good in allGoods) {
-      var groupName = localizations.no_group;
+      var groupName = "No Group";
       if (good.groupId != null) {
         Group group = await groupsUseCases.getById(good.groupId!);
         groupName = group.name;
@@ -352,7 +333,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     );
   }
 
-  Future<void> initListOfDocuments(AppLocalizations localizations) async {
+  Future<void> initListOfDocuments() async {
     List<List<String>> rows = [];
     List<Document> items =
         await documentUseCases.getInRange(state.start!, state.end!);
@@ -360,7 +341,12 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       List<String> row = [];
       row.add(DateFormatFactory.getDateFormat().format(item.date));
       row.add(item.name);
-      row.add(item.type.getTitle(localizations));
+      if (item.type == DocumentType.incoming){
+        row.add("Incoming");
+      }else{
+        row.add("Outgoing");
+      }
+      //row.add(item.type.getTitle(localizations));
       row.add(item.personName ?? '');
       row.add(getDoubleText(item.quantity));
       row.add(getDoubleText(item.amount));
@@ -453,7 +439,6 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
   }
 
   Future<void> initPayments(
-    AppLocalizations localizations,
     PaymentType type,
   ) async {
     List<List<String>> rows = [];
@@ -474,7 +459,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
       if (item.category != null) {
         name = item.category!.name;
       } else {
-        name = localizations.no_category;
+        name = "No category";
       }
       categoryIds.add(item.category?.id);
       categoryTotals[name] = (categoryTotals[name] ?? 0) + (item.amount ?? 0);

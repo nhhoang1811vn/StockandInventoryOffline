@@ -1,6 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
+import 'package:good_manager/util/currency_formatter.dart';
 
 import '../../../../constant/constant.dart';
 import '../../../../domain/entity/entity.dart';
@@ -60,7 +61,7 @@ class PaymentItemRow extends StatelessWidget {
                     Text(
                       item.category != null
                           ? item.category!.name
-                          : AppLocalizations.of(context)!.no_category,
+                          : context.tr("no_category"),
                       style: primaryTextStyle,
                     ),
                     if (item.wallet != null)
@@ -85,7 +86,7 @@ class PaymentItemRow extends StatelessWidget {
                 ),
               ),
               Text(
-                "${item.type == PaymentType.inbound ? "+" : "-"}${Config.currencyFormat.format(item.amount ?? 0)}",
+                "${item.type == PaymentType.inbound ? "+" : "-"}${CurrencyFormatter.format(context, item.amount ?? 0)}",
                 style: primaryTextStyle?.copyWith(
                   color: item.type == PaymentType.inbound
                       ? Colors.green

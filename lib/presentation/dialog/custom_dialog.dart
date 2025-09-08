@@ -1,8 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 
-import '../../l10n/app_localizations.dart';
 import 'alert_dialog.dart';
 import 'select_color_dialog.dart';
 import 'select_option_dialog.dart';
@@ -22,9 +22,7 @@ Future<void> showProgressIndicator(BuildContext context) {
     barrierDismissible: false,
     builder: (context) {
       return const Center(
-        child: CircularProgressIndicator(
-          color: Colors.blue,
-        ),
+        child: CircularProgressIndicator(),
       );
     },
   );
@@ -53,10 +51,10 @@ Future<void> showBuySubscriptionDialog(
 }) {
   return showCustomAlertDialog(
     context,
-    title: AppLocalizations.of(context)!.notification_dialog_title,
+    title: context.tr("notification"),
     message: message,
-    positiveText: AppLocalizations.of(context)!.action_yes,
-    negativeText: AppLocalizations.of(context)!.action_no,
+    positiveText: context.tr("action_yes"),
+    negativeText: context.tr("action_no"),
     onPositivePressed: () async {
       hideDialog(context);
       await RevenueCatUI.presentPaywall();
@@ -97,10 +95,10 @@ Future<void> showCustomAlertDialog(
     barrierColor: barrierColor,
     context: context,
     child: CustomAlertDialog(
-      title: title ?? AppLocalizations.of(context)!.notification_dialog_title,
+      title: title ?? context.tr("notification"),
       message: message,
-      positiveText: positiveText ?? AppLocalizations.of(context)!.action_ok,
-      negativeText: negativeText ?? AppLocalizations.of(context)!.action_cancel,
+      positiveText: positiveText ?? context.tr("ok"),
+      negativeText: negativeText ?? context.tr("cancel"),
       onNegativePressed: onNegativePressed ??
           () {
             hideDialog(context);

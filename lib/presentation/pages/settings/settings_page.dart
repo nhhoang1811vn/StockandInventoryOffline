@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 
 import '../../../constant/constant.dart';
 import '../../widget/views.dart';
@@ -19,7 +19,7 @@ class SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text(AppLocalizations.of(context)!.settings_title),
+        title: new Text(context.tr("settings")),
       ),
       body: _buildBody(),
     );
@@ -35,7 +35,7 @@ class SettingsPageState extends State<SettingsPage> {
             children: [
               ListTile(
                 leading: Icon(Icons.settings),
-                title: Text(AppLocalizations.of(context)!.menu_item_general),
+                title: Text(context.tr("general")),
                 onTap: () {
                   Navigator.of(context).pushNamed(Pages.settings_general);
                   //showSelectLanguageDialog(context);
@@ -45,7 +45,7 @@ class SettingsPageState extends State<SettingsPage> {
               buildDivider(),
               ListTile(
                 leading: Icon(Icons.visibility),
-                title: Text(AppLocalizations.of(context)!.menu_item_view),
+                title: Text(context.tr("display")),
                 onTap: () {
                   Navigator.of(context).pushNamed(Pages.settings_view);
                 },
@@ -55,7 +55,7 @@ class SettingsPageState extends State<SettingsPage> {
               ListTile(
                 leading: Icon(UIConstants.barcodeIconData),
                 title: Text(
-                  AppLocalizations.of(context)!.menu_item_barcode_scanner,
+                  context.tr("menu_item_barcode_scanner"),
                 ),
                 onTap: () => onBarcodeScannerPressed(context),
                 trailing: Icon(Icons.navigate_next),
@@ -64,7 +64,7 @@ class SettingsPageState extends State<SettingsPage> {
               ListTile(
                 leading: Icon(Icons.warning),
                 title: Text(
-                  AppLocalizations.of(context)!.menu_item_minimum_quantity,
+                  context.tr("menu_item_minimum_quantity"),
                 ),
                 onTap: () {
                   Navigator.of(context)
@@ -75,7 +75,7 @@ class SettingsPageState extends State<SettingsPage> {
               buildDivider(),
               ListTile(
                 leading: Icon(Icons.business),
-                title: Text(AppLocalizations.of(context)!.menu_item_my_company),
+                title: Text(context.tr("menu_item_my_company")),
                 trailing: Icon(Icons.navigate_next),
                 onTap: () {
                   Navigator.of(context).pushNamed(Pages.settings_my_company);
@@ -85,7 +85,7 @@ class SettingsPageState extends State<SettingsPage> {
               ListTile(
                 leading: Icon(Icons.backup),
                 title: Text(
-                  AppLocalizations.of(context)!.menu_item_backup_and_restore,
+                  context.tr("menu_item_backup_and_restore"),
                 ),
                 onTap: () =>
                     Navigator.of(context).pushNamed(Pages.settings_data),

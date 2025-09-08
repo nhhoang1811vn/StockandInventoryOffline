@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.dart';
 import 'package:good_manager/presentation/pages/history/widget/item_history_row.dart';
@@ -48,7 +48,7 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
-        title: new Text(AppLocalizations.of(context)!.item_history_title),
+        title: new Text(context.tr("item_history_title")),
       ),
     );
   }
@@ -86,7 +86,7 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  AppLocalizations.of(context)!.empty_document,
+                  context.tr("empty_document"),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -170,17 +170,17 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
         children: [
           if (state.start != null)
             Text(
-              "${AppLocalizations.of(context)!.start_date}:${DateFormatFactory.getDateFormat().format(state.start!)}",
+              "${context.tr("start_date")}:${DateFormatFactory.getDateFormat().format(state.start!)}",
             ),
           if (state.end != null)
             Text(
-              "${AppLocalizations.of(context)!.end_date}:${DateFormatFactory.getDateFormat().format(state.end!)}",
+              "${context.tr("end_date")}:${DateFormatFactory.getDateFormat().format(state.end!)}",
             ),
           IntrinsicHeight(
             child: Row(
               children: [
                 Text(
-                  "${AppLocalizations.of(context)!.field_start_period}: ${Config.currencyFormat.format(state.startPeriodQuantity)}",
+                  "${context.tr("field_start_period")}: ${StringUtils.getQuantityText(state.startPeriodQuantity)}",
                   style: textStyle,
                 ),
                 SizedBox(
@@ -194,7 +194,7 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
                   width: 4,
                 ),
                 Text(
-                  "${AppLocalizations.of(context)!.field_in}: ${Config.currencyFormat.format(state.inQuantity)}",
+                  "${context.tr("field_in")}: ${StringUtils.getQuantityText(state.inQuantity)}",
                   style: textStyle,
                 ),
                 SizedBox(
@@ -208,7 +208,7 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
                   width: 4,
                 ),
                 Text(
-                  "${AppLocalizations.of(context)!.field_out}: ${Config.currencyFormat.format(state.outQuantity)}",
+                  "${context.tr("field_out")}: ${StringUtils.getQuantityText(state.outQuantity)}",
                   style: textStyle,
                 ),
                 SizedBox(
@@ -222,7 +222,7 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
                   width: 4,
                 ),
                 Text(
-                  "${AppLocalizations.of(context)!.field_end_period}: ${Config.currencyFormat.format(state.endPeriodQuantity)}",
+                  "${context.tr("field_end_period")}: ${StringUtils.getQuantityText(state.endPeriodQuantity)}",
                   style: textStyle,
                 ),
               ],

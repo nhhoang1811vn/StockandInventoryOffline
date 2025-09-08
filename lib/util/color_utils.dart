@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ColorUtils {
-  ColorUtils._(); // coverage:ignore-line
+  ColorUtils._();
   static Color getItemBgColor1(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark
           ? Colors.grey.shade900

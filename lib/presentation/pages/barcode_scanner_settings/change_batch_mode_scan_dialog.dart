@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 
 import '../../../domain/entity/entity.dart';
 
@@ -25,18 +25,18 @@ class ChangeBatchModeScanDialogWidgetState
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context)!.after_each_scan),
+      title: Text(context.tr("after_each_scan")),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             Column(
               children: [
                 getRadioListTile(
-                  AppLocalizations.of(context)!.after_each_scan_auto,
+                  context.tr("after_each_scan_auto"),
                   BatchModeScan.AUTO,
                 ),
                 getRadioListTile(
-                  AppLocalizations.of(context)!.after_each_scan_manually,
+                  context.tr("after_each_scan_manually"),
                   BatchModeScan.MANUAL,
                 ),
               ],
@@ -46,7 +46,7 @@ class ChangeBatchModeScanDialogWidgetState
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(AppLocalizations.of(context)!.action_ok),
+          child: Text(context.tr("ok")),
           onPressed: () async {
             //widget.onValueChange(_mode);
             Navigator.of(context).pop(_mode);

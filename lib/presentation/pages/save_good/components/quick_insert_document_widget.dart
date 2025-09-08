@@ -1,12 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/save_good/bloc/quick_insert_document_cubit.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../app.dart';
 import '../../../../constant/constant.dart';
@@ -109,12 +108,12 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
                 children: [
                   if (widget.type == DocumentType.incoming)
                     Text(
-                      AppLocalizations.of(context)!.incoming_document_text,
+                      context.tr("incoming"),
                       style: TextStyle(fontSize: 25),
                     )
                   else
                     Text(
-                      AppLocalizations.of(context)!.outgoing_document_text,
+                      context.tr("outgoing"),
                       style: TextStyle(fontSize: 25),
                     ),
                   SizedBox(height: 16),
@@ -136,13 +135,13 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
         ),
         actions: <Widget>[
           TextButton(
-            child: Text(AppLocalizations.of(context)!.action_cancel),
+            child: Text(context.tr("cancel")),
             onPressed: () async {
               Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: Text(AppLocalizations.of(context)!.action_ok),
+            child: Text(context.tr("ok")),
             onPressed: () async {
               Navigator.of(context).pop({
                 "quantity": state.quantity,
@@ -164,7 +163,7 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
         Expanded(
           child: AppTextField(
             controller: quantityTextController,
-            labelText: AppLocalizations.of(context)!.field_quantity,
+            labelText: context.tr("quantity"),
             keyboardType: TextInputType.number,
             //inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
             onChanged:
@@ -185,8 +184,8 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
         Expanded(
           child: CurrencyAppTextField(
             labelText: widget.type == DocumentType.incoming
-                ? AppLocalizations.of(context)!.field_purchase_price
-                : AppLocalizations.of(context)!.field_sale_price,
+                ? context.tr("purchase_price")
+                : context.tr("sale_price"),
             controller: priceTextController,
             onChanged: context.read<QuickInsertDocumentCubit>().onPriceChanged,
           ),
@@ -211,7 +210,7 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
         Expanded(
           child: CurrencyAppTextField(
             readOnly: true,
-            labelText: AppLocalizations.of(context)!.field_amount,
+            labelText: context.tr("amount"),
             controller: amountTextController,
           ),
         ),
@@ -228,7 +227,7 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
     }
     return AppTextField(
       controller: dateTextController,
-      labelText: AppLocalizations.of(context)!.field_date,
+      labelText: context.tr("date"),
       keyboardType: TextInputType.datetime,
       suffix: Icon(
         Icons.keyboard_arrow_down,
@@ -263,9 +262,9 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
     return AppTextField(
       controller: personNameTextController,
       labelText: type == DocumentType.incoming
-          ? AppLocalizations.of(context)!.label_supplier_name
-          : AppLocalizations.of(context)!.label_customer_name,
-      hintText: AppLocalizations.of(context)!.hint_select,
+          ? context.tr("label_supplier_name")
+          : context.tr("label_customer_name"),
+      hintText: context.tr("hint_select"),
       keyboardType: TextInputType.none,
       readOnly: true,
       suffix: Icon(
@@ -282,8 +281,8 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
     QuickInsertDocumentState state,
   ) {
     return AppTextField(
-      labelText: AppLocalizations.of(context)!.label_description,
-      hintText: AppLocalizations.of(context)!.hint_description,
+      labelText: context.tr("label_description"),
+      hintText: context.tr("hint_description"),
       maxLines: null,
       minLines: 2,
       initialValue: state.description,

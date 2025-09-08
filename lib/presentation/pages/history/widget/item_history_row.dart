@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../constant/constant.dart';
 import '../../../../domain/entity/entity.dart';
+import '../../../../util/currency_formatter.dart';
 import '../../../../util/util.dart';
 
 class ItemHistoryRow extends StatelessWidget {
@@ -99,7 +100,7 @@ class ItemHistoryRow extends StatelessWidget {
                       children: [
                         Text(quantityText, style: primaryTextStyle),
                         Text(
-                          "${Config.currencyFormat.format(item.amount)}",
+                          "${CurrencyFormatter.format(context,item.amount)}",
                           style: secondaryTextStyle,
                         ),
                         //Text(item.amount.toString())

@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/payment_categories/bloc/payment_categories_cubit.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
 
@@ -50,7 +50,7 @@ class PaymentCategoriesPageState extends State<PaymentCategoriesPage> {
           children: [
             //Text(, style: Theme.of(context).textTheme.titleMedium,),
             CategoriesGridView(
-              header: AppLocalizations.of(context)!.inbound_categories,
+              header: context.tr("inbound_categories"),
               categories: state.inboundCategories,
               onAddNewButtonPressed: () async {
                 PaymentCategory item = PaymentCategory();
@@ -69,7 +69,7 @@ class PaymentCategoriesPageState extends State<PaymentCategoriesPage> {
             ),
             //Text(,  style: Theme.of(context).textTheme.titleMedium),
             CategoriesGridView(
-              header: AppLocalizations.of(context)!.outbound_categories,
+              header: context.tr("outbound_categories"),
               categories: state.outboundCategories,
               onAddNewButtonPressed: () async {
                 PaymentCategory item = PaymentCategory();
@@ -91,13 +91,13 @@ class PaymentCategoriesPageState extends State<PaymentCategoriesPage> {
 
   void _showCategoryOptionsDialog(PaymentCategory item) {
     var items = [
-      AppLocalizations.of(context)!.action_delete,
+      context.tr("delete"),
     ];
     showSelectOptionDialog(
       context,
       items: items,
       onItemSelected: (index) async {
-        if (items[index] == AppLocalizations.of(context)!.action_delete) {
+        if (items[index] == context.tr("delete")) {
           context.read<PaymentCategoriesCubit>().deleteCategory(item.id!);
           context.read<PaymentCategoriesCubit>().init();
         }
@@ -109,7 +109,7 @@ class PaymentCategoriesPageState extends State<PaymentCategoriesPage> {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
-        title: new Text(AppLocalizations.of(context)!.categories),
+        title: new Text(context.tr("categories")),
         actions: [],
       ),
     );

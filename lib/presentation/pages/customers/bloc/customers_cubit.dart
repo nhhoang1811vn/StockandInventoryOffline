@@ -49,10 +49,6 @@ class CustomersCubit extends Cubit<CustomersState> {
     return (state.settings.sortByName != SortByText.no_sort);
   }
 
-  void onSortMenuClicked() {
-    emit(state.copyWith(state: OpenSortDialogListState()));
-  }
-
   void onHelpMenuClick() {
     emit(state.copyWith(state: OpenHelpPageState()));
   }

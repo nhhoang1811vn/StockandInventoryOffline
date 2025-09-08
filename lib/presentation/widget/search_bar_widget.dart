@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 
 import '../utils.dart';
 
@@ -61,7 +61,7 @@ class SearchBarWidgetState extends State<SearchBarWidget> {
             ? Colors.grey[800] // Darker background for dark mode
             : Colors.grey[200],
         // Lighter for light mode
-        hintText: AppLocalizations.of(context)!.hint_search_by,
+        hintText: context.tr("hint_search_by"),
         prefixIcon: Icon(Icons.search),
         suffixIcon: Row(
           mainAxisSize: MainAxisSize.min,

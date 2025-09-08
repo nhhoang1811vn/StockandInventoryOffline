@@ -31,11 +31,7 @@ class Pages {
 
   static const String help = '/help';
   static const String helps = '/helps';
-
-  static const String take_picture = '/take_picture';
   static const String settings = "/settings";
-
-  //static const String subscriptions = "/subscriptions";
 
   static const String settings_general = "/settings_general";
   static const String settings_view = "/settings_view";
@@ -52,7 +48,6 @@ class Pages {
   static const String signup = "/signup";
   static const String signIn = "/signIn";
   static const String forgotPassword = "/forgotPassword";
-  static const String upgrade_account = "/upgrade_account";
-
+  static const String link_with = "/link_with";
   static const String payments = "/payments";
 }

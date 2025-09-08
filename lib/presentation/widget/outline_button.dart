@@ -11,16 +11,16 @@ class MyOutlineButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        side: BorderSide(color: Colors.blue.shade700, width: 1),
+        side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
-        foregroundColor: Colors.blue.shade700,
+        foregroundColor: Theme.of(context).colorScheme.primary,
       ),
       child: Text(
         text,
         style: TextStyle(
-          color: Colors.blue.shade700,
+          //color: Colors.blue.shade700,
           fontSize: 18,
           fontWeight: FontWeight.w500,
         ),

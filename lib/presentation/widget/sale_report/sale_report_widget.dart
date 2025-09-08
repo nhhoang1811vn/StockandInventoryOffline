@@ -1,7 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/widget/sale_report/sale_report_cubit.dart';
 
 import '../../../constant/constant.dart';
@@ -62,7 +62,7 @@ class SaleReportWidgetState extends State<SaleReportWidget> {
               child: Column(
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.title_chart_sale_report,
+                    context.tr("title_chart_sale_report"),
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   SizedBox(

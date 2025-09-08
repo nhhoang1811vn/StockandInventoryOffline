@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/save_supplier/components/save_supplier_form.dart';
 
 import '../../../constant/constant.dart';
@@ -40,7 +40,7 @@ class SaveSupplierPageState extends State<SaveSupplierPage> {
             width: double.infinity,
             padding: EdgeInsets.all(16),
             color: Theme.of(context).colorScheme.surface,
-            child: PrimaryButton(AppLocalizations.of(context)!.action_save, () {
+            child: PrimaryButton(context.tr("action_save"), () {
               context.read<SaveSupplierCubit>().onSaveClicked();
             }),
           ),
@@ -53,7 +53,7 @@ class SaveSupplierPageState extends State<SaveSupplierPage> {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
-        title: Text(AppLocalizations.of(context)!.save_supplier_title),
+        title: Text(context.tr("save_supplier")),
       ),
     );
   }

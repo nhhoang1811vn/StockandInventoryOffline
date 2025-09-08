@@ -1,6 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/utils.dart';
+import 'package:good_manager/util/currency_formatter.dart';
 
 import '../../../../constant/constant.dart';
 import '../../../../domain/entity/entity.dart';
@@ -123,13 +124,13 @@ class DocumentItemRow extends StatelessWidget {
     var status = Utils.getStatus(item);
     if (status == DocumentPaidStatus.paid) {
       bgColor = Colors.green.shade700;
-      statusText = AppLocalizations.of(context)!.payment_status_paid;
+      statusText = context.tr("payment_status_paid");
     } else if (status == DocumentPaidStatus.unpaid) {
       bgColor = Colors.red.shade700;
-      statusText = AppLocalizations.of(context)!.payment_status_unpaid;
+      statusText = context.tr("payment_status_unpaid");
     } else {
       bgColor = Colors.orange.shade700;
-      statusText = AppLocalizations.of(context)!.payment_status_partial;
+      statusText = context.tr("payment_status_partial");
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -150,10 +151,10 @@ class DocumentItemRow extends StatelessWidget {
         ),
         if (status == DocumentPaidStatus.partial)
           Text(
-            "${Config.currencyFormat.format(item.paid)}/${Config.currencyFormat.format(item.amount)}",
+            "${CurrencyFormatter.format(context,item.paid)}/${CurrencyFormatter.format(context,item.amount)}",
           )
         else
-          Text("${Config.currencyFormat.format(item.amount)}"),
+          Text("${CurrencyFormatter.format(context, item.amount)}"),
       ],
     );
   }

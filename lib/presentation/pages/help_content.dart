@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 
 enum HelpType {
   STORE,
@@ -14,17 +14,17 @@ extension HelpTypeExtension on HelpType {
   String getTitle(BuildContext context) {
     switch (this) {
       case HelpType.STORE:
-        return AppLocalizations.of(context)!.stores_title;
+        return context.tr("stores");
       case HelpType.SUPPLIER_AND_CUSTOMER:
-        return AppLocalizations.of(context)!.suppliers_title;
+        return context.tr("suppliers");
       case HelpType.GOODS:
-        return AppLocalizations.of(context)!.goods_title;
+        return context.tr("goods");
       case HelpType.DOCUMENTS:
-        return AppLocalizations.of(context)!.documents_title;
+        return context.tr("documents");
       case HelpType.PAYMENTS:
-        return AppLocalizations.of(context)!.payments_title;
+        return context.tr("payments_title");
       case HelpType.MIN_QUAN:
-        return AppLocalizations.of(context)!.menu_item_minimum_quantity;
+        return context.tr("menu_item_minimum_quantity");
     }
   }
 }

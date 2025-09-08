@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
 
@@ -29,7 +29,7 @@ class SaveGroupForm extends StatelessWidget {
         } else if (state.state is SaveItemSameBarcodeError) {
           ScaffoldMessenger.of(context).showSnackBar(
             snackBarWhenFailureWithText(
-              AppLocalizations.of(context)!.error_same_barcode,
+              context.tr("error_same_barcode"),
             ),
           );
         } else if (state.state is SaveItemSuccessful) {
@@ -50,8 +50,8 @@ class SaveGroupForm extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           AppTextField(
-            labelText: AppLocalizations.of(context)!.label_group_name,
-            hintText: AppLocalizations.of(context)!.hint_name,
+            labelText: context.tr("label_group_name"),
+            hintText: context.tr("hint_name"),
             initialValue: state.name.value,
             onChanged: (value) =>
                 context.read<SaveGroupCubit>().nameChanged(value),
@@ -62,8 +62,8 @@ class SaveGroupForm extends StatelessWidget {
             height: 16,
           ),
           AppTextField(
-            labelText: AppLocalizations.of(context)!.label_description,
-            hintText: AppLocalizations.of(context)!.hint_description,
+            labelText: context.tr("label_description"),
+            hintText: context.tr("hint_description"),
             initialValue: state.description,
             maxLines: null,
             minLines: 2,
@@ -86,8 +86,8 @@ class SaveGroupForm extends StatelessWidget {
         Expanded(
           child: AppTextField(
             controller: barcodeTextController,
-            labelText: AppLocalizations.of(context)!.label_bar_code,
-            hintText: AppLocalizations.of(context)!.hint_bar_code,
+            labelText: context.tr("label_bar_code"),
+            hintText: context.tr("hint_bar_code"),
             onChanged: (value) =>
                 context.read<SaveGroupCubit>().barCodeChanged(value),
             keyboardType: TextInputType.number,

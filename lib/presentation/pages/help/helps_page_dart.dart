@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/help_content.dart';
 
 import '../../markdown/md_provider_factory.dart';
@@ -16,7 +16,7 @@ class HelpsPageState extends State<HelpsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.help_title)),
+      appBar: AppBar(title: Text(context.tr("help_title"))),
       body: _buildBody(),
     );
   }

@@ -6,8 +6,7 @@ class NavigatorUtils {
   static Future<void> openUri(Uri uri) async {
     if (await canLaunchUrl(uri)) {
       await launchUrl(
-        uri,
-        mode: LaunchMode.externalApplication,
+        uri
       );
     }
   }

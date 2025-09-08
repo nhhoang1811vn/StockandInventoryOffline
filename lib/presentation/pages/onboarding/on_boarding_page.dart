@@ -1,7 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 import '../../../di/di.dart';
@@ -40,16 +40,16 @@ class OnBoardingPage extends StatelessWidget {
           //key: globalKey,
           pages: [
             PageViewModel(
-              title: AppLocalizations.of(context)!.on_boarding_title_1,
-              body: AppLocalizations.of(context)!.on_boarding_content_1,
+              title: context.tr("on_boarding_title_1"),
+              body: context.tr("on_boarding_content_1"),
               image: Container(
                 width: 150.0,
                 height: 150.0,
                 padding: EdgeInsets.all(32.0),
-                decoration: BoxDecoration(
-                  border: Border.all(width: 2, color: Colors.blue),
-                  shape: BoxShape.circle,
-                ),
+                // decoration: BoxDecoration(
+                //   border: Border.all(width: 2, color: Colors.blue),
+                //   shape: BoxShape.circle,
+                // ),
                 child: Image.asset(
                   "assets/images/onboarding_store.png",
                 ),
@@ -59,33 +59,33 @@ class OnBoardingPage extends StatelessWidget {
               decoration: pageDecoration,
             ),
             PageViewModel(
-              title: AppLocalizations.of(context)!.on_boarding_title_2,
-              body: AppLocalizations.of(context)!.on_boarding_content_2,
+              title: context.tr("on_boarding_title_2"),
+              body: context.tr("on_boarding_content_2"),
               image: Container(
                 width: 150.0,
                 height: 150.0,
                 padding: EdgeInsets.all(32.0),
-                decoration: BoxDecoration(
-                  border: Border.all(width: 2, color: Colors.blue),
-                  shape: BoxShape.circle,
-                ),
+                // decoration: BoxDecoration(
+                //   border: Border.all(width: 2, color: Colors.blue),
+                //   shape: BoxShape.circle,
+                // ),
                 child: Image.asset(
-                  "assets/images/box.png",
+                  "assets/images/app_logo.png",
                 ),
               ),
               decoration: pageDecoration,
             ),
             PageViewModel(
-              title: AppLocalizations.of(context)!.on_boarding_title_3,
-              body: AppLocalizations.of(context)!.on_boarding_content_3,
+              title: context.tr("on_boarding_title_3"),
+              body: context.tr("on_boarding_content_3"),
               image: Container(
                 width: 150.0,
                 height: 150.0,
                 padding: EdgeInsets.all(32.0),
-                decoration: BoxDecoration(
-                  border: Border.all(width: 2, color: Colors.blue),
-                  shape: BoxShape.circle,
-                ),
+                // decoration: BoxDecoration(
+                //   border: Border.all(width: 2, color: Colors.blue),
+                //   shape: BoxShape.circle,
+                // ),
                 child: Image.asset(
                   "assets/images/onboarding_document.png",
                 ),
@@ -97,20 +97,20 @@ class OnBoardingPage extends StatelessWidget {
                 width: 150.0,
                 height: 150.0,
                 padding: EdgeInsets.all(32.0),
-                decoration: BoxDecoration(
-                  border: Border.all(width: 2, color: Colors.blue),
-                  shape: BoxShape.circle,
-                ),
+                // decoration: BoxDecoration(
+                //   border: Border.all(width: 2, color: Colors.blue),
+                //   shape: BoxShape.circle,
+                // ),
                 child: Image.asset(
                   "assets/images/onboarding_store.png",
                 ),
               ),
-              title: AppLocalizations.of(context)!.on_boarding_title_4,
+              title: context.tr("on_boarding_title_4"),
               bodyWidget: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.on_boarding_header_4,
+                    context.tr("on_boarding_header_4"),
                     style: bodyStyle,
                   ),
                   TextFormField(
@@ -135,19 +135,19 @@ class OnBoardingPage extends StatelessWidget {
           showSkipButton: true,
           //skipFlex: 0,
           nextFlex: 0,
-          skip: Text(AppLocalizations.of(context)!.action_skip),
+          skip: Text(context.tr("skip")),
           next: const Icon(Icons.arrow_forward),
           done: Visibility(
             visible: state.name.trim().isNotEmpty,
             child: Text(
-              AppLocalizations.of(context)!.action_done,
+              context.tr("done"),
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
 
-          dotsDecorator: const DotsDecorator(
+          dotsDecorator: DotsDecorator(
             size: Size(10.0, 10.0),
-            color: Color(0xFFBDBDBD),
+            activeColor: Theme.of(context).colorScheme.primary,
             activeSize: Size(22.0, 10.0),
             activeShape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(25.0)),

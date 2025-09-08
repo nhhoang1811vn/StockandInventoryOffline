@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/report_date_range_type.dart';
 
@@ -32,7 +32,7 @@ class ReportPageState extends State<ReportPage> {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child:
-          AppBar(title: new Text(AppLocalizations.of(context)!.report_title)),
+          AppBar(title: new Text(context.tr("report_title"))),
     );
   }
 
@@ -136,7 +136,7 @@ class ReportPageState extends State<ReportPage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                AppLocalizations.of(context)!.select_date_range,
+                context.tr("select_date_range"),
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),

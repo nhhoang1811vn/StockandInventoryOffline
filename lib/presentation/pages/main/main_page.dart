@@ -1,12 +1,13 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screen_lock/flutter_screen_lock.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.dart';
 import 'package:good_manager/presentation/pages/documents/documents_view.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/goods_view.dart';
-import 'package:good_manager/presentation/pages/more/more_page.dart';
+import 'package:good_manager/presentation/pages/menu/bloc/menu_cubit.dart';
+import 'package:good_manager/presentation/pages/menu/menu_page.dart';
 import 'package:good_manager/presentation/pages/payment/bloc/payments_cubit.dart';
 import 'package:good_manager/presentation/pages/payment/payments_page.dart';
 
@@ -26,6 +27,7 @@ class MainPage extends StatelessWidget {
         BlocProvider<GoodsCubit>(create: (_) => getIt<GoodsCubit>()),
         BlocProvider<DocumentsCubit>(create: (_) => getIt<DocumentsCubit>()),
         BlocProvider<PaymentsCubit>(create: (_) => getIt<PaymentsCubit>()),
+        BlocProvider<MenuCubit>(create: (_) => getIt<MenuCubit>()),
       ],
       child: MainView(),
     );
@@ -59,7 +61,7 @@ class _ScreenState extends State<MainView> with SingleTickerProviderStateMixin {
       GoodsPage(isSelection: false),
       DocumentsPage(),
       PaymentsPage(),
-      MorePage(),
+      MenuPage(),
     ];
     _controller = TabController(length: _screens.length, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -81,7 +83,7 @@ class _ScreenState extends State<MainView> with SingleTickerProviderStateMixin {
         Navigator.of(context).pop();
       },
       canCancel: false,
-      title: Text(AppLocalizations.of(context)!.enter_pin_to_unlock),
+      title: Text(context.tr("enter_pin_to_unlock")),
     );
   }
 
@@ -105,23 +107,23 @@ class _ScreenState extends State<MainView> with SingleTickerProviderStateMixin {
             tabs: [
               Tab(
                 icon: Icon(Icons.home),
-                text: AppLocalizations.of(context)!.home_title,
+                text: context.tr("home"),
               ),
               Tab(
                 icon: Icon(UIConstants.goodIconData),
-                text: AppLocalizations.of(context)!.goods_title,
+                text: context.tr("goods"),
               ),
               Tab(
                 icon: Icon(UIConstants.documentIconData),
-                text: AppLocalizations.of(context)!.documents_title,
+                text: context.tr("documents"),
               ),
               Tab(
                 icon: Icon(UIConstants.paymentIconData),
-                text: AppLocalizations.of(context)!.payments_title,
+                text: context.tr("payments"),
               ),
               Tab(
                 icon: Icon(UIConstants.moreIconData),
-                text: AppLocalizations.of(context)!.more_title,
+                text: context.tr("menu"),
               ),
             ],
           ),

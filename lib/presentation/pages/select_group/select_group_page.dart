@@ -1,7 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 
 import '../../../constant/constant.dart';
@@ -49,7 +49,7 @@ class SelectGroupPageState extends State<SelectGroupPage> {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
-        title: Text(AppLocalizations.of(context)!.select_group_title),
+        title: Text(context.tr("select_group_title")),
         actions: <Widget>[
           IconButton(
             onPressed: () {

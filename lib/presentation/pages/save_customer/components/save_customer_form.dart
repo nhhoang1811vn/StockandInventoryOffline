@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_customer/bloc/save_customer_cubit.dart';
 
@@ -32,8 +32,8 @@ class SaveCustomerForm extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           AppTextField(
-            labelText: AppLocalizations.of(context)!.label_customer_name,
-            hintText: AppLocalizations.of(context)!.hint_name,
+            labelText: context.tr("label_customer_name"),
+            hintText: context.tr("hint_name"),
             initialValue: item?.name,
             onChanged: (value) =>
                 context.read<SaveCustomerCubit>().nameChanged(value),
@@ -42,8 +42,8 @@ class SaveCustomerForm extends StatelessWidget {
           ),
           SizedBox(height: 16),
           AppTextField(
-            labelText: AppLocalizations.of(context)!.label_description,
-            hintText: AppLocalizations.of(context)!.hint_description,
+            labelText: context.tr("label_description"),
+            hintText: context.tr("hint_description"),
             maxLines: null,
             minLines: 2,
             initialValue: item?.description,
@@ -53,8 +53,8 @@ class SaveCustomerForm extends StatelessWidget {
           ),
           SizedBox(height: 16),
           AppTextField(
-            labelText: AppLocalizations.of(context)!.label_address,
-            hintText: AppLocalizations.of(context)!.hint_address,
+            labelText: context.tr("label_address"),
+            hintText: context.tr("hint_address"),
             initialValue: item?.address,
             onChanged: (value) =>
                 context.read<SaveCustomerCubit>().addressChanged(value),
@@ -62,8 +62,8 @@ class SaveCustomerForm extends StatelessWidget {
           ),
           SizedBox(height: 16),
           AppTextField(
-            labelText: AppLocalizations.of(context)!.label_email,
-            hintText: AppLocalizations.of(context)!.hint_email,
+            labelText: context.tr("label_email"),
+            hintText: context.tr("hint_email"),
             initialValue: item?.email,
             onChanged: (value) =>
                 context.read<SaveCustomerCubit>().emailChanged(value),
@@ -71,8 +71,8 @@ class SaveCustomerForm extends StatelessWidget {
           ),
           SizedBox(height: 16),
           AppTextField(
-            labelText: AppLocalizations.of(context)!.label_phone_number,
-            hintText: AppLocalizations.of(context)!.hint_phone_number,
+            labelText: context.tr("label_phone_number"),
+            hintText: context.tr("hint_phone_number"),
             initialValue: item?.phone,
             onChanged: (value) =>
                 context.read<SaveCustomerCubit>().phoneChanged(value),
@@ -80,8 +80,8 @@ class SaveCustomerForm extends StatelessWidget {
           ),
           SizedBox(height: 16),
           AppTextField(
-            labelText: AppLocalizations.of(context)!.label_tax_id,
-            hintText: AppLocalizations.of(context)!.hint_tax_id,
+            labelText: context.tr("label_tax_id"),
+            hintText: context.tr("hint_tax_id"),
             initialValue: item?.taxID,
             onChanged: (value) =>
                 context.read<SaveCustomerCubit>().taxIDChanged(value),
@@ -89,8 +89,8 @@ class SaveCustomerForm extends StatelessWidget {
           ),
           SizedBox(height: 16),
           AppTextField(
-            labelText: AppLocalizations.of(context)!.label_bank_details,
-            hintText: AppLocalizations.of(context)!.hint_bank_details,
+            labelText: context.tr("label_bank_details"),
+            hintText: context.tr("hint_bank_details"),
             initialValue: item?.bankDetail,
             onChanged: (value) =>
                 context.read<SaveCustomerCubit>().bankDetailsChanged(value),

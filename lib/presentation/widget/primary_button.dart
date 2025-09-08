@@ -13,11 +13,11 @@ class PrimaryButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius:
-              BorderRadius.circular(8), // Border radius for the button
+              BorderRadius.circular(8),
         ),
         foregroundColor: Colors.white,
-        backgroundColor:
-            Colors.blue.shade700, // Text color (when button is pressed)
+        backgroundColor: Theme.of(context).colorScheme.primary
+
       ),
       child: Text(
         text,

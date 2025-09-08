@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/suppliers/components/supplier_item_row.dart';
 import 'package:sprintf/sprintf.dart';
@@ -53,7 +53,7 @@ class SuppliersPageState extends State<SuppliersPage> {
           Navigator.of(context).pushNamed(
             Pages.help,
             arguments: {
-              "title": AppLocalizations.of(context)?.suppliers_title,
+              "title": context.tr("suppliers"),
               "content": MDProviderFactory.get()
                   .getHelpText(HelpType.SUPPLIER_AND_CUSTOMER),
             },
@@ -62,7 +62,7 @@ class SuppliersPageState extends State<SuppliersPage> {
           showBuySubscriptionDialog(
             context,
             message: sprintf(
-              AppLocalizations.of(context)!.buy_subscription_to_add_more_entity,
+              context.tr("buy_subscription_to_add_more_entity"),
               [FreeLimits.supplierLimit],
             ),
           );
@@ -86,8 +86,8 @@ class SuppliersPageState extends State<SuppliersPage> {
       child: AppBar(
         title: new Text(
           widget.isSelection
-              ? AppLocalizations.of(context)!.suppliers_select_title
-              : AppLocalizations.of(context)!.suppliers_title,
+              ? context.tr("select_supplier")
+              : context.tr("suppliers"),
         ),
         actions: [
           _buildSearchMenu(state),
@@ -159,7 +159,7 @@ class SuppliersPageState extends State<SuppliersPage> {
           Padding(
             padding: EdgeInsets.only(top: 16),
             child: Text(
-              AppLocalizations.of(context)!.empty_suppliers,
+              context.tr("no_suppliers"),
               textAlign: TextAlign.center,
             ),
           ),
@@ -201,17 +201,17 @@ class SuppliersPageState extends State<SuppliersPage> {
 
   void handleOnLongPressed(Supplier item) {
     var items = [
-      AppLocalizations.of(context)!.action_delete,
-      AppLocalizations.of(context)!.action_view_document,
+      context.tr("delete"),
+      context.tr("view_documents"),
     ];
     showSelectOptionDialog(
       context,
       items: items,
       onItemSelected: (index) async {
-        if (items[index] == AppLocalizations.of(context)!.action_delete) {
+        if (items[index] == context.tr("delete")) {
           showDeleteConfirmPopup(item);
         } else if (items[index] ==
-            AppLocalizations.of(context)!.action_view_document) {
+            context.tr("view_documents")) {
           await Navigator.of(context).pushNamed(
             Pages.documents_history,
             arguments: {
@@ -227,7 +227,7 @@ class SuppliersPageState extends State<SuppliersPage> {
     showCustomAlertDialog(
       context,
       message: sprintf(
-        AppLocalizations.of(context)!.message_confirm_delete,
+        context.tr("message_confirm_delete"),
         [item.name],
       ),
       onPositivePressed: () async {

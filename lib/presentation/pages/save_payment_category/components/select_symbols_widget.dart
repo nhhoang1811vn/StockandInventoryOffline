@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 
 class SelectSymbolsWidget extends StatefulWidget {
   final String symbol;
@@ -91,7 +91,7 @@ class SelectSymbolsWidgetState extends State<SelectSymbolsWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            AppLocalizations.of(context)!.label_select_payment_category,
+            context.tr("label_select_payment_category"),
             style: Theme.of(context).textTheme.titleMedium,
           ),
           SizedBox(height: 16),

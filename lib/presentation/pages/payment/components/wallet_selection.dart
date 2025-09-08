@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_manager/util/currency_formatter.dart';
 
 import '../../../../constant/constant.dart';
 import '../../../../domain/entity/entity.dart';
@@ -61,7 +62,7 @@ class WalletSelection extends StatelessWidget {
             ),
             if (showBalance)
               Text(
-                Config.currencyFormat.format(item.balance),
+                CurrencyFormatter.format(context, item.balance),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
           ],

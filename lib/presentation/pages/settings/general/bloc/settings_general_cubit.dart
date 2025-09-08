@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../data/app_settings.dart';
+import '../../../../../models/currency.dart';
 
 part 'settings_general_cubit.freezed.dart';
 part 'settings_general_state.dart';
@@ -14,6 +15,7 @@ class SettingsGeneralCubit extends Cubit<SettingsGeneralState> {
           SettingsGeneralState.initial(
             enablePasscode: AppSettings.getEnablePasscode(),
             passcode: AppSettings.getPasscode(),
+            currency: AppSettings.currency
           ),
         );
 
@@ -25,5 +27,9 @@ class SettingsGeneralCubit extends Cubit<SettingsGeneralState> {
 
   void resetAutoDocumentNo() {
     AppSettings.resetAutoDocumentNo();
+  }
+  void onCurrencyChanged(Currency value){
+    emit(state.copyWith(currency : value));
+    AppSettings.currency = value;
   }
 }

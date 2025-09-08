@@ -31,7 +31,6 @@ class SaveWalletCubit extends Cubit<SaveWalletState> {
       name: (item.name.isNotEmpty)
           ? NameInput.dirty(value: item.name)
           : NameInput.pure(),
-      //name: NameInput.dirty(value: item.name),
       description: item.description,
       color: Color(item.color),
     );
@@ -52,7 +51,7 @@ class SaveWalletCubit extends Cubit<SaveWalletState> {
 
   void onAmountChanged(String value) {
     if (value.isNotEmpty) {
-      num amountNum = Config.currencyFormat.parse(value);
+      num amountNum = Config.simpleCurrencyFormat.parse(value);
       double amount = amountNum.toDouble();
       emit(state.copyWith(amount: amount));
     } else {
@@ -66,7 +65,7 @@ class SaveWalletCubit extends Cubit<SaveWalletState> {
       Wallet item = state.item!;
       item.name = state.name.value;
       item.description = state.description;
-      item.color = 0; //state.color;//todo
+      item.color = state.color!.value;
       if (item.id == null) {
         int id = await useCase.insert(item);
         if (state.amount != 0 && state.amount != null) {

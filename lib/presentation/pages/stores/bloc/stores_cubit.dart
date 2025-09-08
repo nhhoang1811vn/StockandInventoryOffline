@@ -50,18 +50,9 @@ class StoresCubit extends Cubit<StoresState> {
     return (state.settings.sortByName != SortByText.no_sort);
   }
 
-  void onSortMenuClicked() {
-    emit(state.copyWith(state: OpenSortDialogListState()));
-  }
-
   void onHelpMenuClick() {
     emit(state.copyWith(state: OpenHelpPageState()));
   }
-
-  // void onAddButtonClicked() {
-  //   Store item = Store();
-  //   onAddItem(item);
-  // }
 
   void onAddButtonClicked() async {
     bool isValid = await isValidToAddMoreStore();

@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner_settings/change_batch_mode_scan_dialog.dart';
 import 'package:good_manager/presentation/widget/views.dart';
 
@@ -30,7 +30,7 @@ class BarcodeScannerSettingsPageState
           padding: EdgeInsets.all(16),
           children: [
             Text(
-              AppLocalizations.of(context)!.batch_mode_scan,
+              context.tr("batch_mode_scan"),
               style: Theme.of(context).textTheme.titleMedium,
             ),
             Card(
@@ -44,7 +44,7 @@ class BarcodeScannerSettingsPageState
               height: 16,
             ),
             Text(
-              AppLocalizations.of(context)!.when_a_barcode_is_found,
+              context.tr("when_a_barcode_is_found"),
               style: Theme.of(context).textTheme.titleMedium,
             ),
             Card(
@@ -67,7 +67,7 @@ class BarcodeScannerSettingsPageState
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
         title: new Text(
-          AppLocalizations.of(context)!.menu_item_barcode_scanner,
+          context.tr("menu_item_barcode_scanner"),
         ),
       ),
     );
@@ -78,17 +78,17 @@ class BarcodeScannerSettingsPageState
     BarcodeScannerSettingsState state,
   ) {
     return ListTile(
-      title: Text(AppLocalizations.of(context)!.after_each_scan),
+      title: Text(context.tr("after_each_scan")),
       subtitle: state.batchModeScan == BatchModeScan.AUTO
-          ? Text(AppLocalizations.of(context)!.after_each_scan_auto)
-          : Text(AppLocalizations.of(context)!.after_each_scan_manually),
+          ? Text(context.tr("after_each_scan_auto"))
+          : Text(context.tr("after_each_scan_manually")),
       onTap: () => showAfterEachScanDialog(context, state),
     );
   }
 
   Widget _buildBeep(BuildContext context, BarcodeScannerSettingsState state) {
     return SwitchListTile(
-      title: Text(AppLocalizations.of(context)!.beep),
+      title: Text(context.tr("beep")),
       value: state.enableBeep,
       onChanged: (value) {
         context.read<BarcodeScannerSettingsCubit>().onEnableBeepChanged(value);
@@ -101,7 +101,7 @@ class BarcodeScannerSettingsPageState
     BarcodeScannerSettingsState state,
   ) {
     return SwitchListTile(
-      title: Text(AppLocalizations.of(context)!.vibrate),
+      title: Text(context.tr("vibrate")),
       value: state.enableVibrate,
       onChanged: (value) {
         context

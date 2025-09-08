@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:formz/formz.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 
 // Define input validation errors
 enum NameInputError { empty }
@@ -24,7 +24,7 @@ extension NameInputErrorExtension on NameInputError {
   String text(BuildContext context) {
     switch (this) {
       case NameInputError.empty:
-        return AppLocalizations.of(context)!.error_field_name_empty;
+        return context.tr("error_field_name_empty");
     }
   }
 }

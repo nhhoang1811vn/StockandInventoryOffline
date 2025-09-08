@@ -1,9 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/save_payment/components/select_wallet_widget.dart';
-import 'package:intl/intl.dart';
 
 import '../../../app.dart';
 import '../../../constant/constant.dart';
@@ -106,7 +105,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
     var result = "";
     if (widget.item.type == PaymentType.inbound) {
       if (state.documentId != null) {
-        result = AppLocalizations.of(context)!.documents_title +
+        result = context.tr("documents") +
             " " +
             state.document!.name;
         if (state.customer?.name != null) {
@@ -115,11 +114,11 @@ class SavePaymentPageState extends State<SavePaymentPage> {
       } else if (state.customerId != null) {
         result = state.customer!.name;
       } else {
-        result = AppLocalizations.of(context)!.hint_select;
+        result = context.tr("hint_select");
       }
     } else {
       if (state.documentId != null) {
-        result = AppLocalizations.of(context)!.documents_title +
+        result = context.tr("documents") +
             " " +
             state.document!.name;
         //result = state.document!.name;
@@ -129,7 +128,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
       } else if (state.supplierId != null) {
         result = state.supplier!.name;
       } else {
-        result = AppLocalizations.of(context)!.hint_select;
+        result = context.tr("hint_select");
       }
     }
     return Text(result);
@@ -244,8 +243,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AppTextField(
-                            labelText: AppLocalizations.of(context)!
-                                .label_select_payment_category,
+                            labelText: context.tr("label_select_payment_category"),
                             keyboardType: TextInputType.none,
                             readOnly: true,
                             onTapped: () {
@@ -253,7 +251,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                             },
                             prefix: state.selectedCategory == null
                                 ? Text(
-                                    AppLocalizations.of(context)!.hint_select,
+                                    context.tr("hint_select"),
                                   )
                                 : CategoryShortFormWidget(
                                     state.selectedCategory!,
@@ -265,8 +263,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                           ),
                           SizedBox(height: 16),
                           AppTextField(
-                            labelText: AppLocalizations.of(context)!
-                                .label_select_wallet,
+                            labelText: context.tr("label_select_wallet"),
                             keyboardType: TextInputType.none,
                             readOnly: true,
                             onTapped: () {
@@ -274,7 +271,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                             },
                             prefix: state.selectedWallet == null
                                 ? Text(
-                                    AppLocalizations.of(context)!.hint_select,
+                                    context.tr("hint_select"),
                                   )
                                 : WalletShortFormWidget(
                                     state.selectedWallet!,
@@ -289,8 +286,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 16.0),
                               child: AppTextField(
-                                labelText: AppLocalizations.of(context)!
-                                    .title_select_document,
+                                labelText: context.tr("title_select_document"),
                                 keyboardType: TextInputType.none,
                                 readOnly: true,
                                 onTapped: () {
@@ -311,10 +307,8 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                               child: AppTextField(
                                 labelText:
                                     state.item?.type == PaymentType.inbound
-                                        ? AppLocalizations.of(context)!
-                                            .customers_select_title
-                                        : AppLocalizations.of(context)!
-                                            .suppliers_select_title,
+                                        ? context.tr("select_customer")
+                                        : context.tr("select_supplier"),
                                 keyboardType: TextInputType.none,
                                 readOnly: true,
                                 onTapped: () {
@@ -332,9 +326,9 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                           // SizedBox(height: 100),
                           // AppTextField(
                           //     labelText: widget.item.type == PaymentType.inbound
-                          //         ? AppLocalizations.of(context)!
+                          //         ? context.tr("
                           //             .label_select_inbound_object
-                          //         : AppLocalizations.of(context)!
+                          //         : context.tr("
                           //             .label_select_outbound_object,
                           //     keyboardType: TextInputType.none,
                           //     readOnly: true,
@@ -349,9 +343,9 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                           // SizedBox(height: 16),
                           AppTextField(
                             labelText:
-                                AppLocalizations.of(context)!.label_description,
+                                context.tr("label_description"),
                             hintText:
-                                AppLocalizations.of(context)!.hint_description,
+                                context.tr("hint_description"),
                             controller: descriptionController,
                             maxLines: null,
                             minLines: 2,
@@ -364,8 +358,8 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                           AppTextField(
                             controller: dateController,
                             suffix: Icon(Icons.keyboard_arrow_down, size: 16),
-                            hintText: AppLocalizations.of(context)!.field_date,
-                            labelText: AppLocalizations.of(context)!.field_date,
+                            hintText: context.tr("date"),
+                            labelText: context.tr("date"),
                             keyboardType: TextInputType.datetime,
                             readOnly: true,
                             onTapped: () => {
@@ -395,8 +389,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                             children: [
                               Expanded(
                                 child: CurrencyAppTextField(
-                                  labelText: AppLocalizations.of(context)!
-                                      .field_amount,
+                                  labelText: context.tr("amount"),
                                   controller: amountController,
                                   onChanged: context
                                       .read<SavePaymentCubit>()
@@ -426,7 +419,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                 width: double.infinity,
                 padding: EdgeInsets.all(16),
                 color: Theme.of(context).colorScheme.surface,
-                child: PrimaryButton(AppLocalizations.of(context)!.action_save,
+                child: PrimaryButton(context.tr("action_save"),
                     () {
                   context.read<SavePaymentCubit>().onSaveClicked();
                 }),
@@ -445,8 +438,8 @@ class SavePaymentPageState extends State<SavePaymentPage> {
         actions: [_buildHelpMenu()],
         title: Text(
           widget.item.type == PaymentType.inbound
-              ? AppLocalizations.of(context)!.save_inbound_payment_title
-              : AppLocalizations.of(context)!.save_outbound_payment_title,
+              ? context.tr("save_inbound_payment_title")
+              : context.tr("save_outbound_payment_title"),
         ),
       ),
     );
@@ -458,7 +451,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
         Navigator.of(context).pushNamed(
           Pages.help,
           arguments: {
-            "title": AppLocalizations.of(context)!.payments_title,
+            "title": context.tr("payments_title"),
             "content": MDProviderFactory.get().getHelpText(HelpType.PAYMENTS),
           },
         );
@@ -498,7 +491,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
         ],
       );
     } else {
-      return Text(AppLocalizations.of(context)!.hint_select);
+      return Text(context.tr("hint_select"));
     }
   }
 
@@ -539,7 +532,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
         ],
       );
     } else {
-      return Text(AppLocalizations.of(context)!.hint_select);
+      return Text(context.tr("hint_select"));
     }
   }
 }
