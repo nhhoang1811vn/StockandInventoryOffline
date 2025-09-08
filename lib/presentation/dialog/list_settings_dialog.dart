@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 
 import '../../domain/entity/entity.dart';
 
@@ -30,14 +30,14 @@ class ListSettingsDialogState extends State<ListSettingsDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context)!.list_settings),
+      title: Text(context.tr("list_settings")),
       contentPadding: EdgeInsets.all(8),
       content: SingleChildScrollView(
         child: ListBody(
           children: [
             SwitchListTile(
               title: Text(
-                AppLocalizations.of(context)!.good_settings_hide_zero_entries,
+                context.tr("good_settings_hide_zero_entries"),
               ),
               value: _hideZeroEntries,
               onChanged: (value) {
@@ -48,7 +48,7 @@ class ListSettingsDialogState extends State<ListSettingsDialog> {
             ),
             SwitchListTile(
               title: Text(
-                AppLocalizations.of(context)!.good_setting_show_bar_code,
+                context.tr("good_setting_show_bar_code"),
               ),
               value: _showBarcode,
               onChanged: (value) {
@@ -59,7 +59,7 @@ class ListSettingsDialogState extends State<ListSettingsDialog> {
             ),
             SwitchListTile(
               title: Text(
-                AppLocalizations.of(context)!.good_setting_show_description,
+                context.tr("good_setting_show_description"),
               ),
               value: _showDescription,
               onChanged: (value) {
@@ -73,7 +73,7 @@ class ListSettingsDialogState extends State<ListSettingsDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(AppLocalizations.of(context)!.action_ok),
+          child: Text(context.tr("ok")),
           onPressed: () async {
             GoodsSetting result = widget.settings.copyWith(
               hideZeroEntries: _hideZeroEntries,

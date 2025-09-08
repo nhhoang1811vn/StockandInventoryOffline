@@ -1,15 +1,16 @@
 import 'dart:io';
 
 import 'package:csv/csv.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
 import 'package:good_manager/presentation/pages/save_document/components/filter_transaction_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
+import 'package:good_manager/util/currency_formatter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -118,7 +119,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
           Navigator.of(context).pushNamed(
             Pages.help,
             arguments: {
-              "title": AppLocalizations.of(context)?.documents_title,
+              "title": context.tr("documents"),
               "content":
                   MDProviderFactory.get().getHelpText(HelpType.DOCUMENTS),
             },
@@ -187,7 +188,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                   //         horizontal: 16, vertical: 8),
                   //     //color: ColorUtils.getHeaderBgColor(context),
                   //     child: Text(
-                  //         AppLocalizations.of(context)!
+                  //         context.tr("
                   //             .document_information,
                   //         style: Theme.of(context)
                   //             .textTheme
@@ -199,8 +200,8 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                       children: [
                         AppTextField(
                           labelText:
-                              AppLocalizations.of(context)!.field_document_no,
-                          hintText: AppLocalizations.of(context)!.hint_name,
+                              context.tr("document_no"),
+                          hintText: context.tr("hint_name"),
                           initialValue: state.name.value,
                           onChanged: (value) => context
                               .read<SaveDocumentCubit>()
@@ -218,12 +219,10 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                                 controller: personNameController,
                                 labelText:
                                     state.item?.type == DocumentType.incoming
-                                        ? AppLocalizations.of(context)!
-                                            .label_supplier_name
-                                        : AppLocalizations.of(context)!
-                                            .label_customer_name,
+                                        ? context.tr("label_supplier_name")
+                                        : context.tr("label_customer_name"),
                                 hintText:
-                                    AppLocalizations.of(context)!.hint_select,
+                                    context.tr("hint_select"),
                                 suffix: Icon(
                                   Icons.keyboard_arrow_down,
                                   size: 16,
@@ -243,8 +242,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                             Expanded(
                               child: AppTextField(
                                 controller: dateController,
-                                labelText: AppLocalizations.of(context)!
-                                    .field_date_time,
+                                labelText: context.tr("field_date_time"),
                                 keyboardType: TextInputType.datetime,
                                 readOnly: true,
                                 onTapped: () => {
@@ -275,9 +273,9 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                         SizedBox(height: 16),
                         AppTextField(
                           labelText:
-                              AppLocalizations.of(context)!.label_description,
+                              context.tr("label_description"),
                           hintText:
-                              AppLocalizations.of(context)!.hint_description,
+                              context.tr("hint_description"),
                           maxLines: null,
                           minLines: 2,
                           initialValue: state.description,
@@ -296,7 +294,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                     ),
                     //color: ColorUtils.getHeaderBgColor(context),
                     child: Text(
-                      AppLocalizations.of(context)!.goods_information,
+                      context.tr("goods_information"),
                       style: Theme.of(context)
                           .textTheme
                           .titleMedium
@@ -396,7 +394,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
             child: Row(
               children: [
                 Text(
-                  "${AppLocalizations.of(context)!.title_good_count}: ${state.transactions.length.toString()}",
+                  "${context.tr("title_good_count")}: ${state.transactions.length.toString()}",
                   style: textStyle,
                 ),
                 SizedBox(
@@ -410,7 +408,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                   width: 4,
                 ),
                 Text(
-                  "${AppLocalizations.of(context)!.field_quantity}: ${Config.currencyFormat.format(state.totalQuantity)}",
+                  "${context.tr("quantity")}: ${StringUtils.getQuantityText(state.totalQuantity)}",
                   style: textStyle,
                 ),
                 SizedBox(
@@ -424,7 +422,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                   width: 4,
                 ),
                 Text(
-                  "${AppLocalizations.of(context)!.field_amount}: ${Config.currencyFormat.format(state.totalAmount)}",
+                  "${context.tr("amount")}: ${CurrencyFormatter.format(context, state.totalAmount)}",
                   style: textStyle,
                 ),
               ],
@@ -441,8 +439,8 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       child: AppBar(
         title: Text(
           widget.item.type == DocumentType.incoming
-              ? AppLocalizations.of(context)!.incoming_document_text
-              : AppLocalizations.of(context)!.outgoing_document_text,
+              ? context.tr("incoming")
+              : context.tr("outgoing"),
         ),
         actions: <Widget>[
           _buildSaveMenu(context),
@@ -451,27 +449,27 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
             itemBuilder: (context) => [
               PopupMenuItem<OverflowItemMenu>(
                 value: OverflowItemMenu.search,
-                child: Text(AppLocalizations.of(context)!.action_search),
+                child: Text(context.tr("action_search")),
               ),
               PopupMenuItem<OverflowItemMenu>(
                 value: OverflowItemMenu.sort_by,
-                child: Text(AppLocalizations.of(context)!.action_sort_by),
+                child: Text(context.tr("action_sort_by")),
               ),
               PopupMenuItem<OverflowItemMenu>(
                 value: OverflowItemMenu.export_csv,
                 child: Text(
-                  AppLocalizations.of(context)!.action_export_csv,
+                  context.tr("action_export_csv"),
                 ),
               ),
               PopupMenuItem<OverflowItemMenu>(
                 value: OverflowItemMenu.export_pdf,
                 child: Text(
-                  AppLocalizations.of(context)!.action_export_pdf,
+                  context.tr("action_export_pdf"),
                 ),
               ),
               PopupMenuItem<OverflowItemMenu>(
                 value: OverflowItemMenu.help,
-                child: Text(AppLocalizations.of(context)!.action_help),
+                child: Text(context.tr("action_help")),
               ),
             ],
             onSelected: (item) => handleClick(context, item, state),
@@ -602,22 +600,22 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.Text(
-          AppLocalizations.of(context)!.menu_item_my_company,
+          context.tr("menu_item_my_company"),
           style: pw.TextStyle(font: font, fontWeight: pw.FontWeight.bold),
         ),
         pw.Text(
-          "${AppLocalizations.of(context)!.field_my_company_name}: ${myCompany?.companyName ?? ""}",
+          "${context.tr("field_my_company_name")}: ${myCompany?.companyName ?? ""}",
           style: pw.TextStyle(font: font),
         ),
         pw.Row(
           children: [
             pw.Text(
-              "${AppLocalizations.of(context)!.label_address}: ${myCompany?.address ?? ""}",
+              "${context.tr("label_address")}: ${myCompany?.address ?? ""}",
               style: pw.TextStyle(font: font),
             ),
             pw.Spacer(),
             pw.Text(
-              "${AppLocalizations.of(context)!.label_email}: ${myCompany?.email ?? ""}",
+              "${context.tr("label_email")}: ${myCompany?.email ?? ""}",
               style: pw.TextStyle(font: font),
             ),
           ],
@@ -625,34 +623,34 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
         pw.Row(
           children: [
             pw.Text(
-              "${AppLocalizations.of(context)!.label_phone_number}: ${myCompany?.phone ?? ""}",
+              "${context.tr("label_phone_number")}: ${myCompany?.phone ?? ""}",
               style: pw.TextStyle(font: font),
             ),
             pw.Spacer(),
             pw.Text(
-              "${AppLocalizations.of(context)!.label_tax_id}: ${myCompany?.taxId ?? ""}",
+              "${context.tr("label_tax_id")}: ${myCompany?.taxId ?? ""}",
               style: pw.TextStyle(font: font),
             ),
           ],
         ),
         pw.Text(
-          "${AppLocalizations.of(context)!.label_bank_details}: ${myCompany?.bankDetails ?? ""}",
+          "${context.tr("label_bank_details")}: ${myCompany?.bankDetails ?? ""}",
           style: pw.TextStyle(font: font),
         ),
         pw.SizedBox(height: 16),
         pw.Text(
-          AppLocalizations.of(context)!.document_information,
+          context.tr("document_information"),
           style: pw.TextStyle(font: font, fontWeight: pw.FontWeight.bold),
         ),
         pw.Row(
           children: [
             pw.Text(
-              "${AppLocalizations.of(context)!.document_name_no}: ${state.name.value.toString()}",
+              "${context.tr("document_name_no")}: ${state.name.value.toString()}",
               style: pw.TextStyle(font: font),
             ),
             pw.Spacer(),
             pw.Text(
-              "${AppLocalizations.of(context)?.field_date_time}: ${DateFormatFactory.getDateAndTimeFormat().format(state.date!)}",
+              "${context.tr("field_date_time")}: ${DateFormatFactory.getDateAndTimeFormat().format(state.date!)}",
               style: pw.TextStyle(font: font),
             ),
           ],
@@ -660,19 +658,19 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
         pw.Row(
           children: [
             pw.Text(
-              "${AppLocalizations.of(context)!.field_person_name}: ${state.personName ?? ""}",
+              "${context.tr("person_name")}: ${state.personName ?? ""}",
               style: pw.TextStyle(font: font),
             ),
             pw.Spacer(),
             pw.Text(
-              "${AppLocalizations.of(context)?.label_description}: ${state.description}",
+              "${context.tr("label_description")}: ${state.description}",
               style: pw.TextStyle(font: font),
             ),
           ],
         ),
         pw.SizedBox(height: 16),
         pw.Text(
-          AppLocalizations.of(context)!.goods_title,
+          context.tr("goods"),
           style: pw.TextStyle(font: font, fontWeight: pw.FontWeight.bold),
         ),
         pw.Table(
@@ -705,12 +703,12 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
   List<List<String>> getTableData(SaveDocumentState state) {
     List<List<String>> data = [];
     data.add([
-      AppLocalizations.of(context)?.field_name ?? "",
-      AppLocalizations.of(context)?.label_description ?? "",
-      AppLocalizations.of(context)?.field_bar_code ?? "",
-      AppLocalizations.of(context)?.field_price ?? "",
-      AppLocalizations.of(context)?.field_quantity ?? "",
-      AppLocalizations.of(context)?.field_amount ?? "",
+      context.tr("name"),
+      context.tr("label_description"),
+      context.tr("barcode"),
+      context.tr("price"),
+      context.tr("quantity"),
+      context.tr("amount"),
     ]);
     var totalQuantity = 0.0;
     var totalAmount = 0.0;
@@ -728,7 +726,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       ]);
     });
     data.add([
-      AppLocalizations.of(context)!.field_total,
+      context.tr("total"),
       "",
       "",
       "",
@@ -747,47 +745,47 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       var myCompany = await context.read<SaveDocumentCubit>().getMyCompany();
 
       List<List<String>> data = [];
-      data.add([AppLocalizations.of(context)!.menu_item_my_company]);
+      data.add([context.tr("menu_item_my_company")]);
       data.add([
-        AppLocalizations.of(context)!.field_my_company_name,
+        context.tr("field_my_company_name"),
         myCompany?.companyName ?? "",
       ]);
       data.add([
-        AppLocalizations.of(context)!.label_address,
+        context.tr("label_address"),
         myCompany?.address ?? "",
       ]);
       data.add(
-        [AppLocalizations.of(context)!.label_email, myCompany?.email ?? ""],
+        [context.tr("label_email"), myCompany?.email ?? ""],
       );
       data.add([
-        AppLocalizations.of(context)!.label_phone_number,
+        context.tr("label_phone_number"),
         myCompany?.phone ?? "",
       ]);
       data.add(
-        [AppLocalizations.of(context)!.label_tax_id, myCompany?.taxId ?? ""],
+        [context.tr("label_tax_id"), myCompany?.taxId ?? ""],
       );
       data.add([
-        AppLocalizations.of(context)!.label_bank_details,
+        context.tr("label_bank_details"),
         myCompany?.bankDetails ?? "",
       ]);
-      data.add([AppLocalizations.of(context)!.document_information]);
+      data.add([context.tr("document_information")]);
       data.add([
-        AppLocalizations.of(context)?.document_name_no ?? "",
+        context.tr("document_name_no"),
         state.name.value.toString(),
       ]);
       data.add([
-        AppLocalizations.of(context)?.field_date_time ?? "",
+        context.tr("field_date_time"),
         DateFormatFactory.getDateAndTimeFormat().format(state.date!),
       ]);
       data.add([
-        AppLocalizations.of(context)?.field_person_name ?? "",
+        context.tr("person_name"),
         state.personName ?? "",
       ]);
       data.add([
-        AppLocalizations.of(context)?.label_description ?? "",
+        context.tr("label_description"),
         state.description,
       ]);
-      data.add([AppLocalizations.of(context)!.goods_title]);
+      data.add([context.tr("goods")]);
       data.addAll(getTableData(state));
 
       String csv = const ListToCsvConverter().convert(data);
@@ -853,7 +851,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
             height: 16,
           ),
           Text(
-            AppLocalizations.of(context)!.empty_goods,
+            context.tr("no_goods"),
             textAlign: TextAlign.center,
           ),
           SizedBox(
@@ -902,13 +900,13 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
     DocumentTransaction item,
   ) {
     var items = [
-      AppLocalizations.of(context)!.action_delete,
+      context.tr("delete"),
     ];
     showSelectOptionDialog(
       context,
       items: items,
       onItemSelected: (index) async {
-        if (items[index] == AppLocalizations.of(context)!.action_delete) {
+        if (items[index] == context.tr("delete")) {
           showDeleteDocumentConfirm(context, item);
         }
       },
@@ -921,7 +919,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
   ) {
     showCustomAlertDialog(
       context,
-      message: AppLocalizations.of(context)!.message_confirm_delete_no_args,
+      message: context.tr("message_confirm_delete_no_args"),
       onPositivePressed: () async {
         hideDialog(context);
         context.read<SaveDocumentCubit>().deleteTransaction(item);

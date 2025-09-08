@@ -41,3 +41,5 @@ class UserSingupButNotVerified extends AuthState {}
 class UserSignInSuccessfulWithStore extends AuthState {}
 
 class UserSignInSuccessfulWithNoStore extends AuthState {}
+
+class UserLinkSuccessful extends AuthState {}

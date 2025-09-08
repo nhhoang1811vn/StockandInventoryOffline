@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:good_manager/models/currency.dart';
 import 'package:good_manager/presentation/widget/app_text_field.dart';
 
+import '../../data/app_settings.dart';
 import '../../util/currency_input_formatter.dart';
 
 class CurrencyAppTextField extends StatelessWidget {
@@ -24,6 +26,7 @@ class CurrencyAppTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppTextField(
       hintText: "0",
+      prefix: Text(AppSettings.currency.symbol),
       labelText: labelText,
       controller: controller,
       onChanged: onChanged,

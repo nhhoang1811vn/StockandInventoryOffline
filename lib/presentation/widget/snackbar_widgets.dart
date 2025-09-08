@@ -1,16 +1,16 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 
 SnackBar snackBarWhenFailure(BuildContext context) {
   return SnackBar(
-    content: Text(AppLocalizations.of(context)?.error ?? ""),
+    content: Text(context.tr("error")),
     backgroundColor: Colors.red,
   );
 }
 
 SnackBar snackBarWhenSuccess(BuildContext context) {
   return SnackBar(
-    content: Text(AppLocalizations.of(context)?.success ?? ""),
+    content: Text(context.tr("success")),
     backgroundColor: Colors.green,
   );
 }

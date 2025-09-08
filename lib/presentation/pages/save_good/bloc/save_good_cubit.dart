@@ -256,4 +256,28 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
   int getAutoDocumentNo(int storeId) {
     return AppSettings.getAutoDocumentNo(storeId);
   }
+
+  void onDeleteFile(int key) {
+    List<Uint8List> items = [];
+    items.addAll(state.files);
+    items.removeAt(key);
+    emit(state.copyWith(files: items));
+  }
+  void onAddFile(Uint8List bytes) {
+    List<Uint8List> items = [];
+    items.addAll(state.files);
+    items.add(bytes);
+    emit(state.copyWith(files: items));
+  }
+
+  void onLogoChanged(Uint8List bytes) {
+    List<Uint8List> items = [];
+    items.addAll(state.files);
+    if (items.isEmpty){
+      items.add(bytes);
+    }else{
+      items[0] = bytes;
+    }
+    emit(state.copyWith(files: items));
+  }
 }

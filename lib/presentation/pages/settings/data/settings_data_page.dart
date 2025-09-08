@@ -1,13 +1,12 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/widget/views.dart';
-import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../common/path_utils.dart';
@@ -38,7 +37,7 @@ class SettingsDataPageState extends State<SettingsDataPage> {
     return Scaffold(
       appBar: new AppBar(
         title: new Text(
-          AppLocalizations.of(context)!.menu_item_backup_and_restore,
+          context.tr("menu_item_backup_and_restore"),
         ),
       ),
       body: _buildBody(),
@@ -55,15 +54,15 @@ class SettingsDataPageState extends State<SettingsDataPage> {
             children: [
               ListTile(
                 leading: Icon(Icons.backup),
-                title: Text(AppLocalizations.of(context)!.menu_back_up),
-                subtitle: Text(AppLocalizations.of(context)!.menu_back_up_desc),
+                title: Text(context.tr("menu_back_up")),
+                subtitle: Text(context.tr("menu_back_up_desc")),
                 onTap: () => onBackUpPressed(context),
               ),
               buildDivider(),
               ListTile(
                 leading: Icon(Icons.restore),
-                title: Text(AppLocalizations.of(context)!.menu_restore),
-                subtitle: Text(AppLocalizations.of(context)!.menu_restore_desc),
+                title: Text(context.tr("menu_restore")),
+                subtitle: Text(context.tr("menu_restore_desc")),
                 onTap: () => onRestorePressed(context),
               ),
               buildDivider(),
@@ -71,9 +70,9 @@ class SettingsDataPageState extends State<SettingsDataPage> {
               ListTile(
                 leading: Icon(Icons.cloud),
                 title:
-                    Text(AppLocalizations.of(context)!.menu_push_data_to_cloud),
+                    Text(context.tr("menu_push_data_to_cloud")),
                 subtitle: cloudFileUpdatedTime.isEmpty
-                    ? Text(AppLocalizations.of(context)!.cloud_file_no_updated)
+                    ? Text(context.tr("cloud_file_no_updated"))
                     : Text(cloudFileUpdatedTime),
                 onTap: () => onCloudPressed(),
               ),
@@ -81,9 +80,9 @@ class SettingsDataPageState extends State<SettingsDataPage> {
               ListTile(
                 leading: Icon(Icons.sync),
                 title:
-                    Text(AppLocalizations.of(context)!.menu_quick_sync_title),
+                    Text(context.tr("menu_quick_sync_title")),
                 subtitle:
-                    Text(AppLocalizations.of(context)!.menu_quick_sync_desc),
+                    Text(context.tr("menu_quick_sync_desc")),
                 onTap: () => onQuickSyncPressed(context),
               ),
             ],
@@ -153,7 +152,7 @@ class SettingsDataPageState extends State<SettingsDataPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            AppLocalizations.of(context)!.backup_successful + " " + filePath,
+            context.tr("backup_successful") + " " + filePath,
           ),
         ),
       );
@@ -161,7 +160,7 @@ class SettingsDataPageState extends State<SettingsDataPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            AppLocalizations.of(context)!.backup_error + " " + e.toString(),
+            context.tr("backup_error") + " " + e.toString(),
           ),
         ),
       );

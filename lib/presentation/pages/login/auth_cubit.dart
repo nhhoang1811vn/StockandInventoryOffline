@@ -25,10 +25,8 @@ class AuthCubit extends Cubit<AuthState> {
   void downloadUserData() async {
     downloadDBFile((state) {
       if (state == TaskState.success) {
-        print("taskstate success");
         checkStore();
       } else if (state == TaskState.canceled || state == TaskState.error) {
-        print("taskstate error");
         checkStore();
       }
     });
@@ -109,18 +107,11 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> signInWithEmail(String email, String password) async {
     emit(AuthLoading());
-    User? currentUser = FirebaseAuth.instance.currentUser;
     try {
-      if (currentUser != null && currentUser.isAnonymous) {
-        final credential =
-            EmailAuthProvider.credential(email: email, password: password);
-        await currentUser.linkWithCredential(credential);
-      } else {
-        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-      }
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
       emit(UserSignIn());
     } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e);
@@ -148,46 +139,9 @@ class AuthCubit extends Cubit<AuthState> {
     }
     emit(AuthError(error));
   }
-
-  // Future<void> signInWithGoogleInWindowPlatform() async{
-  //   final googleSignInArgs = GoogleSignInArgs(
-  //     clientId:
-  //     '617423800641-s9j7uem4h2u0751pc1im6o34e4resoi4.apps.googleusercontent.com',
-  //     redirectUri:
-  //     'https://quanlykho-4818e.firebaseapp.com/__/auth/handler',
-  //     scope: 'email',
-  //   );
-  //   try {
-  //     final result = await DesktopWebviewAuth.signIn(googleSignInArgs);
-  //
-  //     final newCredential = GoogleAuthProvider.credential(
-  //       accessToken: result?.accessToken,
-  //       idToken: result?.idToken,
-  //     );
-  //     await _auth.signInWithCredential(newCredential);
-  //     emit(UserSignIn());
-  //   } catch (err) {
-  //     emit(AuthError(err.toString()));
-  //   }
-  // }
-  Future<void> signInWithApple() async {
+  Future<void> signInWithApple() async{
     emit(AuthLoading());
     try {
-      // final appleProvider = AppleAuthProvider();
-      // appleProvider.addScope('email');
-      // appleProvider.addScope('name');
-      // var credential = await _auth.signInWithProvider(appleProvider);
-      //
-      //
-      // final user = FirebaseAuth.instance.currentUser;
-      //
-      // if (user != null && user.isAnonymous) {
-      //   await user.linkWithCredential(credential);
-      //   //print("Anonymous account linked to Apple ID.");
-      // } else {
-      //   //print("User is not anonymous or not logged in.");
-      // }
-      // emit(UserSignIn());
       final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
@@ -198,53 +152,65 @@ class AuthCubit extends Cubit<AuthState> {
         idToken: appleCredential.identityToken,
         accessToken: appleCredential.authorizationCode,
       );
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null && user.isAnonymous) {
-        await user.linkWithCredential(oauthCredential);
-      } else {}
+      await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+      //emit(AuthStopped());
+      //downloadData();
       emit(UserSignIn());
-    } on FirebaseAuthException catch (e) {
+    }on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e);
     }
   }
 
-  Future<void> signInWithGuest() async {
-    emit(AuthLoading());
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInAnonymously();
-      emit(UserSignIn());
-    } on FirebaseAuthException catch (e) {
-      handleFirebaseAuthError(e);
-    }
-  }
+  // Future<void> signInWithGuest() async {
+  //   emit(AuthLoading());
+  //   try {
+  //     UserCredential userCredential =
+  //         await FirebaseAuth.instance.signInAnonymously();
+  //     emit(UserSignIn());
+  //   } on FirebaseAuthException catch (e) {
+  //     handleFirebaseAuthError(e);
+  //   }
+  // }
 
+  // Future<void> signInWithGoogle() async {
+  //   emit(AuthLoading());
+  //   try {
+  //     await GoogleSignIn().signOut();
+  //     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  //     if (googleUser == null) {
+  //       emit(AuthStopped());
+  //       return;
+  //     }
+  //     // Obtain the auth details from the request
+  //     final GoogleSignInAuthentication googleAuth =
+  //         await googleUser.authentication;
+  //     // Create a new credential
+  //     final credential = GoogleAuthProvider.credential(
+  //       accessToken: googleAuth.accessToken,
+  //       idToken: googleAuth.idToken,
+  //     );
+  //     final User? user = FirebaseAuth.instance.currentUser;
+  //     if (user != null && user.isAnonymous) {
+  //       await user.linkWithCredential(credential);
+  //     } else {
+  //       await _auth.signInWithCredential(credential);
+  //     }
+  //     emit(UserSignIn());
+  //   } on FirebaseAuthException catch (e) {
+  //     handleFirebaseAuthError(e);
+  //   }
+  // }
   Future<void> signInWithGoogle() async {
     emit(AuthLoading());
     try {
-      await GoogleSignIn().signOut();
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        emit(AuthStopped());
-        return;
-      }
-      // Obtain the auth details from the request
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      // Create a new credential
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      final User? user = FirebaseAuth.instance.currentUser;
-      if (user != null && user.isAnonymous) {
-        await user.linkWithCredential(credential);
-      } else {
-        await _auth.signInWithCredential(credential);
-      }
+      var credential = await getGoogleCredential();
+      await _auth.signInWithCredential(credential);
       emit(UserSignIn());
+      //downloadData();
     } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e);
+    } on Exception{
+      emit(AuthStopped());
     }
   }
 
@@ -272,6 +238,73 @@ class AuthCubit extends Cubit<AuthState> {
       emit(UserSingupButNotVerified());
     } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e);
+    }
+  }
+  Future<OAuthCredential> getGoogleCredential() async{
+    await GoogleSignIn().signOut();
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) {
+      throw Exception("google User is null");
+    }
+    final GoogleSignInAuthentication googleAuth =
+    await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    return credential;
+  }
+  Future<void> linkWithGoogle() async{
+    emit(AuthLoading());
+    try {
+      var credential = await getGoogleCredential();
+      await _auth.currentUser!.linkWithCredential(credential);
+      emit(AuthStopped());
+      emit(UserLinkSuccessful());
+      //uploadData();
+    } on FirebaseAuthException catch (e) {
+      handleFirebaseAuthError(e);
+    } on Exception{
+      emit(AuthStopped());
+    }
+  }
+  Future<void> linkWithApple() async{
+    emit(AuthLoading());
+    try{
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+      final credential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+      await _auth.currentUser!.linkWithCredential(credential);
+
+      emit(AuthStopped());
+      emit(UserLinkSuccessful());
+      //uploadData();
+    } on FirebaseAuthException catch (e){
+      handleFirebaseAuthError(e);
+    } on Exception{
+      emit(AuthStopped());
+    }
+  }
+  Future<void> linkWithEmail(String name, String email, String password) async{
+    emit(AuthLoading());
+    try{
+      final credential = EmailAuthProvider.credential(email: email, password: password);
+      await _auth.currentUser!.linkWithCredential(credential);
+      await _auth.currentUser!.updateDisplayName(name);
+      emit(AuthStopped());
+      emit(UserLinkSuccessful());
+      //uploadData();
+    } on FirebaseAuthException catch (e){
+      handleFirebaseAuthError(e);
+    } on Exception{
+      emit(AuthStopped());
     }
   }
 }

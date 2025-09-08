@@ -16,6 +16,7 @@ import 'package:good_manager/presentation/pages/help/help_page_dart.dart';
 import 'package:good_manager/presentation/pages/help/helps_page_dart.dart';
 import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.dart';
 import 'package:good_manager/presentation/pages/history/item_history_view.dart';
+import 'package:good_manager/presentation/pages/linkwith/link_with_page.dart';
 import 'package:good_manager/presentation/pages/login/auth_cubit.dart';
 import 'package:good_manager/presentation/pages/login/loading_data.dart';
 import 'package:good_manager/presentation/pages/login/login_page.dart';
@@ -69,10 +70,8 @@ import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
 import 'package:good_manager/presentation/pages/stores/stores_page.dart';
 import 'package:good_manager/presentation/pages/suppliers/bloc/bloc.dart';
 import 'package:good_manager/presentation/pages/suppliers/suppliers_page.dart';
-import 'package:good_manager/presentation/pages/take_picture_screen.dart';
 
 import '../di/di.dart';
-import '../main.dart';
 
 class AppRouter {
   final RouteObserver<PageRoute> routeObserver;
@@ -89,8 +88,6 @@ class AppRouter {
             create: (context) => getIt<PaymentHistoryCubit>(),
             child: PaymentHistoryPage(
               documentId: args['documentId'],
-              //start: args['start'],
-              //end: args['end'],
             ),
           ),
         );
@@ -189,7 +186,6 @@ class AppRouter {
             create: (context) => getIt<SaveGoodCubit>(),
             child: SaveGoodPage(
               item: args['item'],
-              //quickInsertDocument: args['quickInsertDocument'],
               document: args['document'],
               transaction: args['transaction'],
             ),
@@ -259,8 +255,6 @@ class AppRouter {
           settings,
           HelpPage(title: args['title'], content: args['content']),
         );
-      case Pages.take_picture:
-        return _buildRoute(settings, TakePictureScreen(camera: cameras.first));
       case Pages.report:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
@@ -293,8 +287,6 @@ class AppRouter {
         );
       case Pages.settings:
         return _buildRoute(settings, SettingsPage());
-      // case Pages.subscriptions:
-      //   return _buildRoute(settings, SubscriptionPage());
       case Pages.settings_view:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
@@ -346,36 +338,36 @@ class AppRouter {
             child: BarcodeScannerSettingsPage(),
           ),
         );
-
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (context) => getIt<BarcodeScannerSettingsCubit>(),
-            child: BarcodeScannerSettingsPage(),
-          ),
-        );
       case Pages.signup:
         return _buildRoute(
           settings,
           BlocProvider(
             create: (context) => getIt<AuthCubit>(),
-            child: SignUpScreen(),
+            child: SignUpPage(),
           ),
         );
-
       case Pages.signIn:
         return _buildRoute(
           settings,
           BlocProvider(
             create: (context) => getIt<AuthCubit>(),
-            child: LoginScreen(),
+            child: LoginPage(),
           ),
         );
-      case Pages.upgrade_account:
+      // case Pages.upgrade_account:
+      //   return _buildRoute(
+      //     settings,
+      //     BlocProvider(
+      //       create: (context) => getIt<AuthCubit>(),
+      //       child: LoginScreen(),
+      //     ),
+      //   );
+      case Pages.link_with:
         return _buildRoute(
           settings,
           BlocProvider(
             create: (context) => getIt<AuthCubit>(),
-            child: LoginScreen(),
+            child: LinkWithPage(),
           ),
         );
 
@@ -384,7 +376,7 @@ class AppRouter {
           settings,
           BlocProvider(
             create: (context) => getIt<AuthCubit>(),
-            child: ForgotPasswordScreen(),
+            child: ForgotPasswordPage(),
           ),
         );
       case Pages.onboarding:

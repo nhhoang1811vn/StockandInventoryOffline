@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/save_payment_category/bloc/save_payment_category_cubit.dart';
 import 'package:good_manager/presentation/pages/save_payment_category/components/select_symbols_widget.dart';
 
@@ -49,7 +49,7 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
-        title: Text(AppLocalizations.of(context)!.title_save_category),
+        title: Text(context.tr("title_save_category")),
       ),
     );
   }
@@ -99,7 +99,7 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
                   height: 8,
                 ),
                 Text(
-                  AppLocalizations.of(context)!.change_icon,
+                  context.tr("change_icon"),
                   style: Theme.of(context)
                       .textTheme
                       .titleSmall
@@ -109,8 +109,8 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
                   height: 32,
                 ),
                 AppTextField(
-                  labelText: AppLocalizations.of(context)!.label_category_name,
-                  hintText: AppLocalizations.of(context)!.hint_name,
+                  labelText: context.tr("label_category_name"),
+                  hintText: context.tr("hint_name"),
                   keyboardType: TextInputType.name,
                   initialValue: state.name.value,
                   onChanged: (value) => context
@@ -120,8 +120,8 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
                 ),
                 SizedBox(height: 16),
                 AppTextField(
-                  labelText: AppLocalizations.of(context)!.label_description,
-                  hintText: AppLocalizations.of(context)!.hint_description,
+                  labelText: context.tr("label_description"),
+                  hintText: context.tr("hint_description"),
                   maxLines: null,
                   minLines: 2,
                   keyboardType: TextInputType.name,
@@ -138,7 +138,7 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
           width: double.infinity,
           padding: EdgeInsets.all(16),
           color: Theme.of(context).colorScheme.surface,
-          child: PrimaryButton(AppLocalizations.of(context)!.action_save, () {
+          child: PrimaryButton(context.tr("action_save"), () {
             context.read<SavePaymentCategoryCubit>().onSaveClicked();
           }),
         ),

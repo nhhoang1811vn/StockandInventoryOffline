@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 
 enum SortByText {
   no_sort(0),
@@ -15,11 +15,11 @@ extension SortByTextExtension on SortByText {
   String getText(BuildContext context) {
     switch (this) {
       case SortByText.no_sort:
-        return AppLocalizations.of(context)!.sort_by_option_no_sort_text;
+        return context.tr("no_sort");
       case SortByText.a_to_z:
-        return AppLocalizations.of(context)!.sort_by_option_a_to_z_text;
+        return context.tr("a_to_z");
       case SortByText.z_to_a:
-        return AppLocalizations.of(context)!.sort_by_option_z_to_a_text;
+        return context.tr("z_to_a");
     }
   }
 }

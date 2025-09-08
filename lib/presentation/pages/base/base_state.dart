@@ -16,8 +16,6 @@ class OpenBuySubscriptionDialogState extends BaseState {}
 
 class OpenListSettingsDialogState extends BaseState {}
 
-class OpenSortDialogListState extends BaseState {}
-
 //goods
 class OpenSaveGoodPageState extends BaseState {
   late Good item;

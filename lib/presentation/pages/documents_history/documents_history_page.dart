@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/models/list_item.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/documents/components/document_item_row.dart';
@@ -58,7 +58,7 @@ class DocumentsHistoryPageState extends State<DocumentsHistoryPage> {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
-        title: new Text(AppLocalizations.of(context)!.item_history_title),
+        title: new Text(context.tr("item_history_title")),
       ),
     );
   }
@@ -96,7 +96,7 @@ class DocumentsHistoryPageState extends State<DocumentsHistoryPage> {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  AppLocalizations.of(context)!.empty_document,
+                  context.tr("empty_document"),
                   textAlign: TextAlign.center,
                 ),
               ],

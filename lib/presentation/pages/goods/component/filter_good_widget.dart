@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/payment/components/text_selection.dart';
 
 import '../../../../domain/entity/entity.dart';
@@ -46,27 +46,27 @@ class FilterGoodWidgetState extends State<FilterGoodWidget> {
         children: [
           Center(
             child: Text(
-              AppLocalizations.of(context)!.title_filter,
+              context.tr("title_filter"),
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
           SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.sort_by_name,
+            context.tr("sort_by_name"),
             style: Theme.of(context).textTheme.titleMedium,
           ),
           SizedBox(height: 8),
           buildSortByNameOptions(),
           SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.sort_by_barcode,
+            context.tr("sort_by_barcode"),
             style: Theme.of(context).textTheme.titleMedium,
           ),
           SizedBox(height: 8),
           buildSortByBarcodeOptions(),
           SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.sort_by_quantity,
+            context.tr("sort_by_quantity"),
             style: Theme.of(context).textTheme.titleMedium,
           ),
           SizedBox(height: 8),
@@ -76,13 +76,13 @@ class FilterGoodWidgetState extends State<FilterGoodWidget> {
             children: [
               Expanded(
                 child: MyOutlineButton(
-                    AppLocalizations.of(context)!.action_reset_all, () {
+                    context.tr("action_reset_all"), () {
                   widget.onResetAllPressed();
                 }),
               ),
               SizedBox(width: 16),
               Expanded(
-                child: PrimaryButton(AppLocalizations.of(context)!.action_apply,
+                child: PrimaryButton(context.tr("action_apply"),
                     () {
                   widget.onApplyPressed(
                     widget.setting.copyWith(

@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/payment/components/text_selection.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
 
@@ -65,48 +65,48 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
         children: [
           Center(
             child: Text(
-              AppLocalizations.of(context)!.title_filter,
+              context.tr("title_filter"),
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
           SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.sort_by_date,
+            context.tr("sort_by_date"),
             style: Theme.of(context).textTheme.titleMedium,
           ),
           SizedBox(height: 8),
           buildSortByDateOptions(),
           SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.by_category,
+            context.tr("by_category"),
             style: Theme.of(context).textTheme.titleMedium,
           ),
           SizedBox(height: 8),
           buildCategoriesOptions(widget.categories),
           SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.by_wallet,
+            context.tr("by_wallet"),
             style: Theme.of(context).textTheme.titleMedium,
           ),
           SizedBox(height: 8),
           buildWalletsOptions(widget.wallets),
           SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.by_customer,
+            context.tr("by_customer"),
             style: Theme.of(context).textTheme.titleMedium,
           ),
           SizedBox(height: 8),
           buildCustomersOptions(widget.customers),
           SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.by_supplier,
+            context.tr("by_supplier"),
             style: Theme.of(context).textTheme.titleMedium,
           ),
           SizedBox(height: 8),
           buildSuppliersOptions(widget.suppliers),
           SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.by_date,
+            context.tr("by_date"),
             style: Theme.of(context).textTheme.titleMedium,
           ),
           SizedBox(height: 8),
@@ -116,13 +116,13 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
             children: [
               Expanded(
                 child: MyOutlineButton(
-                    AppLocalizations.of(context)!.action_reset_all, () {
+                    context.tr("action_reset_all"), () {
                   widget.onResetAllPressed();
                 }),
               ),
               SizedBox(width: 16),
               Expanded(
-                child: PrimaryButton(AppLocalizations.of(context)!.action_apply,
+                child: PrimaryButton(context.tr("action_apply"),
                     () {
                   widget.onApplyPressed(
                     widget.setting.copyWith(
@@ -148,7 +148,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
     List<Widget> items = [];
     items.add(
       AppTextSelection(
-        item: AppLocalizations.of(context)!.newest_to_oldest,
+        item: context.tr("newest_to_oldest"),
         isSelected: _sortByDateNewestFirst,
         onPressed: () {
           setState(() {
@@ -159,7 +159,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
     );
     items.add(
       AppTextSelection(
-        item: AppLocalizations.of(context)!.oldest_to_newest,
+        item: context.tr("oldest_to_newest"),
         isSelected: !_sortByDateNewestFirst,
         onPressed: () {
           setState(() {
@@ -175,7 +175,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
     List<Widget> items = [];
     items.add(
       AppTextSelection(
-        item: AppLocalizations.of(context)!.show_all,
+        item: context.tr("show_all"),
         isSelected: _selectedCategoryIds.isEmpty,
         onPressed: () {
           setState(() {
@@ -191,7 +191,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
               ? null
               : Text(category.icon, style: TextStyle(fontSize: 20)),
           item: category == null
-              ? AppLocalizations.of(context)!.no_category
+              ? context.tr("no_category")
               : category.name,
           isSelected: _selectedCategoryIds.contains(category?.id),
           onPressed: () {
@@ -213,7 +213,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
     List<Widget> items = [];
     items.add(
       AppTextSelection(
-        item: AppLocalizations.of(context)!.show_all,
+        item: context.tr("show_all"),
         isSelected: _selectedWalletIds.isEmpty,
         onPressed: () {
           setState(() {
@@ -251,7 +251,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
     List<Widget> items = [];
     items.add(
       AppTextSelection(
-        item: AppLocalizations.of(context)!.show_all,
+        item: context.tr("show_all"),
         isSelected: _selectedCustomerIds.isEmpty,
         onPressed: () {
           setState(() {
@@ -284,7 +284,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
     List<Widget> items = [];
     items.add(
       AppTextSelection(
-        item: AppLocalizations.of(context)!.show_all,
+        item: context.tr("show_all"),
         isSelected: _selectedSupplierIds.isEmpty,
         onPressed: () {
           setState(() {
@@ -320,7 +320,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
         Row(
           children: [
             AppTextSelection(
-              item: AppLocalizations.of(context)!.show_all,
+              item: context.tr("show_all"),
               isSelected: isSelectedShowAll,
               onPressed: () {
                 setState(() {
@@ -333,7 +333,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
               width: 8,
             ),
             AppTextSelection(
-              item: AppLocalizations.of(context)!.report_type_custom,
+              item: context.tr("report_type_custom"),
               isSelected: !isSelectedShowAll,
               onPressed: () {
                 setState(() {
@@ -352,13 +352,13 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
                 Row(
                   children: [
                     Expanded(
-                      child: Text(AppLocalizations.of(context)!.start_date),
+                      child: Text(context.tr("start_date)")),
                     ),
                     SizedBox(
                       width: 8,
                     ),
                     Expanded(
-                      child: Text(AppLocalizations.of(context)!.end_date),
+                      child: Text(context.tr("end_date)")),
                     ),
                   ],
                 ),

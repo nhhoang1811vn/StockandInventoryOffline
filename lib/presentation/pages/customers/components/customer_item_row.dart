@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 
 import '../../../../domain/entity/entity.dart';
 
@@ -54,7 +54,7 @@ class CustomerItemRow extends StatelessWidget {
                 ? Text(
                     item.numberDocument.toString() +
                         " " +
-                        AppLocalizations.of(context)!.documents_title,
+                        context.tr("documents"),
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
@@ -79,15 +79,15 @@ class CustomerItemRow extends StatelessWidget {
           itemBuilder: (BuildContext a) => <PopupMenuEntry<SupplierItemMenu>>[
             PopupMenuItem<SupplierItemMenu>(
               value: SupplierItemMenu.sendEmail,
-              child: Text(AppLocalizations.of(context)!.action_send_email),
+              child: Text(context.tr("send_email")),
             ),
             PopupMenuItem<SupplierItemMenu>(
               value: SupplierItemMenu.sendSMS,
-              child: Text(AppLocalizations.of(context)!.action_send_sms),
+              child: Text(context.tr("send_sms")),
             ),
             PopupMenuItem<SupplierItemMenu>(
               value: SupplierItemMenu.phoneCall,
-              child: Text(AppLocalizations.of(context)!.action_phone_call),
+              child: Text(context.tr("phone_call")),
             ),
           ],
         ),

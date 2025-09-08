@@ -1,7 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-import '../../l10n/app_localizations.dart';
 import '../../util/util.dart';
 import 'base_dialog.dart';
 
@@ -34,7 +34,7 @@ class _State extends BaseDialogState<SelectColorDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            titleWidget(AppLocalizations.of(context)!.title_pick_color),
+            titleWidget(context.tr("title_pick_color")),
             BlockPicker(
               pickerColor: widget.color,
               onColorChanged: (newColor) {

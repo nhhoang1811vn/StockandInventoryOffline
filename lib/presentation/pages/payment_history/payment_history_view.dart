@@ -1,10 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/payment/components/payment_item_row.dart';
 import 'package:good_manager/presentation/pages/payment_history/bloc/payment_history_cubit.dart';
+import 'package:good_manager/util/currency_formatter.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 import '../../../constant/constant.dart';
@@ -46,7 +47,7 @@ class PaymentHistoryPageState extends State<PaymentHistoryPage> {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
-        title: new Text(AppLocalizations.of(context)!.item_history_title),
+        title: new Text(context.tr("item_history_title")),
       ),
     );
   }
@@ -84,7 +85,7 @@ class PaymentHistoryPageState extends State<PaymentHistoryPage> {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  AppLocalizations.of(context)!.empty_payment,
+                  context.tr("empty_payment"),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -144,7 +145,7 @@ class PaymentHistoryPageState extends State<PaymentHistoryPage> {
             VerticalDivider(width: 2, color: Colors.white),
             SizedBox(width: 4),
             Text(
-              "Total ${Config.currencyFormat.format(state.items.fold<double>(0, (sum, item) => sum + (item.amount ?? 0)))}",
+              "Total ${CurrencyFormatter.format(context,state.items.fold<double>(0, (sum, item) => sum + (item.amount ?? 0)))}",
               style: textStyle,
             ),
           ],

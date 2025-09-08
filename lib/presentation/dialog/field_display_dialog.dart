@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
 
 class ColumnDisplayDialog extends StatefulWidget {
@@ -45,7 +45,7 @@ class ColumnDisplayDialogState extends State<ColumnDisplayDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context)!.settings_title),
+      title: Text(context.tr("settings")),
       content: SingleChildScrollView(
         child: Column(
           children: List.generate(widget.columns.length, (index) {
@@ -70,7 +70,7 @@ class ColumnDisplayDialogState extends State<ColumnDisplayDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(AppLocalizations.of(context)!.action_ok),
+          child: Text(context.tr("ok")),
           onPressed: () async {
             for (int i = 0; i < widget.columns.length; i++) {
               widget.columns[i].isVisible = visibilityStates[i];

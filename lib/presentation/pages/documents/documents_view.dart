@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/documents/components/filter_document_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
@@ -156,16 +156,14 @@ class DocumentPageState extends State<DocumentsPage>
       tabs: [
         Tab(
           text:
-              AppLocalizations.of(context)!.document_list_tab_all.toUpperCase(),
+              context.tr("all").toUpperCase(),
         ),
         Tab(
-          text: AppLocalizations.of(context)!
-              .incoming_document_text
+          text: context.tr("incoming")
               .toUpperCase(),
         ),
         Tab(
-          text: AppLocalizations.of(context)!
-              .outgoing_document_text
+          text: context.tr("outgoing")
               .toUpperCase(),
         ),
       ],
@@ -205,7 +203,7 @@ class DocumentPageState extends State<DocumentsPage>
           Navigator.of(context).pushNamed(
             Pages.help,
             arguments: {
-              "title": AppLocalizations.of(context)!.documents_title,
+              "title": context.tr("documents"),
               "content":
                   MDProviderFactory.get().getHelpText(HelpType.DOCUMENTS),
             },
@@ -237,7 +235,7 @@ class DocumentPageState extends State<DocumentsPage>
     Document item = Document();
     item.storeId = storeId;
     item.type = type;
-    item.name = AppLocalizations.of(context)!.document_name_no + autoDocumentNo;
+    item.name = context.tr("document_name_no") + autoDocumentNo;
     await Navigator.of(context)
         .pushNamed(Pages.save_document, arguments: {'item': item});
     context.read<DocumentsCubit>().loadItems();
@@ -258,16 +256,16 @@ class DocumentPageState extends State<DocumentsPage>
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                AppLocalizations.of(context)!.select_document_type,
+                context.tr("select_document_type"),
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.incoming_document_text),
+              title: Text(context.tr("incoming")),
               onTap: () => Navigator.pop(context, DocumentType.incoming),
             ),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.outgoing_document_text),
+              title: Text(context.tr("outgoing")),
               onTap: () => Navigator.pop(context, DocumentType.outgoing),
             ),
           ],
@@ -279,8 +277,8 @@ class DocumentPageState extends State<DocumentsPage>
   AppBar _buildAppBar(DocumentsState state) {
     return AppBar(
       title: widget.isSelection
-          ? Text(AppLocalizations.of(context)!.title_select_document)
-          : Text(AppLocalizations.of(context)!.documents_title),
+          ? Text(context.tr("select_document"))
+          : Text(context.tr("documents")),
       actions: [
         _buildSearchMenu(state),
         _buildFilterMenu(state),
@@ -300,7 +298,7 @@ class DocumentPageState extends State<DocumentsPage>
           ),
           SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.empty_document,
+            context.tr("no_documents"),
             textAlign: TextAlign.center,
           ),
         ],
@@ -449,23 +447,23 @@ class DocumentPageState extends State<DocumentsPage>
 
     var items = [
       if (showViewPaymentOption)
-        AppLocalizations.of(context)!.action_view_payments,
+        context.tr("action_view_payments"),
       if (showCreatePaymentOption)
-        AppLocalizations.of(context)!.action_create_payment,
-      AppLocalizations.of(context)!.action_delete,
+        context.tr("action_create_payment"),
+      context.tr("delete"),
     ];
     showSelectOptionDialog(
       context,
       items: items,
       onItemSelected: (index) async {
         if (items[index] ==
-            AppLocalizations.of(context)!.action_view_payments) {
+            context.tr("action_view_payments")) {
           context.read<DocumentsCubit>().onViewLinkedPayments(item);
         } else if (items[index] ==
-            AppLocalizations.of(context)!.action_create_payment) {
+            context.tr("action_create_payment")) {
           await context.read<DocumentsCubit>().onCreateAPayment(item);
         } else if (items[index] ==
-            AppLocalizations.of(context)!.action_delete) {
+            context.tr("delete")) {
           showDeleteDocumentConfirm(item);
         }
       },
@@ -476,7 +474,7 @@ class DocumentPageState extends State<DocumentsPage>
     showCustomAlertDialog(
       context,
       message: sprintf(
-        AppLocalizations.of(context)!.message_confirm_delete,
+        context.tr("message_confirm_delete"),
         [document.name],
       ),
       onPositivePressed: () async {

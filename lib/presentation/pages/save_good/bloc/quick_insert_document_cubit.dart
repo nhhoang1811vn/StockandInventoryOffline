@@ -38,7 +38,7 @@ class QuickInsertDocumentCubit extends Cubit<QuickInsertDocumentState> {
 
   void onPriceChanged(String value) {
     if (value.isNotEmpty) {
-      num priceNum = Config.currencyFormat.parse(value);
+      num priceNum = Config.simpleCurrencyFormat.parse(value);
       double price = priceNum.toDouble();
       if (state.quantity != null) {
         emit(state.copyWith(price: price, amount: state.quantity! * price));

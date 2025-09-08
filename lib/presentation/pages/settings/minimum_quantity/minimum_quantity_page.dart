@@ -1,11 +1,11 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/settings/minimum_quantity/bloc/minimum_quantity_cubit.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../../../l10n/app_localizations.dart';
 import '../../../dialog/dialog.dart';
 import '../../../markdown/md_provider_factory.dart';
 import '../../help_content.dart';
@@ -37,7 +37,7 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
           appBar: new AppBar(
             actions: [_buildHelpMenu()],
             title: new Text(
-              AppLocalizations.of(context)!.menu_item_minimum_quantity,
+              context.tr("menu_item_minimum_quantity"),
             ),
           ),
           body: _buildBody(state),
@@ -52,7 +52,7 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
         Navigator.of(context).pushNamed(
           Pages.help,
           arguments: {
-            "title": AppLocalizations.of(context)!.menu_item_minimum_quantity,
+            "title": context.tr("menu_item_minimum_quantity"),
             "content": MDProviderFactory.get().getHelpText(HelpType.MIN_QUAN),
           },
         );
@@ -87,9 +87,9 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
   void _showPermissionDialog(BuildContext context) {
     showCustomAlertDialog(
       context,
-      title: AppLocalizations.of(context)!.notification_permission,
-      message: AppLocalizations.of(context)!.notification_permission_content,
-      positiveText: AppLocalizations.of(context)!.open_settings,
+      title: context.tr("notification_permission"),
+      message: context.tr("notification_permission_content"),
+      positiveText: context.tr("open_settings"),
       onPositivePressed: () async {
         hideDialog(context);
         openAppSettings();
@@ -111,8 +111,7 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
                   context.read<MinimumQuantityCubit>().onShowInItemChanged();
                 },
                 title: Text(
-                  AppLocalizations.of(context)!
-                      .menu_item_show_min_quantity_items_page_title,
+                  context.tr("menu_item_show_min_quantity_items_page_title"),
                 ),
               ),
               Divider(
@@ -124,8 +123,7 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
                   context.read<MinimumQuantityCubit>().onShowInListChanged();
                 },
                 title: Text(
-                  AppLocalizations.of(context)!
-                      .menu_item_show_min_quantity_list_page_title,
+                  context.tr("menu_item_show_min_quantity_list_page_title"),
                 ),
               ),
               Divider(
@@ -133,8 +131,7 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
               ),
               ListTile(
                 title: Text(
-                  AppLocalizations.of(context)!
-                      .menu_item_min_quantity_color_title,
+                  context.tr("menu_item_min_quantity_color_title"),
                 ),
                 onTap: () {
                   showSelectColorDialog(
@@ -174,12 +171,10 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
                   }
                 },
                 title: Text(
-                  AppLocalizations.of(context)!
-                      .menu_item_show_low_stock_alert_title,
+                  context.tr("menu_item_show_low_stock_alert_title"),
                 ),
                 subtitle: Text(
-                  AppLocalizations.of(context)!
-                      .menu_item_show_low_stock_alert_desc,
+                  context.tr("menu_item_show_low_stock_alert_desc"),
                 ),
               ),
             ],

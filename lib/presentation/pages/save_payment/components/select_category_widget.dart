@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/payment/components/category_selection.dart';
 
 import '../../../../domain/entity/entity.dart';
@@ -60,7 +60,7 @@ class SelectCategoryWidgetState extends State<SelectCategoryWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            AppLocalizations.of(context)!.label_select_payment_category,
+            context.tr("label_select_payment_category"),
             style: Theme.of(context).textTheme.titleMedium,
           ),
           SizedBox(height: 16),

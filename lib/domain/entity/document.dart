@@ -1,5 +1,3 @@
-import 'package:good_manager/l10n/app_localizations.dart';
-
 import 'base_model.dart';
 
 enum DocumentType {
@@ -7,16 +5,16 @@ enum DocumentType {
   outgoing,
 }
 
-extension DocumentTypeExtension on DocumentType {
-  String getTitle(AppLocalizations localizations) {
-    switch (this) {
-      case DocumentType.incoming:
-        return localizations.incoming_document_text;
-      case DocumentType.outgoing:
-        return localizations.outgoing_document_text;
-    }
-  }
-}
+// extension DocumentTypeExtension on DocumentType {
+//   String getTitle(AppLocalizations localizations) {
+//     switch (this) {
+//       case DocumentType.incoming:
+//         return localizations.incoming;
+//       case DocumentType.outgoing:
+//         return localizations.outgoing;
+//     }
+//   }
+// }
 
 class Document extends BaseModel {
   DateTime date = DateTime.now();

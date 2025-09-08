@@ -1,15 +1,17 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/component/filter_good_widget.dart';
 import 'package:good_manager/presentation/style_size.dart';
+import 'package:good_manager/util/string_utils.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
+import '../../../util/currency_formatter.dart';
 import '../../blocs/add_quantity_and_price/add_quantity_and_price_dialog.dart';
 import '../../dialog/dialog.dart';
 import '../../widget/widget.dart';
@@ -93,7 +95,7 @@ class GoodsPageState extends State<GoodsPage> {
           children: [
             SizedBox(width: 16),
             Text(
-              "${AppLocalizations.of(context)!.field_quantity_short_form}:  ${Config.currencyFormat.format(state.quantityTotal)}",
+              "${context.tr("quantity")}:  ${StringUtils.getQuantityText(state.quantityTotal)}",
               style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
             ),
             SizedBox(width: 16),
@@ -103,7 +105,7 @@ class GoodsPageState extends State<GoodsPage> {
             ),
             SizedBox(width: 16),
             Text(
-              "${AppLocalizations.of(context)!.field_total_short_form}: ${Config.currencyFormat.format(state.purchasePriceTotal)}/${Config.currencyFormat.format(state.salePriceTotal)}",
+              "${context.tr("total")}: ${CurrencyFormatter.format(context,state.purchasePriceTotal)}/${CurrencyFormatter.format(context,state.salePriceTotal)}",
               style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
             ),
           ],
@@ -172,7 +174,7 @@ class GoodsPageState extends State<GoodsPage> {
           ),
           SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.empty_goods,
+            context.tr("no_goods"),
             textAlign: TextAlign.center,
           ),
         ],
@@ -326,25 +328,25 @@ class GoodsPageState extends State<GoodsPage> {
 
   void onLongPressedGood(Good item) {
     var items = [
-      AppLocalizations.of(context)!.action_move_to_group,
-      AppLocalizations.of(context)!.item_history_title,
-      AppLocalizations.of(context)!.action_delete,
+      context.tr("action_move_to_group"),
+      context.tr("item_history_title"),
+      context.tr("delete"),
     ];
     showSelectOptionDialog(
       context,
       items: items,
       onItemSelected: (index) async {
         if (items[index] ==
-            AppLocalizations.of(context)!.action_move_to_group) {
+            context.tr("action_move_to_group")) {
           openSelectGroupForGood(item);
         } else if (items[index] ==
-            AppLocalizations.of(context)!.item_history_title) {
+            context.tr("item_history_title")) {
           Navigator.of(context).pushNamed(
             Pages.good_history,
             arguments: {'goodId': item.id},
           );
         } else if (items[index] ==
-            AppLocalizations.of(context)!.action_delete) {
+            context.tr("delete")) {
           showDeleteGoodConfirmPopup(item);
         }
       },
@@ -381,7 +383,7 @@ class GoodsPageState extends State<GoodsPage> {
     showCustomAlertDialog(
       context,
       message: sprintf(
-        AppLocalizations.of(context)!.message_confirm_delete,
+        context.tr("message_confirm_delete"),
         [item.name],
       ),
       onPositivePressed: () async {
@@ -397,19 +399,19 @@ class GoodsPageState extends State<GoodsPage> {
 
   void onLongPressedGroup(Group item) {
     var items = [
-      AppLocalizations.of(context)!.action_move_to_group,
-      AppLocalizations.of(context)!.action_edit_group,
-      AppLocalizations.of(context)!.action_delete,
+      context.tr("action_move_to_group"),
+      context.tr("action_edit_group"),
+      context.tr("delete"),
     ];
     showSelectOptionDialog(
       context,
       items: items,
       onItemSelected: (index) async {
         if (items[index] ==
-            AppLocalizations.of(context)!.action_move_to_group) {
+            context.tr("action_move_to_group")) {
           openSelectGroupForGroup(item);
         } else if (items[index] ==
-            AppLocalizations.of(context)!.action_edit_group) {
+            context.tr("action_edit_group")) {
           final result = await Navigator.of(context)
               .pushNamed(Pages.save_group, arguments: {"item": item});
           if (result != null) {
@@ -417,7 +419,7 @@ class GoodsPageState extends State<GoodsPage> {
             //context.read<GoodsCubit>().loadItems();
           }
         } else if (items[index] ==
-            AppLocalizations.of(context)!.action_delete) {
+            context.tr("delete")) {
           context.read<GoodsCubit>().deleteGroup(item.id!);
         }
       },
@@ -434,20 +436,22 @@ class GoodsPageState extends State<GoodsPage> {
     return BlocConsumer<GoodsCubit, GoodsState>(
       listenWhen: (p1, p2) => p1.state != p2.state,
       listener: (context, state) async {
-        if (state.state is OpenSortDialogListState) {
-          GoodsSetting? settings = await showDialog(
-            context: context,
-            builder: (_) => SortGoodsDialog(state.settings),
-            barrierDismissible: true,
-          );
-          if (settings != null) {
-            context.read<GoodsCubit>().setSettings(settings);
-          }
-        } else if (state.state is OpenHelpPageState) {
+        // if (state.state is OpenSortDialogListState) {
+        //   GoodsSetting? settings = await showDialog(
+        //     context: context,
+        //     builder: (_) => SortGoodsDialog(state.settings),
+        //     barrierDismissible: true,
+        //   );
+        //   if (settings != null) {
+        //     context.read<GoodsCubit>().setSettings(settings);
+        //   }
+        // } else
+
+          if (state.state is OpenHelpPageState) {
           Navigator.of(context).pushNamed(
             Pages.help,
             arguments: {
-              "title": AppLocalizations.of(context)?.goods_title,
+              "title": context.tr("goods"),
               "content": MDProviderFactory.get().getHelpText(HelpType.GOODS),
             },
           );
@@ -472,7 +476,7 @@ class GoodsPageState extends State<GoodsPage> {
           final currentState = state.state as InsertTransactionSuccessState;
           ScaffoldMessenger.of(context).showSnackBar(
             snackBarWhenSuccessWithText(
-              AppLocalizations.of(context)!.insert_transaction_success,
+              context.tr("insert_transaction_success"),
             ),
           );
           context
@@ -481,7 +485,7 @@ class GoodsPageState extends State<GoodsPage> {
         } else if (state.state is InsertTransactionFailedState) {
           ScaffoldMessenger.of(context).showSnackBar(
             snackBarWhenFailureWithText(
-              AppLocalizations.of(context)!.insert_transaction_fail,
+              context.tr("insert_transaction_fail"),
             ),
           );
         } else if (state.state is OpenListSettingsDialogState) {
@@ -499,8 +503,8 @@ class GoodsPageState extends State<GoodsPage> {
         appBar: new AppBar(
           title: new Text(
             widget.isSelection
-                ? AppLocalizations.of(context)!.goods_select_title
-                : AppLocalizations.of(context)!.goods_title,
+                ? context.tr("select_good")
+                : context.tr("goods"),
           ),
           actions: [
             _buildSearchMenu(state),
@@ -520,13 +524,13 @@ class GoodsPageState extends State<GoodsPage> {
                 PopupMenuItem<OverflowMenuItem>(
                   value: OverflowMenuItem.listSettings,
                   child: Text(
-                    AppLocalizations.of(context)!.list_settings,
+                    context.tr("list_settings"),
                   ),
                 ),
                 PopupMenuItem<OverflowMenuItem>(
                   value: OverflowMenuItem.help,
                   child: Text(
-                    AppLocalizations.of(context)!.action_help,
+                    context.tr("action_help"),
                   ),
                 ),
               ],
@@ -553,7 +557,7 @@ class GoodsPageState extends State<GoodsPage> {
                 size: 24,
                 color: Theme.of(context).colorScheme.primary,
               ),
-              label: Text(AppLocalizations.of(context)!.action_add_good),
+              label: Text(context.tr("action_add_good")),
               heroTag: 'add_good_tab',
               onPressed: () {
                 final state = _key.currentState;
@@ -570,7 +574,7 @@ class GoodsPageState extends State<GoodsPage> {
                 size: 24,
                 color: Theme.of(context).colorScheme.primary,
               ),
-              label: Text(AppLocalizations.of(context)!.action_add_group),
+              label: Text(context.tr("action_add_group")),
               onPressed: () {
                 final state = _key.currentState;
                 if (state != null) {

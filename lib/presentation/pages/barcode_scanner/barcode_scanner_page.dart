@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:vibration/vibration.dart';
 
@@ -21,7 +21,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.scan_bar_code_title),
+        title: Text(context.tr("scan_bar_code_title")),
         centerTitle: false,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),

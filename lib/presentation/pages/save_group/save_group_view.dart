@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/save_group/bloc/save_group_cubit.dart';
 import 'package:good_manager/presentation/pages/save_group/components/save_group_form.dart';
 
@@ -42,7 +42,7 @@ class SaveGroupPageState extends State<SaveGroupPage> {
             width: double.infinity,
             padding: EdgeInsets.all(16),
             color: Theme.of(context).colorScheme.surface,
-            child: PrimaryButton(AppLocalizations.of(context)!.action_save, () {
+            child: PrimaryButton(context.tr("action_save"), () {
               context.read<SaveGroupCubit>().onSaveClicked();
             }),
           ),
@@ -55,7 +55,7 @@ class SaveGroupPageState extends State<SaveGroupPage> {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
-        title: Text(AppLocalizations.of(context)!.save_group_title),
+        title: Text(context.tr("save_group")),
       ),
     );
   }

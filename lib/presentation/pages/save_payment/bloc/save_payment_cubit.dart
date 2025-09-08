@@ -154,7 +154,7 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
 
   void onAmountChanged(String value) {
     if (value.isNotEmpty) {
-      num amountNum = Config.currencyFormat.parse(value);
+      num amountNum = Config.simpleCurrencyFormat.parse(value);
       double amount = amountNum.toDouble();
       emit(state.copyWith(amount: amount));
     } else {

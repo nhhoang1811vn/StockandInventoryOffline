@@ -1,15 +1,19 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 import '../common/storage/storage.dart';
 import '../domain/entity/entity.dart';
+import '../models/app_language.dart';
+import '../models/app_theme.dart';
+import '../models/currency.dart';
 
 class AppSettings {
   static const Color incomingDocumentColor = Colors.red;
   static const Color outgoingDocumentColor = Colors.green;
 
-  AppSettings._(); // coverage:ignore-line
+  AppSettings._();
 
   static late Storage _storage;
 
@@ -44,7 +48,32 @@ class AppSettings {
   static const String _AutoDocumentNameKey = "AutoDocumentName";
   static const String _SelectedStoreNameKey = "SelectedStoreName";
 
-  static Future<bool> init(Storage storage) async {
+  static const _keyAppTheme = "_keyAppTheme";
+  static const _keyAppLanguage = "_keyAppLanguage";
+  static const _keyCurrency = "_keyCurrency";
+
+  static late Box _box;
+  static bool _isPro = false;
+
+  // static Future<bool> init(Storage storage) async {
+  //   try {
+  //     _storage = storage;
+  //     if (_storage.getBool(InitSettings) == null) {
+  //       _storage.setInt(
+  //         BarcodeScannerBatchScanMode,
+  //         BatchModeScan.MANUAL.value,
+  //       );
+  //       _storage.setBool(BarcodeScannerEnableBeep, true);
+  //       _storage.setBool(BarcodeScannerEnableVibrate, true);
+  //       _storage.setBool(InitSettings, true);
+  //     }
+  //     _isPro = await RevenueCatService.isPro();
+  //     return true;
+  //   } catch (error) {
+  //     return false;
+  //   }
+  // }
+  static Future<bool> initialize(Storage storage) async {
     try {
       _storage = storage;
       if (_storage.getBool(InitSettings) == null) {
@@ -56,6 +85,10 @@ class AppSettings {
         _storage.setBool(BarcodeScannerEnableVibrate, true);
         _storage.setBool(InitSettings, true);
       }
+      Hive.registerAdapter(AppThemeAdapter());
+      Hive.registerAdapter(AppLanguageAdapter());
+      Hive.registerAdapter(CurrencyAdapter());
+      _box = await Hive.openBox('settings');
       return true;
     } catch (error) {
       return false;
@@ -304,4 +337,21 @@ class AppSettings {
     var key = _AutoDocumentNameKey + storeId.toString();
     _storage.setInt(key, 0);
   }
+
+  static AppTheme get appTheme =>
+      _box.get(_keyAppTheme, defaultValue: AppTheme.orange);
+
+  static set appTheme(AppTheme value) => _box.put(_keyAppTheme, value);
+
+  static AppLanguage get appLanguage =>
+      _box.get(_keyAppLanguage, defaultValue: AppLanguage.english);
+
+  static set appLanguage(AppLanguage value) => _box.put(_keyAppLanguage, value);
+
+  static bool isPro() => _isPro;
+
+  static Currency get currency =>
+      _box.get(_keyCurrency, defaultValue: Currency.usd);
+
+  static set currency(Currency value) => _box.put(_keyCurrency, value);
 }

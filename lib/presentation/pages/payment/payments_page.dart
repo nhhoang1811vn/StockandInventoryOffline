@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/payment/components/filter_payment_widget.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
@@ -53,7 +53,7 @@ class PaymentsPageState extends State<PaymentsPage>
         Navigator.of(context).pushNamed(
           Pages.help,
           arguments: {
-            "title": AppLocalizations.of(context)!.payments_title,
+            "title": context.tr("payments_title"),
             "content": MDProviderFactory.get().getHelpText(HelpType.PAYMENTS),
           },
         );
@@ -136,7 +136,7 @@ class PaymentsPageState extends State<PaymentsPage>
 
   AppBar _buildAppBar(PaymentsState state) {
     return new AppBar(
-      title: new Text(AppLocalizations.of(context)!.payments_title),
+      title: new Text(context.tr("payments_title")),
       actions: [
         _buildFilterMenu(state),
         _buildCategoriesMenu(),
@@ -220,7 +220,7 @@ class PaymentsPageState extends State<PaymentsPage>
           Padding(
             padding: EdgeInsets.only(top: 16),
             child: Text(
-              AppLocalizations.of(context)!.empty_payment,
+              context.tr("empty_payment"),
               textAlign: TextAlign.center,
             ),
           ),
@@ -262,13 +262,13 @@ class PaymentsPageState extends State<PaymentsPage>
 
   void onLongPressed(Payment item) {
     var items = [
-      AppLocalizations.of(context)!.action_delete,
+      context.tr("delete"),
     ];
     showSelectOptionDialog(
       context,
       items: items,
       onItemSelected: (index) async {
-        if (items[index] == AppLocalizations.of(context)!.action_delete) {
+        if (items[index] == context.tr("delete")) {
           showDeleteConfirmPopup(item);
         }
       },
@@ -278,7 +278,7 @@ class PaymentsPageState extends State<PaymentsPage>
   void showDeleteConfirmPopup(Payment item) async {
     showCustomAlertDialog(
       context,
-      message: AppLocalizations.of(context)!.message_confirm_delete_no_args,
+      message: context.tr("message_confirm_delete_no_args"),
       onPositivePressed: () async {
         hideDialog(context);
         await context.read<PaymentsCubit>().delete(item.id!);
@@ -299,18 +299,15 @@ class PaymentsPageState extends State<PaymentsPage>
               indicatorColor: Theme.of(context).colorScheme.primary,
               tabs: [
                 Tab(
-                  text: AppLocalizations.of(context)!
-                      .document_list_tab_all
+                  text: context.tr("all")
                       .toUpperCase(),
                 ),
                 Tab(
-                  text: AppLocalizations.of(context)!
-                      .title_inbound_payment
+                  text: context.tr("title_inbound_payment")
                       .toUpperCase(),
                 ),
                 Tab(
-                  text: AppLocalizations.of(context)!
-                      .title_outbound_payment
+                  text: context.tr("title_outbound_payment")
                       .toUpperCase(),
                 ),
               ],
@@ -372,16 +369,16 @@ class PaymentsPageState extends State<PaymentsPage>
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                AppLocalizations.of(context)!.select_payment_type,
+                context.tr("select_payment_type"),
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.title_inbound_payment),
+              title: Text(context.tr("title_inbound_payment")),
               onTap: () => Navigator.pop(context, PaymentType.inbound),
             ),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.title_outbound_payment),
+              title: Text(context.tr("title_outbound_payment")),
               onTap: () => Navigator.pop(context, PaymentType.outbound),
             ),
           ],

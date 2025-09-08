@@ -1,14 +1,15 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:good_manager/core/services/notification_service.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/pages/home/wallet_card.dart';
 import 'package:good_manager/presentation/pages/payment/components/payment_item_row.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
+import 'package:good_manager/util/currency_formatter.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../constant/constant.dart';
@@ -76,9 +77,9 @@ class HomePageState extends State<HomePage> {
     if (hasLowStock && context.mounted) {
       NotificationService.showNotification(
         id: 0,
-        title: AppLocalizations.of(context)!.notification_low_stock_alert_title,
+        title: context.tr("notification_low_stock_alert_title"),
         body:
-            AppLocalizations.of(context)!.notification_low_stock_alert_message,
+            context.tr("notification_low_stock_alert_message"),
         payload: "reorder",
       );
     }
@@ -101,7 +102,7 @@ class HomePageState extends State<HomePage> {
           showBuySubscriptionDialog(
             context,
             message: sprintf(
-              AppLocalizations.of(context)!.buy_subscription_to_add_more_entity,
+              context.tr("buy_subscription_to_add_more_entity"),
               [FreeLimits.walletLimit],
             ),
           );
@@ -132,7 +133,7 @@ class HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                   child: _buildSingleValueCard(
-                    AppLocalizations.of(context)!.suppliers_title,
+                    context.tr("suppliers"),
                     state.countSupplier.toString(),
                     UIConstants.supplierIconData,
                     openSuppliers,
@@ -141,7 +142,7 @@ class HomePageState extends State<HomePage> {
                 SizedBox(width: 16),
                 Expanded(
                   child: _buildSingleValueCard(
-                    AppLocalizations.of(context)!.customers_title,
+                    context.tr("customers"),
                     state.countCustomer.toString(),
                     UIConstants.customerIconData,
                     openCustomers,
@@ -154,7 +155,7 @@ class HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                   child: _buildSingleValueCard(
-                    AppLocalizations.of(context)!.payments_title,
+                    context.tr("payments_title"),
                     "",
                     UIConstants.paymentIconData,
                     widget.onOpenPaymentsPage,
@@ -163,7 +164,7 @@ class HomePageState extends State<HomePage> {
                 SizedBox(width: 16),
                 Expanded(
                   child: _buildSingleValueCard(
-                    AppLocalizations.of(context)!.report_title,
+                    context.tr("report_title"),
                     "",
                     UIConstants.reportIconData,
                     openReport,
@@ -197,14 +198,14 @@ class HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.goods_title,
+                      context.tr("goods"),
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     SizedBox(
                       height: 4,
                     ),
                     Text(
-                      AppLocalizations.of(context)!.title_good_count +
+                      context.tr("title_good_count") +
                           ": ${state.countGoods}",
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
@@ -212,7 +213,7 @@ class HomePageState extends State<HomePage> {
                       height: 4,
                     ),
                     Text(
-                      AppLocalizations.of(context)!.title_total_quantity +
+                      context.tr("title_total_quantity") +
                           ": ${StringUtils.getQuantityText(state.quantityTotal)}",
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
@@ -247,7 +248,7 @@ class HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppLocalizations.of(context)!.documents_title,
+                          context.tr("documents"),
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         SizedBox(
@@ -276,8 +277,7 @@ class HomePageState extends State<HomePage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .incoming_document_text,
+                                          context.tr("incoming"),
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall,
@@ -289,7 +289,7 @@ class HomePageState extends State<HomePage> {
                                               .titleMedium,
                                         ),
                                         Text(
-                                          "${Config.currencyFormat.format(state.sumPriceIncomingDocument)}",
+                                          CurrencyFormatter.format(context, state.sumPriceIncomingDocument),
                                           style: Theme.of(context)
                                               .textTheme
                                               .titleMedium,
@@ -324,8 +324,7 @@ class HomePageState extends State<HomePage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .outgoing_document_text,
+                                          context.tr("outgoing"),
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall,
@@ -337,7 +336,7 @@ class HomePageState extends State<HomePage> {
                                               .titleMedium,
                                         ),
                                         Text(
-                                          "${Config.currencyFormat.format(state.sumPriceOutgoingDocument)}",
+                                          CurrencyFormatter.format(context, state.sumPriceOutgoingDocument),
                                           style: Theme.of(context)
                                               .textTheme
                                               .titleMedium,
@@ -383,8 +382,7 @@ class HomePageState extends State<HomePage> {
                           Icon(Icons.add, size: 20),
                           SizedBox(width: 8),
                           Text(
-                            AppLocalizations.of(context)!
-                                .incoming_document_text,
+                            context.tr("incoming"),
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ],
@@ -413,8 +411,7 @@ class HomePageState extends State<HomePage> {
                           Icon(Icons.remove, size: 20),
                           SizedBox(width: 8),
                           Text(
-                            AppLocalizations.of(context)!
-                                .outgoing_document_text,
+                            context.tr("outgoing"),
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ],
@@ -436,7 +433,7 @@ class HomePageState extends State<HomePage> {
     Document item = Document();
     item.storeId = storeId;
     item.type = DocumentType.incoming;
-    item.name = AppLocalizations.of(context)!.document_name_no + autoDocumentNo;
+    item.name = context.tr("document_name_no") + autoDocumentNo;
     Navigator.of(context).pushNamed(
       Pages.save_document,
       arguments: {
@@ -451,7 +448,7 @@ class HomePageState extends State<HomePage> {
     Document item = Document();
     item.storeId = storeId;
     item.type = DocumentType.outgoing;
-    item.name = AppLocalizations.of(context)!.document_name_no + autoDocumentNo;
+    item.name = context.tr("document_name_no") + autoDocumentNo;
     Navigator.of(context).pushNamed(
       Pages.save_document,
       arguments: {
@@ -532,7 +529,7 @@ class HomePageState extends State<HomePage> {
             Row(
               children: [
                 Text(
-                  AppLocalizations.of(context)!.title_wallet,
+                  context.tr("title_wallet"),
                   style: Theme.of(context).textTheme.titleMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -552,10 +549,11 @@ class HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${Config.simpleCurrencyFormat.format(state.totalBalance)}",
+                        CurrencyFormatter.format(context, state.totalBalance),
+                        //"${Config.currencyFormat.format(state.totalBalance)}",
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
-                      Text(AppLocalizations.of(context)!.total_balance),
+                      Text(context.tr("total_balance")),
                     ],
                   ),
                 ),
@@ -577,7 +575,7 @@ class HomePageState extends State<HomePage> {
                       Icon(Icons.add, size: 20),
                       SizedBox(width: 8),
                       Text(
-                        AppLocalizations.of(context)!.action_add_wallet,
+                        context.tr("action_add_wallet"),
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],

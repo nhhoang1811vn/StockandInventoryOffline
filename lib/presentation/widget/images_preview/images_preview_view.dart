@@ -1,12 +1,11 @@
 import 'dart:typed_data';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/widget/images_preview/images_preview_state.dart';
 
 import '../../dialog/dialog.dart';
-import '../../pages/pages.dart';
 import '../circle_button_widget.dart';
 import 'images_preview_cubit.dart';
 
@@ -52,16 +51,16 @@ class ImagesPreviewViewState extends State<ImagesPreviewView> {
         if (state.state is DataChangedState) {
           widget.onDataChanged(state.items);
         } else if (state.state is TakePictureState) {
-          final result =
-              await Navigator.of(context).pushNamed(Pages.take_picture);
-          if (result != null) {
-            cubit.onAddPhoto(result as String);
-          }
+          // final result =
+          //     await Navigator.of(context).pushNamed(Pages.take_picture);
+          // if (result != null) {
+          //   cubit.onAddPhoto(result as String);
+          // }
         } else if (state.state is ShowDeletePopupState) {
           showCustomAlertDialog(
             context,
             message:
-                AppLocalizations.of(context)!.message_confirm_delete_no_args,
+                context.tr("message_confirm_delete_no_args"),
             onPositivePressed: () async {
               hideDialog(context);
               cubit.onDeleteItem();

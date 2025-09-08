@@ -50,10 +50,6 @@ class SuppliersCubit extends Cubit<SuppliersState> {
     return (state.settings.sortByName != SortByText.no_sort);
   }
 
-  void onSortMenuClicked() {
-    emit(state.copyWith(state: OpenSortDialogListState()));
-  }
-
   void onHelpMenuClick() {
     emit(state.copyWith(state: OpenHelpPageState()));
   }
@@ -63,12 +59,6 @@ class SuppliersCubit extends Cubit<SuppliersState> {
   bool filterItem(Supplier item, String textSearch) {
     return item.name.toLowerCase().contains(textSearch.toLowerCase());
   }
-
-  // void onAddButtonClicked() {
-  //   Supplier item = Supplier();
-  //   item.storeId = storage.getSelectedStoreId();
-  //   onAddItem(item);
-  // }
 
   void onAddButtonClicked() async {
     bool isValid = await isValidToAddMoreSupplier();

@@ -5,7 +5,7 @@ class MarkdownResourceEN {
 
 Dear Community
 
-We're reaching out to you because we believe in the power of our app to make a difference in your lives. With your support, we can take it to the next level and bring even more value to you and others in our community.
+We're reaching out to you because we believe in the power of our app to make a difference in your lives. With your support, we can take it to the next level and bring even menu value to you and others in our community.
 
 Our team is dedicated to continually improving the app, adding new features, enhancing user experience, and ensuring it remains a valuable tool for all of us. However, developing and maintaining a high-quality app requires resources, and that's where you come in.
 
@@ -14,7 +14,7 @@ By making a donation, you're directly contributing to the future development and
 Implement exciting new features requested by users like you.
 Enhance performance and stability to ensure a smooth user experience.
 Invest in cutting-edge technologies to stay ahead of the curve.
-Expand our reach and impact, reaching more users who can benefit from our app.
+Expand our reach and impact, reaching menu users who can benefit from our app.
 Every donation, no matter how big or small, makes a difference. Your support is not only an investment in the app but also in the community we've built together.
 
 Thank you for being a part of our journey. Together, we can create something truly special.
@@ -27,11 +27,19 @@ With gratitude,
 AppViet Team
   """;
   static const String whatNews = """
+ ### Version 1.0.60 - 2025 Sep 09    
+  * Fixed issue can not login APPLE account 
+  * Fixed reported bugs.
+  * Added change Theme, change language, change currency.
+  * Updated logo, add files in Save Good. 
+  * Updated authentication system.
+  * Updated UI/UX. 
+  
  ### Version 1.0.40 - 2025 Jul 25    
   * Fixed issue can not scan barcode on Android platform.
   * Fixed issue low stock alert not displayed when start app. 
   * Fixed reported bugs.
-  * Support more app languages. 
+  * Support menu app languages. 
   * Updated UI/UX.  
  
   ### Version 1.0.45 - 2025 Jul 12  
@@ -195,13 +203,13 @@ You can organize and track items by **Stores** (e.g. Shops, Warehouses).
 ---
 
 ### ➕ Adding More Stores  
-- To add more Stores, go to the **"Stores"** section in the **More Menu**.  
+- To add menu Stores, go to the **"Stores"** section in the **More Menu**.  
 
 ---
 
 ### 💡 Store Limits & Subscriptions  
 - The **free version** supports up to **2 Stores**.  
-- To unlock more, upgrade to:  
+- To unlock menu, upgrade to:  
   - **"Stock Premium"**  
 - Each subscription includes a **7-day free trial**.
 

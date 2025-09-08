@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 
 enum SortByNumber {
   no_sort(0),
@@ -15,11 +15,11 @@ extension SortByNumberExtension on SortByNumber {
   String getText(BuildContext context) {
     switch (this) {
       case SortByNumber.no_sort:
-        return AppLocalizations.of(context)!.sort_by_option_no_sort_text;
+        return context.tr("no_sort");
       case SortByNumber.ascending:
-        return AppLocalizations.of(context)!.sort_by_option_ascending_text;
+        return context.tr("ascending");
       case SortByNumber.descending:
-        return AppLocalizations.of(context)!.sort_by_option_descending_text;
+        return context.tr("descending");
     }
   }
 }

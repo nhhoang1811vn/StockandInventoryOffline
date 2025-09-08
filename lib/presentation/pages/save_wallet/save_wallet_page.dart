@@ -1,8 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/save_wallet/bloc/save_wallet_cubit.dart';
-import 'package:intl/intl.dart';
 
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
@@ -24,10 +23,13 @@ class SaveWalletPage extends StatefulWidget {
 
 class SaveWalletPageState extends State<SaveWalletPage> {
   final TextEditingController amountController = TextEditingController();
-
+  @override
+  void initState() {
+    context.read<SaveWalletCubit>().init(widget.item);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    context.read<SaveWalletCubit>().init(widget.item);
     return BlocConsumer<SaveWalletCubit, SaveWalletState>(
       listenWhen: (state1, state2) => state1.state != state2.state,
       listener: (context, state) async {
@@ -54,7 +56,7 @@ class SaveWalletPageState extends State<SaveWalletPage> {
     return PreferredSize(
       preferredSize: Size.fromHeight(UIConstants.appBarHeight),
       child: AppBar(
-        title: Text(AppLocalizations.of(context)!.save_wallet_title),
+        title: Text(context.tr("save_wallet_title")),
       ),
     );
   }
@@ -91,18 +93,18 @@ class SaveWalletPageState extends State<SaveWalletPage> {
                   height: 8,
                 ),
                 Text(
-                  AppLocalizations.of(context)!.change_color,
+                  context.tr("change_color"),
                   style: Theme.of(context)
                       .textTheme
                       .titleSmall
-                      ?.copyWith(color: Colors.blue),
+                      ?.copyWith(color: Theme.of(context).colorScheme.primary)
                 ),
                 SizedBox(
                   height: 32,
                 ),
                 AppTextField(
-                  labelText: AppLocalizations.of(context)!.label_wallet_name,
-                  hintText: AppLocalizations.of(context)!.hint_name,
+                  labelText: context.tr("label_wallet_name"),
+                  hintText: context.tr("hint_name"),
                   keyboardType: TextInputType.name,
                   initialValue: state.name.value,
                   error: state.name.displayError?.text(context),
@@ -111,8 +113,8 @@ class SaveWalletPageState extends State<SaveWalletPage> {
                 ),
                 SizedBox(height: 16),
                 AppTextField(
-                  labelText: AppLocalizations.of(context)!.label_description,
-                  hintText: AppLocalizations.of(context)!.hint_description,
+                  labelText: context.tr("label_description"),
+                  hintText: context.tr("hint_description"),
                   maxLines: null,
                   minLines: 2,
                   keyboardType: TextInputType.name,
@@ -129,7 +131,7 @@ class SaveWalletPageState extends State<SaveWalletPage> {
                           Expanded(
                             child: CurrencyAppTextField(
                               labelText:
-                                  AppLocalizations.of(context)!.field_amount,
+                                  context.tr("amount"),
                               controller: amountController,
                               onChanged: context
                                   .read<SaveWalletCubit>()
@@ -158,7 +160,7 @@ class SaveWalletPageState extends State<SaveWalletPage> {
           width: double.infinity,
           padding: EdgeInsets.all(16),
           color: Theme.of(context).colorScheme.surface,
-          child: PrimaryButton(AppLocalizations.of(context)!.action_save, () {
+          child: PrimaryButton(context.tr("action_save"), () {
             context.read<SaveWalletCubit>().onSaveClicked();
           }),
         ),

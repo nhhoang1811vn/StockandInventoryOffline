@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 
 enum DocumentPaidStatus {
   unpaid(0),
@@ -15,11 +15,11 @@ extension DocumentPaidStatusExtension on DocumentPaidStatus {
   String getText(BuildContext context) {
     switch (this) {
       case DocumentPaidStatus.unpaid:
-        return AppLocalizations.of(context)!.payment_status_unpaid;
+        return context.tr("payment_status_unpaid");
       case DocumentPaidStatus.partial:
-        return AppLocalizations.of(context)!.payment_status_partial;
+        return context.tr("payment_status_partial");
       case DocumentPaidStatus.paid:
-        return AppLocalizations.of(context)!.payment_status_paid;
+        return context.tr("payment_status_paid");
     }
   }
 }

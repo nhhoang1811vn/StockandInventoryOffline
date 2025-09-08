@@ -1,7 +1,8 @@
 import 'dart:typed_data';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
+import 'package:good_manager/util/currency_formatter.dart';
 
 import '../../../../constant/constant.dart';
 import '../../../../domain/entity/entity.dart';
@@ -108,11 +109,11 @@ class DocumentTransactionItemRow extends StatelessWidget {
     var leftValue = "";
     var rightValue = "";
     if (item.price == null) {
-      leftValue = Config.currencyFormat.format(0.0);
-      rightValue = Config.currencyFormat.format(0.0);
+      leftValue = CurrencyFormatter.format(context, 0);
+      rightValue = CurrencyFormatter.format(context, 0);
     } else {
-      leftValue = Config.currencyFormat.format(item.price!);
-      rightValue = Config.currencyFormat.format(item.price! * item.quantity);
+      leftValue = CurrencyFormatter.format(context, item.price!);
+      rightValue = CurrencyFormatter.format(context, item.price! * item.quantity);
     }
     return Align(
       alignment: Alignment.centerRight,
@@ -120,11 +121,11 @@ class DocumentTransactionItemRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            AppLocalizations.of(context)!.field_price + ": " + leftValue,
+            context.tr("price") + ": " + leftValue,
             style: secondaryTextStyle,
           ),
           Text(
-            AppLocalizations.of(context)!.field_amount + ": " + rightValue,
+            context.tr("amount") + ": " + rightValue,
             style: secondaryTextStyle,
           ),
         ],

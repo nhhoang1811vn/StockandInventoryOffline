@@ -1,10 +1,11 @@
 import 'dart:typed_data';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
+import '../../../util/currency_formatter.dart';
 import '../../../util/util.dart';
 
 class GoodItemRow extends StatelessWidget {
@@ -118,7 +119,7 @@ class GoodItemRow extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.field_min_quantity_short_form,
+                    context.tr("min_quantity_short_form"),
                     style: secondaryTextStyle,
                   ),
                   Text(
@@ -131,14 +132,14 @@ class GoodItemRow extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  Config.currencyFormat.format(item.purchasePrice ?? 0),
+                  CurrencyFormatter.format(context,item.purchasePrice ?? 0),
                   style: secondaryTextStyle?.copyWith(
                     color: Colors.red.shade700,
                   ),
                 ),
                 Text("/"),
                 Text(
-                  Config.currencyFormat.format(item.salePrice ?? 0),
+                CurrencyFormatter.format(context,item.salePrice ?? 0),
                   style: secondaryTextStyle?.copyWith(
                     color: Colors.green.shade700,
                   ),

@@ -1,9 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:good_manager/util/currency_formatter.dart';
 
-import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
-import '../../../l10n/app_localizations.dart';
 import '../../dialog/dialog.dart';
 import '../pages.dart';
 import 'bloc/home_cubit.dart';
@@ -47,7 +47,7 @@ class WalletCard extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                Config.currencyFormat.format(wallet.balance),
+                CurrencyFormatter.format(context, wallet.balance),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
@@ -62,19 +62,19 @@ class WalletCard extends StatelessWidget {
 
   void _showWalletOptionsDialog(BuildContext context, Wallet item) {
     var items = [
-      AppLocalizations.of(context)!.action_edit,
-      AppLocalizations.of(context)!.action_delete,
+      context.tr("edit"),
+      context.tr("delete"),
     ];
     showSelectOptionDialog(
       context,
       items: items,
       onItemSelected: (index) async {
-        if (items[index] == AppLocalizations.of(context)!.action_edit) {
+        if (items[index] == context.tr("edit")) {
           await Navigator.of(context)
               .pushNamed(Pages.save_wallet, arguments: {"item": item});
           context.read<HomeCubit>().initState();
         } else if (items[index] ==
-            AppLocalizations.of(context)!.action_delete) {
+            context.tr("delete")) {
           context.read<HomeCubit>().deleteWallet(item);
           context.read<HomeCubit>().initState();
         }

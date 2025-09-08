@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit.dart';
 
@@ -30,8 +30,8 @@ class SaveStoreForm extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           AppTextField(
-            labelText: AppLocalizations.of(context)!.field_name,
-            hintText: AppLocalizations.of(context)!.hint_name,
+            labelText: context.tr("name"),
+            hintText: context.tr("hint_name"),
             initialValue: state.name.value,
             onChanged: (value) =>
                 context.read<SaveStoreCubit>().nameChanged(value),
@@ -42,8 +42,8 @@ class SaveStoreForm extends StatelessWidget {
             height: 16,
           ),
           AppTextField(
-            labelText: AppLocalizations.of(context)!.label_description,
-            hintText: AppLocalizations.of(context)!.hint_description,
+            labelText: context.tr("label_description"),
+            hintText: context.tr("hint_description"),
             initialValue: state.description,
             onChanged: (value) =>
                 context.read<SaveStoreCubit>().descriptionChanged(value),

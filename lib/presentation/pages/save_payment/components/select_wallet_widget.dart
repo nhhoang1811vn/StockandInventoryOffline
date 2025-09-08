@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/payment/components/wallet_selection.dart';
 
 import '../../../../domain/entity/entity.dart';
@@ -60,7 +60,7 @@ class SelectWalletWidgetState extends State<SelectWalletWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            AppLocalizations.of(context)!.label_select_wallet,
+            context.tr("label_select_wallet"),
             style: Theme.of(context).textTheme.titleMedium,
           ),
           SizedBox(height: 16),

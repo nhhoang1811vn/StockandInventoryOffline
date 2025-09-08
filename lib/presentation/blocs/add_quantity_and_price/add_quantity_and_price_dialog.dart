@@ -1,9 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/style_size.dart';
-import 'package:intl/intl.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../constant/constant.dart';
@@ -38,7 +37,7 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
     double quantity = 1.0;
     cubit.initState(quantity, price);
     quantityTextController.text =
-        StringUtils.getQuantityText(quantity); // quantity.toString();
+        StringUtils.getQuantityText(quantity);
     if (price != null) {
       priceTextController.text = Config.simpleCurrencyFormat.format(price);
     } else {
@@ -85,7 +84,7 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
                       : Container(),
                   Text(
                     sprintf(
-                      AppLocalizations.of(context)!.in_stock_text,
+                      context.tr("in_stock_text"),
                       [widget.good.quantity],
                     ),
                   ),
@@ -102,13 +101,13 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
         ),
         actions: <Widget>[
           TextButton(
-            child: Text(AppLocalizations.of(context)!.action_cancel),
+            child: Text(context.tr("cancel")),
             onPressed: () async {
               Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: Text(AppLocalizations.of(context)!.action_ok),
+            child: Text(context.tr("ok")),
             onPressed: () async {
               Navigator.of(context).pop(
                 {"quantity": state.quantity, "price": state.price},
@@ -127,7 +126,7 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
         Expanded(
           child: AppTextField(
             controller: quantityTextController,
-            labelText: AppLocalizations.of(context)!.field_quantity,
+            labelText: context.tr("quantity"),
             keyboardType: TextInputType.number,
             //inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
             onChanged:
@@ -148,8 +147,8 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
         Expanded(
           child: CurrencyAppTextField(
             labelText: widget.type == DocumentType.incoming
-                ? AppLocalizations.of(context)!.field_purchase_price
-                : AppLocalizations.of(context)!.field_sale_price,
+                ? context.tr("purchase_price")
+                : context.tr("sale_price"),
             controller: priceTextController,
             onChanged: context.read<AddQuantityAndPriceCubit>().onPriceChanged,
           ),
@@ -175,7 +174,7 @@ class AddQuantityAndPriceWidgetState extends State<AddQuantityAndPriceWidget> {
         Expanded(
           child: CurrencyAppTextField(
             readOnly: true,
-            labelText: AppLocalizations.of(context)!.field_amount,
+            labelText: context.tr("amount"),
             controller: amountTextController,
           ),
         ),

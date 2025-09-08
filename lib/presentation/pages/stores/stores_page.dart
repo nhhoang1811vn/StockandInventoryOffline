@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
 import 'package:sprintf/sprintf.dart';
@@ -55,21 +55,21 @@ class StoresPageState extends State<StoresPage> {
           Navigator.of(context).pushNamed(
             Pages.help,
             arguments: {
-              "title": AppLocalizations.of(context)?.stores_title,
+              "title": context.tr("stores"),
               "content": MDProviderFactory.get().getHelpText(HelpType.STORE),
             },
           );
         } else if (state.state is DeleteItemError) {
           ScaffoldMessenger.of(context).showSnackBar(
             snackBarWhenFailureWithText(
-              AppLocalizations.of(context)!.delete_store_error,
+              context.tr("delete_store_error"),
             ),
           );
         } else if (state.state is OpenBuySubscriptionDialogState) {
           showBuySubscriptionDialog(
             context,
             message: sprintf(
-              AppLocalizations.of(context)!.buy_subscription_to_add_more_entity,
+              context.tr("buy_subscription_to_add_more_entity"),
               [FreeLimits.storeLimit],
             ),
           );
@@ -93,8 +93,8 @@ class StoresPageState extends State<StoresPage> {
       child: AppBar(
         title: new Text(
           widget.isSelection
-              ? AppLocalizations.of(context)!.stores_select_title
-              : AppLocalizations.of(context)!.stores_title,
+              ? context.tr("select_store")
+              : context.tr("stores"),
         ),
         actions: [
           _buildSearchMenu(data),
@@ -164,7 +164,7 @@ class StoresPageState extends State<StoresPage> {
           Padding(
             padding: EdgeInsets.only(top: 16),
             child: Text(
-              AppLocalizations.of(context)!.empty_stores,
+              context.tr("no_stores"),
               textAlign: TextAlign.center,
             ),
           ),
@@ -198,13 +198,13 @@ class StoresPageState extends State<StoresPage> {
 
   void onLongPressed(Store item) {
     var items = [
-      AppLocalizations.of(context)!.action_delete,
+      context.tr("delete"),
     ];
     showSelectOptionDialog(
       context,
       items: items,
       onItemSelected: (index) async {
-        if (items[index] == AppLocalizations.of(context)!.action_delete) {
+        if (items[index] == context.tr("delete")) {
           showDeleteConfirmPopup(item);
         }
       },
@@ -215,7 +215,7 @@ class StoresPageState extends State<StoresPage> {
     showCustomAlertDialog(
       context,
       message: sprintf(
-        AppLocalizations.of(context)!.message_confirm_delete,
+        context.tr("message_confirm_delete"),
         [item.name],
       ),
       onPositivePressed: () async {

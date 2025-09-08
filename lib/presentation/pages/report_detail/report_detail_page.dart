@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:csv/csv.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
@@ -50,153 +50,153 @@ class ReportDetailPageState extends State<ReportDetailPage> {
       case ReportType.LIST_OF_GOODS:
         return [
           ColumnReport(
-            AppLocalizations.of(context)!.field_name,
+            context.tr("name"),
             showTotalText: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.folder,
+            context.tr("folder"),
             isPickValues: true,
           ),
-          ColumnReport(AppLocalizations.of(context)!.field_bar_code),
+          ColumnReport(context.tr("barcode")),
           ColumnReport(
-            AppLocalizations.of(context)!.field_start_period,
+            context.tr("field_start_period"),
             showTotal: true,
           ),
-          ColumnReport(AppLocalizations.of(context)!.field_in, showTotal: true),
+          ColumnReport(context.tr("field_in"), showTotal: true),
           ColumnReport(
-            AppLocalizations.of(context)!.field_out,
+            context.tr("field_out"),
             showTotal: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_end_period,
+            context.tr("field_end_period"),
             showTotal: true,
           ),
         ];
       case ReportType.LIST_OF_DOCUMENT:
         return [
           ColumnReport(
-            AppLocalizations.of(context)!.field_date,
+            context.tr("date"),
             showTotalText: true,
           ),
-          ColumnReport(AppLocalizations.of(context)!.field_name),
+          ColumnReport(context.tr("name")),
           ColumnReport(
-            AppLocalizations.of(context)!.field_document_type,
+            context.tr("type"),
             isPickValues: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_person_name,
+            context.tr("person_name"),
             isPickValues: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_quantity,
+            context.tr("quantity"),
             showTotal: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_amount,
+            context.tr("amount"),
             showTotal: true,
           ),
         ];
       case ReportType.DEBTS_BY_SUPPLIER:
         return [
           ColumnReport(
-            AppLocalizations.of(context)!.field_supplier,
+            context.tr("supplier"),
             isPickValues: true,
             showTotalText: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_amount,
+            context.tr("amount"),
             showTotal: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_paid,
+            context.tr("paid"),
             showTotal: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_remaining,
+            context.tr("remaining"),
             showTotal: true,
           ),
         ];
       case ReportType.DEBTS_BY_CUSTOMER:
         return [
           ColumnReport(
-            AppLocalizations.of(context)!.field_customer,
+            context.tr("customer"),
             isPickValues: true,
             showTotalText: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_amount,
+            context.tr("amount"),
             showTotal: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_paid,
+            context.tr("paid"),
             showTotal: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_remaining,
+            context.tr("remaining"),
             showTotal: true,
           ),
         ];
       case ReportType.LIST_OF_WALLETS:
         return [
           ColumnReport(
-            AppLocalizations.of(context)!.label_wallet_name,
+            context.tr("label_wallet_name"),
             showTotalText: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_start_period,
+            context.tr("field_start_period"),
             showTotal: true,
           ),
-          ColumnReport(AppLocalizations.of(context)!.field_in, showTotal: true),
+          ColumnReport(context.tr("field_in"), showTotal: true),
           ColumnReport(
-            AppLocalizations.of(context)!.field_out,
+            context.tr("field_out"),
             showTotal: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_end_period,
+            context.tr("field_end_period"),
             showTotal: true,
           ),
         ];
       case ReportType.LIST_OF_SUPPLIER_PAYMENTS:
         return [
           ColumnReport(
-            AppLocalizations.of(context)!.label_supplier_name,
+            context.tr("label_supplier_name"),
             showTotalText: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_amount,
+            context.tr("amount"),
             showTotal: true,
           ),
         ];
       case ReportType.LIST_OF_CUSTOMER_PAYMENTS:
         return [
           ColumnReport(
-            AppLocalizations.of(context)!.label_customer_name,
+            context.tr("label_customer_name"),
             showTotalText: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_amount,
+            context.tr("amount"),
             showTotal: true,
           ),
         ];
       case ReportType.RE_ORDER:
         return [
           ColumnReport(
-            AppLocalizations.of(context)!.field_name,
+            context.tr("name"),
             showTotalText: true,
           ),
-          ColumnReport(AppLocalizations.of(context)!.field_bar_code),
+          ColumnReport(context.tr("barcode")),
           ColumnReport(
-            AppLocalizations.of(context)!.field_quantity,
+            context.tr("quantity"),
             showTotal: true,
           ),
-          ColumnReport(AppLocalizations.of(context)!.field_min_quantity),
+          ColumnReport(context.tr("min_quantity")),
           ColumnReport(
-            AppLocalizations.of(context)!.field_reorder,
+            context.tr("field_reorder"),
             showTotal: true,
           ),
-          ColumnReport(AppLocalizations.of(context)!.field_purchase_price),
+          ColumnReport(context.tr("purchase_price")),
           ColumnReport(
-            AppLocalizations.of(context)!.field_amount,
+            context.tr("amount"),
             showTotal: true,
           ),
         ];
@@ -204,12 +204,12 @@ class ReportDetailPageState extends State<ReportDetailPage> {
       case ReportType.OUTBOUND_PAYMENTS:
         return [
           ColumnReport(
-            AppLocalizations.of(context)!.label_category_name,
+            context.tr("label_category_name"),
             isPickValues: true,
             showTotalText: true,
           ),
           ColumnReport(
-            AppLocalizations.of(context)!.field_amount,
+            context.tr("amount"),
             showTotal: true,
           ),
         ];
@@ -219,7 +219,6 @@ class ReportDetailPageState extends State<ReportDetailPage> {
   @override
   Widget build(BuildContext context) {
     context.read<ReportDetailCubit>().init(
-          AppLocalizations.of(context)!,
           true,
           widget.type,
           widget.start,
@@ -255,7 +254,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
             CircularProgressIndicator(),
             SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context)!.loading_data,
+              context.tr("loading_data"),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -450,7 +449,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   );
                   context
                       .read<ReportDetailCubit>()
-                      .refresh(AppLocalizations.of(context)!);
+                      .refresh();
                 } else if (state.type == ReportType.LIST_OF_DOCUMENT &&
                     id != null) {
                   var document =
@@ -461,7 +460,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   );
                   context
                       .read<ReportDetailCubit>()
-                      .refresh(AppLocalizations.of(context)!);
+                      .refresh();
                 } else if (state.type == ReportType.DEBTS_BY_SUPPLIER &&
                     id != null) {
                   await Navigator.of(context).pushNamed(
@@ -474,7 +473,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   );
                   context
                       .read<ReportDetailCubit>()
-                      .refresh(AppLocalizations.of(context)!);
+                      .refresh();
                 } else if (state.type == ReportType.DEBTS_BY_CUSTOMER &&
                     id != null) {
                   await Navigator.of(context).pushNamed(
@@ -487,7 +486,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   );
                   context
                       .read<ReportDetailCubit>()
-                      .refresh(AppLocalizations.of(context)!);
+                      .refresh();
                 } else if (state.type == ReportType.INBOUND_PAYMENTS) {
                   PaymentsSetting setting = PaymentsSetting(
                     sortByDateNewestFirst: true,
@@ -504,7 +503,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   );
                   context
                       .read<ReportDetailCubit>()
-                      .refresh(AppLocalizations.of(context)!);
+                      .refresh();
                 } else if (state.type == ReportType.OUTBOUND_PAYMENTS) {
                   PaymentsSetting setting = PaymentsSetting(
                     sortByDateNewestFirst: true,
@@ -521,7 +520,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   );
                   context
                       .read<ReportDetailCubit>()
-                      .refresh(AppLocalizations.of(context)!);
+                      .refresh();
                 } else if (state.type == ReportType.LIST_OF_WALLETS) {
                   PaymentsSetting setting = PaymentsSetting(
                     sortByDateNewestFirst: true,
@@ -538,7 +537,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   );
                   context
                       .read<ReportDetailCubit>()
-                      .refresh(AppLocalizations.of(context)!);
+                      .refresh();
                 } else if (state.type == ReportType.RE_ORDER && id != null) {
                   var good =
                       await context.read<ReportDetailCubit>().getGood(id);
@@ -546,7 +545,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                       .pushNamed(Pages.save_good, arguments: {'item': good});
                   context
                       .read<ReportDetailCubit>()
-                      .refresh(AppLocalizations.of(context)!);
+                      .refresh();
                 } else if (state.type == ReportType.LIST_OF_CUSTOMER_PAYMENTS &&
                     id != null) {
                   PaymentsSetting setting = PaymentsSetting(
@@ -564,7 +563,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   );
                   context
                       .read<ReportDetailCubit>()
-                      .refresh(AppLocalizations.of(context)!);
+                      .refresh();
                 } else if (state.type == ReportType.LIST_OF_SUPPLIER_PAYMENTS &&
                     id != null) {
                   PaymentsSetting setting = PaymentsSetting(
@@ -582,7 +581,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   );
                   context
                       .read<ReportDetailCubit>()
-                      .refresh(AppLocalizations.of(context)!);
+                      .refresh();
                 }
               }
             },
@@ -711,7 +710,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
 
   String getStoreInfoText() {
     return sprintf(
-      AppLocalizations.of(context)!.report_detail_store,
+      context.tr("report_detail_store"),
       [context.read<ReportDetailCubit>().getSelectedStoreName()],
     );
   }
@@ -720,7 +719,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
     var periodInfoText = "";
     if (state.start != null && state.end != null) {
       periodInfoText =
-          sprintf(AppLocalizations.of(context)!.report_detail_period_time, [
+          sprintf(context.tr("report_detail_period_time"), [
         DateFormatFactory.getDateFormat().format(state.start!),
         DateFormatFactory.getDateFormat().format(state.end!),
       ]);
@@ -746,7 +745,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                         Text(storeInfoText),
                         if (periodInfoText.isNotEmpty) Text(periodInfoText),
                         Text(
-                          AppLocalizations.of(context)!.hint_tap_first_column,
+                          context.tr("hint_tap_first_column"),
                         ),
                       ],
                     ),
@@ -766,7 +765,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                           .setColumns(updatedColumns);
                       context
                           .read<ReportDetailCubit>()
-                          .update(AppLocalizations.of(context)!);
+                          .update();
                     }
                   },
                   icon: Icon(Icons.settings),

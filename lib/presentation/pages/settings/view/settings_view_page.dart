@@ -1,10 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/l10n/app_localizations.dart';
+import 'package:good_manager/data/app_settings.dart';
+import 'package:good_manager/models/app_theme.dart';
 import 'package:good_manager/presentation/pages/settings/view/bloc/settings_view_cubit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../app.dart';
+import '../../../../app_cubit.dart';
 import '../../../dialog/dialog.dart';
 
 class SettingsViewPage extends StatefulWidget {
@@ -17,31 +18,6 @@ class SettingsViewPage extends StatefulWidget {
 }
 
 class SettingsViewPageState extends State<SettingsViewPage> {
-  String _subTitle = "";
-
-  @override
-  void initState() {
-    super.initState();
-    fetch();
-  }
-
-  Future<void> fetch() async {
-    final prefs = await SharedPreferences.getInstance();
-    final themeString = prefs.getString("user_theme_mode");
-    switch (themeString) {
-      case 'light':
-        _subTitle = AppLocalizations.of(context)!.theme_light;
-        break;
-      case 'dark':
-        _subTitle = AppLocalizations.of(context)!.theme_dark;
-        break;
-      case 'system':
-      default:
-        _subTitle = AppLocalizations.of(context)!.theme_system;
-    }
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SettingsViewCubit, SettingsViewState>(
@@ -49,7 +25,7 @@ class SettingsViewPageState extends State<SettingsViewPage> {
       builder: (BuildContext context, SettingsViewState state) {
         return Scaffold(
           appBar: new AppBar(
-            title: new Text(AppLocalizations.of(context)!.menu_item_view),
+            title: new Text(context.tr("display")),
           ),
           body: _buildBody(state),
         );
@@ -62,22 +38,29 @@ class SettingsViewPageState extends State<SettingsViewPage> {
       padding: EdgeInsets.all(16),
       children: [
         Text(
-          AppLocalizations.of(context)!.theme,
-          style: Theme
-              .of(context)
-              .textTheme
-              .titleMedium,
+          context.tr("theme"),
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         Card(
           clipBehavior: Clip.antiAlias,
           child: Column(
             children: [
-              ListTile(
-                leading: Icon(Icons.brightness_6),
-                title: Text(AppLocalizations.of(context)!.app_theme),
-                subtitle: Text(_subTitle),
-                onTap: () => _showThemeDialog(context),
-                trailing: Icon(Icons.navigate_next),
+              BlocBuilder<AppCubit, AppState>(
+                builder: (context, state) => ListTile(
+                  leading: Icon(Icons.brightness_6),
+                  title: Text("theme").tr(),
+                  subtitle: Text(state.theme.label),
+                  trailing: const Icon(Icons.navigate_next),
+                  onTap: () async {
+                    var theme = await showSelectTheme(
+                      context,
+                      state,
+                    );
+                    if (theme != null) {
+                      context.read<AppCubit>().setTheme(theme);
+                    }
+                  },
+                ),
               ),
             ],
           ),
@@ -86,19 +69,15 @@ class SettingsViewPageState extends State<SettingsViewPage> {
           height: 16,
         ),
         Text(
-          AppLocalizations.of(context)!.documents_colors,
-          style: Theme
-              .of(context)
-              .textTheme
-              .titleMedium,
+          context.tr("documents_colors"),
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         Card(
           clipBehavior: Clip.antiAlias,
           child: Column(
             children: [
               ListTile(
-                title:
-                Text(AppLocalizations.of(context)!.incoming_document_text),
+                title: Text(context.tr("incoming")),
                 trailing: Container(
                   width: 20, // Circle diameter
                   height: 20,
@@ -120,8 +99,7 @@ class SettingsViewPageState extends State<SettingsViewPage> {
                 height: 1,
               ),
               ListTile(
-                title:
-                Text(AppLocalizations.of(context)!.outgoing_document_text),
+                title: Text(context.tr("outgoing")),
                 trailing: Container(
                   width: 20, // Circle diameter
                   height: 20,
@@ -145,11 +123,8 @@ class SettingsViewPageState extends State<SettingsViewPage> {
           height: 16,
         ),
         Text(
-          AppLocalizations.of(context)!.menu_item_min_quantity_color_title,
-          style: Theme
-              .of(context)
-              .textTheme
-              .titleMedium,
+          context.tr("menu_item_min_quantity_color_title"),
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         Card(
           clipBehavior: Clip.antiAlias,
@@ -157,8 +132,7 @@ class SettingsViewPageState extends State<SettingsViewPage> {
             children: [
               ListTile(
                 title: Text(
-                  AppLocalizations.of(context)!
-                      .menu_item_min_quantity_color_title,
+                  context.tr("menu_item_min_quantity_color_title"),
                 ),
                 trailing: Container(
                   width: 20, // Circle diameter
@@ -184,31 +158,79 @@ class SettingsViewPageState extends State<SettingsViewPage> {
   }
 
   void _showChoiceColorDialog(Color pickerColor, ValueChanged<Color> callback) {
-    showSelectColorDialog(context, color: pickerColor, onItemSelected: (item) {
-      hideDialog(context);
-      callback(item);
-    },);
+    showSelectColorDialog(
+      context,
+      color: pickerColor,
+      onItemSelected: (item) {
+        hideDialog(context);
+        callback(item);
+      },
+    );
   }
 
-  void _showThemeDialog(BuildContext context) {
-    var items = [
-      AppLocalizations.of(context)!.theme_system,
-      AppLocalizations.of(context)!.theme_light,
-      AppLocalizations.of(context)!.theme_dark,
-    ];
-    showSelectOptionDialog(context,
-      title: AppLocalizations.of(context)!.choose_theme,
-      items: items, onItemSelected: (index) {
-        MyAppState? state = context.findAncestorStateOfType<MyAppState>();
-        if (items[index] == AppLocalizations.of(context)!.theme_system) {
-          state?.changeTheme(ThemeMode.system);
-        } else if (items[index] == AppLocalizations.of(context)!.theme_light) {
-          state?.changeTheme(ThemeMode.light);
-        } else if (items[index] == AppLocalizations.of(context)!.theme_dark) {
-          state?.changeTheme(ThemeMode.dark);
-        }
-        hideDialog(context);
-        fetch();
-      },);
+  Future<AppTheme?> showSelectTheme(
+    BuildContext context,
+    AppState state,
+  ) async {
+    return await showModalBottomSheet<AppTheme>(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.7,
+          // 70% of screen height
+          minChildSize: 0.4,
+          maxChildSize: 0.95,
+          builder: (context, scrollController) {
+            return SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                //mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      "select_theme".tr(),
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                  Column(
+                    children: AppTheme.values
+                        .map(
+                          (type) => ListTile(
+                            title: Text(type.label),
+                            trailing: state.theme == type
+                                ? const Icon(
+                                    Icons.check,
+                                    color: Colors.green,
+                                  )
+                                : (type.isLocked && !AppSettings.isPro())
+                                    ? Icon(
+                                        Icons.lock,
+                                        color: Colors.grey,
+                                        size: 20,
+                                      )
+                                    : null,
+                            onTap: () {
+                              if (AppSettings.isPro() || !type.isLocked) {
+                                Navigator.pop(context, type);
+                              }
+                            },
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 }
