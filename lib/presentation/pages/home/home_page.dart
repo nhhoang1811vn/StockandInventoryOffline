@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:good_manager/core/services/notification_service.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/pages/home/wallet_card.dart';
 import 'package:good_manager/presentation/pages/payment/components/payment_item_row.dart';
@@ -13,8 +10,6 @@ import 'package:good_manager/util/currency_formatter.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../constant/constant.dart';
-import '../../../core/services/low_stock_service.dart';
-import '../../../di/di.dart';
 import '../../../domain/entity/entity.dart';
 import '../../../domain/free_limits.dart';
 import '../../../util/util.dart';
@@ -45,45 +40,10 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     context.read<HomeCubit>().initState();
-    var isShowLowStockAlert = context.read<HomeCubit>().isShowLowStockAlert();
-    if (isShowLowStockAlert) {
-      _requestPermissions();
-      _checkLowStockAndShowAlert();
-    }
+
   }
 
-  Future<void> _requestPermissions() async {
-    if (Platform.isIOS) {
-      await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-          );
-    } else if (Platform.isAndroid) {
-      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
-      await androidImplementation?.requestNotificationsPermission();
-    }
-  }
 
-  Future<void> _checkLowStockAndShowAlert() async {
-    final lowStockService = getIt<LowStockService>();
-    final hasLowStock = await lowStockService.hasLowStock();
-
-    if (hasLowStock && context.mounted) {
-      NotificationService.showNotification(
-        id: 0,
-        title: context.tr("notification_low_stock_alert_title"),
-        body:
-            context.tr("notification_low_stock_alert_message"),
-        payload: "reorder",
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

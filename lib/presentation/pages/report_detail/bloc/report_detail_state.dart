@@ -8,9 +8,8 @@ class ReportDetailState with _$ReportDetailState {
     DateTime? start,
     DateTime? end,
     @Default([]) List<List<String>> data,
-    @Default([]) List<int?> allIds,
     @Default([]) List<int?> ids,
-    @Default([]) List<ColumnReport> columns,
-    @Default([]) List<List<String>> rows,
+    @Default([]) List<ColumnReport> columnReports,
+    @Default([]) List<MapEntry<int, List<String>>> rows,
   }) = _Initial;
 }

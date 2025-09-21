@@ -49,6 +49,7 @@ class GoodsPageState extends State<GoodsPage> {
     }
     List<Widget> children = [
       SelectedStoreView(),
+      SizedBox(height: 1),
       _buildSelectedGroupView(state),
       Visibility(
         visible: state.showSearchBar,
@@ -119,7 +120,7 @@ class GoodsPageState extends State<GoodsPage> {
         child: Container(
           height: 50,
           padding: EdgeInsets.only(left: 16.0, right: 16.0),
-          color: Colors.blue,
+          color: Theme.of(context).colorScheme.primary,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: state.selectedGroups.length,

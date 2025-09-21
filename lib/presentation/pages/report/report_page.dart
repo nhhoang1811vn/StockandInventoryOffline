@@ -64,7 +64,15 @@ class ReportPageState extends State<ReportPage> {
   void onReportTypeTapped(ReportType reportType) async {
     if (reportType == ReportType.RE_ORDER) {
       onReportReorder(context);
-    } else {
+    } else if (reportType == ReportType.GOOD_INFO){
+      Navigator.of(context).pushNamed(
+        Pages.report_detail,
+        arguments: {
+          'type': ReportType.GOOD_INFO,
+        },
+      );
+    }
+    else {
       ReportDateRangeType? reportDateRangeType =
           await showSelectDateRangeType(context);
       if (reportDateRangeType != null) {

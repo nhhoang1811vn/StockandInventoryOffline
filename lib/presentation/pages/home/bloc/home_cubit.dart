@@ -167,8 +167,4 @@ class HomeCubit extends Cubit<HomeState> {
     ordered.addAll(walletMap.values);
     return ordered;
   }
-
-  bool isShowLowStockAlert() {
-    return AppSettings.getMinimumQuantitySettings().showAlert;
-  }
 }

@@ -27,6 +27,9 @@ With gratitude,
 AppViet Team
   """;
   static const String whatNews = """
+  ### Version 1.0.65 - 2025 Sep 20       
+  * Fixed reported bugs.  
+  * Added new report type: Good Info. 
  ### Version 1.0.60 - 2025 Sep 09    
   * Fixed issue can not login APPLE account 
   * Fixed reported bugs.

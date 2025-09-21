@@ -11,7 +11,8 @@ enum ReportType {
   LIST_OF_WALLETS,
   LIST_OF_CUSTOMER_PAYMENTS,
   LIST_OF_SUPPLIER_PAYMENTS,
-  RE_ORDER
+  RE_ORDER,
+  GOOD_INFO
 }
 
 extension ReportTypeExtension on ReportType {
@@ -37,6 +38,8 @@ extension ReportTypeExtension on ReportType {
         return context.tr("report_type_list_of_customer_payments");
       case ReportType.RE_ORDER:
         return context.tr("report_type_reorder");
+      case ReportType.GOOD_INFO:
+        return context.tr("report_type_good_info");
     }
   }
 }
