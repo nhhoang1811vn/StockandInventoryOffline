@@ -352,13 +352,13 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
                 Row(
                   children: [
                     Expanded(
-                      child: Text(context.tr("start_date)")),
+                      child: Text(context.tr("start_date")),
                     ),
                     SizedBox(
                       width: 8,
                     ),
                     Expanded(
-                      child: Text(context.tr("end_date)")),
+                      child: Text(context.tr("end_date")),
                     ),
                   ],
                 ),

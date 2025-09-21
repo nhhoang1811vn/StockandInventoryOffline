@@ -38,192 +38,21 @@ class ReportDetailPageState extends State<ReportDetailPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      List<ColumnReport> columns = getColumns(widget.type);
-      context.read<ReportDetailCubit>().initColumn(columns);
-    });
     ReviewManager.maybeRequestReview();
+    init();
   }
-
-  List<ColumnReport> getColumns(ReportType type) {
-    switch (type) {
-      case ReportType.LIST_OF_GOODS:
-        return [
-          ColumnReport(
-            context.tr("name"),
-            showTotalText: true,
-          ),
-          ColumnReport(
-            context.tr("folder"),
-            isPickValues: true,
-          ),
-          ColumnReport(context.tr("barcode")),
-          ColumnReport(
-            context.tr("field_start_period"),
-            showTotal: true,
-          ),
-          ColumnReport(context.tr("field_in"), showTotal: true),
-          ColumnReport(
-            context.tr("field_out"),
-            showTotal: true,
-          ),
-          ColumnReport(
-            context.tr("field_end_period"),
-            showTotal: true,
-          ),
-        ];
-      case ReportType.LIST_OF_DOCUMENT:
-        return [
-          ColumnReport(
-            context.tr("date"),
-            showTotalText: true,
-          ),
-          ColumnReport(context.tr("name")),
-          ColumnReport(
-            context.tr("type"),
-            isPickValues: true,
-          ),
-          ColumnReport(
-            context.tr("person_name"),
-            isPickValues: true,
-          ),
-          ColumnReport(
-            context.tr("quantity"),
-            showTotal: true,
-          ),
-          ColumnReport(
-            context.tr("amount"),
-            showTotal: true,
-          ),
-        ];
-      case ReportType.DEBTS_BY_SUPPLIER:
-        return [
-          ColumnReport(
-            context.tr("supplier"),
-            isPickValues: true,
-            showTotalText: true,
-          ),
-          ColumnReport(
-            context.tr("amount"),
-            showTotal: true,
-          ),
-          ColumnReport(
-            context.tr("paid"),
-            showTotal: true,
-          ),
-          ColumnReport(
-            context.tr("remaining"),
-            showTotal: true,
-          ),
-        ];
-      case ReportType.DEBTS_BY_CUSTOMER:
-        return [
-          ColumnReport(
-            context.tr("customer"),
-            isPickValues: true,
-            showTotalText: true,
-          ),
-          ColumnReport(
-            context.tr("amount"),
-            showTotal: true,
-          ),
-          ColumnReport(
-            context.tr("paid"),
-            showTotal: true,
-          ),
-          ColumnReport(
-            context.tr("remaining"),
-            showTotal: true,
-          ),
-        ];
-      case ReportType.LIST_OF_WALLETS:
-        return [
-          ColumnReport(
-            context.tr("label_wallet_name"),
-            showTotalText: true,
-          ),
-          ColumnReport(
-            context.tr("field_start_period"),
-            showTotal: true,
-          ),
-          ColumnReport(context.tr("field_in"), showTotal: true),
-          ColumnReport(
-            context.tr("field_out"),
-            showTotal: true,
-          ),
-          ColumnReport(
-            context.tr("field_end_period"),
-            showTotal: true,
-          ),
-        ];
-      case ReportType.LIST_OF_SUPPLIER_PAYMENTS:
-        return [
-          ColumnReport(
-            context.tr("label_supplier_name"),
-            showTotalText: true,
-          ),
-          ColumnReport(
-            context.tr("amount"),
-            showTotal: true,
-          ),
-        ];
-      case ReportType.LIST_OF_CUSTOMER_PAYMENTS:
-        return [
-          ColumnReport(
-            context.tr("label_customer_name"),
-            showTotalText: true,
-          ),
-          ColumnReport(
-            context.tr("amount"),
-            showTotal: true,
-          ),
-        ];
-      case ReportType.RE_ORDER:
-        return [
-          ColumnReport(
-            context.tr("name"),
-            showTotalText: true,
-          ),
-          ColumnReport(context.tr("barcode")),
-          ColumnReport(
-            context.tr("quantity"),
-            showTotal: true,
-          ),
-          ColumnReport(context.tr("min_quantity")),
-          ColumnReport(
-            context.tr("field_reorder"),
-            showTotal: true,
-          ),
-          ColumnReport(context.tr("purchase_price")),
-          ColumnReport(
-            context.tr("amount"),
-            showTotal: true,
-          ),
-        ];
-      case ReportType.INBOUND_PAYMENTS:
-      case ReportType.OUTBOUND_PAYMENTS:
-        return [
-          ColumnReport(
-            context.tr("label_category_name"),
-            isPickValues: true,
-            showTotalText: true,
-          ),
-          ColumnReport(
-            context.tr("amount"),
-            showTotal: true,
-          ),
-        ];
-    }
+  void init() async{
+    context.read<ReportDetailCubit>().init(
+      context,
+      widget.type,
+      widget.start,
+      widget.end,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    context.read<ReportDetailCubit>().init(
-          true,
-          widget.type,
-          widget.start,
-          widget.end,
-        );
+
     return BlocConsumer<ReportDetailCubit, ReportDetailState>(
       builder: (context, state) => Stack(
         children: [
@@ -447,9 +276,9 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                       'end': widget.end,
                     },
                   );
-                  context
-                      .read<ReportDetailCubit>()
-                      .refresh();
+                  // context
+                  //     .read<ReportDetailCubit>()
+                  //     .refresh();
                 } else if (state.type == ReportType.LIST_OF_DOCUMENT &&
                     id != null) {
                   var document =
@@ -458,9 +287,9 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                     Pages.save_document,
                     arguments: {'item': document},
                   );
-                  context
-                      .read<ReportDetailCubit>()
-                      .refresh();
+                  // context
+                  //     .read<ReportDetailCubit>()
+                  //     .refresh();
                 } else if (state.type == ReportType.DEBTS_BY_SUPPLIER &&
                     id != null) {
                   await Navigator.of(context).pushNamed(
@@ -471,9 +300,9 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                       'end': widget.end,
                     },
                   );
-                  context
-                      .read<ReportDetailCubit>()
-                      .refresh();
+                  // context
+                  //     .read<ReportDetailCubit>()
+                  //     .refresh();
                 } else if (state.type == ReportType.DEBTS_BY_CUSTOMER &&
                     id != null) {
                   await Navigator.of(context).pushNamed(
@@ -484,9 +313,9 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                       'end': widget.end,
                     },
                   );
-                  context
-                      .read<ReportDetailCubit>()
-                      .refresh();
+                  // context
+                  //     .read<ReportDetailCubit>()
+                  //     .refresh();
                 } else if (state.type == ReportType.INBOUND_PAYMENTS) {
                   PaymentsSetting setting = PaymentsSetting(
                     sortByDateNewestFirst: true,
@@ -501,9 +330,9 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                     Pages.payments,
                     arguments: {'setting': setting, 'initialIndex': 1},
                   );
-                  context
-                      .read<ReportDetailCubit>()
-                      .refresh();
+                  // context
+                  //     .read<ReportDetailCubit>()
+                  //     .refresh();
                 } else if (state.type == ReportType.OUTBOUND_PAYMENTS) {
                   PaymentsSetting setting = PaymentsSetting(
                     sortByDateNewestFirst: true,
@@ -518,9 +347,9 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                     Pages.payments,
                     arguments: {'setting': setting, 'initialIndex': 2},
                   );
-                  context
-                      .read<ReportDetailCubit>()
-                      .refresh();
+                  // context
+                  //     .read<ReportDetailCubit>()
+                  //     .refresh();
                 } else if (state.type == ReportType.LIST_OF_WALLETS) {
                   PaymentsSetting setting = PaymentsSetting(
                     sortByDateNewestFirst: true,
@@ -535,17 +364,17 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                     Pages.payments,
                     arguments: {'setting': setting, 'initialIndex': 0},
                   );
-                  context
-                      .read<ReportDetailCubit>()
-                      .refresh();
+                  // context
+                  //     .read<ReportDetailCubit>()
+                  //     .refresh();
                 } else if (state.type == ReportType.RE_ORDER && id != null) {
                   var good =
                       await context.read<ReportDetailCubit>().getGood(id);
                   await Navigator.of(context)
                       .pushNamed(Pages.save_good, arguments: {'item': good});
-                  context
-                      .read<ReportDetailCubit>()
-                      .refresh();
+                  // context
+                  //     .read<ReportDetailCubit>()
+                  //     .refresh();
                 } else if (state.type == ReportType.LIST_OF_CUSTOMER_PAYMENTS &&
                     id != null) {
                   PaymentsSetting setting = PaymentsSetting(
@@ -561,9 +390,9 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                     Pages.payments,
                     arguments: {'setting': setting, 'initialIndex': 1},
                   );
-                  context
-                      .read<ReportDetailCubit>()
-                      .refresh();
+                  // context
+                  //     .read<ReportDetailCubit>()
+                  //     .refresh();
                 } else if (state.type == ReportType.LIST_OF_SUPPLIER_PAYMENTS &&
                     id != null) {
                   PaymentsSetting setting = PaymentsSetting(
@@ -579,9 +408,18 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                     Pages.payments,
                     arguments: {'setting': setting, 'initialIndex': 2},
                   );
-                  context
-                      .read<ReportDetailCubit>()
-                      .refresh();
+                  // context
+                  //     .read<ReportDetailCubit>()
+                  //     .refresh();
+                } else if (state.type == ReportType.GOOD_INFO &&
+                    id != null){
+                  var good =
+                  await context.read<ReportDetailCubit>().getGood(id);
+                  await Navigator.of(context).pushNamed(
+                    Pages.save_good,
+                    arguments: {'item': good},
+                  );
+
                 }
               }
             },
@@ -655,9 +493,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
   Widget _buildHighlightCell({String value = ""}) {
     return _buildCell(
       value: value,
-      //bac
       backgroundColor: ColorUtils.getHeaderBgColor(context),
-      //textColor: Colors.white,
       fontWeight: FontWeight.w600,
     );
   }
@@ -756,16 +592,13 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                     final updatedColumns = await showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return ColumnDisplayDialog(columns: state.columns);
+                        return ColumnDisplayDialog(columns: state.columnReports);
                       },
                     );
                     if (updatedColumns != null) {
                       context
                           .read<ReportDetailCubit>()
-                          .setColumns(updatedColumns);
-                      context
-                          .read<ReportDetailCubit>()
-                          .update();
+                          .setColumns(updatedColumns, context);
                     }
                   },
                   icon: Icon(Icons.settings),
@@ -773,10 +606,6 @@ class ReportDetailPageState extends State<ReportDetailPage> {
               ],
             ),
             _buildMobileTable(context, state),
-            // if (Platform.isWindows)
-            //   _buildWindowTable(context, state)
-            // else
-            //   _buildMobileTable(context, state)
           ],
         ),
       ),
@@ -808,11 +637,4 @@ class ReportDetailPageState extends State<ReportDetailPage> {
       ),
     );
   }
-
-// _buildWindowTable(BuildContext context, ReportDetailState state) {
-//   return SingleChildScrollView(
-//       child: Column(
-//     children: _buildFullRow(context, state),
-//   ));
-// }
 }

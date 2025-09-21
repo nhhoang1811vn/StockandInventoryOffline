@@ -171,10 +171,12 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
           if (state.start != null)
             Text(
               "${context.tr("start_date")}:${DateFormatFactory.getDateFormat().format(state.start!)}",
+              style: textStyle,
             ),
           if (state.end != null)
             Text(
               "${context.tr("end_date")}:${DateFormatFactory.getDateFormat().format(state.end!)}",
+              style: textStyle,
             ),
           IntrinsicHeight(
             child: Row(

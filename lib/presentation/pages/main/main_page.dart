@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screen_lock/flutter_screen_lock.dart';
 import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.dart';
 import 'package:good_manager/presentation/pages/documents/documents_view.dart';
@@ -12,6 +15,8 @@ import 'package:good_manager/presentation/pages/payment/bloc/payments_cubit.dart
 import 'package:good_manager/presentation/pages/payment/payments_page.dart';
 
 import '../../../constant/constant.dart';
+import '../../../core/services/low_stock_service.dart';
+import '../../../core/services/notification_service.dart';
 import '../../../data/app_settings.dart';
 import '../../../di/di.dart';
 import '../../../util/util.dart';
@@ -67,6 +72,46 @@ class _ScreenState extends State<MainView> with SingleTickerProviderStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showLockScreen();
     });
+
+    var isShowLowStockAlert = AppSettings.getMinimumQuantitySettings().showAlert;
+    if (isShowLowStockAlert) {
+      _requestPermissions();
+      _checkLowStockAndShowAlert();
+    }
+  }
+  static final flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+  Future<void> _requestPermissions() async {
+    if (Platform.isIOS) {
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    } else if (Platform.isAndroid) {
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+      flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+      await androidImplementation?.requestNotificationsPermission();
+    }
+  }
+
+  Future<void> _checkLowStockAndShowAlert() async {
+    final lowStockService = getIt<LowStockService>();
+    final hasLowStock = await lowStockService.hasLowStock();
+
+    if (hasLowStock && context.mounted) {
+      NotificationService.showNotification(
+        id: 0,
+        title: context.tr("notification_low_stock_alert_title"),
+        body:
+        context.tr("notification_low_stock_alert_message"),
+        payload: "reorder",
+      );
+    }
   }
 
   void _showLockScreen() {

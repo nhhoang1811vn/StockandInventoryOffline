@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart' as _i460;
 import '../core/services/low_stock_service.dart' as _i697;
 import '../data/data.dart' as _i433;
 import '../data/db/db_helper.dart' as _i542;
+import '../data/report_data/report_data_factory.dart' as _i266;
 import '../domain/usecase/customers/customers_usecases.dart' as _i75;
 import '../domain/usecase/documents/document_usecases.dart' as _i345;
 import '../domain/usecase/goods/goods_history_usecases.dart' as _i599;
@@ -110,38 +111,38 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i901.AddQuantityAndPriceCubit>(
         () => _i901.AddQuantityAndPriceCubit());
-    gh.factory<_i439.SettingsGeneralCubit>(() => _i439.SettingsGeneralCubit());
-    gh.factory<_i279.SettingsViewCubit>(() => _i279.SettingsViewCubit());
-    gh.factory<_i25.MyCompanyCubit>(() => _i25.MyCompanyCubit());
-    gh.factory<_i951.SettingsCubit>(() => _i951.SettingsCubit());
-    gh.factory<_i178.MinimumQuantityCubit>(() => _i178.MinimumQuantityCubit());
-    gh.factory<_i434.QuickInsertDocumentCubit>(
-        () => _i434.QuickInsertDocumentCubit());
     gh.factory<_i589.BarcodeScannerSettingsCubit>(
         () => _i589.BarcodeScannerSettingsCubit());
     gh.factory<_i207.MenuCubit>(() => _i207.MenuCubit());
     gh.factory<_i974.ReportCubit>(() => _i974.ReportCubit());
+    gh.factory<_i434.QuickInsertDocumentCubit>(
+        () => _i434.QuickInsertDocumentCubit());
+    gh.factory<_i951.SettingsCubit>(() => _i951.SettingsCubit());
+    gh.factory<_i439.SettingsGeneralCubit>(() => _i439.SettingsGeneralCubit());
+    gh.factory<_i178.MinimumQuantityCubit>(() => _i178.MinimumQuantityCubit());
+    gh.factory<_i25.MyCompanyCubit>(() => _i25.MyCompanyCubit());
+    gh.factory<_i279.SettingsViewCubit>(() => _i279.SettingsViewCubit());
     gh.lazySingleton<_i542.DBHelper>(() => _i542.DBHelper());
-    gh.lazySingleton<_i317.DocumentRepository>(
-        () => _i317.DocumentRepository(db: gh<_i433.DBHelper>()));
-    gh.lazySingleton<_i596.GoodsRepository>(
-        () => _i596.GoodsRepository(db: gh<_i433.DBHelper>()));
-    gh.lazySingleton<_i394.DocumentTransactionRepository>(
-        () => _i394.DocumentTransactionRepository(db: gh<_i433.DBHelper>()));
     gh.lazySingleton<_i542.CustomersRepository>(
         () => _i542.CustomersRepository(db: gh<_i433.DBHelper>()));
-    gh.lazySingleton<_i660.PaymentCategoryRepository>(
-        () => _i660.PaymentCategoryRepository(db: gh<_i433.DBHelper>()));
-    gh.lazySingleton<_i699.WalletRepository>(
-        () => _i699.WalletRepository(db: gh<_i433.DBHelper>()));
-    gh.lazySingleton<_i772.SuppliersRepository>(
-        () => _i772.SuppliersRepository(db: gh<_i433.DBHelper>()));
-    gh.lazySingleton<_i457.PaymentRepository>(
-        () => _i457.PaymentRepository(db: gh<_i433.DBHelper>()));
+    gh.lazySingleton<_i317.DocumentRepository>(
+        () => _i317.DocumentRepository(db: gh<_i433.DBHelper>()));
+    gh.lazySingleton<_i394.DocumentTransactionRepository>(
+        () => _i394.DocumentTransactionRepository(db: gh<_i433.DBHelper>()));
+    gh.lazySingleton<_i596.GoodsRepository>(
+        () => _i596.GoodsRepository(db: gh<_i433.DBHelper>()));
     gh.lazySingleton<_i875.GroupsRepository>(
         () => _i875.GroupsRepository(db: gh<_i433.DBHelper>()));
+    gh.lazySingleton<_i660.PaymentCategoryRepository>(
+        () => _i660.PaymentCategoryRepository(db: gh<_i433.DBHelper>()));
+    gh.lazySingleton<_i457.PaymentRepository>(
+        () => _i457.PaymentRepository(db: gh<_i433.DBHelper>()));
     gh.lazySingleton<_i97.StoresRepository>(
         () => _i97.StoresRepository(db: gh<_i433.DBHelper>()));
+    gh.lazySingleton<_i772.SuppliersRepository>(
+        () => _i772.SuppliersRepository(db: gh<_i433.DBHelper>()));
+    gh.lazySingleton<_i699.WalletRepository>(
+        () => _i699.WalletRepository(db: gh<_i433.DBHelper>()));
     gh.lazySingleton<_i162.GoodsUseCases>(() => _i162.GoodsUseCases(
           repository: gh<_i1038.GoodsRepository>(),
           documentTransactionRepository:
@@ -172,10 +173,10 @@ extension GetItInjectableX on _i174.GetIt {
           documentTransactionRepository:
               gh<_i1038.DocumentTransactionRepository>(),
         ));
-    gh.factory<_i346.SuppliersCubit>(
-        () => _i346.SuppliersCubit(useCase: gh<_i704.SuppliersUseCase>()));
     gh.factory<_i377.SaveSupplierCubit>(
         () => _i377.SaveSupplierCubit(useCase: gh<_i704.SuppliersUseCase>()));
+    gh.factory<_i346.SuppliersCubit>(
+        () => _i346.SuppliersCubit(useCase: gh<_i704.SuppliersUseCase>()));
     gh.factory<_i94.SaveGoodCubit>(() => _i94.SaveGoodCubit(
           useCase: gh<_i704.GoodsUseCases>(),
           documentsUseCases: gh<_i704.DocumentUseCases>(),
@@ -200,14 +201,14 @@ extension GetItInjectableX on _i174.GetIt {
           walletUseCases: gh<_i704.WalletUseCases>(),
           paymentUseCases: gh<_i704.PaymentUseCases>(),
         ));
-    gh.factory<_i923.SaveStoreCubit>(
-        () => _i923.SaveStoreCubit(useCase: gh<_i704.StoresUseCase>()));
-    gh.factory<_i895.StoresCubit>(
-        () => _i895.StoresCubit(useCase: gh<_i704.StoresUseCase>()));
     gh.factory<_i995.AuthCubit>(
         () => _i995.AuthCubit(useCase: gh<_i704.StoresUseCase>()));
     gh.factory<_i573.OnBoardingCubit>(
         () => _i573.OnBoardingCubit(useCase: gh<_i704.StoresUseCase>()));
+    gh.factory<_i923.SaveStoreCubit>(
+        () => _i923.SaveStoreCubit(useCase: gh<_i704.StoresUseCase>()));
+    gh.factory<_i895.StoresCubit>(
+        () => _i895.StoresCubit(useCase: gh<_i704.StoresUseCase>()));
     gh.factory<_i673.SaveDocumentCubit>(() => _i673.SaveDocumentCubit(
           useCase: gh<_i704.DocumentUseCases>(),
           paymentUseCase: gh<_i704.PaymentUseCases>(),
@@ -217,17 +218,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i978.CustomersCubit(useCase: gh<_i704.CustomersUseCase>()));
     gh.factory<_i124.SaveCustomerCubit>(
         () => _i124.SaveCustomerCubit(useCase: gh<_i704.CustomersUseCase>()));
-    gh.factory<_i588.ReportDetailCubit>(() => _i588.ReportDetailCubit(
-          goodsUseCase: gh<_i704.GoodsUseCases>(),
-          groupsUseCases: gh<_i704.GroupsUseCases>(),
-          paymentUseCases: gh<_i704.PaymentUseCases>(),
-          documentUseCases: gh<_i704.DocumentUseCases>(),
-          documentTransactionRepository:
-              gh<_i1038.DocumentTransactionRepository>(),
-          suppliersUseCase: gh<_i704.SuppliersUseCase>(),
-          customersUseCase: gh<_i704.CustomersUseCase>(),
-          walletUseCases: gh<_i704.WalletUseCases>(),
-        ));
     gh.factory<_i179.PaymentsCubit>(() => _i179.PaymentsCubit(
           useCase: gh<_i704.PaymentUseCases>(),
           documentUseCases: gh<_i704.DocumentUseCases>(),
@@ -264,8 +254,26 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i434.SaleReportCubit>(
         () => _i434.SaleReportCubit(useCase: gh<_i704.PaymentUseCases>()));
+    gh.lazySingleton<_i266.ReportDataFactory>(() => _i266.ReportDataFactory(
+          goodsUseCases: gh<_i162.GoodsUseCases>(),
+          groupsUseCases: gh<_i506.GroupsUseCases>(),
+          paymentUseCases: gh<_i785.PaymentUseCases>(),
+          documentUseCases: gh<_i345.DocumentUseCases>(),
+          documentTransactionRepository:
+              gh<_i394.DocumentTransactionRepository>(),
+          suppliersUseCase: gh<_i273.SuppliersUseCase>(),
+          customersUseCase: gh<_i75.CustomersUseCase>(),
+          walletUseCases: gh<_i604.WalletUseCases>(),
+        ));
     gh.factory<_i738.SaveGroupCubit>(
         () => _i738.SaveGroupCubit(useCase: gh<_i704.GroupsUseCases>()));
+    gh.factory<_i588.ReportDetailCubit>(() => _i588.ReportDetailCubit(
+          factory: gh<_i266.ReportDataFactory>(),
+          goodsUseCase: gh<_i704.GoodsUseCases>(),
+          documentUseCases: gh<_i704.DocumentUseCases>(),
+          suppliersUseCase: gh<_i704.SuppliersUseCase>(),
+          customersUseCase: gh<_i704.CustomersUseCase>(),
+        ));
     return this;
   }
 }

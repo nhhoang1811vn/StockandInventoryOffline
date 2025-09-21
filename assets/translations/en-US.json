@@ -160,6 +160,7 @@
   "report_type_list_of_supplier_payments": "Payments by Suppliers",
   "report_type_list_of_customer_payments": "Payments by Customer",
   "report_type_reorder": "Reorder",
+  "report_type_good_info": "Good info",
   "select_date_range": "Select date range",
   "report_type_current_month": "Current month",
   "report_type_last_30_days": "Last 30 days",

@@ -4,23 +4,21 @@ import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail
 
 class ColumnDisplayDialog extends StatefulWidget {
   final List<ColumnReport> columns;
-
   const ColumnDisplayDialog({super.key, required this.columns});
-
   @override
   State createState() => ColumnDisplayDialogState();
 }
 
 class ColumnDisplayDialogState extends State<ColumnDisplayDialog> {
-  late List<bool> visibilityStates;
 
   @override
   void initState() {
     super.initState();
-    visibilityStates = widget.columns.map((field) => field.isVisible).toList();
+    //_localColumns = widget.columns.map((c) => c.copy()).toList();
+    //visibilityStates = widget.columns.map((field) => field.isVisible).toList();
   }
 
-  Widget _buildCheckbox(ColumnReport column) {
+  Widget _buildCheckbox(PickableColumn column) {
     return Column(
       children: column.values.map((value) {
         return CheckboxListTile(
@@ -34,7 +32,6 @@ class ColumnDisplayDialogState extends State<ColumnDisplayDialog> {
               column.selectedValues.remove(value);
             }
             setState(() {});
-            // Call setState if you're in a StatefulWidget to refresh UI
           },
           title: Text(value),
         );
@@ -49,20 +46,22 @@ class ColumnDisplayDialogState extends State<ColumnDisplayDialog> {
       content: SingleChildScrollView(
         child: Column(
           children: List.generate(widget.columns.length, (index) {
+            var column = widget.columns[index];
             return Column(
               children: [
                 SwitchListTile(
                   dense: true,
-                  title: Text(widget.columns[index].title),
-                  value: visibilityStates[index],
-                  onChanged: (bool? value) {
+                  title: Text(context.tr(column.title)),
+                  value: column.isVisible,
+                  onChanged: (bool value) {
                     setState(() {
-                      visibilityStates[index] = value ?? false;
+                      column.isVisible = value;
+                      //visibilityStates[index] = value;
                     });
                   },
                 ),
-                if (visibilityStates[index])
-                  _buildCheckbox(widget.columns[index]),
+                if (column.isVisible && column is PickableColumn)
+                  _buildCheckbox(widget.columns[index] as PickableColumn),
               ],
             );
           }),
@@ -72,9 +71,9 @@ class ColumnDisplayDialogState extends State<ColumnDisplayDialog> {
         TextButton(
           child: Text(context.tr("ok")),
           onPressed: () async {
-            for (int i = 0; i < widget.columns.length; i++) {
-              widget.columns[i].isVisible = visibilityStates[i];
-            }
+            // for (int i = 0; i < widget.columns.length; i++) {
+            //   widget.columns[i].isVisible = visibilityStates[i];
+            // }
             Navigator.of(context).pop(widget.columns);
           },
         ),
