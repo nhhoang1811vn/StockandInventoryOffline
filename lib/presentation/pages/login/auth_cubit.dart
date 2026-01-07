@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,9 +6,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/common/path_utils.dart';
+import 'package:good_manager/data/db_service.dart';
 import 'package:good_manager/domain/usecase/usecase.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../data/app_settings.dart';
@@ -22,14 +25,19 @@ class AuthCubit extends Cubit<AuthState> {
 
   AuthCubit({required this.useCase}) : super(AuthInitial());
 
+
   void downloadUserData() async {
-    downloadDBFile((state) {
-      if (state == TaskState.success) {
-        checkStore();
-      } else if (state == TaskState.canceled || state == TaskState.error) {
-        checkStore();
-      }
-    });
+    final firebasePath = getCloudFilePath();
+    final localFileName = "data.json";
+    final file = await downloadFile(firebasePath, localFileName);
+    if (file != null) {
+      final db = await DBHelper().db;
+      final service = DbService(db);
+      await service.importFromFile(file);
+      checkStore();
+    }else {
+      checkStore();
+    }
   }
 
   void checkStore() async {
@@ -70,7 +78,7 @@ class AuthCubit extends Cubit<AuthState> {
   String getCloudFilePath() {
     String? uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
-      return "$uid/database.db";
+      return "2026/$uid/data.json";
     } else {
       throw Exception("file not found");
     }
@@ -81,8 +89,11 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       final filePath = getCloudFilePath();
       final fileRef = storageRef.child(filePath);
-      String dbPath = await PathUtils().getDatabasePath();
-      final dbFile = File(dbPath);
+      //String dbPath = await PathUtils().getDatabasePath();
+      //final dbFile = File(dbPath);
+      final cacheDir = await getTemporaryDirectory();
+      final dbFile = File('${cacheDir.path}/data.json');
+
       await fileRef.getDownloadURL();
       final downloadTask = fileRef.writeToFile(dbFile);
       downloadTask.snapshotEvents.listen((taskSnapshot) {
@@ -92,6 +103,18 @@ class AuthCubit extends Cubit<AuthState> {
       callback(TaskState.error);
     } on Exception {
       callback(TaskState.canceled);
+    }
+  }
+
+  Future<File?> downloadFile(String firebasePath, String localFileName) async {
+    try {
+      final storageRef = FirebaseStorage.instance.ref(firebasePath);
+      final dir = await getApplicationDocumentsDirectory();
+      final file = File('${dir.path}/$localFileName');
+      await storageRef.writeToFile(file);
+      return file;
+    } catch (ex) {
+      return null;
     }
   }
 
@@ -139,7 +162,8 @@ class AuthCubit extends Cubit<AuthState> {
     }
     emit(AuthError(error));
   }
-  Future<void> signInWithApple() async{
+
+  Future<void> signInWithApple() async {
     emit(AuthLoading());
     try {
       final appleCredential = await SignInWithApple.getAppleIDCredential(
@@ -156,7 +180,7 @@ class AuthCubit extends Cubit<AuthState> {
       //emit(AuthStopped());
       //downloadData();
       emit(UserSignIn());
-    }on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e);
     }
   }
@@ -209,7 +233,7 @@ class AuthCubit extends Cubit<AuthState> {
       //downloadData();
     } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e);
-    } on Exception{
+    } on Exception {
       emit(AuthStopped());
     }
   }
@@ -240,21 +264,23 @@ class AuthCubit extends Cubit<AuthState> {
       handleFirebaseAuthError(e);
     }
   }
-  Future<OAuthCredential> getGoogleCredential() async{
+
+  Future<OAuthCredential> getGoogleCredential() async {
     await GoogleSignIn().signOut();
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     if (googleUser == null) {
       throw Exception("google User is null");
     }
     final GoogleSignInAuthentication googleAuth =
-    await googleUser.authentication;
+        await googleUser.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
     return credential;
   }
-  Future<void> linkWithGoogle() async{
+
+  Future<void> linkWithGoogle() async {
     emit(AuthLoading());
     try {
       var credential = await getGoogleCredential();
@@ -264,13 +290,14 @@ class AuthCubit extends Cubit<AuthState> {
       //uploadData();
     } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e);
-    } on Exception{
+    } on Exception {
       emit(AuthStopped());
     }
   }
-  Future<void> linkWithApple() async{
+
+  Future<void> linkWithApple() async {
     emit(AuthLoading());
-    try{
+    try {
       final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
@@ -286,24 +313,26 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthStopped());
       emit(UserLinkSuccessful());
       //uploadData();
-    } on FirebaseAuthException catch (e){
+    } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e);
-    } on Exception{
+    } on Exception {
       emit(AuthStopped());
     }
   }
-  Future<void> linkWithEmail(String name, String email, String password) async{
+
+  Future<void> linkWithEmail(String name, String email, String password) async {
     emit(AuthLoading());
-    try{
-      final credential = EmailAuthProvider.credential(email: email, password: password);
+    try {
+      final credential =
+          EmailAuthProvider.credential(email: email, password: password);
       await _auth.currentUser!.linkWithCredential(credential);
       await _auth.currentUser!.updateDisplayName(name);
       emit(AuthStopped());
       emit(UserLinkSuccessful());
       //uploadData();
-    } on FirebaseAuthException catch (e){
+    } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e);
-    } on Exception{
+    } on Exception {
       emit(AuthStopped());
     }
   }

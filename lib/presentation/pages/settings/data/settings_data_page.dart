@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -6,13 +7,17 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:good_manager/data/data.dart';
+import 'package:good_manager/presentation/dialog/custom_dialog.dart';
 import 'package:good_manager/presentation/widget/views.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../common/path_utils.dart';
+import '../../../../data/db_service.dart';
 import '../../../../main.dart';
 import '../../../widget/snackbar_widgets.dart';
 import '../../pages.dart' show Pages;
+import 'package:path/path.dart' as p;
 
 class SettingsDataPage extends StatefulWidget {
   SettingsDataPage({Key? key}) : super(key: key);
@@ -66,25 +71,21 @@ class SettingsDataPageState extends State<SettingsDataPage> {
                 onTap: () => onRestorePressed(context),
               ),
               buildDivider(),
-              //Divider(color: Colors.grey[500]),
               ListTile(
                 leading: Icon(Icons.cloud),
-                title:
-                    Text(context.tr("menu_push_data_to_cloud")),
+                title: Text(context.tr("menu_push_data_to_cloud")),
                 subtitle: cloudFileUpdatedTime.isEmpty
                     ? Text(context.tr("cloud_file_no_updated"))
                     : Text(cloudFileUpdatedTime),
                 onTap: () => onCloudPressed(),
               ),
-              buildDivider(),
-              ListTile(
-                leading: Icon(Icons.sync),
-                title:
-                    Text(context.tr("menu_quick_sync_title")),
-                subtitle:
-                    Text(context.tr("menu_quick_sync_desc")),
-                onTap: () => onQuickSyncPressed(context),
-              ),
+              // buildDivider(),
+              // ListTile(
+              //   leading: Icon(Icons.sync),
+              //   title: Text(context.tr("menu_quick_sync_title")),
+              //   subtitle: Text(context.tr("menu_quick_sync_desc")),
+              //   onTap: () => onQuickSyncPressed(context),
+              // ),
             ],
           ),
         ),
@@ -97,7 +98,7 @@ class SettingsDataPageState extends State<SettingsDataPage> {
     String? uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
       try {
-        final ref = storageRef.child("$uid/database.db");
+        final ref = storageRef.child("2026/$uid/data.json");
         final metadata = await ref.getMetadata();
         setState(() {
           if (metadata.updated != null) {
@@ -123,7 +124,7 @@ class SettingsDataPageState extends State<SettingsDataPage> {
     }
   }
 
-  Future<void> backup(BuildContext context, String filePath) async {
+  /*Future<void> backup(BuildContext context, String filePath) async {
     try {
       String dbPath = await PathUtils().getDatabasePath();
       File source = File(dbPath);
@@ -165,26 +166,26 @@ class SettingsDataPageState extends State<SettingsDataPage> {
         ),
       );
     }
-  }
+  }*/
 
   void onBackUpPressed(BuildContext context) async {
-    final dateFormat = new DateFormat('dd-MM-yyyy-HH-mm');
-    final timeStamp = dateFormat.format(DateTime.now());
-    String fileName = "appviet_goodmanager_database_$timeStamp.db";
-    if (Platform.isWindows) {
-      String? outputFile = await FilePicker.platform.saveFile(
-        dialogTitle: 'Please select an output file:',
-        fileName: fileName,
-      );
-      if (outputFile != null) {
-        await backup(context, outputFile);
-      }
-    } else {
+    try {
+      showProgressIndicator(context);
+      checkPermission();
+      final db = await DBHelper().db;
+      final service = DbService(db);
+      final file = await service.exportToJson();
       String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
       if (selectedDirectory != null) {
-        String outputFile = selectedDirectory + fileName;
-        await backup(context, outputFile);
+        final fileName = p.basename(file.path);
+        final outputPath = p.join(selectedDirectory, fileName);
+        await file.copy(outputPath);
+        notifyBackupSuccess(outputPath);
       }
+    } catch(e){
+      notifyBackupError(e.toString());
+    } finally {
+      hideDialog(context);
     }
   }
 
@@ -196,34 +197,33 @@ class SettingsDataPageState extends State<SettingsDataPage> {
       // User canceled the picker
     }
   }
+  // Future<Map<String, dynamic>> readJson(File file) async {
+  //   final jsonString = await file.readAsString();
+  //   return jsonDecode(jsonString) as Map<String, dynamic>;
+  // }
 
   void restore(BuildContext context, String filePath) async {
     try {
-      File source = File(filePath);
-      String dbPath = await PathUtils().getDatabasePath();
-      //File file = File(dbPath);
-      //if (await file.exists()){
-      //   await file.delete();
-      //}
-      await source.copy(dbPath);
-      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
+      File file = File(filePath);
+      final db = await DBHelper().db;
+      final service = DbService(db);
+      await service.importFromFile(file);
+      notifyRestoreSuccess();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("restore error: " + e.toString()),
-        ),
-      );
+      notifyRestoreError(e.toString());
+    } finally {
+
     }
   }
 
   void onCloudPressed() async {
-    //upload
-    String dbPath = await PathUtils().getDatabasePath();
-    File file = File(dbPath);
+    final db = await DBHelper().db;
+    final service = DbService(db);
+    final file = await service.exportToJson();
     final storageRef = FirebaseStorage.instance.ref();
     String? uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
-      final ref = storageRef.child("$uid/database.db");
+      final ref = storageRef.child("2026/$uid/data.json");
       try {
         await ref.putFile(file);
         if (!mounted) {
@@ -233,13 +233,6 @@ class SettingsDataPageState extends State<SettingsDataPage> {
             .showSnackBar(snackBarWhenSuccess(context));
         loadCloudFileUpdatedTime();
       }
-      // on FirebaseException {
-      //   if (!mounted) {
-      //     return;
-      //   }
-      //   ScaffoldMessenger.of(context)
-      //       .showSnackBar(snackBarWhenFailure(context));
-      // }
       catch (e) {
         if (!mounted) {
           return;
@@ -250,11 +243,62 @@ class SettingsDataPageState extends State<SettingsDataPage> {
     }
   }
 
-  void onQuickSyncPressed(BuildContext context) {
-    justLogin = true;
-    Navigator.of(context).pushNamedAndRemoveUntil(
-      Pages.loading_data,
-      (Route<dynamic> route) => false,
+  // void onQuickSyncPressed(BuildContext context) {
+  //   justLogin = true;
+  //   Navigator.of(context).pushNamedAndRemoveUntil(
+  //     Pages.loading_data,
+  //     (Route<dynamic> route) => false,
+  //   );
+  // }
+  void notifyBackupSuccess(String path){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          context.tr("backup_successful") + " " + path,
+        ),
+      ),
     );
+  }
+  void notifyBackupError(String error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          context.tr("backup_error") + " " + error,
+        ),
+      ),
+    );
+  }
+  void notifyRestoreSuccess(){
+    ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
+  }
+  void notifyRestoreError(String error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("restore error: " + error),
+      ),
+    );
+  }
+  void checkPermission() async{
+    if (Platform.isAndroid) {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      if (androidInfo.version.sdkInt > 29) {
+        var status = await Permission.manageExternalStorage.status;
+        if (!status.isGranted) {
+          //openAppSettings();
+          await Permission.manageExternalStorage.request();
+        }
+      } else {
+        var status = await Permission.storage.status;
+        if (!status.isGranted) {
+          await Permission.storage.request();
+        }
+      }
+    } else {
+      var status = await Permission.storage.status;
+      if (!status.isGranted) {
+        await Permission.storage.request();
+      }
+    }
   }
 }

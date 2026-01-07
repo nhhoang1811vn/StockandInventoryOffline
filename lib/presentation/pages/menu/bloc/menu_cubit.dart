@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/data/db_service.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../common/path_utils.dart';
@@ -34,13 +35,14 @@ class MenuCubit extends Cubit<MenuState>{
     return Future.value(true);
   }
   Future<bool> upload() async{
-    String dbPath = await PathUtils().getDatabasePath();
-    File file = File(dbPath);
+    final db = await DBHelper().db;
+    final service = DbService(db);
+    final file = await service.exportToJson();
     final storageRef = FirebaseStorage.instance.ref();
     String? uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
       try {
-        final ref = storageRef.child("$uid/database.db");
+        final ref = storageRef.child("2026/$uid/data.json");
         await ref.putFile(file);
         return true;
       } on FirebaseException {

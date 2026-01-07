@@ -31,7 +31,7 @@ configurations.all {
 }
 android {
     namespace "com.ssteam.goodmanagerflutter"
-    compileSdk 35
+    compileSdk 36
 
 //    compileOptions {
 //        sourceCompatibility JavaVersion.VERSION_1_8
@@ -59,7 +59,7 @@ android {
     defaultConfig {
         applicationId "com.steam.goodmanagerflutter"
         minSdkVersion 24
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
