@@ -50,6 +50,7 @@ class StoreItemRow extends StatelessWidget {
                           ),
                     )
                   : Container(),
+              item.networkId.isNotEmpty ? Text(item.networkId) : Container()
             ],
           ),
         ),

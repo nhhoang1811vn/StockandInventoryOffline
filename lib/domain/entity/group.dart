@@ -19,7 +19,7 @@ class Group extends BaseModel {
   }
 
   @override
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool includeId = false}) {
     var map = super.toMap();
     map["barCode"] = barCode;
     map["storeId"] = storeId;

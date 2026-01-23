@@ -15,7 +15,7 @@ class Expense extends BaseModel {
   }
 
   @override
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool includeId = false}) {
     var map = super.toMap();
     map["date"] = date.millisecondsSinceEpoch;
     map["amount"] = amount;

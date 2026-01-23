@@ -7,6 +7,7 @@ import '../../utils/auth_listeners.dart';
 import '../pages.dart';
 import 'auth_cubit.dart';
 import 'components/background.dart';
+import 'package:flutter/foundation.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -36,6 +37,11 @@ class LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     BlocProvider.of<AuthCubit>(context);
+
+    if (kDebugMode) {
+      emailController.text = "nhhoang1811vn@gmail.com";
+      passwordController.text = "123456";
+    }
   }
   @override
   Widget build(BuildContext context) {

@@ -69,6 +69,8 @@ import '../presentation/pages/save_wallet/bloc/save_wallet_cubit.dart' as _i193;
 import '../presentation/pages/select_group/bloc/select_group_cubit.dart'
     as _i921;
 import '../presentation/pages/settings/bloc/settings_cubit.dart' as _i951;
+import '../presentation/pages/settings/data/bloc/settings_data_cubit.dart'
+    as _i673;
 import '../presentation/pages/settings/general/bloc/settings_general_cubit.dart'
     as _i439;
 import '../presentation/pages/settings/minimum_quantity/bloc/minimum_quantity_cubit.dart'
@@ -143,6 +145,18 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i772.SuppliersRepository(db: gh<_i433.DBHelper>()));
     gh.lazySingleton<_i699.WalletRepository>(
         () => _i699.WalletRepository(db: gh<_i433.DBHelper>()));
+    gh.factory<_i673.SettingsDataCubit>(() => _i673.SettingsDataCubit(
+          gh<_i1038.StoresRepository>(),
+          gh<_i1038.SuppliersRepository>(),
+          gh<_i1038.CustomersRepository>(),
+          gh<_i1038.GroupsRepository>(),
+          gh<_i1038.GoodsRepository>(),
+          gh<_i1038.DocumentRepository>(),
+          gh<_i1038.DocumentTransactionRepository>(),
+          gh<_i1038.PaymentCategoryRepository>(),
+          gh<_i1038.WalletRepository>(),
+          gh<_i1038.PaymentRepository>(),
+        ));
     gh.lazySingleton<_i162.GoodsUseCases>(() => _i162.GoodsUseCases(
           repository: gh<_i1038.GoodsRepository>(),
           documentTransactionRepository:

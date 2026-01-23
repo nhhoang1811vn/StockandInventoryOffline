@@ -46,4 +46,8 @@ class DocumentTransactionRepository {
     item.updatedDate = DateTime.now();
     return db.updateTransaction(item);
   }
+
+  Future<List<DocumentTransaction>> getAllByStoreId(int storeId){
+    return db.getTransactionsByStoreId(storeId);
+  }
 }

@@ -84,6 +84,18 @@ class DBHelper {
       "CREATE TABLE IF NOT EXISTS $PAYMENTS_CATEGORY_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER,type INTEGER NOT NULL, icon TEXT)",
     ],
     5: ["ALTER TABLE $GOODS_TABLE_NAME ADD COLUMN minQuantity REAL"],
+    6: [
+      //rename old table
+      "ALTER TABLE $GROUPS_TABLE_NAME RENAME TO ${GROUPS_TABLE_NAME}_old",
+      // Create new table WITHOUT groupId foreign key
+      "CREATE TABLE $GROUPS_TABLE_NAME (id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE,storeId INTEGER NOT NULL,groupId INTEGER,files TEXT,createdDate INTEGER,updatedDate INTEGER,FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
+      //Copy data
+      "INSERT INTO $GROUPS_TABLE_NAME (id,name,description,barCode,storeId,groupId,files,createdDate,updatedDate) SELECT id,name,description,barCode,storeId,groupId,files,createdDate,updatedDate FROM ${GROUPS_TABLE_NAME}_old",
+      //Drop old table
+      "DROP TABLE ${GROUPS_TABLE_NAME}_old",
+
+      "ALTER TABLE $STORES_TABLE_NAME ADD COLUMN networkId TEXT"
+    ]
   };
 
   Future<void> reopen() async {
@@ -104,7 +116,7 @@ class DBHelper {
     String path = await PathUtils().getDatabasePath();
     var theDb = await openDatabase(
       path,
-      version: 5,
+      version: 6,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -121,9 +133,12 @@ class DBHelper {
   }
 
   void _onCreate(Database db, int version) async {
-    await db.execute(
-      "CREATE TABLE IF NOT EXISTS $STORES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER)",
-    );
+     /*await db.execute(
+       "CREATE TABLE IF NOT EXISTS $STORES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER)",
+     );*/
+     await db.execute(
+       "CREATE TABLE IF NOT EXISTS $STORES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER, networkId TEXT)",
+     );
     await db.execute(
       "CREATE TABLE IF NOT EXISTS $EXPENSES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, date INTEGER, amount REAL,storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
@@ -144,10 +159,14 @@ class DBHelper {
           "FOREIGN KEY(customerId) REFERENCES $CUSTOMERS_TABLE_NAME(id) ON DELETE SET NULL)",
     );
 
-    await db.execute(
+    /*await db.execute(
       "CREATE TABLE IF NOT EXISTS $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE," +
           "FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)",
+    );*/
+    await db.execute(
+      "CREATE TABLE IF NOT EXISTS $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
+          "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)"
     );
     await db.execute(
       "CREATE TABLE IF NOT EXISTS $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, purchasePrice REAL, salePrice REAL,  storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, minQuantity REAL, createdDate INTEGER, updatedDate INTEGER, " +
@@ -211,8 +230,7 @@ class DBHelper {
         await dbClient.rawQuery('SELECT * FROM $STORES_TABLE_NAME');
     List<Store> stores = [];
     for (int i = 0; i < list.length; i++) {
-      Store store = Store();
-      store.map(list[i]);
+      Store store = Store.map(list[i]);
       stores.add(store);
     }
     print(stores.length);
@@ -856,6 +874,22 @@ class DBHelper {
       var good = await findGood(transaction.goodId);
       good.quantity = transaction.quantity;
       transaction.good = good;
+      transactions.add(transaction);
+    }
+    return transactions;
+  }
+  Future<List<DocumentTransaction>> getTransactionsByStoreId(
+      int storeId,
+      ) async {
+    var dbClient = await db;
+    List<Map> list = await dbClient.rawQuery(
+      'SELECT * FROM $DOCUMENT_TRANSACTIONS_TABLE_NAME where storeId = ?',
+      [storeId],
+    );
+
+    List<DocumentTransaction> transactions = [];
+    for (int i = 0; i < list.length; i++) {
+      var transaction = DocumentTransaction.map(list[i]);
       transactions.add(transaction);
     }
     return transactions;

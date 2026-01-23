@@ -5,19 +5,19 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/data/data.dart';
 import 'package:good_manager/presentation/dialog/custom_dialog.dart';
 import 'package:good_manager/presentation/widget/views.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-import '../../../../common/path_utils.dart';
 import '../../../../data/db_service.dart';
-import '../../../../main.dart';
 import '../../../widget/snackbar_widgets.dart';
-import '../../pages.dart' show Pages;
 import 'package:path/path.dart' as p;
+
+import 'bloc/settings_data_cubit.dart';
 
 class SettingsDataPage extends StatefulWidget {
   SettingsDataPage({Key? key}) : super(key: key);
@@ -30,6 +30,7 @@ class SettingsDataPage extends StatefulWidget {
 
 class SettingsDataPageState extends State<SettingsDataPage> {
   var cloudFileUpdatedTime = "";
+  final user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -37,7 +38,7 @@ class SettingsDataPageState extends State<SettingsDataPage> {
     loadCloudFileUpdatedTime();
   }
 
-  @override
+  /*@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
@@ -47,7 +48,22 @@ class SettingsDataPageState extends State<SettingsDataPage> {
       ),
       body: _buildBody(),
     );
+  }*/
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<SettingsDataCubit, SettingsDataState>(
+      listener: (context, state) async {},
+      builder: (BuildContext context, SettingsDataState state) {
+        return Scaffold(
+          appBar: new AppBar(
+            title: new Text(context.tr("menu_item_backup_and_restore")),
+          ),
+          body: _buildBody(),
+        );
+      },
+    );
   }
+
 
   Widget _buildBody() {
     return ListView(
@@ -70,25 +86,31 @@ class SettingsDataPageState extends State<SettingsDataPage> {
                 subtitle: Text(context.tr("menu_restore_desc")),
                 onTap: () => onRestorePressed(context),
               ),
-              buildDivider(),
-              ListTile(
-                leading: Icon(Icons.cloud),
-                title: Text(context.tr("menu_push_data_to_cloud")),
-                subtitle: cloudFileUpdatedTime.isEmpty
-                    ? Text(context.tr("cloud_file_no_updated"))
-                    : Text(cloudFileUpdatedTime),
-                onTap: () => onCloudPressed(),
-              ),
-              // buildDivider(),
-              // ListTile(
-              //   leading: Icon(Icons.sync),
-              //   title: Text(context.tr("menu_quick_sync_title")),
-              //   subtitle: Text(context.tr("menu_quick_sync_desc")),
-              //   onTap: () => onQuickSyncPressed(context),
-              // ),
             ],
           ),
         ),
+        if (user != null && user?.isAnonymous == false)
+          Card(
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              children: [
+                  ListTile(
+                    leading: Icon(Icons.cloud),
+                    title: Text(context.tr("menu_push_data_to_cloud")),
+                    subtitle: cloudFileUpdatedTime.isEmpty
+                        ? Text(context.tr("cloud_file_no_updated"))
+                        : Text(cloudFileUpdatedTime),
+                    onTap: () => onCloudPressed(),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.cloud),
+                    title: Text("Save the data to cloud v2"),
+                    subtitle: Text("Use this option to make your offline Stock & Inventory data available in the online version. (under development)"),
+                    onTap: () => onSaveDataToCloudVersion2(),
+                  ),
+              ],
+            ),
+          ),
       ],
     );
   }
@@ -217,6 +239,7 @@ class SettingsDataPageState extends State<SettingsDataPage> {
   }
 
   void onCloudPressed() async {
+    //save data to Firebase Storage
     final db = await DBHelper().db;
     final service = DbService(db);
     final file = await service.exportToJson();
@@ -241,6 +264,11 @@ class SettingsDataPageState extends State<SettingsDataPage> {
             .showSnackBar(snackBarWhenFailure(context));
       }
     }
+  }
+
+  void onSaveDataToCloudVersion2() async {
+    //save data to Firebase Realtime Database
+    //context.read<SettingsDataCubit>().syncToRealtimeDB();
   }
 
   // void onQuickSyncPressed(BuildContext context) {

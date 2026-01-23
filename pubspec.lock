@@ -561,6 +561,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.6.44"
+  firebase_database:
+    dependency: "direct main"
+    description:
+      name: firebase_database
+      sha256: "64f8076912139e83f3db3d853df5bffd4c6150a71ffef393584318efd4883f7c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.1.4"
+  firebase_database_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_database_platform_interface
+      sha256: "750e9076a41bc78ce87b95f9d0548f224e5b0679009f6236bf5cf98884db60dd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.5+44"
+  firebase_database_web:
+    dependency: transitive
+    description:
+      name: firebase_database_web
+      sha256: daf3fbde892ff5f2ea7469eff1ab22b7988fe96b637919fdec6890141eb51023
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.6+2"
   firebase_storage:
     dependency: "direct main"
     description:
@@ -1277,6 +1301,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.1"
+  nanoid:
+    dependency: "direct main"
+    description:
+      name: nanoid
+      sha256: be3f8752d9046c825df2f3914195151eb876f3ad64b9d833dd0b799b77b8759e
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   nested:
     dependency: transitive
     description:

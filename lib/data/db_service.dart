@@ -99,24 +99,23 @@ class DbService {
       await transaction.delete(DBHelper.MEDIA_TABLE_NAME);
       await transaction.delete(DBHelper.STORES_TABLE_NAME);
 
-      insertDB(transaction, DBHelper.STORES_TABLE_NAME, json[STORES_KEY] as List<dynamic>);
-      insertDB(transaction, DBHelper.CUSTOMERS_TABLE_NAME, json[CUSTOMERS_KEY] as List<dynamic>);
-      insertDB(transaction, DBHelper.SUPPLIERS_TABLE_NAME, json[SUPPLIERS_KEY] as List<dynamic>);
-      insertGroup(transaction, json);
-      insertDB(transaction, DBHelper.GOODS_TABLE_NAME, json[GOODS_KEY] as List<dynamic>);
-      insertMedia(transaction, json);
-      //insertDB(transaction, DBHelper.MEDIA_TABLE_NAME, json[MEDIA_KEY] as List<dynamic>);
+      await insertDB(transaction, DBHelper.STORES_TABLE_NAME, json[STORES_KEY] as List<dynamic>);
+      await insertDB(transaction, DBHelper.CUSTOMERS_TABLE_NAME, json[CUSTOMERS_KEY] as List<dynamic>);
+      await insertDB(transaction, DBHelper.SUPPLIERS_TABLE_NAME, json[SUPPLIERS_KEY] as List<dynamic>);
+      await insertGroup(transaction, json);
+      await insertDB(transaction, DBHelper.GOODS_TABLE_NAME, json[GOODS_KEY] as List<dynamic>);
+      await insertMedia(transaction, json);
 
-      insertDB(transaction, DBHelper.DOCUMENTS_TABLE_NAME, json[DOCUMENTS_KEY] as List<dynamic>);
-      insertDB(transaction, DBHelper.DOCUMENT_TRANSACTIONS_TABLE_NAME, json[DOCUMENT_TRANSACTIONS_KEY] as List<dynamic>);
+      await insertDB(transaction, DBHelper.DOCUMENTS_TABLE_NAME, json[DOCUMENTS_KEY] as List<dynamic>);
+      await insertDB(transaction, DBHelper.DOCUMENT_TRANSACTIONS_TABLE_NAME, json[DOCUMENT_TRANSACTIONS_KEY] as List<dynamic>);
 
-      insertDB(transaction, DBHelper.WALLET_TABLE_NAME, json[WALLETS_KEY] as List<dynamic>);
-      insertDB(transaction, DBHelper.PAYMENTS_CATEGORY_TABLE_NAME, json[PAYMENT_CATEGORIES_KEY] as List<dynamic>);
-      insertDB(transaction, DBHelper.PAYMENTS_TABLE_NAME, json[PAYMENTS_KEY] as List<dynamic>);
+      await insertDB(transaction, DBHelper.WALLET_TABLE_NAME, json[WALLETS_KEY] as List<dynamic>);
+      await insertDB(transaction, DBHelper.PAYMENTS_CATEGORY_TABLE_NAME, json[PAYMENT_CATEGORIES_KEY] as List<dynamic>);
+      await insertDB(transaction, DBHelper.PAYMENTS_TABLE_NAME, json[PAYMENTS_KEY] as List<dynamic>);
     });
   }
 
-  void insertDB(Transaction txn, String tableName, List<dynamic> items) async {
+  Future<void> insertDB(Transaction txn, String tableName, List<dynamic> items) async {
     for (final item in items) {
       await txn.insert(
         tableName,
@@ -126,23 +125,23 @@ class DbService {
     }
   }
 
-  void insertGroup(Transaction txn, Map<String, dynamic> json) async {
+  Future<void> insertGroup(Transaction txn, Map<String, dynamic> json) async {
     final raw = json[GROUPS_KEY] as List<dynamic>;
-    final groups = [];
+    List<Group> groups = [];
     for (final item in raw) {
       groups.add(Group.map(item));
     }
-    groups.sort((a, b) => a.createdDate.compareTo(b.createdDate));
     for (final item in groups) {
+      print("insert Group ${item.toMap()}");
       await txn.insert(
         DBHelper.GROUPS_TABLE_NAME,
         item.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.ignore,
+        conflictAlgorithm: ConflictAlgorithm.replace,
       );
     }
   }
 
-  void insertMedia(Transaction txn, Map<String, dynamic> json) async {
+  Future<void> insertMedia(Transaction txn, Map<String, dynamic> json) async {
     final items = json[MEDIA_KEY] as List<dynamic>;
     for (final item in items) {
       var map = new Map<String, dynamic>();

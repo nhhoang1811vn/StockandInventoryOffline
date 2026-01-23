@@ -54,6 +54,7 @@ import 'package:good_manager/presentation/pages/save_wallet/bloc/save_wallet_cub
 import 'package:good_manager/presentation/pages/save_wallet/save_wallet_page.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 import 'package:good_manager/presentation/pages/select_group/select_group_page.dart';
+import 'package:good_manager/presentation/pages/settings/data/bloc/settings_data_cubit.dart';
 import 'package:good_manager/presentation/pages/settings/data/settings_data_page.dart';
 import 'package:good_manager/presentation/pages/settings/general/bloc/settings_general_cubit.dart';
 import 'package:good_manager/presentation/pages/settings/general/settings_general_page.dart';
@@ -302,7 +303,12 @@ class AppRouter {
           ),
         );
       case Pages.settings_data:
-        return _buildRoute(settings, SettingsDataPage());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<SettingsDataCubit>(),
+            child: SettingsDataPage(),
+          ),
+        );
       case Pages.settings_general:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(

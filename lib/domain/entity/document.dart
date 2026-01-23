@@ -5,17 +5,6 @@ enum DocumentType {
   outgoing,
 }
 
-// extension DocumentTypeExtension on DocumentType {
-//   String getTitle(AppLocalizations localizations) {
-//     switch (this) {
-//       case DocumentType.incoming:
-//         return localizations.incoming;
-//       case DocumentType.outgoing:
-//         return localizations.outgoing;
-//     }
-//   }
-// }
-
 class Document extends BaseModel {
   DateTime date = DateTime.now();
   late DocumentType type;
@@ -58,7 +47,7 @@ class Document extends BaseModel {
   }
 
   @override
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool includeId = false}) {
     var map = super.toMap();
     map["date"] = date.millisecondsSinceEpoch;
     map["type"] = type.index;

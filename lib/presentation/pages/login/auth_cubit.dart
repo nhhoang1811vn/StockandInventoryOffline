@@ -27,26 +27,27 @@ class AuthCubit extends Cubit<AuthState> {
 
 
   void downloadUserData() async {
-    final firebasePath = getCloudFilePath();
-    final localFileName = "data.json";
-    final file = await downloadFile(firebasePath, localFileName);
-    if (file != null) {
-      final db = await DBHelper().db;
-      final service = DbService(db);
-      await service.importFromFile(file);
-      checkStore();
-    }else {
-      checkStore();
+    String? uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      final firebasePath = "2026/$uid/data.json";
+      final localFileName = "data.json";
+      final file = await downloadFile(firebasePath, localFileName);
+      if (file != null) {
+        final db = await DBHelper().db;
+        final service = DbService(db);
+        await service.importFromFile(file);
+      }
     }
+    checkStore();
   }
 
   void checkStore() async {
-    await Future.delayed(Duration(seconds: 2));
+    //await Future.delayed(Duration(seconds: 2));
     try {
-      if (Platform.isIOS) {
+      /*if (Platform.isIOS) {
         DBHelper dbHelper = DBHelper();
         await dbHelper.reopen();
-      }
+      }*/
       final stores = await useCase.getAll();
       if (stores.isNotEmpty) {
         await updateSelectedStore();
@@ -81,28 +82,6 @@ class AuthCubit extends Cubit<AuthState> {
       return "2026/$uid/data.json";
     } else {
       throw Exception("file not found");
-    }
-  }
-
-  void downloadDBFile(Function(TaskState) callback) async {
-    final storageRef = FirebaseStorage.instance.ref();
-    try {
-      final filePath = getCloudFilePath();
-      final fileRef = storageRef.child(filePath);
-      //String dbPath = await PathUtils().getDatabasePath();
-      //final dbFile = File(dbPath);
-      final cacheDir = await getTemporaryDirectory();
-      final dbFile = File('${cacheDir.path}/data.json');
-
-      await fileRef.getDownloadURL();
-      final downloadTask = fileRef.writeToFile(dbFile);
-      downloadTask.snapshotEvents.listen((taskSnapshot) {
-        callback(taskSnapshot.state);
-      });
-    } on FirebaseException {
-      callback(TaskState.error);
-    } on Exception {
-      callback(TaskState.canceled);
     }
   }
 

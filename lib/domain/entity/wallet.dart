@@ -15,7 +15,7 @@ class Wallet extends BaseModel {
   }
 
   @override
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool includeId = false}) {
     var map = super.toMap();
     map["color"] = color;
     map["storeId"] = storeId;

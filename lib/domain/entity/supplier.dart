@@ -21,9 +21,10 @@ class Supplier extends BaseModel {
     this.storeId = obj["storeId"];
   }
 
+
   @override
-  Map<String, dynamic> toMap() {
-    var map = super.toMap();
+  Map<String, dynamic> toMap({bool includeId = false}) {
+    var map = super.toMap(includeId: includeId);
     map["address"] = address;
     map["email"] = email;
     map["phone"] = phone;
