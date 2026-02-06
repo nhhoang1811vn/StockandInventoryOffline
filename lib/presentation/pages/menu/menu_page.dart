@@ -511,16 +511,6 @@ class MenuPageState extends State<MenuPage> {
     Navigator.of(context).pushNamed(Pages.helps, arguments: {});
   }
 
-  void onDonation(BuildContext context) {
-    Navigator.of(context).pushNamed(
-      Pages.help,
-      arguments: {
-        "title": context.tr("menu_item_donation"),
-        "content": MDProviderFactory.get().getDonationText(),
-      },
-    );
-  }
-
   void onLogoutItemPressed() {
     showCustomAlertDialog(
       context,

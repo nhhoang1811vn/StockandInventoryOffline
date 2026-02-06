@@ -1,31 +1,4 @@
 class MarkdownResourceVN {
-  static const String donationText = """
- 🌟 Hỗ Trợ Chúng Tôi Xây Dựng Ứng Dụng Tốt Hơn! 🌟
-
-Chào quý vị, những người sử dụng ứng dụng của chúng tôi,
-
-Chúng tôi viết thư này đến quý vị với hi vọng về sức mạnh của ứng dụng của chúng tôi trong việc tạo ra sự khác biệt trong cuộc sống của quý vị. Với sự ủng hộ của quý vị, chúng tôi có thể đưa nó lên một tầm cao mới và mang lại giá trị hơn nữa cho quý vị và những người trong cộng đồng của chúng tôi.
-
-Đội ngũ của chúng tôi cam kết liên tục cải thiện ứng dụng, thêm các tính năng mới, cải thiện trải nghiệm người dùng và đảm bảo rằng nó vẫn là một công cụ quý giá cho tất cả chúng ta. Tuy nhiên, việc phát triển và duy trì một ứng dụng chất lượng cao đòi hỏi nguồn lực, và đó là lý do quý vị ra đời.
-
-Bằng cách quyên góp, quý vị đang góp phần trực tiếp vào sự phát triển và bền vững của ứng dụng của chúng tôi. Sự hào phóng của quý vị sẽ giúp chúng tôi:
-
-Thực hiện các tính năng mới thú vị được người dùng yêu cầu như quý vị.
-Cải thiện hiệu suất và ổn định để đảm bảo trải nghiệm người dùng mượt mà.
-Đầu tư vào các công nghệ tiên tiến để giữ bước với xu hướng.
-Mở rộng phạm vi và ảnh hưởng của chúng tôi, tiếp cận nhiều người dùng hơn có thể hưởng lợi từ ứng dụng của chúng tôi.
-Mọi đóng góp, dù lớn hay nhỏ, đều có ý nghĩa. Sự ủng hộ của quý vị không chỉ là một đầu tư vào ứng dụng mà còn là một đầu tư vào cộng đồng chúng tôi đã xây dựng cùng nhau.
-
-Cảm ơn quý vị đã tham gia cuộc hành trình của chúng tôi. Cùng nhau, chúng ta có thể tạo ra điều gì đó thực sự đặc biệt.
-
-Quý vị hãy quyên góp ngay bây giờ và là một trong những động lực đằng sau sự thành công của ứng dụng!
-
-https://me.momo.vn/qr/nguyen-huy-hoang-z2kUuMD7go
-
-
-Với lòng biết ơn,
-AppViet Team
-  """;
   static const String helpStores = """
   Bạn có thể luu trữ các Hàng Hoá theo cửa hàng (nhà kho, cửa tiệm).
  

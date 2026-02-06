@@ -1,32 +1,10 @@
 class MarkdownResourceEN {
-  static const String donationText = """
- 
- 🌟 Help Us Build a Better App! 🌟
-
-Dear Community
-
-We're reaching out to you because we believe in the power of our app to make a difference in your lives. With your support, we can take it to the next level and bring even menu value to you and others in our community.
-
-Our team is dedicated to continually improving the app, adding new features, enhancing user experience, and ensuring it remains a valuable tool for all of us. However, developing and maintaining a high-quality app requires resources, and that's where you come in.
-
-By making a donation, you're directly contributing to the future development and sustainability of our app. Your generosity will enable us to:
-
-Implement exciting new features requested by users like you.
-Enhance performance and stability to ensure a smooth user experience.
-Invest in cutting-edge technologies to stay ahead of the curve.
-Expand our reach and impact, reaching menu users who can benefit from our app.
-Every donation, no matter how big or small, makes a difference. Your support is not only an investment in the app but also in the community we've built together.
-
-Thank you for being a part of our journey. Together, we can create something truly special.
-
-Donate now and be a driving force behind the app's success!
-
-https://me.momo.vn/qr/nguyen-huy-hoang-z2kUuMD7go
-
-With gratitude,
-AppViet Team
-  """;
   static const String whatNews = """
+  ### Version 1.0.70 - 2026 Feb 06       
+  * Fixed reported bugs.  
+  * Added new currency.
+  * Updated logic sync data.
+  
   ### Version 1.0.65 - 2025 Sep 20       
   * Fixed reported bugs.  
   * Added new report type: Good Info. 

@@ -19,9 +19,10 @@ enum Currency {
   @HiveField(12) sgd,
   @HiveField(13) nok,
   @HiveField(14) mxn,
-  @HiveField(15) ngn, // Nigerian Naira
-  @HiveField(16) thb, // Thai Baht
-  @HiveField(17) aed, // UAE Dirham
+  @HiveField(15) ngn,
+  @HiveField(16) thb,
+  @HiveField(17) aed,
+  @HiveField(18) inr,
 }
 
 extension CurrencyExtension on Currency {
@@ -45,6 +46,7 @@ extension CurrencyExtension on Currency {
       case Currency.ngn: return "₦";
       case Currency.thb: return "฿";
       case Currency.aed: return "د.إ";
+      case Currency.inr:return "₹";
     }
   }
 
@@ -68,6 +70,7 @@ extension CurrencyExtension on Currency {
       case Currency.ngn: return "NGN (₦) - Nigerian Naira";
       case Currency.thb: return "THB (฿) - Thai Baht";
       case Currency.aed: return "AED (د.إ) - United Arab Emirates Dirham";
+      case Currency.inr: return "INR (₹) - Indian Rupee";
     }
   }
 }
