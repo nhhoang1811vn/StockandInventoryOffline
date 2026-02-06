@@ -4,6 +4,7 @@ class MarkdownResourceEN {
   * Fixed reported bugs.  
   * Added new currency.
   * Updated logic sync data.
+  * Updated new logo (prepare for version online)
   
   ### Version 1.0.65 - 2025 Sep 20       
   * Fixed reported bugs.  
