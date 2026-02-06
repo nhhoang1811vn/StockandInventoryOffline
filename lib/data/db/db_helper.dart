@@ -88,7 +88,7 @@ class DBHelper {
       //rename old table
       "ALTER TABLE $GROUPS_TABLE_NAME RENAME TO ${GROUPS_TABLE_NAME}_old",
       // Create new table WITHOUT groupId foreign key
-      "CREATE TABLE $GROUPS_TABLE_NAME (id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE,storeId INTEGER NOT NULL,groupId INTEGER,files TEXT,createdDate INTEGER,updatedDate INTEGER,FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
+      "CREATE TABLE $GROUPS_TABLE_NAME (id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT,storeId INTEGER NOT NULL,groupId INTEGER,files TEXT,createdDate INTEGER,updatedDate INTEGER,FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
       //Copy data
       "INSERT INTO $GROUPS_TABLE_NAME (id,name,description,barCode,storeId,groupId,files,createdDate,updatedDate) SELECT id,name,description,barCode,storeId,groupId,files,createdDate,updatedDate FROM ${GROUPS_TABLE_NAME}_old",
       //Drop old table
@@ -165,7 +165,7 @@ class DBHelper {
           "FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)",
     );*/
     await db.execute(
-      "CREATE TABLE IF NOT EXISTS $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
+      "CREATE TABLE IF NOT EXISTS $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)"
     );
     await db.execute(
