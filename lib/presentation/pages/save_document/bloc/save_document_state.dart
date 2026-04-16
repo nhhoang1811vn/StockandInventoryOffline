@@ -1,4 +1,5 @@
 part of 'save_document_cubit.dart';
+
 @freezed
 class SaveDocumentState with _$SaveDocumentState {
   const factory SaveDocumentState.initial({
@@ -17,7 +18,6 @@ class SaveDocumentState with _$SaveDocumentState {
     @Default('') String textSearch,
     @Default(0) double totalQuantity,
     @Default(0) double totalAmount,
-    @Default([]) List<Payment> payments
+    @Default([]) List<Payment> payments,
   }) = _Initial;
 }
-

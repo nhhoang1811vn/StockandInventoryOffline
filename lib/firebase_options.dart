@@ -44,8 +44,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '617423800641',
     projectId: 'quanlykho-4818e',
     storageBucket: 'quanlykho-4818e.appspot.com',
-    androidClientId: '617423800641-b5a5vbl4h2qo98r84nm5nljharcuhtt9.apps.googleusercontent.com',
-    iosClientId: '617423800641-3hg9toe6rn1ho9pqbt7mami3vmda5l33.apps.googleusercontent.com',
+    androidClientId:
+        '617423800641-b5a5vbl4h2qo98r84nm5nljharcuhtt9.apps.googleusercontent.com',
+    iosClientId:
+        '617423800641-3hg9toe6rn1ho9pqbt7mami3vmda5l33.apps.googleusercontent.com',
     iosBundleId: 'com.ssteam.goodmanagerflutter',
   );
 
@@ -58,5 +60,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'quanlykho-4818e.appspot.com',
     measurementId: 'G-9CKSJ18YBD',
   );
-
 }

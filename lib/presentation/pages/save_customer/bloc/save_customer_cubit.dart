@@ -1,11 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/entities/customer.dart';
-import 'package:good_manager/domain/usecases/customers/customers_usecases.dart';
+import 'package:good_manager/domain/usecase/usecase.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../domain/entities/models/name.dart';
+import '../../../../domain/entity/entity.dart';
 import '../../base/base_state.dart';
 
 part 'save_customer_cubit.freezed.dart';
@@ -14,57 +13,67 @@ part 'save_customer_state.dart';
 @injectable
 class SaveCustomerCubit extends Cubit<SaveCustomerState> {
   final CustomersUseCase useCase;
-  SaveCustomerCubit({required this.useCase}) : super(SaveCustomerState.initial(state: InitialState()));
 
-  void init(Customer item){
+  SaveCustomerCubit({required this.useCase})
+      : super(SaveCustomerState.initial(state: InitialState()));
+
+  void init(Customer item) {
     SaveCustomerState initState;
-      if (item.id == null){
-        initState = state.copyWith(item: item);
-      }else{
-        initState = state.copyWith(item: item,
-            name: NameInput.dirty(value: item.name),
-            description: item.description,
-            address: item.address,
-            email: item.email,
-            phone: item.phone,
-            taxID: item.taxID,
-            bankDetails: item.bankDetail
-        );
-      }
-      emit(initState);
+    if (item.id == null) {
+      initState = state.copyWith(item: item);
+    } else {
+      initState = state.copyWith(
+        item: item,
+        name: NameInput.dirty(value: item.name),
+        description: item.description,
+        address: item.address,
+        email: item.email,
+        phone: item.phone,
+        taxID: item.taxID,
+        bankDetails: item.bankDetail,
+      );
+    }
+    emit(initState);
   }
 
   Future<bool> onWillPop() async {
     return true;
   }
-  void nameChanged(String value){
+
+  void nameChanged(String value) {
     final name = NameInput.dirty(value: value);
     emit(state.copyWith(name: name));
   }
-  void descriptionChanged(String value){
+
+  void descriptionChanged(String value) {
     emit(state.copyWith(description: value));
   }
-  void addressChanged(String value){
+
+  void addressChanged(String value) {
     emit(state.copyWith(address: value));
   }
-  void emailChanged(String value){
+
+  void emailChanged(String value) {
     //final email = Email.dirty(value: value);
     emit(state.copyWith(email: value));
   }
-  void phoneChanged(String value){
+
+  void phoneChanged(String value) {
     emit(state.copyWith(phone: value));
   }
-  void taxIDChanged(String value){
+
+  void taxIDChanged(String value) {
     emit(state.copyWith(taxID: value));
   }
-  void bankDetailsChanged(String value){
+
+  void bankDetailsChanged(String value) {
     emit(state.copyWith(bankDetails: value));
   }
 
-  void onSaveClicked() async{
+  void onSaveClicked() async {
     final validate = Formz.validate([state.name]);
-    if (validate){
-      try{
+    if (validate) {
+      try {
         //emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
         Customer item = state.item!;
         item.name = state.name.value;
@@ -74,17 +83,17 @@ class SaveCustomerCubit extends Cubit<SaveCustomerState> {
         item.phone = state.phone;
         item.taxID = state.taxID;
         item.bankDetail = state.bankDetails;
-        if (item.id == null){
+        if (item.id == null) {
           await useCase.insert(item);
-        }else{
+        } else {
           await useCase.update(item);
         }
         emit(state.copyWith(state: SaveItemSuccessful()));
-      } catch(error){
+      } catch (error) {
         emit(state.copyWith(state: SaveItemError(error.toString())));
       }
-    }else{
-      emit(state.copyWith(name: NameInput.dirty(value : state.name.value)));
+    } else {
+      emit(state.copyWith(name: NameInput.dirty(value: state.name.value)));
     }
   }
 }

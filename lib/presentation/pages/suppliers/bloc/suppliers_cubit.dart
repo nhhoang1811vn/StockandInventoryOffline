@@ -1,14 +1,13 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_manager/domain/entities/supplier.dart';
+import 'package:good_manager/domain/usecase/usecase.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../data/storage.dart';
-import '../../../../domain/entities/sort_by_text.dart';
-import '../../../../domain/entities/suppliers_setting.dart';
-import '../../../../domain/usecases/suppliers/suppliers_usecases.dart';
+import '../../../../data/app_settings.dart';
+import '../../../../domain/entity/entity.dart';
+import '../../../../domain/free_limits.dart';
+import '../../../../util/util.dart';
 import '../../base/base_sort_items.dart';
 
 part 'suppliers_cubit.freezed.dart';
@@ -17,98 +16,104 @@ part 'suppliers_state.dart';
 @injectable
 class SuppliersCubit extends Cubit<SuppliersState> {
   final SuppliersUseCase useCase;
-  final Storage storage;
-  SuppliersCubit({required this.storage,required this.useCase}) : super(SuppliersState.initial(state: InitialState(), settings: storage.getSuppliersSetting()));
 
-  void initState(bool isSelection){
+  SuppliersCubit({required this.useCase})
+      : super(
+          SuppliersState.initial(
+            state: InitialState(),
+            settings: AppSettings.getSuppliersSetting(),
+          ),
+        );
+
+  //final purchaseManager = PurchaseManager();
+  void initState(bool isSelection) {
     emit(state.copyWith(isSelection: isSelection, showSearchBar: isSelection));
     loadItems();
   }
-  void searchTextChanged(String value){
+
+  void searchTextChanged(String value) {
     emit(state.copyWith(textSearch: value));
     filter();
   }
-  void resetSearchText(){
+
+  void resetSearchText() {
     emit(state.copyWith(textSearch: ""));
     filter();
   }
-  void onShowSearchBarMenuClicked(){
+
+  void onShowSearchBarMenuClicked() {
     emit(state.copyWith(showSearchBar: !state.showSearchBar));
     resetSearchText();
   }
+
   bool hasSortOptions() {
     return (state.settings.sortByName != SortByText.no_sort);
   }
-  void onSortMenuClicked(){
-    emit(state.copyWith(state: OpenSortDialogListState()));
-  }
-  void onHelpMenuClick(){
+
+  void onHelpMenuClick() {
     emit(state.copyWith(state: OpenHelpPageState()));
   }
 
-  void showCanNotDeleteDialog() {
-    /*showDialog(
-              content: Text(AppLocalizations.of(getContext())
-        context: getContext(),
-        builder: (BuildContext builder) => AlertDialog(
-              title: Text(
-                  AppLocalizations.of(getContext()).notification_dialog_title),
-                  .message_delete_supplier_error_having_document),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.pop(getContext()),
-                  child: const Text('OK'),
-                )
-              ],
-            ));*/
-  }
+  void showCanNotDeleteDialog() {}
 
   bool filterItem(Supplier item, String textSearch) {
     return item.name.toLowerCase().contains(textSearch.toLowerCase());
   }
-  void onAddButtonClicked() {
-    Supplier item = Supplier();
-    item.storeId = storage.getSelectedStoreId();
-    onAddItem(item);
+
+  void onAddButtonClicked() async {
+    bool isValid = await isValidToAddMoreSupplier();
+    if (isValid) {
+      Supplier item = Supplier();
+      item.storeId = AppSettings.getSelectedStoreId();
+      onAddItem(item);
+    } else {
+      emit(state.copyWith(state: OpenBuySubscriptionDialogState()));
+    }
   }
-  void onAddItem(Supplier item){
+
+  Future<bool> isValidToAddMoreSupplier() async {
+    var storeId = AppSettings.getSelectedStoreId();
+    int count = await useCase.getCount(storeId);
+    bool isPro = await RevenueCatService.isPro();
+    return count < FreeLimits.supplierLimit || isPro;
+  }
+
+  void onAddItem(Supplier item) {
     emit(state.copyWith(state: OpenSaveSupplierPageState(item)));
   }
 
-  void setSettings(SuppliersSetting settings) {
-    storage.setSuppliersSetting(settings);
-    emit(state.copyWith(settings: settings));
-    sort();
-    filter();
-  }
-
-
-  void loadItems() async{
-    final storeId = storage.getSelectedStoreId();
+  void loadItems() async {
+    final storeId = AppSettings.getSelectedStoreId();
     List<Supplier> allItems = await useCase.getAllByStoreId(storeId);
     emit(state.copyWith(allItems: allItems));
     sort();
     filter();
   }
-  void filter(){
+
+  void filter() {
     List<Supplier> items = filterSuppliers();
     emit(state.copyWith(items: items));
   }
-  List<Supplier> filterSuppliers(){
-    List<Supplier> results = state.allItems.where((element) => filterSupplier(element)).toList();
+
+  List<Supplier> filterSuppliers() {
+    List<Supplier> results =
+        state.allItems.where((element) => filterSupplier(element)).toList();
     return results;
   }
+
   bool filterSupplier(Supplier item) {
     if (state.textSearch.trim().isEmpty) {
       return true;
     }
     return item.name.contains(state.textSearch);
   }
-  void sort(){
+
+  void sort() {
     List<Supplier> items = sortSuppliers();
     emit(state.copyWith(allItems: items));
   }
-  List<Supplier> sortSuppliers(){
+
+  List<Supplier> sortSuppliers() {
     List<SortItems<Supplier>> options = [];
     switch (state.settings.sortByName) {
       case SortByText.a_to_z:
@@ -140,8 +145,20 @@ class SuppliersCubit extends Cubit<SuppliersState> {
     });
     return items;
   }
-  delete(int id) async{
+
+  Future<void> delete(int id) async {
     await useCase.delete(id);
     loadItems();
+  }
+
+  void resetAllFilter() {
+    applyFilter(SuppliersSetting.getDefault());
+  }
+
+  void applyFilter(SuppliersSetting setting) {
+    emit(state.copyWith(settings: setting));
+    AppSettings.setSuppliersSetting(setting);
+    sort();
+    filter();
   }
 }

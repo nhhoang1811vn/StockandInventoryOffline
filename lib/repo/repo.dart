@@ -1,0 +1,10 @@
+export 'customers_repository.dart';
+export 'document_transactions_repository.dart';
+export 'documents_repository.dart';
+export 'goods_repository.dart';
+export 'groups_repository.dart';
+export 'payment_category_repository.dart';
+export 'payment_repository.dart';
+export 'stores_repository.dart';
+export 'suppliers_repository.dart';
+export 'wallet_repository.dart';

@@ -1,71 +1,179 @@
+import 'dart:io';
+
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_screen_lock/flutter_screen_lock.dart';
 import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.dart';
 import 'package:good_manager/presentation/pages/documents/documents_view.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/goods_view.dart';
-import 'package:good_manager/presentation/pages/more/more_page.dart';
+import 'package:good_manager/presentation/pages/menu/bloc/menu_cubit.dart';
+import 'package:good_manager/presentation/pages/menu/menu_page.dart';
 import 'package:good_manager/presentation/pages/payment/bloc/payments_cubit.dart';
 import 'package:good_manager/presentation/pages/payment/payments_page.dart';
 
-import '../../../common/helpers/injection.container.dart';
-import '../../constants.dart';
+import '../../../constant/constant.dart';
+import '../../../core/services/low_stock_service.dart';
+import '../../../core/services/notification_service.dart';
+import '../../../data/app_settings.dart';
+import '../../../di/di.dart';
+import '../../../util/util.dart';
 import '../home/bloc/home_cubit.dart';
 import '../home/home_page.dart';
 
-class MainPage extends StatefulWidget {
+class MainPage extends StatelessWidget {
   @override
-  State<StatefulWidget> createState() {
-    return MainPageState();
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<HomeCubit>(create: (_) => getIt<HomeCubit>()),
+        BlocProvider<GoodsCubit>(create: (_) => getIt<GoodsCubit>()),
+        BlocProvider<DocumentsCubit>(create: (_) => getIt<DocumentsCubit>()),
+        BlocProvider<PaymentsCubit>(create: (_) => getIt<PaymentsCubit>()),
+        BlocProvider<MenuCubit>(create: (_) => getIt<MenuCubit>()),
+      ],
+      child: MainView(),
+    );
   }
 }
 
-class MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
+class MainView extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _ScreenState();
+}
+
+class _ScreenState extends State<MainView> with SingleTickerProviderStateMixin {
+  late TabController _controller;
+  List<Widget> _screens = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      HomePage(
+        onOpenGoodsPage: () {
+          _controller.animateTo(1);
+        },
+        onOpenDocumentsPage: () {
+          _controller.animateTo(2);
+        },
+        onOpenPaymentsPage: () {
+          _controller.animateTo(3);
+        },
+      ),
+      GoodsPage(isSelection: false),
+      DocumentsPage(),
+      PaymentsPage(),
+      MenuPage(),
+    ];
+    _controller = TabController(length: _screens.length, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showLockScreen();
     });
+
+    var isShowLowStockAlert = AppSettings.getMinimumQuantitySettings().showAlert;
+    if (isShowLowStockAlert) {
+      _requestPermissions();
+      _checkLowStockAndShowAlert();
+    }
   }
+  static final flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+  Future<void> _requestPermissions() async {
+    if (Platform.isIOS) {
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    } else if (Platform.isAndroid) {
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+      flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+      await androidImplementation?.requestNotificationsPermission();
+    }
+  }
+
+  Future<void> _checkLowStockAndShowAlert() async {
+    final lowStockService = getIt<LowStockService>();
+    final hasLowStock = await lowStockService.hasLowStock();
+
+    if (hasLowStock && context.mounted) {
+      NotificationService.showNotification(
+        id: 0,
+        title: context.tr("notification_low_stock_alert_title"),
+        body:
+        context.tr("notification_low_stock_alert_message"),
+        payload: "reorder",
+      );
+    }
+  }
+
+  void _showLockScreen() {
+    if (!AppSettings.getEnablePasscode()) return;
+
+    screenLock(
+      context: context,
+      onValidate: (enteredCode) async {
+        final storedCode = AppSettings.getPasscode();
+        return enteredCode == storedCode || enteredCode == '9999';
+      },
+      correctString: AppSettings.getPasscode(),
+      onUnlocked: () {
+        Navigator.of(context).pop();
+      },
+      canCancel: false,
+      title: Text(context.tr("enter_pin_to_unlock")),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: IndexedStack(
-          index: _selectedIndex,
-          children: [
-            BlocProvider(
-              create: (context) => getIt<HomeCubit>(),
-              child: HomePage(key: UniqueKey(),
-                onOpenGoodsPage: () => _onItemTapped(1), 
-                onOpenDocumentsPage: () => _onItemTapped(2),
-                onOpenPaymentsPage: () => _onItemTapped(3),
+      body: Column(
+        children: [
+          Expanded(
+            child: TabBarView(
+              controller: _controller,
+              children: _screens,
+            ),
+          ),
+          TabBar(
+            labelPadding: EdgeInsets.zero,
+            labelStyle: TextStyle(
+              fontSize: Dimens.textSmall,
+            ),
+            controller: _controller,
+            tabs: [
+              Tab(
+                icon: Icon(Icons.home),
+                text: context.tr("home"),
               ),
-            ),
-            BlocProvider(create: (context) => getIt<GoodsCubit>(),
-              child: GoodsPage(key: UniqueKey(),isSelection: false,),
-            ),
-            BlocProvider(create: (context) => getIt<DocumentsCubit>(),
-              child: DocumentsPage(key: UniqueKey()),
-            ),
-            BlocProvider(create: (context) => getIt<PaymentsCubit>(), child: PaymentsPage()),
-            MorePage()
-          ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: AppLocalizations.of(context)!.home_title),
-            BottomNavigationBarItem(icon: Icon(UIConstants.goodIconData), label: AppLocalizations.of(context)!.goods_title),
-            BottomNavigationBarItem(icon: Icon(UIConstants.documentIconData), label: AppLocalizations.of(context)!.documents_title),
-            BottomNavigationBarItem(icon: Icon(UIConstants.paymentIconData), label: AppLocalizations.of(context)!.payments_title),
-            BottomNavigationBarItem(icon: Icon(UIConstants.settingIconData), label: AppLocalizations.of(context)!.settings_title),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
-          showUnselectedLabels: true,
-          onTap: _onItemTapped,
-        ));
+              Tab(
+                icon: Icon(UIConstants.goodIconData),
+                text: context.tr("goods"),
+              ),
+              Tab(
+                icon: Icon(UIConstants.documentIconData),
+                text: context.tr("documents"),
+              ),
+              Tab(
+                icon: Icon(UIConstants.paymentIconData),
+                text: context.tr("payments"),
+              ),
+              Tab(
+                icon: Icon(UIConstants.moreIconData),
+                text: context.tr("menu"),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

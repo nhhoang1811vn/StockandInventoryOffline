@@ -1,26 +1,32 @@
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/data/storage.dart';
-import 'package:good_manager/presentation/pages/pages.dart';
-import 'package:good_manager/presentation/router.dart';
+import 'package:good_manager/util/revenuecat_purchase_manager.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-import '../common/helpers/injection.container.dart';
+import 'app.dart';
+import 'common/storage/pref_storage.dart';
+import 'data/app_settings.dart';
+import 'di/di.dart';
 import 'firebase_options.dart';
+
 late List<CameraDescription> cameras;
-Storage storage = getIt<Storage>();
 bool justLogin = false;
-late String initialRoute;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  configureDependencies();
-  await storage.init();
+  await EasyLocalization.ensureInitialized();
+  //await NotificationService.init();
+  await configureDependencies();
+  await Hive.initFlutter();
+  var storage = await PrefStorage.init();
+  await AppSettings.initialize(storage);
+  await RevenueCatService.init();
   cameras = await availableCameras();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -34,148 +40,37 @@ void main() async {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
   };
-  FirebaseAuth.instance.authStateChanges().listen(
-        (user) {
-      if (user == null || !user.emailVerified) {
-        initialRoute = Pages.signIn;
-      } else {
-        initialRoute = Pages.loading_data;
-      }
-    },
+  final auth = FirebaseAuth.instance;
+  auth.authStateChanges().listen((user) async {
+    if (user != null) {
+      await RevenueCatService.updateUser(user.uid);
+    }
+  });
+  if (auth.currentUser == null) {
+    await auth.signInAnonymously();
+  }else{
+    //open app with valid user, sync the data
+    //syncService.upload();
+  }
+  runApp(
+    EasyLocalization(
+      supportedLocales: [
+        Locale('en', 'US'), // English
+        Locale('es', 'ES'), // Spanish
+        Locale('fr', 'FR'), // French
+        Locale('de', 'DE'), // German
+        Locale('zh', 'CN'), // Chinese (Simplified)
+        Locale('ar', 'SA'), // Arabic
+        Locale('hi', 'IN'), // Hindi
+        Locale('pt', 'BR'), // Portuguese (Brazil)
+        Locale('ru', 'RU'), // Russian
+        Locale('ja', 'JP'), // Japanese
+        Locale('vi', 'VN'), // Vietnamese
+      ],
+      path: 'assets/translations',
+      fallbackLocale: Locale('en', 'US'),
+      saveLocale: true,
+      child: MyApp(),
+    ),
   );
-  runApp(MyApp());
-}
-
-class MyApp extends StatefulWidget {
-  MyApp({Key? key}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() {
-    return MyAppState();
-  }
-
-  static void setLocale(BuildContext context, String languageCode) async {
-    MyAppState? state = context.findAncestorStateOfType<MyAppState>();
-    state?.changeLanguage(languageCode);
-  }
-  static LocaleType getDatePickerLocaleType(BuildContext context){
-    MyAppState? state = context.findAncestorStateOfType<MyAppState>();
-    if (state?._languageCode == "vi")
-      return LocaleType.vi;
-    return LocaleType.en;
-  }
-
-}
-
-class MyAppState extends State<MyApp> {
-
-  String? _languageCode;
-  final AppRouter _router;
-  MyAppState() : _router = AppRouter() {
-    _languageCode = storage.getLanguageCode();
-  }
-  Locale locale(String languageCode) {
-    Locale _temp;
-    switch (languageCode) {
-      case "vi":
-        _temp = Locale("vi", "VN");
-        break;
-      default:
-        _temp = Locale("en", "US");
-    }
-    return _temp;
-  }
-  changeLanguage(String code) {
-    setState(() {
-      _languageCode = code;
-    });
-  }
-
-
-  ThemeData _buildTheme(brightness) {
-    var baseTheme = ThemeData(
-        fontFamily: 'Roboto',
-        brightness: brightness,
-        cardTheme: CardTheme(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8), // Rounded corners
-          ),
-        ),
-        textTheme: TextTheme(
-            titleSmall: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-            titleMedium: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
-            titleLarge: TextStyle(fontSize: 19.0, fontWeight: FontWeight.bold),
-        ),
-        checkboxTheme: CheckboxThemeData(
-          fillColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return Colors.blue.shade700; // Checked color
-            }
-            return Colors.white; // Unchecked color
-          }),
-          checkColor: WidgetStateProperty.all(Colors.white),
-          side: BorderSide(color: Colors.grey.shade700), // Border when unchecked
-        ),
-
-        colorScheme: ColorScheme.fromSeed(
-            onSurface: Colors.black,
-            surface: Colors.white,
-            onPrimary: Colors.blue.shade700,
-            seedColor: Colors.blue.shade700,
-            brightness: Brightness.light,
-        ),
-        switchTheme: SwitchThemeData(
-          thumbColor: WidgetStateProperty.resolveWith<Color?>(
-              (states){
-                if (states.contains(WidgetState.selected)){
-                  return Colors.white;
-                }
-                return Colors.grey;
-              }
-          ),
-          trackColor: WidgetStateProperty.resolveWith<Color?>(
-                  (states){
-                if (states.contains(WidgetState.selected)){
-                  return Colors.blue.shade700;
-                }
-                return Colors.grey.shade100;
-              }
-          ),
-        ),
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: AppBarTheme(
-            iconTheme: IconThemeData(color: Colors.black),
-          titleTextStyle: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.blue,
-          ),
-        ),
-        primaryColor: Colors.blue,
-        primarySwatch: Colors.blue,
-        inputDecorationTheme: InputDecorationTheme(
-          isDense: true,
-        ));
-
-    return baseTheme.copyWith(
-      //textTheme: GoogleFonts.robotoTextTheme(baseTheme.textTheme),
-      //textTheme: GoogleFonts.montserratTextTheme(baseTheme.textTheme)
-      //  textTheme: GoogleFonts.gamjaFlowerTextTheme(baseTheme.textTheme),
-
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-      return MaterialApp(
-          debugShowCheckedModeBanner: true,
-          theme: _buildTheme(Brightness.light),
-          onGenerateRoute: _router.getRoute,
-          navigatorObservers: [_router.routeObserver],
-          locale: locale(_languageCode!),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          initialRoute: initialRoute,
-        );
-    }
 }

@@ -10,8 +10,10 @@ class SaveGoodState with _$SaveGoodState {
     double? purchasePrice,
     double? salePrice,
     @Default([]) List<Uint8List> files,
+    double? minQuantity,
+    @Default(true) bool showMinQuantity,
     Good? item,
     Document? document,
-    DocumentTransaction? transaction
+    DocumentTransaction? transaction,
   }) = _Initial;
 }

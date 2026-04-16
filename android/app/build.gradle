@@ -23,11 +23,7 @@ def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
-//def keystoreProperties = new Properties()
-//def keystorePropertiesFile = rootProject.file('upload-key-good-manager.jks')
-//if (keystorePropertiesFile.exists()) {
-//    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-//}
+
 configurations.all {
     resolutionStrategy {
         force 'androidx.core:core-ktx:1.6.0'
@@ -35,18 +31,26 @@ configurations.all {
 }
 android {
     namespace "com.ssteam.goodmanagerflutter"
-    compileSdk 34
-    //ndkVersion "25.1.8937393"
-    //ndkVersion flutter.ndkVersion
+    compileSdk 36
 
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+//        coreLibraryDesugaringEnabled true
+//    }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
+
+//    kotlinOptions {
+//        jvmTarget = '1.8'
+//    }
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -54,14 +58,10 @@ android {
 
     defaultConfig {
         applicationId "com.steam.goodmanagerflutter"
-        minSdkVersion 23
-        targetSdkVersion 34
+        minSdkVersion 24
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-
-        //ndk {
-        //    abiFilters "armeabi", "armeabi-v7a","arm64-v8a"
-        //}
     }
     signingConfigs {
         release {
@@ -87,4 +87,6 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
+}

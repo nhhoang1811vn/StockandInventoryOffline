@@ -1,12 +1,13 @@
-import 'package:good_manager/domain/entities/good.dart';
-import 'package:good_manager/presentation/criteria/criteria.dart';
+import '../../domain/entity/entity.dart';
+import 'filter_criteria.dart';
 
-class FilterGoodByBarcodeCriteria extends Criteria<Good>{
-  final String searchText;
-  FilterGoodByBarcodeCriteria(this.searchText);
+class FilterGoodByBarcodeCriteria extends FilterCriteria<Good> {
+  FilterGoodByBarcodeCriteria(super.searchText);
 
   @override
   List<Good> meetCriteria(List<Good> items) {
-    return items.where((item) => item.barCode?.contains(searchText) == true).toList();
+    return items
+        .where((item) => item.barCode?.contains(searchText) == true)
+        .toList();
   }
 }

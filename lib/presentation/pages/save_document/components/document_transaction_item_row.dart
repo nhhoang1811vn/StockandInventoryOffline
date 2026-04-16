@@ -1,101 +1,163 @@
 import 'dart:typed_data';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/domain/entities/transaction.dart';
-import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/utils.dart';
+import 'package:good_manager/util/currency_formatter.dart';
+
+import '../../../../constant/constant.dart';
+import '../../../../domain/entity/entity.dart';
+import '../../../../util/util.dart';
+
 class DocumentTransactionItemRow extends StatelessWidget {
   final DocumentTransaction item;
-  final void Function(DocumentTransaction item) onTransactionPressed;
-  final void Function(DocumentTransaction item) onTransactionLongPressed;
+  final Color bgColor;
+  final Function(DocumentTransaction item) onTransactionPressed;
+  final Function(DocumentTransaction item) onTransactionLongPressed;
   final bool isSelection;
 
   DocumentTransactionItemRow(
-      this.item, this.onTransactionPressed, this.onTransactionLongPressed,
-      [this.isSelection = false]);
+    this.item,
+    this.bgColor,
+    this.onTransactionPressed,
+    this.onTransactionLongPressed, [
+    this.isSelection = false,
+  ]);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+    return Container(
       child: InkWell(
-        borderRadius: BorderRadius.circular(8),
         onTap: () => onTransactionPressed(item),
-        onLongPress : () => onTransactionLongPressed(item),
-        child: Padding(padding: EdgeInsets.all(16.0), child: Row(children: [
-          _buildLeadingWidget(context),
-          SizedBox(width: 8,),
-          Expanded(child: _buildWidget(context))
-        ],),),),
+        onLongPress: () => onTransactionLongPressed(item),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16.0),
+          child: Row(
+            children: [
+              _buildLeadingWidget(context),
+              SizedBox(width: 16),
+              Expanded(child: _buildWidget(context)),
+            ],
+          ),
+        ),
+      ),
     );
   }
-  Widget _buildLeadingWidget(BuildContext context){
+
+  Widget _buildLeadingWidget(BuildContext context) {
     return item.good.files.isNotEmpty
         ? getAvatarWidget(item.good.files.first)
         : _buildEmptyAvatarWidget(context);
   }
-  Widget _buildWidget(BuildContext context){
-    return Column(children: [
-      _buildTop(context),
-      _buildBottom(context)
-    ],);
+
+  Widget _buildWidget(BuildContext context) {
+    return Column(
+      children: [_buildTop(context), _buildBottom(context)],
+    );
   }
-  Widget _buildTop(BuildContext context){
+
+  Widget _buildTop(BuildContext context) {
+    TextStyle? primaryTextStyle = Theme.of(context)
+        .textTheme
+        .titleMedium
+        ?.copyWith(fontWeight: FontWeight.w700);
+    TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
+
     return Row(
       children: [
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
-          Text(item.good.name, style:
-          Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
-          SizedBox(height: 4),
-          if (item.good.barCode != null)
-            Row(children: [
-              Icon(UIConstants.barcodeIconData, size: 24,color: UIConstants.primaryColor),
-              SizedBox(
-                width: 8,
-              ),
-              Text(item.good.barCode!, style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onSurface))
-            ]),
-          if (item.good.description.isNotEmpty)
-            Column(children: [
-              SizedBox(height: 4,),
-              Text(item.good.description, style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.onSurface))
-            ],)
-
-
-        ]),),
-
-        Text(Utils.getQuantityText(item.quantity), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),)
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(item.good.name, style: primaryTextStyle),
+              SizedBox(height: 4),
+              if (item.good.barCode != null)
+                Row(
+                  children: [
+                    Icon(
+                      UIConstants.barcodeIconData,
+                      size: 24,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(item.good.barCode!, style: secondaryTextStyle),
+                  ],
+                ),
+              if (item.good.description.isNotEmpty)
+                Column(
+                  children: [
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Text(item.good.description, style: secondaryTextStyle),
+                  ],
+                ),
+            ],
+          ),
+        ),
+        Text(
+          StringUtils.getQuantityText(item.quantity),
+          style: primaryTextStyle,
+        ),
       ],
     );
   }
-  Widget _buildBottom(BuildContext con){
+
+  Widget _buildBottom(BuildContext context) {
+    TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
     var leftValue = "";
     var rightValue = "";
-    if (item.price == null){
-      leftValue = Config.currencyFormat.format(0.0);
-      rightValue = Config.currencyFormat.format(0.0);
-    }else{
-      leftValue = Config.currencyFormat.format(item.price!);
-      rightValue = Config.currencyFormat.format(item.price!* item.quantity);
+    if (item.price == null) {
+      leftValue = CurrencyFormatter.format(context, 0);
+      rightValue = CurrencyFormatter.format(context, 0);
+    } else {
+      leftValue = CurrencyFormatter.format(context, item.price!);
+      rightValue = CurrencyFormatter.format(context, item.price! * item.quantity);
     }
-    return Align(alignment: Alignment.centerRight, child: Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-      Text(AppLocalizations.of(con)!.field_price + ": " + leftValue),
-      Text(AppLocalizations.of(con)!.field_amount + ": " + rightValue),
-    ]));
+          Text(
+            context.tr("price") + ": " + leftValue,
+            style: secondaryTextStyle,
+          ),
+          Text(
+            context.tr("amount") + ": " + rightValue,
+            style: secondaryTextStyle,
+          ),
+        ],
+      ),
+    );
   }
+
   Widget getAvatarWidget(Uint8List bytes) {
-    return SizedBox(width: 48, height: 48, child: Image.memory(bytes));
+    return SizedBox(
+      width: 48,
+      height: 48,
+      child: ClipOval(
+        child: Image.memory(
+          bytes,
+          fit:
+              BoxFit.cover, // Ensures the image covers the entire circular area
+        ),
+      ),
+    );
   }
-  Widget _buildEmptyAvatarWidget(BuildContext context){
-    return Icon(UIConstants.goodIconData, size: 32, color: Theme.of(context).colorScheme.onPrimary);
+
+  Widget _buildEmptyAvatarWidget(BuildContext context) {
+    return SizedBox(
+      width: 48,
+      height: 48,
+      child: Center(
+        child: Icon(
+          UIConstants.goodIconData,
+          size: 36,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
+    );
   }
 }

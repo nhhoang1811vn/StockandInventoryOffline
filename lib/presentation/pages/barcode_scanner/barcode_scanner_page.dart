@@ -1,87 +1,67 @@
+import 'package:audioplayers/audioplayers.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/domain/entities/batch_mode_scan.dart';
-import 'package:good_manager/presentation/pages/barcode_scanner/bloc/barcode_scanner_cubit.dart';
-import 'package:good_manager/presentation/pages/barcode_scanner/change_batch_mode_scan_dialog.dart';
-import 'package:good_manager/presentation/pages/base/base_state_widget.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:vibration/vibration.dart';
 
-import '../../constants.dart';
+import '../../../data/app_settings.dart';
 
 class BarcodeScannerPage extends StatefulWidget {
-  BarcodeScannerPage({Key? key}) : super(key: key);
-  @override
-  State<StatefulWidget> createState() {
-    return BarcodeScannerPageState();
-  }
-}
-class BarcodeScannerPageState extends BaseStateWidget<BarcodeScannerPage> {
-  @override
-  Widget buildWidget(BuildContext context) {
-    return BlocConsumer<BarcodeScannerCubit, BarcodeScannerState>(
-      listener: (context, state) async {
+  const BarcodeScannerPage({super.key});
 
-      },
-      builder: (context, state) => Scaffold(
-          backgroundColor: Colors.grey[100],
-      appBar: _buildAppBar(context),
-      body:  ListView(children: [
-        Card(color: Colors.white, margin: EdgeInsets.all(16), child: Column(
-          children: [
-            ListTile(
-                textColor: UIConstants.primaryColor,
-                title: Text(AppLocalizations.of(context)!.batch_mode_scan)
-            ),
-            _buildAfterEachScan(context, state),
-            ListTile(
-                textColor: UIConstants.primaryColor,
-                title: Text(AppLocalizations.of(context)!.when_a_barcode_is_found)
-            ),
-            _buildBeep(context,state),
-            _buildVibrate(context,state)
-          ],
-        ),),
-      ]),
-    ));
-  }
-  PreferredSize _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(title: new Text(AppLocalizations.of(context)!.menu_item_barcode_scanner_title)),
+  @override
+  State<BarcodeScannerPage> createState() => _BarcodeScannerPageState();
+}
+
+class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
+  AudioPlayer _audioPlayer = AudioPlayer();
+  bool isScanned = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(context.tr("scan_bar_code_title")),
+        centerTitle: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: MobileScanner(
+        controller: MobileScannerController(
+          facing: CameraFacing.back,
+          detectionSpeed: DetectionSpeed.normal,
+        ),
+        //allowDuplicates: false,
+        onDetect: (capture) {
+          if (!isScanned) {
+            final barcode = capture.barcodes.first;
+            final String? rawValue = barcode.rawValue;
+            setState(() => isScanned = true);
+            if (rawValue != null) {
+              handleABarcodeFound();
+            }
+            Navigator.pop(context, rawValue);
+          }
+        },
+      ),
     );
   }
-  Widget _buildAfterEachScan(BuildContext context, BarcodeScannerState state){
-    return ListTile(
-      title: Text(AppLocalizations.of(context)!.after_each_scan),
-      subtitle: state.batchModeScan == BatchModeScan.AUTO ? Text(AppLocalizations.of(context)!.after_each_scan_auto) : Text(AppLocalizations.of(context)!.after_each_scan_manually),
-      onTap: () => showAfterEachScanDialog(context, state),
-    );
-  }
-  Widget _buildBeep(BuildContext context,BarcodeScannerState state){
-    return SwitchListTile(
-      title: Text(AppLocalizations.of(context)!.beep),
-      value: state.enableBeep,
-      onChanged: (value) {
-        context.read<BarcodeScannerCubit>().onEnableBeepChanged(value);
-      },
-    );
-  }
-  Widget _buildVibrate(BuildContext context, BarcodeScannerState state){
-    return SwitchListTile(
-      title: Text(AppLocalizations.of(context)!.vibrate),
-      value: state.enableVibrate,
-      onChanged: (value) {
-        context.read<BarcodeScannerCubit>().onEnableVibrateChanged(value);
-        //controller.setEnableVibrate(value);
-      },
-    );
-  }
-  void showAfterEachScanDialog(BuildContext context, BarcodeScannerState state) async{
-    BatchModeScan? newMode = await showDialog(
-        context: context,
-        builder: (_) => ChangeBatchModeScanDialogWidget(state.batchModeScan),
-        barrierDismissible: false);
-    if (newMode != null)
-      context.read<BarcodeScannerCubit>().setBatchModeScan(newMode);
+
+  void handleABarcodeFound() async {
+    var enableSound = AppSettings.getBarcodeScannerEnableBeep();
+    var enableVibrate = AppSettings.getBarcodeScannerEnableVibrate();
+    if (enableSound) {
+      //FlutterBeep.beep();
+      await _audioPlayer.play(AssetSource('sounds/beep.mp3'));
+    }
+    if (enableVibrate) {
+      var vibrationCapabilities = await Vibration.hasVibrator();
+
+      if (vibrationCapabilities == true) {
+        Vibration.vibrate();
+      }
+    }
   }
 }

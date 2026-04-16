@@ -1,13 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/domain/entities/models/name.dart';
-import 'package:good_manager/domain/entities/store.dart';
-import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit.dart';
 
-import '../../../../presentation/widgets/snackbar_widgets.dart';
+import '../../../../domain/entity/entity.dart';
+import '../../../../presentation/widget/widget.dart';
 
 class SaveStoreForm extends StatelessWidget {
   final Store item;
@@ -17,36 +15,42 @@ class SaveStoreForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SaveStoreCubit, SaveStoreState>(
-        listener: (context, state) {
-          if (state.state is SaveItemError) {
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
-          } else if (state.state is SaveItemSuccessful) {
-            ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
-            Navigator.of(context).pop(state.item);
-          }
-        },
-        builder: (context, state) => Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    AppTextField(
-                        labelText: AppLocalizations.of(context)!.field_name,
-                        hintText: AppLocalizations.of(context)!.hint_name,
-                        initialValue: state.name.value,
-                        onChanged: (value) => context.read<SaveStoreCubit>().nameChanged(value),
-                        keyboardType: TextInputType.name,
-                        error: state.name.displayError?.text(context)),
-                    SizedBox(height: 16,),
-                    AppTextField(
-                        labelText: AppLocalizations.of(context)!.label_description,
-                        hintText: AppLocalizations.of(context)!.hint_description,
-                        initialValue: state.description,
-                        onChanged: (value) => context.read<SaveStoreCubit>().descriptionChanged(value),
-                        keyboardType: TextInputType.name),
-                  ],
+      listener: (context, state) {
+        if (state.state is SaveItemError) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(snackBarWhenFailure(context));
+        } else if (state.state is SaveItemSuccessful) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(snackBarWhenSuccess(context));
+          Navigator.of(context).pop(state.item);
+        }
+      },
+      builder: (context, state) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          AppTextField(
+            labelText: context.tr("name"),
+            hintText: context.tr("hint_name"),
+            initialValue: state.name.value,
+            onChanged: (value) =>
+                context.read<SaveStoreCubit>().nameChanged(value),
+            keyboardType: TextInputType.name,
+            error: state.name.displayError?.text(context),
           ),
-        ));
+          SizedBox(
+            height: 16,
+          ),
+          AppTextField(
+            labelText: context.tr("label_description"),
+            hintText: context.tr("hint_description"),
+            initialValue: state.description,
+            onChanged: (value) =>
+                context.read<SaveStoreCubit>().descriptionChanged(value),
+            keyboardType: TextInputType.name,
+          ),
+        ],
+      ),
+    );
   }
 }
