@@ -45,12 +45,6 @@ class SaveGoodForm extends StatelessWidget {
         if (state.state is SaveItemError) {
           ScaffoldMessenger.of(context)
               .showSnackBar(snackBarWhenFailure(context));
-        } else if (state.state is SaveItemSameBarcodeError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            snackBarWhenFailureWithText(
-              context.tr("error_same_barcode"),
-            ),
-          );
         } else if (state.state is SaveItemSuccessful) {
           ReviewManager.maybeRequestReview();
           ScaffoldMessenger.of(context)

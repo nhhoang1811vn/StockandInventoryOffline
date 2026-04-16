@@ -53,11 +53,7 @@ class SaveGroupCubit extends Cubit<SaveGroupState> {
         }
         emit(state.copyWith(state: SaveItemSuccessful()));
       } catch (e) {
-        if (e.toString().contains("UNIQUE constraint failed: Groups.barCode")) {
-          emit(state.copyWith(state: SaveItemSameBarcodeError()));
-        } else {
-          emit(state.copyWith(state: SaveItemError(e.toString())));
-        }
+        emit(state.copyWith(state: SaveItemError(e.toString())));
       }
     } else {
       emit(state.copyWith(name: NameInput.dirty(value: state.name.value)));

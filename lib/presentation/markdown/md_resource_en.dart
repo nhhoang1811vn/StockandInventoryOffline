@@ -1,5 +1,10 @@
 class MarkdownResourceEN {
   static const String whatNews = """
+  ### Version 1.0.75 - 2026 April 16       
+  * Fixed reported bugs.  
+  * Added new currency.
+  * Resolved issues same bar code for goods.  
+  
   ### Version 1.0.70 - 2026 Feb 06       
   * Fixed reported bugs.  
   * Added new currency.

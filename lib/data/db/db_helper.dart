@@ -95,6 +95,16 @@ class DBHelper {
       "DROP TABLE ${GROUPS_TABLE_NAME}_old",
 
       "ALTER TABLE $STORES_TABLE_NAME ADD COLUMN networkId TEXT"
+    ],
+    7: [
+      //rename old table
+      "ALTER TABLE $GOODS_TABLE_NAME RENAME TO ${GOODS_TABLE_NAME}_old",
+      // Create new table WITHOUT UNIQUE on barCode
+      "CREATE TABLE $GOODS_TABLE_NAME (id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, purchasePrice REAL, salePrice REAL, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, minQuantity REAL, createdDate INTEGER, updatedDate INTEGER, FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE, FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)",
+      //Copy data
+      "INSERT INTO $GOODS_TABLE_NAME (id, name, description, barCode, purchasePrice, salePrice, storeId, groupId, files, minQuantity, createdDate, updatedDate) SELECT id, name, description, barCode, purchasePrice, salePrice, storeId, groupId, files, minQuantity, createdDate, updatedDate FROM ${GOODS_TABLE_NAME}_old",
+      //Drop old table
+      "DROP TABLE ${GOODS_TABLE_NAME}_old",
     ]
   };
 
@@ -116,7 +126,7 @@ class DBHelper {
     String path = await PathUtils().getDatabasePath();
     var theDb = await openDatabase(
       path,
-      version: 6,
+      version: 7,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -169,7 +179,7 @@ class DBHelper {
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)"
     );
     await db.execute(
-      "CREATE TABLE IF NOT EXISTS $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT UNIQUE, purchasePrice REAL, salePrice REAL,  storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, minQuantity REAL, createdDate INTEGER, updatedDate INTEGER, " +
+      "CREATE TABLE IF NOT EXISTS $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, purchasePrice REAL, salePrice REAL,  storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, minQuantity REAL, createdDate INTEGER, updatedDate INTEGER, " +
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE," +
           "FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)",
     );
