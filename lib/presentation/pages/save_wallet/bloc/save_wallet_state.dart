@@ -7,7 +7,7 @@ class SaveWalletState with _$SaveWalletState {
     @Default(NameInput.pure()) NameInput name,
     @Default('') String description,
     Color? color,
-    Wallet? item
+    double? amount,
+    Wallet? item,
   }) = _Initial;
 }
-

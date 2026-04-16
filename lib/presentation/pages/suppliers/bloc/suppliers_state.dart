@@ -9,6 +9,6 @@ class SuppliersState with _$SuppliersState {
     @Default('') String textSearch,
     required SuppliersSetting settings,
     @Default(false) bool showSearchBar,
-    @Default(false) bool isSelection
+    @Default(false) bool isSelection,
   }) = _Initial;
 }

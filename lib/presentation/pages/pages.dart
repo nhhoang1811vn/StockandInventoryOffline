@@ -1,7 +1,8 @@
 class Pages {
+  static const String splash = 'splash';
   static const String onboarding = 'onboarding';
 
-  //static const String payment_list = 'payment_list';
+  static const String payment_history = 'payment_history';
   static const String save_payment = 'save_payment';
   static const String save_payment_category = 'save_payment_category';
   static const String payment_categories = 'payment_categories';
@@ -15,7 +16,7 @@ class Pages {
   static const String save_group = '/save_group';
 
   static const String document_list = "/document_list";
-  static const String select_document = "/select_document";
+  static const String documents_history = "/documents_history";
   static const String save_document = '/save_document';
 
   static const String store_list = '/store_list';
@@ -30,16 +31,23 @@ class Pages {
 
   static const String help = '/help';
   static const String helps = '/helps';
-
-  static const String take_picture = '/take_picture';
   static const String settings = "/settings";
+
+  static const String settings_general = "/settings_general";
+  static const String settings_view = "/settings_view";
+  static const String settings_minimum_quantity = "/settings_minimum_quantity";
+  static const String settings_data = "/settings_data";
+  static const String settings_my_company = "/settings_my_company";
 
   static const String select_group = '/select_group';
   static const String barcode_scanner = "/barcode_scanner";
+  static const String barcode_scanner_settings = "/barcode_scanner_settings";
   static const String report = "/report";
   static const String report_detail = "/report_detail";
 
   static const String signup = "/signup";
   static const String signIn = "/signIn";
   static const String forgotPassword = "/forgotPassword";
+  static const String link_with = "/link_with";
+  static const String payments = "/payments";
 }

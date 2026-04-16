@@ -9,6 +9,6 @@ class CustomersState with _$CustomersState {
     @Default('') String textSearch,
     required CustomersSetting settings,
     @Default(false) bool showSearchBar,
-    @Default(false) bool isSelection
+    @Default(false) bool isSelection,
   }) = _Initial;
 }

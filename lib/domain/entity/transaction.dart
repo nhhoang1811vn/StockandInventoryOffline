@@ -1,0 +1,48 @@
+import 'document.dart';
+import 'good.dart';
+
+class DocumentTransaction {
+  int? id;
+  late int documentId;
+  late int goodId;
+  late double quantity;
+  double? price;
+  late DocumentType type;
+  late int storeId;
+  late Good good;
+  late DateTime createdDate;
+  late DateTime updatedDate;
+
+  DocumentTransaction();
+
+  DocumentTransaction.map(dynamic obj) {
+    this.id = obj["id"];
+    this.createdDate = DateTime.fromMillisecondsSinceEpoch(obj["createdDate"]);
+    this.updatedDate = DateTime.fromMillisecondsSinceEpoch(obj["updatedDate"]);
+    this.documentId = obj["documentId"];
+    this.goodId = obj["goodId"];
+    this.quantity = obj["quantity"];
+    this.price = obj["price"];
+    DocumentType.values.forEach((element) {
+      if (obj["documentType"] == element.index) {
+        this.type = element;
+        return;
+      }
+    });
+    this.storeId = obj["storeId"];
+  }
+
+  Map<String, dynamic> toMap() {
+    var map = new Map<String, dynamic>();
+    map["documentId"] = documentId;
+    map["goodId"] = goodId;
+    map["quantity"] = quantity;
+    map["price"] = price;
+    map["documentType"] = type.index;
+    map["storeId"] = storeId;
+
+    map["createdDate"] = createdDate.millisecondsSinceEpoch;
+    map["updatedDate"] = updatedDate.millisecondsSinceEpoch;
+    return map;
+  }
+}

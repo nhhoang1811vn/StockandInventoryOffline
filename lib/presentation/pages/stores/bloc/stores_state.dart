@@ -1,4 +1,5 @@
 part of 'stores_cubit.dart';
+
 @freezed
 class StoresState with _$StoresState {
   const factory StoresState.initial({
@@ -8,6 +9,6 @@ class StoresState with _$StoresState {
     @Default('') String textSearch,
     required StoresSetting settings,
     @Default(false) bool showSearchBar,
-    @Default(false) bool isSelection
+    @Default(false) bool isSelection,
   }) = _Initial;
 }

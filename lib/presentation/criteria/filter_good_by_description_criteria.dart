@@ -1,12 +1,16 @@
-import 'package:good_manager/domain/entities/good.dart';
-import 'package:good_manager/presentation/criteria/criteria.dart';
+import '../../domain/entity/entity.dart';
+import 'filter_criteria.dart';
 
-class FilterGoodByDescriptionCriteria extends Criteria<Good>{
-  final String searchText;
-  FilterGoodByDescriptionCriteria(this.searchText);
+class FilterGoodByDescriptionCriteria extends FilterCriteria<Good> {
+  FilterGoodByDescriptionCriteria(super.searchText);
 
   @override
   List<Good> meetCriteria(List<Good> items) {
-    return items.where((item) => item.description.toLowerCase().contains(searchText.toLowerCase())).toList();
+    var keySearch = searchText.toLowerCase();
+    return items
+        .where(
+          (item) => item.description.toLowerCase().contains(keySearch),
+        )
+        .toList();
   }
 }

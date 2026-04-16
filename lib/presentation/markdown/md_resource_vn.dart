@@ -1,31 +1,4 @@
-class MarkdownResourceVN{
- static const String donationText = """
- 🌟 Hỗ Trợ Chúng Tôi Xây Dựng Ứng Dụng Tốt Hơn! 🌟
-
-Chào quý vị, những người sử dụng ứng dụng của chúng tôi,
-
-Chúng tôi viết thư này đến quý vị với hi vọng về sức mạnh của ứng dụng của chúng tôi trong việc tạo ra sự khác biệt trong cuộc sống của quý vị. Với sự ủng hộ của quý vị, chúng tôi có thể đưa nó lên một tầm cao mới và mang lại giá trị hơn nữa cho quý vị và những người trong cộng đồng của chúng tôi.
-
-Đội ngũ của chúng tôi cam kết liên tục cải thiện ứng dụng, thêm các tính năng mới, cải thiện trải nghiệm người dùng và đảm bảo rằng nó vẫn là một công cụ quý giá cho tất cả chúng ta. Tuy nhiên, việc phát triển và duy trì một ứng dụng chất lượng cao đòi hỏi nguồn lực, và đó là lý do quý vị ra đời.
-
-Bằng cách quyên góp, quý vị đang góp phần trực tiếp vào sự phát triển và bền vững của ứng dụng của chúng tôi. Sự hào phóng của quý vị sẽ giúp chúng tôi:
-
-Thực hiện các tính năng mới thú vị được người dùng yêu cầu như quý vị.
-Cải thiện hiệu suất và ổn định để đảm bảo trải nghiệm người dùng mượt mà.
-Đầu tư vào các công nghệ tiên tiến để giữ bước với xu hướng.
-Mở rộng phạm vi và ảnh hưởng của chúng tôi, tiếp cận nhiều người dùng hơn có thể hưởng lợi từ ứng dụng của chúng tôi.
-Mọi đóng góp, dù lớn hay nhỏ, đều có ý nghĩa. Sự ủng hộ của quý vị không chỉ là một đầu tư vào ứng dụng mà còn là một đầu tư vào cộng đồng chúng tôi đã xây dựng cùng nhau.
-
-Cảm ơn quý vị đã tham gia cuộc hành trình của chúng tôi. Cùng nhau, chúng ta có thể tạo ra điều gì đó thực sự đặc biệt.
-
-Quý vị hãy quyên góp ngay bây giờ và là một trong những động lực đằng sau sự thành công của ứng dụng!
-
-https://me.momo.vn/qr/nguyen-huy-hoang-z2kUuMD7go
-
-
-Với lòng biết ơn,
-AppViet Team
-  """;
+class MarkdownResourceVN {
   static const String helpStores = """
   Bạn có thể luu trữ các Hàng Hoá theo cửa hàng (nhà kho, cửa tiệm).
  
@@ -82,6 +55,8 @@ Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Ho
  Chúng tôi đã tạo ra chức năng đơn giản này để theo dõi các chi tiêu của bạn cho một cửa hàng. 
  """;
   static const String whatNews = """
+  ### Phiên bản 1.0.45 - 12/07/2025  
+  * Sửa lỗi được báo cáo.
   ### Phiên bản 1.0.25 - 14/04/2025  
   * Sửa lỗi được báo cáo.
   * Thêm chức năng giao dịch. 
@@ -138,38 +113,76 @@ Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Ho
  """;
 
   static const String helpPayments = """
-  ## Hướng dẫn Lưu Giao dịch
+  ## Hướng Dẫn Quản Lý Thanh Toán  
 
-Trang này giúp bạn ghi lại các khoản giao dịch một cách chính xác.  
+Có hai loại thanh toán:
 
-### 🔹 Chọn loại Giao dịch
-Có hai loại:  
-- **Giao dịch chi** – Khi bạn **trả tiền** cho nhà cung cấp, nhân viên, hóa đơn, v.v.  
-- **Giao dịch thu** – Khi bạn **nhận tiền** từ khách hàng hoặc các nguồn khác.  
+### 💰 Thanh Toán Thu (Inbound)  
+- Tạo khi bạn **nhận tiền** từ khách hàng.  
+- Thường liên kết với **phiếu xuất kho**.  
+- Giúp theo dõi **dòng tiền vào**.
 
-### 📂 Chọn danh mục  
-- Chọn danh mục phù hợp để dễ dàng quản lý và theo dõi chi tiêu hoặc thu nhập.  
-- Ví dụ: **Ăn uống, Đi lại, Tiền lương, Thu nhập từ bán hàng**, v.v.  
-- Nếu không có danh mục phù hợp, bạn có thể tạo danh mục mới.  
+### 💸 Thanh Toán Chi (Outbound)  
+- Tạo khi bạn **trả tiền** cho nhà cung cấp.  
+- Thường liên kết với **phiếu nhập kho**.  
+- Giúp theo dõi **dòng tiền ra**.
 
-### ✏️ Sửa hoặc Xóa danh mục  
-- **Nhấn giữ** vào danh mục trong danh sách để hiển thị tùy chọn **sửa** hoặc **xóa**.  
-- Nếu xóa danh mục, các khoản GD liên quan sẽ được chuyển về danh mục mặc định.  
+---
 
-### 🧾 Chọn đối tượng thu/chi  
-- Bạn có thể **liên kết GD với một hóa đơn** để theo dõi chính xác.  
-- Bạn có thể **liên kết GD với một đối tượng**. 
-- Nếu hóa đơn chưa có trong danh sách, hãy kiểm tra lại hoặc tạo mới.  
-- Hệ thống sẽ tự động gán số tiền GD theo hóa đơn đã chọn.  
+### ➕ Thêm Thanh Toán  
+- Vào phần **Thanh Toán** hoặc sử dụng phím tắt từ màn hình chi tiết phiếu.  
+- Chọn **loại thanh toán** (Thu hoặc Chi).  
+- Nhập **số tiền**, **ngày**, **người trả/người nhận**, và ghi chú nếu có.  
+- Bạn có thể liên kết với **phiếu chứng từ** để dễ quản lý hơn.
 
-### 💾 Lưu GD  
-- Nhập đầy đủ thông tin: **Số tiền, Ngày GD, Ghi chú (nếu có)**.  
-- Kiểm tra lại trước khi bấm **Lưu** để tránh sai sót.  
+---
 
-### 🗑️ Xóa GD 
-- Nếu cần xóa một khoản GD, **nhấn giữ** vào mục trong danh sách để thực hiện.  
+### 📄 Liên Kết Với Phiếu  
+- Thanh toán có thể liên kết với **phiếu nhập/xuất** để hiển thị rõ mục đích.  
+- Nếu thanh toán chỉ một phần, phiếu sẽ được đánh dấu là **Thanh Toán Một Phần**.  
+- Khi đã thanh toán đủ, phiếu sẽ được đánh dấu là **Đã Thanh Toán**.
 
-Hãy đảm bảo nhập chính xác để theo dõi tài chính hiệu quả! ✅  
+---
 
-  """;
+### 📝 Sửa hoặc Xóa Thanh Toán  
+- **Nhấn giữ** vào một thanh toán để chỉnh sửa hoặc xóa.  
+- ⚠️ Lưu ý: Xóa thanh toán có thể ảnh hưởng đến trạng thái thanh toán của phiếu liên quan.
+
+---
+
+### 📊 Lọc và Theo Dõi  
+- Sử dụng bộ lọc phía trên để xem **chỉ thanh toán Thu, Chi**, hoặc các phiếu **Chưa thanh toán/Thanh toán một phần**.  
+- Theo dõi thường xuyên để đảm bảo quản lý tài chính chính xác.
+
+Giữ thông tin thanh toán rõ ràng để kiểm soát dòng tiền hiệu quả! ✅  
+""";
+
+  static const String helpMinQuan = """
+  ## Hướng Dẫn Sử Dụng Số Lượng Tối Thiểu  
+
+Trang này giúp bạn quản lý tồn kho bằng cách thiết lập **Số lượng tối thiểu** cho từng sản phẩm.  
+
+### 📦 Số Lượng Tối Thiểu Là Gì?  
+- **Số lượng tối thiểu** là mức tồn kho thấp nhất mà bạn muốn duy trì.  
+- Khi tồn kho giảm xuống dưới mức này, sản phẩm sẽ xuất hiện trong **Báo cáo cần đặt hàng**.  
+
+### 🛠️ Thiết Lập Số Lượng Tối Thiểu  
+- Vào phần **Cài đặt sản phẩm** khi thêm hoặc chỉnh sửa sản phẩm.  
+- Nhập số vào ô **Số lượng tối thiểu** (ví dụ: 5 hoặc 10).  
+- Đây là số lượng tối thiểu bạn muốn luôn có trong kho.  
+
+### 📉 Theo Dõi Tồn Kho Thấp  
+- Sử dụng **Báo cáo cần đặt hàng** để xem các sản phẩm có tồn kho thấp hơn số lượng tối thiểu.  
+- Giúp bạn đặt hàng đúng lúc và tránh hết hàng.  
+
+### 🔄 Cập Nhật Số Lượng Tối Thiểu  
+- Bạn có thể thay đổi số lượng tối thiểu bất kỳ lúc nào bằng cách chỉnh sửa sản phẩm.  
+- Điều chỉnh dựa trên tốc độ bán hàng hoặc theo mùa vụ.  
+
+### ✅ Mẹo Sử Dụng  
+- Thiết lập số lượng tối thiểu cao hơn cho các mặt hàng bán chạy hoặc quan trọng.  
+- Xem lại và điều chỉnh thường xuyên để đảm bảo cảnh báo chính xác.  
+
+Quản lý tồn kho hiệu quả và tránh thiếu hàng bất ngờ! 🔔  
+""";
 }

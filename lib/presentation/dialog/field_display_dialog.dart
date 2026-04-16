@@ -1,0 +1,83 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail_cubit.dart';
+
+class ColumnDisplayDialog extends StatefulWidget {
+  final List<ColumnReport> columns;
+  const ColumnDisplayDialog({super.key, required this.columns});
+  @override
+  State createState() => ColumnDisplayDialogState();
+}
+
+class ColumnDisplayDialogState extends State<ColumnDisplayDialog> {
+
+  @override
+  void initState() {
+    super.initState();
+    //_localColumns = widget.columns.map((c) => c.copy()).toList();
+    //visibilityStates = widget.columns.map((field) => field.isVisible).toList();
+  }
+
+  Widget _buildCheckbox(PickableColumn column) {
+    return Column(
+      children: column.values.map((value) {
+        return CheckboxListTile(
+          dense: true,
+          value: column.selectedValues.contains(value),
+          onChanged: (isChecked) {
+            // This will require setState to trigger UI update if used in a StatefulWidget
+            if (isChecked == true) {
+              column.selectedValues.add(value);
+            } else {
+              column.selectedValues.remove(value);
+            }
+            setState(() {});
+          },
+          title: Text(value),
+        );
+      }).toList(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(context.tr("settings")),
+      content: SingleChildScrollView(
+        child: Column(
+          children: List.generate(widget.columns.length, (index) {
+            var column = widget.columns[index];
+            return Column(
+              children: [
+                SwitchListTile(
+                  dense: true,
+                  title: Text(context.tr(column.title)),
+                  value: column.isVisible,
+                  onChanged: (bool value) {
+                    setState(() {
+                      column.isVisible = value;
+                      //visibilityStates[index] = value;
+                    });
+                  },
+                ),
+                if (column.isVisible && column is PickableColumn)
+                  _buildCheckbox(widget.columns[index] as PickableColumn),
+              ],
+            );
+          }),
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: Text(context.tr("ok")),
+          onPressed: () async {
+            // for (int i = 0; i < widget.columns.length; i++) {
+            //   widget.columns[i].isVisible = visibilityStates[i];
+            // }
+            Navigator.of(context).pop(widget.columns);
+          },
+        ),
+      ],
+    );
+  }
+}

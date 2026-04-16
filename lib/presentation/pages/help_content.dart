@@ -1,27 +1,30 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-enum HelpType{
+
+enum HelpType {
   STORE,
   SUPPLIER_AND_CUSTOMER,
   GOODS,
   DOCUMENTS,
   PAYMENTS,
+  MIN_QUAN
 }
-extension HelpTypeExtension on HelpType{
-  String getTitle(BuildContext context){
-    switch(this){
-      case HelpType.STORE:
-        return AppLocalizations.of(context)!.stores_title;
-      case HelpType.SUPPLIER_AND_CUSTOMER:
-        return AppLocalizations.of(context)!.suppliers_title;
-      case HelpType.GOODS:
-        return AppLocalizations.of(context)!.goods_title;
 
+extension HelpTypeExtension on HelpType {
+  String getTitle(BuildContext context) {
+    switch (this) {
+      case HelpType.STORE:
+        return context.tr("stores");
+      case HelpType.SUPPLIER_AND_CUSTOMER:
+        return context.tr("suppliers");
+      case HelpType.GOODS:
+        return context.tr("goods");
       case HelpType.DOCUMENTS:
-        return AppLocalizations.of(context)!.documents_title;
+        return context.tr("documents");
       case HelpType.PAYMENTS:
-        return AppLocalizations.of(context)!.payments_title;
+        return context.tr("payments_title");
+      case HelpType.MIN_QUAN:
+        return context.tr("menu_item_minimum_quantity");
     }
   }
 }
-

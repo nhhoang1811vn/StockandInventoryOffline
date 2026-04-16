@@ -1,32 +1,44 @@
-class MarkdownResourceEN{
- static const String donationText = """
+class MarkdownResourceEN {
+  static const String whatNews = """
+  ### Version 1.0.75 - 2026 April 16       
+  * Fixed reported bugs.  
+  * Added new currency.
+  * Resolved issues same bar code for goods.  
+  
+  ### Version 1.0.70 - 2026 Feb 06       
+  * Fixed reported bugs.  
+  * Added new currency.
+  * Updated logic sync data.
+  * Updated new logo (prepare for version online)
+  
+  ### Version 1.0.65 - 2025 Sep 20       
+  * Fixed reported bugs.  
+  * Added new report type: Good Info. 
+ ### Version 1.0.60 - 2025 Sep 09    
+  * Fixed issue can not login APPLE account 
+  * Fixed reported bugs.
+  * Added change Theme, change language, change currency.
+  * Updated logo, add files in Save Good. 
+  * Updated authentication system.
+  * Updated UI/UX. 
+  
+ ### Version 1.0.40 - 2025 Jul 25    
+  * Fixed issue can not scan barcode on Android platform.
+  * Fixed issue low stock alert not displayed when start app. 
+  * Fixed reported bugs.
+  * Support menu app languages. 
+  * Updated UI/UX.  
  
- 🌟 Help Us Build a Better App! 🌟
-
-Dear Community
-
-We're reaching out to you because we believe in the power of our app to make a difference in your lives. With your support, we can take it to the next level and bring even more value to you and others in our community.
-
-Our team is dedicated to continually improving the app, adding new features, enhancing user experience, and ensuring it remains a valuable tool for all of us. However, developing and maintaining a high-quality app requires resources, and that's where you come in.
-
-By making a donation, you're directly contributing to the future development and sustainability of our app. Your generosity will enable us to:
-
-Implement exciting new features requested by users like you.
-Enhance performance and stability to ensure a smooth user experience.
-Invest in cutting-edge technologies to stay ahead of the curve.
-Expand our reach and impact, reaching more users who can benefit from our app.
-Every donation, no matter how big or small, makes a difference. Your support is not only an investment in the app but also in the community we've built together.
-
-Thank you for being a part of our journey. Together, we can create something truly special.
-
-Donate now and be a driving force behind the app's success!
-
-https://me.momo.vn/qr/nguyen-huy-hoang-z2kUuMD7go
-
-With gratitude,
-AppViet Team
-  """;
- static const String whatNews = """
+  ### Version 1.0.45 - 2025 Jul 12  
+  * Fixed reported bugs.  
+ 
+ ### Version 1.0.30 - 2025 May 30  
+  * Fixed reported bugs.  
+  * Added Minimum quantity feature
+  * Added Company information feature
+  * Added Dark mode, Passcode lock
+  * Added new type of report: REORDER
+ 
  ### Version 1.0.25 - 2025 Apr 14  
   * Fixed reported bugs.
   * Added Payment features. 
@@ -79,86 +91,239 @@ AppViet Team
  
   * First Release.
  """;
- static const String helpDocuments = """
- There are 2 types of documents:
 
-* Incoming - You create this type of document when items arrive at your warehouse. Items in documents are added to quantities in stock.
-* Outgoing - You create this type of documents when goods leave warehouse (e.g. you send goods to somebody). Items in document are subtracted from the stock.
+  static const String helpDocuments = """
+  ## Document Management Guide  
 
- You can add item to document simply selecting it from Goods catalog or scanning item's barcode.
- 
- In addition, application provides "batch scan" mode. In this mode you continuously scan items' barcodes and these items are added to document in background. Quantity is increased by 1 with each scan or, alternatively, after each scan you enter item's quantity manually in the input field - you can choose from these options in "Settings".
- 
- When you add item to document and there is no such item in Goods catalog, it will be added there automatically, if you entered full info about the product. But, it is impossible to add item to Outgoing document if there is no such item in Goods catalog, since we can't ship goods which are out of stock.
- 
- To delete document or document's line use long press (to show popup menu)
- 
- Deletion obviously leads to changes in quantities in stock. Inventory documents can be deleted only in case if it is the last document, because deletion of any previous Inventory documents could result in erroneous data about quantities in stock.
+There are two types of documents:
 
- Use top toolbar buttons to filter and sort documents in the list.
- """;
- static const String helpGoods = """
-  Screen Goods contains list(catalog) of all your goods including information about quantity in stock.
-  You add items to documents selecting them  from this catalog. Moreover, if item has a barcode it can be added to document very quickly simply by scanning this barcode with camera. Quantity in stock is not editable, it is calculated using data in your documents.
- 
- * During manual entry you can read product barcode with camera by pressing button next to barcode field.
- * To delete item from the list long press the item.
- * For search and sorting you can use top toolbar buttons.
- 
-  You can start working without filling in Goods catalog - you can create Incoming document, enter information about new products these manually and these positions will be added to catelog automatically. Next time you will be able to use barcode scanner and add these items to document by barcode.
- """;
- static const String helpStores = """
-  You can keep track of items by Stores (Shops, Warehouses).
-  
-  Every Store keeps its own quantity in stock. Every document's transactions are also attached to specific Store.
-  
-  In the Home Menu you can select current Store to work with
-  
-  You can add more stores using "Stores" item in More Menu.
-  
-  In the free version you can work with 2 stores. If you need more Stores you can buy a subscription "Multiple Stores" or "Complete Pro". Every subscription provides 7-days free trial.
- """;
- static const String helpSupplierCustomers = """
-  You can keep track of your Customers and Suppliers. Fill in their data manually or import from Contacts.
- 
-  Tap on Supplier when editing Document to select Supplier for Incoming document.
- 
-  Tap on Customer when editing Document to select Customer for Outgoing document.
- 
-  Long tap on a Supplier or a Customer to:
- *  Access all document of item. 
- *  Delete item.
+### 📥 Incoming  
+- Create this when items **arrive at your warehouse**.  
+- Items listed in the document will be **added to the stock**.
 
- """;
+### 📤 Outgoing  
+- Create this when items **leave the warehouse** (e.g. sent to a customer).  
+- Items will be **subtracted from the stock**.
 
- static const String helpPayments = """
-  ## Payment Saving Guide  
+---
 
-This page helps you accurately record your payments.  
+### ➕ Adding Items to a Document  
+- Select items from the **Goods catalog** or  
+- **Scan the barcode** using your device’s camera.
 
-### 📂 Select a Payment Category  
-- Choose the appropriate category to easily track expenses or income.  
-- Examples: **Food, Transportation, Salaries, Sales Revenue**, etc.  
-- If no suitable category exists, you can create a new one.  
+---
 
-### ✏️ Edit or Delete a Category  
-- **Long-press** on a category in the list to show the options to **edit** or **delete**.  
-- If a category is deleted, related payments will be assigned to a default category.  
+### 🔄 Batch Scan Mode  
+The app supports **Batch Scan Mode** for quick entry:
+- Continuously scan item barcodes — each scan **adds the item and increases its quantity by 1**.
+- Or, after each scan, **manually enter the quantity**.
+- You can choose your preferred mode in **Settings**.
 
-### 🧾 Select an Invoice  
-- You can **link a payment to an invoice** for better tracking.  
-- If the invoice is not in the list, check again or create a new one.  
-- The system will automatically assign the payment amount based on the selected invoice.  
+---
 
-### 💾 Save Payment  
-- Enter all required details: **Amount, Payment Date, Notes (if any)**.  
-- Double-check before clicking **Save** to avoid mistakes.  
+### 📦 Auto-Creation from Documents  
+- If you add a **new item** (not yet in the Goods catalog) to an **Incoming** document and provide complete info, the item will be **automatically added to the catalog**.  
+- You **cannot** add new items to an **Outgoing** document unless they already exist in the catalog, as items must be in stock to be shipped.
 
-### 🗑️ Delete a Payment  
-- To delete a payment, **long-press** on the item in the list.  
+---
 
-Ensure accurate entries for better financial tracking! ✅  
+### 🗑️ Deleting Documents or Lines  
+- **Long-press** on a document or its item line to access delete options.
 
+🛑 **Important Note**:  
+- Deleting a document affects your stock levels.  
+- You can only delete the **last (most recent) inventory document** — deleting earlier ones could cause stock quantity errors.
+
+---
+
+### 📊 Filter and Sort  
+- Use the toolbar buttons at the top to **filter** or **sort** documents.
+
+Keep your documents organized for accurate inventory tracking and smooth operations! ✅  
 """;
 
+  static const String helpGoods = """
+  ## Goods Management Guide  
+
+The **Goods** screen displays a catalog of all your products, along with their current stock levels.
+
+You can add items to documents by selecting them from this catalog.  
+If a product has a barcode, you can quickly add it to a document by **scanning the barcode using your camera**.  
+Note: **Stock quantity is not editable manually** – it is calculated automatically based on your documents.
+
+---
+
+### 🔍 Features and Actions  
+
+- During manual entry, you can scan a product barcode by tapping the **camera button** next to the barcode field.  
+- To **delete an item**, long-press on it in the list.  
+- Use the **top toolbar buttons** to search or sort your goods.
+
+---
+
+### ⚙️ Auto-Creation of Goods  
+
+You can begin working without pre-filling the goods catalog.  
+Just create an **Incoming Document** and manually enter new product details —  
+These items will then be **automatically added to your catalog**.  
+Next time, you’ll be able to use the barcode scanner to add them instantly.
+
+Efficient goods management helps speed up your workflow and maintain accurate stock control. ✅  
+""";
+
+  static const String helpStores = """
+  ## Store Management Guide  
+
+You can organize and track items by **Stores** (e.g. Shops, Warehouses).
+
+---
+
+### 🏪 Store-Specific Inventory  
+- Each Store maintains its **own stock levels**.  
+- All documents (invoices, transactions) are linked to a **specific Store**.
+
+---
+
+### 📍 Selecting a Store  
+- In the **Home Menu**, you can choose the **current Store** you're working with.  
+
+---
+
+### ➕ Adding More Stores  
+- To add menu Stores, go to the **"Stores"** section in the **More Menu**.  
+
+---
+
+### 💡 Store Limits & Subscriptions  
+- The **free version** supports up to **2 Stores**.  
+- To unlock menu, upgrade to:  
+  - **"Stock Premium"**  
+- Each subscription includes a **7-day free trial**.
+
+Managing stores separately helps you maintain accurate stock tracking across multiple locations. ✅  
+""";
+  static const String helpSupplierCustomers = """
+  ## Supplier & Customer Management Guide  
+
+You can manage and track both your **Suppliers** and **Customers** in one place.  
+Add their details manually or **import directly from your device's Contacts**.
+
+---
+
+### 🏷️ Assigning to Documents  
+- When editing a document:  
+  - Tap **Supplier** to assign to an **Incoming (Purchase)** document.  
+  - Tap **Customer** to assign to an **Outgoing (Sales)** document.
+
+---
+
+### 🗂️ Manage Records  
+- **Long-press** on a Supplier or Customer to:  
+  * View all related documents  
+  * Delete the record (if no longer needed)
+
+Keeping your supplier and customer information organized ensures smoother transactions and accurate reporting. ✅  
+""";
+  static const String helpPayments = """
+  ## Payment Management Guide  
+
+There are two types of payments:
+
+### 💰 Inbound (Received)  
+- Record this when you **receive money** from a customer.  
+- Typically linked to a **sale** or **outgoing document**.  
+- Helps track **incoming cash flow**.
+
+### 💸 Outbound (Paid)  
+- Record this when you **make a payment** to a supplier.  
+- Typically linked to a **purchase** or **incoming document**.  
+- Helps track **expenses and outgoing cash flow**.
+
+---
+
+### ➕ Adding a Payment  
+- Go to the **Payments** section or use the shortcut from a document detail screen.  
+- Choose the **type** (Inbound or Outbound).  
+- Enter the **amount**, **date**, **payer/payee**, and optional **notes**.
+- You can link it to an existing **document** for better tracking.
+
+---
+
+### 📄 Linked Documents  
+- Payments can be linked to **documents** to show what the payment is for.
+- If a payment covers part of a document's total, it will be marked as **Partial**.
+- Fully paid documents will be marked as **Paid**.
+
+---
+
+### 📝 Edit or Delete Payments  
+- **Long-press** a payment to edit or delete it.  
+- Be careful: deleting payments may affect document payment status.
+
+---
+
+### 📊 Filter and Sort  
+- Use the toolbar buttons at the top to **filter** or **sort** payments.
+
+Keep your payment records up to date to ensure accurate financial tracking! ✅  
+""";
+
+//  static const String helpSavePayment = """
+//   ## Payment Saving Guide
+//
+// This page helps you accurately record your payments.
+//
+// ### 📂 Select a Payment Category
+// - Choose the appropriate category to easily track expenses or income.
+// - Examples: **Food, Transportation, Salaries, Sales Revenue**, etc.
+// - If no suitable category exists, you can create a new one.
+//
+// ### ✏️ Edit or Delete a Category
+// - **Long-press** on a category in the list to show the options to **edit** or **delete**.
+// - If a category is deleted, related payments will be assigned to a default category.
+//
+// ### 🧾 Select an Invoice
+// - You can **link a payment to an invoice** for better tracking.
+// - If the invoice is not in the list, check again or create a new one.
+// - The system will automatically assign the payment amount based on the selected invoice.
+//
+// ### 💾 Save Payment
+// - Enter all required details: **Amount, Payment Date, Notes (if any)**.
+// - Double-check before clicking **Save** to avoid mistakes.
+//
+// ### 🗑️ Delete a Payment
+// - To delete a payment, **long-press** on the item in the list.
+//
+// Ensure accurate entries for better financial tracking! ✅
+//
+// """;
+
+  static const String helpMinQuan = """
+  ## Minimum Quantity Guide  
+
+This page helps you manage stock levels by setting a **Minimum Quantity** for each product.  
+
+### 📦 What is Minimum Quantity?  
+- The **Minimum Quantity** is the lowest stock level allowed before you need to reorder.  
+- When stock drops below this level, the item will appear in the **Reorder Report**.  
+
+### 🛠️ Set Minimum Quantity  
+- Go to the **Item Settings** when adding or editing a product.  
+- Enter a number in the **Min Quantity** field (e.g., 5 or 10).  
+- This value represents the minimum units you'd like to keep in stock.  
+
+### 📉 Monitor Low Stock  
+- Use the **Reorder Report** to view all items that are below their set Minimum Quantity.  
+- This helps prevent stockouts and improves inventory planning.  
+
+### 🔄 Update Minimum Quantity  
+- You can update the Min Quantity anytime by editing the product.  
+- Adjust levels based on sales trends or seasonal demand.  
+
+### ✅ Best Practices  
+- Set higher Min Quantity for fast-selling or critical items.  
+- Review and adjust regularly to ensure accurate alerts.  
+
+Keep your stock levels under control and avoid unexpected shortages! 🔔  
+""";
 }

@@ -1,3 +1,3 @@
-abstract class Criteria<T>{
+abstract class Criteria<T> {
   List<T> meetCriteria(List<T> input);
 }

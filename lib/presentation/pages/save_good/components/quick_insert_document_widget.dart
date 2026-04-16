@@ -1,22 +1,17 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:good_manager/domain/entities/customer.dart';
-import 'package:good_manager/domain/entities/document.dart';
-import 'package:good_manager/domain/entities/good.dart';
-import 'package:good_manager/domain/entities/supplier.dart';
-import 'package:good_manager/presentation/constants.dart';
-import 'package:good_manager/presentation/pages/app_text_field.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
-import 'package:good_manager/presentation/pages/currency_app_text_field.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/save_good/bloc/quick_insert_document_cubit.dart';
-import 'package:good_manager/presentation/utils.dart';
-import 'package:good_manager/presentation/widgets/circle_button_widget.dart';
-import 'package:intl/intl.dart';
+import 'package:good_manager/presentation/widget/widget.dart';
 
-import '../../../../main.dart';
+import '../../../../app.dart';
+import '../../../../constant/constant.dart';
+import '../../../../domain/entity/entity.dart';
+import '../../../../util/util.dart';
+import '../../../dialog/dialog.dart';
 
 class QuickInsertDocumentWidget extends StatefulWidget {
   final Good good;
@@ -40,103 +35,126 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
 
   @override
   Widget build(BuildContext context) {
-    double? price = (widget.type == DocumentType.incoming ? widget.good.purchasePrice : widget.good.salePrice);
+    double? price = (widget.type == DocumentType.incoming
+        ? widget.good.purchasePrice
+        : widget.good.salePrice);
     double quantity = 1.0;
     cubit.initState(quantity, price);
-    quantityTextController.text = Utils.getQuantityText(quantity);// quantity.toString();
-    if (price != null){
+    quantityTextController.text =
+        StringUtils.getQuantityText(quantity); // quantity.toString();
+    if (price != null) {
       priceTextController.text = Config.simpleCurrencyFormat.format(price);
-    }else{
+    } else {
       priceTextController.text = "";
     }
     return BlocProvider(create: (_) => cubit, child: _buildBody(context));
   }
+
   Widget _buildBody(BuildContext context) {
     return BlocConsumer<QuickInsertDocumentCubit, QuickInsertDocumentState>(
-        listenWhen: (state1, state2) {
-          return state1.state != state2.state;
-        },
-        listener: (context, state) async {
-          if (state.state is OpenCalculatorToInputQuantityState){
-            Utils.showCalculatorPopup(context, state.quantity, (p0){
-              cubit.onQuantityChanged(p0.toString());
-              quantityTextController.text = p0.toString();
-            });
-          }else if (state.state is OpenCalculatorToInputPriceState){
-            Utils.showCalculatorPopup(context, state.price,(p0){
-              NumberFormat format = new NumberFormat("0.#");
-              cubit.onPriceChanged(format.format(p0));
-              priceTextController.text = Config.simpleCurrencyFormat.format(p0);
-            });
-          }else if (state.state is OpenPersonListState) {
-            if (widget.type == DocumentType.incoming){
-              final result = await Navigator.of(context).pushNamed(Pages.supplier_list, arguments: {"isSelection": true});
-              if (result != null) {
-                Supplier item = result as Supplier;
-                context.read<QuickInsertDocumentCubit>().onPersonNameChanged(item.name);
-                context.read<QuickInsertDocumentCubit>().onPersonChanged(item.id!);
-              }
-            }else{
-              final result = await Navigator.of(context).pushNamed(Pages.customer_list, arguments: {"isSelection": true});
-              if (result != null) {
-                Customer item = result as Customer;
-                context.read<QuickInsertDocumentCubit>().onPersonNameChanged(item.name);
-                context.read<QuickInsertDocumentCubit>().onPersonChanged(item.id!);
-              }
+      listenWhen: (state1, state2) {
+        return state1.state != state2.state;
+      },
+      listener: (context, state) async {
+        if (state.state is OpenCalculatorToInputQuantityState) {
+          showCalculatorPopup(context, state.quantity, (p0) {
+            cubit.onQuantityChanged(p0.toString());
+            quantityTextController.text = p0.toString();
+          });
+        } else if (state.state is OpenCalculatorToInputPriceState) {
+          showCalculatorPopup(context, state.price, (p0) {
+            NumberFormat format = new NumberFormat("0.#");
+            cubit.onPriceChanged(format.format(p0));
+            priceTextController.text = Config.simpleCurrencyFormat.format(p0);
+          });
+        } else if (state.state is OpenPersonListState) {
+          if (widget.type == DocumentType.incoming) {
+            final result = await Navigator.of(context).pushNamed(
+              Pages.supplier_list,
+              arguments: {"isSelection": true},
+            );
+            if (result != null) {
+              Supplier item = result as Supplier;
+              context
+                  .read<QuickInsertDocumentCubit>()
+                  .onPersonNameChanged(item.name);
+              context
+                  .read<QuickInsertDocumentCubit>()
+                  .onPersonChanged(item.id!);
             }
-
+          } else {
+            final result = await Navigator.of(context).pushNamed(
+              Pages.customer_list,
+              arguments: {"isSelection": true},
+            );
+            if (result != null) {
+              Customer item = result as Customer;
+              context
+                  .read<QuickInsertDocumentCubit>()
+                  .onPersonNameChanged(item.name);
+              context
+                  .read<QuickInsertDocumentCubit>()
+                  .onPersonChanged(item.id!);
+            }
           }
-        },
-        builder: (context, state) => AlertDialog(
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (widget.type == DocumentType.incoming)
-                      Text(AppLocalizations.of(context)!.incoming_document_text, style: TextStyle(fontSize: 25))
-                    else
-                      Text(AppLocalizations.of(context)!.outgoing_document_text, style: TextStyle(fontSize: 25)),
-                    SizedBox(height: 16),
-                    _buildQuantity(context, state),
-                    SizedBox(height: 16),
-                    _buildPrice(context, state),
-                    SizedBox(height: 16),
-                    _buildAmount(context, state),
-                    SizedBox(height: 16),
-                    _buildDate(context, state),
-                    SizedBox(height: 16),
-                    _buildPerson(context,state, widget.type),
-                    SizedBox(height: 16),
-                    _buildDescription(context, state)
-                  ],
-                )
-              ],
-            ),
+        }
+      },
+      builder: (context, state) => AlertDialog(
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (widget.type == DocumentType.incoming)
+                    Text(
+                      context.tr("incoming"),
+                      style: TextStyle(fontSize: 25),
+                    )
+                  else
+                    Text(
+                      context.tr("outgoing"),
+                      style: TextStyle(fontSize: 25),
+                    ),
+                  SizedBox(height: 16),
+                  _buildQuantity(context, state),
+                  SizedBox(height: 16),
+                  _buildPrice(context, state),
+                  SizedBox(height: 16),
+                  _buildAmount(context, state),
+                  SizedBox(height: 16),
+                  _buildDate(context, state),
+                  SizedBox(height: 16),
+                  _buildPerson(context, state, widget.type),
+                  SizedBox(height: 16),
+                  _buildDescription(context, state),
+                ],
+              ),
+            ],
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(AppLocalizations.of(context)!.action_cancel),
-              onPressed: () async {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text(AppLocalizations.of(context)!.action_ok),
-              onPressed: () async {
-                Navigator.of(context).pop(
-                    {
-                      "quantity": state.quantity,
-                      "price": state.price,
-                      "date": state.date,
-                      "personId": state.personId,
-                      "description": state.description
-                    });
-              },
-            ),
-          ],
-        ));
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text(context.tr("cancel")),
+            onPressed: () async {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: Text(context.tr("ok")),
+            onPressed: () async {
+              Navigator.of(context).pop({
+                "quantity": state.quantity,
+                "price": state.price,
+                "date": state.date,
+                "personId": state.personId,
+                "description": state.description,
+              });
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildQuantity(BuildContext context, QuickInsertDocumentState state) {
@@ -145,13 +163,17 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
         Expanded(
           child: AppTextField(
             controller: quantityTextController,
-            labelText: AppLocalizations.of(context)!.field_quantity,
+            labelText: context.tr("quantity"),
             keyboardType: TextInputType.number,
             //inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
-            onChanged: context.read<QuickInsertDocumentCubit>().onQuantityChanged,
+            onChanged:
+                context.read<QuickInsertDocumentCubit>().onQuantityChanged,
           ),
         ),
-        CircleButton(UIConstants.calculatorIconData, () => cubit.onQuantityCalculatorPressed())
+        CircleButton(
+          UIConstants.calculatorIconData,
+          () => cubit.onQuantityCalculatorPressed(),
+        ),
       ],
     );
   }
@@ -162,21 +184,25 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
         Expanded(
           child: CurrencyAppTextField(
             labelText: widget.type == DocumentType.incoming
-                ? AppLocalizations.of(context)!.field_purchase_price
-                : AppLocalizations.of(context)!.field_sale_price,
+                ? context.tr("purchase_price")
+                : context.tr("sale_price"),
             controller: priceTextController,
             onChanged: context.read<QuickInsertDocumentCubit>().onPriceChanged,
           ),
         ),
-        CircleButton(UIConstants.calculatorIconData, () => cubit.onPriceCalculatorPressed())
+        CircleButton(
+          UIConstants.calculatorIconData,
+          () => cubit.onPriceCalculatorPressed(),
+        ),
       ],
     );
   }
 
   Widget _buildAmount(BuildContext context, QuickInsertDocumentState state) {
-    if (state.amount != null){
-      amountTextController.text = Config.simpleCurrencyFormat.format(state.amount);
-    }else{
+    if (state.amount != null) {
+      amountTextController.text =
+          Config.simpleCurrencyFormat.format(state.amount);
+    } else {
       amountTextController.text = "";
     }
     return Row(
@@ -184,60 +210,85 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
         Expanded(
           child: CurrencyAppTextField(
             readOnly: true,
-            labelText: AppLocalizations.of(context)!.field_amount,
+            labelText: context.tr("amount"),
             controller: amountTextController,
           ),
         ),
       ],
     );
   }
-  Widget _buildDate(BuildContext context, QuickInsertDocumentState state){
-    if (state.date != null){
-      dateTextController.text = DateFormatFactory.getDateFormat().format(state.date!);
-    }else{
+
+  Widget _buildDate(BuildContext context, QuickInsertDocumentState state) {
+    if (state.date != null) {
+      dateTextController.text =
+          DateFormatFactory.getDateFormat().format(state.date!);
+    } else {
       dateTextController.text = "";
     }
     return AppTextField(
-          controller: dateTextController,
-          labelText: AppLocalizations.of(context)!.field_date,
-          keyboardType: TextInputType.datetime,
-          suffix: Icon(Icons.keyboard_arrow_down, size: 16,),
-          readOnly: true,
-          onTapped: () => {
-            DatePicker.showDatePicker(context,
-                showTitleActions: true,
-                minTime: Config.minTime,
-                maxTime: Config.maxTime,
-                onChanged: (date) {}, onConfirm: (date) {
-                  context.read<QuickInsertDocumentCubit>().dateChanged(date);
-                  dateTextController.text = DateFormatFactory.getDateFormat().format(date);
-                }, currentTime: state.date, locale: MyApp.getDatePickerLocaleType(context))
+      controller: dateTextController,
+      labelText: context.tr("date"),
+      keyboardType: TextInputType.datetime,
+      suffix: Icon(
+        Icons.keyboard_arrow_down,
+        size: 16,
+      ),
+      readOnly: true,
+      onTapped: () => {
+        DatePicker.showDatePicker(
+          context,
+          showTitleActions: true,
+          minTime: Config.minTime,
+          maxTime: Config.maxTime,
+          onChanged: (date) {},
+          onConfirm: (date) {
+            context.read<QuickInsertDocumentCubit>().dateChanged(date);
+            dateTextController.text =
+                DateFormatFactory.getDateFormat().format(date);
           },
-        );
+          currentTime: state.date,
+          locale: MyApp.getDatePickerLocaleType(context),
+        ),
+      },
+    );
   }
 
-  Widget _buildPerson(BuildContext context, QuickInsertDocumentState state, DocumentType type){
+  Widget _buildPerson(
+    BuildContext context,
+    QuickInsertDocumentState state,
+    DocumentType type,
+  ) {
     personNameTextController.text = state.personName ?? '';
     return AppTextField(
       controller: personNameTextController,
       labelText: type == DocumentType.incoming
-          ? AppLocalizations.of(context)!.label_supplier_name
-          : AppLocalizations.of(context)!.label_customer_name,
-      hintText: AppLocalizations.of(context)!.hint_select,
+          ? context.tr("label_supplier_name")
+          : context.tr("label_customer_name"),
+      hintText: context.tr("hint_select"),
       keyboardType: TextInputType.none,
       readOnly: true,
-      suffix: Icon(Icons.keyboard_arrow_down, size: 16,),
-      onTapped: () => {context.read<QuickInsertDocumentCubit>().onPersonClicked()},
+      suffix: Icon(
+        Icons.keyboard_arrow_down,
+        size: 16,
+      ),
+      onTapped: () =>
+          {context.read<QuickInsertDocumentCubit>().onPersonClicked()},
     );
   }
-  Widget _buildDescription(BuildContext context,QuickInsertDocumentState state){
+
+  Widget _buildDescription(
+    BuildContext context,
+    QuickInsertDocumentState state,
+  ) {
     return AppTextField(
-        labelText: AppLocalizations.of(context)!.label_description,
-        hintText: AppLocalizations.of(context)!.hint_description,
-        maxLines: null,
-        minLines: 2,
-        initialValue: state.description,
-        onChanged: (value) => context.read<QuickInsertDocumentCubit>().descriptionChanged(value),
-        keyboardType: TextInputType.name);
+      labelText: context.tr("label_description"),
+      hintText: context.tr("hint_description"),
+      maxLines: null,
+      minLines: 2,
+      initialValue: state.description,
+      onChanged: (value) =>
+          context.read<QuickInsertDocumentCubit>().descriptionChanged(value),
+      keyboardType: TextInputType.name,
+    );
   }
 }

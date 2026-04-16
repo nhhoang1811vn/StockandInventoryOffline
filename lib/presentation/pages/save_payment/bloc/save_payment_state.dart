@@ -13,17 +13,12 @@ class SavePaymentState with _$SavePaymentState {
     Payment? item,
     @Default([]) List<PaymentCategory> categories,
     PaymentCategory? selectedCategory,
-
     @Default([]) List<Wallet> wallets,
     Wallet? selectedWallet,
-
     int? supplierId,
     int? customerId,
-
     Document? document,
     Supplier? supplier,
-    Customer? customer
-
+    Customer? customer,
   }) = _Initial;
 }
-

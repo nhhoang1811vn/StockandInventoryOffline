@@ -7,7 +7,6 @@ class SaveStoreState with _$SaveStoreState {
     @Default(NameInput.pure()) NameInput name,
     @Default('') String description,
     @Default('') String exceptionError,
-    Store? item
+    Store? item,
   }) = _Initial;
 }
-

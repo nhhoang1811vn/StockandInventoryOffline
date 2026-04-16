@@ -1,0 +1,186 @@
+import 'dart:io';
+
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:good_manager/presentation/pages/settings/minimum_quantity/bloc/minimum_quantity_cubit.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import '../../../dialog/dialog.dart';
+import '../../../markdown/md_provider_factory.dart';
+import '../../help_content.dart';
+import '../../pages.dart';
+
+class MinimumQuantityPage extends StatefulWidget {
+  MinimumQuantityPage({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return MinimumQuantityPageState();
+  }
+}
+
+class MinimumQuantityPageState extends State<MinimumQuantityPage> {
+  //bool _isNotificationPermissionGranted = false;
+  @override
+  void initState() {
+    super.initState();
+    context.read<MinimumQuantityCubit>().init();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<MinimumQuantityCubit, MinimumQuantityState>(
+      listener: (context, state) async {},
+      builder: (BuildContext context, MinimumQuantityState state) {
+        return Scaffold(
+          appBar: new AppBar(
+            actions: [_buildHelpMenu()],
+            title: new Text(
+              context.tr("menu_item_minimum_quantity"),
+            ),
+          ),
+          body: _buildBody(state),
+        );
+      },
+    );
+  }
+
+  Widget _buildHelpMenu() {
+    return IconButton(
+      onPressed: () {
+        Navigator.of(context).pushNamed(
+          Pages.help,
+          arguments: {
+            "title": context.tr("menu_item_minimum_quantity"),
+            "content": MDProviderFactory.get().getHelpText(HelpType.MIN_QUAN),
+          },
+        );
+      },
+      icon: Icon(Icons.help),
+    );
+  }
+
+  Future<bool> requestNotificationPermission(BuildContext context) async {
+    if (Platform.isAndroid) {
+      final status = await Permission.notification.status;
+      if (status.isDenied) {
+        final result = await Permission.notification.request();
+        return result.isGranted;
+      }
+      if (status.isPermanentlyDenied) {
+        _showPermissionDialog(context);
+        return false;
+      }
+    } else if (Platform.isIOS) {
+      final result = await Permission.notification.request();
+      print(result);
+      if (result == PermissionStatus.denied ||
+          result == PermissionStatus.permanentlyDenied) {
+        _showPermissionDialog(context);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  void _showPermissionDialog(BuildContext context) {
+    showCustomAlertDialog(
+      context,
+      title: context.tr("notification_permission"),
+      message: context.tr("notification_permission_content"),
+      positiveText: context.tr("open_settings"),
+      onPositivePressed: () async {
+        hideDialog(context);
+        openAppSettings();
+      },
+    );
+  }
+
+  Widget _buildBody(MinimumQuantityState state) {
+    return ListView(
+      padding: EdgeInsets.all(16),
+      children: [
+        Card(
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            children: [
+              SwitchListTile(
+                value: state.showInItem,
+                onChanged: (newValue) {
+                  context.read<MinimumQuantityCubit>().onShowInItemChanged();
+                },
+                title: Text(
+                  context.tr("menu_item_show_min_quantity_items_page_title"),
+                ),
+              ),
+              Divider(
+                height: 1,
+              ),
+              SwitchListTile(
+                value: state.showInList,
+                onChanged: (newValue) {
+                  context.read<MinimumQuantityCubit>().onShowInListChanged();
+                },
+                title: Text(
+                  context.tr("menu_item_show_min_quantity_list_page_title"),
+                ),
+              ),
+              Divider(
+                height: 1,
+              ),
+              ListTile(
+                title: Text(
+                  context.tr("menu_item_min_quantity_color_title"),
+                ),
+                onTap: () {
+                  showSelectColorDialog(
+                    context,
+                    color: state.color,
+                    onItemSelected: (item) {
+                      hideDialog(context);
+                      context.read<MinimumQuantityCubit>().onColorChanged(item);
+                    },
+                  );
+                },
+                trailing: Container(
+                  width: 20, // Circle diameter
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: state.color, // use your color here
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+              Divider(
+                height: 1,
+              ),
+              SwitchListTile(
+                value: (state.showAlert),
+                onChanged: (newValue) async {
+                  if (newValue) {
+                    final granted =
+                        await requestNotificationPermission(context);
+                    context
+                        .read<MinimumQuantityCubit>()
+                        .onShowAlertChanged(true);
+                  } else {
+                    context
+                        .read<MinimumQuantityCubit>()
+                        .onShowAlertChanged(newValue);
+                  }
+                },
+                title: Text(
+                  context.tr("menu_item_show_low_stock_alert_title"),
+                ),
+                subtitle: Text(
+                  context.tr("menu_item_show_low_stock_alert_desc"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
