@@ -177,198 +177,200 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       builder: (context, state) => Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: _buildAppBar(context, state),
-        body: Column(
-          children: [
-            SelectedStoreView(),
-            Expanded(
-              child: ListView(
-                children: [
-                  // Container(
-                  //     padding: const EdgeInsets.symmetric(
-                  //         horizontal: 16, vertical: 8),
-                  //     //color: ColorUtils.getHeaderBgColor(context),
-                  //     child: Text(
-                  //         context.tr("
-                  //             .document_information,
-                  //         style: Theme.of(context)
-                  //             .textTheme
-                  //             .titleMedium
-                  //             ?.copyWith(fontWeight: FontWeight.bold))),
-                  Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        AppTextField(
-                          labelText:
-                              context.tr("document_no"),
-                          hintText: context.tr("hint_name"),
-                          initialValue: state.name.value,
-                          onChanged: (value) => context
-                              .read<SaveDocumentCubit>()
-                              .nameChanged(value),
-                          keyboardType: TextInputType.name,
-                          error: state.name.displayError?.text(context),
-                        ),
-                        SizedBox(
-                          height: 16.0,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: AppTextField(
-                                controller: personNameController,
-                                labelText:
-                                    state.item?.type == DocumentType.incoming
-                                        ? context.tr("label_supplier_name")
-                                        : context.tr("label_customer_name"),
-                                hintText:
-                                    context.tr("hint_select"),
-                                suffix: Icon(
-                                  Icons.keyboard_arrow_down,
-                                  size: 16,
-                                ),
-                                keyboardType: TextInputType.none,
-                                readOnly: true,
-                                onTapped: () => {
-                                  context
-                                      .read<SaveDocumentCubit>()
-                                      .onPersonClicked(),
-                                },
-                              ),
-                            ),
-                            SizedBox(
-                              width: 16.0,
-                            ),
-                            Expanded(
-                              child: AppTextField(
-                                controller: dateController,
-                                labelText: context.tr("field_date_time"),
-                                keyboardType: TextInputType.datetime,
-                                readOnly: true,
-                                onTapped: () => {
-                                  DatePicker.showDateTimePicker(
-                                    context,
-                                    locale: MyApp.getDatePickerLocaleType(
-                                      context,
-                                    ),
-                                    showTitleActions: true,
-                                    minTime: Config.minTime,
-                                    maxTime: Config.maxTime,
-                                    onChanged: (date) {},
-                                    onConfirm: (date) {
-                                      context
-                                          .read<SaveDocumentCubit>()
-                                          .dateChanged(date);
-                                      dateController.text = DateFormatFactory
-                                              .getDateAndTimeFormat()
-                                          .format(date);
-                                    },
-                                    currentTime: state.date,
+        body: SafeArea(
+          child: Column(
+            children: [
+              SelectedStoreView(),
+              Expanded(
+                child: ListView(
+                  children: [
+                    // Container(
+                    //     padding: const EdgeInsets.symmetric(
+                    //         horizontal: 16, vertical: 8),
+                    //     //color: ColorUtils.getHeaderBgColor(context),
+                    //     child: Text(
+                    //         context.tr("
+                    //             .document_information,
+                    //         style: Theme.of(context)
+                    //             .textTheme
+                    //             .titleMedium
+                    //             ?.copyWith(fontWeight: FontWeight.bold))),
+                    Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          AppTextField(
+                            labelText:
+                                context.tr("document_no"),
+                            hintText: context.tr("hint_name"),
+                            initialValue: state.name.value,
+                            onChanged: (value) => context
+                                .read<SaveDocumentCubit>()
+                                .nameChanged(value),
+                            keyboardType: TextInputType.name,
+                            error: state.name.displayError?.text(context),
+                          ),
+                          SizedBox(
+                            height: 16.0,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: AppTextField(
+                                  controller: personNameController,
+                                  labelText:
+                                      state.item?.type == DocumentType.incoming
+                                          ? context.tr("label_supplier_name")
+                                          : context.tr("label_customer_name"),
+                                  hintText:
+                                      context.tr("hint_select"),
+                                  suffix: Icon(
+                                    Icons.keyboard_arrow_down,
+                                    size: 16,
                                   ),
-                                },
+                                  keyboardType: TextInputType.none,
+                                  readOnly: true,
+                                  onTapped: () => {
+                                    context
+                                        .read<SaveDocumentCubit>()
+                                        .onPersonClicked(),
+                                  },
+                                ),
                               ),
-                            ),
-                          ],
+                              SizedBox(
+                                width: 16.0,
+                              ),
+                              Expanded(
+                                child: AppTextField(
+                                  controller: dateController,
+                                  labelText: context.tr("field_date_time"),
+                                  keyboardType: TextInputType.datetime,
+                                  readOnly: true,
+                                  onTapped: () => {
+                                    DatePicker.showDateTimePicker(
+                                      context,
+                                      locale: MyApp.getDatePickerLocaleType(
+                                        context,
+                                      ),
+                                      showTitleActions: true,
+                                      minTime: Config.minTime,
+                                      maxTime: Config.maxTime,
+                                      onChanged: (date) {},
+                                      onConfirm: (date) {
+                                        context
+                                            .read<SaveDocumentCubit>()
+                                            .dateChanged(date);
+                                        dateController.text = DateFormatFactory
+                                                .getDateAndTimeFormat()
+                                            .format(date);
+                                      },
+                                      currentTime: state.date,
+                                    ),
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 16),
+                          AppTextField(
+                            labelText:
+                                context.tr("label_description"),
+                            hintText:
+                                context.tr("hint_description"),
+                            maxLines: null,
+                            minLines: 2,
+                            initialValue: state.description,
+                            onChanged: (value) => context
+                                .read<SaveDocumentCubit>()
+                                .descriptionChanged(value),
+                            keyboardType: TextInputType.name,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      //color: ColorUtils.getHeaderBgColor(context),
+                      child: Text(
+                        context.tr("goods_information"),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Visibility(
+                      visible: state.showSearchBar,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          left: 16.0,
+                          right: 16.0,
+                          bottom: 16,
                         ),
-                        SizedBox(height: 16),
-                        AppTextField(
-                          labelText:
-                              context.tr("label_description"),
-                          hintText:
-                              context.tr("hint_description"),
-                          maxLines: null,
-                          minLines: 2,
-                          initialValue: state.description,
-                          onChanged: (value) => context
-                              .read<SaveDocumentCubit>()
-                              .descriptionChanged(value),
-                          keyboardType: TextInputType.name,
+                        child: SearchBarWidget(
+                          onTextChanged: (newValue) {
+                            context
+                                .read<SaveDocumentCubit>()
+                                .onSearchTextChanged(newValue);
+                          },
+                          focusNode: searchTextFocusNode,
+                          showCamera: true,
+                        ),
+                      ),
+                    ),
+                    Stack(
+                      children: [
+                        Visibility(
+                          child: _buildEmptyTransaction(context),
+                          visible: state.transactions.isEmpty,
+                        ),
+                        Visibility(
+                          child: _buildTransactionsView(context, state),
+                          visible: state.transactions.isNotEmpty,
                         ),
                       ],
                     ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    //color: ColorUtils.getHeaderBgColor(context),
-                    child: Text(
-                      context.tr("goods_information"),
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Visibility(
-                    visible: state.showSearchBar,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        left: 16.0,
-                        right: 16.0,
-                        bottom: 16,
-                      ),
-                      child: SearchBarWidget(
-                        onTextChanged: (newValue) {
-                          context
-                              .read<SaveDocumentCubit>()
-                              .onSearchTextChanged(newValue);
-                        },
-                        focusNode: searchTextFocusNode,
-                        showCamera: true,
-                      ),
-                    ),
-                  ),
-                  Stack(
-                    children: [
-                      Visibility(
-                        child: _buildEmptyTransaction(context),
-                        visible: state.transactions.isEmpty,
-                      ),
-                      Visibility(
-                        child: _buildTransactionsView(context, state),
-                        visible: state.transactions.isNotEmpty,
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            _buildSummaryView(state),
-            // Align(
-            //     alignment: Alignment.bottomCenter,
-            //     child: Container(
-            //       height: 30,
-            //       color: Theme.of(context).colorScheme.primary,
-            //       child: IntrinsicHeight(
-            //           child: Row(
-            //         children: [
-            //           SizedBox(width: 16),
-            //           Text(state.transactions.length.toString(),
-            //               style: TextStyle(
-            //                   color: Colors.white,
-            //                   fontSize: TextSize.medium)),
-            //           SizedBox(width: 16),
-            //           VerticalDivider(width: 2, color: Colors.white),
-            //           SizedBox(width: 16),
-            //           Text(
-            //               Config.currencyFormat.format(state.totalQuantity),
-            //               style: TextStyle(
-            //                   color: Colors.white,
-            //                   fontSize: TextSize.medium)),
-            //           SizedBox(width: 16),
-            //           VerticalDivider(width: 2, color: Colors.white),
-            //           SizedBox(width: 16),
-            //           Text(
-            //               Config.currencyFormat.format(state.totalAmount),
-            //               style: TextStyle(
-            //                   color: Colors.white,
-            //                   fontSize: TextSize.medium)),
-            //         ],
-            //       )),
-            //     ))
-          ],
+              _buildSummaryView(state),
+              // Align(
+              //     alignment: Alignment.bottomCenter,
+              //     child: Container(
+              //       height: 30,
+              //       color: Theme.of(context).colorScheme.primary,
+              //       child: IntrinsicHeight(
+              //           child: Row(
+              //         children: [
+              //           SizedBox(width: 16),
+              //           Text(state.transactions.length.toString(),
+              //               style: TextStyle(
+              //                   color: Colors.white,
+              //                   fontSize: TextSize.medium)),
+              //           SizedBox(width: 16),
+              //           VerticalDivider(width: 2, color: Colors.white),
+              //           SizedBox(width: 16),
+              //           Text(
+              //               Config.currencyFormat.format(state.totalQuantity),
+              //               style: TextStyle(
+              //                   color: Colors.white,
+              //                   fontSize: TextSize.medium)),
+              //           SizedBox(width: 16),
+              //           VerticalDivider(width: 2, color: Colors.white),
+              //           SizedBox(width: 16),
+              //           Text(
+              //               Config.currencyFormat.format(state.totalAmount),
+              //               style: TextStyle(
+              //                   color: Colors.white,
+              //                   fontSize: TextSize.medium)),
+              //         ],
+              //       )),
+              //     ))
+            ],
+          ),
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),

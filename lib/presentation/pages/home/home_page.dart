@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -7,15 +8,19 @@ import 'package:good_manager/presentation/pages/home/wallet_card.dart';
 import 'package:good_manager/presentation/pages/payment/components/payment_item_row.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
 import 'package:good_manager/util/currency_formatter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../constant/constant.dart';
+import '../../../di/di.dart';
 import '../../../domain/entity/entity.dart';
 import '../../../domain/free_limits.dart';
 import '../../../util/util.dart';
 import '../../dialog/dialog.dart';
+import '../../widget/snackbar_widgets.dart';
 import '../base/base_state.dart';
 import '../pages.dart';
+import '../settings/data/bloc/settings_data_cubit.dart';
 
 class HomePage extends StatefulWidget {
   final VoidCallback onOpenGoodsPage;
@@ -40,10 +45,22 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     context.read<HomeCubit>().initState();
-
+    _checkShowVersionInfo();
   }
 
+  void _checkShowVersionInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool isSkipped = prefs.getBool('version_2_0_0_skipped') ?? false;
+    if (isSkipped) return;
 
+    int showCount = prefs.getInt('version_2_0_0_show_count') ?? 0;
+    if (showCount < 3) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showVersionInfoDialog();
+      });
+      await prefs.setInt('version_2_0_0_show_count', showCount + 1);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +163,9 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget _buildAnnouncementCard() {
+    final user = FirebaseAuth.instance.currentUser;
+    final isGuest = user == null || user.isAnonymous;
+
     return Card(
       color: Theme.of(context).colorScheme.primaryContainer,
       child: InkWell(
@@ -175,7 +195,97 @@ class HomePageState extends State<HomePage> {
                 "Multiple users can now work on the same store with real-time updates and sharing.",
                 style: Theme.of(context).textTheme.bodySmall,
               ),
+              SizedBox(height: 12),
+              Text(
+                "Migration Guide:",
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              if (isGuest) ...[
+                SizedBox(height: 8),
+                Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.orange.withOpacity(0.5)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 16),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          "You are in Guest Mode. Please log in first to sync your data.",
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.orange[900]),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(Pages.link_with);
+                        },
+                        child: Text("Login"),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Step 1: Sync your data",
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        SizedBox(height: 8),
+                        ElevatedButton(
+                          onPressed: isGuest ? null : () => onSyncDataPressed(),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: Text("Sync Data"),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Step 2: Download new app",
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        SizedBox(height: 8),
+                        ElevatedButton(
+                          onPressed: () {
+                            NavigatorUtils.openUrl("https://apps.apple.com/us/app/stock-inventory-online/id6761761103");
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: Text("Download Now"),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 12),
               Text(
                 "Tap to learn more about new features!",
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
@@ -190,9 +300,21 @@ class HomePageState extends State<HomePage> {
     );
   }
 
+  void onSyncDataPressed() async {
+    showProgressIndicator(context);
+    final result = await getIt<SettingsDataCubit>().syncToRealtimeDB();
+    hideDialog(context);
+    if (result) {
+      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+    }
+  }
+
   void _showVersionInfoDialog() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Text("What's New in v2.0.0"),
         content: SingleChildScrollView(
@@ -209,10 +331,24 @@ class HomePageState extends State<HomePage> {
               _buildFeatureRow(Icons.manage_accounts, "Role Management – assign members as Editor or Viewer."),
               _buildFeatureRow(Icons.people, "Multi-user Access – multiple users can work on the same store simultaneously."),
               _buildFeatureRow(Icons.flash_on, "Improved performance and synchronization reliability."),
+              Divider(height: 24),
+              Text("Instructions for Data Migration:",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              SizedBox(height: 12),
+              _buildFeatureRow(Icons.looks_one, "Step 1: Sync your data to ensure everything is backed up online."),
+              _buildFeatureRow(Icons.looks_two, "Step 2: Download the new 'Stock Inventory Online' app and log in."),
             ],
           ),
         ),
         actions: [
+          TextButton(
+            onPressed: () async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.setBool('version_2_0_0_skipped', true);
+              Navigator.pop(context);
+            },
+            child: Text(context.tr("skip"), style: TextStyle(color: Colors.grey)),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(context.tr("ok")),

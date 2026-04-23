@@ -26,83 +26,81 @@ class DocumentItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle? primaryTextStyle = Theme.of(context)
-        .textTheme
-        .titleMedium
-        ?.copyWith(fontWeight: FontWeight.w700);
-    TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
-    return Container(
-      color: bgColor,
-      padding: EdgeInsets.all(16),
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
-        borderRadius: BorderRadius.circular(8),
         onTap: () => onDocumentTapped(item),
         onLongPress: () => onDocumentLongPressed(item),
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 6,
-                child: Container(
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 6,
                   decoration: BoxDecoration(
                     color: getIndicatorColor(item.type),
-                    // Change color as needed
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                    //),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              Expanded(
-                child: Row(
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        item.name,
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        DateFormatFactory.getDateFormat().format(item.date),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      if (item.personName != null)
+                        Text(
+                          item.personName!,
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      if (item.description.isNotEmpty)
+                        Text(
+                          item.description,
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            item.name,
-                            style: primaryTextStyle,
-                          ),
-                          //SizedBox(height: 4),
-                          Text(
-                            DateFormatFactory.getDateFormat().format(item.date),
-                            style: secondaryTextStyle,
-                          ),
-                          item.personName != null
-                              ? Text(
-                                  item.personName!,
-                                  style: secondaryTextStyle,
-                                )
-                              : Container(),
-                          item.description.isNotEmpty
-                              ? Text(
-                                  item.description,
-                                  style: secondaryTextStyle,
-                                )
-                              : Container(),
-                        ],
+                    Text(
+                      StringUtils.getQuantityText(item.quantity),
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          StringUtils.getQuantityText(item.quantity),
-                          style: primaryTextStyle,
-                        ),
-                        _buildStatusWidget(context, item),
-                      ],
-                    ),
+                    const SizedBox(height: 4),
+                    _buildStatusWidget(context, item),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -136,25 +134,34 @@ class DocumentItemRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Container(
-          padding: EdgeInsets.all(4),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
           decoration: BoxDecoration(
             color: bgColor,
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
             statusText,
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white),
+            style: Theme.of(context).textTheme.labelSmall!.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ),
+        const SizedBox(height: 4),
         if (status == DocumentPaidStatus.partial)
           Text(
-            "${CurrencyFormatter.format(context,item.paid)}/${CurrencyFormatter.format(context,item.amount)}",
+            "${CurrencyFormatter.format(context, item.paid)}/${CurrencyFormatter.format(context, item.amount)}",
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           )
         else
-          Text("${CurrencyFormatter.format(context, item.amount)}"),
+          Text(
+            CurrencyFormatter.format(context, item.amount),
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
       ],
     );
   }

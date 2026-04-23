@@ -16,26 +16,42 @@ class DocumentTransactionItemRow extends StatelessWidget {
   final bool isSelection;
 
   DocumentTransactionItemRow(
-    this.item,
-    this.bgColor,
-    this.onTransactionPressed,
-    this.onTransactionLongPressed, [
-    this.isSelection = false,
-  ]);
+      this.item,
+      this.bgColor,
+      this.onTransactionPressed,
+      this.onTransactionLongPressed, [
+        this.isSelection = false,
+      ]);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: () => onTransactionPressed(item),
         onLongPress: () => onTransactionLongPressed(item),
+        borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16.0),
+          padding: const EdgeInsets.all(12.0),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildLeadingWidget(context),
-              SizedBox(width: 16),
-              Expanded(child: _buildWidget(context)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildTitleRow(context),
+                    const SizedBox(height: 4),
+                    _buildSubtitleColumn(context),
+                    const SizedBox(height: 8),
+                    _buildPriceRow(context),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -44,120 +60,121 @@ class DocumentTransactionItemRow extends StatelessWidget {
   }
 
   Widget _buildLeadingWidget(BuildContext context) {
-    return item.good.files.isNotEmpty
-        ? getAvatarWidget(item.good.files.first)
-        : _buildEmptyAvatarWidget(context);
-  }
-
-  Widget _buildWidget(BuildContext context) {
-    return Column(
-      children: [_buildTop(context), _buildBottom(context)],
+    if (item.good?.files.isNotEmpty ?? false) {
+      return SizedBox(
+        width: 48,
+        height: 48,
+        child: ClipOval(
+          child: Image.memory(
+            item.good!.files.first,
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    }
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        UIConstants.goodIconData,
+        size: 28,
+        color: Theme.of(context).colorScheme.primary,
+      ),
     );
   }
 
-  Widget _buildTop(BuildContext context) {
-    TextStyle? primaryTextStyle = Theme.of(context)
-        .textTheme
-        .titleMedium
-        ?.copyWith(fontWeight: FontWeight.w700);
-    TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
-
+  Widget _buildTitleRow(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(item.good.name, style: primaryTextStyle),
-              SizedBox(height: 4),
-              if (item.good.barCode != null)
-                Row(
-                  children: [
-                    Icon(
-                      UIConstants.barcodeIconData,
-                      size: 24,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(item.good.barCode!, style: secondaryTextStyle),
-                  ],
-                ),
-              if (item.good.description.isNotEmpty)
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 4,
-                    ),
-                    Text(item.good.description, style: secondaryTextStyle),
-                  ],
-                ),
-            ],
+          child: Text(
+            item.good?.name ?? "",
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
         Text(
           StringUtils.getQuantityText(item.quantity),
-          style: primaryTextStyle,
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildBottom(BuildContext context) {
-    TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
-    var leftValue = "";
-    var rightValue = "";
-    if (item.price == null) {
-      leftValue = CurrencyFormatter.format(context, 0);
-      rightValue = CurrencyFormatter.format(context, 0);
-    } else {
-      leftValue = CurrencyFormatter.format(context, item.price!);
-      rightValue = CurrencyFormatter.format(context, item.price! * item.quantity);
-    }
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            context.tr("price") + ": " + leftValue,
-            style: secondaryTextStyle,
+  Widget _buildSubtitleColumn(BuildContext context) {
+    var description = item.good?.description ?? "";
+    var barcode = item.good?.barCode ?? "";
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (barcode.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 2.0),
+            child: Row(
+              children: [
+                Icon(
+                  UIConstants.barcodeIconData,
+                  size: 14,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  barcode,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
           ),
+        if (description.isNotEmpty)
           Text(
-            context.tr("amount") + ": " + rightValue,
-            style: secondaryTextStyle,
+            description,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-        ],
-      ),
+      ],
     );
   }
 
-  Widget getAvatarWidget(Uint8List bytes) {
-    return SizedBox(
-      width: 48,
-      height: 48,
-      child: ClipOval(
-        child: Image.memory(
-          bytes,
-          fit:
-              BoxFit.cover, // Ensures the image covers the entire circular area
+  Widget _buildPriceRow(BuildContext context) {
+    final price = item.price ?? 0;
+    final total = price * item.quantity;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Text(
+          "${context.tr("price")}: ${CurrencyFormatter.format(context, price)}",
+          style: Theme.of(context).textTheme.bodySmall,
         ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyAvatarWidget(BuildContext context) {
-    return SizedBox(
-      width: 48,
-      height: 48,
-      child: Center(
-        child: Icon(
-          UIConstants.goodIconData,
-          size: 36,
-          color: Theme.of(context).colorScheme.primary,
+        const SizedBox(width: 12),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            "${context.tr("total")}: ${CurrencyFormatter.format(context, total)}",
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+              color: Theme.of(context).colorScheme.onSecondaryContainer,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }

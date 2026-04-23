@@ -14,46 +14,29 @@ class PaymentItemRow extends StatelessWidget {
 
   PaymentItemRow(this.item, this.bgColor, this.onPressed, this.onLongPressed);
 
-  Widget _buildLeadingIcon(Payment item) {
-    return item.category != null
-        ? Padding(
-            padding: EdgeInsets.only(right: 8),
-            child: Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  item.category!.icon,
-                  style: TextStyle(fontSize: 24),
-                ),
-              ),
-            ),
-          )
-        : SizedBox();
-  }
-
   @override
   Widget build(BuildContext context) {
-    TextStyle? primaryTextStyle = Theme.of(context)
-        .textTheme
-        .titleMedium
-        ?.copyWith(fontWeight: FontWeight.w700);
-    TextStyle? subTextStyle = Theme.of(context).textTheme.bodySmall;
-    return Container(
-      color: bgColor,
+    var personName = "";
+    if (item.customer != null) {
+      personName = item.customer!.name;
+    } else if (item.supplier != null) {
+      personName = item.supplier!.name;
+    }
+
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: () => onPressed(item),
         onLongPress: () => onLongPressed(item),
+        borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+          padding: const EdgeInsets.all(12.0),
           child: Row(
             children: [
               _buildLeadingIcon(item),
-              //SizedBox(width: 16),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,39 +45,74 @@ class PaymentItemRow extends StatelessWidget {
                       item.category != null
                           ? item.category!.name
                           : context.tr("no_category"),
-                      style: primaryTextStyle,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
+                    const SizedBox(height: 4),
                     if (item.wallet != null)
-                      WalletShortFormWidget(item.wallet!),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 2.0),
+                        child: WalletShortFormWidget(item.wallet!),
+                      ),
                     Text(
                       DateFormatFactory.getDateFormat().format(item.date),
-                      style: subTextStyle,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                     if (item.description.isNotEmpty)
                       Text(
                         item.description,
-                        style: subTextStyle,
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    if (item.document?.name != null &&
-                        item.document!.name.isNotEmpty)
-                      Text(item.document!.name, style: subTextStyle),
-                    if (item.customer != null)
-                      Text(item.customer!.name, style: subTextStyle),
-                    if (item.supplier != null)
-                      Text(item.supplier!.name, style: subTextStyle),
+                    if (item.document != null || personName.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Text(
+                          item.document != null
+                              ? "${item.document!.name}${personName.isNotEmpty ? " ($personName)" : ""}"
+                              : personName,
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
+              const SizedBox(width: 8),
               Text(
                 "${item.type == PaymentType.inbound ? "+" : "-"}${CurrencyFormatter.format(context, item.amount ?? 0)}",
-                style: primaryTextStyle?.copyWith(
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  fontWeight: FontWeight.bold,
                   color: item.type == PaymentType.inbound
-                      ? Colors.green
-                      : Colors.red,
+                      ? Colors.green.shade700
+                      : Colors.red.shade700,
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLeadingIcon(Payment item) {
+    return Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: Text(
+          item.category?.icon ?? "💰",
+          style: const TextStyle(fontSize: 24),
         ),
       ),
     );

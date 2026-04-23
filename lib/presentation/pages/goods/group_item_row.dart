@@ -10,70 +10,74 @@ class GroupItemRow extends StatelessWidget {
 
   GroupItemRow(this.item, this.onGroupTapped, this.onGroupLongPressed);
 
-  Widget _buildLeadingWidget(BuildContext context) {
-    return SizedBox(
-      width: 48,
-      height: 48,
-      child: Center(
-        child: Icon(
-          UIConstants.groupIconData,
-          size: 36,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    TextStyle? primaryTextStyle = Theme.of(context)
-        .textTheme
-        .titleMedium
-        ?.copyWith(fontWeight: FontWeight.w700);
-    TextStyle? secondaryTextStyle = Theme.of(context).textTheme.bodySmall;
-    return InkWell(
-      //borderRadius: BorderRadius.circular(8),
-      onTap: () => onGroupTapped(item),
-      onLongPress: () => onGroupLongPressed(item),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Row(
-          children: [
-            _buildLeadingWidget(context),
-            SizedBox(
-              width: 16,
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: InkWell(
+        onTap: () => onGroupTapped(item),
+        onLongPress: () => onGroupLongPressed(item),
+        borderRadius: BorderRadius.circular(12),
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+          leading: SizedBox(
+            height: 48,
+            width: 48,
+            child: CircleAvatar(
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              child: Icon(
+                UIConstants.groupIconData,
+                size: 24,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(item.name, style: primaryTextStyle),
-                Visibility(
-                  visible: item.description.isNotEmpty,
+          ),
+          title: Text(
+            item.name,
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (item.description.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
                   child: Text(
                     item.description,
-                    style: secondaryTextStyle,
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
-                if (item.barCode != null && item.barCode!.isNotEmpty)
-                  Row(
+              if (item.barCode != null && item.barCode!.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Row(
                     children: [
                       Icon(
                         UIConstants.barcodeIconData,
-                        size: 24,
-                        color: Theme.of(context).colorScheme.primary,
+                        size: 14,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
-                      SizedBox(
-                        width: 8,
-                      ),
+                      const SizedBox(width: 4),
                       Text(
                         item.barCode!,
-                        style: secondaryTextStyle,
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
                   ),
-              ],
-            ),
-          ],
+                ),
+            ],
+          ),
+          trailing: Icon(
+            Icons.chevron_right,
+            color: Theme.of(context).colorScheme.outline,
+          ),
         ),
       ),
     );

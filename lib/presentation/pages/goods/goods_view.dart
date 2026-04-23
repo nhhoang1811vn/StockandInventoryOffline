@@ -116,53 +116,70 @@ class GoodsPageState extends State<GoodsPage> {
   }
 
   Widget _buildSelectedGroupView(GoodsState state) => Visibility(
-        visible: state.selectedGroups.isNotEmpty && state.textSearch.isEmpty,
-        child: Container(
-          height: 50,
-          padding: EdgeInsets.only(left: 16.0, right: 16.0),
-          color: Theme.of(context).colorScheme.primary,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: state.selectedGroups.length,
-            itemBuilder: (context, index) {
-              return Row(
-                children: [
-                  if (index == 0)
-                    GestureDetector(
-                      child: Icon(
-                        Icons.home,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                      onTap: () =>
-                          context.read<GoodsCubit>().onSelectedGroupTapped(-1),
-                    ),
-                  GestureDetector(
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.navigate_next,
-                          color: Colors.white,
-                          size: 30,
-                        ),
-                        Text(
-                          state.selectedGroups[index].name,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: TextSize.medium,
-                          ),
-                        ),
-                      ],
-                    ),
-                    onTap: () =>
-                        context.read<GoodsCubit>().onSelectedGroupTapped(index),
-                  ),
-                ],
-              );
-            },
+    visible: state.selectedGroups.isNotEmpty && state.textSearch.isEmpty,
+    child: Container(
+      height: 44,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        border: Border(
+          bottom: BorderSide(
+            color: Theme.of(context).dividerColor.withOpacity(0.1),
           ),
         ),
-      );
+      ),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: 12),
+        itemCount: state.selectedGroups.length + 1,
+        itemBuilder: (context, index) {
+          final isHome = index == 0;
+          final groupIndex = index - 1;
+          final isLast = index == state.selectedGroups.length;
+
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (!isHome)
+                Icon(
+                  Icons.chevron_right,
+                  size: 18,
+                  color: Theme.of(context).hintColor.withOpacity(0.5),
+                ),
+              InkWell(
+                onTap: () => context
+                    .read<GoodsCubit>()
+                    .onSelectedGroupTapped(groupIndex),
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8, vertical: 6),
+                  child: isHome
+                      ? Icon(
+                    Icons.home_outlined,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.primary,
+                  )
+                      : Text(
+                    state.selectedGroups[groupIndex].name,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: isLast
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: isLast
+                          ? Theme.of(context).colorScheme.onSurface
+                          : Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    ),
+  );
 
   Widget get emptyView => Column(
         mainAxisAlignment: MainAxisAlignment.center,

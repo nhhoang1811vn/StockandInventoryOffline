@@ -1,5 +1,10 @@
 class MarkdownResourceEN {
   static const String whatNews = """
+  ### Version 1.0.80 - 2026 April 23        
+  * Fixed reported bugs.  
+  * Include guide flow to migration for online version
+  * Revamp UI
+  
   ### Version 1.0.75 - 2026 April 16       
   * Fixed reported bugs.  
   * Added new currency.
