@@ -1,7 +1,6 @@
 import 'package:good_manager/domain/entity/entity.dart';
 
 class StoreRealtimeEntity {
-  late int localId;
   String networkId = "";
   String name = "";
   String description = "";
@@ -13,52 +12,46 @@ class StoreRealtimeEntity {
   List<Group> groups = [];
   List<Good> goods = [];
   List<Document> documents = [];
-  List<DocumentTransaction> documentTransactions = [];
+  Map<String, List<DocumentTransaction>> documentTransactions = {};
 
   List<Wallet> wallets = [];
   List<PaymentCategory> paymentCategories = [];
   List<Payment> payments = [];
 
-  List<MemberEntity> members = [];
-
-
   Map<String, dynamic> toJson() {
     return {
-      "localId": localId,
       "networkId": networkId,
       "name": name,
       "description": description,
-      "createdDate": createdDate.toIso8601String(),
-      "updatedDate": updatedDate.toIso8601String(),
-       "suppliers" : {
-         for (var s in suppliers) s.id.toString() : s.toMap(includeId: true)
-       },
-      "customers" : {
-        for (var c in customers) c.id.toString() : c.toMap(includeId: true)
+      "createdDate": createdDate.millisecondsSinceEpoch,
+      "updatedDate": updatedDate.millisecondsSinceEpoch,
+      "suppliers": {
+        for (var item in suppliers) "${item.id}" : item.toMapV2()
       },
-      "groups" : {
-        for (var group in groups) group.id.toString() : group.toMap(includeId: true)
+      "customers": {
+        for (var item in customers) "${item.id}": item.toMapV2()
       },
-      // "goods": goods.map((e) => e.toMap(includeId: true)).toList(),
-      // "documents": documents.map((e) => e.toMap(includeId: true)).toList(),
-      // "documentTransactions": documentTransactions.map((e) => e.toMap()).toList(),
-      // "wallets": wallets.map((e) => e.toMap(includeId: true)).toList(),
-       "paymentCategories": {
-         for (var cat in paymentCategories) cat.id.toString() : cat.toMap(includeId: true)
-       },
-      // "payments": payments.map((e) => e.toMap(includeId: true)).toList(),
-      // "members" : members.map((e) => e.toJson()).toList()
-    };
-  }
-}
-class MemberEntity {
-  String email = "";
-  String role = "";
+      "groups": {for (var item in groups) "${item.id}": item.toMapV2()},
+      "goods": {for (var item in goods) item.id.toString(): item.toMapV2()},
+      "documents": {
+        for (var item in documents) item.id.toString(): item.toMapV2()
+      },
+      "transactionByDocument": {
+        for (var entry in documentTransactions.entries)
+          entry.key: {
+            for (var tx in entry.value) "${tx.id}": tx.toMapV2()
+          }
+      },
 
-  Map<String, dynamic> toJson() {
-    return {
-      "email": email,
-      "role": role
+      "wallets": {
+        for (var item in wallets) "${item.id}": item.toMapV2()
+      },
+      "paymentCategories": {
+        for (var item in paymentCategories) "${item.id}": item.toMapV2()
+      },
+      "payments": {
+        for (var item in payments) "${item.id}": item.toMapV2()
+      },
     };
   }
 }

@@ -15,11 +15,8 @@ class BaseModel {
     this.updatedDate = DateTime.fromMillisecondsSinceEpoch(obj["updatedDate"]);
   }
 
-  Map<String, dynamic> toMap({bool includeId = false}) {
+  Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();
-    if (includeId) {
-      map["id"] = id;
-    }
     map["name"] = name;
     map["description"] = description;
     map["createdDate"] = createdDate.millisecondsSinceEpoch;

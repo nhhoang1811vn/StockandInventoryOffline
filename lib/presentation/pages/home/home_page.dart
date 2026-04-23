@@ -135,12 +135,105 @@ class HomePageState extends State<HomePage> {
             //SizedBox(height: 16),
             //SaleReportWidget(),
             SizedBox(height: 16),
+            _buildAnnouncementCard(),
+            SizedBox(height: 16),
             _walletsCard(context, state),
           ],
         ),
       ),
     ];
     return SingleChildScrollView(child: Column(children: children));
+  }
+
+  Widget _buildAnnouncementCard() {
+    return Card(
+      color: Theme.of(context).colorScheme.primaryContainer,
+      child: InkWell(
+        onTap: () => _showVersionInfoDialog(),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.rocket_launch, color: Theme.of(context).colorScheme.primary),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      "Version 2.0.0: Online Collaboration",
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Text(
+                "Multiple users can now work on the same store with real-time updates and sharing.",
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              SizedBox(height: 8),
+              Text(
+                "Tap to learn more about new features!",
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showVersionInfoDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("What's New in v2.0.0"),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("🚀 Major Update: Online Collaboration",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              SizedBox(height: 12),
+              _buildFeatureRow(Icons.cloud, "Introduced Online Mode powered by Firebase Realtime Database."),
+              _buildFeatureRow(Icons.sync, "Real-time Updates – store data now syncs instantly across all devices."),
+              _buildFeatureRow(Icons.share, "Store Sharing – go to 'Stores' and tap the Share button to invite others."),
+              _buildFeatureRow(Icons.manage_accounts, "Role Management – assign members as Editor or Viewer."),
+              _buildFeatureRow(Icons.people, "Multi-user Access – multiple users can work on the same store simultaneously."),
+              _buildFeatureRow(Icons.flash_on, "Improved performance and synchronization reliability."),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(context.tr("ok")),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeatureRow(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
+          SizedBox(width: 8),
+          Expanded(child: Text(text, style: Theme.of(context).textTheme.bodySmall)),
+        ],
+      ),
+    );
   }
 
   Widget _buildGoods(HomeState state) {

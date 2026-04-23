@@ -15,8 +15,16 @@ class PaymentCategory extends BaseModel {
   }
 
   @override
-  Map<String, dynamic> toMap({bool includeId = false}) {
+  Map<String, dynamic> toMap() {
     var map = super.toMap();
+    map["icon"] = icon;
+    map["type"] = type.index;
+    return map;
+  }
+
+  Map<String, dynamic> toMapV2() {
+    var map = super.toMap();
+    map["id"] = id;
     map["icon"] = icon;
     map["type"] = type.index;
     return map;

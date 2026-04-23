@@ -77,7 +77,7 @@ class SaveWalletCubit extends Cubit<SaveWalletState> {
           payment.walletId = id;
           payment.type = PaymentType.inbound;
           payment.storeId = AppSettings.getSelectedStoreId();
-          paymentUseCases.insert(payment);
+          await paymentUseCases.insert(payment);
         }
       } else {
         await useCase.update(item);

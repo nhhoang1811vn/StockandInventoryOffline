@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/util/revenuecat_purchase_manager.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -43,6 +44,21 @@ void main() async {
   final auth = FirebaseAuth.instance;
   auth.authStateChanges().listen((user) async {
     if (user != null) {
+      if (user.email != null &&
+          user.email!.isNotEmpty &&
+          user.uid.isNotEmpty) {
+
+        final email = user.email!.trim().toLowerCase();
+        String safeEmail = email.replaceAll('.', ',');
+        final uid = user.uid;
+
+        final db = FirebaseDatabase.instance;
+
+        await db.ref().update({
+          "users_by_email/$safeEmail": uid,
+          "users_by_id/$uid": safeEmail
+        });
+      }
       await RevenueCatService.updateUser(user.uid);
     }
   });

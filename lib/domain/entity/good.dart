@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'base_model.dart';
@@ -37,6 +38,20 @@ class Good extends BaseModel {
     map["storeId"] = storeId;
     map["groupId"] = groupId;
     map["minQuantity"] = minQuantity;
+    return map;
+  }
+
+  Map<String, dynamic> toMapV2() {
+    var map = super.toMap();
+    map["id"] = id;
+    map["barCode"] = barCode;
+    map["purchasePrice"] = purchasePrice;
+    map["salePrice"] = salePrice;
+    map["storeId"] = storeId;
+    map["groupId"] = groupId;
+    map["minQuantity"] = minQuantity;
+    map["files"] = files.map((f) => base64Encode(f)).toList();
+    map["quantity"] = quantity;
     return map;
   }
 }

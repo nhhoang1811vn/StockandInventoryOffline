@@ -59,4 +59,17 @@ class Document extends BaseModel {
     map["storeId"] = storeId;
     return map;
   }
+
+  Map<String, dynamic> toMapV2() {
+    var map = super.toMap();
+    map["id"] = id;
+    map["date"] = date.millisecondsSinceEpoch;
+    map["type"] = type.index;
+    map["personId"] = personId;
+    map["personName"] = personName;
+    map["quantity"] = quantity;
+    map["amount"] = amount;
+    map["paid"] = paid;
+    return map;
+  }
 }

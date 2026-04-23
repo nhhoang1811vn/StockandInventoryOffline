@@ -47,7 +47,7 @@ class Payment extends BaseModel {
   }
 
   @override
-  Map<String, dynamic> toMap({bool includeId = false}) {
+  Map<String, dynamic> toMap() {
     var map = super.toMap();
     map["date"] = date.millisecondsSinceEpoch;
     map["amount"] = amount;
@@ -57,6 +57,20 @@ class Payment extends BaseModel {
     map["customerId"] = customerId;
     map["supplierId"] = supplierId;
     map["storeId"] = storeId;
+    map["type"] = type.index;
+    return map;
+  }
+
+  Map<String, dynamic> toMapV2() {
+    var map = super.toMap();
+    map["id"] = id;
+    map["date"] = date.millisecondsSinceEpoch;
+    map["amount"] = amount;
+    map["documentId"] = documentId;
+    map["categoryId"] = categoryId;
+    map["walletId"] = walletId;
+    map["customerId"] = customerId;
+    map["supplierId"] = supplierId;
     map["type"] = type.index;
     return map;
   }

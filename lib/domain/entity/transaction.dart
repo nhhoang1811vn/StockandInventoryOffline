@@ -45,4 +45,18 @@ class DocumentTransaction {
     map["updatedDate"] = updatedDate.millisecondsSinceEpoch;
     return map;
   }
+
+  Map<String, dynamic> toMapV2() {
+    var map = new Map<String, dynamic>();
+    map["documentId"] = documentId;
+    map["goodId"] = goodId;
+    map["quantity"] = quantity;
+    map["price"] = price;
+    map["documentType"] = type.index;
+    //map["storeId"] = storeId;
+
+    map["createdDate"] = createdDate.millisecondsSinceEpoch;
+    map["updatedDate"] = updatedDate.millisecondsSinceEpoch;
+    return map;
+  }
 }

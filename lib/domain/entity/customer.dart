@@ -23,8 +23,8 @@ class Customer extends BaseModel {
   }
 
   @override
-  Map<String, dynamic> toMap({bool includeId = false}) {
-    var map = super.toMap(includeId: includeId);
+  Map<String, dynamic> toMap() {
+    var map = super.toMap();
     map["address"] = address;
     map["email"] = email;
     map["phone"] = phone;
@@ -34,17 +34,16 @@ class Customer extends BaseModel {
     return map;
   }
 
-  // @override
-  // Map<String, dynamic> toMap() {
-  //   var map = super.toMap();
-  //   map["address"] = address;
-  //   map["email"] = email;
-  //   map["phone"] = phone;
-  //   map["taxID"] = taxID;
-  //   map["bankDetail"] = bankDetail;
-  //   map["storeId"] = storeId;
-  //   return map;
-  // }
+  Map<String, dynamic> toMapV2() {
+    var map = super.toMap();
+    map["id"] = id;
+    map["address"] = address;
+    map["email"] = email;
+    map["phone"] = phone;
+    map["taxID"] = taxID;
+    map["bankDetail"] = bankDetail;
+    return map;
+  }
 
   @override
   bool operator ==(Object other) =>

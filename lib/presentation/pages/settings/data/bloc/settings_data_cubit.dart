@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/data/realtime/db_service_realtime.dart';
+import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/repo/repo.dart';
 import 'package:injectable/injectable.dart';
 
@@ -36,22 +37,19 @@ class SettingsDataCubit extends Cubit<SettingsDataState> {
       )
       : super(SettingsDataState.initial());
 
-  void syncToRealtimeDB() {
+  Future<bool> syncToRealtimeDB() {
     final service = DbServiceRealtime(
         storesRepository,
         suppliersRepository,
         customersRepository,
         groupsRepository,
         goodsRepository,
-
         documentRepository,
         documentTransactionRepository,
-
         paymentCategoryRepository,
         walletRepository,
         paymentRepository
-
     );
-    service.syncLocalToNetwork();
+    return service.syncLocalToNetwork();
   }
 }

@@ -35,18 +35,6 @@ class SettingsDataPageState extends State<SettingsDataPage> {
     super.initState();
     loadCloudFileUpdatedTime();
   }
-
-  /*@override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: new AppBar(
-        title: new Text(
-          context.tr("menu_item_backup_and_restore"),
-        ),
-      ),
-      body: _buildBody(),
-    );
-  }*/
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SettingsDataCubit, SettingsDataState>(
@@ -103,8 +91,10 @@ class SettingsDataPageState extends State<SettingsDataPage> {
                   ListTile(
                     leading: Icon(Icons.cloud),
                     title: Text("Save the data to cloud v2"),
-                    subtitle: Text("Use this option to make your offline Stock & Inventory data available in the online version. (under development)"),
-                    onTap: () => onSaveDataToCloudVersion2(),
+                    subtitle: Text("Use this option to make your offline Stock & Inventory data available in the online version."),
+                    onTap: () {
+                      onSaveDataToCloudVersion2();
+                    },
                   ),
               ],
             ),
@@ -265,17 +255,16 @@ class SettingsDataPageState extends State<SettingsDataPage> {
   }
 
   void onSaveDataToCloudVersion2() async {
-    //save data to Firebase Realtime Database
-    //context.read<SettingsDataCubit>().syncToRealtimeDB();
+    showProgressIndicator(context);
+    final result = await context.read<SettingsDataCubit>().syncToRealtimeDB();
+    hideDialog(context);
+    if (result) {
+      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+    }
   }
 
-  // void onQuickSyncPressed(BuildContext context) {
-  //   justLogin = true;
-  //   Navigator.of(context).pushNamedAndRemoveUntil(
-  //     Pages.loading_data,
-  //     (Route<dynamic> route) => false,
-  //   );
-  // }
   void notifyBackupSuccess(String path){
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
