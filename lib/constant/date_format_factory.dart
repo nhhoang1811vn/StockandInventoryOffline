@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 import '../data/app_settings.dart';
 
 class DateFormatFactory {
-  static DateFormat dateFormatEnglish = DateFormat("yyyy/MM/dd");
-  static DateFormat dateFormatVietNam = DateFormat("dd/MM/yyyy");
+  static DateFormat dateFormatEnglish = DateFormat("yyyy/MM/dd", "en");
+  static DateFormat dateFormatVietNam = DateFormat("dd/MM/yyyy", "vi");
 
   static DateFormat getDateFormat() {
     String code = AppSettings.getLanguageCode();
@@ -15,8 +15,8 @@ class DateFormatFactory {
     }
   }
 
-  static DateFormat dateAndTimeFormatEnglish = DateFormat("yyyy/MM/dd HH:mm");
-  static DateFormat dateAndTimeFormatVietNam = DateFormat("dd/MM/yyyy HH:mm");
+  static DateFormat dateAndTimeFormatEnglish = DateFormat("yyyy/MM/dd HH:mm", "en");
+  static DateFormat dateAndTimeFormatVietNam = DateFormat("dd/MM/yyyy HH:mm", "vi");
 
   static DateFormat getDateAndTimeFormat() {
     String code = AppSettings.getLanguageCode();
@@ -27,7 +27,7 @@ class DateFormatFactory {
     }
   }
 
-  static DateFormat monthFormatEnglish = DateFormat.MMM();
+  static DateFormat monthFormatEnglish = DateFormat.MMM("en");
   static DateFormat monthFormatVietNam = DateFormat.MMM("vi");
 
   static DateFormat getMonthFormat() {

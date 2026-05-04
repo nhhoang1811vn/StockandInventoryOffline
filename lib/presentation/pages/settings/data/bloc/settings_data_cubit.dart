@@ -37,7 +37,7 @@ class SettingsDataCubit extends Cubit<SettingsDataState> {
       )
       : super(SettingsDataState.initial());
 
-  Future<bool> syncToRealtimeDB() {
+  Future<String?> syncToRealtimeDB() {
     final service = DbServiceRealtime(
         storesRepository,
         suppliersRepository,

@@ -4,15 +4,26 @@ class NavigatorUtils {
   NavigatorUtils._();
 
   static Future<void> openUri(Uri uri) async {
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(
-        uri
-      );
+    try {
+      // Using externalApplication mode is more reliable for App Store/Play Store links
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
+      }
+    } catch (e) {
+      // Handle potential PlatformExceptions gracefully
+      print("NavigatorUtils: Error launching URI: $e");
     }
   }
 
   static Future<void> openUrl(String input) async {
-    var uri = Uri.parse(input);
-    await openUri(uri);
+    try {
+      var uri = Uri.parse(input);
+      await openUri(uri);
+    } catch (e) {
+      print("NavigatorUtils: Error parsing URL: $e");
+    }
   }
 }

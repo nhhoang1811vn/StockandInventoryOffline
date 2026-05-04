@@ -256,12 +256,12 @@ class SettingsDataPageState extends State<SettingsDataPage> {
 
   void onSaveDataToCloudVersion2() async {
     showProgressIndicator(context);
-    final result = await context.read<SettingsDataCubit>().syncToRealtimeDB();
+    final error = await context.read<SettingsDataCubit>().syncToRealtimeDB();
     hideDialog(context);
-    if (result) {
+    if (error == null) {
       ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(error));
     }
   }
 

@@ -302,12 +302,12 @@ class HomePageState extends State<HomePage> {
 
   void onSyncDataPressed() async {
     showProgressIndicator(context);
-    final result = await getIt<SettingsDataCubit>().syncToRealtimeDB();
+    final error = await getIt<SettingsDataCubit>().syncToRealtimeDB();
     hideDialog(context);
-    if (result) {
+    if (error == null) {
       ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailure(context));
+      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(error));
     }
   }
 
