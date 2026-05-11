@@ -31,7 +31,7 @@ class MainPage extends StatelessWidget {
         BlocProvider<HomeCubit>(create: (_) => getIt<HomeCubit>()),
         BlocProvider<GoodsCubit>(create: (_) => getIt<GoodsCubit>()),
         BlocProvider<DocumentsCubit>(create: (_) => getIt<DocumentsCubit>()),
-        BlocProvider<PaymentsCubit>(create: (_) => getIt<PaymentsCubit>()),
+        //BlocProvider<PaymentsCubit>(create: (_) => getIt<PaymentsCubit>()),
         BlocProvider<MenuCubit>(create: (_) => getIt<MenuCubit>()),
       ],
       child: MainView(),
@@ -59,13 +59,13 @@ class _ScreenState extends State<MainView> with SingleTickerProviderStateMixin {
         onOpenDocumentsPage: () {
           _controller.animateTo(2);
         },
-        onOpenPaymentsPage: () {
-          _controller.animateTo(3);
-        },
+        //onOpenPaymentsPage: () {
+        //  _controller.animateTo(3);
+        //},
       ),
       GoodsPage(isSelection: false),
       DocumentsPage(),
-      PaymentsPage(),
+      //PaymentsPage(),
       MenuPage(),
     ];
     _controller = TabController(length: _screens.length, vsync: this);
@@ -162,10 +162,10 @@ class _ScreenState extends State<MainView> with SingleTickerProviderStateMixin {
                 icon: Icon(UIConstants.documentIconData),
                 text: context.tr("documents"),
               ),
-              Tab(
-                icon: Icon(UIConstants.paymentIconData),
-                text: context.tr("payments"),
-              ),
+              // Tab(
+              //   icon: Icon(UIConstants.paymentIconData),
+              //   text: context.tr("payments"),
+              // ),
               Tab(
                 icon: Icon(UIConstants.moreIconData),
                 text: context.tr("menu"),

@@ -92,6 +92,7 @@ class ItemHistoryCubit extends Cubit<ItemHistoryState> {
         await getSumQuantityOutgoing(state.goodId!, documentsInPeriod);
     double endPeriodQuantity = startPeriodQuantity + inQuantity - outQuantity;
 
+    if (isClosed) return;
     emit(
       state.copyWith(
         startPeriodQuantity: startPeriodQuantity,

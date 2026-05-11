@@ -90,69 +90,6 @@ class MenuPageState extends State<MenuPage> {
         children: [
           _buildProfileCard(),
           SizedBox(height: 16,),
-          // Card(
-          //   clipBehavior: Clip.antiAlias,
-          //   margin: EdgeInsets.all(16),
-          //   child: Column(
-          //     children: [
-          //       SizedBox(height: 16),
-          //       _buildProfile(),
-          //       SizedBox(height: 16),
-          //       buildDivider(indent: 0),
-          //       if (isAnonymous)
-          //         Column(
-          //           children: [
-          //             ListTile(
-          //               leading: Icon(Icons.upgrade),
-          //               title: Text(
-          //                 context.tr("menu_item_upgrade_account"),
-          //               ),
-          //               onTap: () => onUpgradeAccountItemPressed(),
-          //             ),
-          //             buildDivider(),
-          //           ],
-          //         ),
-          //       buildDivider(),
-          //       ListTile(
-          //         leading: Icon(UIConstants.settingIconData),
-          //         title: Text(context.tr("settings")),
-          //         trailing: Icon(Icons.navigate_next),
-          //         onTap: () => onSettingsItemPressed(context),
-          //       ),
-          //       buildDivider(),
-          //       ListTile(
-          //         leading: Icon(Icons.production_quantity_limits),
-          //         title:
-          //             Text(context.tr("subscriptions_title")),
-          //         trailing: Icon(Icons.navigate_next),
-          //         onTap: () => onSubscriptionItemPressed(context),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          Card(
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              children: [
-                ListTile(
-                  leading: Icon(UIConstants.storeIconData),
-                  title: Text(context.tr("stores")),
-                  trailing: Icon(Icons.navigate_next),
-                  onTap: () => onStoresItemPressed(context),
-                ),
-                buildDivider(),
-                ListTile(
-                  leading: Icon(Icons.change_circle),
-                  title:
-                      Text(context.tr("change_tracking_store")),
-                  subtitle: Text("${AppSettings.getSelectedStoreName()}"),
-                  trailing: Icon(Icons.navigate_next),
-                  onTap: () => onChangeTrackingStoreItemPressed(context),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 16,),
           Card(
             clipBehavior: Clip.antiAlias,
             child: Column(
@@ -285,14 +222,12 @@ class MenuPageState extends State<MenuPage> {
             },
           ),
           Divider(height: 0),
-          // ListTile(
-          //   leading: Icon(Icons.search),
-          //   title: Text("store_policy").tr(),
-          //   trailing: Icon(Icons.navigate_next),
-          //   onTap: () {
-          //     context.go("/store_policy");
-          //   },
-          // ),
+          ListTile(
+            leading: Icon(UIConstants.storeIconData),
+            title: Text(context.tr("stores")),
+            trailing: Icon(Icons.navigate_next),
+            onTap: () => onStoresItemPressed(context),
+          ),
         ],
       ),
     );

@@ -23,6 +23,7 @@ enum Currency {
   @HiveField(16) thb,
   @HiveField(17) aed,
   @HiveField(18) inr,
+  @HiveField(19) omr,
 }
 
 extension CurrencyExtension on Currency {
@@ -46,7 +47,8 @@ extension CurrencyExtension on Currency {
       case Currency.ngn: return "₦";
       case Currency.thb: return "฿";
       case Currency.aed: return "د.إ";
-      case Currency.inr:return "₹";
+      case Currency.inr: return "₹";
+      case Currency.omr: return "ر.ع.";
     }
   }
 
@@ -71,7 +73,7 @@ extension CurrencyExtension on Currency {
       case Currency.thb: return "THB (฿) - Thai Baht";
       case Currency.aed: return "AED (د.إ) - United Arab Emirates Dirham";
       case Currency.inr: return "INR (₹) - Indian Rupee";
+      case Currency.omr: return "OMR (ر.ع.) - Omani Riyal";
     }
   }
 }
-

@@ -11,7 +11,9 @@ import 'package:good_manager/data/data.dart';
 import 'package:good_manager/presentation/dialog/custom_dialog.dart';
 import 'package:good_manager/presentation/widget/views.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../data/db_service.dart';
 import '../../../widget/snackbar_widgets.dart';
@@ -178,21 +180,71 @@ class SettingsDataPageState extends State<SettingsDataPage> {
     }
   }*/
 
-  void onBackUpPressed(BuildContext context) async {
+  // void onBackUpPressed(BuildContext context) async {
+  //   try {
+  //     showProgressIndicator(context);
+  //     checkPermission();
+  //     final db = await DBHelper().db;
+  //     final service = DbService(db);
+  //     final file = await service.exportToJson();
+  //     String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+  //     if (selectedDirectory != null) {
+  //       final fileName = p.basename(file.path);
+  //       final outputPath = p.join(selectedDirectory, fileName);
+  //       await file.copy(outputPath);
+  //       notifyBackupSuccess(outputPath);
+  //     }
+  //   } catch(e){
+  //     notifyBackupError(e.toString());
+  //   } finally {
+  //     hideDialog(context);
+  //   }
+  // }
+
+
+
+  Future<void> onBackUpPressed(BuildContext context) async {
     try {
       showProgressIndicator(context);
+
       checkPermission();
+
       final db = await DBHelper().db;
       final service = DbService(db);
-      final file = await service.exportToJson();
-      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-      if (selectedDirectory != null) {
-        final fileName = p.basename(file.path);
-        final outputPath = p.join(selectedDirectory, fileName);
-        await file.copy(outputPath);
-        notifyBackupSuccess(outputPath);
+
+      // Export json file
+      final exportedFile = await service.exportToJson();
+
+      // Create backup folder in app documents directory
+      final appDocDir = await getApplicationDocumentsDirectory();
+      final backupDir = Directory(
+        p.join(appDocDir.path, 'backups'),
+      );
+
+      if (!await backupDir.exists()) {
+        await backupDir.create(recursive: true);
       }
-    } catch(e){
+
+      // Create final backup file path
+      final fileName =
+          'backup_${DateTime.now().millisecondsSinceEpoch}.json';
+
+      final backupPath = p.join(backupDir.path, fileName);
+
+      // Copy exported file to backup location
+      final backupFile = await exportedFile.copy(backupPath);
+
+      // Share file
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(backupFile.path)],
+          text: 'Stock Inventory Backup',
+          subject: 'Backup File',
+        ),
+      );
+
+      notifyBackupSuccess(backupFile.path);
+    } catch (e) {
       notifyBackupError(e.toString());
     } finally {
       hideDialog(context);

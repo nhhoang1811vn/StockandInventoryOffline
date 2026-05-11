@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +12,10 @@ import 'package:good_manager/presentation/widget/widget.dart';
 import 'package:good_manager/util/currency_formatter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprintf/sprintf.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../constant/constant.dart';
+import '../../../data/app_settings.dart';
 import '../../../di/di.dart';
 import '../../../domain/entity/entity.dart';
 import '../../../domain/free_limits.dart';
@@ -19,18 +23,19 @@ import '../../../util/util.dart';
 import '../../dialog/dialog.dart';
 import '../../widget/snackbar_widgets.dart';
 import '../base/base_state.dart';
+import '../main/main_page.dart';
 import '../pages.dart';
 import '../settings/data/bloc/settings_data_cubit.dart';
 
 class HomePage extends StatefulWidget {
   final VoidCallback onOpenGoodsPage;
   final VoidCallback onOpenDocumentsPage;
-  final VoidCallback onOpenPaymentsPage;
+  //final VoidCallback onOpenPaymentsPage;
 
   HomePage({
     required this.onOpenGoodsPage,
     required this.onOpenDocumentsPage,
-    required this.onOpenPaymentsPage,
+    //required this.onOpenPaymentsPage,
   }) : super();
 
   @override
@@ -97,7 +102,21 @@ class HomePageState extends State<HomePage> {
 
   Widget _buildContent(HomeState state) {
     List<Widget> children = [
-      SelectedStoreView(),
+      SelectedStoreView(canChange: true, onPressed: () async{
+        final result = await Navigator.of(context)
+            .pushNamed(Pages.store_list, arguments: {"isSelection": true});
+        if (result != null) {
+          Store store = result as Store;
+
+          AppSettings.setSelectedStoreId(store.id!);
+          AppSettings.setSelectedStoreName(store.name);
+
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => MainPage()),
+                (Route<dynamic> route) => false,
+          );
+        }
+      },),
       Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -135,7 +154,7 @@ class HomePageState extends State<HomePage> {
                     context.tr("payments_title"),
                     "",
                     UIConstants.paymentIconData,
-                    widget.onOpenPaymentsPage,
+                    openPayments,
                   ),
                 ),
                 SizedBox(width: 16),
@@ -267,19 +286,56 @@ class HomePageState extends State<HomePage> {
                         ),
                         SizedBox(height: 8),
                         ElevatedButton(
-                          onPressed: () {
-                            NavigatorUtils.openUrl("https://apps.apple.com/us/app/stock-inventory-online/id6761761103");
+                          onPressed: () async {
+                            if (Platform.isAndroid) {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text("Join Closed Beta"),
+                                  content: const Text(
+                                    "Please send me your Gmail address so I can add you as a tester on Google Play.",
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text("Close"),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        Navigator.pop(context);
+
+                                        final Uri emailUri = Uri(
+                                          scheme: 'mailto',
+                                          path: 'nhhoang1811vn@gmail.com',
+                                          query: Uri.encodeFull(
+                                            'subject=Join Closed Beta Program&body=I want to join the Closed Beta program.',
+                                          ),
+                                        );
+
+                                        await launchUrl(emailUri);
+                                      },
+                                      child: const Text("OK"),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              return;
+                            }
+
+                            NavigatorUtils.openUrl(
+                              "https://apps.apple.com/us/app/stock-inventory-online/id6761761103",
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Theme.of(context).colorScheme.primary,
                             foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
-                          child: Text("Download Now"),
-                        ),
+                          child: const Text("Download Now"),
+                        )
                       ],
                     ),
                   ),
@@ -662,6 +718,11 @@ class HomePageState extends State<HomePage> {
 
   void openReport() {
     Navigator.of(context).pushNamed(Pages.report);
+  }
+  void openPayments() {
+    Navigator.of(context).pushNamed(Pages.payments,
+      arguments: {"setting": null, "initialIndex": 0},
+    );
   }
 
   Widget _buildSingleValueCard(
