@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -242,9 +244,17 @@ class SettingsDataPageState extends State<SettingsDataPage> {
           subject: 'Backup File',
         ),
       );
-
+      unawaited(FirebaseAnalytics.instance.logEvent(
+          name: 'backup_success'
+      ));
       notifyBackupSuccess(backupFile.path);
     } catch (e) {
+      unawaited(FirebaseAnalytics.instance.logEvent(
+        name: 'backup_failed',
+        parameters: {
+          'error': e.toString(),
+        },
+      ));
       notifyBackupError(e.toString());
     } finally {
       hideDialog(context);

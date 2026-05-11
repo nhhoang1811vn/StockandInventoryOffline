@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_manager/constant/config.dart';
 
 class LogoAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -14,10 +15,8 @@ class LogoAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           SizedBox(width: 8),
           Text(
-            "Stock and Inventory",
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontStyle: FontStyle.italic,
-                ),
+            Config.appName,
+            style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(fontStyle: FontStyle.italic),
           ),
         ],
       ),

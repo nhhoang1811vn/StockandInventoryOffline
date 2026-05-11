@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,6 +32,7 @@ import '../settings/data/bloc/settings_data_cubit.dart';
 class HomePage extends StatefulWidget {
   final VoidCallback onOpenGoodsPage;
   final VoidCallback onOpenDocumentsPage;
+
   //final VoidCallback onOpenPaymentsPage;
 
   HomePage({
@@ -102,21 +105,24 @@ class HomePageState extends State<HomePage> {
 
   Widget _buildContent(HomeState state) {
     List<Widget> children = [
-      SelectedStoreView(canChange: true, onPressed: () async{
-        final result = await Navigator.of(context)
-            .pushNamed(Pages.store_list, arguments: {"isSelection": true});
-        if (result != null) {
-          Store store = result as Store;
+      SelectedStoreView(
+        canChange: true,
+        onPressed: () async {
+          final result = await Navigator.of(context)
+              .pushNamed(Pages.store_list, arguments: {"isSelection": true});
+          if (result != null) {
+            Store store = result as Store;
 
-          AppSettings.setSelectedStoreId(store.id!);
-          AppSettings.setSelectedStoreName(store.name);
+            AppSettings.setSelectedStoreId(store.id!);
+            AppSettings.setSelectedStoreName(store.name);
 
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => MainPage()),
-                (Route<dynamic> route) => false,
-          );
-        }
-      },),
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => MainPage()),
+              (Route<dynamic> route) => false,
+            );
+          }
+        },
+      ),
       Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -197,14 +203,15 @@ class HomePageState extends State<HomePage> {
             children: [
               Row(
                 children: [
-                  Icon(Icons.rocket_launch, color: Theme.of(context).colorScheme.primary),
+                  Icon(Icons.rocket_launch,
+                      color: Theme.of(context).colorScheme.primary),
                   SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       "Version 2.0.0: Online Collaboration",
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                   ),
                 ],
@@ -217,7 +224,10 @@ class HomePageState extends State<HomePage> {
               SizedBox(height: 12),
               Text(
                 "Migration Guide:",
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               if (isGuest) ...[
                 SizedBox(height: 8),
@@ -230,12 +240,16 @@ class HomePageState extends State<HomePage> {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 16),
+                      Icon(Icons.warning_amber_rounded,
+                          color: Colors.orange, size: 16),
                       SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           "You are in Guest Mode. Please log in first to sync your data.",
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.orange[900]),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelSmall
+                              ?.copyWith(color: Colors.orange[900]),
                         ),
                       ),
                       TextButton(
@@ -290,6 +304,7 @@ class HomePageState extends State<HomePage> {
                             if (Platform.isAndroid) {
                               showDialog(
                                 context: context,
+                                barrierDismissible: true,
                                 builder: (context) => AlertDialog(
                                   title: const Text("Join Closed Beta"),
                                   content: const Text(
@@ -297,13 +312,12 @@ class HomePageState extends State<HomePage> {
                                   ),
                                   actions: [
                                     TextButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: const Text("Close"),
-                                    ),
-                                    ElevatedButton(
                                       onPressed: () async {
-                                        Navigator.pop(context);
+                                        unawaited(FirebaseAnalytics.instance.logEvent(
+                                          name: 'migration_flow_register',
+                                        ));
 
+                                        Navigator.pop(context);
                                         final Uri emailUri = Uri(
                                           scheme: 'mailto',
                                           path: 'nhhoang1811vn@gmail.com',
@@ -314,7 +328,18 @@ class HomePageState extends State<HomePage> {
 
                                         await launchUrl(emailUri);
                                       },
-                                      child: const Text("OK"),
+                                      child: const Text("Register"),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        unawaited(FirebaseAnalytics.instance.logEvent(
+                                          name: 'migration_flow_access',
+                                        ));
+                                        NavigatorUtils.openUrl(
+                                          "https://play.google.com/apps/testing/com.steam.goodmanagerflutteronline",
+                                        );
+                                      },
+                                      child: const Text("Access"),
                                     ),
                                   ],
                                 ),
@@ -327,8 +352,10 @@ class HomePageState extends State<HomePage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.onPrimary,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -346,8 +373,7 @@ class HomePageState extends State<HomePage> {
                 "Tap to learn more about new features!",
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.bold
-                ),
+                    fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -363,7 +389,8 @@ class HomePageState extends State<HomePage> {
     if (error == null) {
       ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(error));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(snackBarWhenFailureWithText(error));
     }
   }
 
@@ -381,18 +408,26 @@ class HomePageState extends State<HomePage> {
               Text("🚀 Major Update: Online Collaboration",
                   style: TextStyle(fontWeight: FontWeight.bold)),
               SizedBox(height: 12),
-              _buildFeatureRow(Icons.cloud, "Introduced Online Mode powered by Firebase Realtime Database."),
-              _buildFeatureRow(Icons.sync, "Real-time Updates – store data now syncs instantly across all devices."),
-              _buildFeatureRow(Icons.share, "Store Sharing – go to 'Stores' and tap the Share button to invite others."),
-              _buildFeatureRow(Icons.manage_accounts, "Role Management – assign members as Editor or Viewer."),
-              _buildFeatureRow(Icons.people, "Multi-user Access – multiple users can work on the same store simultaneously."),
-              _buildFeatureRow(Icons.flash_on, "Improved performance and synchronization reliability."),
+              _buildFeatureRow(Icons.cloud,
+                  "Introduced Online Mode powered by Firebase Realtime Database."),
+              _buildFeatureRow(Icons.sync,
+                  "Real-time Updates – store data now syncs instantly across all devices."),
+              _buildFeatureRow(Icons.share,
+                  "Store Sharing – go to 'Stores' and tap the Share button to invite others."),
+              _buildFeatureRow(Icons.manage_accounts,
+                  "Role Management – assign members as Editor or Viewer."),
+              _buildFeatureRow(Icons.people,
+                  "Multi-user Access – multiple users can work on the same store simultaneously."),
+              _buildFeatureRow(Icons.flash_on,
+                  "Improved performance and synchronization reliability."),
               Divider(height: 24),
               Text("Instructions for Data Migration:",
                   style: TextStyle(fontWeight: FontWeight.bold)),
               SizedBox(height: 12),
-              _buildFeatureRow(Icons.looks_one, "Step 1: Sync your data to ensure everything is backed up online."),
-              _buildFeatureRow(Icons.looks_two, "Step 2: Download the new 'Stock Inventory Online' app and log in."),
+              _buildFeatureRow(Icons.looks_one,
+                  "Step 1: Sync your data to ensure everything is backed up online."),
+              _buildFeatureRow(Icons.looks_two,
+                  "Step 2: Download the new 'Stock Inventory Online' app and log in."),
             ],
           ),
         ),
@@ -403,7 +438,8 @@ class HomePageState extends State<HomePage> {
               await prefs.setBool('version_2_0_0_skipped', true);
               Navigator.pop(context);
             },
-            child: Text(context.tr("skip"), style: TextStyle(color: Colors.grey)),
+            child:
+                Text(context.tr("skip"), style: TextStyle(color: Colors.grey)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -422,7 +458,8 @@ class HomePageState extends State<HomePage> {
         children: [
           Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
           SizedBox(width: 8),
-          Expanded(child: Text(text, style: Theme.of(context).textTheme.bodySmall)),
+          Expanded(
+              child: Text(text, style: Theme.of(context).textTheme.bodySmall)),
         ],
       ),
     );
@@ -450,8 +487,7 @@ class HomePageState extends State<HomePage> {
                       height: 4,
                     ),
                     Text(
-                      context.tr("title_good_count") +
-                          ": ${state.countGoods}",
+                      context.tr("title_good_count") + ": ${state.countGoods}",
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     SizedBox(
@@ -534,7 +570,8 @@ class HomePageState extends State<HomePage> {
                                               .titleMedium,
                                         ),
                                         Text(
-                                          CurrencyFormatter.format(context, state.sumPriceIncomingDocument),
+                                          CurrencyFormatter.format(context,
+                                              state.sumPriceIncomingDocument),
                                           style: Theme.of(context)
                                               .textTheme
                                               .titleMedium,
@@ -581,7 +618,8 @@ class HomePageState extends State<HomePage> {
                                               .titleMedium,
                                         ),
                                         Text(
-                                          CurrencyFormatter.format(context, state.sumPriceOutgoingDocument),
+                                          CurrencyFormatter.format(context,
+                                              state.sumPriceOutgoingDocument),
                                           style: Theme.of(context)
                                               .textTheme
                                               .titleMedium,
@@ -719,8 +757,10 @@ class HomePageState extends State<HomePage> {
   void openReport() {
     Navigator.of(context).pushNamed(Pages.report);
   }
+
   void openPayments() {
-    Navigator.of(context).pushNamed(Pages.payments,
+    Navigator.of(context).pushNamed(
+      Pages.payments,
       arguments: {"setting": null, "initialIndex": 0},
     );
   }

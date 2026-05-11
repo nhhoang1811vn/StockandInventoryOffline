@@ -59,6 +59,12 @@ class MyAppState extends State<MyApp> {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: ThemeData.light().copyWith(
+                appBarTheme: AppBarTheme(
+                    titleTextStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    )),
                 scaffoldBackgroundColor: Color.fromARGB(255, 230, 230, 236),
                   cardTheme: CardThemeData(
                     color: Colors.white,
