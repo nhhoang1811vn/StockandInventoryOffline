@@ -32,7 +32,7 @@ class StoreRealtimeEntity {
         for (var item in customers) "${item.id}": item.toMapV2()
       },
       "groups": {for (var item in groups) "${item.id}": item.toMapV2()},
-      "goods": {for (var item in goods) item.id.toString(): item.toMapV2()},
+      //"goods": {for (var item in goods) item.id.toString(): item.toMapV2()},
       "documents": {
         for (var item in documents) item.id.toString(): item.toMapV2()
       },

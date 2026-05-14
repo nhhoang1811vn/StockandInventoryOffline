@@ -125,15 +125,21 @@ class DbServiceRealtime {
             groups,
             goods,
             documents,
-            documentTransactions,
-            wallets,
-            paymentCategories,
-            payments);
-        
-        // Network write with timeout
-        await FirebaseDatabase.instance.ref("stores/$storeId")
-            .set(entity.toJson())
-            .timeout(const Duration(seconds: 60));
+              documentTransactions,
+              wallets,
+              paymentCategories,
+              payments);
+
+          // Network write with timeout
+          await FirebaseDatabase.instance.ref("stores/$storeId")
+              .set(entity.toJson())
+              .timeout(const Duration(seconds: 120));
+
+           final goodsRef = FirebaseDatabase.instance.ref("stores/$storeId/goods");
+
+           for (final item in entity.goods) {
+             await goodsRef.child(item.id.toString()).set(item.toMapV2());
+           }
       }
 
       // Batch membership updates
