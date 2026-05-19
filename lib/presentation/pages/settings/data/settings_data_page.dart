@@ -237,13 +237,20 @@ class SettingsDataPageState extends State<SettingsDataPage> {
       final backupFile = await exportedFile.copy(backupPath);
 
       // Share file
-      await SharePlus.instance.share(
+      /*await SharePlus.instance.share(
         ShareParams(
           files: [XFile(backupFile.path)],
           text: 'Stock Inventory Backup',
           subject: 'Backup File',
         ),
+      );*/
+      final box = context.findRenderObject() as RenderBox?;
+      final params = ShareParams(
+        files: [XFile(backupFile.path)],
+        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
       );
+      await SharePlus.instance.share(params);
+
       unawaited(FirebaseAnalytics.instance.logEvent(
           name: 'backup_success'
       ));

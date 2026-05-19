@@ -576,8 +576,14 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       await file.writeAsBytes(await pdf.save());
 
       // Export via share dialog (iOS-compatible)
+      // final params = ShareParams(
+      //   files: [XFile('${file.path}')],
+      // );
+      // await SharePlus.instance.share(params);
+      final box = context.findRenderObject() as RenderBox?;
       final params = ShareParams(
         files: [XFile('${file.path}')],
+        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
       );
       await SharePlus.instance.share(params);
 
