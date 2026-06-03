@@ -298,6 +298,8 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
         onBatchScanMenuClicked();
       }
     } catch (e) {
+      if (isClosed)
+        return;
       emit(state.copyWith(state: OpenSaveGoodPageWithBarcodeState(barcode)));
     }
   }

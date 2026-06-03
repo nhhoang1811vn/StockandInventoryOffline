@@ -306,40 +306,61 @@ class HomePageState extends State<HomePage> {
                                 context: context,
                                 barrierDismissible: true,
                                 builder: (context) => AlertDialog(
-                                  title: const Text("Join Closed Beta"),
-                                  content: const Text(
-                                    "Please send me your Gmail address so I can add you as a tester on Google Play.",
+                                  title: const Text("Switch to Online Mode"),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        "To access real-time collaboration and the new app, please follow these steps:",
+                                      ),
+                                      const SizedBox(height: 16),
+                                      const Text(
+                                        "1. Join the Google Group",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const Text(
+                                        "This grants your account permission to download the beta version.",
+                                      ),
+                                      const SizedBox(height: 12),
+                                      const Text(
+                                        "2. Join the Beta Program",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const Text(
+                                        "After joining the group, opt-in on the Play Store to download 'Stock Inventory Online'.",
+                                      ),
+                                    ],
                                   ),
                                   actions: [
                                     TextButton(
                                       onPressed: () async {
-                                        unawaited(FirebaseAnalytics.instance.logEvent(
+                                        unawaited(FirebaseAnalytics.instance
+                                            .logEvent(
                                           name: 'migration_flow_register',
                                         ));
 
                                         Navigator.pop(context);
-                                        final Uri emailUri = Uri(
-                                          scheme: 'mailto',
-                                          path: 'nhhoang1811vn@gmail.com',
-                                          query: Uri.encodeFull(
-                                            'subject=Join Closed Beta Program&body=I want to join the Closed Beta program.',
-                                          ),
+                                        NavigatorUtils.openUrl(
+                                          "https://groups.google.com/g/stock-inventory-online-beta-testers",
                                         );
-
-                                        await launchUrl(emailUri);
                                       },
-                                      child: const Text("Register"),
+                                      child: const Text("Step 1: Join Group"),
                                     ),
                                     ElevatedButton(
                                       onPressed: () async {
-                                        unawaited(FirebaseAnalytics.instance.logEvent(
+                                        unawaited(FirebaseAnalytics.instance
+                                            .logEvent(
                                           name: 'migration_flow_access',
                                         ));
                                         NavigatorUtils.openUrl(
                                           "https://play.google.com/apps/testing/com.steam.goodmanagerflutteronline",
                                         );
                                       },
-                                      child: const Text("Access"),
+                                      child: const Text("Step 2: Join Beta"),
                                     ),
                                   ],
                                 ),
