@@ -39,6 +39,7 @@ class GoodsCubit extends Cubit<GoodsState> {
 
   void initState(bool isSelection, Document? document) async {
     var minQuantitySettings = await AppSettings.getMinimumQuantitySettings();
+    if (isClosed) return;
 
     emit(
       state.copyWith(
@@ -64,6 +65,7 @@ class GoodsCubit extends Cubit<GoodsState> {
 
   void onGroupTapped(Group group) async {
     var items = await getSelectedGroupValue(group);
+    if (isClosed) return;
     emit(
       state.copyWith(
         selectedGroups: items,
@@ -136,11 +138,13 @@ class GoodsCubit extends Cubit<GoodsState> {
     int storeId = AppSettings.getSelectedStoreId();
     List<Group> allGroups = await groupsUseCase.getAllByStoreId(storeId);
     List<Good> allGoods = await goodsUseCase.getAllByStoreId(storeId);
+    if (isClosed) return;
     emit(state.copyWith(allGroups: allGroups, allGoods: allGoods));
     refresh();
   }
 
   void refresh() {
+    if (isClosed) return;
     if (state.textSearch.isNotEmpty) {
       //show item match search text
       loadItemsMatchSearchText();
@@ -179,6 +183,7 @@ class GoodsCubit extends Cubit<GoodsState> {
   }
 
   void loadItemsMatchSearchText() {
+    if (isClosed) return;
     Criteria<Group> groupCriteria = getFilterGroupCriteria();
     List<Group> groups = groupCriteria.meetCriteria(state.allGroups);
 
@@ -201,6 +206,7 @@ class GoodsCubit extends Cubit<GoodsState> {
   }
 
   void loadItemsInSelectedGroup() {
+    if (isClosed) return;
     int? groupId = getSelectedGroupId();
     List<Group> groups =
         state.allGroups.where((item) => item.groupId == groupId).toList();
@@ -223,6 +229,7 @@ class GoodsCubit extends Cubit<GoodsState> {
   }
 
   void updateTotalInfo() {
+    if (isClosed) return;
     double quantityTotal = 0;
     double purchasePriceTotal = 0.0;
     double salePriceTotal = 0.0;
@@ -582,6 +589,7 @@ class GoodsCubit extends Cubit<GoodsState> {
     transaction.type = state.document!.type;
     transaction.storeId = AppSettings.getSelectedStoreId();
     int transactionId = await documentsUseCases.insertTransaction(transaction);
+    if (isClosed) return;
     if (transactionId > 0) {
       if (transaction.type == DocumentType.incoming) {
         emit(
@@ -602,6 +610,7 @@ class GoodsCubit extends Cubit<GoodsState> {
   }
 
   void updateQuantity(int goodId, double quantity) {
+    if (isClosed) return;
     List<Good> goods = [];
     goods.addAll(state.allGoods);
     for (Good item in goods) {

@@ -302,75 +302,14 @@ class HomePageState extends State<HomePage> {
                         ElevatedButton(
                           onPressed: () async {
                             if (Platform.isAndroid) {
-                              showDialog(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (context) => AlertDialog(
-                                  title: const Text("Switch to Online Mode"),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        "To access real-time collaboration and the new app, please follow these steps:",
-                                      ),
-                                      const SizedBox(height: 16),
-                                      const Text(
-                                        "1. Join the Google Group",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const Text(
-                                        "This grants your account permission to download the beta version.",
-                                      ),
-                                      const SizedBox(height: 12),
-                                      const Text(
-                                        "2. Join the Beta Program",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const Text(
-                                        "After joining the group, opt-in on the Play Store to download 'Stock Inventory Online'.",
-                                      ),
-                                    ],
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () async {
-                                        unawaited(FirebaseAnalytics.instance
-                                            .logEvent(
-                                          name: 'migration_flow_register',
-                                        ));
-
-                                        Navigator.pop(context);
-                                        NavigatorUtils.openUrl(
-                                          "https://groups.google.com/g/stock-inventory-online-beta-testers",
-                                        );
-                                      },
-                                      child: const Text("Step 1: Join Group"),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        unawaited(FirebaseAnalytics.instance
-                                            .logEvent(
-                                          name: 'migration_flow_access',
-                                        ));
-                                        NavigatorUtils.openUrl(
-                                          "https://play.google.com/apps/testing/com.steam.goodmanagerflutteronline",
-                                        );
-                                      },
-                                      child: const Text("Step 2: Join Beta"),
-                                    ),
-                                  ],
-                                ),
+                              NavigatorUtils.openUrl(
+                                "https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutteronline",
                               );
-                              return;
+                            } else {
+                              NavigatorUtils.openUrl(
+                                "https://apps.apple.com/us/app/stock-inventory-online/id6761761103",
+                              );
                             }
-
-                            NavigatorUtils.openUrl(
-                              "https://apps.apple.com/us/app/stock-inventory-online/id6761761103",
-                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:

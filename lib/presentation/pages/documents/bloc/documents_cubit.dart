@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/domain/usecase/usecase.dart';
@@ -53,6 +54,7 @@ class DocumentsCubit extends Cubit<DocumentsState> {
   void loadItems() async {
     int storeId = AppSettings.getSelectedStoreId();
     List<Document> items = await useCase.getAllByStoreId(storeId);
+    if (isClosed) return;
     emit(state.copyWith(allDocuments: items));
     update();
   }
@@ -123,6 +125,7 @@ class DocumentsCubit extends Cubit<DocumentsState> {
   }
 
   void update() {
+    if (isClosed) return;
     List<Criteria<Document>> commonCriteria = [];
     if (state.setting!.selectedStatus.isNotEmpty) {
       List<Criteria<Document>> statusCriteria = [];
@@ -180,6 +183,7 @@ class DocumentsCubit extends Cubit<DocumentsState> {
         payment.customer = await customersUseCase.get(item.personId!);
       }
     }
+    if (isClosed) return;
     emit(state.copyWith(state: OpenSavePaymentPageState(payment)));
   }
 

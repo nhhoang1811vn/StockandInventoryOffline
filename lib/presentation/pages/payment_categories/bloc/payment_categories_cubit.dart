@@ -23,6 +23,7 @@ class PaymentCategoriesCubit extends Cubit<PaymentCategoriesState> {
 
   void loadItems() async {
     List<PaymentCategory> categories = await paymentCategoryUseCases.getAll();
+    if (isClosed) return;
     List<PaymentCategory> inboundCategories = categories
         .where((category) => category.type == PaymentType.inbound)
         .toList();
@@ -40,5 +41,6 @@ class PaymentCategoriesCubit extends Cubit<PaymentCategoriesState> {
 
   void deleteCategory(int id) async {
     await paymentCategoryUseCases.delete(id);
+    loadItems();
   }
 }

@@ -59,6 +59,7 @@ class CustomersCubit extends Cubit<CustomersState> {
 
   void onAddButtonClicked() async {
     bool isValid = await isValidToAddMoreCustomer();
+    if (isClosed) return;
     if (isValid) {
       Customer item = Customer();
       item.storeId = AppSettings.getSelectedStoreId();
@@ -89,12 +90,14 @@ class CustomersCubit extends Cubit<CustomersState> {
   void loadItems() async {
     final storeId = AppSettings.getSelectedStoreId();
     List<Customer> allItems = await useCase.getAllByStoreId(storeId);
+    if (isClosed) return;
     emit(state.copyWith(allItems: allItems));
     sort();
     filter();
   }
 
   void filter() {
+    if (isClosed) return;
     List<Customer> items = filterCustomers();
     emit(state.copyWith(items: items));
   }
@@ -113,6 +116,7 @@ class CustomersCubit extends Cubit<CustomersState> {
   }
 
   void sort() {
+    if (isClosed) return;
     List<Customer> items = sortCustomers();
     emit(state.copyWith(allItems: items));
   }

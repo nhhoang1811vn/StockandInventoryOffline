@@ -30,6 +30,7 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
 
   void init(Payment item) async {
     var allCategories = await paymentCategoryUseCases.getAll();
+    if (isClosed) return;
     var categories =
         allCategories.where((category) => category.type == item.type).toList();
     PaymentCategory? selectedCategory = categories.firstWhereOrNull(
@@ -37,6 +38,7 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     );
     int storeId = AppSettings.getSelectedStoreId();
     var wallets = await walletUseCases.getAllByStoreId(storeId);
+    if (isClosed) return;
     Wallet? selectedWallet =
         wallets.firstWhereOrNull((wallet) => wallet.id == item.walletId);
     emit(
@@ -80,11 +82,13 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     if (state.item!.type == PaymentType.inbound) {
       if (item.personId != null) {
         Customer customer = await customersUseCase.get(item.personId!);
+        if (isClosed) return;
         emit(state.copyWith(customerId: item.personId, customer: customer));
       }
     } else {
       if (item.personId != null) {
         Supplier supplier = await suppliersUseCase.get(item.personId!);
+        if (isClosed) return;
         emit(state.copyWith(supplierId: item.personId, supplier: supplier));
       }
     }
@@ -182,6 +186,7 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
     } else {
       await useCase.update(item);
     }
+    if (isClosed) return;
     AppSettings.setSavePaymentLastSelectedWalletId(item.walletId);
     emit(state.copyWith(state: SaveItemSuccessful()));
   }
@@ -200,6 +205,7 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
 
   void onRefreshCategories() async {
     var allCategories = await paymentCategoryUseCases.getAll();
+    if (isClosed) return;
     var categories = allCategories
         .where((category) => category.type == state.item!.type)
         .toList();
@@ -218,6 +224,7 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
   void onRefreshWallets() async {
     int storeId = AppSettings.getSelectedStoreId();
     var wallets = await walletUseCases.getAllByStoreId(storeId);
+    if (isClosed) return;
     //var categories = allCategories.where((category) => category.type == state.item!.type).toList();
 
     Wallet? selectedWallet = wallets.firstWhereOrNull(

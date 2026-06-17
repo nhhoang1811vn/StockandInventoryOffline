@@ -51,8 +51,10 @@ class SaveGroupCubit extends Cubit<SaveGroupState> {
         } else {
           await useCase.update(item);
         }
+        if (isClosed) return;
         emit(state.copyWith(state: SaveItemSuccessful()));
       } catch (e) {
+        if (isClosed) return;
         emit(state.copyWith(state: SaveItemError(e.toString())));
       }
     } else {

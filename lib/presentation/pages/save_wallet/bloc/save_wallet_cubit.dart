@@ -82,6 +82,7 @@ class SaveWalletCubit extends Cubit<SaveWalletState> {
       } else {
         await useCase.update(item);
       }
+      if (isClosed) return;
       emit(state.copyWith(state: SaveItemSuccessful(), item: item));
     } else {
       emit(state.copyWith(name: NameInput.dirty(value: state.name.value)));

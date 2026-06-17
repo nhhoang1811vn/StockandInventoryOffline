@@ -85,6 +85,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
       } else {
         await useCase.update(item);
       }
+      if (isClosed) return true;
       emit(state.copyWith(item: item));
       return true;
     } else {
@@ -95,6 +96,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
 
   void onAddGoodClicked() async {
     final result = await save();
+    if (isClosed) return;
     if (result) {
       emit(state.copyWith(state: OpenGoodListState()));
     }
@@ -102,6 +104,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
 
   void onSaveMenuClicked() async {
     bool result = await save();
+    if (isClosed) return;
     if (result) {
       emit(state.copyWith(state: SaveDocumentSuccessfulState(state.item!)));
     }
@@ -132,6 +135,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   void loadPayments() async {
     List<Payment> payments =
         await paymentUseCase.getByDocumentId(state.item!.id!);
+    if (isClosed) return;
     emit(state.copyWith(payments: payments));
   }
 
@@ -147,6 +151,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
     if (state.item?.id != null) {
       List<DocumentTransaction> transactions =
           await useCase.getTransactionsByDocumentId(state.item!.id!);
+      if (isClosed) return;
       double totalQuantity = 0.0;
       double totalAmount = 0.0;
       transactions.forEach((element) {
@@ -168,6 +173,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
 
   void deleteTransaction(DocumentTransaction item) async {
     bool result = await useCase.deleteTransaction(item.id!);
+    if (isClosed) return;
     if (result) {
       loadTransactions();
     }
@@ -188,6 +194,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   }
 
   void filter() {
+    if (isClosed) return;
     List<DocumentTransaction> transactions = state.allTransactions
         .where((element) => filterTransaction(element))
         .toList();
@@ -213,6 +220,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   }
 
   void sort() {
+    if (isClosed) return;
     List<SortTransaction> options = getSortOptions();
     List<DocumentTransaction> items = [];
     items.addAll(state.allTransactions);
@@ -284,6 +292,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   void findGood(String barcode) async {
     try {
       Good good = await goodUseCases.getGoodsByBarCode(barcode);
+      if (isClosed) return;
       if (AppSettings.getBatchModeScan() == BatchModeScan.MANUAL) {
         emit(state.copyWith(state: OpenInputQuantityDialogState(good)));
       } else {
@@ -295,17 +304,18 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
               : good.salePrice,
         );
         await Future.delayed(Duration(seconds: 2));
+        if (isClosed) return;
         onBatchScanMenuClicked();
       }
     } catch (e) {
-      if (isClosed)
-        return;
+      if (isClosed) return;
       emit(state.copyWith(state: OpenSaveGoodPageWithBarcodeState(barcode)));
     }
   }
 
   void saveThenAddTransaction(Good good, double quantity, double? price) async {
     bool result = await save();
+    if (isClosed) return;
     if (result) {
       DocumentTransaction transaction = DocumentTransaction();
       transaction.documentId = state.item!.id!;
@@ -315,6 +325,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
       transaction.type = state.item!.type;
       transaction.storeId = AppSettings.getSelectedStoreId();
       await useCase.insertTransaction(transaction);
+      if (isClosed) return;
       loadTransactions();
     }
   }

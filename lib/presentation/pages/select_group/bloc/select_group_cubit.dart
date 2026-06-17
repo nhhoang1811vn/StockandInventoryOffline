@@ -26,6 +26,8 @@ class SelectGroupCubit extends Cubit<SelectGroupState> {
   void init(int? id, int? groupId) async {
     int storeId = AppSettings.getSelectedStoreId();
     List<Group> groups = await groupsUseCase.getAllByStoreId(storeId);
+    if (isClosed) return;
+
     Map<int, Group> items = {};
     Group rootGroup = Group();
     rootGroup.name = "No Group";
@@ -39,6 +41,7 @@ class SelectGroupCubit extends Cubit<SelectGroupState> {
     }
     emit(state.copyWith(selectedGroupId: groupId, items: items));
     Map<int, dynamic> map = run(null);
+    if (isClosed) return;
     emit(state.copyWith(treeMap: map));
   }
 

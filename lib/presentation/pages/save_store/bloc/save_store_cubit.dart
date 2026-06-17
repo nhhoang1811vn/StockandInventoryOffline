@@ -59,8 +59,10 @@ class SaveStoreCubit extends Cubit<SaveStoreState> {
           //  storage.setSelectedStoreName(item.name);
           //}
         }
+        if (isClosed) return;
         emit(state.copyWith(state: SaveItemSuccessful(), item: item));
       } catch (error) {
+        if (isClosed) return;
         emit(state.copyWith(state: SaveItemError(error.toString())));
       }
     } else {

@@ -26,6 +26,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
 
   void initState() async {
     var minQuantitySettings = await AppSettings.getMinimumQuantitySettings();
+    if (isClosed) return;
     emit(state.copyWith(showMinQuantity: minQuantitySettings.showInItem));
   }
 
@@ -62,7 +63,9 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
     item.minQuantity = state.minQuantity;
     if (item.id == null) {
       item.id = await useCase.insert(item);
-      emit(state.copyWith(item: item));
+      if (!isClosed) {
+        emit(state.copyWith(item: item));
+      }
     } else {
       await useCase.update(item);
     }
@@ -109,11 +112,14 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
             transaction.goodId = goodId;
             await documentsUseCases.insertTransaction(transaction);
           }
+          if (isClosed) return;
           emit(state.copyWith(state: SaveItemSuccessful(), document: document));
         } else {
+          if (isClosed) return;
           emit(state.copyWith(state: SaveItemSuccessful()));
         }
       } catch (e) {
+          if (isClosed) return;
           emit(state.copyWith(state: SaveItemError(e.toString())));
       }
     } else {
@@ -126,8 +132,10 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
     if (validate) {
       try {
         await insertOrUpdateGood();
+        if (isClosed) return;
         emit(state.copyWith(state: OpenHistoryPageState()));
       } catch (e) {
+        if (isClosed) return;
         emit(state.copyWith(state: SaveItemError(e.toString())));
       }
     } else {
@@ -216,6 +224,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
     final validate = Formz.validate([state.name]);
     if (validate) {
       await insertOrUpdateGood();
+      if (isClosed) return;
       emit(state.copyWith(state: OpenReceiveGoodsPopupState()));
     } else {
       emit(state.copyWith(name: NameInput.dirty(value: state.name.value)));
@@ -226,6 +235,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
     final validate = Formz.validate([state.name]);
     if (validate) {
       await insertOrUpdateGood();
+      if (isClosed) return;
       emit(state.copyWith(state: OpenIssueGoodsPopupState()));
     } else {
       emit(state.copyWith(name: NameInput.dirty(value: state.name.value)));

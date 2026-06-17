@@ -23,11 +23,13 @@ class OnBoardingCubit extends Cubit<OnBoardingState> {
       store.name = state.name;
       store.description = "";
       final storeId = await useCase.insert(store);
+      if (isClosed) return;
       //storage.setFirstTime(false);
       AppSettings.setSelectedStoreId(storeId);
       AppSettings.setSelectedStoreName(state.name);
       emit(state.copyWith(status: FormzSubmissionStatus.success));
     } catch (error) {
+      if (isClosed) return;
       emit(
         state.copyWith(
           status: FormzSubmissionStatus.failure,

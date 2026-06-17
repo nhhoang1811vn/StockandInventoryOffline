@@ -43,6 +43,7 @@ class ItemHistoryCubit extends Cubit<ItemHistoryState> {
   Future<void> loadItems() async {
     if (state.start == null) {
       var goodHistories = await useCases.getAll(state.goodId!);
+      if (isClosed) return;
       emit(
         state.copyWith(
           goodHistories: goodHistories,
@@ -52,6 +53,7 @@ class ItemHistoryCubit extends Cubit<ItemHistoryState> {
     } else {
       var goodHistories =
           await useCases.getInRange(state.goodId!, state.start!, state.end!);
+      if (isClosed) return;
       emit(
         state.copyWith(
           goodHistories: goodHistories,

@@ -47,13 +47,16 @@ class AuthCubit extends Cubit<AuthState> {
         await dbHelper.reopen();
       }*/
       final stores = await useCase.getAll();
+      if (isClosed) return;
       if (stores.isNotEmpty) {
         await updateSelectedStore();
+        if (isClosed) return;
         emit(UserSignInSuccessfulWithStore());
       } else {
         emit(UserSignInSuccessfulWithNoStore());
       }
     } catch (e) {
+      if (isClosed) return;
       emit(UserSignInSuccessfulWithNoStore());
     }
   }
@@ -68,7 +71,7 @@ class AuthCubit extends Cubit<AuthState> {
         break;
       }
     }
-    if (!matched) {
+    if (!matched && stores.isNotEmpty) {
       AppSettings.setSelectedStoreId(stores.first.id!);
       AppSettings.setSelectedStoreName(stores.first.name);
     }
@@ -99,8 +102,10 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       await _auth.sendPasswordResetEmail(email: email);
+      if (isClosed) return;
       emit(ResetPasswordSent());
     } catch (e) {
+      if (isClosed) return;
       emit(AuthError(e.toString()));
     }
   }
@@ -108,12 +113,14 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signInWithEmail(String email, String password) async {
     emit(AuthLoading());
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      if (isClosed) return;
       emit(UserSignIn());
     } on FirebaseAuthException catch (e) {
+      if (isClosed) return;
       handleFirebaseAuthError(e);
     }
   }
@@ -154,10 +161,12 @@ class AuthCubit extends Cubit<AuthState> {
         accessToken: appleCredential.authorizationCode,
       );
       await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+      if (isClosed) return;
       //emit(AuthStopped());
       //downloadData();
       emit(UserSignIn());
     } on FirebaseAuthException catch (e) {
+      if (isClosed) return;
       handleFirebaseAuthError(e);
     }
   }
@@ -206,11 +215,14 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       var credential = await getGoogleCredential();
       await _auth.signInWithCredential(credential);
+      if (isClosed) return;
       emit(UserSignIn());
       //downloadData();
     } on FirebaseAuthException catch (e) {
+      if (isClosed) return;
       handleFirebaseAuthError(e);
     } on Exception {
+      if (isClosed) return;
       emit(AuthStopped());
     }
   }
@@ -218,6 +230,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signOut() async {
     emit(AuthLoading());
     await _auth.signOut();
+    if (isClosed) return;
     emit(UserSignedOut());
   }
 
@@ -238,6 +251,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (isClosed) return;
       emit(UserSingupButNotVerified());
     } on FirebaseAuthException catch (e) {
+      if (isClosed) return;
       handleFirebaseAuthError(e);
     }
   }
@@ -262,12 +276,15 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       var credential = await getGoogleCredential();
       await _auth.currentUser!.linkWithCredential(credential);
+      if (isClosed) return;
       emit(AuthStopped());
       emit(UserLinkSuccessful());
       //uploadData();
     } on FirebaseAuthException catch (e) {
+      if (isClosed) return;
       handleFirebaseAuthError(e);
     } on Exception {
+      if (isClosed) return;
       emit(AuthStopped());
     }
   }
@@ -287,12 +304,15 @@ class AuthCubit extends Cubit<AuthState> {
       );
       await _auth.currentUser!.linkWithCredential(credential);
 
+      if (isClosed) return;
       emit(AuthStopped());
       emit(UserLinkSuccessful());
       //uploadData();
     } on FirebaseAuthException catch (e) {
+      if (isClosed) return;
       handleFirebaseAuthError(e);
     } on Exception {
+      if (isClosed) return;
       emit(AuthStopped());
     }
   }
@@ -304,12 +324,15 @@ class AuthCubit extends Cubit<AuthState> {
           EmailAuthProvider.credential(email: email, password: password);
       await _auth.currentUser!.linkWithCredential(credential);
       await _auth.currentUser!.updateDisplayName(name);
+      if (isClosed) return;
       emit(AuthStopped());
       emit(UserLinkSuccessful());
       //uploadData();
     } on FirebaseAuthException catch (e) {
+      if (isClosed) return;
       handleFirebaseAuthError(e);
     } on Exception {
+      if (isClosed) return;
       emit(AuthStopped());
     }
   }

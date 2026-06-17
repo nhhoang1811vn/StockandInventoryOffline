@@ -1,12 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_manager/domain/free_limits.dart';
 import 'package:good_manager/domain/usecase/usecase.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
-import '../../../../domain/free_limits.dart';
 import '../../../../util/util.dart';
 import '../../base/base_sort_items.dart';
 
@@ -62,6 +62,7 @@ class SuppliersCubit extends Cubit<SuppliersState> {
 
   void onAddButtonClicked() async {
     bool isValid = await isValidToAddMoreSupplier();
+    if (isClosed) return;
     if (isValid) {
       Supplier item = Supplier();
       item.storeId = AppSettings.getSelectedStoreId();
@@ -85,12 +86,14 @@ class SuppliersCubit extends Cubit<SuppliersState> {
   void loadItems() async {
     final storeId = AppSettings.getSelectedStoreId();
     List<Supplier> allItems = await useCase.getAllByStoreId(storeId);
+    if (isClosed) return;
     emit(state.copyWith(allItems: allItems));
     sort();
     filter();
   }
 
   void filter() {
+    if (isClosed) return;
     List<Supplier> items = filterSuppliers();
     emit(state.copyWith(items: items));
   }
@@ -109,6 +112,7 @@ class SuppliersCubit extends Cubit<SuppliersState> {
   }
 
   void sort() {
+    if (isClosed) return;
     List<Supplier> items = sortSuppliers();
     emit(state.copyWith(allItems: items));
   }

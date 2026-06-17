@@ -69,6 +69,8 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   void loadItems() async {
     int storeId = AppSettings.getSelectedStoreId();
     List<Payment> payments = await useCase.getAllByStoreId(storeId);
+    if (isClosed) return;
+
     List<PaymentCategory?> categories = payments
         //.where((payment) => payment.category != null)
         .map((payment) => payment.category)
@@ -125,6 +127,8 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   }
 
   void update() {
+    if (isClosed) return;
+
     List<Criteria<Payment>> commonCriteria = [];
     if (state.setting?.selectedCategoryIds != null &&
         state.setting!.selectedCategoryIds.isNotEmpty) {

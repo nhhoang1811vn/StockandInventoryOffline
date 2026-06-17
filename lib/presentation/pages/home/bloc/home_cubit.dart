@@ -39,6 +39,8 @@ class HomeCubit extends Cubit<HomeState> {
     int countCustomer = await customerUseCase.getCount(storeId);
 
     List<Document> documents = await documentsUseCases.getAllByStoreId(storeId);
+    if (isClosed) return;
+
     int countIncomingDocument = 0;
     int countOutgoingDocument = 0;
     double sumPriceIncomingDocument = 0.0;
@@ -57,6 +59,8 @@ class HomeCubit extends Cubit<HomeState> {
       quantityTotal += good.quantity;
     }
     List<Wallet> wallets = await walletUseCases.getAllByStoreId(storeId);
+    if (isClosed) return;
+
     final savedOrder = await loadWalletOrder();
     final orderedWallets = await reorderWallets(wallets, savedOrder);
 
@@ -65,6 +69,8 @@ class HomeCubit extends Cubit<HomeState> {
       var lastWallet = orderedWallets.last;
       payments = await getPayments(lastWallet.id!);
     }
+    if (isClosed) return;
+
     emit(
       state.copyWith(
         incomingColor: AppSettings.getIncomingDocumentColor(),
@@ -101,6 +107,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   void onAddWalletClicked() async {
     bool isValid = await isValidToAddMoreWallet();
+    if (isClosed) return;
     if (isValid) {
       int storeId = AppSettings.getSelectedStoreId();
       Wallet item = Wallet();
@@ -127,6 +134,8 @@ class HomeCubit extends Cubit<HomeState> {
     await saveWalletOrder(wallets);
 
     var payments = await getPayments(wallet.id!);
+    if (isClosed) return;
+
     emit(state.copyWith(wallets: wallets, payments: payments));
   }
 

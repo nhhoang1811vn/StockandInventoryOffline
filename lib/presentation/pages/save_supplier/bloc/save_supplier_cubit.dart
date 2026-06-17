@@ -88,8 +88,10 @@ class SaveSupplierCubit extends Cubit<SaveSupplierState> {
         } else {
           await useCase.update(item);
         }
+        if (isClosed) return;
         emit(state.copyWith(state: SaveItemSuccessful()));
       } catch (error) {
+        if (isClosed) return;
         emit(state.copyWith(state: SaveItemError(error.toString())));
       }
     } else {

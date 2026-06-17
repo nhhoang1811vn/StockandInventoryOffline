@@ -24,6 +24,7 @@ class PaymentHistoryCubit extends Cubit<PaymentHistoryState> {
 
   Future<void> loadItems() async {
     var payments = await useCases.getByDocumentId(state.documentId!);
+    if (isClosed) return;
     emit(state.copyWith(items: payments));
     updateSummaryInfo();
   }

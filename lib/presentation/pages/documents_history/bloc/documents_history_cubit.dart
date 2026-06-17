@@ -65,7 +65,9 @@ class DocumentsHistoryCubit extends Cubit<DocumentsHistoryState> {
         endDateTime,
       );
     }
+    if (isClosed) return;
     var items = await getListItems(documents);
+    if (isClosed) return;
     emit(state.copyWith(items: items));
   }
 

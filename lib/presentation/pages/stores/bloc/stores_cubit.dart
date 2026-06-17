@@ -56,6 +56,7 @@ class StoresCubit extends Cubit<StoresState> {
 
   void onAddButtonClicked() async {
     bool isValid = await isValidToAddMoreStore();
+    if (isClosed) return;
     if (isValid) {
       Store item = Store();
       onAddItem(item);
@@ -82,12 +83,14 @@ class StoresCubit extends Cubit<StoresState> {
   // }
   void loadItems() async {
     List<Store> allItems = await useCase.getAll();
+    if (isClosed) return;
     emit(state.copyWith(allItems: allItems));
     sort();
     filter();
   }
 
   void filter() {
+    if (isClosed) return;
     List<Store> items = filterStores();
     emit(state.copyWith(items: items));
   }
@@ -106,6 +109,7 @@ class StoresCubit extends Cubit<StoresState> {
   }
 
   void sort() {
+    if (isClosed) return;
     List<Store> items = sortStores();
     emit(state.copyWith(allItems: items));
   }
@@ -145,6 +149,7 @@ class StoresCubit extends Cubit<StoresState> {
 
   Future<void> delete(int id) async {
     bool result = await useCase.delete(id);
+    if (isClosed) return;
     if (result == false) {
       emit(state.copyWith(state: DeleteItemError()));
     } else {
