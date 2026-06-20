@@ -135,11 +135,6 @@ class ReportDetailPageState extends State<ReportDetailPage> {
       final file = File(path);
 
       await file.writeAsString(csv);
-      // Export via share dialog (iOS-compatible)
-      // final params = ShareParams(
-      //   files: [XFile('${file.path}')],
-      // );
-      // await SharePlus.instance.share(params);
       final box = context.findRenderObject() as RenderBox?;
       final params = ShareParams(
         files: [XFile('${file.path}')],
@@ -165,10 +160,13 @@ class ReportDetailPageState extends State<ReportDetailPage> {
     try {
       final pdf = pw.Document();
       final font = await PdfGoogleFonts.robotoRegular();
+      final fontBold = await PdfGoogleFonts.robotoBold();
+
       pdf.addPage(
-        pw.Page(
+        pw.MultiPage(
+          pageFormat: PdfPageFormat.a4,
           build: (pw.Context pwContext) =>
-              _buildPDFContent(context, state, font),
+              _buildPDFContentList(context, state, font, fontBold),
         ),
       );
 
@@ -177,11 +175,6 @@ class ReportDetailPageState extends State<ReportDetailPage> {
       final file = File(path);
       await file.writeAsBytes(await pdf.save());
 
-      // Export via share dialog (iOS-compatible)
-      // final params = ShareParams(
-      //   files: [XFile('${file.path}')],
-      // );
-      // await SharePlus.instance.share(params);
       final box = context.findRenderObject() as RenderBox?;
       final params = ShareParams(
         files: [XFile('${file.path}')],
@@ -214,51 +207,33 @@ class ReportDetailPageState extends State<ReportDetailPage> {
     return name;
   }
 
-  pw.Widget _buildPDFContent(
+  List<pw.Widget> _buildPDFContentList(
     BuildContext context,
     ReportDetailState state,
     pw.Font font,
+    pw.Font fontBold,
   ) {
     var storeInfoText = getStoreInfoText();
     var periodInfoText = getPeriodInfoText(state);
-    return pw.Column(
-      children: [
-        pw.Text(storeInfoText, style: pw.TextStyle(font: font)),
-        if (periodInfoText.isNotEmpty)
-          pw.Text(periodInfoText, style: pw.TextStyle(font: font)),
-        pw.SizedBox(height: 16.0),
-        pw.Table(
+    return [
+      pw.Text(storeInfoText, style: pw.TextStyle(font: font)),
+      if (periodInfoText.isNotEmpty)
+        pw.Text(periodInfoText, style: pw.TextStyle(font: font)),
+      pw.SizedBox(height: 16.0),
+      if (state.data.isNotEmpty)
+        pw.Table.fromTextArray(
           border: pw.TableBorder.all(color: PdfColors.grey),
-          defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
-          children: [
-            ...List.generate(
-              state.data.length,
-              (indexI) => pw.TableRow(
-                decoration: pw.BoxDecoration(
-                  color: indexI == 0 ? PdfColors.blue : PdfColors.white,
-                ),
-                children: [
-                  ...List.generate(
-                    state.data[indexI].length,
-                    (indexJ) => pw.Padding(
-                      padding: pw.EdgeInsets.all(8.0),
-                      child: pw.Text(
-                        state.data[indexI][indexJ],
-                        style: pw.TextStyle(
-                          font: font,
-                          color:
-                              indexI == 0 ? PdfColors.white : PdfColors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
+          headerStyle: pw.TextStyle(font: fontBold, color: PdfColors.white),
+          headerDecoration: pw.BoxDecoration(color: PdfColors.blue),
+          cellStyle: pw.TextStyle(font: font),
+          data: state.data,
+          headerAlignment: pw.Alignment.centerLeft,
+          cellAlignment: pw.Alignment.centerLeft,
+          cellPadding: const pw.EdgeInsets.all(4),
+        )
+      else
+        pw.Text(context.tr("no_data"), style: pw.TextStyle(font: font)),
+    ];
   }
 
   List<Widget> _buildFirstColumn(
@@ -288,9 +263,6 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                       'end': widget.end,
                     },
                   );
-                  // context
-                  //     .read<ReportDetailCubit>()
-                  //     .refresh();
                 } else if (state.type == ReportType.LIST_OF_DOCUMENT &&
                     id != null) {
                   var document =
@@ -299,9 +271,6 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                     Pages.save_document,
                     arguments: {'item': document},
                   );
-                  // context
-                  //     .read<ReportDetailCubit>()
-                  //     .refresh();
                 } else if (state.type == ReportType.DEBTS_BY_SUPPLIER &&
                     id != null) {
                   await Navigator.of(context).pushNamed(
@@ -312,9 +281,6 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                       'end': widget.end,
                     },
                   );
-                  // context
-                  //     .read<ReportDetailCubit>()
-                  //     .refresh();
                 } else if (state.type == ReportType.DEBTS_BY_CUSTOMER &&
                     id != null) {
                   await Navigator.of(context).pushNamed(
@@ -325,9 +291,6 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                       'end': widget.end,
                     },
                   );
-                  // context
-                  //     .read<ReportDetailCubit>()
-                  //     .refresh();
                 } else if (state.type == ReportType.INBOUND_PAYMENTS) {
                   PaymentsSetting setting = PaymentsSetting(
                     sortByDateNewestFirst: true,
@@ -342,9 +305,6 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                     Pages.payments,
                     arguments: {'setting': setting, 'initialIndex': 1},
                   );
-                  // context
-                  //     .read<ReportDetailCubit>()
-                  //     .refresh();
                 } else if (state.type == ReportType.OUTBOUND_PAYMENTS) {
                   PaymentsSetting setting = PaymentsSetting(
                     sortByDateNewestFirst: true,
@@ -359,9 +319,6 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                     Pages.payments,
                     arguments: {'setting': setting, 'initialIndex': 2},
                   );
-                  // context
-                  //     .read<ReportDetailCubit>()
-                  //     .refresh();
                 } else if (state.type == ReportType.LIST_OF_WALLETS) {
                   PaymentsSetting setting = PaymentsSetting(
                     sortByDateNewestFirst: true,
@@ -376,17 +333,11 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                     Pages.payments,
                     arguments: {'setting': setting, 'initialIndex': 0},
                   );
-                  // context
-                  //     .read<ReportDetailCubit>()
-                  //     .refresh();
                 } else if (state.type == ReportType.RE_ORDER && id != null) {
                   var good =
                       await context.read<ReportDetailCubit>().getGood(id);
                   await Navigator.of(context)
                       .pushNamed(Pages.save_good, arguments: {'item': good});
-                  // context
-                  //     .read<ReportDetailCubit>()
-                  //     .refresh();
                 } else if (state.type == ReportType.LIST_OF_CUSTOMER_PAYMENTS &&
                     id != null) {
                   PaymentsSetting setting = PaymentsSetting(
@@ -402,9 +353,6 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                     Pages.payments,
                     arguments: {'setting': setting, 'initialIndex': 1},
                   );
-                  // context
-                  //     .read<ReportDetailCubit>()
-                  //     .refresh();
                 } else if (state.type == ReportType.LIST_OF_SUPPLIER_PAYMENTS &&
                     id != null) {
                   PaymentsSetting setting = PaymentsSetting(
@@ -420,9 +368,6 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                     Pages.payments,
                     arguments: {'setting': setting, 'initialIndex': 2},
                   );
-                  // context
-                  //     .read<ReportDetailCubit>()
-                  //     .refresh();
                 } else if (state.type == ReportType.GOOD_INFO &&
                     id != null){
                   var good =
@@ -462,45 +407,6 @@ class ReportDetailPageState extends State<ReportDetailPage> {
     });
     return results;
   }
-
-  // List<Widget> _buildFullRow(BuildContext context, ReportDetailState state) {
-  //   List<Widget> results = [];
-  //   bool flag = false;
-  //   state.data.asMap().forEach((key, value) {
-  //     List<Widget> rows = [];
-  //     for (int i = 0; i < value.length; i++) {
-  //       if (key == 0 || key == state.data.length - 1) {
-  //         rows.add(_buildHighlightCell(value: value[i]));
-  //       } else {
-  //         rows.add(_buildNormalCell(
-  //             value: value[i],
-  //             //width: cellWidth,
-  //             type: flag,
-  //             onPressed: () {
-  //               if (state.type == ReportType.LIST_OF_GOODS) {
-  //                 var good = state.goods[key - 1];
-  //                 //Navigator.of(context).pushNamed(Pages.good_history, arguments: {'goodId': goodId, 'start': widget.start, 'end': widget.end});
-  //                 Navigator.of(context)
-  //                     .pushNamed(Pages.save_good, arguments: {'item': good});
-  //                 context
-  //                     .read<ReportDetailCubit>()
-  //                     .init(context, widget.type, widget.start, widget.end);
-  //               } else if (state.type == ReportType.LIST_OF_DOCUMENT) {
-  //                 var item = state.documents[key - 1];
-  //                 Navigator.of(context).pushNamed(Pages.save_document,
-  //                     arguments: {'item': item});
-  //                 context
-  //                     .read<ReportDetailCubit>()
-  //                     .init(context, widget.type, widget.start, widget.end);
-  //               }
-  //             }));
-  //       }
-  //     }
-  //     flag = !flag;
-  //     results.add(Row(children: rows));
-  //   });
-  //   return results;
-  // }
 
   Widget _buildHighlightCell({String value = ""}) {
     return _buildCell(

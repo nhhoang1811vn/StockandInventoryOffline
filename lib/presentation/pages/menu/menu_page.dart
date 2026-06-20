@@ -59,206 +59,252 @@ class MenuPageState extends State<MenuPage> {
     });
   }
 
-  Widget _buildStockPremiumBadge() {
+  Widget _buildPremiumBadge() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(8.0),
+        gradient: LinearGradient(
+          colors: [Colors.amber.shade700, Colors.amber.shade400],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.amber.withOpacity(0.3),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      child: Text(
-        "Premium",
-        style: Theme.of(context)
-            .textTheme
-            .bodySmall
-            ?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.star, color: Colors.white, size: 14),
+          SizedBox(width: 4),
+          Text(
+            "Premium",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<MenuCubit, MenuState>(
-        listener: (context, state) async {},
-        builder:
-            (context, state) =>
+    bool isAnonymous = FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
 
-      Scaffold(
-      appBar: LogoAppBar(),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildProfileCard(),
-          SizedBox(height: 16,),
-          Card(
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.mail_outline),
-                  title: Text(
-                    context.tr("invite_friend"),
-                  ),
-                  onTap: () => onInviteFriend(context),
+    return BlocConsumer<MenuCubit, MenuState>(
+      listener: (context, state) async {},
+      builder: (context, state) => Scaffold(
+        appBar: LogoAppBar(),
+        body: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          children: [
+            _buildProfileHeader(isAnonymous),
+            const SizedBox(height: 24),
+            
+            _buildSectionHeader(context.tr("workspace")),
+            _buildMenuCard([
+              _buildMenuItem(
+                icon: UIConstants.settingIconData,
+                title: context.tr("settings"),
+                onTap: () => onSettingsItemPressed(context),
+              ),
+              _buildMenuItem(
+                icon: UIConstants.storeIconData,
+                title: context.tr("stores"),
+                onTap: () => onStoresItemPressed(context),
+              ),
+              _buildMenuItem(
+                icon: Icons.subscriptions_outlined,
+                title: context.tr("subscriptions_title"),
+                onTap: () async => await RevenueCatUI.presentPaywall(),
+              ),
+            ]),
+
+            _buildSectionHeader(context.tr("support")),
+            _buildMenuCard([
+              _buildMenuItem(
+                icon: Icons.person_add_outlined,
+                title: context.tr("invite_friend"),
+                onTap: () => onInviteFriend(context),
+              ),
+              _buildMenuItem(
+                icon: Icons.chat_bubble_outline,
+                title: context.tr("question_or_suggestion_title"),
+                onTap: () => onSelectMessageType(context),
+              ),
+              _buildMenuItem(
+                icon: Icons.star_outline,
+                title: context.tr("review_the_app_title"),
+                onTap: () async {
+                  final InAppReview inAppReview = InAppReview.instance;
+                  if (await inAppReview.isAvailable()) {
+                    inAppReview.requestReview();
+                  } else {
+                    await inAppReview.openStoreListing();
+                  }
+                },
+              ),
+            ]),
+
+            _buildSectionHeader(context.tr("about")),
+            _buildMenuCard([
+              _buildMenuItem(
+                icon: Icons.help_outline,
+                title: context.tr("help_title"),
+                onTap: () => onHelp(context),
+              ),
+              _buildMenuItem(
+                icon: Icons.new_releases_outlined,
+                title: context.tr("whats_new_title"),
+                onTap: () => onWhatsNew(context),
+              ),
+              _buildMenuItem(
+                icon: Icons.description_outlined,
+                title: context.tr("terms_of_use_title"),
+                onTap: () => onTermsOfUse(),
+              ),
+              _buildMenuItem(
+                icon: Icons.privacy_tip_outlined,
+                title: context.tr("privacy_policy_title"),
+                onTap: () => onPrivacyPolicy(),
+              ),
+            ]),
+
+            if (!isAnonymous) ...[
+              _buildSectionHeader(context.tr("account")),
+              _buildMenuCard([
+                _buildMenuItem(
+                  icon: Icons.no_accounts_outlined,
+                  title: context.tr("delete_account"),
+                  textColor: Colors.red,
+                  iconColor: Colors.red,
+                  onTap: () => onDeleteAccountItemPressed(),
                 ),
-                buildDivider(),
-                ListTile(
-                  leading: Icon(Icons.question_answer_outlined),
-                  title: Text(
-                    context.tr("question_or_suggestion_title"),
-                  ),
-                  onTap: () => onSelectMessageType(context),
+                _buildMenuItem(
+                  icon: Icons.logout,
+                  title: context.tr("sign_out"),
+                  onTap: () => onLogoutItemPressed(),
                 ),
-                buildDivider(),
-                ListTile(
-                  leading: Icon(Icons.star),
-                  title:
-                      Text(context.tr("review_the_app_title")),
-                  onTap: () async {
-                    //NotificationService.showNotification(id: 1, title: "title", body: "body");
-                    final InAppReview inAppReview = InAppReview.instance;
-                    if (await inAppReview.isAvailable()) {
-                      inAppReview.requestReview();
-                    } else {
-                      await inAppReview.openStoreListing();
-                    }
-                  },
+              ]),
+            ],
+            
+            const SizedBox(height: 32),
+            Center(
+              child: Text(
+                "version".tr(args: [_packageInfo.version]),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).hintColor,
                 ),
-              ],
-            ),
-          ),
-          SizedBox(height: 16,),
-          Card(
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.help_outline),
-                  title: Text(context.tr("help_title")),
-                  trailing: Icon(Icons.navigate_next),
-                  onTap: () => onHelp(context),
-                ),
-                buildDivider(),
-                ListTile(
-                  leading: Icon(Icons.flag_outlined),
-                  title: Text(context.tr("whats_new_title")),
-                  onTap: () => onWhatsNew(context),
-                  trailing: Icon(Icons.navigate_next),
-                ),
-                buildDivider(),
-                ListTile(
-                  leading: Icon(Icons.description_outlined),
-                  title: Text(context.tr("terms_of_use_title")),
-                  onTap: () => onTermsOfUse(),
-                  trailing: Icon(Icons.navigate_next),
-                ),
-                buildDivider(),
-                ListTile(
-                  leading: Icon(Icons.security),
-                  title:
-                      Text(context.tr("privacy_policy_title")),
-                  onTap: () => onPrivacyPolicy(),
-                  trailing: Icon(Icons.navigate_next),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 16,),
-          if (FirebaseAuth.instance.currentUser?.isAnonymous ==
-              false) ...[
-            Card(
-              clipBehavior: Clip.antiAlias,
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: Icon(Icons.close),
-                    title: Text(
-                      context.tr("delete_account"),
-                    ),
-                    onTap: () => onDeleteAccountItemPressed(),
-                  ),
-                  buildDivider(),
-                  ListTile(
-                    leading: Icon(Icons.logout),
-                    title: Text(context.tr("sign_out")),
-                    //trailing: Icon(Icons.navigate_next),
-                    onTap: () => onLogoutItemPressed(),
-                  ),
-                ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 40),
           ],
-          Center(child: Text("version".tr(args: [_packageInfo.version]))),
-          SizedBox(height: 32),
-        ],
-      ),
-    ));
-  }
-  Widget _buildProfileCard() {
-    bool isAnonymous = FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: [
-          if (isAnonymous) _buildAnonymousInfo() else _buildUserInfo(),
-          SizedBox(height: 8),
-          if (_isPro) _buildStockPremiumBadge(),
-          SizedBox(height: 16),
-          Divider(height: 0),
-          ListTile(
-            leading: Icon(UIConstants.settingIconData),
-            title: Text(context.tr("settings")),
-            trailing: Icon(Icons.navigate_next),
-            onTap: () => onSettingsItemPressed(context),
-          ),
-          Divider(height: 0),
-          ListTile(
-            leading: Icon(Icons.production_quantity_limits),
-            title: Text("subscriptions_title").tr(),
-            trailing: Icon(Icons.navigate_next),
-            onTap: () async {
-              await RevenueCatUI.presentPaywall();
-            },
-          ),
-          Divider(height: 0),
-          ListTile(
-            leading: Icon(UIConstants.storeIconData),
-            title: Text(context.tr("stores")),
-            trailing: Icon(Icons.navigate_next),
-            onTap: () => onStoresItemPressed(context),
-          ),
-        ],
+        ),
       ),
     );
   }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, bottom: 8, top: 12),
+      child: Text(
+        title.toUpperCase(),
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+          color: Theme.of(context).colorScheme.primary,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.2,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuCard(List<Widget> items) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Theme.of(context).dividerColor.withOpacity(0.1)),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: List.generate(items.length, (index) {
+          return Column(
+            children: [
+              items[index],
+              if (index < items.length - 1) buildDivider(indent: 56),
+            ],
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _buildMenuItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    Color? textColor,
+    Color? iconColor,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: iconColor ?? Theme.of(context).colorScheme.onSurfaceVariant),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: textColor,
+          fontWeight: FontWeight.w500,
+          fontSize: 15,
+        ),
+      ),
+      trailing: const Icon(Icons.chevron_right, size: 20),
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildProfileHeader(bool isAnonymous) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: isAnonymous ? _buildAnonymousInfo() : _buildUserInfo(),
+    );
+  }
+
   Widget _buildAnonymousInfo() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(height: 16),
-        CircleAvatar(
-          radius: 30,
-          child: Image(image: AssetImage('assets/images/user.png')),
-        ),
-        SizedBox(height: 8),
-        GestureDetector(
-          onTap: () {
-            Navigator.of(context).pushNamed(Pages.link_with);
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "sign_up_or_login",
-                style: Theme.of(context).textTheme.titleMedium,
-              ).tr(),
-              Icon(Icons.navigate_next),
-            ],
+        const CircleAvatar(
+          radius: 35,
+          backgroundColor: Colors.white,
+          child: Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Image(image: AssetImage('assets/images/user.png')),
           ),
         ),
-        SizedBox(height: 8),
-        Text("you_are_currently_on_guess_mode").tr(),
+        const SizedBox(height: 16),
+        Text(
+          "you_are_currently_on_guess_mode".tr(),
+          style: Theme.of(context).textTheme.bodyMedium,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 16),
+        FilledButton.icon(
+          onPressed: () => Navigator.of(context).pushNamed(Pages.link_with),
+          icon: const Icon(Icons.login, size: 18),
+          label: Text("sign_up_or_login".tr()),
+          style: FilledButton.styleFrom(
+            minimumSize: const Size(200, 45),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        ),
       ],
     );
   }
@@ -267,42 +313,57 @@ class MenuPageState extends State<MenuPage> {
     final user = FirebaseAuth.instance.currentUser;
     String? photoUrl;
     String? displayName;
-    String? email = user?.email;
-    photoUrl = user?.photoURL;
-    displayName = user?.displayName;
+    String? email;
 
-    // if (email == null || email.isEmpty)
-    // if (photoUrl == null && user?.providerData.isNotEmpty == true) {
-    //   photoUrl = user!.providerData.first.photoURL;
-    // }
-    //
-    // if (displayName == null ||
-    //     displayName.isEmpty && user?.providerData.isNotEmpty == true) {
-    //   displayName = user?.providerData.first.displayName;
-    // }
-    if (user?.providerData.isNotEmpty == true){
+    if (user?.providerData.isNotEmpty == true) {
       var first = user!.providerData.first;
-      email = first.email ?? "n/a";
+      email = first.email;
       photoUrl = first.photoURL;
-      displayName = first.displayName ?? "n/a";
+      displayName = first.displayName;
     }
 
-
-    //email = user?.email ?? "n/a";
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(height: 16),
-        photoUrl != null
-            ? CircleAvatar(radius: 30, backgroundImage: NetworkImage(photoUrl))
-            : CircleAvatar(
-          radius: 30,
-          child: Image(image: AssetImage('assets/images/user.png')),
+        Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            CircleAvatar(
+              radius: 42,
+              backgroundColor: Colors.white,
+              backgroundImage: photoUrl != null ? NetworkImage(photoUrl) : null,
+              child: photoUrl == null 
+                  ? const Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Image(image: AssetImage('assets/images/user.png')),
+                    )
+                  : null,
+            ),
+            if (_isPro)
+              Container(
+                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                padding: const EdgeInsets.all(2),
+                child: const Icon(Icons.verified, color: Colors.blue, size: 24),
+              ),
+          ],
         ),
-        SizedBox(height: 8),
-        Text(displayName ?? "n/a", style: Theme.of(context).textTheme.titleMedium),
-        SizedBox(height: 8),
-        Text(email ?? "n/a"),
+        const SizedBox(height: 12),
+        Text(
+          displayName ?? "User",
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        if (email != null) ...[
+          const SizedBox(height: 2),
+          Text(
+            email,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).hintColor,
+            ),
+          ),
+        ],
+        if (_isPro) ...[
+          const SizedBox(height: 12),
+          _buildPremiumBadge(),
+        ],
       ],
     );
   }
@@ -311,7 +372,7 @@ class MenuPageState extends State<MenuPage> {
     showCustomAlertDialog(
       context,
       message: context.tr("message_confirm_delete_account"),
-      onPositivePressed: () async{
+      onPositivePressed: () async {
         Navigator.of(context).pop();
         await context.read<MenuCubit>().deleteAccount();
         Navigator.of(context).pushNamedAndRemoveUntil(Pages.loading_data, (Route<dynamic> route) => false);
@@ -320,33 +381,11 @@ class MenuPageState extends State<MenuPage> {
   }
 
   void onStoresItemPressed(BuildContext context) {
-    Navigator.of(context)
-        .pushNamed(Pages.store_list, arguments: {"isSelection": false});
-  }
-
-  void onChangeTrackingStoreItemPressed(BuildContext context) async {
-    final result = await Navigator.of(context)
-        .pushNamed(Pages.store_list, arguments: {"isSelection": true});
-    if (result != null) {
-      Store store = result as Store;
-
-      AppSettings.setSelectedStoreId(store.id!);
-      AppSettings.setSelectedStoreName(store.name);
-
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => MainPage()),
-        (Route<dynamic> route) => false, // Remove all previous routes
-      );
-    }
+    Navigator.of(context).pushNamed(Pages.store_list, arguments: {"isSelection": false});
   }
 
   void onSettingsItemPressed(BuildContext context) {
     Navigator.of(context).pushNamed(Pages.settings);
-  }
-
-  void onSubscriptionItemPressed(BuildContext context) async {
-    await RevenueCatUI.presentPaywall();
-    //Navigator.of(context).pushNamed(Pages.subscriptions);
   }
 
   void onInviteFriend(BuildContext context) {
@@ -358,14 +397,12 @@ class MenuPageState extends State<MenuPage> {
       },
     );
     onSendMail(subject, body, "");
-
   }
+
   void onSelectMessageType(BuildContext context) async {
     var type = await showSelectMessageType(context);
     if (type != null) {
-      String subject = Config.appName;
-      subject += " - ${type.getText(context)}";
-      subject += " - $platformInfo";
+      String subject = "${Config.appName} - ${type.getText(context)} - ${Platform.operatingSystem}";
       onSendMail(subject, "", Config.supportEmail);
     }
   }
@@ -374,54 +411,51 @@ class MenuPageState extends State<MenuPage> {
     return await showModalBottomSheet<MessageType>(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                context.tr("select_message_type"),
-                style: Theme.of(context).textTheme.titleMedium,
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                child: Text(
+                  context.tr("select_message_type"),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            Column(
-              children: MessageType.values
-                  .map(
-                    (type) => ListTile(
-                      title: Text(type.getText(context)),
-                      onTap: () => Navigator.pop(context, type),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ],
+              ...MessageType.values.map(
+                (type) => ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  title: Text(type.getText(context)),
+                  onTap: () => Navigator.pop(context, type),
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+          ),
         );
       },
     );
   }
-  final platformInfo = Platform.operatingSystem;
-  String encodeQueryParameters(Map<String, String> params) {
-    return params.entries
-        .map(
-          (e) =>
-      '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}',
-    ).join('&');
-  }
+
   void onSendMail(String subject, String body, String path) {
     final Uri emailLaunchUri = Uri(
       scheme: 'mailto',
       path: path,
-      query: encodeQueryParameters(<String, String>{
+      query: _encodeQueryParameters(<String, String>{
         "subject": subject,
         "body": body,
       }),
     );
     launchUrl(emailLaunchUri);
+  }
+
+  String _encodeQueryParameters(Map<String, String> params) {
+    return params.entries.map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}').join('&');
   }
 
   void onWhatsNew(BuildContext context) async {
@@ -434,17 +468,9 @@ class MenuPageState extends State<MenuPage> {
     );
   }
 
-  void onTermsOfUse() async {
-    NavigatorUtils.openUrl(Config.termOfUseUrl);
-  }
-
-  void onPrivacyPolicy() async {
-    NavigatorUtils.openUrl(Config.privacyPolicyUrl);
-  }
-
-  void onHelp(BuildContext context) {
-    Navigator.of(context).pushNamed(Pages.helps, arguments: {});
-  }
+  void onTermsOfUse() => NavigatorUtils.openUrl(Config.termOfUseUrl);
+  void onPrivacyPolicy() => NavigatorUtils.openUrl(Config.privacyPolicyUrl);
+  void onHelp(BuildContext context) => Navigator.of(context).pushNamed(Pages.helps, arguments: {});
 
   void onLogoutItemPressed() {
     showCustomAlertDialog(

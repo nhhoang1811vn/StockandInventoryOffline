@@ -5,37 +5,72 @@ import 'package:good_manager/presentation/pages/report_detail/bloc/report_detail
 class ColumnDisplayDialog extends StatefulWidget {
   final List<ColumnReport> columns;
   const ColumnDisplayDialog({super.key, required this.columns});
+
   @override
-  State createState() => ColumnDisplayDialogState();
+  State<ColumnDisplayDialog> createState() => ColumnDisplayDialogState();
 }
 
 class ColumnDisplayDialogState extends State<ColumnDisplayDialog> {
-
   @override
   void initState() {
     super.initState();
-    //_localColumns = widget.columns.map((c) => c.copy()).toList();
-    //visibilityStates = widget.columns.map((field) => field.isVisible).toList();
   }
 
-  Widget _buildCheckbox(PickableColumn column) {
-    return Column(
-      children: column.values.map((value) {
-        return CheckboxListTile(
-          dense: true,
-          value: column.selectedValues.contains(value),
-          onChanged: (isChecked) {
-            // This will require setState to trigger UI update if used in a StatefulWidget
-            if (isChecked == true) {
-              column.selectedValues.add(value);
-            } else {
-              column.selectedValues.remove(value);
-            }
-            setState(() {});
-          },
-          title: Text(value),
-        );
-      }).toList(),
+  Widget _buildPickableContent(PickableColumn column) {
+    final allValues = column.values.toList();
+    allValues.sort(); // Sort alphabetically for better UX
+
+    final isAllSelected = column.selectedValues.length == allValues.length;
+    final hasSelection = column.selectedValues.isNotEmpty;
+
+    return Container(
+      margin: const EdgeInsets.only(left: 16, right: 16, bottom: 12, top: 4),
+      decoration: BoxDecoration(
+        color: Theme.of(context).dividerColor.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CheckboxListTile(
+            dense: true,
+            tristate: hasSelection && !isAllSelected,
+            value: isAllSelected ? true : (hasSelection ? null : false),
+            title: Text(
+              context.tr("all"),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            onChanged: (_) {
+              setState(() {
+                if (isAllSelected) {
+                  column.selectedValues.clear();
+                } else {
+                  column.selectedValues.addAll(column.values);
+                }
+              });
+            },
+          ),
+          const Divider(height: 1),
+          ...allValues.map((value) {
+            return CheckboxListTile(
+              dense: true,
+              visualDensity: VisualDensity.compact,
+              value: column.selectedValues.contains(value),
+              onChanged: (isChecked) {
+                setState(() {
+                  if (isChecked == true) {
+                    column.selectedValues.add(value);
+                  } else {
+                    column.selectedValues.remove(value);
+                  }
+                });
+              },
+              title: Text(value, style: const TextStyle(fontSize: 14)),
+            );
+          }),
+        ],
+      ),
     );
   }
 
@@ -43,37 +78,48 @@ class ColumnDisplayDialogState extends State<ColumnDisplayDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(context.tr("settings")),
-      content: SingleChildScrollView(
-        child: Column(
-          children: List.generate(widget.columns.length, (index) {
-            var column = widget.columns[index];
-            return Column(
-              children: [
-                SwitchListTile(
-                  dense: true,
-                  title: Text(context.tr(column.title)),
-                  value: column.isVisible,
-                  onChanged: (bool value) {
-                    setState(() {
-                      column.isVisible = value;
-                      //visibilityStates[index] = value;
-                    });
-                  },
-                ),
-                if (column.isVisible && column is PickableColumn)
-                  _buildCheckbox(widget.columns[index] as PickableColumn),
-              ],
-            );
-          }),
+      titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+      contentPadding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: widget.columns.map((column) {
+              return Column(
+                children: [
+                  SwitchListTile(
+                    title: Text(
+                      context.tr(column.title),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                    value: column.isVisible,
+                    onChanged: (bool value) {
+                      setState(() {
+                        column.isVisible = value;
+                      });
+                    },
+                  ),
+                  if (column.isVisible && column is PickableColumn)
+                    _buildPickableContent(column),
+                  const Divider(height: 1),
+                ],
+              );
+            }).toList(),
+          ),
         ),
       ),
       actions: <Widget>[
         TextButton(
+          child: Text(context.tr("cancel")),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        TextButton(
           child: Text(context.tr("ok")),
-          onPressed: () async {
-            // for (int i = 0; i < widget.columns.length; i++) {
-            //   widget.columns[i].isVisible = visibilityStates[i];
-            // }
+          onPressed: () {
             Navigator.of(context).pop(widget.columns);
           },
         ),
