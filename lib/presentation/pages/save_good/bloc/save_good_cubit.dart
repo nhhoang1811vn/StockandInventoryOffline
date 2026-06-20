@@ -202,9 +202,13 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
 
   void onPurchasePriceChanged(String value) {
     if (value.isNotEmpty) {
-      num numValue = Config.simpleCurrencyFormat.parse(value);
-      double price = numValue.toDouble();
-      emit(state.copyWith(purchasePrice: price));
+      try {
+        num numValue = Config.simpleCurrencyFormat.parse(value);
+        double price = numValue.toDouble();
+        emit(state.copyWith(purchasePrice: price));
+      }catch (e) {
+        emit(state.copyWith(purchasePrice: null));
+      }
     } else {
       emit(state.copyWith(purchasePrice: null));
     }
@@ -212,9 +216,13 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
 
   void onSalePriceChanged(String value) {
     if (value.isNotEmpty) {
-      num numValue = Config.simpleCurrencyFormat.parse(value);
-      double price = numValue.toDouble();
-      emit(state.copyWith(salePrice: price));
+      try {
+        num numValue = Config.simpleCurrencyFormat.parse(value);
+        double price = numValue.toDouble();
+        emit(state.copyWith(salePrice: price));
+      } catch (e) {
+        emit(state.copyWith(salePrice: null));
+      }
     } else {
       emit(state.copyWith(salePrice: null));
     }
