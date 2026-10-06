@@ -229,10 +229,15 @@ class SavePaymentPageState extends State<SavePaymentPage> {
         }
 
         return Scaffold(
-          appBar: _buildAppBar(context),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          appBar: SaveObjectAppBar(
+            title: widget.item.type == PaymentType.inbound
+                ? context.tr("save_inbound_payment_title")
+                : context.tr("save_outbound_payment_title"),
+            actions: [_buildHelpMenu()],
+          ),
           body: Column(
             children: [
-              SelectedStoreView(),
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(UIConstants.screenSpace),
@@ -418,7 +423,6 @@ class SavePaymentPageState extends State<SavePaymentPage> {
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.all(16),
-                color: Theme.of(context).colorScheme.surface,
                 child: PrimaryButton(context.tr("action_save"),
                     () {
                   context.read<SavePaymentCubit>().onSaveClicked();
@@ -428,20 +432,6 @@ class SavePaymentPageState extends State<SavePaymentPage> {
           ),
         );
       },
-    );
-  }
-
-  PreferredSize _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(
-        actions: [_buildHelpMenu()],
-        title: Text(
-          widget.item.type == PaymentType.inbound
-              ? context.tr("save_inbound_payment_title")
-              : context.tr("save_outbound_payment_title"),
-        ),
-      ),
     );
   }
 

@@ -58,15 +58,31 @@ class MyAppState extends State<MyApp> {
           builder: (context, state) {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
-              theme: ThemeData.light().copyWith(
+            builder: (context, child) {
+              final mediaQuery = MediaQuery.of(context);
+              final padding = mediaQuery.padding;
+              final viewPadding = mediaQuery.viewPadding;
+              return MediaQuery(
+                data: mediaQuery.copyWith(
+                  padding: padding.copyWith(
+                    top: padding.top > 0 ? padding.top : viewPadding.top,
+                    bottom: padding.bottom > 0
+                        ? padding.bottom
+                        : viewPadding.bottom,
+                  ),
+                ),
+                child: child ?? const SizedBox.shrink(),
+              );
+            },
+            theme: ThemeData.light().copyWith(
                 appBarTheme: AppBarTheme(
                     titleTextStyle: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
                     )),
-                scaffoldBackgroundColor: Color.fromARGB(255, 230, 230, 236),
-                  cardTheme: CardThemeData(
+              scaffoldBackgroundColor: Color.fromARGB(255, 241, 243, 244),
+              cardTheme: CardThemeData(
                     color: Colors.white,
                   ),
                 colorScheme: ColorScheme.fromSeed(

@@ -22,6 +22,7 @@ class HomeCubit extends Cubit<HomeState> {
   final CustomersUseCase customerUseCase;
   final WalletUseCases walletUseCases;
   final PaymentUseCases paymentUseCases;
+  final StoresUseCase storesUseCase;
 
   HomeCubit({
     required this.goodsUseCases,
@@ -30,6 +31,7 @@ class HomeCubit extends Cubit<HomeState> {
     required this.customerUseCase,
     required this.walletUseCases,
     required this.paymentUseCases,
+    required this.storesUseCase,
   }) : super(HomeState.initial(state: InitialState()));
 
   void initState() async {
@@ -55,20 +57,49 @@ class HomeCubit extends Cubit<HomeState> {
       }
     }
     double quantityTotal = 0;
+    List<Good> outOfStockGoods = [];
+    List<Good> lowStockGoods = [];
     for (Good good in goods) {
       quantityTotal += good.quantity;
+      if (good.quantity <= 0) {
+        outOfStockGoods.add(good);
+      }
+      if (good.minQuantity != null && good.quantity < good.minQuantity!) {
+        lowStockGoods.add(good);
+      }
     }
+
+    List<Document> recent = List.from(documents);
+    recent.sort((a, b) => b.date.compareTo(a.date));
+    recent = recent.take(5).toList();
+
     List<Wallet> wallets = await walletUseCases.getAllByStoreId(storeId);
     if (isClosed) return;
 
     final savedOrder = await loadWalletOrder();
     final orderedWallets = await reorderWallets(wallets, savedOrder);
 
-    List<Payment> payments = [];
-    if (orderedWallets.isNotEmpty) {
-      var lastWallet = orderedWallets.last;
-      payments = await getPayments(lastWallet.id!);
+    List<Payment> allPayments = [];
+    for (final wallet in orderedWallets) {
+      if (wallet.id != null) {
+        allPayments.addAll(await getPayments(wallet.id!, take: 1000));
+      }
     }
+    if (isClosed) return;
+
+    var selectedId = state.selectedWalletId;
+    if (selectedId == null || !orderedWallets.any((w) => w.id == selectedId)) {
+      selectedId = orderedWallets.isNotEmpty ? orderedWallets.first.id : null;
+    }
+
+    List<Payment> payments = [];
+    if (selectedId != null) {
+      payments = allPayments.where((p) => p.walletId == selectedId).toList()
+        ..sort((a, b) => b.date.compareTo(a.date));
+      payments = payments.take(5).toList();
+    }
+
+    final selectedStore = await _loadSelectedStore();
     if (isClosed) return;
 
     emit(
@@ -77,6 +108,7 @@ class HomeCubit extends Cubit<HomeState> {
         outgoingColor: AppSettings.getOutgoingDocumentColor(),
         countGoods: goods.length,
         quantityTotal: quantityTotal,
+        countDocuments: documents.length,
         countIncomingDocument: countIncomingDocument,
         sumPriceIncomingDocument: sumPriceIncomingDocument,
         countOutgoingDocument: countOutgoingDocument,
@@ -84,10 +116,51 @@ class HomeCubit extends Cubit<HomeState> {
         countSupplier: countSupplier,
         countCustomer: countCustomer,
         wallets: orderedWallets,
+        selectedWalletId: selectedId,
         totalBalance: wallets.fold(0.0, (sum, wallet) => sum + wallet.balance),
         payments: payments,
+        allPayments: allPayments,
+        recentDocuments: recent,
+        isLoadingRecentDocuments: false,
+        isLoadingWallets: false,
+        allGoods: goods,
+        outOfStockCount: outOfStockGoods.length,
+        lowStockCount: lowStockGoods.length,
+        outOfStockGoods: outOfStockGoods,
+        lowStockGoods: lowStockGoods,
+        selectedStore: selectedStore,
       ),
     );
+  }
+
+  void refreshSelectedStore() async {
+    final selectedStore = await _loadSelectedStore();
+    if (isClosed) return;
+    emit(state.copyWith(selectedStore: selectedStore));
+  }
+
+  Future<Store> _loadSelectedStore() async {
+    final storeId = AppSettings.getSelectedStoreId();
+    try {
+      return await storesUseCase.get(storeId);
+    } catch (_) {
+      final store = Store();
+      store.id = storeId;
+      store.name = AppSettings.getSelectedStoreName();
+      return store;
+    }
+  }
+
+  void selectWallet(int walletId) {
+    if (state.selectedWalletId == walletId) return;
+    final walletPayments = state.allPayments
+        .where((payment) => payment.walletId == walletId)
+        .toList()
+      ..sort((a, b) => b.date.compareTo(a.date));
+    emit(state.copyWith(
+      selectedWalletId: walletId,
+      payments: walletPayments.take(5).toList(),
+    ));
   }
 
   void deleteWallet(Wallet item) async {
@@ -139,7 +212,7 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(wallets: wallets, payments: payments));
   }
 
-  Future<List<Payment>> getPayments(int walletId) async {
+  Future<List<Payment>> getPayments(int walletId, {int take = 3}) async {
     DateTime startDateTime = DateTime.fromMicrosecondsSinceEpoch(0);
     DateTime endDateTime = DateTime.now().endOfDay();
     var payments = await paymentUseCases.getInRangeByWalletId(
@@ -147,7 +220,7 @@ class HomeCubit extends Cubit<HomeState> {
       startDateTime,
       endDateTime,
     );
-    return payments.take(3).toList();
+    return payments.take(take).toList();
   }
 
   Future<void> saveWalletOrder(List<Wallet> wallets) async {

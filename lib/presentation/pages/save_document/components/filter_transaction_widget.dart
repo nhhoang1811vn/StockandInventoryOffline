@@ -1,9 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:good_manager/presentation/pages/payment/components/text_selection.dart';
+import 'package:good_manager/presentation/pages/goods/component/goods_sheet_common.dart';
 
 import '../../../../domain/entity/entity.dart';
-import '../../../widget/widget.dart';
 
 class FilterTransactionWidget extends StatefulWidget {
   final Function() onResetAllPressed;
@@ -39,117 +38,67 @@ class FilterTransactionWidgetState extends State<FilterTransactionWidget> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      padding: const EdgeInsets.only(bottom: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(
-            child: Text(
-              context.tr("title_filter"),
-              style: Theme.of(context).textTheme.titleLarge,
+          GoodsSheetHeader(title: context.tr("action_sort_by")),
+          const SizedBox(height: 16),
+          GoodsSheetSectionHeader(context.tr("sort_by_name")),
+          _buildOptions(
+            SortByText.values.map(
+              (item) => GoodsSheetChip(
+                label: item.getText(context),
+                isSelected: _sortByName == item,
+                onTap: () => setState(() => _sortByName = item),
+              ),
             ),
           ),
-          SizedBox(height: 16),
-          Text(
-            context.tr("sort_by_name"),
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          SizedBox(height: 8),
-          buildSortByNameOptions(),
-          SizedBox(height: 16),
-          Text(
-            context.tr("sort_by_barcode"),
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          SizedBox(height: 8),
-          buildSortByBarcodeOptions(),
-          SizedBox(height: 16),
-          Text(
-            context.tr("sort_by_quantity"),
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          SizedBox(height: 8),
-          buildSortByQuantityOptions(),
-          SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: MyOutlineButton(
-                    context.tr("action_reset_all"), () {
-                  widget.onResetAllPressed();
-                }),
+          const SizedBox(height: 24),
+          GoodsSheetSectionHeader(context.tr("sort_by_barcode")),
+          _buildOptions(
+            SortByNumber.values.map(
+              (item) => GoodsSheetChip(
+                label: item.getText(context),
+                isSelected: _sortByBarCode == item,
+                onTap: () => setState(() => _sortByBarCode = item),
               ),
-              SizedBox(width: 16),
-              Expanded(
-                child: PrimaryButton(context.tr("action_apply"),
-                    () {
-                  widget.onApplyPressed(
-                    widget.setting.copyWith(
-                      sortByName: _sortByName,
-                      sortByBarcode: _sortByBarCode,
-                      sortByQuantity: _sortByQuantity,
-                      //    isPaid: _isPaid
-                    ),
-                  );
-                }),
+            ),
+          ),
+          const SizedBox(height: 24),
+          GoodsSheetSectionHeader(context.tr("sort_by_quantity")),
+          _buildOptions(
+            SortByNumber.values.map(
+              (item) => GoodsSheetChip(
+                label: item.getText(context),
+                isSelected: _sortByQuantity == item,
+                onTap: () => setState(() => _sortByQuantity = item),
               ),
-            ],
+            ),
+          ),
+          const SizedBox(height: 40),
+          GoodsSheetActions(
+            onResetAllPressed: widget.onResetAllPressed,
+            onApplyPressed: () {
+              widget.onApplyPressed(
+                widget.setting.copyWith(
+                  sortByName: _sortByName,
+                  sortByBarcode: _sortByBarCode,
+                  sortByQuantity: _sortByQuantity,
+                ),
+              );
+            },
           ),
         ],
       ),
     );
   }
 
-  Widget buildSortByNameOptions() {
-    List<Widget> items = [];
-    for (var item in SortByText.values) {
-      items.add(
-        AppTextSelection(
-          item: item.getText(context),
-          isSelected: _sortByName == item,
-          onPressed: () {
-            setState(() {
-              _sortByName = item;
-            });
-          },
-        ),
-      );
-    }
-    return Wrap(spacing: 8, runSpacing: 8, children: items);
-  }
-
-  Widget buildSortByBarcodeOptions() {
-    List<Widget> items = [];
-    for (var item in SortByNumber.values) {
-      items.add(
-        AppTextSelection(
-          item: item.getText(context),
-          isSelected: _sortByBarCode == item,
-          onPressed: () {
-            setState(() {
-              _sortByBarCode = item;
-            });
-          },
-        ),
-      );
-    }
-    return Wrap(spacing: 8, runSpacing: 8, children: items);
-  }
-
-  Widget buildSortByQuantityOptions() {
-    List<Widget> items = [];
-    for (var item in SortByNumber.values) {
-      items.add(
-        AppTextSelection(
-          item: item.getText(context),
-          isSelected: _sortByQuantity == item,
-          onPressed: () {
-            setState(() {
-              _sortByQuantity = item;
-            });
-          },
-        ),
-      );
-    }
-    return Wrap(spacing: 8, runSpacing: 8, children: items);
+  Widget _buildOptions(Iterable<Widget> children) {
+    return Wrap(
+      spacing: 10,
+      runSpacing: 10,
+      children: children.toList(),
+    );
   }
 }

@@ -37,6 +37,7 @@ class SuppliersPageState extends State<SuppliersPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocConsumer<SuppliersCubit, SuppliersState>(
       listenWhen: (p1, p2) => p1.state != p2.state,
       listener: (context, state) async {
@@ -69,109 +70,124 @@ class SuppliersPageState extends State<SuppliersPage> {
         }
       },
       builder: (context, state) => Scaffold(
-        //drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 5, storeName: storage.getSelectedStoreName(),),
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: _buildAppBar(state),
-        body: _buildBody(state),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => context.read<SuppliersCubit>().onAddButtonClicked(),
-          child: Icon(Icons.add),
-        ),
+        body: SafeArea(child: _buildBody(state)),
       ),
     );
   }
 
-  PreferredSize _buildAppBar(SuppliersState state) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(
-        title: new Text(
-          widget.isSelection
-              ? context.tr("select_supplier")
-              : context.tr("suppliers"),
-        ),
-        actions: [
-          _buildSearchMenu(state),
-          _buildFilterMenu(state),
-          _buildHelpMenu(),
-        ],
+  AppBar _buildAppBar(SuppliersState state) {
+    final theme = Theme.of(context);
+    return AppBar(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      elevation: 0,
+      title: Text(
+        widget.isSelection
+            ? context.tr("select_supplier")
+            : context.tr("suppliers"),
+        style: TextStyle(
+            color: theme.colorScheme.onSurface, fontWeight: FontWeight.w800),
       ),
+      iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
+      actions: [
+        SSButton(
+          icon: Icons.add,
+          onPressed: () => context.read<SuppliersCubit>().onAddButtonClicked(),
+          borderRadius: 14,
+          padding: 10,
+        ),
+        const SizedBox(width: 12),
+        SSButton(
+          icon: Icons.help_outline_rounded,
+          onPressed: () => context.read<SuppliersCubit>().onHelpMenuClick(),
+          borderRadius: 14,
+          padding: 10,
+        ),
+        const SizedBox(width: 16),
+      ],
     );
   }
 
   Widget _buildBody(SuppliersState data) {
-    final state = data.state;
-    if (state is LoadingState) {
-      return _buildLoading();
+    if (data.state is LoadingState) {
+      return const Center(child: CircularProgressIndicator());
     }
     return _buildContent(data);
   }
 
-  Widget _buildLoading() {
-    return const Center(
-      child: CircularProgressIndicator(),
+  Widget _buildContent(SuppliersState data) {
+    bool showWarning = data.settings.sortByName != SortByText.no_sort;
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: SearchBarWidget(
+                  onTextChanged: (newValue) {
+                    context.read<SuppliersCubit>().searchTextChanged(newValue);
+                  },
+                  focusNode: searchTextFocusNode,
+                ),
+              ),
+              const SizedBox(width: 12),
+              SSButton(
+                icon: Icons.tune,
+                onPressed: () => showFilterBottomSheet(data),
+                borderRadius: 14,
+                padding: 10,
+                hasBadge: showWarning,
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Stack(
+            children: [
+              Visibility(
+                child: emptyView,
+                visible: data.items.isEmpty,
+              ),
+              Visibility(
+                child: _buildListView(data),
+                visible: data.items.isNotEmpty,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildContent(SuppliersState data) {
-    List<Widget> children = [
-      SelectedStoreView(),
-      Visibility(
-        visible: data.showSearchBar,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16, top: 16),
-          child: SearchBarWidget(
-            onTextChanged: (newValue) {
-              context.read<SuppliersCubit>().searchTextChanged(newValue);
-            },
-            focusNode: searchTextFocusNode,
-          ),
-        ),
-      ),
-
-      // Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
-      Expanded(
-        child: Stack(
+  Widget get emptyView => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Visibility(
-              child: emptyView,
-              visible: data.items.isEmpty,
+            Icon(
+              UIConstants.supplierIconData,
+              size: 64,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
             ),
-            Visibility(
-              child: _buildListView(data),
-              visible: data.items.isNotEmpty,
+            const SizedBox(height: 16),
+            Text(
+              context.tr("no_suppliers"),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
             ),
           ],
         ),
-      ),
-    ];
-    return Column(children: children);
-  }
-
-  Widget get emptyView => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Icon(
-            UIConstants.supplierIconData,
-            size: 60,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: Text(
-              context.tr("no_suppliers"),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ],
       );
 
   Widget _buildListView(SuppliersState data) {
-    return ListView.separated(
-      separatorBuilder: (context, index) => buildDivider(),
+    return ListView.builder(
+      padding: const EdgeInsets.only(top: 8),
       itemBuilder: (BuildContext context, index) {
         Supplier item = data.items[index];
-
         return SupplierItemRow(
           item,
           onPressed: _handleOnPressed,
@@ -210,8 +226,7 @@ class SuppliersPageState extends State<SuppliersPage> {
       onItemSelected: (index) async {
         if (items[index] == context.tr("delete")) {
           showDeleteConfirmPopup(item);
-        } else if (items[index] ==
-            context.tr("view_documents")) {
+        } else if (items[index] == context.tr("view_documents")) {
           await Navigator.of(context).pushNamed(
             Pages.documents_history,
             arguments: {
@@ -237,53 +252,12 @@ class SuppliersPageState extends State<SuppliersPage> {
     );
   }
 
-  Widget _buildSearchMenu(SuppliersState state) {
-    return IconButton(
-      onPressed: () {
-        if (!state.showSearchBar) {
-          searchTextFocusNode.requestFocus();
-        }
-        context.read<SuppliersCubit>().onShowSearchBarMenuClicked();
-      },
-      icon: Icon(
-        Icons.search,
-        color: state.showSearchBar
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).iconTheme.color,
-      ),
-    );
-  }
-
-  Widget _buildFilterMenu(SuppliersState state) {
-    bool showWarning = state.settings.sortByName != SortByText.no_sort;
-    return Stack(
-      children: [
-        IconButton(
-          onPressed: () {
-            showFilterBottomSheet(state);
-          },
-          icon: Icon(Icons.filter_alt),
-        ),
-        if (showWarning)
-          Positioned(
-            right: 4,
-            top: 4,
-            child: Icon(
-              Icons.error,
-              color: Colors.red,
-              size: 16,
-            ),
-          ),
-      ],
-    );
-  }
-
   void showFilterBottomSheet(SuppliersState state) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (BuildContext mContext) {
         return DraggableScrollableSheet(
@@ -291,7 +265,7 @@ class SuppliersPageState extends State<SuppliersPage> {
           builder: (mContext, scrollController) {
             return SingleChildScrollView(
               controller: scrollController,
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: FilterSupplierWidget(
                 onResetAllPressed: () {
                   context.read<SuppliersCubit>().resetAllFilter();
@@ -307,15 +281,6 @@ class SuppliersPageState extends State<SuppliersPage> {
           },
         );
       },
-    );
-  }
-
-  Widget _buildHelpMenu() {
-    return IconButton(
-      onPressed: () {
-        context.read<SuppliersCubit>().onHelpMenuClick();
-      },
-      icon: Icon(Icons.help),
     );
   }
 }

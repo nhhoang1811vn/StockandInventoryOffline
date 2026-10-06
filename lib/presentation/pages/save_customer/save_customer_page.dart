@@ -24,36 +24,28 @@ class SaveCustomerPageState extends State<SaveCustomerPage> {
   Widget build(BuildContext context) {
     context.read<SaveCustomerCubit>().init(widget.item);
     return Scaffold(
-      appBar: _buildAppBar(context),
-      body: Column(
-        children: [
-          SelectedStoreView(),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(UIConstants.screenSpace),
-              child: Column(
-                children: [SaveCustomerForm(item: widget.item)],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: SaveObjectAppBar(title: context.tr("save_customer")),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(UIConstants.screenSpace),
+                child: Column(
+                  children: [SaveCustomerForm(item: widget.item)],
+                ),
               ),
             ),
-          ),
-          Container(
+            Container(
             width: double.infinity,
             padding: EdgeInsets.all(16),
-            color: Theme.of(context).colorScheme.surface,
             child: PrimaryButton(context.tr("action_save"), () {
               context.read<SaveCustomerCubit>().onSaveClicked();
             }),
           ),
         ],
-      ),
-    );
-  }
-
-  PreferredSize _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(
-        title: Text(context.tr("save_customer")),
+        ),
       ),
     );
   }

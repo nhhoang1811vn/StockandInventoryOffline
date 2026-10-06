@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,8 +7,7 @@ import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.dart';
 import 'package:good_manager/presentation/pages/save_good/components/quick_insert_document_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:good_manager/util/entity_image_picker.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../../constant/constant.dart';
@@ -20,7 +16,6 @@ import '../../../../presentation/widget/widget.dart';
 import '../../../../util/util.dart';
 import '../../../dialog/dialog.dart';
 import '../../../review_manager.dart';
-import '../../full_image_page.dart';
 
 class SaveGoodForm extends StatelessWidget {
   SaveGoodForm();
@@ -32,8 +27,6 @@ class SaveGoodForm extends StatelessWidget {
   final purchasePriceTextController = TextEditingController();
   final salePriceTextController = TextEditingController();
   final minQuantityTextController = TextEditingController();
-
-  final _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -145,10 +138,22 @@ class SaveGoodForm extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            _buildLogo(context, state.files.firstOrNull),
-            SizedBox(
-              height: 16,
+            Center(
+              child: EntityPhotoAvatar(
+                imageBytes: state.files.firstOrNull,
+                fallbackIcon: Icons.inventory_2_rounded,
+                canEdit: true,
+                onTap: () {
+                  EntityImagePicker.showSourceSheet(
+                    context,
+                    onImagePicked: (bytes) async {
+                      context.read<SaveGoodCubit>().onLogoChanged(bytes);
+                    },
+                  );
+                },
+              ),
             ),
+            const SizedBox(height: 24),
             AppTextField(
               labelText: context.tr("label_good_name"),
               hintText: context.tr("hint_name"),
@@ -231,57 +236,17 @@ class SaveGoodForm extends StatelessWidget {
             SizedBox(
               height: 16,
             ),
-            Row(
-              children: [
-                Text(
-                  context.tr("images_information"),
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                Spacer(),
-                if (state.files.isNotEmpty)
-                  CircleButton(Icons.add_a_photo, () {
-                    _showImageSourceDialog(context, false);
-                  })
-              ],
+            ImagesInformationSection(
+              files: state.files,
+              canEdit: true,
+              onAddFile: (bytes) =>
+                  context.read<SaveGoodCubit>().onAddFile(bytes),
+              onDeleteFile: (index) =>
+                  context.read<SaveGoodCubit>().onDeleteFile(index),
             ),
-            SizedBox(
-              height: 8,
-            ),
-            _buildPhoto(context, state)
           ],
         );
       },
-    );
-  }
-
-  _buildLogo(BuildContext context,Uint8List? logo) {
-    return GestureDetector(
-      onTap: () {
-        _showImageSourceDialog(context, true);
-      },
-      child:
-      logo == null
-          ? const CircleAvatar(
-        radius: 50,
-        child: Icon(
-          Icons.camera_alt,
-          size: 30,
-          color: Colors.white70,
-        ),
-      )
-          : SizedBox(
-        width: 100,
-        height: 100,
-        child: ClipOval(
-          child: Image.memory(
-            logo,
-            fit: BoxFit.contain,
-          ),
-        ),
-      ),
     );
   }
 
@@ -438,167 +403,5 @@ class SaveGoodForm extends StatelessWidget {
     );
     ScaffoldMessenger.of(context)
         .showSnackBar(snackBarWhenSuccessWithText(text));
-  }
-
-  Widget _buildPhoto(BuildContext context, SaveGoodState state) {
-    return Container(
-      padding: EdgeInsets.all(4),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.grey,
-          style: BorderStyle.solid,
-          width: 1,
-        ),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: state.files.isEmpty
-          ? _buildAddPhotoWidget(context)
-          : _buildPreview(context, state.files),
-    );
-  }
-
-  Widget _buildAddPhotoWidget(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        _showImageSourceDialog(context, false);
-      },
-      child: Container(
-          height: 120,
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.add_a_photo, color: Colors.grey, size: 40),
-              SizedBox(height: 8),
-              Text(
-                context.tr("tap_to_add_file"),
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-            ],
-          )),
-    );
-  }
-
-  Widget _buildPreview(BuildContext context, List<Uint8List> files) {
-    return Wrap(
-        runSpacing: 8,
-        spacing: 8,
-        children: files.asMap().entries.map((entry) {
-          return Stack(
-            clipBehavior: Clip.none,
-            children: [
-              GestureDetector(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.memory(
-                      entry.value,
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => FullImagePage(
-                          base64Image: base64Encode(entry.value),
-                          heroTag: 'imageHero',
-                        ),
-                      ),
-                    );
-                  }),
-              Positioned(
-                right: 4,
-                top: 4,
-                child: GestureDetector(
-                  onTap: () {
-                    context.read<SaveGoodCubit>().onDeleteFile(entry.key);
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.black54,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 18,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        }).toList());
-  }
-
-  void _showImageSourceDialog(BuildContext context, bool isLogo) {
-    showModalBottomSheet(
-      context: context,
-      builder: (_) => SafeArea(
-        child: Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo),
-              title: Text(context.tr("choose_gallery")),
-              onTap: () async {
-                Navigator.pop(context);
-                await _pickAndSaveImage(context, ImageSource.gallery, isLogo);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: Text(context.tr("take_picture")),
-              onTap: () async {
-                Navigator.pop(context);
-                await _pickAndSaveImage(context, ImageSource.camera, isLogo);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _pickAndSaveImage(BuildContext context, ImageSource source, bool isLogo) async {
-    final pickedFile = await _picker.pickImage(
-      source: source,
-      imageQuality: 75,
-    );
-    if (pickedFile == null) return;
-    final croppedFile = await ImageCropper().cropImage(
-      sourcePath: pickedFile.path,
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: 'Cropper',
-          toolbarColor: Colors.blue,
-          toolbarWidgetColor: Colors.white,
-          initAspectRatio: CropAspectRatioPreset.square,
-          lockAspectRatio: false,
-          aspectRatioPresets: [
-            CropAspectRatioPreset.original,
-            CropAspectRatioPreset.square,
-            CropAspectRatioPreset.ratio4x3,
-          ],
-        ),
-        IOSUiSettings(
-          title: 'Cropper',
-          aspectRatioPresets: [
-            CropAspectRatioPreset.original,
-            CropAspectRatioPreset.square,
-            CropAspectRatioPreset.ratio4x3,
-          ],
-        ),
-      ],
-    );
-    if (croppedFile == null) return;
-    final bytes = await croppedFile.readAsBytes();
-    if (isLogo){
-      context.read<SaveGoodCubit>().onLogoChanged(bytes);
-    }else{
-      context.read<SaveGoodCubit>().onAddFile(bytes);
-    }
   }
 }

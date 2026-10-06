@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/presentation/utils.dart';
+import 'package:good_manager/presentation/widget/entity_avatar.dart';
 import 'package:good_manager/util/currency_formatter.dart';
 
 import '../../../../constant/constant.dart';
@@ -10,10 +11,11 @@ import '../../../../util/util.dart';
 class DocumentItemRow extends StatelessWidget {
   final Document item;
   final Color bgColor;
-  final Color? incomingColor;
-  final Color? outgoingColor;
+  final Color incomingColor;
+  final Color outgoingColor;
   final Function(Document document) onDocumentTapped;
   final Function(Document document) onDocumentLongPressed;
+  final bool showTimeOnly;
 
   DocumentItemRow({
     required this.item,
@@ -22,81 +24,129 @@ class DocumentItemRow extends StatelessWidget {
     required this.outgoingColor,
     required this.onDocumentTapped,
     required this.onDocumentLongPressed,
+    this.showTimeOnly = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: InkWell(
-        onTap: () => onDocumentTapped(item),
-        onLongPress: () => onDocumentLongPressed(item),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: IntrinsicHeight(
+    final color =
+        item.type == DocumentType.incoming ? incomingColor : outgoingColor;
+    final leadingIcon = item.type == DocumentType.incoming
+        ? Icons.file_download_outlined
+        : Icons.file_upload_outlined;
+    final status = Utils.getStatus(item);
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.015),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => onDocumentTapped(item),
+          onLongPress: () => onDocumentLongPressed(item),
+          borderRadius: BorderRadius.circular(22),
+          child: Padding(
+            padding: const EdgeInsets.all(14.0),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 6,
+                  width: 64,
+                  height: 64,
                   decoration: BoxDecoration(
-                    color: getIndicatorColor(item.type),
-                    borderRadius: BorderRadius.circular(12),
+                    color: color.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Icon(
+                    leadingIcon,
+                    color: color,
+                    size: 28,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        item.name,
-                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              item.name,
+                              style: Theme.of(context).textTheme.titleMedium,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          _buildStatusBadge(context, status),
+                        ],
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        DateFormatFactory.getDateFormat().format(item.date),
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
+                      const SizedBox(height: 6),
                       if (item.personName != null)
-                        Text(
-                          item.personName!,
-                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
+                        Row(
+                          children: [
+                            EntityAvatar(
+                              file: item.personFile,
+                              name: item.personName ?? '',
+                              radius: 10,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              item.personName!,
+                              style: const TextStyle(
+                                color: Color(0xFF8E9199),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
-                      if (item.description.isNotEmpty)
-                        Text(
-                          item.description,
-                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                      const SizedBox(height: 4),
+                      Text(
+                        showTimeOnly
+                            ? DateFormatFactory.getTimeFormat()
+                                .format(item.date)
+                            : DateFormatFactory.getDateAndTimeFormat()
+                                .format(item.date),
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.2),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
                         ),
+                      ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       StringUtils.getQuantityText(item.quantity),
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontWeight: FontWeight.bold,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 15,
+                        color: color,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    _buildStatusWidget(context, item),
+                    const SizedBox(height: 8),
+                    Text(
+                      CurrencyFormatter.format(context, item.amount),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 15,
+                        color: color,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -107,62 +157,39 @@ class DocumentItemRow extends StatelessWidget {
     );
   }
 
-  Color? getIndicatorColor(DocumentType type) {
-    switch (type) {
-      case DocumentType.incoming:
-        return incomingColor;
-      default:
-        return outgoingColor;
-    }
-  }
+  Widget _buildStatusBadge(BuildContext context, DocumentPaidStatus status) {
+    Color color;
+    String text;
 
-  Widget _buildStatusWidget(BuildContext context, Document item) {
-    var bgColor;
-    var statusText = "";
-    var status = Utils.getStatus(item);
-    if (status == DocumentPaidStatus.paid) {
-      bgColor = Colors.green.shade700;
-      statusText = context.tr("payment_status_paid");
-    } else if (status == DocumentPaidStatus.unpaid) {
-      bgColor = Colors.red.shade700;
-      statusText = context.tr("payment_status_unpaid");
-    } else {
-      bgColor = Colors.orange.shade700;
-      statusText = context.tr("payment_status_partial");
+    switch (status) {
+      case DocumentPaidStatus.paid:
+        color = Colors.green;
+        text = context.tr("payment_status_paid");
+        break;
+      case DocumentPaidStatus.unpaid:
+        color = Colors.red;
+        text = context.tr("payment_status_unpaid");
+        break;
+      case DocumentPaidStatus.partial:
+        color = Colors.orange;
+        text = context.tr("payment_status_partial");
+        break;
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            statusText,
-            style: Theme.of(context).textTheme.labelSmall!.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
         ),
-        const SizedBox(height: 4),
-        if (status == DocumentPaidStatus.partial)
-          Text(
-            "${CurrencyFormatter.format(context, item.paid)}/${CurrencyFormatter.format(context, item.amount)}",
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          )
-        else
-          Text(
-            CurrencyFormatter.format(context, item.amount),
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-      ],
+      ),
     );
   }
 }

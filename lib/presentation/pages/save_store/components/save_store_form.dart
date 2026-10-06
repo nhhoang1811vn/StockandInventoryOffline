@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_store/bloc/save_store_cubit.dart';
+import 'package:good_manager/util/entity_image_picker.dart';
 
 import '../../../../domain/entity/entity.dart';
 import '../../../../presentation/widget/widget.dart';
+import '../../../../util/base64_utils.dart';
 
 class SaveStoreForm extends StatelessWidget {
   final Store item;
@@ -29,6 +31,22 @@ class SaveStoreForm extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          Center(
+            child: EntityPhotoAvatar(
+              imageBytes: tryDecodeBase64(state.file),
+              fallbackIcon: Icons.store_rounded,
+              canEdit: true,
+              onTap: () {
+                EntityImagePicker.showSourceSheet(
+                  context,
+                  onImagePicked: (bytes) async {
+                    context.read<SaveStoreCubit>().onFileChanged(bytes);
+                  },
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 24),
           AppTextField(
             labelText: context.tr("name"),
             hintText: context.tr("hint_name"),

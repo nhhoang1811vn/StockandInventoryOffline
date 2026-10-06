@@ -6,6 +6,7 @@ class SaveStoreState with _$SaveStoreState {
     required BaseState state,
     @Default(NameInput.pure()) NameInput name,
     @Default('') String description,
+    String? file,
     @Default('') String exceptionError,
     Store? item,
   }) = _Initial;

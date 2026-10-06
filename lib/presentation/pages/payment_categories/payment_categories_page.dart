@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/payment_categories/bloc/payment_categories_cubit.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
 
-import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
 import '../../dialog/dialog.dart';
 import '../pages.dart';
@@ -32,7 +31,7 @@ class PaymentCategoriesPageState extends State<PaymentCategoriesPage> {
     );
   }
 
-  void funcA(PaymentCategory item) async {
+  void onSaveCategory(PaymentCategory item) async {
     var result = await Navigator.of(context)
         .pushNamed(Pages.save_payment_category, arguments: {"item": item});
     if (result != null) {
@@ -41,49 +40,50 @@ class PaymentCategoriesPageState extends State<PaymentCategoriesPage> {
   }
 
   Scaffold _buildScaffold(PaymentCategoriesState state) {
+    final theme = Theme.of(context);
     return Scaffold(
-      appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            //Text(, style: Theme.of(context).textTheme.titleMedium,),
-            CategoriesGridView(
-              header: context.tr("inbound_categories"),
-              categories: state.inboundCategories,
-              onAddNewButtonPressed: () async {
-                PaymentCategory item = PaymentCategory();
-                item.type = PaymentType.inbound;
-                funcA(item);
-              },
-              onPressed: (category) {
-                funcA(category);
-              },
-              onLongPressed: (category) {
-                _showCategoryOptionsDialog(category);
-              },
-            ),
-            SizedBox(
-              height: 16,
-            ),
-            //Text(,  style: Theme.of(context).textTheme.titleMedium),
-            CategoriesGridView(
-              header: context.tr("outbound_categories"),
-              categories: state.outboundCategories,
-              onAddNewButtonPressed: () async {
-                PaymentCategory item = PaymentCategory();
-                item.type = PaymentType.outbound;
-                funcA(item);
-              },
-              onPressed: (category) {
-                funcA(category);
-              },
-              onLongPressed: (category) {
-                _showCategoryOptionsDialog(category);
-              },
-            ),
-          ],
+      backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: _buildAppBar(theme),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CategoriesGridView(
+                header: context.tr("inbound_categories"),
+                categories: state.inboundCategories,
+                onAddNewButtonPressed: () async {
+                  PaymentCategory item = PaymentCategory();
+                  item.type = PaymentType.inbound;
+                  onSaveCategory(item);
+                },
+                onPressed: (category) {
+                  onSaveCategory(category);
+                },
+                onLongPressed: (category) {
+                  _showCategoryOptionsDialog(category);
+                },
+              ),
+              const SizedBox(height: 32),
+              CategoriesGridView(
+                header: context.tr("outbound_categories"),
+                categories: state.outboundCategories,
+                onAddNewButtonPressed: () async {
+                  PaymentCategory item = PaymentCategory();
+                  item.type = PaymentType.outbound;
+                  onSaveCategory(item);
+                },
+                onPressed: (category) {
+                  onSaveCategory(category);
+                },
+                onLongPressed: (category) {
+                  _showCategoryOptionsDialog(category);
+                },
+              ),
+              const SizedBox(height: 32),
+            ],
+          ),
         ),
       ),
     );
@@ -99,19 +99,25 @@ class PaymentCategoriesPageState extends State<PaymentCategoriesPage> {
       onItemSelected: (index) async {
         if (items[index] == context.tr("delete")) {
           context.read<PaymentCategoriesCubit>().deleteCategory(item.id!);
-          context.read<PaymentCategoriesCubit>().init();
         }
       },
     );
   }
 
-  PreferredSize _buildAppBar() {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(
-        title: new Text(context.tr("categories")),
-        actions: [],
+  PreferredSizeWidget _buildAppBar(ThemeData theme) {
+    return AppBar(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      elevation: 0,
+      centerTitle: false,
+      title: Text(
+        context.tr("categories"),
+        style: TextStyle(
+          color: theme.colorScheme.onSurface,
+          fontWeight: FontWeight.w800,
+          fontSize: 20,
+        ),
       ),
+      iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
     );
   }
 }

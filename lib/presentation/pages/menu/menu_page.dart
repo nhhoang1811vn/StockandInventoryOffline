@@ -59,234 +59,177 @@ class MenuPageState extends State<MenuPage> {
     });
   }
 
-  Widget _buildPremiumBadge() {
+  Widget _buildStockPremiumBadge() {
+    final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.amber.shade700, Colors.amber.shade400],
+          colors: [theme.colorScheme.primary, theme.colorScheme.secondary],
         ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.amber.withOpacity(0.3),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12.0),
       ),
-      child: const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.star, color: Colors.white, size: 14),
-          SizedBox(width: 4),
-          Text(
-            "Premium",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-          ),
-        ],
+      child: Text(
+        context.tr("premium"),
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: theme.colorScheme.onPrimary,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isAnonymous = FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
+    final theme = Theme.of(context);
+    final isAnonymous = FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
 
     return BlocConsumer<MenuCubit, MenuState>(
       listener: (context, state) async {},
       builder: (context, state) => Scaffold(
-        appBar: LogoAppBar(),
+        backgroundColor: theme.scaffoldBackgroundColor,
+        appBar: AppBar(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          title: Text(
+            context.tr("settings"),
+            style: TextStyle(
+              color: theme.colorScheme.onSurface,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
+        ),
         body: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 100),
           children: [
-            _buildProfileHeader(isAnonymous),
-            const SizedBox(height: 24),
-            
-            _buildSectionHeader(context.tr("workspace")),
-            _buildMenuCard([
-              _buildMenuItem(
-                icon: UIConstants.settingIconData,
-                title: context.tr("settings"),
-                onTap: () => onSettingsItemPressed(context),
-              ),
-              _buildMenuItem(
-                icon: UIConstants.storeIconData,
-                title: context.tr("stores"),
-                onTap: () => onStoresItemPressed(context),
-              ),
-              _buildMenuItem(
-                icon: Icons.subscriptions_outlined,
-                title: context.tr("subscriptions_title"),
-                onTap: () async => await RevenueCatUI.presentPaywall(),
-              ),
-            ]),
-
-            _buildSectionHeader(context.tr("support")),
-            _buildMenuCard([
-              _buildMenuItem(
-                icon: Icons.person_add_outlined,
-                title: context.tr("invite_friend"),
-                onTap: () => onInviteFriend(context),
-              ),
-              _buildMenuItem(
-                icon: Icons.chat_bubble_outline,
-                title: context.tr("question_or_suggestion_title"),
-                onTap: () => onSelectMessageType(context),
-              ),
-              _buildMenuItem(
-                icon: Icons.star_outline,
-                title: context.tr("review_the_app_title"),
-                onTap: () async {
-                  final InAppReview inAppReview = InAppReview.instance;
-                  if (await inAppReview.isAvailable()) {
-                    inAppReview.requestReview();
-                  } else {
-                    await inAppReview.openStoreListing();
-                  }
-                },
-              ),
-            ]),
-
-            _buildSectionHeader(context.tr("about")),
-            _buildMenuCard([
-              _buildMenuItem(
-                icon: Icons.help_outline,
-                title: context.tr("help_title"),
-                onTap: () => onHelp(context),
-              ),
-              _buildMenuItem(
-                icon: Icons.new_releases_outlined,
-                title: context.tr("whats_new_title"),
-                onTap: () => onWhatsNew(context),
-              ),
-              _buildMenuItem(
-                icon: Icons.description_outlined,
-                title: context.tr("terms_of_use_title"),
-                onTap: () => onTermsOfUse(),
-              ),
-              _buildMenuItem(
-                icon: Icons.privacy_tip_outlined,
-                title: context.tr("privacy_policy_title"),
-                onTap: () => onPrivacyPolicy(),
-              ),
-            ]),
-
+            _buildProfileCard(isAnonymous),
+            SettingsSectionHeader(context.tr("inventory")),
+            _buildManagementCard(),
+            SettingsSectionHeader(context.tr("settings")),
+            _buildSettingsCard(),
+            SettingsSectionHeader(context.tr("help_title")),
+            _buildSupportCard(),
+            SettingsSectionHeader(context.tr("social")),
+            _buildSocialCard(),
             if (!isAnonymous) ...[
-              _buildSectionHeader(context.tr("account")),
-              _buildMenuCard([
-                _buildMenuItem(
-                  icon: Icons.no_accounts_outlined,
-                  title: context.tr("delete_account"),
-                  textColor: Colors.red,
-                  iconColor: Colors.red,
-                  onTap: () => onDeleteAccountItemPressed(),
-                ),
-                _buildMenuItem(
-                  icon: Icons.logout,
-                  title: context.tr("sign_out"),
-                  onTap: () => onLogoutItemPressed(),
-                ),
-              ]),
+              SettingsSectionHeader(context.tr("account")),
+              _buildAccountActionsCard(),
             ],
-            
             const SizedBox(height: 32),
             Center(
               child: Text(
                 "version".tr(args: [_packageInfo.version]),
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).hintColor,
+                style: TextStyle(
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                  fontSize: 12,
                 ),
               ),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 32),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8, bottom: 8, top: 12),
-      child: Text(
-        title.toUpperCase(),
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-          color: Theme.of(context).colorScheme.primary,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 1.2,
-        ),
-      ),
-    );
-  }
+  Widget _buildProfileCard(bool isAnonymous) {
+    final user = FirebaseAuth.instance.currentUser;
+    final theme = Theme.of(context);
+    String? photoUrl;
+    String? displayName;
+    String? email = user?.email;
+    photoUrl = user?.photoURL;
+    displayName = user?.displayName;
 
-  Widget _buildMenuCard(List<Widget> items) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Theme.of(context).dividerColor.withOpacity(0.1)),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: List.generate(items.length, (index) {
-          return Column(
-            children: [
-              items[index],
-              if (index < items.length - 1) buildDivider(indent: 56),
-            ],
-          );
-        }),
-      ),
-    );
-  }
+    if (user?.providerData.isNotEmpty == true) {
+      var first = user!.providerData.first;
+      email = first.email;
+      photoUrl = first.photoURL;
+      displayName = first.displayName;
+    }
 
-  Widget _buildMenuItem({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-    Color? textColor,
-    Color? iconColor,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: iconColor ?? Theme.of(context).colorScheme.onSurfaceVariant),
-      title: Text(
-        title,
-        style: TextStyle(
-          color: textColor,
-          fontWeight: FontWeight.w500,
-          fontSize: 15,
-        ),
-      ),
-      trailing: const Icon(Icons.chevron_right, size: 20),
-      onTap: onTap,
-    );
-  }
-
-  Widget _buildProfileHeader(bool isAnonymous) {
     return Container(
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(16),
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black
+                .withOpacity(theme.brightness == Brightness.dark ? 0.1 : 0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: isAnonymous ? _buildAnonymousInfo() : _buildUserInfo(),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: isAnonymous
+            ? _buildAnonymousInfo()
+            : Row(
+                children: [
+                  photoUrl != null
+                      ? CircleAvatar(
+                          radius: 35,
+                          backgroundImage: NetworkImage(photoUrl),
+                        )
+                      : CircleAvatar(
+                          radius: 35,
+                          backgroundColor: theme.colorScheme.primaryContainer,
+                          child: Icon(
+                            Icons.person,
+                            size: 40,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          displayName ?? context.tr("user"),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 20,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
+                        if (email != null) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            email,
+                            style: TextStyle(
+                              color:
+                                  theme.colorScheme.onSurface.withOpacity(0.4),
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                        if (_isPro) ...[
+                          const SizedBox(height: 8),
+                          _buildStockPremiumBadge(),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+      ),
     );
   }
 
   Widget _buildAnonymousInfo() {
     return Column(
       children: [
-        const CircleAvatar(
+        CircleAvatar(
           radius: 35,
-          backgroundColor: Colors.white,
-          child: Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Image(image: AssetImage('assets/images/user.png')),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          child: Icon(
+            Icons.person,
+            size: 40,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         const SizedBox(height: 16),
@@ -302,68 +245,154 @@ class MenuPageState extends State<MenuPage> {
           label: Text("sign_up_or_login".tr()),
           style: FilledButton.styleFrom(
             minimumSize: const Size(200, 45),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildUserInfo() {
-    final user = FirebaseAuth.instance.currentUser;
-    String? photoUrl;
-    String? displayName;
-    String? email;
-
-    if (user?.providerData.isNotEmpty == true) {
-      var first = user!.providerData.first;
-      email = first.email;
-      photoUrl = first.photoURL;
-      displayName = first.displayName;
-    }
-
-    return Column(
+  Widget _buildManagementCard() {
+    return SettingsMenuCard(
       children: [
-        Stack(
-          alignment: Alignment.bottomRight,
-          children: [
-            CircleAvatar(
-              radius: 42,
-              backgroundColor: Colors.white,
-              backgroundImage: photoUrl != null ? NetworkImage(photoUrl) : null,
-              child: photoUrl == null 
-                  ? const Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Image(image: AssetImage('assets/images/user.png')),
-                    )
-                  : null,
-            ),
-            if (_isPro)
-              Container(
-                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                padding: const EdgeInsets.all(2),
-                child: const Icon(Icons.verified, color: Colors.blue, size: 24),
-              ),
-          ],
+        SettingsMenuItem(
+          icon: Icons.sync_alt_rounded,
+          title: context.tr("change_tracking_store"),
+          onTap: onChangeStorePressed,
         ),
-        const SizedBox(height: 12),
-        Text(
-          displayName ?? "User",
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        SettingsMenuItem(
+          icon: UIConstants.documentIconData,
+          title: context.tr("documents"),
+          onTap: openDocuments,
         ),
-        if (email != null) ...[
-          const SizedBox(height: 2),
-          Text(
-            email,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).hintColor,
-            ),
-          ),
-        ],
-        if (_isPro) ...[
-          const SizedBox(height: 12),
-          _buildPremiumBadge(),
-        ],
+        SettingsMenuItem(
+          icon: UIConstants.walletIconData,
+          title: context.tr("title_wallet"),
+          onTap: () => Navigator.of(context).pushNamed(Pages.wallet_list),
+        ),
+        SettingsMenuItem(
+          icon: UIConstants.supplierIconData,
+          title: context.tr("suppliers"),
+          onTap: openSuppliers,
+        ),
+        SettingsMenuItem(
+          icon: UIConstants.customerIconData,
+          title: context.tr("customers"),
+          onTap: openCustomers,
+        ),
+        SettingsMenuItem(
+          icon: UIConstants.storeIconData,
+          title: context.tr("stores"),
+          onTap: () => onStoresItemPressed(context),
+        ),
+        SettingsMenuItem(
+          icon: UIConstants.paymentIconData,
+          title: context.tr("payments_title"),
+          onTap: openPayments,
+        ),
+        SettingsMenuItem(
+          icon: Icons.category_outlined,
+          title: context.tr("categories"),
+          onTap: openPaymentCategories,
+          isLast: true,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSettingsCard() {
+    return SettingsMenuCard(
+      children: [
+        SettingsMenuItem(
+          icon: UIConstants.settingIconData,
+          title: context.tr("settings"),
+          onTap: () => onSettingsItemPressed(context),
+        ),
+        SettingsMenuItem(
+          icon: Icons.workspace_premium_outlined,
+          title: context.tr("subscriptions_title"),
+          onTap: () async => await RevenueCatUI.presentPaywall(),
+          isLast: true,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSupportCard() {
+    return SettingsMenuCard(
+      children: [
+        SettingsMenuItem(
+          icon: Icons.help_outline,
+          title: context.tr("help_title"),
+          onTap: () => onHelp(context),
+        ),
+        SettingsMenuItem(
+          icon: Icons.new_releases_outlined,
+          title: context.tr("whats_new_title"),
+          onTap: () => onWhatsNew(context),
+        ),
+        SettingsMenuItem(
+          icon: Icons.description_outlined,
+          title: context.tr("terms_of_use_title"),
+          onTap: () => onTermsOfUse(),
+        ),
+        SettingsMenuItem(
+          icon: Icons.privacy_tip_outlined,
+          title: context.tr("privacy_policy_title"),
+          onTap: () => onPrivacyPolicy(),
+          isLast: true,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSocialCard() {
+    return SettingsMenuCard(
+      children: [
+        SettingsMenuItem(
+          icon: Icons.share_outlined,
+          title: context.tr("invite_friend"),
+          onTap: () => onInviteFriend(context),
+        ),
+        SettingsMenuItem(
+          icon: Icons.feedback_outlined,
+          title: context.tr("question_or_suggestion_title"),
+          onTap: () => onSelectMessageType(context),
+        ),
+        SettingsMenuItem(
+          icon: Icons.star_outline,
+          title: context.tr("review_the_app_title"),
+          onTap: () async {
+            final InAppReview inAppReview = InAppReview.instance;
+            if (await inAppReview.isAvailable()) {
+              inAppReview.requestReview();
+            } else {
+              await inAppReview.openStoreListing();
+            }
+          },
+          isLast: true,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAccountActionsCard() {
+    return SettingsMenuCard(
+      children: [
+        SettingsMenuItem(
+          icon: Icons.logout,
+          title: context.tr("sign_out"),
+          iconColor: Colors.redAccent,
+          onTap: () => onLogoutItemPressed(),
+        ),
+        SettingsMenuItem(
+          icon: Icons.delete_forever_outlined,
+          title: context.tr("delete_account"),
+          iconColor: Colors.red,
+          onTap: () => onDeleteAccountItemPressed(),
+          isLast: true,
+        ),
       ],
     );
   }
@@ -375,13 +404,56 @@ class MenuPageState extends State<MenuPage> {
       onPositivePressed: () async {
         Navigator.of(context).pop();
         await context.read<MenuCubit>().deleteAccount();
-        Navigator.of(context).pushNamedAndRemoveUntil(Pages.loading_data, (Route<dynamic> route) => false);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            Pages.loading_data, (Route<dynamic> route) => false);
       },
     );
   }
 
   void onStoresItemPressed(BuildContext context) {
-    Navigator.of(context).pushNamed(Pages.store_list, arguments: {"isSelection": false});
+    Navigator.of(context)
+        .pushNamed(Pages.store_list, arguments: {"isSelection": false});
+  }
+
+  Future<void> onChangeStorePressed() async {
+    final result = await Navigator.of(context)
+        .pushNamed(Pages.store_list, arguments: {"isSelection": true});
+    if (result != null && context.mounted) {
+      Store store = result as Store;
+      AppSettings.setSelectedStoreId(store.id!);
+      AppSettings.setSelectedStoreName(store.name);
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => MainPage()),
+        (Route<dynamic> route) => false,
+      );
+    }
+  }
+
+  void openSuppliers() {
+    Navigator.of(context).pushNamed(Pages.supplier_list);
+  }
+
+  void openCustomers() {
+    Navigator.of(context).pushNamed(Pages.customer_list);
+  }
+
+  void openDocuments() {
+    Navigator.of(context).pushNamed(Pages.document_list, arguments: {
+      "documentType": null,
+      "isSelection": false,
+      "setting": null,
+    });
+  }
+
+  void openPaymentCategories() {
+    Navigator.of(context).pushNamed(Pages.payment_categories);
+  }
+
+  void openPayments() {
+    Navigator.of(context).pushNamed(
+      Pages.payments,
+      arguments: {"setting": null, "initialIndex": 0},
+    );
   }
 
   void onSettingsItemPressed(BuildContext context) {
@@ -402,7 +474,8 @@ class MenuPageState extends State<MenuPage> {
   void onSelectMessageType(BuildContext context) async {
     var type = await showSelectMessageType(context);
     if (type != null) {
-      String subject = "${Config.appName} - ${type.getText(context)} - ${Platform.operatingSystem}";
+      String subject =
+          "${Config.appName} - ${type.getText(context)} - ${Platform.operatingSystem}";
       onSendMail(subject, "", Config.supportEmail);
     }
   }
@@ -412,7 +485,7 @@ class MenuPageState extends State<MenuPage> {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (BuildContext context) {
         return SafeArea(
@@ -420,13 +493,8 @@ class MenuPageState extends State<MenuPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-                child: Text(
-                  context.tr("select_message_type"),
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
+              SettingsBottomSheetTitle(
+                  title: context.tr("select_message_type")),
               ...MessageType.values.map(
                 (type) => ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 24),
@@ -455,7 +523,10 @@ class MenuPageState extends State<MenuPage> {
   }
 
   String _encodeQueryParameters(Map<String, String> params) {
-    return params.entries.map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}').join('&');
+    return params.entries
+        .map((e) =>
+            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+        .join('&');
   }
 
   void onWhatsNew(BuildContext context) async {
@@ -470,7 +541,9 @@ class MenuPageState extends State<MenuPage> {
 
   void onTermsOfUse() => NavigatorUtils.openUrl(Config.termOfUseUrl);
   void onPrivacyPolicy() => NavigatorUtils.openUrl(Config.privacyPolicyUrl);
-  void onHelp(BuildContext context) => Navigator.of(context).pushNamed(Pages.helps, arguments: {});
+
+  void onHelp(BuildContext context) =>
+      Navigator.of(context).pushNamed(Pages.helps, arguments: {});
 
   void onLogoutItemPressed() {
     showCustomAlertDialog(
@@ -485,12 +558,14 @@ class MenuPageState extends State<MenuPage> {
             Navigator.of(context).pop();
             await context.read<MenuCubit>().upload();
             context.read<MenuCubit>().signOut();
-            Navigator.of(context).pushNamedAndRemoveUntil(Pages.loading_data, (Route<dynamic> route) => false);
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                Pages.loading_data, (Route<dynamic> route) => false);
           },
           onNegativePressed: () async {
             Navigator.of(context).pop();
             context.read<MenuCubit>().signOut();
-            Navigator.of(context).pushNamedAndRemoveUntil(Pages.loading_data, (Route<dynamic> route) => false);
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                Pages.loading_data, (Route<dynamic> route) => false);
           },
         );
       },

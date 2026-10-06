@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -129,20 +130,19 @@ class AuthCubit extends Cubit<AuthState> {
     String error = "";
     switch (e.code) {
       case "provider-already-linked":
-        error = "The provider has already been linked to the user.";
+        error = "auth_provider_already_linked".tr();
         break;
       case "invalid-credential":
-        error = "The provider's credential is not valid.";
+        error = "auth_invalid_credential".tr();
         break;
       case "credential-already-in-use":
-        error =
-            "The account corresponding to the credential already exists, or is already linked to a Firebase User.";
+        error = "auth_credential_already_in_use".tr();
         break;
       case "email-already-in-use":
-        error = "The email is already in used";
+        error = "auth_email_already_in_use".tr();
         break;
       default:
-        error = "Unknown error.";
+        error = "auth_unknown_error".tr();
     }
     emit(AuthError(error));
   }

@@ -8,7 +8,7 @@ import 'package:good_manager/presentation/pages/settings/general/bloc/settings_g
 import '../../../../app_cubit.dart';
 import '../../../../models/currency.dart';
 import '../../../../util/util.dart';
-import '../../../widget/views.dart';
+import '../../../widget/widget.dart';
 
 class SettingsGeneralPage extends StatefulWidget {
   SettingsGeneralPage({Key? key}) : super(key: key);
@@ -25,155 +25,105 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
     return BlocConsumer<SettingsGeneralCubit, SettingsGeneralState>(
       listener: (context, state) async {},
       builder: (BuildContext context, SettingsGeneralState state) {
-        return Scaffold(
-          appBar: new AppBar(
-            title: new Text(context.tr("general")),
+        return SettingsScaffold(
+          title: context.tr("general"),
+          body: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+            children: [
+              SettingsSectionHeader(context.tr("general"), isFirst: true),
+              SettingsMenuCard(
+                children: [
+                  BlocBuilder<AppCubit, AppState>(
+                    builder: (context, appState) => SettingsMenuItem(
+                      icon: Icons.language_outlined,
+                      title: context.tr("language"),
+                      subtitle: appState.language.label,
+                      onTap: () async {
+                        final language =
+                            await showSelectLanguage(context, appState);
+                        if (language != null) {
+                          context.setLocale(language.locale);
+                          context.read<AppCubit>().setLanguage(language);
+                        }
+                      },
+                    ),
+                  ),
+                  SettingsMenuItem(
+                    icon: Icons.attach_money_rounded,
+                    title: context.tr("currency"),
+                    subtitle: state.currency.label,
+                    onTap: () async {
+                      final newCurrency =
+                          await showSelectCurrency(context, state);
+                      if (newCurrency != null) {
+                        context
+                            .read<SettingsGeneralCubit>()
+                            .onCurrencyChanged(newCurrency);
+                      }
+                    },
+                  ),
+                  SettingsSwitchItem(
+                    icon: Icons.lock_outline_rounded,
+                    title: context.tr("menu_item_passcode_title"),
+                    subtitle: context.tr("menu_item_passcode_title"),
+                    value: state.enablePasscode,
+                    onChanged: (value) =>
+                        _handlePasscodeToggle(context, value, state.passcode),
+                  ),
+                  SettingsMenuItem(
+                    icon: Icons.refresh_rounded,
+                    title: context
+                        .tr("menu_item_reset_numeration_documents_title"),
+                    onTap: () {
+                      context
+                          .read<SettingsGeneralCubit>()
+                          .resetAutoDocumentNo();
+                      ToastUtils.showInfoToast(context.tr("success"));
+                    },
+                    isLast: true,
+                  ),
+                ],
+              ),
+            ],
           ),
-          body: _buildBody(state),
         );
       },
     );
   }
 
-  Widget _buildBody(SettingsGeneralState state) {
-    return ListView(
-      padding: EdgeInsets.all(16),
-      children: [
-        Card(
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            children: [
-              BlocBuilder<AppCubit, AppState>(
-                builder:
-                    (context, state) => ListTile(
-                      leading: Icon(Icons.language_outlined),
-                  title: Text("language").tr(),
-                  subtitle: Text(state.language.label),
-                  trailing: const Icon(Icons.navigate_next),
-                  onTap: () async {
-                    var language = await showSelectLanguage(
-                      context,
-                      state,
-                    );
-                    if (language != null) {
-                      context.setLocale(language.locale);
-                      context.read<AppCubit>().setLanguage(language);
-                    }
-                  },
-                ),
-              ),
-              buildDivider(),
-              ListTile(
-                leading: Icon(Icons.attach_money),
-                title: Text("currency").tr(),
-                subtitle: Text(state.currency.label),
-                onTap: () async {
-                  Currency? newCurrency = await showSelectCurrency(
-                    context,
-                    state,
-                  );
-                  if (newCurrency != null) {
-                    context.read<SettingsGeneralCubit>().onCurrencyChanged(
-                      newCurrency,
-                    );
-                  }
-                },
-                trailing: const Icon(Icons.navigate_next),
-              ),
-              buildDivider(),
-              ListTile(
-                leading: Icon(Icons.lock_outline),
-                title: Text(
-                  context.tr("menu_item_passcode_title"),
-                ),
-                subtitle: Text(
-                  context.tr("menu_item_passcode_title"),
-                ),
-                trailing: Switch(
-                  value: state.enablePasscode,
-                  onChanged: (value) {
-                    _handlePasscodeToggle(context, value, state.passcode);
-                  },
-                ),
-                onTap: () {
-                  _handlePasscodeToggle(
-                    context,
-                    !state.enablePasscode,
-                    state.passcode,
-                  );
-                },
-              ),
-              buildDivider(),
-              ListTile(
-                leading: Icon(Icons.refresh_outlined),
-                title: Text(
-                  context.tr("menu_item_reset_numeration_documents_title"),
-                ),
-                onTap: () {
-                  context.read<SettingsGeneralCubit>().resetAutoDocumentNo();
-                  ToastUtils.showInfoToast(
-                    context.tr("success"),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Future<AppLanguage?> showSelectLanguage(
-      BuildContext context,
-      AppState state,
-      ) async {
-    return await showModalBottomSheet<AppLanguage>(
+  Future<AppLanguage?> showSelectLanguage(BuildContext context,
+      AppState state,) async {
+    return showModalBottomSheet<AppLanguage>(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (BuildContext context) {
         return DraggableScrollableSheet(
           expand: false,
           initialChildSize: 0.7,
-          // 70% of screen height
           minChildSize: 0.4,
           maxChildSize: 0.95,
           builder: (context, scrollController) {
             return SingleChildScrollView(
               controller: scrollController,
               child: Column(
-                //mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "select_language".tr(),
-                      style: Theme.of(context).textTheme.titleMedium,
+                  SettingsBottomSheetTitle(
+                      title: context.tr("select_language")),
+                  ...AppLanguage.values.map(
+                    (type) => ListTile(
+                      title: Text(type.label),
+                      trailing: state.language == type
+                          ? Icon(Icons.check_rounded,
+                              color: Theme.of(context).colorScheme.primary)
+                          : null,
+                      onTap: () => Navigator.pop(context, type),
                     ),
                   ),
-                  Column(
-                    children:
-                    AppLanguage.values
-                        .map(
-                          (type) => ListTile(
-                        title: Text(type.label),
-                        trailing:
-                        state.language == type
-                            ? const Icon(
-                          Icons.check,
-                          color: Colors.green,
-                        )
-                            : null,
-                        onTap: () {
-                          Navigator.pop(context, type);
-                        },
-                      ),
-                    )
-                        .toList(),
-                  ),
+                  const SizedBox(height: 12),
                 ],
               ),
             );
@@ -182,21 +132,19 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
       },
     );
   }
-  Future<Currency?> showSelectCurrency(
-      BuildContext context,
-      SettingsGeneralState state,
-      ) async {
-    return await showModalBottomSheet<Currency>(
+
+  Future<Currency?> showSelectCurrency(BuildContext context,
+      SettingsGeneralState state,) async {
+    return showModalBottomSheet<Currency>(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (BuildContext context) {
         return DraggableScrollableSheet(
           expand: false,
           initialChildSize: 0.7,
-          // 70% of screen height
           minChildSize: 0.4,
           maxChildSize: 0.95,
           builder: (context, scrollController) {
@@ -205,31 +153,19 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "select_currency".tr(),
-                      style: Theme.of(context).textTheme.titleMedium,
+                  SettingsBottomSheetTitle(
+                      title: context.tr("select_currency")),
+                  ...Currency.values.map(
+                    (type) => ListTile(
+                      title: Text(type.label),
+                      trailing: state.currency == type
+                          ? Icon(Icons.check_rounded,
+                              color: Theme.of(context).colorScheme.primary)
+                          : null,
+                      onTap: () => Navigator.pop(context, type),
                     ),
                   ),
-                  Column(
-                    children:
-                    Currency.values
-                        .map(
-                          (type) => ListTile(
-                        title: Text(type.label),
-                        trailing:
-                        state.currency == type
-                            ? const Icon(
-                          Icons.check,
-                          color: Colors.green,
-                        )
-                            : null,
-                        onTap: () => Navigator.pop(context, type),
-                      ),
-                    )
-                        .toList(),
-                  ),
+                  const SizedBox(height: 12),
                 ],
               ),
             );

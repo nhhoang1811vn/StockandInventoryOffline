@@ -7,8 +7,6 @@ import 'package:good_manager/presentation/pages/documents/components/document_it
 import 'package:good_manager/presentation/pages/documents_history/bloc/documents_history_cubit.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/payment/components/payment_item_row.dart';
-import 'package:good_manager/presentation/widget/selected_store_view.dart';
-
 import '../../../constant/constant.dart';
 import '../../../util/util.dart';
 import '../../widget/date_item_row.dart';
@@ -79,7 +77,6 @@ class DocumentsHistoryPageState extends State<DocumentsHistoryPage> {
 
   Widget _buildContent(DocumentsHistoryState state) {
     List<Widget> children = [
-      SelectedStoreView(),
       if (state.items.isNotEmpty)
         Expanded(child: _buildListView(state))
       else
@@ -111,6 +108,7 @@ class DocumentsHistoryPageState extends State<DocumentsHistoryPage> {
   Widget _buildListView(DocumentsHistoryState data) {
     //bool flag = true;
     return ListView.builder(
+      padding: EdgeInsets.symmetric(horizontal: 16),
       itemBuilder: (BuildContext context, index) {
         ListItem item = data.items[index];
         //flag = !flag;

@@ -11,6 +11,7 @@ class SaveSupplierState with _$SaveSupplierState {
     @Default('') String phone,
     @Default('') String taxID,
     @Default('') String bankDetails,
+    String? file,
     @Default('') String exceptionError,
     Supplier? item,
   }) = _Initial;

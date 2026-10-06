@@ -11,14 +11,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/data/data.dart';
 import 'package:good_manager/presentation/dialog/custom_dialog.dart';
-import 'package:good_manager/presentation/widget/views.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:sprintf/sprintf.dart';
 
 import '../../../../data/db_service.dart';
-import '../../../widget/snackbar_widgets.dart';
+import '../../../widget/widget.dart';
 import 'bloc/settings_data_cubit.dart';
 
 class SettingsDataPage extends StatefulWidget {
@@ -44,10 +44,8 @@ class SettingsDataPageState extends State<SettingsDataPage> {
     return BlocConsumer<SettingsDataCubit, SettingsDataState>(
       listener: (context, state) async {},
       builder: (BuildContext context, SettingsDataState state) {
-        return Scaffold(
-          appBar: new AppBar(
-            title: new Text(context.tr("menu_item_backup_and_restore")),
-          ),
+        return SettingsScaffold(
+          title: context.tr("menu_item_backup_and_restore"),
           body: _buildBody(),
         );
       },
@@ -57,52 +55,47 @@ class SettingsDataPageState extends State<SettingsDataPage> {
 
   Widget _buildBody() {
     return ListView(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
       children: [
-        Card(
-          clipBehavior: Clip.antiAlias,
-          child: Column(
+        SettingsMenuCard(
+          children: [
+            SettingsMenuItem(
+              icon: Icons.backup_outlined,
+              title: context.tr("menu_back_up"),
+              subtitle: context.tr("menu_back_up_desc"),
+              onTap: () => onBackUpPressed(context),
+            ),
+            SettingsMenuItem(
+              icon: Icons.restore_outlined,
+              title: context.tr("menu_restore"),
+              subtitle: context.tr("menu_restore_desc"),
+              onTap: () => onRestorePressed(context),
+              isLast: true,
+            ),
+          ],
+        ),
+        if (user != null && user?.isAnonymous == false) ...[
+          SettingsSectionHeader(context.tr("cloud")),
+          SettingsMenuCard(
             children: [
-              ListTile(
-                leading: Icon(Icons.backup),
-                title: Text(context.tr("menu_back_up")),
-                subtitle: Text(context.tr("menu_back_up_desc")),
-                onTap: () => onBackUpPressed(context),
+              SettingsMenuItem(
+                icon: Icons.cloud_outlined,
+                title: context.tr("menu_push_data_to_cloud"),
+                subtitle: cloudFileUpdatedTime.isEmpty
+                    ? context.tr("cloud_file_no_updated")
+                    : cloudFileUpdatedTime,
+                onTap: () => onCloudPressed(),
               ),
-              buildDivider(),
-              ListTile(
-                leading: Icon(Icons.restore),
-                title: Text(context.tr("menu_restore")),
-                subtitle: Text(context.tr("menu_restore_desc")),
-                onTap: () => onRestorePressed(context),
+              SettingsMenuItem(
+                icon: Icons.cloud_sync_outlined,
+                title: context.tr("menu_push_data_to_cloud_v2"),
+                subtitle: context.tr("menu_push_data_to_cloud_v2_desc"),
+                onTap: onSaveDataToCloudVersion2,
+                isLast: true,
               ),
             ],
           ),
-        ),
-        if (user != null && user?.isAnonymous == false)
-          Card(
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              children: [
-                  ListTile(
-                    leading: Icon(Icons.cloud),
-                    title: Text(context.tr("menu_push_data_to_cloud")),
-                    subtitle: cloudFileUpdatedTime.isEmpty
-                        ? Text(context.tr("cloud_file_no_updated"))
-                        : Text(cloudFileUpdatedTime),
-                    onTap: () => onCloudPressed(),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.cloud),
-                    title: Text("Save the data to cloud v2"),
-                    subtitle: Text("Use this option to make your offline Stock & Inventory data available in the online version."),
-                    onTap: () {
-                      onSaveDataToCloudVersion2();
-                    },
-                  ),
-              ],
-            ),
-          ),
+        ],
       ],
     );
   }
@@ -358,7 +351,7 @@ class SettingsDataPageState extends State<SettingsDataPage> {
   void notifyRestoreError(String error) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text("restore error: " + error),
+        content: Text(sprintf(context.tr("restore_error"), [error])),
       ),
     );
   }

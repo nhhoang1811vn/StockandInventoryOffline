@@ -66,6 +66,7 @@ import '../presentation/pages/save_store/bloc/save_store_cubit.dart' as _i923;
 import '../presentation/pages/save_supplier/bloc/save_supplier_cubit.dart'
     as _i377;
 import '../presentation/pages/save_wallet/bloc/save_wallet_cubit.dart' as _i193;
+import '../presentation/pages/search/bloc/search_cubit.dart' as _i654;
 import '../presentation/pages/select_group/bloc/select_group_cubit.dart'
     as _i921;
 import '../presentation/pages/settings/bloc/settings_cubit.dart' as _i951;
@@ -81,6 +82,7 @@ import '../presentation/pages/settings/view/bloc/settings_view_cubit.dart'
     as _i279;
 import '../presentation/pages/stores/bloc/stores_cubit.dart' as _i895;
 import '../presentation/pages/suppliers/bloc/suppliers_cubit.dart' as _i346;
+import '../presentation/pages/wallets/bloc/wallets_cubit.dart' as _i427;
 import '../presentation/widget/sale_report/sale_report_cubit.dart' as _i434;
 import '../repo/customers_repository.dart' as _i542;
 import '../repo/document_transactions_repository.dart' as _i394;
@@ -207,14 +209,6 @@ extension GetItInjectableX on _i174.GetIt {
             useCase: gh<_i704.PaymentCategoryUseCases>()));
     gh.factory<_i921.SelectGroupCubit>(() =>
         _i921.SelectGroupCubit(groupsUseCase: gh<_i704.GroupsUseCases>()));
-    gh.factory<_i12.HomeCubit>(() => _i12.HomeCubit(
-          goodsUseCases: gh<_i704.GoodsUseCases>(),
-          documentsUseCases: gh<_i704.DocumentUseCases>(),
-          supplierUseCases: gh<_i704.SuppliersUseCase>(),
-          customerUseCase: gh<_i704.CustomersUseCase>(),
-          walletUseCases: gh<_i704.WalletUseCases>(),
-          paymentUseCases: gh<_i704.PaymentUseCases>(),
-        ));
     gh.factory<_i995.AuthCubit>(
         () => _i995.AuthCubit(useCase: gh<_i704.StoresUseCase>()));
     gh.factory<_i573.OnBoardingCubit>(
@@ -228,6 +222,8 @@ extension GetItInjectableX on _i174.GetIt {
           paymentUseCase: gh<_i704.PaymentUseCases>(),
           goodUseCases: gh<_i704.GoodsUseCases>(),
         ));
+    gh.factory<_i427.WalletsCubit>(
+        () => _i427.WalletsCubit(walletUseCases: gh<_i704.WalletUseCases>()));
     gh.factory<_i978.CustomersCubit>(
         () => _i978.CustomersCubit(useCase: gh<_i704.CustomersUseCase>()));
     gh.factory<_i124.SaveCustomerCubit>(
@@ -268,6 +264,22 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i434.SaleReportCubit>(
         () => _i434.SaleReportCubit(useCase: gh<_i704.PaymentUseCases>()));
+    gh.factory<_i654.SearchCubit>(() => _i654.SearchCubit(
+          goodsUseCases: gh<_i704.GoodsUseCases>(),
+          documentUseCases: gh<_i704.DocumentUseCases>(),
+          paymentUseCases: gh<_i704.PaymentUseCases>(),
+          groupsUseCases: gh<_i704.GroupsUseCases>(),
+          walletUseCases: gh<_i704.WalletUseCases>(),
+        ));
+    gh.factory<_i12.HomeCubit>(() => _i12.HomeCubit(
+          goodsUseCases: gh<_i704.GoodsUseCases>(),
+          documentsUseCases: gh<_i704.DocumentUseCases>(),
+          supplierUseCases: gh<_i704.SuppliersUseCase>(),
+          customerUseCase: gh<_i704.CustomersUseCase>(),
+          walletUseCases: gh<_i704.WalletUseCases>(),
+          paymentUseCases: gh<_i704.PaymentUseCases>(),
+          storesUseCase: gh<_i704.StoresUseCase>(),
+        ));
     gh.lazySingleton<_i266.ReportDataFactory>(() => _i266.ReportDataFactory(
           goodsUseCases: gh<_i162.GoodsUseCases>(),
           groupsUseCases: gh<_i506.GroupsUseCases>(),

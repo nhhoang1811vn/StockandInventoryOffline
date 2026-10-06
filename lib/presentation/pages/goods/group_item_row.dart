@@ -2,82 +2,174 @@ import 'package:flutter/material.dart';
 
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
+import '../../../util/base64_utils.dart';
 
 class GroupItemRow extends StatelessWidget {
   final Group item;
   final Function(Group) onGroupTapped;
   final Function(Group) onGroupLongPressed;
+  final bool isListTile;
 
-  GroupItemRow(this.item, this.onGroupTapped, this.onGroupLongPressed);
+  GroupItemRow(
+    this.item,
+    this.onGroupTapped,
+    this.onGroupLongPressed, {
+    this.isListTile = true,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: InkWell(
-        onTap: () => onGroupTapped(item),
-        onLongPress: () => onGroupLongPressed(item),
-        borderRadius: BorderRadius.circular(12),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-          leading: SizedBox(
-            height: 48,
-            width: 48,
-            child: CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-              child: Icon(
-                UIConstants.groupIconData,
-                size: 24,
-                color: Theme.of(context).colorScheme.primary,
+    if (isListTile) {
+      return _buildListTile(context);
+    }
+    return _buildGridTile(context);
+  }
+
+  Widget _buildCardWrapper(BuildContext context, Widget child) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.1 : 0.015),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => onGroupTapped(item),
+          onLongPress: () => onGroupLongPressed(item),
+          borderRadius: BorderRadius.circular(22),
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFolderIcon(BuildContext context,
+      {double size = 54, double iconSize = 24}) {
+    final theme = Theme.of(context);
+    final bytes = tryDecodeBase64(item.file);
+
+    if (bytes != null) {
+      return Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(18),
+          child: Image.memory(
+            bytes,
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Icon(
+        UIConstants.groupIconData,
+        color: theme.colorScheme.primary,
+        size: iconSize,
+      ),
+    );
+  }
+
+  Widget _buildListTile(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return _buildCardWrapper(
+      context,
+      Padding(
+        padding: const EdgeInsets.all(14.0),
+        child: Row(
+          children: [
+            _buildFolderIcon(context, size: 64, iconSize: 28),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.name,
+                    style: Theme.of(context).textTheme.titleMedium,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (item.description.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      item.description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: theme.colorScheme.onSurface.withOpacity(0.5),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ],
               ),
             ),
-          ),
-          title: Text(
-            item.name,
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGridTile(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return _buildCardWrapper(
+      context,
+      Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildFolderIcon(context),
+            const SizedBox(height: 10),
+            Text(
+              item.name,
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 14,
+                color: theme.colorScheme.onSurface,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (item.description.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Text(
-                    item.description,
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
+            if (item.description.isNotEmpty) ...[
+              const SizedBox(height: 2),
+              Text(
+                item.description,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: theme.colorScheme.onSurface.withOpacity(0.5),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
                 ),
-              if (item.barCode != null && item.barCode!.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Row(
-                    children: [
-                      Icon(
-                        UIConstants.barcodeIconData,
-                        size: 14,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        item.barCode!,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ],
-                  ),
-                ),
+                textAlign: TextAlign.center,
+              ),
             ],
-          ),
-          trailing: Icon(
-            Icons.chevron_right,
-            color: Theme.of(context).colorScheme.outline,
-          ),
+          ],
         ),
       ),
     );

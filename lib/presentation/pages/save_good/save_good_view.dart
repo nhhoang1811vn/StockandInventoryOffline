@@ -50,10 +50,20 @@ class SaveGoodPageState extends State<SaveGoodPage> {
   Widget build(BuildContext context) {
     context.read<SaveGoodCubit>().init(item, document, transaction);
     return Scaffold(
-      appBar: _buildAppBar(context),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: SaveObjectAppBar(
+        title: context.tr("save_good"),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              context.read<SaveGoodCubit>().onHistoryClicked();
+            },
+            icon: Icon(Icons.history),
+          ),
+        ],
+      ),
       body: Column(
         children: [
-          SelectedStoreView(),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(UIConstants.screenSpace),
@@ -83,7 +93,6 @@ class SaveGoodPageState extends State<SaveGoodPage> {
           //Expanded(child: ),
           Container(
             width: double.infinity,
-            color: Theme.of(context).colorScheme.surface,
             padding: EdgeInsets.all(16),
             child: PrimaryButton(context.tr("action_save"), () {
               context.read<SaveGoodCubit>().onSaveClicked();
@@ -93,22 +102,4 @@ class SaveGoodPageState extends State<SaveGoodPage> {
       ),
     );
   }
-
-  PreferredSize _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(
-        title: Text(context.tr("save_good")),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              context.read<SaveGoodCubit>().onHistoryClicked();
-            },
-            icon: Icon(Icons.history),
-          ),
-        ],
-      ),
-    );
-  }
-
 }

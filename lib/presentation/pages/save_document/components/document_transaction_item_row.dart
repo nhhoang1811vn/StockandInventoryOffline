@@ -1,6 +1,3 @@
-import 'dart:typed_data';
-
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/util/currency_formatter.dart';
 
@@ -15,8 +12,7 @@ class DocumentTransactionItemRow extends StatelessWidget {
   final Function(DocumentTransaction item) onTransactionLongPressed;
   final bool isSelection;
 
-  DocumentTransactionItemRow(
-      this.item,
+  DocumentTransactionItemRow(this.item,
       this.bgColor,
       this.onTransactionPressed,
       this.onTransactionLongPressed, [
@@ -25,156 +21,129 @@ class DocumentTransactionItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: InkWell(
-        onTap: () => onTransactionPressed(item),
-        onLongPress: () => onTransactionLongPressed(item),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildLeadingWidget(context),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildTitleRow(context),
-                    const SizedBox(height: 4),
-                    _buildSubtitleColumn(context),
-                    const SizedBox(height: 8),
-                    _buildPriceRow(context),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final total = (item.price ?? 0) * item.quantity;
+    final good = item.good;
 
-  Widget _buildLeadingWidget(BuildContext context) {
-    if (item.good?.files.isNotEmpty ?? false) {
-      return SizedBox(
-        width: 48,
-        height: 48,
-        child: ClipOval(
-          child: Image.memory(
-            item.good!.files.first,
-            fit: BoxFit.cover,
-          ),
-        ),
-      );
-    }
     return Container(
-      width: 48,
-      height: 48,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer,
-        shape: BoxShape.circle,
-      ),
-      child: Icon(
-        UIConstants.goodIconData,
-        size: 28,
-        color: Theme.of(context).colorScheme.primary,
-      ),
-    );
-  }
-
-  Widget _buildTitleRow(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Text(
-            item.good?.name ?? "",
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.1 : 0.015),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
-        ),
-        Text(
-          StringUtils.getQuantityText(item.quantity),
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSubtitleColumn(BuildContext context) {
-    var description = item.good?.description ?? "";
-    var barcode = item.good?.barCode ?? "";
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (barcode.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 2.0),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => onTransactionPressed(item),
+          onLongPress: () => onTransactionLongPressed(item),
+          borderRadius: BorderRadius.circular(22),
+          child: Padding(
+            padding: const EdgeInsets.all(14.0),
             child: Row(
               children: [
-                Icon(
-                  UIConstants.barcodeIconData,
-                  size: 14,
-                  color: Theme.of(context).colorScheme.secondary,
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(18),
+                    child: good.files.isNotEmpty
+                        ? Image.memory(good.files.first, fit: BoxFit.cover)
+                        : Icon(UIConstants.goodIconData,
+                            color: theme.colorScheme.primary, size: 28),
+                  ),
                 ),
-                const SizedBox(width: 4),
-                Text(
-                  barcode,
-                  style: Theme.of(context).textTheme.bodySmall,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        good.name,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 6),
+                      if (good.barCode != null && good.barCode!.isNotEmpty)
+                        Row(
+                          children: [
+                            Icon(Icons.qr_code,
+                                size: 14,
+                                color: theme.colorScheme.onSurface
+                                    .withOpacity(0.5)),
+                            const SizedBox(width: 6),
+                            Text(
+                              good.barCode!,
+                              style: TextStyle(
+                                color: theme.colorScheme.onSurface
+                                    .withOpacity(0.5),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Text(
+                            CurrencyFormatter.format(context, item.price ?? 0),
+                            style: TextStyle(
+                              color: theme.colorScheme.primary,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color:
+                                  theme.colorScheme.secondary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              CurrencyFormatter.format(context, total),
+                              style: TextStyle(
+                                color: theme.colorScheme.secondary,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      StringUtils.getQuantityText(item.quantity),
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-        if (description.isNotEmpty)
-          Text(
-            description,
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-      ],
-    );
-  }
-
-  Widget _buildPriceRow(BuildContext context) {
-    final price = item.price ?? 0;
-    final total = price * item.quantity;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Text(
-          "${context.tr("price")}: ${CurrencyFormatter.format(context, price)}",
-          style: Theme.of(context).textTheme.bodySmall,
         ),
-        const SizedBox(width: 12),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondaryContainer,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            "${context.tr("total")}: ${CurrencyFormatter.format(context, total)}",
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-              color: Theme.of(context).colorScheme.onSecondaryContainer,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:good_manager/data/report_data/column_info.dart';
 import 'package:good_manager/data/report_data/report_data.dart';
 import 'package:good_manager/data/report_data/utils.dart';
@@ -46,7 +47,7 @@ class OutboundPaymentsReportData extends ReportData{
 
     for (Payment item in items) {
       final id = item.category?.id ?? -1; // -1 = no category
-      final name = item.category?.name ?? "No category";
+      final name = item.category?.name ?? "no_category".tr();
 
       final current = categoryTotals[id]?.value ?? 0.0;
       categoryTotals[id] = MapEntry(name, current + (item.amount ?? 0));

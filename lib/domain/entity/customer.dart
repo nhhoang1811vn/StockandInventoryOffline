@@ -6,6 +6,7 @@ class Customer extends BaseModel {
   String phone = "";
   String taxID = "";
   String bankDetail = "";
+  String? file;
   late int storeId;
 
   int numberDocument = 0;
@@ -19,6 +20,7 @@ class Customer extends BaseModel {
     this.phone = obj["phone"];
     this.taxID = obj["taxID"];
     this.bankDetail = obj["bankDetail"];
+    this.file = obj["file"];
     this.storeId = obj["storeId"];
   }
 
@@ -30,6 +32,7 @@ class Customer extends BaseModel {
     map["phone"] = phone;
     map["taxID"] = taxID;
     map["bankDetail"] = bankDetail;
+    map["file"] = file;
     map["storeId"] = storeId;
     return map;
   }
@@ -42,6 +45,7 @@ class Customer extends BaseModel {
     map["phone"] = phone;
     map["taxID"] = taxID;
     map["bankDetail"] = bankDetail;
+    map["file"] = file;
     return map;
   }
 

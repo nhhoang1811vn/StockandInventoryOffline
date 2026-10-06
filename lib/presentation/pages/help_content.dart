@@ -1,5 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+
+import '../../constant/constant.dart';
 
 enum HelpType {
   STORE,
@@ -25,6 +27,23 @@ extension HelpTypeExtension on HelpType {
         return context.tr("payments_title");
       case HelpType.MIN_QUAN:
         return context.tr("menu_item_minimum_quantity");
+    }
+  }
+
+  IconData getIcon() {
+    switch (this) {
+      case HelpType.STORE:
+        return UIConstants.storeIconData;
+      case HelpType.SUPPLIER_AND_CUSTOMER:
+        return UIConstants.supplierIconData;
+      case HelpType.GOODS:
+        return UIConstants.goodIconData;
+      case HelpType.DOCUMENTS:
+        return UIConstants.documentIconData;
+      case HelpType.PAYMENTS:
+        return UIConstants.paymentIconData;
+      case HelpType.MIN_QUAN:
+        return Icons.warning_amber_rounded;
     }
   }
 }

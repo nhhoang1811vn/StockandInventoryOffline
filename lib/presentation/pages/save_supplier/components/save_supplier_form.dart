@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier_cubit.dart';
+import 'package:good_manager/util/entity_image_picker.dart';
 
 import '../../../../domain/entity/entity.dart';
 import '../../../../presentation/widget/widget.dart';
+import '../../../../util/base64_utils.dart';
 import '../../../review_manager.dart';
 
 class SaveSupplierForm extends StatelessWidget {
@@ -29,6 +31,22 @@ class SaveSupplierForm extends StatelessWidget {
       },
       builder: (context, state) => Column(
         children: [
+          Center(
+            child: EntityPhotoAvatar(
+              imageBytes: tryDecodeBase64(state.file),
+              fallbackIcon: Icons.local_shipping_rounded,
+              canEdit: true,
+              onTap: () {
+                EntityImagePicker.showSourceSheet(
+                  context,
+                  onImagePicked: (bytes) async {
+                    context.read<SaveSupplierCubit>().onFileChanged(bytes);
+                  },
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 24),
           AppTextField(
             labelText: context.tr("label_supplier_name"),
             hintText: context.tr("hint_name"),

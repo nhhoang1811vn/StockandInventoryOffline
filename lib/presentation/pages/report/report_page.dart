@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/report_date_range_type.dart';
 
-import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
 import '../pages.dart';
 
@@ -20,59 +19,179 @@ class ReportPage extends StatefulWidget {
 class ReportPageState extends State<ReportPage> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocConsumer<ReportCubit, ReportState>(
-      builder: (context, state) =>
-          Scaffold(appBar: _buildAppBar(context), body: _buildBody2()),
+      builder: (context, state) => Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        appBar: AppBar(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          title: Text(
+            context.tr("report_title"),
+            style: TextStyle(
+                color: theme.colorScheme.onSurface,
+                fontWeight: FontWeight.w800),
+          ),
+          iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
+        ),
+        body: _buildBody(),
+      ),
       listenWhen: (p1, p2) => p1.state != p2.state,
       listener: (context, state) async {},
     );
   }
 
-  PreferredSize _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child:
-          AppBar(title: new Text(context.tr("report_title"))),
+  Widget _buildBody() {
+    return ListView(
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 100),
+      children: [
+        _buildSectionHeader(context.tr("inventory")),
+        _buildReportGroup([
+          ReportType.LIST_OF_GOODS,
+          ReportType.RE_ORDER,
+          ReportType.GOOD_INFO,
+          ReportType.LIST_OF_DOCUMENT,
+        ]),
+        _buildSectionHeader(context.tr("payments_title")),
+        _buildReportGroup([
+          ReportType.INBOUND_PAYMENTS,
+          ReportType.OUTBOUND_PAYMENTS,
+          ReportType.LIST_OF_WALLETS,
+        ]),
+        _buildSectionHeader(context.tr("person_name")),
+        _buildReportGroup([
+          ReportType.DEBTS_BY_SUPPLIER,
+          ReportType.DEBTS_BY_CUSTOMER,
+          ReportType.LIST_OF_SUPPLIER_PAYMENTS,
+          ReportType.LIST_OF_CUSTOMER_PAYMENTS,
+        ]),
+        const SizedBox(height: 40),
+      ],
     );
   }
 
-  Widget _buildBody2() {
-    return ListView(
-      children: [
-        Card(
-          clipBehavior: Clip.antiAlias,
-          margin: EdgeInsets.all(16),
-          child: Column(
-            children: [
-              for (int i = 0; i < ReportType.values.length; i++) ...[
-                ListTile(
-                  title: Text(ReportType.values[i].getTitle(context)),
-                  trailing: Icon(Icons.navigate_next),
-                  onTap: () {
-                    onReportTypeTapped(ReportType.values[i]);
-                  },
-                ),
-                if (i < ReportType.values.length - 1) Divider(height: 1),
-              ],
-            ],
-          ),
+  Widget _buildSectionHeader(String title) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, bottom: 12, top: 24),
+      child: Text(
+        title.toUpperCase(),
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w800,
+          color: theme.colorScheme.onSurface.withOpacity(0.4),
+          letterSpacing: 1.2,
         ),
+      ),
+    );
+  }
+
+  Widget _buildReportGroup(List<ReportType> types) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.1 : 0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: List.generate(types.length, (index) {
+          final type = types[index];
+          final isLast = index == types.length - 1;
+          return _buildReportItem(type, isLast);
+        }),
+      ),
+    );
+  }
+
+  Widget _buildReportItem(ReportType type, bool isLast) {
+    final theme = Theme.of(context);
+    return Column(
+      children: [
+        ListTile(
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          leading: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              _getIconForReportType(type),
+              color: theme.colorScheme.primary,
+              size: 22,
+            ),
+          ),
+          title: Text(
+            type.getTitle(context),
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
+              color: theme.colorScheme.onSurface,
+            ),
+          ),
+          trailing: Icon(
+            Icons.chevron_right_rounded,
+            color: theme.colorScheme.onSurface.withOpacity(0.2),
+          ),
+          onTap: () => onReportTypeTapped(type),
+        ),
+        if (!isLast)
+          Divider(
+            height: 0,
+            indent: 60,
+            color: theme.dividerColor.withOpacity(0.05),
+          ),
       ],
     );
+  }
+
+  IconData _getIconForReportType(ReportType type) {
+    switch (type) {
+      case ReportType.LIST_OF_GOODS:
+        return Icons.inventory_2_outlined;
+      case ReportType.LIST_OF_DOCUMENT:
+        return Icons.receipt_long_outlined;
+      case ReportType.DEBTS_BY_SUPPLIER:
+        return Icons.person_remove_outlined;
+      case ReportType.DEBTS_BY_CUSTOMER:
+        return Icons.person_add_outlined;
+      case ReportType.OUTBOUND_PAYMENTS:
+        return Icons.file_upload_outlined;
+      case ReportType.INBOUND_PAYMENTS:
+        return Icons.file_download_outlined;
+      case ReportType.LIST_OF_WALLETS:
+        return Icons.account_balance_wallet_outlined;
+      case ReportType.LIST_OF_SUPPLIER_PAYMENTS:
+        return Icons.upload_file_outlined;
+      case ReportType.LIST_OF_CUSTOMER_PAYMENTS:
+        return Icons.download_done_outlined;
+      case ReportType.RE_ORDER:
+        return Icons.reorder_outlined;
+      case ReportType.GOOD_INFO:
+        return Icons.info_outline;
+    }
   }
 
   void onReportTypeTapped(ReportType reportType) async {
     if (reportType == ReportType.RE_ORDER) {
       onReportReorder(context);
-    } else if (reportType == ReportType.GOOD_INFO){
+    } else if (reportType == ReportType.GOOD_INFO) {
       Navigator.of(context).pushNamed(
         Pages.report_detail,
         arguments: {
           'type': ReportType.GOOD_INFO,
         },
       );
-    }
-    else {
+    } else {
       ReportDateRangeType? reportDateRangeType =
           await showSelectDateRangeType(context);
       if (reportDateRangeType != null) {
@@ -130,35 +249,58 @@ class ReportPageState extends State<ReportPage> {
   Future<ReportDateRangeType?> showSelectDateRangeType(
     BuildContext context,
   ) async {
+    final theme = Theme.of(context);
     return await showModalBottomSheet<ReportDateRangeType>(
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (BuildContext context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                context.tr("select_date_range"),
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-            Column(
-              children: ReportDateRangeType.values
-                  .map(
-                    (type) => ListTile(
-                      title: Text(type.getText(context)),
-                      onTap: () => Navigator.pop(context, type),
+        return Container(
+          padding: const EdgeInsets.only(bottom: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      context.tr("select_date_range"),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: theme.colorScheme.onSurface,
+                      ),
                     ),
-                  )
-                  .toList(),
-            ),
-          ],
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(Icons.close,
+                          color: theme.colorScheme.onSurface.withOpacity(0.4)),
+                    ),
+                  ],
+                ),
+              ),
+              ...ReportDateRangeType.values.map(
+                (type) => ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  title: Text(
+                    type.getText(context),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                  onTap: () => Navigator.pop(context, type),
+                  trailing: Icon(Icons.chevron_right_rounded,
+                      color: theme.colorScheme.onSurface.withOpacity(0.2)),
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -172,12 +314,17 @@ class ReportPageState extends State<ReportPage> {
       initialDateRange: dateRange,
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+                  onPrimary: Colors.white,
+                ),
+          ),
+          child: child!,
+        );
+      },
     );
     return result;
-    if (result != null) {
-      setState(() {
-        dateRange = result;
-      });
-    }
   }
 }

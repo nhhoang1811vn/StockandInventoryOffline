@@ -11,6 +11,7 @@ class Pages {
   static const String loading_data = '/loading_data';
 
   static const String good_list = '/good_list';
+  static const String good_list_view = '/good_list_view';
   static const String save_good = '/save_good';
   static const String good_history = "/good_history";
   static const String save_group = '/save_group';
@@ -28,6 +29,8 @@ class Pages {
   static const String customer_list = '/customer_list';
   static const String save_customer = '/save_customer';
   static const String save_wallet = "/save_wallet";
+  static const String wallet_list = '/wallet_list';
+  static const String search = "/search";
 
   static const String help = '/help';
   static const String helps = '/helps';

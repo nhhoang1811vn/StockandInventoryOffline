@@ -8,151 +8,357 @@ import '../../../di/di.dart';
 import '../pages.dart';
 import 'bloc/on_boarding_cubit.dart';
 
-class OnBoardingPage extends StatelessWidget {
+class OnBoardingPage extends StatefulWidget {
+  OnBoardingPage({super.key});
+
+  @override
+  State<OnBoardingPage> createState() => _OnBoardingPageState();
+}
+
+class _OnBoardingPageState extends State<OnBoardingPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
   final OnBoardingCubit cubit = getIt<OnBoardingCubit>();
+  late final TextEditingController _storeNameController;
+
+  @override
+  void initState() {
+    super.initState();
+    _storeNameController = TextEditingController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_storeNameController.text.isEmpty) {
+      final defaultName = context.tr("default_store_name");
+      _storeNameController.text = defaultName;
+      cubit.nameChanged(defaultName);
+    }
+  }
+
+  @override
+  void dispose() {
+    _storeNameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    const bodyStyle = TextStyle(fontSize: 18.0);
-    const pageDecoration = PageDecoration(
-      imagePadding: EdgeInsets.only(bottom: 48.0),
-      titlePadding: EdgeInsets.only(bottom: 20.0, top: 120.0),
-      //pageMargin: EdgeInsets.only(bottom: 48.0),
-      //pageMargin:  EdgeInsets.only(bottom: 0.0),
-      titleTextStyle: TextStyle(fontSize: 26.0, fontWeight: FontWeight.w700),
-      bodyTextStyle: bodyStyle,
-      //imagePadding: EdgeInsets.zero,
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final background = theme.scaffoldBackgroundColor;
+
+    final titleStyle = theme.textTheme.headlineSmall?.copyWith(
+      fontWeight: FontWeight.w800,
+      letterSpacing: -0.4,
+      height: 1.2,
+      color: colors.onSurface,
     );
+
+    final bodyStyle = theme.textTheme.bodyLarge?.copyWith(
+      height: 1.5,
+      color: colors.onSurface.withOpacity(0.62),
+    );
+
+    final pageDecoration = PageDecoration(
+      pageColor: background,
+      imagePadding: EdgeInsets.zero,
+      titlePadding: EdgeInsets.zero,
+      bodyPadding: EdgeInsets.zero,
+      contentMargin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+      bodyAlignment: Alignment.center,
+      imageFlex: 0,
+      bodyFlex: 1,
+    );
+
     return BlocProvider(
       create: (context) => cubit,
-      child: BlocConsumer<OnBoardingCubit, OnBoardingState>(
+      child: BlocListener<OnBoardingCubit, OnBoardingState>(
         listener: (context, state) {
-          if (state.status.isFailure) {
-            //ScaffoldMessenger.of(context)
-            //    .showSnackBar(snackBarWhenFailureWithText(state.exceptionError));
-            Navigator.of(context).pushReplacementNamed(Pages.main);
-          } else if (state.status.isSuccess) {
+          if (state.status.isFailure || state.status.isSuccess) {
             Navigator.of(context).pushReplacementNamed(Pages.main);
           }
         },
-        builder: (context, state) => IntroductionScreen(
-          //key: globalKey,
-          pages: [
-            PageViewModel(
-              title: context.tr("on_boarding_title_1"),
-              body: context.tr("on_boarding_content_1"),
-              image: Container(
-                width: 150.0,
-                height: 150.0,
-                padding: EdgeInsets.all(32.0),
-                // decoration: BoxDecoration(
-                //   border: Border.all(width: 2, color: Colors.blue),
-                //   shape: BoxShape.circle,
-                // ),
-                child: Image.asset(
-                  "assets/images/onboarding_store.png",
+        child: Scaffold(
+          backgroundColor: background,
+          resizeToAvoidBottomInset: true,
+          body: SafeArea(
+            child: IntroductionScreen(
+              key: introKey,
+              globalBackgroundColor: background,
+              animationDuration: 350,
+              controlsPadding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+              pages: [
+                _contentPage(
+                  title: context.tr("on_boarding_title_1"),
+                  body: context.tr("on_boarding_content_1"),
+                  assetPath: "assets/images/onboarding_store.png",
+                  titleStyle: titleStyle,
+                  bodyStyle: bodyStyle,
+                  colors: colors,
+                  decoration: pageDecoration,
                 ),
-              ),
-              //image: Image.asset(name)
-              //image: Icon(UIConstants.storeIconData, size: 60, color: AppColors.primaryColor,),
-              decoration: pageDecoration,
-            ),
-            PageViewModel(
-              title: context.tr("on_boarding_title_2"),
-              body: context.tr("on_boarding_content_2"),
-              image: Container(
-                width: 150.0,
-                height: 150.0,
-                padding: EdgeInsets.all(32.0),
-                // decoration: BoxDecoration(
-                //   border: Border.all(width: 2, color: Colors.blue),
-                //   shape: BoxShape.circle,
-                // ),
-                child: Image.asset(
-                  "assets/images/app_logo.png",
+                _contentPage(
+                  title: context.tr("on_boarding_title_2"),
+                  body: context.tr("on_boarding_content_2"),
+                  assetPath: "assets/images/app_logo.png",
+                  titleStyle: titleStyle,
+                  bodyStyle: bodyStyle,
+                  colors: colors,
+                  decoration: pageDecoration,
                 ),
-              ),
-              decoration: pageDecoration,
-            ),
-            PageViewModel(
-              title: context.tr("on_boarding_title_3"),
-              body: context.tr("on_boarding_content_3"),
-              image: Container(
-                width: 150.0,
-                height: 150.0,
-                padding: EdgeInsets.all(32.0),
-                // decoration: BoxDecoration(
-                //   border: Border.all(width: 2, color: Colors.blue),
-                //   shape: BoxShape.circle,
-                // ),
-                child: Image.asset(
-                  "assets/images/onboarding_document.png",
+                _contentPage(
+                  title: context.tr("on_boarding_title_3"),
+                  body: context.tr("on_boarding_content_3"),
+                  assetPath: "assets/images/onboarding_document.png",
+                  titleStyle: titleStyle,
+                  bodyStyle: bodyStyle,
+                  colors: colors,
+                  decoration: pageDecoration,
                 ),
-              ),
-              decoration: pageDecoration,
-            ),
-            PageViewModel(
-              image: Container(
-                width: 150.0,
-                height: 150.0,
-                padding: EdgeInsets.all(32.0),
-                // decoration: BoxDecoration(
-                //   border: Border.all(width: 2, color: Colors.blue),
-                //   shape: BoxShape.circle,
-                // ),
-                child: Image.asset(
-                  "assets/images/onboarding_store.png",
-                ),
-              ),
-              title: context.tr("on_boarding_title_4"),
-              bodyWidget: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    context.tr("on_boarding_header_4"),
-                    style: bodyStyle,
+                _contentPage(
+                  title: context.tr("on_boarding_title_4"),
+                  body: context.tr("on_boarding_header_4"),
+                  assetPath: "assets/images/onboarding_store.png",
+                  titleStyle: titleStyle,
+                  bodyStyle: bodyStyle,
+                  colors: colors,
+                  decoration: pageDecoration,
+                  extra: _StoreNameField(
+                    controller: _storeNameController,
+                    hintText: context.tr("hint_store_name"),
+                    onChanged: cubit.nameChanged,
+                    onSubmitted: (_) => cubit.onAddStore(),
                   ),
-                  TextFormField(
-                    textAlign: TextAlign.center,
-                    initialValue: "My Store",
-                    decoration: InputDecoration(
-                      hintText: "Input store name",
-                    ),
-                    onFieldSubmitted: (value) {
-                      context.read<OnBoardingCubit>().onAddStore();
-                    },
-                    onChanged: context.read<OnBoardingCubit>().nameChanged,
-                  ),
-                ],
+                ),
+              ],
+              onDone: cubit.onAddStore,
+              showSkipButton: true,
+              skip: Text(
+                context.tr("skip"),
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: colors.primary,
+                ),
               ),
-              //image: Icon(UIConstants.storeIconData, size: 60, color: AppColors.primaryColor),
-              decoration: pageDecoration,
-            ),
-          ],
-          onDone: () => context.read<OnBoardingCubit>().onAddStore(),
-          //onSkip: () => _onIntroEnd(context), // You can override onSkip callback
-          showSkipButton: true,
-          //skipFlex: 0,
-          nextFlex: 0,
-          skip: Text(context.tr("skip")),
-          next: const Icon(Icons.arrow_forward),
-          done: Visibility(
-            visible: state.name.trim().isNotEmpty,
-            child: Text(
-              context.tr("done"),
-              style: TextStyle(fontWeight: FontWeight.w600),
+              next: _CircleAction(
+                color: colors.primary,
+                child: Icon(
+                  Icons.arrow_forward_rounded,
+                  color: colors.onPrimary,
+                ),
+              ),
+              done: _DoneAction(
+                label: context.tr("done"),
+                color: colors.primary,
+                onColor: colors.onPrimary,
+              ),
+              dotsDecorator: DotsDecorator(
+                size: const Size(8, 8),
+                color: colors.primary.withOpacity(0.18),
+                activeColor: colors.primary,
+                activeSize: const Size(22, 8),
+                spacing: const EdgeInsets.symmetric(horizontal: 4),
+                activeShape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
+              ),
             ),
           ),
+        ),
+      ),
+    );
+  }
 
-          dotsDecorator: DotsDecorator(
-            size: Size(10.0, 10.0),
-            activeColor: Theme.of(context).colorScheme.primary,
-            activeSize: Size(22.0, 10.0),
-            activeShape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(25.0)),
+  PageViewModel _contentPage({
+    required String title,
+    required String body,
+    required String assetPath,
+    required TextStyle? titleStyle,
+    required TextStyle? bodyStyle,
+    required ColorScheme colors,
+    required PageDecoration decoration,
+    Widget? extra,
+  }) {
+    return PageViewModel(
+      titleWidget: const SizedBox.shrink(),
+      decoration: decoration,
+      bodyWidget: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _Illustration(assetPath: assetPath, colors: colors),
+            const SizedBox(height: 36),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: titleStyle,
             ),
+            const SizedBox(height: 12),
+            Text(
+              body,
+              textAlign: TextAlign.center,
+              style: bodyStyle,
+            ),
+            if (extra != null) ...[
+              const SizedBox(height: 28),
+              extra,
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Illustration extends StatelessWidget {
+  final String assetPath;
+  final ColorScheme colors;
+
+  const _Illustration({
+    required this.assetPath,
+    required this.colors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 188,
+      height: 188,
+      padding: const EdgeInsets.all(40),
+      decoration: BoxDecoration(
+        color: colors.primary.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(36),
+      ),
+      child: Image.asset(
+        assetPath,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+}
+
+class _StoreNameField extends StatelessWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final ValueChanged<String> onChanged;
+  final ValueChanged<String> onSubmitted;
+
+  const _StoreNameField({
+    required this.controller,
+    required this.hintText,
+    required this.onChanged,
+    required this.onSubmitted,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+
+    return TextFormField(
+      controller: controller,
+      textAlign: TextAlign.center,
+      textInputAction: TextInputAction.done,
+      style: theme.textTheme.titleMedium?.copyWith(
+        fontWeight: FontWeight.w700,
+      ),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: colors.surface,
+        hintText: hintText,
+        hintStyle: theme.textTheme.titleMedium?.copyWith(
+          color: colors.onSurface.withOpacity(0.35),
+          fontWeight: FontWeight.w500,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 18,
+          horizontal: 20,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: colors.outline.withOpacity(0.12),
           ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: colors.primary, width: 1.5),
+        ),
+      ),
+      onChanged: onChanged,
+      onFieldSubmitted: onSubmitted,
+    );
+  }
+}
+
+class _CircleAction extends StatelessWidget {
+  final Color color;
+  final Widget child;
+
+  const _CircleAction({
+    required this.color,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 52,
+      height: 52,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.28),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Center(child: child),
+    );
+  }
+}
+
+class _DoneAction extends StatelessWidget {
+  final String label;
+  final Color color;
+  final Color onColor;
+
+  const _DoneAction({
+    required this.label,
+    required this.color,
+    required this.onColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.28),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontWeight: FontWeight.w800,
+          color: onColor,
+          fontSize: 15,
         ),
       ),
     );

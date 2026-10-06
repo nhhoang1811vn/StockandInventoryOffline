@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../dialog/dialog.dart';
 import '../../../markdown/md_provider_factory.dart';
+import '../../../widget/widget.dart';
 import '../../help_content.dart';
 import '../../pages.dart';
 
@@ -21,7 +22,6 @@ class MinimumQuantityPage extends StatefulWidget {
 }
 
 class MinimumQuantityPageState extends State<MinimumQuantityPage> {
-  //bool _isNotificationPermissionGranted = false;
   @override
   void initState() {
     super.initState();
@@ -33,31 +33,99 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
     return BlocConsumer<MinimumQuantityCubit, MinimumQuantityState>(
       listener: (context, state) async {},
       builder: (BuildContext context, MinimumQuantityState state) {
-        return Scaffold(
-          appBar: new AppBar(
-            actions: [_buildHelpMenu()],
-            title: new Text(
-              context.tr("menu_item_minimum_quantity"),
+        return SettingsScaffold(
+          title: context.tr("menu_item_minimum_quantity"),
+          actions: [
+            SSButton(
+              icon: Icons.help_outline_rounded,
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  Pages.help,
+                  arguments: {
+                    "title": context.tr("menu_item_minimum_quantity"),
+                    "content":
+                        MDProviderFactory.get().getHelpText(HelpType.MIN_QUAN),
+                  },
+                );
+              },
+              borderRadius: 14,
+              padding: 10,
             ),
+            const SizedBox(width: 16),
+          ],
+          body: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+            children: [
+              SettingsSectionHeader(context.tr("display"), isFirst: true),
+              SettingsMenuCard(
+                children: [
+                  SettingsSwitchItem(
+                    icon: Icons.inventory_2_outlined,
+                    title: context
+                        .tr("menu_item_show_min_quantity_items_page_title"),
+                    value: state.showInItem,
+                    onChanged: (_) => context
+                        .read<MinimumQuantityCubit>()
+                        .onShowInItemChanged(),
+                  ),
+                  SettingsSwitchItem(
+                    icon: Icons.view_list_outlined,
+                    title: context
+                        .tr("menu_item_show_min_quantity_list_page_title"),
+                    value: state.showInList,
+                    onChanged: (_) => context
+                        .read<MinimumQuantityCubit>()
+                        .onShowInListChanged(),
+                  ),
+                  SettingsColorItem(
+                    icon: Icons.palette_outlined,
+                    title: context.tr("menu_item_min_quantity_color_title"),
+                    color: state.color ?? Theme.of(context).colorScheme.primary,
+                    onTap: () {
+                      showSelectColorDialog(
+                        context,
+                        color: state.color ??
+                            Theme.of(context).colorScheme.primary,
+                        onItemSelected: (item) {
+                          hideDialog(context);
+                          context
+                              .read<MinimumQuantityCubit>()
+                              .onColorChanged(item);
+                        },
+                      );
+                    },
+                    isLast: true,
+                  ),
+                ],
+              ),
+              SettingsSectionHeader(context.tr("notifications")),
+              SettingsMenuCard(
+                children: [
+                  SettingsSwitchItem(
+                    icon: Icons.notifications_outlined,
+                    title: context.tr("menu_item_show_low_stock_alert_title"),
+                    subtitle: context.tr("menu_item_show_low_stock_alert_desc"),
+                    value: state.showAlert,
+                    onChanged: (newValue) async {
+                      if (newValue) {
+                        await requestNotificationPermission(context);
+                        context
+                            .read<MinimumQuantityCubit>()
+                            .onShowAlertChanged(true);
+                      } else {
+                        context
+                            .read<MinimumQuantityCubit>()
+                            .onShowAlertChanged(newValue);
+                      }
+                    },
+                    isLast: true,
+                  ),
+                ],
+              ),
+            ],
           ),
-          body: _buildBody(state),
         );
       },
-    );
-  }
-
-  Widget _buildHelpMenu() {
-    return IconButton(
-      onPressed: () {
-        Navigator.of(context).pushNamed(
-          Pages.help,
-          arguments: {
-            "title": context.tr("menu_item_minimum_quantity"),
-            "content": MDProviderFactory.get().getHelpText(HelpType.MIN_QUAN),
-          },
-        );
-      },
-      icon: Icon(Icons.help),
     );
   }
 
@@ -74,7 +142,6 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
       }
     } else if (Platform.isIOS) {
       final result = await Permission.notification.request();
-      print(result);
       if (result == PermissionStatus.denied ||
           result == PermissionStatus.permanentlyDenied) {
         _showPermissionDialog(context);
@@ -94,93 +161,6 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
         hideDialog(context);
         openAppSettings();
       },
-    );
-  }
-
-  Widget _buildBody(MinimumQuantityState state) {
-    return ListView(
-      padding: EdgeInsets.all(16),
-      children: [
-        Card(
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            children: [
-              SwitchListTile(
-                value: state.showInItem,
-                onChanged: (newValue) {
-                  context.read<MinimumQuantityCubit>().onShowInItemChanged();
-                },
-                title: Text(
-                  context.tr("menu_item_show_min_quantity_items_page_title"),
-                ),
-              ),
-              Divider(
-                height: 1,
-              ),
-              SwitchListTile(
-                value: state.showInList,
-                onChanged: (newValue) {
-                  context.read<MinimumQuantityCubit>().onShowInListChanged();
-                },
-                title: Text(
-                  context.tr("menu_item_show_min_quantity_list_page_title"),
-                ),
-              ),
-              Divider(
-                height: 1,
-              ),
-              ListTile(
-                title: Text(
-                  context.tr("menu_item_min_quantity_color_title"),
-                ),
-                onTap: () {
-                  showSelectColorDialog(
-                    context,
-                    color: state.color,
-                    onItemSelected: (item) {
-                      hideDialog(context);
-                      context.read<MinimumQuantityCubit>().onColorChanged(item);
-                    },
-                  );
-                },
-                trailing: Container(
-                  width: 20, // Circle diameter
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: state.color, // use your color here
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-              Divider(
-                height: 1,
-              ),
-              SwitchListTile(
-                value: (state.showAlert),
-                onChanged: (newValue) async {
-                  if (newValue) {
-                    final granted =
-                        await requestNotificationPermission(context);
-                    context
-                        .read<MinimumQuantityCubit>()
-                        .onShowAlertChanged(true);
-                  } else {
-                    context
-                        .read<MinimumQuantityCubit>()
-                        .onShowAlertChanged(newValue);
-                  }
-                },
-                title: Text(
-                  context.tr("menu_item_show_low_stock_alert_title"),
-                ),
-                subtitle: Text(
-                  context.tr("menu_item_show_low_stock_alert_desc"),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

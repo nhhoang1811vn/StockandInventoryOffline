@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../constant/constant.dart';
-import '../../util/util.dart';
 
 class DateItemRow extends StatelessWidget {
   final DateTime date;
@@ -11,8 +10,10 @@ class DateItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: ColorUtils.getHeaderBgColor(context),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 4,
+      ),
       child: Text(
         DateFormatFactory.getDateFormat().format(date),
         style: Theme.of(context)

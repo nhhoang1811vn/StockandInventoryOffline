@@ -1,276 +1,228 @@
 class MarkdownResourceEN {
   static const String whatNews = """
-  ### Version 1.0.80 - 2026 April 23        
-  * Fixed reported bugs.  
-  * Include guide flow to migration for online version
-  * Revamp UI
-  
-  ### Version 1.0.75 - 2026 April 16       
-  * Fixed reported bugs.  
-  * Added new currency.
-  * Resolved issues same bar code for goods.  
-  
-  ### Version 1.0.70 - 2026 Feb 06       
-  * Fixed reported bugs.  
-  * Added new currency.
-  * Updated logic sync data.
-  * Updated new logo (prepare for version online)
-  
-  ### Version 1.0.65 - 2025 Sep 20       
-  * Fixed reported bugs.  
-  * Added new report type: Good Info. 
- ### Version 1.0.60 - 2025 Sep 09    
-  * Fixed issue can not login APPLE account 
-  * Fixed reported bugs.
-  * Added change Theme, change language, change currency.
-  * Updated logo, add files in Save Good. 
-  * Updated authentication system.
-  * Updated UI/UX. 
-  
- ### Version 1.0.40 - 2025 Jul 25    
-  * Fixed issue can not scan barcode on Android platform.
-  * Fixed issue low stock alert not displayed when start app. 
-  * Fixed reported bugs.
-  * Support menu app languages. 
-  * Updated UI/UX.  
- 
-  ### Version 1.0.45 - 2025 Jul 12  
-  * Fixed reported bugs.  
- 
- ### Version 1.0.30 - 2025 May 30  
-  * Fixed reported bugs.  
-  * Added Minimum quantity feature
-  * Added Company information feature
-  * Added Dark mode, Passcode lock
-  * Added new type of report: REORDER
- 
- ### Version 1.0.25 - 2025 Apr 14  
-  * Fixed reported bugs.
-  * Added Payment features. 
-  * Added Wallet features. 
-  * Added new 5 report types. 
- 
- 
- ### Version 1.0.8 - Dec 6  
-  * Fixed reported bugs. 
-  * Added List Settings on Goods Page.
-  * Modified Search function on Goods Page
-  * Added Quick Sync option
-  
-  ### Version 1.0.7 - Sep 27  
-  * Fixed reported bugs. 
-  * Support iOS platform.
-  ### Version 1.0.6 - July 07  
-  * Fixed reported bugs. 
-  * Added Quick create document on SaveGood page. 
-  * Added Good History page. 
-  
- ### Version 1.0.5 - June 14
-  * Added Login/SignUp system.
-  * User's data saved to cloud safety
-  * Fixed reported bugs. 
- 
- ### Version 1.0.4 - April 18
- 
-  * Fixed bug could not scroll vertically on Report Detail Page. 
- 
- ### Version 1.0.3 - April 15
- 
-  * Added Report - Select Range Date 
-  * Fixed bug on Select Group page    
- 
- ### Version 1.0.2 - April 12
- 
-  * Support for window platform. 
-  * Added Report - List of Good. 
-  * Added Report - Export PDF, CSV.  
-  * Added Setting - Backup, Restore. 
- 
- ### Version 1.0.1 - April 4
- 
-  * Modified Table Transaction.Quantity from INT to REAL.
-  * Added Sound and Vibration effect when a barcode scanned.
-  * Updated to Material 3 Design. 
- 
- ### Version 1.0.0
- 
-  * First Release.
+### Version 1.0.90 - 06 Oct 2026
+* Updated Home, Inventory, Payments, Reports, and Settings.
+* Added photos for stores, groups, customers, and suppliers.
+* Updated lists, empty states, and onboarding.
+* Improved translations.
+* Fixed reported bugs.
+
+### Version 1.0.80 - 23 Apr 2026
+* Fixed reported bugs.
+* Added a guide to migrate to the online version.
+* Revamped the UI.
+
+### Version 1.0.75 - 16 Apr 2026
+* Fixed reported bugs.
+* Added a new currency.
+* Fixed duplicate barcodes on goods.
+
+### Version 1.0.70 - 06 Feb 2026
+* Fixed reported bugs.
+* Added a new currency.
+* Updated data sync.
+* Updated the logo (for the online version).
+
+### Version 1.0.65 - 20 Sep 2025
+* Fixed reported bugs.
+* Added report type: Good info.
+
+### Version 1.0.60 - 09 Sep 2025
+* Fixed Apple account login.
+* Fixed reported bugs.
+* Added theme, language, and currency settings.
+* Updated the logo and files on Save Good.
+* Updated authentication.
+* Updated the UI.
+
+### Version 1.0.45 - 12 Jul 2025
+* Fixed reported bugs.
+
+### Version 1.0.40 - 25 Jul 2025
+* Fixed barcode scanning on Android.
+* Fixed the low-stock alert not showing at startup.
+* Fixed reported bugs.
+* Added app language in the menu.
+* Updated the UI.
+
+### Version 1.0.30 - 30 May 2025
+* Fixed reported bugs.
+* Added minimum quantity.
+* Added company information.
+* Added dark mode and passcode lock.
+* Added Reorder report.
+
+### Version 1.0.25 - 14 Apr 2025
+* Fixed reported bugs.
+* Added payments.
+* Added wallets.
+* Added 5 report types.
+
+### Version 1.0.8 - 06 Dec 2024
+* Fixed reported bugs.
+* Added list settings on Goods.
+* Updated search on Goods.
+* Added Quick Sync.
+
+### Version 1.0.7 - 27 Sep 2024
+* Fixed reported bugs.
+* Added iOS support.
+
+### Version 1.0.6 - 07 Jul 2024
+* Fixed reported bugs.
+* Added quick create document on Save Good.
+* Added Good History.
+
+### Version 1.0.5 - 14 Jun 2024
+* Added login and sign up.
+* User data is saved to the cloud.
+* Fixed reported bugs.
+
+### Version 1.0.4 - 18 Apr 2024
+* Fixed scrolling on Report Detail.
+
+### Version 1.0.3 - 15 Apr 2024
+* Added report date range.
+* Fixed Select Group.
+
+### Version 1.0.2 - 12 Apr 2024
+* Added Windows support.
+* Added List of Goods report.
+* Added PDF and CSV export.
+* Added backup and restore.
+
+### Version 1.0.1 - 04 Apr 2024
+* Changed document quantity from integer to decimal.
+* Added sound and vibration when scanning a barcode.
+* Updated to Material 3.
+
+### Version 1.0.0
+* First release.
  """;
 
   static const String helpDocuments = """
-  ## Document Management Guide  
+## Documents
 
-There are two types of documents:
+Documents record stock moving in or out of a Store.
 
-### 📥 Incoming  
-- Create this when items **arrive at your warehouse**.  
-- Items listed in the document will be **added to the stock**.
+### Incoming
+- Create an Incoming document when goods **arrive** at the Store.
+- Quantities in the document are **added** to stock.
 
-### 📤 Outgoing  
-- Create this when items **leave the warehouse** (e.g. sent to a customer).  
-- Items will be **subtracted from the stock**.
+### Outgoing
+- Create an Outgoing document when goods **leave** the Store (for example, a sale).
+- Quantities in the document are **subtracted** from stock.
 
----
+### Add goods
+- Pick goods from the catalog, or
+- **Scan a barcode** with the camera.
 
-### ➕ Adding Items to a Document  
-- Select items from the **Goods catalog** or  
-- **Scan the barcode** using your device’s camera.
+### Batch scan
+- Scan barcodes one after another. Each scan **adds the good and increases quantity by 1**.
+- Or enter the quantity **manually** after each scan.
+- Choose the mode in **Settings**.
 
----
+### Auto-create goods
+- A **new good** added to an Incoming document (with complete info) is **saved to the catalog**.
+- You cannot add a new good to an Outgoing document. The good must already exist in stock.
 
-### 🔄 Batch Scan Mode  
-The app supports **Batch Scan Mode** for quick entry:
-- Continuously scan item barcodes — each scan **adds the item and increases its quantity by 1**.
-- Or, after each scan, **manually enter the quantity**.
-- You can choose your preferred mode in **Settings**.
+### Delete
+- **Long-press** a document or a line to delete it.
 
----
+> Deleting a document changes stock. You can delete only the **latest** document. Deleting an older one can make quantities incorrect.
 
-### 📦 Auto-Creation from Documents  
-- If you add a **new item** (not yet in the Goods catalog) to an **Incoming** document and provide complete info, the item will be **automatically added to the catalog**.  
-- You **cannot** add new items to an **Outgoing** document unless they already exist in the catalog, as items must be in stock to be shipped.
-
----
-
-### 🗑️ Deleting Documents or Lines  
-- **Long-press** on a document or its item line to access delete options.
-
-🛑 **Important Note**:  
-- Deleting a document affects your stock levels.  
-- You can only delete the **last (most recent) inventory document** — deleting earlier ones could cause stock quantity errors.
-
----
-
-### 📊 Filter and Sort  
-- Use the toolbar buttons at the top to **filter** or **sort** documents.
-
-Keep your documents organized for accurate inventory tracking and smooth operations! ✅  
+### Filter and sort
+- Use the toolbar to **filter** or **sort** documents.
 """;
 
   static const String helpGoods = """
-  ## Goods Management Guide  
+## Goods
 
-The **Goods** screen displays a catalog of all your products, along with their current stock levels.
+The Goods screen is the catalog of everything in the Store, including current stock.
 
-You can add items to documents by selecting them from this catalog.  
-If a product has a barcode, you can quickly add it to a document by **scanning the barcode using your camera**.  
-Note: **Stock quantity is not editable manually** – it is calculated automatically based on your documents.
+Add goods to a document from this list. If a good has a barcode, scan it with the camera to add it quickly.
 
----
+> Stock quantity cannot be edited by hand. It is calculated from documents.
 
-### 🔍 Features and Actions  
+### Actions
+- When editing a good, tap the **camera** next to the barcode field to scan.
+- **Long-press** a good to delete it.
+- Use the toolbar to **search** or **sort**.
 
-- During manual entry, you can scan a product barcode by tapping the **camera button** next to the barcode field.  
-- To **delete an item**, long-press on it in the list.  
-- Use the **top toolbar buttons** to search or sort your goods.
-
----
-
-### ⚙️ Auto-Creation of Goods  
-
-You can begin working without pre-filling the goods catalog.  
-Just create an **Incoming Document** and manually enter new product details —  
-These items will then be **automatically added to your catalog**.  
-Next time, you’ll be able to use the barcode scanner to add them instantly.
-
-Efficient goods management helps speed up your workflow and maintain accurate stock control. ✅  
+### Auto-create
+- You do not need to fill the catalog first.
+- Create an Incoming document and enter a new good. It is **saved to the catalog** automatically.
+- Next time, you can add it by scanning the barcode.
 """;
 
   static const String helpStores = """
-  ## Store Management Guide  
+## Stores
 
-You can organize and track items by **Stores** (e.g. Shops, Warehouses).
+Use Stores to keep stock separate by location (shop, warehouse, and so on).
 
----
+### Stock by Store
+- Each Store has its **own stock**.
+- Every document belongs to **one Store**.
 
-### 🏪 Store-Specific Inventory  
-- Each Store maintains its **own stock levels**.  
-- All documents (invoices, transactions) are linked to a **specific Store**.
+### Switch Store
+- On **Home**, tap the Store name or avatar to change the current Store.
 
----
+### Add and manage
+- Open **Stores** from Settings to add, edit, or delete a Store.
 
-### 📍 Selecting a Store  
-- In the **Home Menu**, you can choose the **current Store** you're working with.  
-
----
-
-### ➕ Adding More Stores  
-- To add menu Stores, go to the **"Stores"** section in the **More Menu**.  
-
----
-
-### 💡 Store Limits & Subscriptions  
-- The **free version** supports up to **2 Stores**.  
-- To unlock menu, upgrade to:  
-  - **"Stock Premium"**  
-- Each subscription includes a **7-day free trial**.
-
-Managing stores separately helps you maintain accurate stock tracking across multiple locations. ✅  
+### Limits
+- The free version supports up to **2 Stores**.
+- Upgrade to **Stock Premium** for more. The subscription includes a **7-day free trial**.
 """;
+
   static const String helpSupplierCustomers = """
-  ## Supplier & Customer Management Guide  
+## Suppliers and customers
 
-You can manage and track both your **Suppliers** and **Customers** in one place.  
-Add their details manually or **import directly from your device's Contacts**.
+Keep supplier and customer records in one place. Add details by hand or **import from Contacts**.
 
----
+### Assign to a document
+- On an **Incoming** document, tap **Supplier**.
+- On an **Outgoing** document, tap **Customer**.
 
-### 🏷️ Assigning to Documents  
-- When editing a document:  
-  - Tap **Supplier** to assign to an **Incoming (Purchase)** document.  
-  - Tap **Customer** to assign to an **Outgoing (Sales)** document.
-
----
-
-### 🗂️ Manage Records  
-- **Long-press** on a Supplier or Customer to:  
-  * View all related documents  
-  * Delete the record (if no longer needed)
-
-Keeping your supplier and customer information organized ensures smoother transactions and accurate reporting. ✅  
+### Manage records
+- **Long-press** a supplier or customer to:
+  - View related documents
+  - Delete the record
 """;
+
   static const String helpPayments = """
-  ## Payment Management Guide  
+## Payments
 
-There are two types of payments:
+Payments record money in and out of a Wallet.
 
-### 💰 Inbound (Received)  
-- Record this when you **receive money** from a customer.  
-- Typically linked to a **sale** or **outgoing document**.  
-- Helps track **incoming cash flow**.
+### Inbound
+- Record when you **receive money** from a customer.
+- Usually linked to an **Outgoing** document.
+- Tracks money coming in.
 
-### 💸 Outbound (Paid)  
-- Record this when you **make a payment** to a supplier.  
-- Typically linked to a **purchase** or **incoming document**.  
-- Helps track **expenses and outgoing cash flow**.
+### Outbound
+- Record when you **pay** a supplier.
+- Usually linked to an **Incoming** document.
+- Tracks money going out.
 
----
+### Add a payment
+- Open **Payments**, or add a payment from a document.
+- Choose **Inbound** or **Outbound**.
+- Enter **amount**, **date**, person, and optional notes.
+- Link a **document** when needed.
 
-### ➕ Adding a Payment  
-- Go to the **Payments** section or use the shortcut from a document detail screen.  
-- Choose the **type** (Inbound or Outbound).  
-- Enter the **amount**, **date**, **payer/payee**, and optional **notes**.
-- You can link it to an existing **document** for better tracking.
+### Linked documents
+- A linked payment shows what the money is for.
+- A partial payment marks the document as **Partial**.
+- A full payment marks the document as **Paid**.
 
----
+### Edit or delete
+- **Long-press** a payment to edit or delete it.
 
-### 📄 Linked Documents  
-- Payments can be linked to **documents** to show what the payment is for.
-- If a payment covers part of a document's total, it will be marked as **Partial**.
-- Fully paid documents will be marked as **Paid**.
+> Deleting a payment can change the document payment status.
 
----
-
-### 📝 Edit or Delete Payments  
-- **Long-press** a payment to edit or delete it.  
-- Be careful: deleting payments may affect document payment status.
-
----
-
-### 📊 Filter and Sort  
-- Use the toolbar buttons at the top to **filter** or **sort** payments.
-
-Keep your payment records up to date to ensure accurate financial tracking! ✅  
+### Filter and sort
+- Use the toolbar to **filter** or **sort** payments.
 """;
 
 //  static const String helpSavePayment = """
@@ -304,31 +256,28 @@ Keep your payment records up to date to ensure accurate financial tracking! ✅
 // """;
 
   static const String helpMinQuan = """
-  ## Minimum Quantity Guide  
+## Minimum quantity
 
-This page helps you manage stock levels by setting a **Minimum Quantity** for each product.  
+Set a **minimum quantity** on each good so you know when to reorder.
 
-### 📦 What is Minimum Quantity?  
-- The **Minimum Quantity** is the lowest stock level allowed before you need to reorder.  
-- When stock drops below this level, the item will appear in the **Reorder Report**.  
+### What it is
+- The lowest stock you want to keep.
+- When stock falls below this number, the good appears in the **Reorder** report and on **Home** as low stock.
 
-### 🛠️ Set Minimum Quantity  
-- Go to the **Item Settings** when adding or editing a product.  
-- Enter a number in the **Min Quantity** field (e.g., 5 or 10).  
-- This value represents the minimum units you'd like to keep in stock.  
+### Set it
+- Open a good when adding or editing.
+- Enter a number in **Min quantity** (for example, 5 or 10).
 
-### 📉 Monitor Low Stock  
-- Use the **Reorder Report** to view all items that are below their set Minimum Quantity.  
-- This helps prevent stockouts and improves inventory planning.  
+### Low stock
+- Use the **Reorder** report to see goods below the minimum.
+- Home also shows **Out of stock** and **Low stock**.
 
-### 🔄 Update Minimum Quantity  
-- You can update the Min Quantity anytime by editing the product.  
-- Adjust levels based on sales trends or seasonal demand.  
+### Update
+- Edit the good any time to change the minimum.
+- Adjust for sales speed or season.
 
-### ✅ Best Practices  
-- Set higher Min Quantity for fast-selling or critical items.  
-- Review and adjust regularly to ensure accurate alerts.  
-
-Keep your stock levels under control and avoid unexpected shortages! 🔔  
+### Tips
+- Use a higher minimum for fast-selling or important goods.
+- Review the values regularly so alerts stay useful.
 """;
 }

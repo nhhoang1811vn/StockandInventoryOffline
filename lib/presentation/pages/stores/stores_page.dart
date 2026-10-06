@@ -38,7 +38,14 @@ class StoresPageState extends State<StoresPage> {
   }
 
   @override
+  void dispose() {
+    searchTextFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocConsumer<StoresCubit, StoresState>(
       listenWhen: (p1, p2) => p1.state != p2.state,
       listener: (context, state) async {
@@ -76,103 +83,121 @@ class StoresPageState extends State<StoresPage> {
         }
       },
       builder: (context, state) => Scaffold(
-        //drawer: widget.isSelection?null:CustomNavigationDrawer(selectedIndex: 7, storeName: storage.getSelectedStoreName()),
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: _buildAppBar(state),
-        body: _buildBody(state),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => context.read<StoresCubit>().onAddButtonClicked(),
-          child: Icon(Icons.add),
-        ),
+        body: SafeArea(child: _buildBody(state)),
       ),
     );
   }
 
-  PreferredSize _buildAppBar(StoresState data) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(
-        title: new Text(
-          widget.isSelection
-              ? context.tr("select_store")
-              : context.tr("stores"),
-        ),
-        actions: [
-          _buildSearchMenu(data),
-          _buildFilterMenu(data),
-          _buildHelpMenu(),
-        ],
+  AppBar _buildAppBar(StoresState data) {
+    final theme = Theme.of(context);
+    return AppBar(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      elevation: 0,
+      title: Text(
+        widget.isSelection ? context.tr("select_store") : context.tr("stores"),
+        style: TextStyle(
+            color: theme.colorScheme.onSurface, fontWeight: FontWeight.w800),
       ),
+      iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
+      actions: [
+        SSButton(
+          icon: Icons.add,
+          onPressed: () => context.read<StoresCubit>().onAddButtonClicked(),
+          borderRadius: 14,
+          padding: 10,
+        ),
+        const SizedBox(width: 12),
+        SSButton(
+          icon: Icons.help_outline_rounded,
+          onPressed: () => context.read<StoresCubit>().onHelpMenuClick(),
+          borderRadius: 14,
+          padding: 10,
+        ),
+        const SizedBox(width: 16),
+      ],
     );
   }
 
   Widget _buildBody(StoresState data) {
     final state = data.state;
     if (state is LoadingState) {
-      return _buildLoading();
+      return const Center(child: CircularProgressIndicator());
     }
     return _buildContent(data);
   }
 
-  Widget _buildLoading() {
-    return const Center(
-      child: CircularProgressIndicator(),
+  Widget _buildContent(StoresState data) {
+    bool showWarning = data.settings.sortByName != SortByText.no_sort;
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: SearchBarWidget(
+                  onTextChanged: (newValue) {
+                    context.read<StoresCubit>().searchTextChanged(newValue);
+                  },
+                  focusNode: searchTextFocusNode,
+                ),
+              ),
+              const SizedBox(width: 12),
+              SSButton(
+                icon: Icons.tune,
+                onPressed: () => showFilterBottomSheet(data),
+                borderRadius: 14,
+                padding: 10,
+                hasBadge: showWarning,
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Stack(
+            children: [
+              Visibility(
+                child: emptyView,
+                visible: data.items.isEmpty,
+              ),
+              Visibility(
+                child: _buildListView(data),
+                visible: data.items.isNotEmpty,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildContent(StoresState data) {
-    List<Widget> children = [
-      Visibility(
-        visible: data.showSearchBar,
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: SearchBarWidget(
-            onTextChanged: (newValue) {
-              context.read<StoresCubit>().searchTextChanged(newValue);
-            },
-            focusNode: searchTextFocusNode,
-          ),
-        ),
-      ),
-      //Visibility(child: _buildSearchBar(data), visible: data.showSearchBar),
-      Expanded(
-        child: Stack(
+  Widget get emptyView => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Visibility(
-              child: emptyView,
-              visible: data.items.isEmpty,
+            Icon(
+              UIConstants.storeIconData,
+              size: 64,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
             ),
-            Visibility(
-              child: _buildListView(data),
-              visible: data.items.isNotEmpty,
+            const SizedBox(height: 16),
+            Text(
+              context.tr("no_stores"),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
             ),
           ],
         ),
-      ),
-    ];
-    return Column(children: children);
-  }
-
-  Widget get emptyView => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Icon(
-            UIConstants.storeIconData,
-            size: 60,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: Text(
-              context.tr("no_stores"),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ],
       );
 
   Widget _buildListView(StoresState data) {
     return ListView.builder(
+      padding: const EdgeInsets.only(top: 8),
       itemBuilder: (BuildContext context, index) {
         Store item = data.items[index];
         return StoreItemRow(
@@ -225,53 +250,12 @@ class StoresPageState extends State<StoresPage> {
     );
   }
 
-  Widget _buildSearchMenu(StoresState state) {
-    return IconButton(
-      onPressed: () {
-        if (!state.showSearchBar) {
-          searchTextFocusNode.requestFocus();
-        }
-        context.read<StoresCubit>().onShowSearchBarMenuClicked();
-      },
-      icon: Icon(
-        Icons.search,
-        color: state.showSearchBar
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).iconTheme.color,
-      ),
-    );
-  }
-
-  Widget _buildFilterMenu(StoresState state) {
-    bool showWarning = state.settings.sortByName != SortByText.no_sort;
-    return Stack(
-      children: [
-        IconButton(
-          onPressed: () {
-            showFilterBottomSheet(state);
-          },
-          icon: Icon(Icons.filter_alt),
-        ),
-        if (showWarning)
-          Positioned(
-            right: 4,
-            top: 4,
-            child: Icon(
-              Icons.error,
-              color: Colors.red,
-              size: 16,
-            ),
-          ),
-      ],
-    );
-  }
-
   void showFilterBottomSheet(StoresState state) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (BuildContext mContext) {
         return DraggableScrollableSheet(
@@ -279,7 +263,7 @@ class StoresPageState extends State<StoresPage> {
           builder: (mContext, scrollController) {
             return SingleChildScrollView(
               controller: scrollController,
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: FilterStoreWidget(
                 onResetAllPressed: () {
                   context.read<StoresCubit>().resetAllFilter();
@@ -295,15 +279,6 @@ class StoresPageState extends State<StoresPage> {
           },
         );
       },
-    );
-  }
-
-  Widget _buildHelpMenu() {
-    return IconButton(
-      onPressed: () {
-        context.read<StoresCubit>().onHelpMenuClick();
-      },
-      icon: Icon(Icons.help),
     );
   }
 }

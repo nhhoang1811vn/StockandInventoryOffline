@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -19,14 +20,14 @@ class OnBoardingCubit extends Cubit<OnBoardingState> {
 
   void onAddStore() async {
     try {
+      final name = _resolvedStoreName();
       Store store = Store();
-      store.name = state.name;
+      store.name = name;
       store.description = "";
       final storeId = await useCase.insert(store);
       if (isClosed) return;
-      //storage.setFirstTime(false);
       AppSettings.setSelectedStoreId(storeId);
-      AppSettings.setSelectedStoreName(state.name);
+      AppSettings.setSelectedStoreName(name);
       emit(state.copyWith(status: FormzSubmissionStatus.success));
     } catch (error) {
       if (isClosed) return;
@@ -41,5 +42,13 @@ class OnBoardingCubit extends Cubit<OnBoardingState> {
 
   void nameChanged(String value) {
     emit(state.copyWith(name: value));
+  }
+
+  String _resolvedStoreName() {
+    final name = state.name.trim();
+    if (name.isEmpty || name == 'main store') {
+      return 'default_store_name'.tr();
+    }
+    return name;
   }
 }

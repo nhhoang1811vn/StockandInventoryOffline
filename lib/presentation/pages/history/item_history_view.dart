@@ -34,22 +34,29 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocConsumer<ItemHistoryCubit, ItemHistoryState>(
       builder: (context, state) => Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: _buildAppBar(),
-        body: _buildBody(state),
+        body: SafeArea(child: _buildBody(state)),
       ),
       listenWhen: (p1, p2) => p1.state != p2.state,
       listener: (context, state) async {},
     );
   }
 
-  PreferredSize _buildAppBar() {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(
-        title: new Text(context.tr("item_history_title")),
+  AppBar _buildAppBar() {
+    final theme = Theme.of(context);
+    return AppBar(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      elevation: 0,
+      title: Text(
+        context.tr("item_history_title"),
+        style: TextStyle(
+            color: theme.colorScheme.onSurface, fontWeight: FontWeight.w800),
       ),
+      iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
     );
   }
 
@@ -68,39 +75,46 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
   }
 
   Widget _buildContent(ItemHistoryState state) {
-    List<Widget> children = [
-      SelectedStoreView(),
-      if (state.items.isNotEmpty)
-        Expanded(child: _buildStickyListView(state))
-      else
+    return Column(
+      children: [
         Expanded(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                  UIConstants.documentIconData,
-                  size: 64,
-                  color: Theme.of(context).colorScheme.primary,
+          child: state.goodHistories.isNotEmpty
+              ? _buildStickyListView(state)
+              : Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        UIConstants.documentIconData,
+                        size: 64,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.1),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        context.tr("empty_document"),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.4)),
+                      ),
+                    ],
+                  ),
                 ),
-                SizedBox(height: 16),
-                Text(
-                  context.tr("empty_document"),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
         ),
-      _buildSummaryView(state),
-    ];
-    return Column(children: children);
+        _buildSummaryView(state),
+      ],
+    );
   }
 
   Widget _buildStickyListView(ItemHistoryState state) {
-    var flag = true;
     return StickyGroupedListView<GoodHistory, DateTime>(
+      stickyHeaderBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
       elements: List.of(state.goodHistories),
       groupBy: (GoodHistory item) => DateTime(
         item.document!.date.year,
@@ -110,125 +124,101 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
       groupSeparatorBuilder: (GoodHistory item) =>
           DateItemRow(item.document!.date),
       itemBuilder: (context, GoodHistory item) {
-        flag = !flag;
         return ItemHistoryRow(
-            item,
-            flag
-                ? ColorUtils.getItemBgColor1(context)
-                : ColorUtils.getItemBgColor2(context),
-            state.incomingColor,
+            item, Colors.transparent, state.incomingColor,
             state.outgoingColor, (item) async {
           await Navigator.of(context)
               .pushNamed(Pages.save_document, arguments: {'item': item});
           context.read<ItemHistoryCubit>().loadItems();
         });
       },
-      itemComparator: (a, b) => b.document!.date.compareTo(a.document!.date),
+      itemComparator: (a, b) => a.document!.date.compareTo(b.document!.date),
       order: StickyGroupedListOrder.DESC,
     );
   }
 
-  // Widget _buildListView(ItemHistoryState state) {
-  //   bool flag = true;
-  //   return ListView.builder(
-  //       itemBuilder: (BuildContext context, index) {
-  //         ListItem item = state.items[index];
-  //         flag = !flag;
-  //         if (item is HeaderItem){
-  //           flag = true;
-  //           return DateItemRow(item.date);
-  //         }else if (item is GoodHistoryListItem){
-  //           flag = !flag;
-  //           return ItemHistoryRow(
-  //               item.goodHistory,
-  //               flag ? ColorUtils.getItemBgColor1(context) : ColorUtils.getItemBgColor2(context),
-  //               state.incomingColor,
-  //               state.outgoingColor,
-  //                   (item) async {
-  //             await Navigator.of(context).pushNamed(
-  //                 Pages.save_document, arguments: {'item': item});
-  //             context.read<ItemHistoryCubit>().loadItems();
-  //           });
-  //         }else{
-  //           return SizedBox();
-  //         }
-  //       },
-  //       itemCount: state.items.length);
-  // }
   Widget _buildSummaryView(ItemHistoryState state) {
-    var textColor = Theme.of(context).colorScheme.onPrimary;
-    var textStyle = Theme.of(context)
-        .textTheme
-        .bodySmall
-        ?.copyWith(color: Theme.of(context).colorScheme.onPrimary);
+    final theme = Theme.of(context);
     return Container(
-      width: double.infinity,
-      color: Theme.of(context).colorScheme.primary,
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+      decoration: BoxDecoration(
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          if (state.start != null)
-            Text(
-              "${context.tr("start_date")}:${DateFormatFactory.getDateFormat().format(state.start!)}",
-              style: textStyle,
+          if (state.start != null || state.end != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.calendar_today_outlined,
+                      size: 14, color: theme.colorScheme.primary),
+                  const SizedBox(width: 8),
+                  Text(
+                    "${state.start != null ? DateFormatFactory.getDateFormat().format(state.start!) : '...'} - ${state.end != null ? DateFormatFactory.getDateFormat().format(state.end!) : '...'}",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface.withOpacity(0.5),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          if (state.end != null)
-            Text(
-              "${context.tr("end_date")}:${DateFormatFactory.getDateFormat().format(state.end!)}",
-              style: textStyle,
+          Row(
+            children: [
+              _buildSummaryItem(
+                  context.tr("field_start_period"),
+                  StringUtils.getQuantityText(state.startPeriodQuantity),
+                  theme),
+              _buildSummaryItem(context.tr("field_in"),
+                  StringUtils.getQuantityText(state.inQuantity), theme,
+                  valueColor: Colors.red),
+              _buildSummaryItem(context.tr("field_out"),
+                  StringUtils.getQuantityText(state.outQuantity), theme,
+                  valueColor: Colors.green),
+              _buildSummaryItem(context.tr("field_end_period"),
+                  StringUtils.getQuantityText(state.endPeriodQuantity), theme),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryItem(String label, String value, ThemeData theme,
+      {Color? valueColor}) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurface.withOpacity(0.4),
             ),
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Text(
-                  "${context.tr("field_start_period")}: ${StringUtils.getQuantityText(state.startPeriodQuantity)}",
-                  style: textStyle,
-                ),
-                SizedBox(
-                  width: 4,
-                ),
-                VerticalDivider(
-                  width: 2,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: 4,
-                ),
-                Text(
-                  "${context.tr("field_in")}: ${StringUtils.getQuantityText(state.inQuantity)}",
-                  style: textStyle,
-                ),
-                SizedBox(
-                  width: 4,
-                ),
-                VerticalDivider(
-                  width: 2,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: 4,
-                ),
-                Text(
-                  "${context.tr("field_out")}: ${StringUtils.getQuantityText(state.outQuantity)}",
-                  style: textStyle,
-                ),
-                SizedBox(
-                  width: 4,
-                ),
-                VerticalDivider(
-                  width: 2,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: 4,
-                ),
-                Text(
-                  "${context.tr("field_end_period")}: ${StringUtils.getQuantityText(state.endPeriodQuantity)}",
-                  style: textStyle,
-                ),
-              ],
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              color: valueColor ?? theme.colorScheme.onSurface,
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

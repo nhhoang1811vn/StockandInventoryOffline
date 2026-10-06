@@ -7,6 +7,7 @@ class SaveGroupState with _$SaveGroupState {
     @Default(NameInput.pure()) NameInput name,
     @Default('') String description,
     @Default('') String barCode,
+    String? file,
     @Default([]) List<String> files,
     @Default('') String exceptionError,
     Group? item,

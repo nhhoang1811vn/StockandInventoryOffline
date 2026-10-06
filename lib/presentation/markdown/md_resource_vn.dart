@@ -1,188 +1,262 @@
 class MarkdownResourceVN {
   static const String helpStores = """
-  Bạn có thể luu trữ các Hàng Hoá theo cửa hàng (nhà kho, cửa tiệm).
- 
-  Mỗi cửa hàng giữ số lượng Hàng Hoá riêng. Mỗi Hoá Đơn giao hàng cũng liên kết tới một cửa hàng cụ thể.
- 
-  Ở "MENU TRÁI", bạn có thể chọn cửa hàng mà bạn muốn thao tác, theo dõi. 
- 
-  Bạn có thể thêm cửa hàng ở menu "MENU TRÁI: Cửa Hàng"
- """;
+## Cửa hàng
+
+Dùng Cửa hàng để tách tồn kho theo từng nơi (cửa tiệm, nhà kho).
+
+### Tồn kho theo cửa hàng
+- Mỗi cửa hàng có **tồn kho riêng**.
+- Mỗi tài liệu nhập/xuất thuộc **một cửa hàng**.
+
+### Đổi cửa hàng
+- Ở **Trang chủ**, nhấn tên hoặc ảnh cửa hàng để chọn cửa hàng đang làm việc.
+
+### Thêm và quản lý
+- Mở **Cửa hàng** trong Cài đặt để thêm, sửa hoặc xóa.
+
+### Giới hạn
+- Bản miễn phí dùng tối đa **2 cửa hàng**.
+- Nâng cấp **Stock Premium** để thêm cửa hàng. Gói có **7 ngày dùng thử**.
+""";
+
   static const String helpSupplierCustomers = """
- Bạn có thể lưu trữ danh sách các Khách Hàng(KH), Nhà Cung Cấp(NCC). Điền thông tin của họ bằng tay hoặc import từ danh bạ.
- 
- Nhấn trường Nhà Cung Cấp khi chỉnh sửa Hoá Đơn để chọn Nhà Cung Cấp cho loại Hoá Đơn Nhập.
- 
- Nhấn trường Khách Hàng khi chỉnh sửa Hoá Đơn để chọn Khách Hàng cho loại Hoá Đơn Xuất.
- 
- Nhấn giữ ở một Nhà Cung Cấp hoặc một Khách Hàng để:
- * Xem các Hoá Đơn của NCC/KH.
- * Xoá NCC/KH.
+## Nhà cung cấp và khách hàng
 
- """;
+Lưu thông tin nhà cung cấp và khách hàng ở một nơi. Nhập tay hoặc **thêm từ danh bạ**.
+
+### Gán vào tài liệu
+- Tài liệu **Nhập hàng**: nhấn **Nhà cung cấp**.
+- Tài liệu **Xuất hàng**: nhấn **Khách hàng**.
+
+### Quản lý
+- **Nhấn giữ** nhà cung cấp hoặc khách hàng để:
+  - Xem tài liệu liên quan
+  - Xóa bản ghi
+""";
+
   static const String helpGoods = """
- Màn hình "Hàng Hoá" chứa các Hàng Hoá, mặt hàng trong cửa hàng của bạn, bao gồm cả thông tin số lượng tồn kho của từng Hàng Hoá. 
- 
- Khi tạo các "Hoá Đơn", Bạn sẽ chọn các "Hàng hoá" từ danh sách này. Ngoài ra, nếu một "Hàng Hoá" có mã vạch, thì nó có thể được thêm vào "Hoá Đơn" một cách nhanh chóng bằng việc quét mã vạch đó với camera. Số lượng tồn kho không thể chỉnh sửa, mà được tính toán thông qua các dữ liệu trong các "Hoá Đơn".
- 
- * Trong quá trình nhập thông tin "Hàng Hoá", bạn có thể dùng camera để quét mã vạch bằng cách nhấn nút bên cạnh trường mã vạch.
- * Để xoá Hàng Hoá thì hãy nhấn giữ trên "Hàng Hoá" đó.
- * Để tìm kiếm, sắp xếp, thì sử dụng các nút ở trên thanh công cụ.
- 
- Bạn có thể tạo "Hàng Hoá" mới trong quá trình tạo "Hoá Đơn".
- """;
+## Hàng hóa
+
+Màn hình Hàng hóa là danh mục trong cửa hàng, kèm số lượng tồn.
+
+Khi tạo tài liệu, chọn hàng từ danh sách này. Nếu hàng có mã vạch, quét camera để thêm nhanh.
+
+> Không sửa tồn kho bằng tay. Tồn kho được tính từ tài liệu nhập/xuất.
+
+### Thao tác
+- Khi sửa hàng, nhấn **camera** cạnh ô mã vạch để quét.
+- **Nhấn giữ** hàng hóa để xóa.
+- Dùng thanh công cụ để **tìm** hoặc **sắp xếp**.
+
+### Tạo tự động
+- Không cần nhập hết danh mục trước.
+- Tạo tài liệu Nhập hàng và điền hàng mới. Hàng đó được **lưu vào danh mục**.
+- Lần sau có thể thêm bằng cách quét mã vạch.
+""";
+
   static const String helpDocuments = """
-Có 2 loại "Hoá Đơn":
+## Tài liệu
 
-* NHẬP - Bạn tạo loại "Hoá Đơn" này khi mà bạn mua các "Hàng Hoá" về "Cửa Hàng". Số lượng của những "Hàng Hoá" trong "Hoá Đơn" này sẽ tự động tăng lên trong "Cửa Hàng" của bạn. 
-* XUẤT - Bạn tạo loại "Hoá Đơn" này khi mà bạn bán các "Hàng Hoá" từ "Cửa Hàng". Số lượng của những "Hàng Hoá" trong "Hoá Đơn" này sẽ tự động trừ đi trong "Cửa Hàng" của bạn.
- 
-Bạn có thể thêm "Hàng Hoá" trong "Hoá Đơn" bằng cách chọn chúng trong danh sách các hàng hoá, hoặc quét mã vạch của hàng hoá.
+Tài liệu ghi hàng vào hoặc ra khỏi cửa hàng.
 
-Cụ thể hơn, ứng dụng cung cấp chế độ "quét 1 trùm". Trong chế độ này bạn có thể liên tục quét mã vach của Hàng Hoá và số lượng của chúng sẽ được tăng thêm 1 sau mỗi lần quét, hoặc bạn nhập bằng tay số lượng SP sau mỗi lần quét. 
+### Nhập hàng
+- Tạo khi hàng **về cửa hàng**.
+- Số lượng trong tài liệu được **cộng** vào tồn kho.
 
-Để mà xoá các "Hoá Đơn", hoặc các Hàng Hoá trong Hoá Đơn thì nhấn giữ chúng (để hiên tuỳ chọn).
+### Xuất hàng
+- Tạo khi hàng **rời cửa hàng** (ví dụ bán cho khách).
+- Số lượng trong tài liệu được **trừ** khỏi tồn kho.
 
-Xoá các Hoá Đơn thì dẫn đến sự thay đổi số lượng SP trong cửa hàng. Các Hoá Đơn có thể được xoá chỉ khi nó là Hoá Đơn cuối cùng, vì việc xoá các Hoá Đơn trước sẽ gây ra lỗi trong việc tính toán số lượng SP.
+### Thêm hàng
+- Chọn từ danh mục hàng hóa, hoặc
+- **Quét mã vạch** bằng camera.
 
+### Quét liên tục
+- Quét mã lần lượt. Mỗi lần quét **thêm hàng và tăng số lượng thêm 1**.
+- Hoặc nhập số lượng **bằng tay** sau mỗi lần quét.
+- Chọn chế độ trong **Cài đặt**.
 
-Sử dụng các nút trên thanh công cụ để sắp xếp và lọc các Hoá Đơn. 
- 
- """;
+### Tạo hàng tự động
+- Hàng **mới** thêm vào tài liệu Nhập hàng (đủ thông tin) được **lưu vào danh mục**.
+- Không thêm hàng mới vào tài liệu Xuất hàng. Hàng phải đã có trong tồn kho.
+
+### Xóa
+- **Nhấn giữ** tài liệu hoặc dòng hàng để xóa.
+
+> Xóa tài liệu làm thay đổi tồn kho. Chỉ xóa được tài liệu **mới nhất**. Xóa tài liệu cũ có thể làm sai số lượng.
+
+### Lọc và sắp xếp
+- Dùng thanh công cụ để **lọc** hoặc **sắp xếp**.
+""";
+
   static const String helpExpenses = """
- Mỗi cửa hàng đều mất chi phí để vận hành chúng (tiền điện, tiền nước, tiền nhân viên).
- 
- Chúng tôi đã tạo ra chức năng đơn giản này để theo dõi các chi tiêu của bạn cho một cửa hàng. 
- """;
+Mỗi cửa hàng đều có chi phí vận hành (điện, nước, nhân viên).
+
+Dùng chức năng này để theo dõi chi tiêu theo từng cửa hàng.
+""";
+
   static const String whatNews = """
-  ### Phiên bản 1.0.45 - 12/07/2025  
-  * Sửa lỗi được báo cáo.
-  ### Phiên bản 1.0.25 - 14/04/2025  
-  * Sửa lỗi được báo cáo.
-  * Thêm chức năng giao dịch. 
-  * Thêm chứ năng Ví tiền. 
-  * Thêm 5 dạng báo cáo mới. 
-  
-  ### Phiên bản 1.0.8 - 6/11/24  
-  * Thêm cài đặt danh sách ở màn hình hàng hóa
-  * Sửa chức năng tìm kiếm ở màn hình hàng hóa
-  * Thêm chức năng Quick Sync
-  
-  ### Phiên bản 1.0.7 - 27/09/2024
-  * Sữa lỗi được báo cáo.   
-  * Hỗ trợ trên iOS.  
-  
-  ### Phiên bản 1.0.6 - 11/07/2024
-  * Thêm chức năng tạo Hóa đơn nhanh ở màn hình lưu hàng hóa. 
-  * Thêm chức năng kiểm tra lịch sử nhập xuất của hàng hóa. 
-  * Sữa lỗi được báo cáo.    
-  
-  ### Phiên bản 1.0.5 - 14/06/2024
-  * Thêm hệ thống người dùng, dữ liệu của người dùng được lưu trên CLOUD. 
-  * Hệ thống tự lưu dữ liệu của người dùng lên cloud vào cuối ngày, hoặc mỗi lần người dùng đăng xuất. 
-  * Người dùng có thể đẩy dữ liệu của mình lên CLOUD trong menu cài đặt/Lưu dữ liệu trên cloud.
-  * Dữ liệu người dùng được phục hồi ở trên thiết bị mới, sau khi đăng nhập thành công tài khoản cũ.
-  * Dữ liệu người dùng được quản lý theo từng gmail.
-  * Sửa lỗi giao diện.
-  
-  ### Phiên bản 1.0.4 - 18/04/2024
- 
-  * Sửa lỗi không thể cuộn xuống được ở màn hình Thống Kê chi tiết. 
-  
-  ### Phiên bản 1.0.3 - 15/04/2024
- 
-  * Thêm thống kê - tự chọn ngày. 
-  * Sửa lỗi ở màn hình chọn nhóm. 
-  
-  ### Phiên bản 1.0.2 - 12/04/2024
- 
-  * Hỗ trợ nền tảng Window. 
-  * Thêm thống kê - Danh sách hàng hóa. 
-  * Thêm thống kê - Xuất PDF,CSV tệp.  
-  * Thêm cài đặt - sao lưu, phục hồi. 
-  
- ### Phiên bản 1.0.1 04/04/2024
- 
- * Cho phép nhập số THỰC ở trường số lượng.
- * Cập nhât chức năng rung và âm thanh khi quét mã vạch. 
- * Cập nhật lên thiết kế Material 3.
- 
- ### Phiên bản 1.0.0
- 
- * Lần đầu tiên ra mắt chưa có gì để nói cả :), mọi người chọn nút trợ giúp ở từng màn hình để hiểu rõ nhé.
- """;
+### Phiên bản 1.0.90 - 06/10/2026
+* Cập nhật Trang chủ, Hàng hóa, Thanh toán, Báo cáo và Cài đặt.
+* Thêm ảnh cho cửa hàng, nhóm, khách hàng và nhà cung cấp.
+* Cập nhật danh sách, trạng thái trống và màn bắt đầu.
+* Cải thiện bản dịch.
+* Sửa lỗi được báo cáo.
+
+### Phiên bản 1.0.80 - 23/04/2026
+* Sửa lỗi được báo cáo.
+* Thêm hướng dẫn chuyển sang bản online.
+* Làm mới giao diện.
+
+### Phiên bản 1.0.75 - 16/04/2026
+* Sửa lỗi được báo cáo.
+* Thêm loại tiền tệ.
+* Sửa lỗi trùng mã vạch hàng hóa.
+
+### Phiên bản 1.0.70 - 06/02/2026
+* Sửa lỗi được báo cáo.
+* Thêm loại tiền tệ.
+* Cập nhật đồng bộ dữ liệu.
+* Cập nhật logo (chuẩn bị bản online).
+
+### Phiên bản 1.0.65 - 20/09/2025
+* Sửa lỗi được báo cáo.
+* Thêm báo cáo: Thông tin hàng hóa.
+
+### Phiên bản 1.0.60 - 09/09/2025
+* Sửa lỗi không đăng nhập được tài khoản Apple.
+* Sửa lỗi được báo cáo.
+* Thêm đổi giao diện, ngôn ngữ, tiền tệ.
+* Cập nhật logo, thêm tệp khi lưu hàng hóa.
+* Cập nhật đăng nhập.
+* Cập nhật giao diện.
+
+### Phiên bản 1.0.45 - 12/07/2025
+* Sửa lỗi được báo cáo.
+
+### Phiên bản 1.0.40 - 25/07/2025
+* Sửa lỗi không quét được mã vạch trên Android.
+* Sửa lỗi cảnh báo tồn thấp không hiện khi mở ứng dụng.
+* Sửa lỗi được báo cáo.
+* Hỗ trợ ngôn ngữ trong menu.
+* Cập nhật giao diện.
+
+### Phiên bản 1.0.30 - 30/05/2025
+* Sửa lỗi được báo cáo.
+* Thêm số lượng tối thiểu.
+* Thêm thông tin công ty.
+* Thêm chế độ tối, khóa mã.
+* Thêm báo cáo đặt hàng lại.
+
+### Phiên bản 1.0.25 - 14/04/2025
+* Sửa lỗi được báo cáo.
+* Thêm thanh toán.
+* Thêm ví.
+* Thêm 5 loại báo cáo.
+
+### Phiên bản 1.0.8 - 06/12/2024
+* Sửa lỗi được báo cáo.
+* Thêm cài đặt danh sách ở màn hình hàng hóa.
+* Sửa tìm kiếm ở màn hình hàng hóa.
+* Thêm Quick Sync.
+
+### Phiên bản 1.0.7 - 27/09/2024
+* Sửa lỗi được báo cáo.
+* Hỗ trợ iOS.
+
+### Phiên bản 1.0.6 - 07/07/2024
+* Sửa lỗi được báo cáo.
+* Thêm tạo tài liệu nhanh khi lưu hàng hóa.
+* Thêm lịch sử nhập xuất hàng hóa.
+
+### Phiên bản 1.0.5 - 14/06/2024
+* Thêm đăng nhập / đăng ký. Dữ liệu người dùng lưu trên cloud.
+* Hệ thống tự lưu dữ liệu lên cloud cuối ngày, hoặc khi đăng xuất.
+* Có thể đẩy dữ liệu lên cloud trong Cài đặt.
+* Dữ liệu được khôi phục trên thiết bị mới sau khi đăng nhập.
+* Dữ liệu được quản lý theo từng email.
+* Sửa lỗi giao diện.
+
+### Phiên bản 1.0.4 - 18/04/2024
+* Sửa lỗi không cuộn được ở báo cáo chi tiết.
+
+### Phiên bản 1.0.3 - 15/04/2024
+* Thêm báo cáo theo khoảng ngày tự chọn.
+* Sửa lỗi màn hình chọn nhóm.
+
+### Phiên bản 1.0.2 - 12/04/2024
+* Hỗ trợ Windows.
+* Thêm báo cáo danh sách hàng hóa.
+* Thêm xuất PDF, CSV.
+* Thêm sao lưu, phục hồi.
+
+### Phiên bản 1.0.1 - 04/04/2024
+* Cho phép số thực ở trường số lượng.
+* Thêm rung và âm thanh khi quét mã vạch.
+* Cập nhật Material 3.
+
+### Phiên bản 1.0.0
+* Phiên bản đầu tiên.
+""";
 
   static const String helpPayments = """
-  ## Hướng Dẫn Quản Lý Thanh Toán  
+## Thanh toán
 
-Có hai loại thanh toán:
+Thanh toán ghi tiền vào và ra khỏi ví.
 
-### 💰 Thanh Toán Thu (Inbound)  
-- Tạo khi bạn **nhận tiền** từ khách hàng.  
-- Thường liên kết với **phiếu xuất kho**.  
-- Giúp theo dõi **dòng tiền vào**.
+### Thu
+- Ghi khi **nhận tiền** từ khách hàng.
+- Thường gắn với tài liệu **Xuất hàng**.
+- Theo dõi tiền vào.
 
-### 💸 Thanh Toán Chi (Outbound)  
-- Tạo khi bạn **trả tiền** cho nhà cung cấp.  
-- Thường liên kết với **phiếu nhập kho**.  
-- Giúp theo dõi **dòng tiền ra**.
+### Chi
+- Ghi khi **trả tiền** cho nhà cung cấp.
+- Thường gắn với tài liệu **Nhập hàng**.
+- Theo dõi tiền ra.
 
----
+### Thêm thanh toán
+- Mở **Thanh toán**, hoặc thêm từ màn hình tài liệu.
+- Chọn **Thu** hoặc **Chi**.
+- Nhập **số tiền**, **ngày**, người liên quan, và ghi chú nếu có.
+- Có thể gắn **tài liệu**.
 
-### ➕ Thêm Thanh Toán  
-- Vào phần **Thanh Toán** hoặc sử dụng phím tắt từ màn hình chi tiết phiếu.  
-- Chọn **loại thanh toán** (Thu hoặc Chi).  
-- Nhập **số tiền**, **ngày**, **người trả/người nhận**, và ghi chú nếu có.  
-- Bạn có thể liên kết với **phiếu chứng từ** để dễ quản lý hơn.
+### Gắn tài liệu
+- Thanh toán gắn tài liệu cho biết khoản tiền dùng để làm gì.
+- Thanh toán một phần đánh dấu tài liệu là **Thanh toán một phần**.
+- Thanh toán đủ đánh dấu tài liệu là **Đã thanh toán**.
 
----
+### Sửa hoặc xóa
+- **Nhấn giữ** một thanh toán để sửa hoặc xóa.
 
-### 📄 Liên Kết Với Phiếu  
-- Thanh toán có thể liên kết với **phiếu nhập/xuất** để hiển thị rõ mục đích.  
-- Nếu thanh toán chỉ một phần, phiếu sẽ được đánh dấu là **Thanh Toán Một Phần**.  
-- Khi đã thanh toán đủ, phiếu sẽ được đánh dấu là **Đã Thanh Toán**.
+> Xóa thanh toán có thể đổi trạng thái thanh toán của tài liệu.
 
----
-
-### 📝 Sửa hoặc Xóa Thanh Toán  
-- **Nhấn giữ** vào một thanh toán để chỉnh sửa hoặc xóa.  
-- ⚠️ Lưu ý: Xóa thanh toán có thể ảnh hưởng đến trạng thái thanh toán của phiếu liên quan.
-
----
-
-### 📊 Lọc và Theo Dõi  
-- Sử dụng bộ lọc phía trên để xem **chỉ thanh toán Thu, Chi**, hoặc các phiếu **Chưa thanh toán/Thanh toán một phần**.  
-- Theo dõi thường xuyên để đảm bảo quản lý tài chính chính xác.
-
-Giữ thông tin thanh toán rõ ràng để kiểm soát dòng tiền hiệu quả! ✅  
+### Lọc và sắp xếp
+- Dùng thanh công cụ để **lọc** hoặc **sắp xếp**.
 """;
 
   static const String helpMinQuan = """
-  ## Hướng Dẫn Sử Dụng Số Lượng Tối Thiểu  
+## Số lượng tối thiểu
 
-Trang này giúp bạn quản lý tồn kho bằng cách thiết lập **Số lượng tối thiểu** cho từng sản phẩm.  
+Đặt **số lượng tối thiểu** cho từng hàng hóa để biết khi nào cần nhập thêm.
 
-### 📦 Số Lượng Tối Thiểu Là Gì?  
-- **Số lượng tối thiểu** là mức tồn kho thấp nhất mà bạn muốn duy trì.  
-- Khi tồn kho giảm xuống dưới mức này, sản phẩm sẽ xuất hiện trong **Báo cáo cần đặt hàng**.  
+### Là gì
+- Mức tồn thấp nhất bạn muốn giữ.
+- Khi tồn xuống dưới mức này, hàng xuất hiện trong báo cáo **Đặt hàng lại** và trên **Trang chủ** (tồn thấp).
 
-### 🛠️ Thiết Lập Số Lượng Tối Thiểu  
-- Vào phần **Cài đặt sản phẩm** khi thêm hoặc chỉnh sửa sản phẩm.  
-- Nhập số vào ô **Số lượng tối thiểu** (ví dụ: 5 hoặc 10).  
-- Đây là số lượng tối thiểu bạn muốn luôn có trong kho.  
+### Thiết lập
+- Mở hàng hóa khi thêm hoặc sửa.
+- Nhập số vào **Số lượng tối thiểu** (ví dụ 5 hoặc 10).
 
-### 📉 Theo Dõi Tồn Kho Thấp  
-- Sử dụng **Báo cáo cần đặt hàng** để xem các sản phẩm có tồn kho thấp hơn số lượng tối thiểu.  
-- Giúp bạn đặt hàng đúng lúc và tránh hết hàng.  
+### Tồn thấp
+- Dùng báo cáo **Đặt hàng lại** để xem hàng dưới mức tối thiểu.
+- Trang chủ cũng hiện **Hết hàng** và **Tồn thấp**.
 
-### 🔄 Cập Nhật Số Lượng Tối Thiểu  
-- Bạn có thể thay đổi số lượng tối thiểu bất kỳ lúc nào bằng cách chỉnh sửa sản phẩm.  
-- Điều chỉnh dựa trên tốc độ bán hàng hoặc theo mùa vụ.  
+### Cập nhật
+- Sửa hàng hóa bất kỳ lúc nào để đổi mức tối thiểu.
+- Điều chỉnh theo tốc độ bán hoặc mùa vụ.
 
-### ✅ Mẹo Sử Dụng  
-- Thiết lập số lượng tối thiểu cao hơn cho các mặt hàng bán chạy hoặc quan trọng.  
-- Xem lại và điều chỉnh thường xuyên để đảm bảo cảnh báo chính xác.  
-
-Quản lý tồn kho hiệu quả và tránh thiếu hàng bất ngờ! 🔔  
+### Gợi ý
+- Đặt mức cao hơn cho hàng bán chạy hoặc hàng quan trọng.
+- Xem lại thường xuyên để cảnh báo còn đúng.
 """;
 }

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/save_payment_category/bloc/save_payment_category_cubit.dart';
 import 'package:good_manager/presentation/pages/save_payment_category/components/select_symbols_widget.dart';
 
-import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
 import '../../widget/widget.dart';
 import '../base/base_state.dart';
@@ -38,19 +37,11 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
       },
       builder: (BuildContext context, SavePaymentCategoryState state) {
         return Scaffold(
-          appBar: _buildAppBar(context),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          appBar: SaveObjectAppBar(title: context.tr("title_save_category")),
           body: _buildBody(state),
         );
       },
-    );
-  }
-
-  PreferredSize _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(
-        title: Text(context.tr("title_save_category")),
-      ),
     );
   }
 
@@ -137,7 +128,6 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
         Container(
           width: double.infinity,
           padding: EdgeInsets.all(16),
-          color: Theme.of(context).colorScheme.surface,
           child: PrimaryButton(context.tr("action_save"), () {
             context.read<SavePaymentCategoryCubit>().onSaveClicked();
           }),
