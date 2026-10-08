@@ -205,10 +205,11 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
     if (state.textSearch.trim().isEmpty) {
       return true;
     }
-    return item.good.name.contains(state.textSearch) ||
-        item.good.description.contains(state.textSearch) ||
+    final query = state.textSearch.toLowerCase();
+    return item.good.name.toLowerCase().contains(query) ||
+        item.good.description.toLowerCase().contains(query) ||
         (item.good.barCode != null &&
-            item.good.barCode!.contains(state.textSearch));
+            item.good.barCode!.toLowerCase().contains(query));
   }
 
   void onBatchScanMenuClicked() {

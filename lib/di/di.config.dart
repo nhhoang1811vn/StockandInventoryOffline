@@ -270,6 +270,8 @@ extension GetItInjectableX on _i174.GetIt {
           paymentUseCases: gh<_i704.PaymentUseCases>(),
           groupsUseCases: gh<_i704.GroupsUseCases>(),
           walletUseCases: gh<_i704.WalletUseCases>(),
+          customersUseCase: gh<_i704.CustomersUseCase>(),
+          suppliersUseCase: gh<_i704.SuppliersUseCase>(),
         ));
     gh.factory<_i12.HomeCubit>(() => _i12.HomeCubit(
           goodsUseCases: gh<_i704.GoodsUseCases>(),

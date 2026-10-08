@@ -138,90 +138,37 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
   }
 
   Widget _buildSummaryView(ItemHistoryState state) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
-      decoration: BoxDecoration(
-        color: theme.cardTheme.color ?? theme.colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 20,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (state.start != null || state.end != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.calendar_today_outlined,
-                      size: 14, color: theme.colorScheme.primary),
-                  const SizedBox(width: 8),
-                  Text(
-                    "${state.start != null ? DateFormatFactory.getDateFormat().format(state.start!) : '...'} - ${state.end != null ? DateFormatFactory.getDateFormat().format(state.end!) : '...'}",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: theme.colorScheme.onSurface.withOpacity(0.5),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          Row(
-            children: [
-              _buildSummaryItem(
-                  context.tr("field_start_period"),
-                  StringUtils.getQuantityText(state.startPeriodQuantity),
-                  theme),
-              _buildSummaryItem(context.tr("field_in"),
-                  StringUtils.getQuantityText(state.inQuantity), theme,
-                  valueColor: Colors.red),
-              _buildSummaryItem(context.tr("field_out"),
-                  StringUtils.getQuantityText(state.outQuantity), theme,
-                  valueColor: Colors.green),
-              _buildSummaryItem(context.tr("field_end_period"),
-                  StringUtils.getQuantityText(state.endPeriodQuantity), theme),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+    String? period;
+    if (state.start != null || state.end != null) {
+      final start = state.start != null
+          ? DateFormatFactory.getDateFormat().format(state.start!)
+          : '...';
+      final end = state.end != null
+          ? DateFormatFactory.getDateFormat().format(state.end!)
+          : '...';
+      period = '$start - $end';
+    }
 
-  Widget _buildSummaryItem(String label, String value, ThemeData theme,
-      {Color? valueColor}) {
-    return Expanded(
-      child: Column(
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: theme.colorScheme.onSurface.withOpacity(0.4),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 6),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
-              color: valueColor ?? theme.colorScheme.onSurface,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
+    return SummaryLine(
+      [
+        SummaryLine.item(
+          context.tr("field_start_period"),
+          StringUtils.getQuantityText(state.startPeriodQuantity),
+        ),
+        SummaryLine.item(
+          context.tr("field_in"),
+          StringUtils.getQuantityText(state.inQuantity),
+        ),
+        SummaryLine.item(
+          context.tr("field_out"),
+          StringUtils.getQuantityText(state.outQuantity),
+        ),
+        SummaryLine.item(
+          context.tr("field_end_period"),
+          StringUtils.getQuantityText(state.endPeriodQuantity),
+        ),
+      ],
+      caption: period,
     );
   }
 }

@@ -96,6 +96,12 @@ Dùng chức năng này để theo dõi chi tiêu theo từng cửa hàng.
 """;
 
   static const String whatNews = """
+### Phiên bản 1.0.91 - 08/10/2026
+* Thêm nhập và xuất Excel trên menu Tồn kho.
+* Thêm thao tác nhấn giữ cho chứng từ gần đây trên Trang chủ.
+* Thêm thao tác nhấn giữ cho kết quả tìm kiếm.
+* Đổi mục Danh mục thành Danh mục thanh toán trong Cài đặt.
+
 ### Phiên bản 1.0.90 - 06/10/2026
 * Cập nhật Trang chủ, Hàng hóa, Thanh toán, Báo cáo và Cài đặt.
 * Thêm ảnh cho cửa hàng, nhóm, khách hàng và nhà cung cấp.

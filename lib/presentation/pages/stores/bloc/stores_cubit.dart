@@ -105,7 +105,7 @@ class StoresCubit extends Cubit<StoresState> {
     if (state.textSearch.trim().isEmpty) {
       return true;
     }
-    return item.name.contains(state.textSearch);
+    return item.name.toLowerCase().contains(state.textSearch.toLowerCase());
   }
 
   void sort() {

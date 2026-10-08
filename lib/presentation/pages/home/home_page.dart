@@ -16,9 +16,10 @@ import '../../../constant/constant.dart';
 import '../../../di/di.dart';
 import '../../../domain/entity/entity.dart';
 import '../../../domain/free_limits.dart';
-import '../../../util/util.dart';
 import '../../../util/base64_utils.dart';
+import '../../../util/util.dart';
 import '../../dialog/dialog.dart';
+import '../../utils.dart';
 import '../base/base_state.dart';
 import '../documents/components/document_item_row.dart';
 import '../main/main_page.dart';
@@ -203,6 +204,8 @@ class HomePageState extends State<HomePage> {
             onTap: _onChangeStore,
             child: Text(
               storeName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 16,
@@ -411,6 +414,8 @@ class HomePageState extends State<HomePage> {
               const SizedBox(height: 2),
               Text(
                 label,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
@@ -455,7 +460,9 @@ class HomePageState extends State<HomePage> {
               const SizedBox(height: 12),
               if (value != null)
                 Text(
-                  label + "($value)",
+                  "$label ($value)",
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.titleSmall,
                 )
               else
@@ -498,8 +505,69 @@ class HomePageState extends State<HomePage> {
               arguments: {'item': doc},
             ).then((value) => context.read<HomeCubit>().initState());
           },
-          onDocumentLongPressed: (doc) {},
+          onDocumentLongPressed: onLongPressedDocument,
         );
+      },
+    );
+  }
+
+  void onLongPressedDocument(Document item) {
+    var status = Utils.getStatus(item);
+    var showCreatePaymentOption = false;
+    var showViewPaymentOption = false;
+    if (status == DocumentPaidStatus.partial ||
+        status == DocumentPaidStatus.unpaid) {
+      showCreatePaymentOption = true;
+    }
+    if (status == DocumentPaidStatus.partial ||
+        status == DocumentPaidStatus.paid) {
+      showViewPaymentOption = true;
+    }
+
+    var items = [
+      if (showViewPaymentOption) context.tr("action_view_payments"),
+      if (showCreatePaymentOption) context.tr("action_create_payment"),
+      context.tr("delete"),
+    ];
+    showSelectOptionDialog(
+      context,
+      items: items,
+      onItemSelected: (index) async {
+        if (items[index] == context.tr("action_view_payments")) {
+          await Navigator.of(context).pushNamed(
+            Pages.payment_history,
+            arguments: {"documentId": item.id},
+          );
+          if (!mounted) return;
+          context.read<HomeCubit>().initState();
+        } else if (items[index] == context.tr("action_create_payment")) {
+          final payment =
+              await context.read<HomeCubit>().createPaymentDraft(item);
+          if (!mounted) return;
+          final result = await Navigator.of(context).pushNamed(
+            Pages.save_payment,
+            arguments: {"item": payment},
+          );
+          if (result != null && mounted) {
+            context.read<HomeCubit>().initState();
+          }
+        } else if (items[index] == context.tr("delete")) {
+          showDeleteDocumentConfirm(item);
+        }
+      },
+    );
+  }
+
+  void showDeleteDocumentConfirm(Document document) {
+    showCustomAlertDialog(
+      context,
+      message: sprintf(
+        context.tr("message_confirm_delete"),
+        [document.name],
+      ),
+      onPositivePressed: () async {
+        hideDialog(context);
+        context.read<HomeCubit>().deleteDocument(document.id!);
       },
     );
   }

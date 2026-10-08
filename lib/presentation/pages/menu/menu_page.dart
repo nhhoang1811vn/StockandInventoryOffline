@@ -545,27 +545,60 @@ class MenuPageState extends State<MenuPage> {
   void onHelp(BuildContext context) =>
       Navigator.of(context).pushNamed(Pages.helps, arguments: {});
 
+  Future<void> _finishSignOut() async {
+    await context.read<MenuCubit>().signOut();
+    if (!mounted) return;
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      Pages.loading_data,
+      (route) => false,
+    );
+  }
+
   void onLogoutItemPressed() {
     showCustomAlertDialog(
       context,
       message: context.tr("signout_message"),
       onPositivePressed: () async {
         Navigator.of(context).pop();
+        if (!mounted) return;
         showCustomAlertDialog(
           context,
           message: context.tr("question_push_data"),
+          positiveText: context.tr("action_save"),
+          negativeText: context.tr("signout_without_save"),
           onPositivePressed: () async {
             Navigator.of(context).pop();
-            await context.read<MenuCubit>().upload();
-            context.read<MenuCubit>().signOut();
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                Pages.loading_data, (Route<dynamic> route) => false);
+            if (!mounted) return;
+            var saved = false;
+            try {
+              saved = await context.read<MenuCubit>().upload();
+            } catch (_) {
+              saved = false;
+            }
+            if (!mounted) return;
+            if (!saved) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                snackBarWhenFailureWithText(
+                  context.tr("upload_failed_signout_cancelled"),
+                ),
+              );
+              return;
+            }
+            await _finishSignOut();
           },
           onNegativePressed: () async {
             Navigator.of(context).pop();
-            context.read<MenuCubit>().signOut();
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                Pages.loading_data, (Route<dynamic> route) => false);
+            if (!mounted) return;
+            showCustomAlertDialog(
+              context,
+              message: context.tr("signout_discard_warning"),
+              positiveText: context.tr("delete"),
+              onPositivePressed: () async {
+                Navigator.of(context).pop();
+                if (!mounted) return;
+                await _finishSignOut();
+              },
+            );
           },
         );
       },

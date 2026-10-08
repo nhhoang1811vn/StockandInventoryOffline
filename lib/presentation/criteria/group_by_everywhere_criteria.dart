@@ -13,7 +13,8 @@ class GroupByEverywhereCriteria extends FilterCriteria<Group> {
               item.description
                   .toLowerCase()
                   .contains(searchText.toLowerCase()) ||
-              (item.barCode?.contains(searchText) == true),
+              (item.barCode?.toLowerCase().contains(searchText.toLowerCase()) ==
+                  true),
         )
         .toList();
   }

@@ -91,18 +91,13 @@ class CustomersPageState extends State<CustomersPage> {
       ),
       iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
       actions: [
-        SSButton(
-          icon: Icons.add,
+        IconButton(
+          icon: const Icon(Icons.add),
           onPressed: () => context.read<CustomersCubit>().onAddButtonClicked(),
-          borderRadius: 14,
-          padding: 10,
         ),
-        const SizedBox(width: 12),
-        SSButton(
-          icon: Icons.help_outline_rounded,
+        IconButton(
+          icon: const Icon(Icons.help_outline_rounded),
           onPressed: () => context.read<CustomersCubit>().onHelpMenuClick(),
-          borderRadius: 14,
-          padding: 10,
         ),
         const SizedBox(width: 16),
       ],
@@ -133,12 +128,12 @@ class CustomersPageState extends State<CustomersPage> {
                 ),
               ),
               const SizedBox(width: 12),
-              SSButton(
-                icon: Icons.tune,
-                onPressed: () => showFilterBottomSheet(data),
-                borderRadius: 14,
-                padding: 10,
-                hasBadge: showWarning,
+              Badge(
+                isLabelVisible: showWarning,
+                child: IconButton(
+                  icon: const Icon(Icons.tune),
+                  onPressed: () => showFilterBottomSheet(data),
+                ),
               ),
             ],
           ),
@@ -167,7 +162,7 @@ class CustomersPageState extends State<CustomersPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
-              UIConstants.supplierIconData,
+              UIConstants.customerIconData,
               size: 64,
               color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
             ),

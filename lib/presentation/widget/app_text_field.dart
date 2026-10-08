@@ -22,6 +22,8 @@ class AppTextField extends StatelessWidget {
   final int minLines;
   final int? maxLines;
   final TextInputAction textInputAction;
+  final bool obscureText;
+  final Widget? suffixIcon;
 
   AppTextField({
     Key? key,
@@ -41,6 +43,8 @@ class AppTextField extends StatelessWidget {
     this.minLines = 1,
     this.maxLines = 1,
     this.textInputAction = TextInputAction.next,
+    this.obscureText = false,
+    this.suffixIcon,
   }) : super(key: key);
 
   OutlineInputBorder border(Color color) {
@@ -58,19 +62,21 @@ class AppTextField extends StatelessWidget {
     return TextFormField(
       onTap: onTapped,
       controller: controller,
-      initialValue: initialValue,
+      initialValue: controller == null ? initialValue : null,
       keyboardType: keyboardType,
-      minLines: minLines,
-      maxLines: maxLines,
+      minLines: obscureText ? 1 : minLines,
+      maxLines: obscureText ? 1 : maxLines,
+      obscureText: obscureText,
       decoration: InputDecoration(
         border: border(borderColor),
         prefix: prefix,
         suffix: suffix,
+        suffixIcon: suffixIcon,
         suffixText: suffixText,
         disabledBorder: border(borderColor),
         enabledBorder: border(borderColor),
         errorBorder: border(Colors.red),
-        focusedBorder: border(Colors.blue.shade700),
+        focusedBorder: border(theme.colorScheme.primary),
         focusedErrorBorder: border(Colors.red),
         labelText: labelText,
         floatingLabelBehavior: FloatingLabelBehavior.always,

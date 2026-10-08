@@ -26,22 +26,28 @@ class AuthCubit extends Cubit<AuthState> {
 
 
   void downloadUserData() async {
-    String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null) {
-      final firebasePath = "2026/$uid/data.json";
-      final localFileName = "data.json";
-      final file = await downloadFile(firebasePath, localFileName);
-      if (file != null) {
-        final db = await DBHelper().db;
-        final service = DbService(db);
-        await service.importFromFile(file);
+    emit(AuthLoading());
+    try {
+      String? uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid != null) {
+        final firebasePath = "2026/$uid/data.json";
+        final localFileName = "data.json";
+        final file = await downloadFile(firebasePath, localFileName);
+        if (file != null) {
+          final db = await DBHelper().db;
+          final service = DbService(db);
+          await service.importFromFile(file);
+        }
       }
+      checkStore();
+    } catch (_) {
+      if (isClosed) return;
+      emit(StartupFailure("startup_data_error".tr()));
     }
-    checkStore();
   }
 
   void checkStore() async {
-    //await Future.delayed(Duration(seconds: 2));
+    emit(AuthLoading());
     try {
       /*if (Platform.isIOS) {
         DBHelper dbHelper = DBHelper();
@@ -56,9 +62,9 @@ class AuthCubit extends Cubit<AuthState> {
       } else {
         emit(UserSignInSuccessfulWithNoStore());
       }
-    } catch (e) {
+    } catch (_) {
       if (isClosed) return;
-      emit(UserSignInSuccessfulWithNoStore());
+      emit(StartupFailure("startup_data_error".tr()));
     }
   }
 
@@ -105,9 +111,12 @@ class AuthCubit extends Cubit<AuthState> {
       await _auth.sendPasswordResetEmail(email: email);
       if (isClosed) return;
       emit(ResetPasswordSent());
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
       if (isClosed) return;
-      emit(AuthError(e.toString()));
+      handleFirebaseAuthError(e);
+    } catch (_) {
+      if (isClosed) return;
+      emit(AuthError("auth_unknown_error".tr()));
     }
   }
 
@@ -123,6 +132,9 @@ class AuthCubit extends Cubit<AuthState> {
     } on FirebaseAuthException catch (e) {
       if (isClosed) return;
       handleFirebaseAuthError(e);
+    } catch (_) {
+      if (isClosed) return;
+      emit(AuthError("auth_unknown_error".tr()));
     }
   }
 
@@ -140,6 +152,22 @@ class AuthCubit extends Cubit<AuthState> {
         break;
       case "email-already-in-use":
         error = "auth_email_already_in_use".tr();
+        break;
+      case "invalid-email":
+        error = "auth_invalid_email".tr();
+        break;
+      case "user-not-found":
+      case "wrong-password":
+        error = "auth_user_not_found".tr();
+        break;
+      case "weak-password":
+        error = "auth_weak_password".tr();
+        break;
+      case "too-many-requests":
+        error = "auth_too_many_requests".tr();
+        break;
+      case "network-request-failed":
+        error = "auth_network_error".tr();
         break;
       default:
         error = "auth_unknown_error".tr();
@@ -168,6 +196,16 @@ class AuthCubit extends Cubit<AuthState> {
     } on FirebaseAuthException catch (e) {
       if (isClosed) return;
       handleFirebaseAuthError(e);
+    } on SignInWithAppleAuthorizationException catch (e) {
+      if (isClosed) return;
+      if (e.code == AuthorizationErrorCode.canceled) {
+        emit(AuthStopped());
+      } else {
+        emit(AuthError("auth_unknown_error".tr()));
+      }
+    } catch (_) {
+      if (isClosed) return;
+      emit(AuthError("auth_unknown_error".tr()));
     }
   }
 

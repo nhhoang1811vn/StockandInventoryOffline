@@ -7,7 +7,9 @@ class GroupByBarcodeCriteria extends FilterCriteria<Group> {
   @override
   List<Group> meetCriteria(List<Group> items) {
     return items
-        .where((item) => item.barCode?.contains(searchText) == true)
+        .where((item) =>
+            item.barCode?.toLowerCase().contains(searchText.toLowerCase()) ==
+            true)
         .toList();
   }
 }

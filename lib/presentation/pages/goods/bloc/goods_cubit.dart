@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +14,9 @@ import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
 import '../../base/base_sort_items.dart';
 import '../../base/base_state.dart';
+import '../component/excel_column_mapping.dart';
+import '../goods_excel_export.dart';
+import '../goods_excel_import.dart';
 import '../sort/sort_by_barcode_groups.dart';
 import '../sort/sort_by_quantity_goods.dart';
 
@@ -658,5 +662,57 @@ class GoodsCubit extends Cubit<GoodsState> {
     emit(state.copyWith(settings: setting));
     AppSettings.setGoodsSetting(setting);
     refresh();
+  }
+
+  Future<int> importGoodsFromExcel({
+    required Uint8List bytes,
+    required String? fileName,
+    required ExcelColumnMapping mapping,
+  }) async {
+    final rows = GoodsExcelImportParser.parse(
+      bytes: bytes,
+      fileName: fileName,
+      mapping: mapping,
+    );
+    if (rows.isEmpty) return 0;
+
+    final groupId = getSelectedGroupId();
+    final storeId = AppSettings.getSelectedStoreId();
+    var importedCount = 0;
+
+    for (final row in rows) {
+      final item = Good()
+        ..name = row.name
+        ..description = row.description ?? ''
+        ..barCode = row.barcode
+        ..purchasePrice = row.purchasePrice
+        ..salePrice = row.salePrice
+        ..minQuantity = row.minQuantity
+        ..groupId = groupId
+        ..storeId = storeId;
+      final id = await goodsUseCase.insert(item);
+      if (id > 0) importedCount++;
+    }
+
+    if (importedCount > 0) {
+      loadData();
+    }
+    return importedCount;
+  }
+
+  Uint8List? exportGoodsToExcel(ExcelColumnMapping mapping) {
+    final groupId = getSelectedGroupId();
+    var goods =
+        state.allGoods.where((item) => item.groupId == groupId).toList();
+    goods = getGoodWithSortOption(goods, getGoodSortOptions());
+    if (goods.isEmpty) return null;
+    return GoodsExcelExportBuilder.build(goods: goods, mapping: mapping);
+  }
+
+  String excelExportFileName() {
+    final raw =
+        state.selectedGroups.isEmpty ? 'goods' : state.selectedGroups.last.name;
+    final safe = raw.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_').trim();
+    return '${safe.isEmpty ? 'goods' : safe}.xlsx';
   }
 }

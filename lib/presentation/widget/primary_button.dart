@@ -11,17 +11,17 @@ class PrimaryButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
+        minimumSize: const Size(64, 48),
         shape: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8),
         ),
         foregroundColor: Colors.white,
-        backgroundColor: Theme.of(context).colorScheme.primary
-
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
       child: Text(
         text,
-        style: TextStyle(color: Colors.white, fontSize: 20),
+        style: const TextStyle(color: Colors.white, fontSize: 16),
       ),
     );
   }

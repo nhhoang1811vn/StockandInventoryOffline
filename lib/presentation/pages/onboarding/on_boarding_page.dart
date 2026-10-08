@@ -75,8 +75,12 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       create: (context) => cubit,
       child: BlocListener<OnBoardingCubit, OnBoardingState>(
         listener: (context, state) {
-          if (state.status.isFailure || state.status.isSuccess) {
+          if (state.status.isSuccess) {
             Navigator.of(context).pushReplacementNamed(Pages.main);
+          } else if (state.status.isFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(context.tr("store_create_failed"))),
+            );
           }
         },
         child: Scaffold(

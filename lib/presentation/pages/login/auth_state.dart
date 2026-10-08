@@ -42,4 +42,10 @@ class UserSignInSuccessfulWithStore extends AuthState {}
 
 class UserSignInSuccessfulWithNoStore extends AuthState {}
 
+class StartupFailure extends AuthState {
+  final String message;
+
+  StartupFailure(this.message);
+}
+
 class UserLinkSuccessful extends AuthState {}

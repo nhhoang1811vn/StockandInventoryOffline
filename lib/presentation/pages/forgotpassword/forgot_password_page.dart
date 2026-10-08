@@ -1,9 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:good_manager/presentation/widget/app_text_field.dart';
+import 'package:good_manager/presentation/widget/primary_button.dart';
 
 import '../../utils/auth_listeners.dart';
 import '../login/auth_cubit.dart';
+import '../login/auth_input.dart';
 import '../login/components/background.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -16,9 +19,6 @@ class ForgotPasswordPage extends StatefulWidget {
 class ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final emailController = TextEditingController();
   bool _emailValidate = false;
-  var emailReg = RegExp(
-    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
-  );
   @override
   void dispose() {
     super.dispose();
@@ -66,34 +66,36 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   style: Theme.of(context).textTheme.titleLarge,
                 ).tr(),
                 SizedBox(height: 32),
-                TextField(
+                AppTextField(
+                  labelText: "email".tr(),
+                  keyboardType: TextInputType.emailAddress,
                   controller: emailController,
+                  textInputAction: TextInputAction.done,
                   onChanged: (newText) {
                     setState(() {
                       _emailValidate = false;
                     });
                   },
-                  decoration: InputDecoration(
-                    labelText: "email".tr(),
-                    errorText:
-                    _emailValidate ? "error_invalid_email".tr() : null,
-                  ),
+                  error: _emailValidate ? "error_invalid_email".tr() : null,
                 ),
                 SizedBox(height: 32),
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (emailReg.hasMatch(emailController.text)) {
-                        context.read<AuthCubit>().resetPassword(emailController.text);
+                  child: PrimaryButton(
+                    context.tr("send_reset_email"),
+                    () {
+                      final emailOk =
+                          AuthInput.isValidEmail(emailController.text);
+                      if (emailOk) {
+                        context.read<AuthCubit>().resetPassword(
+                              emailController.text.trim(),
+                            );
                       } else {
                         setState(() {
-                          _emailValidate =
-                          !emailReg.hasMatch(emailController.text);
+                          _emailValidate = true;
                         });
                       }
                     },
-                    child: const Text('next').tr(),
                   ),
                 ),
               ],

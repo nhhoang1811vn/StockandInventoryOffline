@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 SnackBar snackBarWhenFailure(BuildContext context) {
   return SnackBar(
-    content: Text(context.tr("error")),
+    content: Text(context.tr("snackbar_try_again")),
     backgroundColor: Colors.red,
   );
 }
 
 SnackBar snackBarWhenSuccess(BuildContext context) {
   return SnackBar(
-    content: Text(context.tr("success")),
+    content: Text(context.tr("snackbar_saved")),
     backgroundColor: Colors.green,
   );
 }

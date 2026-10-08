@@ -1,9 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:good_manager/presentation/widget/app_text_field.dart';
+import 'package:good_manager/presentation/widget/primary_button.dart';
 
 import '../../utils/auth_listeners.dart';
 import '../login/auth_cubit.dart';
+import '../login/auth_input.dart';
 import '../login/components/background.dart';
 
 
@@ -19,11 +22,9 @@ class SignUpPageState extends State<SignUpPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  bool _nameValidate = false;
   bool _emailValidate = false;
   bool _passwordValidate = false;
-  var emailReg = RegExp(
-    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
-  );
 
   @override
   void dispose() {
@@ -75,76 +76,84 @@ class SignUpPageState extends State<SignUpPage> {
                   style: Theme.of(context).textTheme.titleLarge,
                 ).tr(),
                 SizedBox(height: 32),
-                TextField(
+                AppTextField(
+                  labelText: "name".tr(),
+                  keyboardType: TextInputType.name,
                   controller: nameController,
-                  decoration: InputDecoration(labelText: "name".tr()),
+                  textInputAction: TextInputAction.next,
+                  onChanged: (_) {
+                    setState(() {
+                      _nameValidate = false;
+                    });
+                  },
+                  error: _nameValidate ? "error_name_required".tr() : null,
                 ),
                 SizedBox(height: 16),
-                TextField(
+                AppTextField(
+                  labelText: "email".tr(),
+                  keyboardType: TextInputType.emailAddress,
                   controller: emailController,
+                  textInputAction: TextInputAction.next,
                   onChanged: (newText) {
                     setState(() {
                       _emailValidate = false;
                     });
                   },
-                  decoration: InputDecoration(
-                    labelText: "email".tr(),
-                    errorText:
-                    _emailValidate ? "error_invalid_email".tr() : null,
-                  ),
+                  error: _emailValidate ? "error_invalid_email".tr() : null,
                 ),
                 SizedBox(height: 16),
-                TextField(
+                AppTextField(
+                  labelText: "password".tr(),
+                  keyboardType: TextInputType.visiblePassword,
                   controller: passwordController,
+                  textInputAction: TextInputAction.done,
+                  obscureText: _obscurePassword,
                   onChanged: (newText) {
                     setState(() {
                       _passwordValidate = false;
                     });
                   },
-
-                  decoration: InputDecoration(
-                    labelText: "password".tr(),
-                    errorText:
-                    _passwordValidate
-                        ? "error_invalid_password".tr()
-                        : null,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
+                  error: _passwordValidate
+                      ? "error_password_too_short".tr()
+                      : null,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                     ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
                   ),
-                  obscureText: _obscurePassword,
                 ),
                 SizedBox(height: 32),
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (emailReg.hasMatch(emailController.text) &&
-                          passwordController.text.trim().isNotEmpty) {
+                  child: PrimaryButton(
+                    context.tr("sign_up"),
+                    () {
+                      final nameOk = nameController.text.trim().isNotEmpty;
+                      final emailOk =
+                          AuthInput.isValidEmail(emailController.text);
+                      final passwordOk =
+                          AuthInput.isValidPassword(passwordController.text);
+                      if (nameOk && emailOk && passwordOk) {
                         context.read<AuthCubit>().linkWithEmail(
-                          nameController.text,
-                          emailController.text,
-                          passwordController.text,
+                              nameController.text.trim(),
+                              emailController.text.trim(),
+                              passwordController.text,
                         );
                       } else {
                         setState(() {
-                          _emailValidate =
-                          !emailReg.hasMatch(emailController.text);
-                          _passwordValidate =
-                              passwordController.text.trim().isEmpty;
+                          _nameValidate = !nameOk;
+                          _emailValidate = !emailOk;
+                          _passwordValidate = !passwordOk;
                         });
                       }
                     },
-                    child: const Text('next').tr(),
                   ),
                 ),
               ],

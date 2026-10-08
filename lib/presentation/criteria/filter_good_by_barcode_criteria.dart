@@ -7,7 +7,9 @@ class FilterGoodByBarcodeCriteria extends FilterCriteria<Good> {
   @override
   List<Good> meetCriteria(List<Good> items) {
     return items
-        .where((item) => item.barCode?.contains(searchText) == true)
+        .where((item) =>
+            item.barCode?.toLowerCase().contains(searchText.toLowerCase()) ==
+            true)
         .toList();
   }
 }

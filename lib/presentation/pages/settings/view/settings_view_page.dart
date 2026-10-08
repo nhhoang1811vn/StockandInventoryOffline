@@ -151,6 +151,11 @@ class SettingsViewPageState extends State<SettingsViewPage> {
                       onTap: () {
                         if (AppSettings.isPro() || !type.isLocked) {
                           Navigator.pop(context, type);
+                        } else {
+                          showBuySubscriptionDialog(
+                            context,
+                            message: context.tr("theme_locked_message"),
+                          );
                         }
                       },
                     ),

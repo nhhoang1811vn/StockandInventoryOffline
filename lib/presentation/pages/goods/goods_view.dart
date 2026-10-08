@@ -1,12 +1,20 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:easy_localization/easy_localization.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
+import 'package:good_manager/presentation/pages/goods/component/excel_column_mapping_sheet.dart';
 import 'package:good_manager/presentation/pages/goods/component/list_settings_good_widget.dart';
 import 'package:good_manager/presentation/pages/goods/component/sort_good_widget.dart';
+import 'package:good_manager/presentation/utils/share_utils.dart';
 import 'package:good_manager/util/currency_formatter.dart';
 import 'package:good_manager/util/string_utils.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../constant/constant.dart';
@@ -20,7 +28,7 @@ import '../pages.dart';
 import 'good_item_row.dart';
 import 'group_item_row.dart';
 
-enum GoodsOverflowMenu { listSettings, help }
+enum GoodsOverflowMenu { importExcel, exportExcel, listSettings, help }
 
 class GoodsPage extends StatefulWidget {
   final bool isSelection;
@@ -107,11 +115,9 @@ class GoodsPageState extends State<GoodsPage> {
           ),
           iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
           actions: [
-            SSButton(
-              icon: Icons.add,
+            IconButton(
+              icon: const Icon(Icons.add),
               onPressed: () => _showAddMenu(context),
-              borderRadius: 14,
-              padding: 10,
             ),
             const SizedBox(width: 12),
             PopupMenuButton<GoodsOverflowMenu>(
@@ -122,6 +128,14 @@ class GoodsPageState extends State<GoodsPage> {
               onSelected: (item) => _onOverflowMenuSelected(item, state),
               itemBuilder: (BuildContext context) =>
                   <PopupMenuEntry<GoodsOverflowMenu>>[
+                PopupMenuItem<GoodsOverflowMenu>(
+                  value: GoodsOverflowMenu.importExcel,
+                  child: Text(context.tr("action_import_from_excel")),
+                ),
+                PopupMenuItem<GoodsOverflowMenu>(
+                  value: GoodsOverflowMenu.exportExcel,
+                  child: Text(context.tr("action_export_to_excel")),
+                ),
                 PopupMenuItem<GoodsOverflowMenu>(
                   value: GoodsOverflowMenu.listSettings,
                   child: Text(context.tr("list_settings")),
@@ -214,87 +228,34 @@ class GoodsPageState extends State<GoodsPage> {
           ),
         ),
         const SizedBox(width: 12),
-        SSButton(
-          icon: Icons.tune,
+        IconButton(
+          icon: const Icon(Icons.tune),
           onPressed: () => showSortBottomSheet(state),
-          borderRadius: 14,
-          padding: 10,
         ),
       ],
     );
   }
 
   Widget _buildSummaryInfo(GoodsState state) {
-    final theme = Theme.of(context);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      decoration: BoxDecoration(
-        color: theme.cardTheme.color ?? theme.colorScheme.surface,
-        border:
-            Border(top: BorderSide(color: theme.dividerColor.withOpacity(0.1))),
+    return SummaryLine([
+      SummaryLine.item(
+        context.tr("title_folder_count"),
+        state.groups.length.toString(),
       ),
-      child: Row(
-        children: [
-          _buildSummaryItem(
-            context.tr("title_folder_count"),
-            state.groups.length.toString(),
-            theme,
-          ),
-          _buildSummaryItem(
-            context.tr("title_good_count"),
-            state.goods.length.toString(),
-            theme,
-          ),
-          _buildSummaryItem(
-            context.tr("title_total_quantity"),
-            StringUtils.getQuantityText(state.quantityTotal),
-            theme,
-          ),
-          _buildSummaryItem(
-            context.tr("title_total_purchase"),
-            CurrencyFormatter.format(context, state.purchasePriceTotal),
-            theme,
-          ),
-          _buildSummaryItem(
-            context.tr("title_total_sale"),
-            CurrencyFormatter.format(context, state.salePriceTotal),
-            theme,
-          ),
-        ],
+      SummaryLine.item(context.tr("goods"), state.goods.length.toString()),
+      SummaryLine.item(
+        context.tr("title_total_quantity"),
+        StringUtils.getQuantityText(state.quantityTotal),
       ),
-    );
-  }
-
-  Widget _buildSummaryItem(String label, String value, ThemeData theme) {
-    return Expanded(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            value,
-            style: theme.textTheme.labelLarge
-                ?.copyWith(fontWeight: FontWeight.w800, fontSize: 12),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
-              color: theme.colorScheme.onSurface.withOpacity(0.45),
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+      SummaryLine.item(
+        context.tr("title_total_purchase"),
+        CurrencyFormatter.format(context, state.purchasePriceTotal),
       ),
-    );
+      SummaryLine.item(
+        context.tr("title_total_sale"),
+        CurrencyFormatter.format(context, state.salePriceTotal),
+      ),
+    ]);
   }
 
   Widget _buildList(GoodsState state) {
@@ -638,12 +599,128 @@ class GoodsPageState extends State<GoodsPage> {
 
   void _onOverflowMenuSelected(GoodsOverflowMenu item, GoodsState state) {
     switch (item) {
+      case GoodsOverflowMenu.importExcel:
+        Future.microtask(_importFromExcel);
+        break;
+      case GoodsOverflowMenu.exportExcel:
+        Future.microtask(_exportToExcel);
+        break;
       case GoodsOverflowMenu.listSettings:
         context.read<GoodsCubit>().onListSettingsMenuClicked();
         break;
       case GoodsOverflowMenu.help:
         context.read<GoodsCubit>().onHelpMenuClicked();
         break;
+    }
+  }
+
+  Future<void> _importFromExcel() async {
+    final mapping = await showExcelColumnMappingSheet(context);
+    if (mapping == null || !mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: const ['xlsx', 'xls', 'csv'],
+        withData: true,
+      );
+      if (result == null || result.files.isEmpty) return;
+
+      final picked = result.files.first;
+      Uint8List? bytes = picked.bytes;
+      if (bytes == null && picked.path != null) {
+        bytes = await File(picked.path!).readAsBytes();
+      }
+      if (bytes == null) {
+        messenger.showSnackBar(
+          snackBarWhenFailureWithText(context.tr("excel_import_failed")),
+        );
+        return;
+      }
+
+      showProgressIndicator(context);
+      final count = await context.read<GoodsCubit>().importGoodsFromExcel(
+            bytes: bytes,
+            fileName: picked.name,
+            mapping: mapping,
+          );
+      if (!mounted) return;
+      hideDialog(context);
+
+      if (count == 0) {
+        messenger.showSnackBar(
+          snackBarWhenFailureWithText(context.tr("excel_import_no_items")),
+        );
+        return;
+      }
+
+      messenger.showSnackBar(
+        snackBarWhenSuccessWithText(
+          sprintf(context.tr("excel_import_success"), [count.toString()]),
+        ),
+      );
+    } catch (e) {
+      if (mounted) hideDialog(context);
+      messenger.showSnackBar(
+        snackBarWhenFailureWithText(
+          sprintf(context.tr("error_with_details"), [e.toString()]),
+        ),
+      );
+    }
+  }
+
+  Future<void> _exportToExcel() async {
+    final mapping = await showExcelColumnMappingSheet(
+      context,
+      allowAdjustColumns: false,
+    );
+    if (mapping == null || !mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    final cubit = context.read<GoodsCubit>();
+    try {
+      showProgressIndicator(context);
+      final bytes = cubit.exportGoodsToExcel(mapping);
+      if (!mounted) return;
+      hideDialog(context);
+
+      if (bytes == null) {
+        messenger.showSnackBar(
+          snackBarWhenFailureWithText(context.tr("excel_export_no_items")),
+        );
+        return;
+      }
+
+      final directory = await getTemporaryDirectory();
+      final path = '${directory.path}/${cubit.excelExportFileName()}';
+      await File(path).writeAsBytes(bytes, flush: true);
+      if (!mounted) return;
+
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [
+            XFile(
+              path,
+              mimeType:
+                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ),
+          ],
+          sharePositionOrigin: ShareUtils.sharePositionOrigin(context),
+        ),
+      );
+      if (!mounted) return;
+
+      messenger.showSnackBar(
+        snackBarWhenSuccessWithText(context.tr("excel_saved_and_shared")),
+      );
+    } catch (e) {
+      if (mounted) hideDialog(context);
+      messenger.showSnackBar(
+        snackBarWhenFailureWithText(
+          sprintf(context.tr("error_with_details"), [e.toString()]),
+        ),
+      );
     }
   }
 }

@@ -36,8 +36,8 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
         return SettingsScaffold(
           title: context.tr("menu_item_minimum_quantity"),
           actions: [
-            SSButton(
-              icon: Icons.help_outline_rounded,
+            IconButton(
+              icon: const Icon(Icons.help_outline_rounded),
               onPressed: () {
                 Navigator.of(context).pushNamed(
                   Pages.help,
@@ -48,8 +48,6 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
                   },
                 );
               },
-              borderRadius: 14,
-              padding: 10,
             ),
             const SizedBox(width: 16),
           ],

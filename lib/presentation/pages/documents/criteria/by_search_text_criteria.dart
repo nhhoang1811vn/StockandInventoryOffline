@@ -15,9 +15,10 @@ class BySearchTextCriteria extends Criteria<Document> {
   }
 
   bool filterDocument(Document document, String textSearch) {
-    return (document.name.contains(textSearch) ||
-        document.description.contains(textSearch) ||
+    final query = textSearch.toLowerCase();
+    return (document.name.toLowerCase().contains(query) ||
+        document.description.toLowerCase().contains(query) ||
         (document.personName != null &&
-            document.personName!.contains(textSearch)));
+            document.personName!.toLowerCase().contains(query)));
   }
 }

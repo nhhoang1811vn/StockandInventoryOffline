@@ -229,6 +229,33 @@ class HomeCubit extends Cubit<HomeState> {
     await prefs.setStringList('wallet_order', walletIds);
   }
 
+  Future<void> deleteDocument(int id) async {
+    await documentsUseCases.delete(id);
+    initState();
+  }
+
+  Future<Payment> createPaymentDraft(Document item) async {
+    final payment = Payment();
+    payment.type = item.type == DocumentType.incoming
+        ? PaymentType.outbound
+        : PaymentType.inbound;
+    payment.storeId = AppSettings.getSelectedStoreId();
+    payment.walletId = AppSettings.getSavePaymentLastSelectedWalletId();
+    payment.documentId = item.id;
+    payment.document = item;
+
+    if (item.type == DocumentType.incoming) {
+      if (item.personId != null) {
+        payment.supplierId = item.personId;
+        payment.supplier = await supplierUseCases.get(item.personId!);
+      }
+    } else if (item.personId != null) {
+      payment.customerId = item.personId;
+      payment.customer = await customerUseCase.get(item.personId!);
+    }
+    return payment;
+  }
+
   Future<List<String>> loadWalletOrder() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getStringList('wallet_order') ?? [];

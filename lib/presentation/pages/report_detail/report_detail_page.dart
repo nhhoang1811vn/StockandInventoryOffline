@@ -404,7 +404,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
           rows.add(_buildHighlightCell(value: value[i]));
         } else {
           rows.add(
-            _buildNormalCell(value: value[i], type: flag, onPressed: () {}),
+            _buildNormalCell(value: value[i], type: flag),
           );
         }
       }
@@ -450,22 +450,23 @@ class ReportDetailPageState extends State<ReportDetailPage> {
     required FontWeight fontWeight,
     Function()? onPressed = null,
   }) {
-    return InkWell(
-      onTap: onPressed,
-      child: Container(
-        alignment: Alignment.center,
-        width: 120,
-        height: 20,
-        color: backgroundColor,
-        margin: EdgeInsets.all(1.0),
-        child: Text(
-          value,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 12, fontWeight: fontWeight),
-        ),
+    final cell = Container(
+      alignment: Alignment.center,
+      width: 132,
+      constraints: const BoxConstraints(minHeight: 44),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      color: backgroundColor,
+      margin: const EdgeInsets.all(1),
+      child: Text(
+        value,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 13, fontWeight: fontWeight),
       ),
     );
+    if (onPressed == null) return cell;
+    return InkWell(onTap: onPressed, child: cell);
   }
 
   String getStoreInfoText() {

@@ -21,6 +21,7 @@ class WalletsPage extends StatefulWidget {
 
 class WalletsPageState extends State<WalletsPage> {
   final FocusNode searchTextFocusNode = FocusNode();
+  String _searchText = '';
 
   @override
   void initState() {
@@ -73,11 +74,9 @@ class WalletsPageState extends State<WalletsPage> {
       ),
       iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
       actions: [
-        SSButton(
-          icon: Icons.add,
+        IconButton(
+          icon: const Icon(Icons.add),
           onPressed: () => context.read<WalletsCubit>().onAddButtonClicked(),
-          borderRadius: 14,
-          padding: 10,
         ),
         const SizedBox(width: 16),
       ],
@@ -89,29 +88,45 @@ class WalletsPageState extends State<WalletsPage> {
       return const Center(child: CircularProgressIndicator());
     }
 
+    final items = _filterWallets(state.items);
+
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: SearchBarWidget(
-            onTextChanged: (newValue) {},
+            onTextChanged: (newValue) {
+              setState(() => _searchText = newValue);
+            },
             focusNode: searchTextFocusNode,
           ),
         ),
         Expanded(
-          child: state.items.isEmpty ? _buildEmpty() : _buildListView(state),
+          child: items.isEmpty
+              ? _buildEmpty(noResults: _searchText.trim().isNotEmpty)
+              : _buildListView(items),
         ),
       ],
     );
   }
 
-  Widget _buildListView(WalletsState state) {
+  List<Wallet> _filterWallets(List<Wallet> items) {
+    final query = _searchText.trim().toLowerCase();
+    if (query.isEmpty) return items;
+    return items.where((item) {
+      return item.name.toLowerCase().contains(query) ||
+          item.description.toLowerCase().contains(query) ||
+          item.number.toLowerCase().contains(query);
+    }).toList();
+  }
+
+  Widget _buildListView(List<Wallet> items) {
     return ListView.separated(
       padding: const EdgeInsets.all(16),
-      itemCount: state.items.length,
+      itemCount: items.length,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
-        final wallet = state.items[index];
+        final wallet = items[index];
         return GestureDetector(
           onTap: () => _handleOnPressed(wallet),
           onLongPress: () => _handleOnLongPressed(wallet),
@@ -121,19 +136,19 @@ class WalletsPageState extends State<WalletsPage> {
     );
   }
 
-  Widget _buildEmpty() {
+  Widget _buildEmpty({required bool noResults}) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            UIConstants.walletIconData,
+            noResults ? Icons.search_off : UIConstants.walletIconData,
             size: 64,
             color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
           ),
           const SizedBox(height: 16),
           Text(
-            context.tr("title_wallet"),
+            context.tr(noResults ? "no_results_found" : "title_wallet"),
             style: TextStyle(
                 color:
                     Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),

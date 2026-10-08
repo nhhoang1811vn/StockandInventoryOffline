@@ -29,6 +29,7 @@ class PaymentsPageState extends State<PaymentsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final FocusNode searchTextFocusNode = FocusNode();
+  String _searchText = '';
 
   @override
   void initState() {
@@ -60,8 +61,8 @@ class PaymentsPageState extends State<PaymentsPage>
       ),
       iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
       actions: [
-        SSButton(
-          icon: Icons.add,
+        IconButton(
+          icon: const Icon(Icons.add),
           onPressed: () async {
             PaymentType? type = await showAddPaymentBottomSheet(context);
             if (type != null) {
@@ -72,21 +73,15 @@ class PaymentsPageState extends State<PaymentsPage>
               }
             }
           },
-          borderRadius: 14,
-          padding: 10,
         ),
-        const SizedBox(width: 12),
-        SSButton(
-          icon: Icons.category_outlined,
+        IconButton(
+          icon: const Icon(Icons.category_outlined),
           onPressed: () {
             Navigator.of(context).pushNamed(Pages.payment_categories);
           },
-          borderRadius: 14,
-          padding: 10,
         ),
-        const SizedBox(width: 12),
-        SSButton(
-          icon: Icons.help_outline_rounded,
+        IconButton(
+          icon: const Icon(Icons.help_outline_rounded),
           onPressed: () {
             Navigator.of(context).pushNamed(
               Pages.help,
@@ -97,8 +92,6 @@ class PaymentsPageState extends State<PaymentsPage>
               },
             );
           },
-          borderRadius: 14,
-          padding: 10,
         ),
         const SizedBox(width: 16),
       ],
@@ -123,17 +116,19 @@ class PaymentsPageState extends State<PaymentsPage>
             children: [
               Expanded(
                 child: SearchBarWidget(
-                  onTextChanged: (newValue) {},
+                  onTextChanged: (newValue) {
+                    setState(() => _searchText = newValue);
+                  },
                   focusNode: searchTextFocusNode,
                 ),
               ),
               const SizedBox(width: 12),
-              SSButton(
-                icon: Icons.tune,
-                onPressed: () => showFilterBottomSheet(state),
-                borderRadius: 14,
-                padding: 10,
-                hasBadge: showWarning,
+              Badge(
+                isLabelVisible: showWarning,
+                child: IconButton(
+                  icon: const Icon(Icons.tune),
+                  onPressed: () => showFilterBottomSheet(state),
+                ),
               ),
             ],
           ),
@@ -167,59 +162,55 @@ class PaymentsPageState extends State<PaymentsPage>
     return TabBarView(
       controller: _tabController,
       children: [
-        _buildAllItems(state),
-        _buildInboundPayment(state),
-        _buildOutboundPayment(state),
+        _buildAllItems(state, _filterPayments(state.payments)),
+        _buildInboundPayment(state, _filterPayments(state.inboundPayments)),
+        _buildOutboundPayment(state, _filterPayments(state.outboundPayments)),
       ],
     );
   }
 
-  Widget _buildAllItems(PaymentsState state) {
+  List<Payment> _filterPayments(List<Payment> items) {
+    final query = _searchText.trim().toLowerCase();
+    if (query.isEmpty) return items;
+    return items.where((item) {
+      return item.name.toLowerCase().contains(query) ||
+          item.description.toLowerCase().contains(query) ||
+          (item.category?.name.toLowerCase().contains(query) ?? false) ||
+          (item.wallet?.name.toLowerCase().contains(query) ?? false) ||
+          (item.customer?.name.toLowerCase().contains(query) ?? false) ||
+          (item.supplier?.name.toLowerCase().contains(query) ?? false);
+    }).toList();
+  }
+
+  Widget _buildAllItems(PaymentsState state, List<Payment> items) {
+    return _buildPaymentTab(state, items);
+  }
+
+  Widget _buildInboundPayment(PaymentsState state, List<Payment> items) {
+    return _buildPaymentTab(state, items);
+  }
+
+  Widget _buildOutboundPayment(PaymentsState state, List<Payment> items) {
+    return _buildPaymentTab(state, items);
+  }
+
+  Widget _buildPaymentTab(PaymentsState state, List<Payment> items) {
+    final noResults = _searchText.trim().isNotEmpty && items.isEmpty;
     return Stack(
       children: [
         Visibility(
-          child: _buildEmptyView(),
-          visible: state.payments.isEmpty,
+          child: _buildEmptyView(noResults: noResults),
+          visible: items.isEmpty,
         ),
         Visibility(
-          child: _buildStickyListView(state.payments, state),
-          visible: state.payments.isNotEmpty,
+          child: _buildStickyListView(items, state),
+          visible: items.isNotEmpty,
         ),
       ],
     );
   }
 
-  Widget _buildInboundPayment(PaymentsState state) {
-    return Stack(
-      children: [
-        Visibility(
-          child: _buildEmptyView(),
-          visible: state.inboundPayments.isEmpty,
-        ),
-        Visibility(
-          child: _buildStickyListView(state.inboundPayments, state),
-          visible: state.inboundPayments.isNotEmpty,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildOutboundPayment(PaymentsState state) {
-    return Stack(
-      children: [
-        Visibility(
-          child: _buildEmptyView(),
-          visible: state.outboundPayments.isEmpty,
-        ),
-        Visibility(
-          child: _buildStickyListView(state.outboundPayments, state),
-          visible: state.outboundPayments.isNotEmpty,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEmptyView() => Center(
+  Widget _buildEmptyView({bool noResults = false}) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -231,7 +222,7 @@ class PaymentsPageState extends State<PaymentsPage>
             ),
             const SizedBox(height: 16),
             Text(
-              context.tr("empty_payment"),
+              context.tr(noResults ? "no_results_found" : "empty_payment"),
               textAlign: TextAlign.center,
               style: TextStyle(
                   color:

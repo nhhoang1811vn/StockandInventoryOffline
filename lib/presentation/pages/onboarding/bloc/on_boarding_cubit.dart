@@ -19,6 +19,12 @@ class OnBoardingCubit extends Cubit<OnBoardingState> {
       : super(const OnBoardingState.initial());
 
   void onAddStore() async {
+    emit(
+      state.copyWith(
+        status: FormzSubmissionStatus.inProgress,
+        exceptionError: '',
+      ),
+    );
     try {
       final name = _resolvedStoreName();
       Store store = Store();

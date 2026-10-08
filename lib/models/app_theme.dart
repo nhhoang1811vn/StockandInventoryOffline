@@ -31,17 +31,28 @@ extension AppThemeExtension on AppTheme{
         return "theme_system_default".tr();
       case AppTheme.dark:
         return "theme_dark".tr();
-      case AppTheme.blue: return "Blue";
-      case AppTheme.green: return "Green";
-      case AppTheme.orange: return "Orange";
-      case AppTheme.violet: return "Violet";
-      case AppTheme.red: return "Red";
-      case AppTheme.pink: return "Pink";
-      case AppTheme.indigo: return "Indigo";
-      case AppTheme.teal: return "Teal";
-      case AppTheme.cyan: return "Cyan";
-      case AppTheme.lime: return "Lime";
-      case AppTheme.amber: return "Amber";
+      case AppTheme.blue:
+        return "theme_blue".tr();
+      case AppTheme.green:
+        return "theme_green".tr();
+      case AppTheme.orange:
+        return "theme_orange".tr();
+      case AppTheme.violet:
+        return "theme_violet".tr();
+      case AppTheme.red:
+        return "theme_red".tr();
+      case AppTheme.pink:
+        return "theme_pink".tr();
+      case AppTheme.indigo:
+        return "theme_indigo".tr();
+      case AppTheme.teal:
+        return "theme_teal".tr();
+      case AppTheme.cyan:
+        return "theme_cyan".tr();
+      case AppTheme.lime:
+        return "theme_lime".tr();
+      case AppTheme.amber:
+        return "theme_amber".tr();
     }
   }
   bool get isLocked {

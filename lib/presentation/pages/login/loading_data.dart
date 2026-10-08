@@ -40,6 +40,47 @@ class LoadingDataState extends State<LoadingData> {
         }
       },
       builder: (context, state) {
+        if (state is StartupFailure) {
+          return Scaffold(
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.cloud_off_outlined,
+                      size: 64,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.4),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      state.message,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (justLogin) {
+                            context.read<AuthCubit>().downloadUserData();
+                          } else {
+                            context.read<AuthCubit>().checkStore();
+                          }
+                        },
+                        child: Text(context.tr("startup_retry")),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
         return Scaffold(
           body: Center(
             child: Column(

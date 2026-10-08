@@ -141,61 +141,12 @@ class PaymentHistoryPageState extends State<PaymentHistoryPage> {
   }
 
   Widget _buildSummaryView(PaymentHistoryState state) {
-    final theme = Theme.of(context);
     final total =
         state.items.fold<double>(0, (sum, item) => sum + (item.amount ?? 0));
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      decoration: BoxDecoration(
-        color: theme.cardTheme.color ?? theme.colorScheme.surface,
-        border:
-            Border(top: BorderSide(color: theme.dividerColor.withOpacity(0.1))),
-      ),
-      child: Row(
-        children: [
-          _buildSummaryItem(
-            context.tr("count"),
-            state.items.length.toString(),
-            theme,
-          ),
-          _buildSummaryItem(
-            context.tr("total"),
-            CurrencyFormatter.format(context, total),
-            theme,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSummaryItem(String label, String value, ThemeData theme) {
-    return Expanded(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            value,
-            style: theme.textTheme.labelLarge
-                ?.copyWith(fontWeight: FontWeight.w800, fontSize: 12),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
-              color: theme.colorScheme.onSurface.withOpacity(0.45),
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
+    return SummaryLine([
+      SummaryLine.item(context.tr("count"), state.items.length.toString()),
+      SummaryLine.item(
+          context.tr("total"), CurrencyFormatter.format(context, total)),
+    ]);
   }
 }

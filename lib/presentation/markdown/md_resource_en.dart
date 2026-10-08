@@ -1,5 +1,11 @@
 class MarkdownResourceEN {
   static const String whatNews = """
+### Version 1.0.91 - 08 Oct 2026
+* Added Excel import and export on the Inventory menu.
+* Added long-press actions for recent documents on Home.
+* Added long-press actions for search results.
+* Renamed Categories to Payment Categories in Settings.
+
 ### Version 1.0.90 - 06 Oct 2026
 * Updated Home, Inventory, Payments, Reports, and Settings.
 * Added photos for stores, groups, customers, and suppliers.

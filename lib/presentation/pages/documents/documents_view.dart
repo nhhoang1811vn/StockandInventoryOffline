@@ -135,12 +135,12 @@ class DocumentPageState extends State<DocumentsPage>
           ),
         ),
         const SizedBox(width: 12),
-        SSButton(
-          icon: Icons.tune,
-          onPressed: () => showFilterBottomSheet(state),
-          borderRadius: 14,
-          padding: 10,
-          hasBadge: showWarning,
+        Badge(
+          isLabelVisible: showWarning,
+          child: IconButton(
+            icon: const Icon(Icons.tune),
+            onPressed: () => showFilterBottomSheet(state),
+          ),
         ),
       ],
     );
@@ -285,8 +285,8 @@ class DocumentPageState extends State<DocumentsPage>
       ),
       iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
       actions: [
-        SSButton(
-          icon: Icons.add,
+        IconButton(
+          icon: const Icon(Icons.add),
           onPressed: () async {
             final type = _typeForActiveTab();
             if (type != null) {
@@ -298,15 +298,10 @@ class DocumentPageState extends State<DocumentsPage>
               _onAddDocumentWithType(selected);
             }
           },
-          borderRadius: 14,
-          padding: 10,
         ),
-        const SizedBox(width: 12),
-        SSButton(
-          icon: Icons.help_outline_rounded,
+        IconButton(
+          icon: const Icon(Icons.help_outline_rounded),
           onPressed: () => context.read<DocumentsCubit>().onMenuHelpClicked(),
-          borderRadius: 14,
-          padding: 10,
         ),
         const SizedBox(width: 16),
       ],

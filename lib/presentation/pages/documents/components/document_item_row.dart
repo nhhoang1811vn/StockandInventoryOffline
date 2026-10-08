@@ -39,7 +39,8 @@ class DocumentItemRow extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardTheme.color ??
+            Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
@@ -118,7 +119,10 @@ class DocumentItemRow extends StatelessWidget {
                             : DateFormatFactory.getDateAndTimeFormat()
                                 .format(item.date),
                         style: TextStyle(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.4),
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),

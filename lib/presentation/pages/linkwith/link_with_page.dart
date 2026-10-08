@@ -7,6 +7,7 @@ import 'package:good_manager/presentation/pages/pages.dart';
 import '../../utils/auth_listeners.dart';
 import '../login/auth_cubit.dart';
 import '../login/components/background.dart';
+import '../login/social_button_style.dart';
 
 class LinkWithPage extends StatefulWidget {
   const LinkWithPage({super.key});
@@ -94,13 +95,7 @@ class LinkWithPageState extends State<LinkWithPage> {
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton.icon(
-        style: OutlinedButton.styleFrom(
-          backgroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32),
-          ),
-        ),
+        style: socialAuthButtonStyle(context, backgroundColor: Colors.white),
         icon: SvgPicture.asset('assets/svgs/google.svg', width: 24, height: 24),
         label:
             const Text(
@@ -119,13 +114,7 @@ class LinkWithPageState extends State<LinkWithPage> {
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton.icon(
-        style: OutlinedButton.styleFrom(
-          backgroundColor: Colors.black,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32),
-          ),
-        ),
+        style: socialAuthButtonStyle(context, backgroundColor: Colors.black),
         icon: SvgPicture.asset(
           'assets/svgs/apple_logo.svg',
           width: 24,
@@ -147,13 +136,7 @@ class LinkWithPageState extends State<LinkWithPage> {
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton.icon(
-        style: OutlinedButton.styleFrom(
-          backgroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32),
-          ),
-        ),
+        style: socialAuthButtonStyle(context, backgroundColor: Colors.white),
         icon: Icon(Icons.email, size: 24, color: Colors.black),
         label:
             const Text(

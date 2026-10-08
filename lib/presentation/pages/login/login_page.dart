@@ -1,13 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:good_manager/presentation/widget/app_text_field.dart';
+import 'package:good_manager/presentation/widget/primary_button.dart';
 
 import '../../utils/auth_listeners.dart';
 import '../pages.dart';
 import 'auth_cubit.dart';
+import 'auth_input.dart';
 import 'components/background.dart';
+import 'social_button_style.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -22,9 +25,6 @@ class LoginPageState extends State<LoginPage> {
 
   bool _emailValidate = false;
   bool _passwordValidate = false;
-  var emailReg = RegExp(
-    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
-  );
 
   @override
   void dispose() {
@@ -37,11 +37,6 @@ class LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     BlocProvider.of<AuthCubit>(context);
-
-    if (kDebugMode) {
-      emailController.text = "nhhoang1811vn@gmail.com";
-      passwordController.text = "123456";
-    }
   }
   @override
   Widget build(BuildContext context) {
@@ -79,48 +74,45 @@ class LoginPageState extends State<LoginPage> {
                   style: Theme.of(context).textTheme.titleLarge,
                 ).tr(),
                 SizedBox(height: 32),
-                TextField(
+                AppTextField(
+                  labelText: "email".tr(),
+                  keyboardType: TextInputType.emailAddress,
                   controller: emailController,
+                  textInputAction: TextInputAction.next,
                   onChanged: (newText) {
                     setState(() {
                       _emailValidate = false;
                     });
                   },
-                  decoration: InputDecoration(
-                    labelText: "email".tr(),
-                    errorText:
-                    _emailValidate ? "error_invalid_email".tr() : null,
-                  ),
+                  error: _emailValidate ? "error_invalid_email".tr() : null,
                 ),
                 SizedBox(height: 16),
-                TextField(
+                AppTextField(
+                  labelText: "password".tr(),
+                  keyboardType: TextInputType.visiblePassword,
                   controller: passwordController,
+                  textInputAction: TextInputAction.done,
+                  obscureText: _obscurePassword,
                   onChanged: (newText) {
                     setState(() {
                       _passwordValidate = false;
                     });
                   },
-
-                  decoration: InputDecoration(
-                    labelText: "password".tr(),
-                    errorText:
-                    _passwordValidate
-                        ? "error_invalid_password".tr()
-                        : null,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
+                  error: _passwordValidate
+                      ? "error_password_too_short".tr()
+                      : null,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                     ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
                   ),
-                  obscureText: _obscurePassword,
                 ),
                 SizedBox(height: 32),
                 GestureDetector(
@@ -140,24 +132,25 @@ class LoginPageState extends State<LoginPage> {
                 SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (emailReg.hasMatch(emailController.text) &&
-                          passwordController.text.trim().isNotEmpty) {
+                  child: PrimaryButton(
+                    context.tr("login"),
+                    () {
+                      final emailOk =
+                          AuthInput.isValidEmail(emailController.text);
+                      final passwordOk =
+                          AuthInput.isValidPassword(passwordController.text);
+                      if (emailOk && passwordOk) {
                         context.read<AuthCubit>().signInWithEmail(
-                          emailController.text,
-                          passwordController.text,
+                              emailController.text.trim(),
+                              passwordController.text,
                         );
                       } else {
                         setState(() {
-                          _emailValidate =
-                          !emailReg.hasMatch(emailController.text);
-                          _passwordValidate =
-                              passwordController.text.trim().isEmpty;
+                          _emailValidate = !emailOk;
+                          _passwordValidate = !passwordOk;
                         });
                       }
                     },
-                    child: const Text('next').tr(),
                   ),
                 ),
                 SizedBox(height: 32),
@@ -184,13 +177,7 @@ class LoginPageState extends State<LoginPage> {
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton.icon(
-        style: OutlinedButton.styleFrom(
-          backgroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32),
-          ),
-        ),
+        style: socialAuthButtonStyle(context, backgroundColor: Colors.white),
         icon: SvgPicture.asset('assets/svgs/google.svg', width: 24, height: 24),
         label:
         const Text(
@@ -208,13 +195,7 @@ class LoginPageState extends State<LoginPage> {
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton.icon(
-        style: OutlinedButton.styleFrom(
-          backgroundColor: Colors.black,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32),
-          ),
-        ),
+        style: socialAuthButtonStyle(context, backgroundColor: Colors.black),
         icon: SvgPicture.asset(
           'assets/svgs/apple_logo.svg',
           width: 24,

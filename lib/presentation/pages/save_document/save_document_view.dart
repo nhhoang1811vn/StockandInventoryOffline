@@ -351,8 +351,8 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                SSButton(
-                                  icon: Icons.tune,
+                                IconButton(
+                                  icon: const Icon(Icons.tune),
                                   onPressed: () {
                                     showFilterBottomSheet(state);
                                   },
@@ -416,77 +416,20 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
   }
 
   Widget _buildGoodsSummaryBar(SaveDocumentState state) {
-    final theme = Theme.of(context);
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      decoration: BoxDecoration(
-        color: theme.cardTheme.color ?? theme.colorScheme.surface,
-        border: Border(
-          top: BorderSide(color: theme.dividerColor.withOpacity(0.1)),
-        ),
+    return SummaryLine([
+      SummaryLine.item(
+        context.tr("goods"),
+        state.transactions.length.toString(),
       ),
-      child: Row(
-        children: [
-          _buildSummaryItem(
-            context.tr("title_good_count"),
-            state.transactions.length.toString(),
-            theme,
-          ),
-          _buildSummaryItem(
-            context.tr("quantity"),
-            StringUtils.getQuantityText(state.totalQuantity),
-            theme,
-          ),
-          _buildSummaryItem(
-            context.tr("amount"),
-            CurrencyFormatter.format(context, state.totalAmount),
-            theme,
-            valueColor: widget.item.type == DocumentType.incoming
-                ? Colors.green
-                : Colors.red,
-          ),
-        ],
+      SummaryLine.item(
+        context.tr("quantity"),
+        StringUtils.getQuantityText(state.totalQuantity),
       ),
-    );
-  }
-
-  Widget _buildSummaryItem(
-    String label,
-    String value,
-    ThemeData theme, {
-    Color? valueColor,
-  }) {
-    return Expanded(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            value,
-            style: theme.textTheme.labelLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-              fontSize: 12,
-              color: valueColor ?? theme.colorScheme.onSurface,
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
-              color: theme.colorScheme.onSurface.withOpacity(0.45),
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+      SummaryLine.item(
+        context.tr("amount"),
+        CurrencyFormatter.format(context, state.totalAmount),
       ),
-    );
+    ]);
   }
 
   void handleClick(

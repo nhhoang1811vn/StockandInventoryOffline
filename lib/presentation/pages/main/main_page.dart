@@ -122,7 +122,7 @@ class _ScreenState extends State<MainView> {
       context: context,
       onValidate: (enteredCode) async {
         final storedCode = AppSettings.getPasscode();
-        return enteredCode == storedCode || enteredCode == '9999';
+        return enteredCode == storedCode;
       },
       correctString: AppSettings.getPasscode(),
       onUnlocked: () {
@@ -158,7 +158,9 @@ class _ScreenState extends State<MainView> {
       height: 85,
       decoration: BoxDecoration(
         color: theme.cardTheme.color ?? (isDark ? Colors.black : Colors.white),
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(30),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
@@ -216,30 +218,35 @@ class _ScreenState extends State<MainView> {
         : theme.colorScheme.onSurface.withOpacity(0.5);
 
     return Expanded(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          setState(() => _currentIndex = index);
-          if (index == 0) {
-            context.read<HomeCubit>().refreshSelectedStore();
-            context.read<HomeCubit>().initState();
-          }
-        },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(isSelected ? activeIcon : icon, color: color, size: 24),
-            const SizedBox(height: 6),
-            Text(
-              label,
-              style: TextStyle(
-                color: color,
-                fontSize: 10,
-                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+      child: Semantics(
+        button: true,
+        selected: isSelected,
+        label: label,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            setState(() => _currentIndex = index);
+            if (index == 0) {
+              context.read<HomeCubit>().refreshSelectedStore();
+              context.read<HomeCubit>().initState();
+            }
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(isSelected ? activeIcon : icon, color: color, size: 24),
+              const SizedBox(height: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -249,42 +256,47 @@ class _ScreenState extends State<MainView> {
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.primary;
 
-    return GestureDetector(
-      onTap: () async {
-        String? barcode = await Utils.scanBarcode(context);
-        if (barcode != null && barcode.isNotEmpty && context.mounted) {
-          final homeState = context.read<HomeCubit>().state;
-          final existingGood =
-              homeState.allGoods.where((g) => g.barCode == barcode).firstOrNull;
+    return Semantics(
+      button: true,
+      label: context.tr("menu_item_barcode_scanner"),
+      child: GestureDetector(
+        onTap: () async {
+          String? barcode = await Utils.scanBarcode(context);
+          if (barcode != null && barcode.isNotEmpty && context.mounted) {
+            final homeState = context.read<HomeCubit>().state;
+            final existingGood = homeState.allGoods
+                .where((g) => g.barCode == barcode)
+                .firstOrNull;
 
-          if (existingGood != null) {
-            Navigator.of(context).pushNamed(
-              Pages.save_good,
-              arguments: {'item': existingGood},
-            );
-          } else {
-            final newGood = Good();
-            newGood.barCode = barcode;
-            newGood.name = barcode;
-            newGood.storeId = AppSettings.getSelectedStoreId();
-            Navigator.of(context).pushNamed(
-              Pages.save_good,
-              arguments: {'item': newGood},
-            );
+            if (existingGood != null) {
+              Navigator.of(context).pushNamed(
+                Pages.save_good,
+                arguments: {'item': existingGood},
+              );
+            } else {
+              final newGood = Good();
+              newGood.barCode = barcode;
+              newGood.name = barcode;
+              newGood.storeId = AppSettings.getSelectedStoreId();
+              Navigator.of(context).pushNamed(
+                Pages.save_good,
+                arguments: {'item': newGood},
+              );
+            }
           }
-        }
-      },
-      child: Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-          color: primaryColor,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Icon(
-          Icons.qr_code_scanner_rounded,
-          color: theme.colorScheme.onPrimary,
-          size: 30,
+        },
+        child: Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: primaryColor,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Icon(
+            Icons.qr_code_scanner_rounded,
+            color: theme.colorScheme.onPrimary,
+            size: 30,
+          ),
         ),
       ),
     );

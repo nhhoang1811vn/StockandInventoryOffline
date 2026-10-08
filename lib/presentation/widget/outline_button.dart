@@ -11,18 +11,19 @@ class MyOutlineButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
+        minimumSize: const Size(64, 48),
         side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
         foregroundColor: Theme.of(context).colorScheme.primary,
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
       child: Text(
         text,
-        style: TextStyle(
-          //color: Colors.blue.shade700,
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

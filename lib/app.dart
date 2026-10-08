@@ -16,7 +16,30 @@ class MyApp extends StatefulWidget {
   MyAppState createState() => MyAppState();
 
   static LocaleType getDatePickerLocaleType(BuildContext context) {
-    return LocaleType.en;
+    switch (context.locale.languageCode) {
+      case 'vi':
+        return LocaleType.vi;
+      case 'zh':
+        return LocaleType.zh;
+      case 'ru':
+        return LocaleType.ru;
+      case 'fr':
+        return LocaleType.fr;
+      case 'es':
+        return LocaleType.es;
+      case 'de':
+        return LocaleType.de;
+      case 'ja':
+        return LocaleType.jp;
+      case 'pt':
+        return LocaleType.pt;
+      case 'ar':
+        return LocaleType.ar;
+      case 'hi':
+        return LocaleType.hi;
+      default:
+        return LocaleType.en;
+    }
   }
 }
 
@@ -79,8 +102,8 @@ class MyAppState extends State<MyApp> {
                     titleTextStyle: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                    )),
+                color: baseLight.colorScheme.onSurface,
+              )),
               scaffoldBackgroundColor: Color.fromARGB(255, 241, 243, 244),
               cardTheme: CardThemeData(
                     color: Colors.white,
@@ -92,7 +115,14 @@ class MyAppState extends State<MyApp> {
                 textTheme: boldTextTheme,
               ),
               darkTheme: ThemeData.dark().copyWith(
-                scaffoldBackgroundColor: const Color.fromARGB(255, 18, 18, 18),
+              appBarTheme: AppBarTheme(
+                titleTextStyle: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: baseDark.colorScheme.onSurface,
+                ),
+              ),
+              scaffoldBackgroundColor: const Color.fromARGB(255, 18, 18, 18),
                   cardTheme: const CardThemeData(
                     color: Colors.black, // Black cards
                   ),

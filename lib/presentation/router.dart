@@ -449,7 +449,7 @@ class AppRouter {
       default:
         return _buildRoute(
           settings,
-          Text("loading_data".tr()),
+          const UnknownRoutePage(),
         );
     }
   }
@@ -458,6 +458,50 @@ class AppRouter {
     return new MaterialPageRoute(
       settings: settings,
       builder: (ctx) => builder,
+    );
+  }
+}
+
+class UnknownRoutePage extends StatelessWidget {
+  const UnknownRoutePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 64,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                context.tr("route_not_found"),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      Pages.main,
+                      (route) => false,
+                    );
+                  },
+                  child: Text(context.tr("action_go_home")),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

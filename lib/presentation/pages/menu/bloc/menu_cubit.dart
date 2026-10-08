@@ -43,6 +43,7 @@ class MenuCubit extends Cubit<MenuState>{
         await ref.putFile(file);
         return true;
       } on FirebaseException {
+        return false;
       } catch (e) {
         return false;
       }
