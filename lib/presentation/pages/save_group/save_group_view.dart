@@ -24,10 +24,10 @@ class SaveGroupPageState extends State<SaveGroupPage> {
   Widget build(BuildContext context) {
     context.read<SaveGroupCubit>().init(widget.item);
     return Scaffold(
-      appBar: _buildAppBar(context),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: SaveObjectAppBar(title: context.tr("save_group")),
       body: Column(
         children: [
-          SelectedStoreView(),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(UIConstants.screenSpace),
@@ -41,21 +41,11 @@ class SaveGroupPageState extends State<SaveGroupPage> {
           Container(
             width: double.infinity,
             padding: EdgeInsets.all(16),
-            color: Theme.of(context).colorScheme.surface,
             child: PrimaryButton(context.tr("action_save"), () {
               context.read<SaveGroupCubit>().onSaveClicked();
             }),
           ),
         ],
-      ),
-    );
-  }
-
-  PreferredSize _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(
-        title: Text(context.tr("save_group")),
       ),
     );
   }

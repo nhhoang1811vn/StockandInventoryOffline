@@ -6,7 +6,6 @@ import 'package:good_manager/presentation/pages/select_group/bloc/select_group_c
 
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
-import '../../widget/widget.dart';
 
 class SelectGroupPage extends StatefulWidget {
   final int? id;
@@ -28,46 +27,48 @@ class SelectGroupPageState extends State<SelectGroupPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     context.read<SelectGroupCubit>().init(widget.id, widget.groupId);
+
     return BlocConsumer<SelectGroupCubit, SelectGroupState>(
       builder: (context, state) => Scaffold(
-        appBar: _buildAppBar(context, state),
-        body: Column(
-          children: [
-            SelectedStoreView(),
-            Expanded(
-              child: SingleChildScrollView(child: buildTree(context, state)),
+        backgroundColor: theme.scaffoldBackgroundColor,
+        appBar: AppBar(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          title: Text(
+            context.tr("select_group_title"),
+            style: TextStyle(
+                color: theme.colorScheme.onSurface,
+                fontWeight: FontWeight.w800),
+          ),
+          iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.check_rounded),
+              onPressed: () {
+                Navigator.of(context).pop({"groupId": state.selectedGroupId});
+              },
             ),
           ],
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: buildTree(context, state),
+          ),
         ),
       ),
       listener: (context, state) => {},
     );
   }
 
-  PreferredSize _buildAppBar(BuildContext context, SelectGroupState state) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(
-        title: Text(context.tr("select_group_title")),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pop({"groupId": state.selectedGroupId});
-            },
-            icon: Icon(Icons.check),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Builds tree or error message out of the entered content.
   Widget buildTree(BuildContext context, SelectGroupState state) {
     try {
       return TreeView(
         nodes: toTreeNodes(context, state, state.treeMap, state.items),
         treeController: _treeController,
+        indent: 24,
       );
     } on FormatException catch (e) {
       return Text(e.message);
@@ -97,53 +98,84 @@ class SelectGroupPageState extends State<SelectGroupPage> {
     SelectGroupState state,
     Group? item,
   ) {
+    final theme = Theme.of(context);
+    final bool isSelected = item?.id == state.selectedGroupId;
+
     return Expanded(
-      child: InkWell(
-        onTap: () => context.read<SelectGroupCubit>().select(item),
-        child: Container(
-          padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-          decoration: item?.id == state.selectedGroupId
-              ? BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: [
-                      Colors.blue,
-                      Colors.white,
-                    ],
-                  ),
-                )
-              : null,
-          child: Row(
-            children: [
-              Icon(
-                UIConstants.groupIconData,
-                size: 24,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              SizedBox(
-                width: 16,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? theme.colorScheme.primary.withOpacity(0.08)
+              : (theme.cardTheme.color ?? theme.colorScheme.surface),
+          borderRadius: BorderRadius.circular(18),
+          border: isSelected
+              ? Border.all(color: theme.colorScheme.primary, width: 1.5)
+              : Border.all(
+                  color: theme.colorScheme.onSurface.withOpacity(0.05)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(
+                  theme.brightness == Brightness.dark ? 0.1 : 0.01),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => context.read<SelectGroupCubit>().select(item),
+            borderRadius: BorderRadius.circular(18),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              child: Row(
                 children: [
-                  Text(
-                    item?.name ?? '',
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                  Icon(
+                    UIConstants.groupIconData,
+                    size: 20,
+                    color: isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurface.withOpacity(0.4),
                   ),
-                  if (item?.description != '') ...[
-                    Text(
-                      item?.description ?? '',
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          item?.name ?? '',
+                          style: TextStyle(
+                            fontWeight:
+                                isSelected ? FontWeight.w800 : FontWeight.w600,
+                            fontSize: 15,
+                            color: theme.colorScheme.onSurface,
                           ),
+                        ),
+                        if ((item?.description ?? '').isNotEmpty)
+                          Text(
+                            item!.description,
+                            style: TextStyle(
+                              color:
+                                  theme.colorScheme.onSurface.withOpacity(0.4),
+                              fontSize: 12,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                      ],
                     ),
-                  ],
+                  ),
+                  if (isSelected)
+                    Icon(
+                      Icons.check_circle_rounded,
+                      color: theme.colorScheme.primary,
+                      size: 20,
+                    ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),

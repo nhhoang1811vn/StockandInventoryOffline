@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -26,8 +27,10 @@ enum AppTheme {
 extension AppThemeExtension on AppTheme{
   String get label {
     switch (this) {
-      case AppTheme.system_default: return "System Default (auto)";
-      case AppTheme.dark: return "Dark";
+      case AppTheme.system_default:
+        return "theme_system_default".tr();
+      case AppTheme.dark:
+        return "theme_dark".tr();
       case AppTheme.blue: return "Blue";
       case AppTheme.green: return "Green";
       case AppTheme.orange: return "Orange";

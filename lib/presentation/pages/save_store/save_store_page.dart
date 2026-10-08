@@ -24,7 +24,8 @@ class SaveStorePageState extends State<SaveStorePage> {
   Widget build(BuildContext context) {
     context.read<SaveStoreCubit>().init(widget.item);
     return Scaffold(
-      appBar: _buildAppBar(context),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: SaveObjectAppBar(title: context.tr("save_store")),
       body: Column(
         children: [
           Expanded(
@@ -38,22 +39,12 @@ class SaveStorePageState extends State<SaveStorePage> {
           Container(
             width: double.infinity,
             padding: EdgeInsets.all(16),
-            color: Theme.of(context).colorScheme.surface,
             child: PrimaryButton(context.tr("action_save"), () {
               context.read<SaveStoreCubit>().onSaveClicked();
             }),
           ),
         ],
       ), //SaveStoreForm(item: widget.item)
-    );
-  }
-
-  PreferredSize _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(
-        title: Text(context.tr("save_store")),
-      ),
     );
   }
 }

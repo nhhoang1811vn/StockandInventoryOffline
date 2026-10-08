@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:good_manager/presentation/pages/payment/components/category_selection.dart';
 
 import '../../domain/entity/entity.dart';
-import '../../util/util.dart';
 
 class CategoriesGridView extends StatelessWidget {
   final String header;
@@ -21,79 +20,87 @@ class CategoriesGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(
-              header,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            decoration: BoxDecoration(
-              color: ColorUtils.getHeaderBgColor(context),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
-              ),
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4.0, bottom: 12.0),
+          child: Text(
+            header,
+            style: TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 18,
+              color: theme.colorScheme.onSurface,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: GridView.builder(
-              itemCount: categories.length + 1,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-              ),
-              itemBuilder: (context, index) {
-                if (index < categories.length) {
-                  //return _buildCategoryWidget(context, categories[index]);
-                  return CategorySelection(
-                    item: categories[index],
-                    isSelected: false,
-                    onPressed: () {
-                      onPressed(categories[index]);
-                    },
-                    onLongPressed: () {
-                      onLongPressed(categories[index]);
-                    },
-                  );
-                } else {
-                  return _buildAddCategoryWidget();
-                }
-              },
-            ),
+        ),
+        GridView.builder(
+          itemCount: categories.length + 1,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            mainAxisExtent: 110,
           ),
-        ],
-      ),
+          itemBuilder: (context, index) {
+            if (index < categories.length) {
+              return CategorySelection(
+                item: categories[index],
+                isSelected: false,
+                onPressed: () {
+                  onPressed(categories[index]);
+                },
+                onLongPressed: () {
+                  onLongPressed(categories[index]);
+                },
+              );
+            }
+            return _buildAddCategoryWidget(theme, isDark);
+          },
+        ),
+      ],
     );
   }
 
-  Widget _buildAddCategoryWidget() {
-    return InkWell(
-      onTap: () {
-        onAddNewButtonPressed();
-      },
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.grey.shade700,
-            width: 1,
+  Widget _buildAddCategoryWidget(ThemeData theme, bool isDark) {
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.1 : 0.015),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
-          borderRadius: BorderRadius.circular(16),
-        ), // No decoration if not selected
-
-        child: Icon(Icons.add, color: Colors.grey.shade700),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onAddNewButtonPressed,
+          borderRadius: BorderRadius.circular(22),
+          child: Center(
+            child: Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withOpacity(0.08),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.add_rounded,
+                color: theme.colorScheme.primary,
+                size: 28,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

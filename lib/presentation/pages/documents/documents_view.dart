@@ -9,7 +9,6 @@ import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
-import '../../../util/util.dart';
 import '../../dialog/dialog.dart';
 import '../../widget/widget.dart';
 import '../base/base_state.dart';
@@ -51,21 +50,15 @@ class DocumentPageState extends State<DocumentsPage>
     super.dispose();
   }
 
-  Widget _buildAllDocumentView(DocumentsState state) => Column(
+  Widget _buildAllDocumentView(DocumentsState state) => Stack(
         children: [
-          Expanded(
-            child: Stack(
-              children: [
-                Visibility(
-                  child: _buildEmptyView(state),
-                  visible: state.documents.isEmpty,
-                ),
-                Visibility(
-                  child: _buildStickyListView(state.documents, state),
-                  visible: state.documents.isNotEmpty,
-                ),
-              ],
-            ),
+          Visibility(
+            child: _buildEmptyView(state),
+            visible: state.documents.isEmpty,
+          ),
+          Visibility(
+            child: _buildStickyListView(state.documents, state),
+            visible: state.documents.isNotEmpty,
           ),
         ],
       );
@@ -74,21 +67,15 @@ class DocumentPageState extends State<DocumentsPage>
     BuildContext context,
     DocumentsState state,
   ) =>
-      Column(
+      Stack(
         children: [
-          Expanded(
-            child: Stack(
-              children: [
-                Visibility(
-                  child: _buildEmptyView(state),
-                  visible: state.incomingDocuments.isEmpty,
-                ),
-                Visibility(
-                  child: _buildStickyListView(state.incomingDocuments, state),
-                  visible: state.incomingDocuments.isNotEmpty,
-                ),
-              ],
-            ),
+          Visibility(
+            child: _buildEmptyView(state),
+            visible: state.incomingDocuments.isEmpty,
+          ),
+          Visibility(
+            child: _buildStickyListView(state.incomingDocuments, state),
+            visible: state.incomingDocuments.isNotEmpty,
           ),
         ],
       );
@@ -97,21 +84,15 @@ class DocumentPageState extends State<DocumentsPage>
     BuildContext context,
     DocumentsState state,
   ) =>
-      Column(
+      Stack(
         children: [
-          Expanded(
-            child: Stack(
-              children: [
-                Visibility(
-                  child: _buildEmptyView(state),
-                  visible: state.outgoingDocuments.isEmpty,
-                ),
-                Visibility(
-                  child: _buildStickyListView(state.outgoingDocuments, state),
-                  visible: state.outgoingDocuments.isNotEmpty,
-                ),
-              ],
-            ),
+          Visibility(
+            child: _buildEmptyView(state),
+            visible: state.outgoingDocuments.isEmpty,
+          ),
+          Visibility(
+            child: _buildStickyListView(state.outgoingDocuments, state),
+            visible: state.outgoingDocuments.isNotEmpty,
           ),
         ],
       );
@@ -119,18 +100,9 @@ class DocumentPageState extends State<DocumentsPage>
   Widget _buildBody(DocumentsState state) {
     return Column(
       children: [
-        SelectedStoreView(),
-        Visibility(
-          visible: state.showSearchBar,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SearchBarWidget(
-              onTextChanged: (newValue) {
-                context.read<DocumentsCubit>().onSearchTextChanged(newValue);
-              },
-              focusNode: searchTextFocusNode,
-            ),
-          ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: _buildSearchRow(state),
         ),
         if (!widget.isSelection)
           Expanded(
@@ -149,23 +121,40 @@ class DocumentPageState extends State<DocumentsPage>
     );
   }
 
+  Widget _buildSearchRow(DocumentsState state) {
+    final bool showWarning = state.setting!.selectedStatus.isNotEmpty ||
+        !state.setting!.sortByDateNewestFirst;
+    return Row(
+      children: [
+        Expanded(
+          child: SearchBarWidget(
+            onTextChanged: (newValue) {
+              context.read<DocumentsCubit>().onSearchTextChanged(newValue);
+            },
+            focusNode: searchTextFocusNode,
+          ),
+        ),
+        const SizedBox(width: 12),
+        SSButton(
+          icon: Icons.tune,
+          onPressed: () => showFilterBottomSheet(state),
+          borderRadius: 14,
+          padding: 10,
+          hasBadge: showWarning,
+        ),
+      ],
+    );
+  }
+
   Widget _buildTabBar() {
     return TabBar(
       controller: _tabController,
-      indicatorColor: Theme.of(context).colorScheme.primary,
+      isScrollable: true,
+      tabAlignment: TabAlignment.start,
       tabs: [
-        Tab(
-          text:
-              context.tr("all").toUpperCase(),
-        ),
-        Tab(
-          text: context.tr("incoming")
-              .toUpperCase(),
-        ),
-        Tab(
-          text: context.tr("outgoing")
-              .toUpperCase(),
-        ),
+        Tab(text: context.tr("all").toUpperCase()),
+        Tab(text: context.tr("incoming").toUpperCase()),
+        Tab(text: context.tr("outgoing").toUpperCase()),
       ],
     );
   }
@@ -183,19 +172,12 @@ class DocumentPageState extends State<DocumentsPage>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocConsumer<DocumentsCubit, DocumentsState>(
       builder: (context, state) => Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: _buildAppBar(state),
-        body: _buildBody(state),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            DocumentType? type = await showAddDocumentBottomSheet(context);
-            if (type != null) {
-              _onAddDocumentWithType(type);
-            }
-          },
-          child: Icon(Icons.add),
-        ),
+        body: SafeArea(child: _buildBody(state)),
       ),
       listenWhen: (state1, state2) => state1.state != state2.state,
       listener: (context, state) async {
@@ -219,7 +201,7 @@ class DocumentPageState extends State<DocumentsPage>
           }
         } else if (state.state is OpenPaymentHistoryPageState) {
           final currentState = state.state as OpenPaymentHistoryPageState;
-          final result = await Navigator.of(context).pushNamed(
+          await Navigator.of(context).pushNamed(
             Pages.payment_history,
             arguments: {"documentId": currentState.documentId},
           );
@@ -227,6 +209,17 @@ class DocumentPageState extends State<DocumentsPage>
         }
       },
     );
+  }
+
+  DocumentType? _typeForActiveTab() {
+    switch (_tabController.index) {
+      case 1:
+        return DocumentType.incoming;
+      case 2:
+        return DocumentType.outgoing;
+      default:
+        return null;
+    }
   }
 
   void _onAddDocumentWithType(DocumentType type) async {
@@ -246,7 +239,7 @@ class DocumentPageState extends State<DocumentsPage>
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (BuildContext context) {
         return Column(
@@ -261,11 +254,15 @@ class DocumentPageState extends State<DocumentsPage>
               ),
             ),
             ListTile(
+              leading: const Icon(Icons.file_download_outlined),
               title: Text(context.tr("incoming")),
+              subtitle: Text(context.tr("incoming_description")),
               onTap: () => Navigator.pop(context, DocumentType.incoming),
             ),
             ListTile(
+              leading: const Icon(Icons.file_upload_outlined),
               title: Text(context.tr("outgoing")),
+              subtitle: Text(context.tr("outgoing_description")),
               onTap: () => Navigator.pop(context, DocumentType.outgoing),
             ),
           ],
@@ -275,37 +272,70 @@ class DocumentPageState extends State<DocumentsPage>
   }
 
   AppBar _buildAppBar(DocumentsState state) {
+    final theme = Theme.of(context);
     return AppBar(
-      title: widget.isSelection
-          ? Text(context.tr("select_document"))
-          : Text(context.tr("documents")),
+      backgroundColor: theme.scaffoldBackgroundColor,
+      elevation: 0,
+      title: Text(
+        widget.isSelection
+            ? context.tr("title_select_document")
+            : context.tr("documents"),
+        style: TextStyle(
+            color: theme.colorScheme.onSurface, fontWeight: FontWeight.w800),
+      ),
+      iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
       actions: [
-        _buildSearchMenu(state),
-        _buildFilterMenu(state),
-        _buildHelpMenu(),
+        SSButton(
+          icon: Icons.add,
+          onPressed: () async {
+            final type = _typeForActiveTab();
+            if (type != null) {
+              _onAddDocumentWithType(type);
+              return;
+            }
+            final selected = await showAddDocumentBottomSheet(context);
+            if (selected != null) {
+              _onAddDocumentWithType(selected);
+            }
+          },
+          borderRadius: 14,
+          padding: 10,
+        ),
+        const SizedBox(width: 12),
+        SSButton(
+          icon: Icons.help_outline_rounded,
+          onPressed: () => context.read<DocumentsCubit>().onMenuHelpClicked(),
+          borderRadius: 14,
+          padding: 10,
+        ),
+        const SizedBox(width: 16),
       ],
     );
   }
 
-  Widget _buildEmptyView(DocumentsState state) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            UIConstants.documentIconData,
-            size: 64,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          SizedBox(height: 16),
-          Text(
-            context.tr("no_documents"),
-            textAlign: TextAlign.center,
-          ),
-        ],
+  Widget _buildEmptyView(DocumentsState state) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              UIConstants.documentIconData,
+              size: 64,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+            ),
+            SizedBox(height: 16),
+            Text(
+              context.tr("no_documents"),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
+            ),
+          ],
+        ),
       );
 
   Widget _buildStickyListView(List<Document> documents, DocumentsState state) {
-    final groupedElements = List.of(documents);
     return StickyGroupedListView<Document, DateTime>(
       elements: List.of(documents),
       groupBy: (Document payment) => DateTime(
@@ -313,71 +343,30 @@ class DocumentPageState extends State<DocumentsPage>
         payment.date.month,
         payment.date.day,
       ),
+      stickyHeaderBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
       groupSeparatorBuilder: (Document document) => DateItemRow(document.date),
       itemBuilder: (context, Document document) {
-        final index = groupedElements.indexOf(document);
-        return DocumentItemRow(
-          item: document,
-          bgColor: index.isEven
-              ? ColorUtils.getItemBgColor1(context)
-              : ColorUtils.getItemBgColor2(context),
-          incomingColor: state.incomingColor,
-          outgoingColor: state.outgoingColor,
-          onDocumentTapped: (item) {
-            onPressedDocument(item);
-          },
-          onDocumentLongPressed: (item) {
-            onLongPressedDocument(item);
-          },
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: DocumentItemRow(
+            item: document,
+            bgColor: Colors.transparent,
+            incomingColor: state.incomingColor ?? Colors.red,
+            outgoingColor: state.outgoingColor ?? Colors.green,
+            showTimeOnly: true,
+            onDocumentTapped: (item) {
+              onPressedDocument(item);
+            },
+            onDocumentLongPressed: (item) {
+              onLongPressedDocument(item);
+            },
+          ),
         );
       },
-      itemComparator: (a, b) => b.date.compareTo(a.date),
+      itemComparator: (a, b) => a.date.compareTo(b.date),
       order: state.setting!.sortByDateNewestFirst
           ? StickyGroupedListOrder.DESC
           : StickyGroupedListOrder.ASC,
-    );
-  }
-
-  Widget _buildSearchMenu(DocumentsState state) {
-    return IconButton(
-      onPressed: () {
-        if (!state.showSearchBar) {
-          searchTextFocusNode.requestFocus();
-        }
-        //searchTextController.text = "";
-        context.read<DocumentsCubit>().onSearchMenuClicked();
-      },
-      icon: Icon(
-        Icons.search,
-        color: state.showSearchBar
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).iconTheme.color,
-      ),
-    );
-  }
-
-  Widget _buildFilterMenu(DocumentsState state) {
-    bool showWarning = (state.setting!.selectedStatus.isNotEmpty ||
-        !state.setting!.sortByDateNewestFirst);
-    return Stack(
-      children: [
-        IconButton(
-          onPressed: () {
-            showFilterBottomSheet(state);
-          },
-          icon: Icon(Icons.filter_alt),
-        ),
-        if (showWarning)
-          Positioned(
-            right: 4,
-            top: 4,
-            child: Icon(
-              Icons.error,
-              color: Colors.red,
-              size: 16,
-            ),
-          ),
-      ],
     );
   }
 
@@ -386,7 +375,7 @@ class DocumentPageState extends State<DocumentsPage>
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (BuildContext mContext) {
         return DraggableScrollableSheet(
@@ -394,7 +383,7 @@ class DocumentPageState extends State<DocumentsPage>
           builder: (mContext, scrollController) {
             return SingleChildScrollView(
               controller: scrollController,
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: FilterDocumentWidget(
                 onResetAllPressed: () {
                   context.read<DocumentsCubit>().resetAllFilter();
@@ -410,15 +399,6 @@ class DocumentPageState extends State<DocumentsPage>
           },
         );
       },
-    );
-  }
-
-  Widget _buildHelpMenu() {
-    return IconButton(
-      onPressed: () {
-        context.read<DocumentsCubit>().onMenuHelpClicked();
-      },
-      icon: Icon(Icons.help),
     );
   }
 
@@ -446,24 +426,19 @@ class DocumentPageState extends State<DocumentsPage>
     }
 
     var items = [
-      if (showViewPaymentOption)
-        context.tr("action_view_payments"),
-      if (showCreatePaymentOption)
-        context.tr("action_create_payment"),
+      if (showViewPaymentOption) context.tr("action_view_payments"),
+      if (showCreatePaymentOption) context.tr("action_create_payment"),
       context.tr("delete"),
     ];
     showSelectOptionDialog(
       context,
       items: items,
       onItemSelected: (index) async {
-        if (items[index] ==
-            context.tr("action_view_payments")) {
+        if (items[index] == context.tr("action_view_payments")) {
           context.read<DocumentsCubit>().onViewLinkedPayments(item);
-        } else if (items[index] ==
-            context.tr("action_create_payment")) {
+        } else if (items[index] == context.tr("action_create_payment")) {
           await context.read<DocumentsCubit>().onCreateAPayment(item);
-        } else if (items[index] ==
-            context.tr("delete")) {
+        } else if (items[index] == context.tr("delete")) {
           showDeleteDocumentConfirm(item);
         }
       },

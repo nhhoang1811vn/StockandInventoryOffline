@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -164,7 +165,7 @@ class DbServiceRealtime {
           'error': e.toString(),
         },
       ));
-      return "The sync operation timed out. Please check your internet connection.";
+      return "sync_timeout".tr();
     } catch (e) {
       unawaited(FirebaseAnalytics.instance.logEvent(
         name: 'sync_migration_failed',

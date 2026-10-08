@@ -44,6 +44,10 @@ class StoresUseCase extends ItemsUseCase<Store> {
     return repository.getAll();
   }
 
+  Future<Store> get(int id) {
+    return repository.get(id);
+  }
+
   Future<int> getCount() {
     return repository.getCount();
   }

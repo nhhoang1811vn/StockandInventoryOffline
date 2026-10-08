@@ -6,6 +6,7 @@ class Group extends BaseModel {
   String? barCode;
   late int storeId;
   int? groupId;
+  String? file;
   List<String> files = [];
 
   Group();
@@ -15,7 +16,10 @@ class Group extends BaseModel {
     this.barCode = obj["barCode"];
     this.storeId = obj["storeId"];
     this.groupId = obj["groupId"];
-    this.files = (jsonDecode(obj["files"]) as List<dynamic>).cast<String>();
+    this.file = obj["file"];
+    if (obj["files"] != null && obj["files"].toString().isNotEmpty) {
+      this.files = (jsonDecode(obj["files"]) as List<dynamic>).cast<String>();
+    }
   }
 
   @override
@@ -24,6 +28,7 @@ class Group extends BaseModel {
     map["barCode"] = barCode;
     map["storeId"] = storeId;
     map["groupId"] = groupId;
+    map["file"] = file;
     map["files"] = jsonEncode(files);
     return map;
   }
@@ -34,6 +39,7 @@ class Group extends BaseModel {
     map["barCode"] = barCode;
     map["storeId"] = storeId;
     map["groupId"] = groupId;
+    map["file"] = file;
     map["files"] = jsonEncode(files);
     return map;
   }

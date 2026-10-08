@@ -6,7 +6,6 @@ import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
-import '../../../util/util.dart';
 import '../../dialog/dialog.dart';
 import '../../markdown/md_provider_factory.dart';
 import '../../widget/widget.dart';
@@ -29,6 +28,7 @@ class PaymentsPage extends StatefulWidget {
 class PaymentsPageState extends State<PaymentsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final FocusNode searchTextFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -43,193 +43,207 @@ class PaymentsPageState extends State<PaymentsPage>
 
   @override
   void dispose() {
+    searchTextFocusNode.dispose();
     _tabController.dispose();
     super.dispose();
   }
 
-  Widget _buildHelpMenu() {
-    return IconButton(
-      onPressed: () {
-        Navigator.of(context).pushNamed(
-          Pages.help,
-          arguments: {
-            "title": context.tr("payments_title"),
-            "content": MDProviderFactory.get().getHelpText(HelpType.PAYMENTS),
+  AppBar _buildAppBar(PaymentsState state) {
+    final theme = Theme.of(context);
+    return AppBar(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      elevation: 0,
+      title: Text(
+        context.tr("payments_title"),
+        style: TextStyle(
+            color: theme.colorScheme.onSurface, fontWeight: FontWeight.w800),
+      ),
+      iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
+      actions: [
+        SSButton(
+          icon: Icons.add,
+          onPressed: () async {
+            PaymentType? type = await showAddPaymentBottomSheet(context);
+            if (type != null) {
+              if (type == PaymentType.inbound) {
+                context.read<PaymentsCubit>().onAddInboundPayment();
+              } else {
+                context.read<PaymentsCubit>().onAddOutboundPayment();
+              }
+            }
           },
-        );
-      },
-      icon: Icon(Icons.help),
-    );
-  }
-
-  Widget _buildFilterMenu(PaymentsState state) {
-    bool showWarning = (state.setting!.selectedCategoryIds.isNotEmpty ||
-        state.setting!.selectedWalletIds.isNotEmpty ||
-        state.setting!.selectedCustomerIds.isNotEmpty ||
-        state.setting!.selectedSupplierIds.isNotEmpty);
-    return Stack(
-      children: [
-        IconButton(
-          onPressed: () {
-            showFilterBottomSheet(state);
-          },
-          icon: Icon(Icons.filter_alt),
+          borderRadius: 14,
+          padding: 10,
         ),
-        if (showWarning)
-          Positioned(
-            right: 4,
-            top: 4,
-            child: Icon(
-              Icons.error,
-              color: Colors.red,
-              size: 16,
-            ),
-          ),
+        const SizedBox(width: 12),
+        SSButton(
+          icon: Icons.category_outlined,
+          onPressed: () {
+            Navigator.of(context).pushNamed(Pages.payment_categories);
+          },
+          borderRadius: 14,
+          padding: 10,
+        ),
+        const SizedBox(width: 12),
+        SSButton(
+          icon: Icons.help_outline_rounded,
+          onPressed: () {
+            Navigator.of(context).pushNamed(
+              Pages.help,
+              arguments: {
+                "title": context.tr("payments_title"),
+                "content":
+                    MDProviderFactory.get().getHelpText(HelpType.PAYMENTS),
+              },
+            );
+          },
+          borderRadius: 14,
+          padding: 10,
+        ),
+        const SizedBox(width: 16),
       ],
     );
   }
 
-  void showFilterBottomSheet(PaymentsState state) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (BuildContext mContext) {
-        return DraggableScrollableSheet(
-          expand: false,
-          builder: (mContext, scrollController) {
-            return SingleChildScrollView(
-              controller: scrollController,
-              padding: EdgeInsets.all(16),
-              child: FilterPaymentWidget(
-                onResetAllPressed: () {
-                  context.read<PaymentsCubit>().resetAllFilter();
-                  Navigator.of(context).pop();
-                },
-                categories: state.categories,
-                wallets: state.wallets,
-                customers: state.customers,
-                suppliers: state.suppliers,
-                onApplyPressed: (setting) {
-                  context.read<PaymentsCubit>().applyFilter(setting);
-                  Navigator.of(context).pop();
-                },
-                setting: state.setting!,
+  Widget _buildBody(PaymentsState state) {
+    if (state.setting == null) {
+      return const SizedBox.shrink();
+    }
+
+    bool showWarning = (state.setting!.selectedCategoryIds.isNotEmpty ||
+        state.setting!.selectedWalletIds.isNotEmpty ||
+        state.setting!.selectedCustomerIds.isNotEmpty ||
+        state.setting!.selectedSupplierIds.isNotEmpty);
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: SearchBarWidget(
+                  onTextChanged: (newValue) {},
+                  focusNode: searchTextFocusNode,
+                ),
               ),
-            );
-          },
-        );
-      },
+              const SizedBox(width: 12),
+              SSButton(
+                icon: Icons.tune,
+                onPressed: () => showFilterBottomSheet(state),
+                borderRadius: 14,
+                padding: 10,
+                hasBadge: showWarning,
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Column(
+            children: [
+              _buildTabBar(),
+              Expanded(child: _buildTabBarView(state)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildCategoriesMenu() {
-    return IconButton(
-      onPressed: () {
-        Navigator.of(context).pushNamed(Pages.payment_categories);
-      },
-      icon: Icon(Icons.category),
+  Widget _buildTabBar() {
+    return TabBar(
+      controller: _tabController,
+      isScrollable: true,
+      tabAlignment: TabAlignment.start,
+      tabs: [
+        Tab(text: context.tr("all").toUpperCase()),
+        Tab(text: context.tr("title_inbound_payment").toUpperCase()),
+        Tab(text: context.tr("title_outbound_payment").toUpperCase()),
+      ],
     );
   }
 
-  AppBar _buildAppBar(PaymentsState state) {
-    return new AppBar(
-      title: new Text(context.tr("payments_title")),
-      actions: [
-        _buildFilterMenu(state),
-        _buildCategoriesMenu(),
-        _buildHelpMenu(),
+  Widget _buildTabBarView(PaymentsState state) {
+    return TabBarView(
+      controller: _tabController,
+      children: [
+        _buildAllItems(state),
+        _buildInboundPayment(state),
+        _buildOutboundPayment(state),
       ],
     );
   }
 
   Widget _buildAllItems(PaymentsState state) {
-    return Column(
+    return Stack(
       children: [
-        Expanded(
-          child: Stack(
-            children: [
-              Visibility(
-                child: emptyView,
-                visible: state.payments.isEmpty,
-              ),
-              Visibility(
-                child: _buildStickyListView(state.payments, state),
-                visible: state.payments.isNotEmpty,
-              ),
-            ],
-          ),
+        Visibility(
+          child: _buildEmptyView(),
+          visible: state.payments.isEmpty,
+        ),
+        Visibility(
+          child: _buildStickyListView(state.payments, state),
+          visible: state.payments.isNotEmpty,
         ),
       ],
     );
   }
 
   Widget _buildInboundPayment(PaymentsState state) {
-    return Column(
+    return Stack(
       children: [
-        Expanded(
-          child: Stack(
-            children: [
-              Visibility(
-                child: emptyView,
-                visible: state.inboundPayments.isEmpty,
-              ),
-              Visibility(
-                child: _buildStickyListView(state.inboundPayments, state),
-                visible: state.inboundPayments.isNotEmpty,
-              ),
-            ],
-          ),
+        Visibility(
+          child: _buildEmptyView(),
+          visible: state.inboundPayments.isEmpty,
+        ),
+        Visibility(
+          child: _buildStickyListView(state.inboundPayments, state),
+          visible: state.inboundPayments.isNotEmpty,
         ),
       ],
     );
   }
 
   Widget _buildOutboundPayment(PaymentsState state) {
-    return Column(
+    return Stack(
       children: [
-        Expanded(
-          child: Stack(
-            children: [
-              Visibility(
-                child: emptyView,
-                visible: state.outboundPayments.isEmpty,
-              ),
-              Visibility(
-                child: _buildStickyListView(state.outboundPayments, state),
-                visible: state.outboundPayments.isNotEmpty,
-              ),
-            ],
-          ),
+        Visibility(
+          child: _buildEmptyView(),
+          visible: state.outboundPayments.isEmpty,
+        ),
+        Visibility(
+          child: _buildStickyListView(state.outboundPayments, state),
+          visible: state.outboundPayments.isNotEmpty,
         ),
       ],
     );
   }
 
-  Widget get emptyView => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Icon(
-            UIConstants.paymentIconData,
-            size: 60,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: Text(
+  Widget _buildEmptyView() => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              UIConstants.paymentIconData,
+              size: 64,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+            ),
+            const SizedBox(height: 16),
+            Text(
               context.tr("empty_payment"),
               textAlign: TextAlign.center,
+              style: TextStyle(
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
             ),
-          ),
-        ],
+          ],
+        ),
       );
 
   Widget _buildStickyListView(List<Payment> payments, PaymentsState state) {
-    var flag = true;
     return StickyGroupedListView<Payment, DateTime>(
+      stickyHeaderBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
       elements: List.of(payments),
       groupBy: (Payment payment) => DateTime(
         payment.date.year,
@@ -238,18 +252,18 @@ class PaymentsPageState extends State<PaymentsPage>
       ),
       groupSeparatorBuilder: (Payment payment) => DateItemRow(payment.date),
       itemBuilder: (context, Payment payment) {
-        flag = !flag;
-        return PaymentItemRow(
-          payment,
-          // Alternate background colors
-          flag
-              ? ColorUtils.getItemBgColor1(context)
-              : ColorUtils.getItemBgColor2(context),
-          (item) => onPressed(item),
-          (item) => onLongPressed(item),
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: PaymentItemRow(
+            payment,
+            Colors.transparent,
+            (item) => onPressed(item),
+            (item) => onLongPressed(item),
+            showDate: false,
+          ),
         );
       },
-      itemComparator: (a, b) => b.date.compareTo(a.date),
+      itemComparator: (a, b) => a.date.compareTo(b.date),
       order: state.setting!.sortByDateNewestFirst
           ? StickyGroupedListOrder.DESC
           : StickyGroupedListOrder.ASC,
@@ -288,55 +302,12 @@ class PaymentsPageState extends State<PaymentsPage>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocConsumer<PaymentsCubit, PaymentsState>(
       builder: (context, state) => Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: _buildAppBar(state),
-        body: Column(
-          children: [
-            SelectedStoreView(),
-            TabBar(
-              controller: _tabController,
-              indicatorColor: Theme.of(context).colorScheme.primary,
-              tabs: [
-                Tab(
-                  text: context.tr("all")
-                      .toUpperCase(),
-                ),
-                Tab(
-                  text: context.tr("title_inbound_payment")
-                      .toUpperCase(),
-                ),
-                Tab(
-                  text: context.tr("title_outbound_payment")
-                      .toUpperCase(),
-                ),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _buildAllItems(state),
-                  _buildInboundPayment(state),
-                  _buildOutboundPayment(state),
-                ],
-              ),
-            ),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            PaymentType? type = await showAddPaymentBottomSheet(context);
-            if (type != null) {
-              if (type == PaymentType.inbound) {
-                context.read<PaymentsCubit>().onAddInboundPayment();
-              } else {
-                context.read<PaymentsCubit>().onAddOutboundPayment();
-              }
-            }
-          },
-          child: Icon(Icons.add),
-        ),
+        body: SafeArea(child: _buildBody(state)),
       ),
       listenWhen: (p1, p2) => p1.state != p2.state,
       listener: (context, state) async {
@@ -350,6 +321,42 @@ class PaymentsPageState extends State<PaymentsPage>
             context.read<PaymentsCubit>().loadItems();
           }
         }
+      },
+    );
+  }
+
+  void showFilterBottomSheet(PaymentsState state) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
+      builder: (mContext) {
+        return DraggableScrollableSheet(
+          expand: false,
+          builder: (mContext, scrollController) {
+            return SingleChildScrollView(
+              controller: scrollController,
+              padding: const EdgeInsets.all(16),
+              child: FilterPaymentWidget(
+                onResetAllPressed: () {
+                  context.read<PaymentsCubit>().resetAllFilter();
+                  Navigator.of(context).pop();
+                },
+                categories: state.categories,
+                wallets: state.wallets,
+                customers: state.customers,
+                suppliers: state.suppliers,
+                onApplyPressed: (setting) {
+                  context.read<PaymentsCubit>().applyFilter(setting);
+                  Navigator.of(context).pop();
+                },
+                setting: state.setting!,
+              ),
+            );
+          },
+        );
       },
     );
   }

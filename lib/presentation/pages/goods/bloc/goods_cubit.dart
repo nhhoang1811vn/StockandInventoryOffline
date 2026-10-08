@@ -628,6 +628,32 @@ class GoodsCubit extends Cubit<GoodsState> {
     applyFilter(GoodsSetting.getDefault());
   }
 
+  void resetListSettings() {
+    applyFilter(
+      state.settings.copyWith(
+        hideZeroEntries: false,
+        showBarcode: true,
+        showDescription: true,
+        showPurchasePrice: true,
+        purchaseDisplayMode: PriceDisplayMode.price,
+        showSalePrice: true,
+        saleDisplayMode: PriceDisplayMode.price,
+        showMinQuantity: true,
+        gridColumnCount: 1,
+      ),
+    );
+  }
+
+  void resetSortOptions() {
+    applyFilter(
+      state.settings.copyWith(
+        sortByName: SortByText.no_sort,
+        sortByBarcode: SortByNumber.no_sort,
+        sortByQuantity: SortByNumber.no_sort,
+      ),
+    );
+  }
+
   void applyFilter(GoodsSetting setting) {
     emit(state.copyWith(settings: setting));
     AppSettings.setGoodsSetting(setting);

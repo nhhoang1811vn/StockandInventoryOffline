@@ -21,6 +21,7 @@ class AppTextField extends StatelessWidget {
 
   final int minLines;
   final int? maxLines;
+  final TextInputAction textInputAction;
 
   AppTextField({
     Key? key,
@@ -39,6 +40,7 @@ class AppTextField extends StatelessWidget {
     this.suffix,
     this.minLines = 1,
     this.maxLines = 1,
+    this.textInputAction = TextInputAction.next,
   }) : super(key: key);
 
   OutlineInputBorder border(Color color) {
@@ -76,7 +78,7 @@ class AppTextField extends StatelessWidget {
         hintText: hintText,
       ),
       autocorrect: false,
-      textInputAction: TextInputAction.done,
+      textInputAction: textInputAction,
 
       onChanged: onChanged,
       readOnly: readOnly!,

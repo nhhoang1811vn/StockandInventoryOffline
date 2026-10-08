@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -26,6 +29,7 @@ class SaveStoreCubit extends Cubit<SaveStoreState> {
         item: item,
         name: NameInput.dirty(value: item.name),
         description: item.description,
+        file: item.file,
       );
     }
     emit(initState);
@@ -44,6 +48,10 @@ class SaveStoreCubit extends Cubit<SaveStoreState> {
     emit(state.copyWith(description: value));
   }
 
+  void onFileChanged(Uint8List bytes) {
+    emit(state.copyWith(file: base64Encode(bytes)));
+  }
+
   void onSaveClicked() async {
     final validate = Formz.validate([state.name]);
     if (validate) {
@@ -51,6 +59,7 @@ class SaveStoreCubit extends Cubit<SaveStoreState> {
         Store item = state.item!;
         item.name = state.name.value;
         item.description = state.description;
+        item.file = state.file;
         if (item.id == null) {
           await useCase.insert(item);
         } else {

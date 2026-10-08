@@ -105,7 +105,13 @@ class DBHelper {
       "INSERT INTO $GOODS_TABLE_NAME (id, name, description, barCode, purchasePrice, salePrice, storeId, groupId, files, minQuantity, createdDate, updatedDate) SELECT id, name, description, barCode, purchasePrice, salePrice, storeId, groupId, files, minQuantity, createdDate, updatedDate FROM ${GOODS_TABLE_NAME}_old",
       //Drop old table
       "DROP TABLE ${GOODS_TABLE_NAME}_old",
-    ]
+    ],
+    8: [
+      "ALTER TABLE $GROUPS_TABLE_NAME ADD COLUMN file TEXT",
+      "ALTER TABLE $SUPPLIERS_TABLE_NAME ADD COLUMN file TEXT",
+      "ALTER TABLE $CUSTOMERS_TABLE_NAME ADD COLUMN file TEXT",
+      "ALTER TABLE $STORES_TABLE_NAME ADD COLUMN file TEXT",
+    ],
   };
 
   Future<void> reopen() async {
@@ -126,9 +132,10 @@ class DBHelper {
     String path = await PathUtils().getDatabasePath();
     var theDb = await openDatabase(
       path,
-      version: 7,
+      version: 8,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
+      onDowngrade: (db, oldVersion, newVersion) async {},
     );
     return theDb;
   }
@@ -147,18 +154,18 @@ class DBHelper {
        "CREATE TABLE IF NOT EXISTS $STORES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER)",
      );*/
      await db.execute(
-       "CREATE TABLE IF NOT EXISTS $STORES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER, networkId TEXT)",
-     );
+      "CREATE TABLE IF NOT EXISTS $STORES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, createdDate INTEGER, updatedDate INTEGER, networkId TEXT, file TEXT)",
+    );
     await db.execute(
       "CREATE TABLE IF NOT EXISTS $EXPENSES_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, date INTEGER, amount REAL,storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
     );
     await db.execute(
-      "CREATE TABLE IF NOT EXISTS $SUPPLIERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT, storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
+      "CREATE TABLE IF NOT EXISTS $SUPPLIERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT, file TEXT, storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
     );
     await db.execute(
-      "CREATE TABLE IF NOT EXISTS $CUSTOMERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT, storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
+      "CREATE TABLE IF NOT EXISTS $CUSTOMERS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, address TEXT, email TEXT, phone TEXT, taxID TEXT, bankDetail TEXT, file TEXT, storeId INTEGER, createdDate INTEGER, updatedDate INTEGER, " +
           "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)",
     );
 
@@ -175,8 +182,9 @@ class DBHelper {
           "FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)",
     );*/
     await db.execute(
-      "CREATE TABLE IF NOT EXISTS $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, createdDate INTEGER, updatedDate INTEGER, " +
-          "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE)"
+      "CREATE TABLE IF NOT EXISTS $GROUPS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, file TEXT, createdDate INTEGER, updatedDate INTEGER, " +
+          "FOREIGN KEY(storeId) REFERENCES $STORES_TABLE_NAME(id) ON DELETE CASCADE," +
+          "FOREIGN KEY(groupId) REFERENCES $GROUPS_TABLE_NAME(id) ON DELETE CASCADE)",
     );
     await db.execute(
       "CREATE TABLE IF NOT EXISTS $GOODS_TABLE_NAME(id INTEGER PRIMARY KEY, name TEXT, description TEXT, barCode TEXT, purchasePrice REAL, salePrice REAL,  storeId INTEGER NOT NULL, groupId INTEGER, files TEXT, minQuantity REAL, createdDate INTEGER, updatedDate INTEGER, " +
@@ -702,7 +710,9 @@ class DBHelper {
           "A.customerId, " +
           "A.storeId, " +
           "B.name AS supplierName, " +
+          "B.file AS supplierFile, " +
           "C.name AS customerName, " +
+          "C.file AS customerFile, " +
           "SUM(D.quantity) AS quantity, " +
           "SUM(D.quantity * D.price) AS amount " +
           "FROM $DOCUMENTS_TABLE_NAME A " +
@@ -743,7 +753,9 @@ class DBHelper {
         "A.customerId, " +
         "A.storeId, " +
         "B.name AS supplierName, " +
+        "B.file AS supplierFile, " +
         "C.name AS customerName, " +
+        "C.file AS customerFile, " +
         "SUM(D.quantity) AS quantity, " +
         "SUM(D.quantity * D.price) AS amount " +
         "FROM $DOCUMENTS_TABLE_NAME A " +
@@ -785,7 +797,9 @@ class DBHelper {
         "A.customerId, " +
         "A.storeId, " +
         "B.name AS supplierName, " +
+        "B.file AS supplierFile, " +
         "C.name AS customerName, " +
+        "C.file AS customerFile, " +
         "SUM(D.quantity) AS quantity, " +
         "SUM(D.quantity * D.price) AS amount " +
         "FROM $DOCUMENTS_TABLE_NAME A " +
@@ -827,7 +841,9 @@ class DBHelper {
         "A.customerId, " +
         "A.storeId, " +
         "B.name AS supplierName, " +
+        "B.file AS supplierFile, " +
         "C.name AS customerName, " +
+        "C.file AS customerFile, " +
         "SUM(D.quantity) AS quantity, " +
         "SUM(D.quantity * D.price) AS amount " +
         "FROM $DOCUMENTS_TABLE_NAME A " +

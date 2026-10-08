@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -27,6 +30,7 @@ class SaveGroupCubit extends Cubit<SaveGroupState> {
         name: NameInput.dirty(value: item.name),
         description: item.description,
         barCode: item.barCode ?? '',
+        file: item.file,
         files: item.files,
       );
     }
@@ -45,6 +49,7 @@ class SaveGroupCubit extends Cubit<SaveGroupState> {
         //}
 
         item.barCode = state.barCode;
+        item.file = state.file;
         item.files = state.files;
         if (item.id == null) {
           await useCase.insert(item);
@@ -73,6 +78,10 @@ class SaveGroupCubit extends Cubit<SaveGroupState> {
 
   void barCodeChanged(String value) {
     emit(state.copyWith(barCode: value));
+  }
+
+  void onFileChanged(Uint8List bytes) {
+    emit(state.copyWith(file: base64Encode(bytes)));
   }
 
   void onImagesChanged(List<String> value) {

@@ -1,17 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
-import 'package:good_manager/presentation/pages/goods/component/filter_good_widget.dart';
-import 'package:good_manager/presentation/style_size.dart';
+import 'package:good_manager/presentation/pages/goods/component/list_settings_good_widget.dart';
+import 'package:good_manager/presentation/pages/goods/component/sort_good_widget.dart';
+import 'package:good_manager/util/currency_formatter.dart';
 import 'package:good_manager/util/string_utils.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
-import '../../../util/currency_formatter.dart';
 import '../../blocs/add_quantity_and_price/add_quantity_and_price_dialog.dart';
 import '../../dialog/dialog.dart';
 import '../../widget/widget.dart';
@@ -20,6 +19,8 @@ import '../help_content.dart';
 import '../pages.dart';
 import 'good_item_row.dart';
 import 'group_item_row.dart';
+
+enum GoodsOverflowMenu { listSettings, help }
 
 class GoodsPage extends StatefulWidget {
   final bool isSelection;
@@ -31,11 +32,8 @@ class GoodsPage extends StatefulWidget {
   GoodsPageState createState() => GoodsPageState();
 }
 
-enum OverflowMenuItem { listSettings, help }
-
 class GoodsPageState extends State<GoodsPage> {
   final FocusNode searchTextFocusNode = FocusNode();
-  final _key = GlobalKey<ExpandableFabState>();
 
   @override
   void initState() {
@@ -43,18 +41,170 @@ class GoodsPageState extends State<GoodsPage> {
     context.read<GoodsCubit>().initState(widget.isSelection, widget.document);
   }
 
-  Widget _buildBody(BuildContext context, GoodsState state) {
-    if (state.state is LoadingState) {
-      return _buildLoading();
-    }
-    List<Widget> children = [
-      SelectedStoreView(),
-      SizedBox(height: 1),
-      _buildSelectedGroupView(state),
-      Visibility(
-        visible: state.showSearchBar,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16, top: 16),
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return BlocConsumer<GoodsCubit, GoodsState>(
+      listenWhen: (p1, p2) => p1.state != p2.state,
+      listener: (context, state) async {
+        if (state.state is OpenHelpPageState) {
+          Navigator.of(context).pushNamed(
+            Pages.help,
+            arguments: {
+              "title": context.tr("goods"),
+              "content": MDProviderFactory.get().getHelpText(HelpType.GOODS),
+            },
+          );
+        } else if (state.state is OpenSaveGoodPageState) {
+          final currentState = state.state as OpenSaveGoodPageState;
+          await Navigator.of(context).pushNamed(
+            Pages.save_good,
+            arguments: {"item": currentState.item},
+          );
+          context.read<GoodsCubit>().loadData();
+        } else if (state.state is AddGroupState) {
+          final currentState = state.state as AddGroupState;
+          final result = await Navigator.of(context).pushNamed(
+            Pages.save_group,
+            arguments: {"item": currentState.item},
+          );
+          if (result != null) {
+            context.read<GoodsCubit>().loadData();
+          }
+        } else if (state.state is InsertTransactionSuccessState) {
+          final currentState = state.state as InsertTransactionSuccessState;
+          ScaffoldMessenger.of(context).showSnackBar(
+            snackBarWhenSuccessWithText(
+              context.tr("insert_transaction_success"),
+            ),
+          );
+          context
+              .read<GoodsCubit>()
+              .updateQuantity(currentState.goodId, currentState.quantity);
+        } else if (state.state is InsertTransactionFailedState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            snackBarWhenFailureWithText(
+              context.tr("insert_transaction_fail"),
+            ),
+          );
+        } else if (state.state is OpenListSettingsDialogState) {
+          showListSettingsBottomSheet(state);
+        }
+      },
+      builder: (context, state) => Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        appBar: AppBar(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          title: Text(
+            widget.isSelection
+                ? context.tr("select_good")
+                : context.tr("inventory"),
+            style: TextStyle(
+                color: theme.colorScheme.onSurface,
+                fontWeight: FontWeight.w800),
+          ),
+          iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
+          actions: [
+            SSButton(
+              icon: Icons.add,
+              onPressed: () => _showAddMenu(context),
+              borderRadius: 14,
+              padding: 10,
+            ),
+            const SizedBox(width: 12),
+            PopupMenuButton<GoodsOverflowMenu>(
+              offset: const Offset(0, 8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              onSelected: (item) => _onOverflowMenuSelected(item, state),
+              itemBuilder: (BuildContext context) =>
+                  <PopupMenuEntry<GoodsOverflowMenu>>[
+                PopupMenuItem<GoodsOverflowMenu>(
+                  value: GoodsOverflowMenu.listSettings,
+                  child: Text(context.tr("list_settings")),
+                ),
+                PopupMenuItem<GoodsOverflowMenu>(
+                  value: GoodsOverflowMenu.help,
+                  child: Text(context.tr("action_help")),
+                ),
+              ],
+            ),
+            const SizedBox(width: 16),
+          ],
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildSelectedGroupView(state),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: _buildSearchRow(state),
+              ),
+              Expanded(
+                child: state.goods.isEmpty && state.groups.isEmpty
+                    ? _buildEmptyView()
+                    : ListView(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
+                        children: [
+                          _buildList(state),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
+              ),
+              if (!state.isSelection)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 0),
+                  child: _buildSummaryInfo(state),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showAddMenu(BuildContext context) {
+    final theme = Theme.of(context);
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+      builder: (ctx) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 12),
+          ListTile(
+            leading: Icon(UIConstants.goodIconData,
+                color: theme.colorScheme.primary),
+            title: Text(context.tr("action_add_good")),
+            onTap: () {
+              Navigator.pop(ctx);
+              context.read<GoodsCubit>().onAddGood();
+            },
+          ),
+          ListTile(
+            leading: Icon(UIConstants.groupIconData,
+                color: theme.colorScheme.primary),
+            title: Text(context.tr("action_add_group")),
+            onTap: () {
+              Navigator.pop(ctx);
+              context.read<GoodsCubit>().onAddGroup();
+            },
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchRow(GoodsState state) {
+    return Row(
+      children: [
+        Expanded(
           child: SearchBarWidget(
             onTextChanged: (newValue) {
               context.read<GoodsCubit>().onSearchTextChanged(newValue);
@@ -63,113 +213,252 @@ class GoodsPageState extends State<GoodsPage> {
             showCamera: true,
           ),
         ),
-      ),
-      //_buildSearchBar(context, state),
-      Expanded(
-        child: Stack(
-          children: [
-            Visibility(
-              child: emptyView,
-              visible: (state.goods.isEmpty && state.groups.isEmpty),
-            ),
-            Visibility(
-              child: _buildListView(state),
-              visible: !(state.goods.isEmpty && state.groups.isEmpty),
-            ),
-          ],
+        const SizedBox(width: 12),
+        SSButton(
+          icon: Icons.tune,
+          onPressed: () => showSortBottomSheet(state),
+          borderRadius: 14,
+          padding: 10,
         ),
-      ),
-      Align(
-        alignment: Alignment.bottomLeft,
-        child: _buildSummaryInfoWidget(state),
-      ),
-    ];
-    return Column(children: children);
+      ],
+    );
   }
 
-  Widget _buildSummaryInfoWidget(GoodsState state) {
+  Widget _buildSummaryInfo(GoodsState state) {
+    final theme = Theme.of(context);
+
     return Container(
-      height: 32,
-      color: Theme.of(context).colorScheme.primary,
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            SizedBox(width: 16),
-            Text(
-              "${context.tr("quantity")}:  ${StringUtils.getQuantityText(state.quantityTotal)}",
-              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      decoration: BoxDecoration(
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
+        border:
+            Border(top: BorderSide(color: theme.dividerColor.withOpacity(0.1))),
+      ),
+      child: Row(
+        children: [
+          _buildSummaryItem(
+            context.tr("title_folder_count"),
+            state.groups.length.toString(),
+            theme,
+          ),
+          _buildSummaryItem(
+            context.tr("title_good_count"),
+            state.goods.length.toString(),
+            theme,
+          ),
+          _buildSummaryItem(
+            context.tr("title_total_quantity"),
+            StringUtils.getQuantityText(state.quantityTotal),
+            theme,
+          ),
+          _buildSummaryItem(
+            context.tr("title_total_purchase"),
+            CurrencyFormatter.format(context, state.purchasePriceTotal),
+            theme,
+          ),
+          _buildSummaryItem(
+            context.tr("title_total_sale"),
+            CurrencyFormatter.format(context, state.salePriceTotal),
+            theme,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryItem(String label, String value, ThemeData theme) {
+    return Expanded(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            value,
+            style: theme.textTheme.labelLarge
+                ?.copyWith(fontWeight: FontWeight.w800, fontSize: 12),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 9,
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurface.withOpacity(0.45),
             ),
-            SizedBox(width: 16),
-            VerticalDivider(
-              width: 2,
-              color: Theme.of(context).colorScheme.onPrimary,
-            ),
-            SizedBox(width: 16),
-            Text(
-              "${context.tr("total")}: ${CurrencyFormatter.format(context,state.purchasePriceTotal)}/${CurrencyFormatter.format(context,state.salePriceTotal)}",
-              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-            ),
-          ],
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildList(GoodsState state) {
+    final columnCount = state.settings.gridColumnCount;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (state.groups.isNotEmpty) ...[
+          _buildItemsLayout(
+            columnCount: columnCount,
+            itemCount: state.groups.length,
+            gridExtent: 130,
+            itemBuilder: (context, index) {
+              final group = state.groups[index];
+              return GroupItemRow(
+                group,
+                (item) => onPressedGroup(group),
+                (item) => onLongPressedGroup(group),
+                isListTile: columnCount == 1,
+              );
+            },
+          ),
+          if (state.goods.isNotEmpty) const SizedBox(height: 12),
+        ],
+        _buildItemsLayout(
+          columnCount: columnCount,
+          itemCount: state.goods.length,
+          gridExtent: columnCount == 2 ? 200 : 180,
+          itemBuilder: (context, index) {
+            final good = state.goods[index];
+            return GoodItemRow(
+              item: good,
+              quantity: good.quantity,
+              showBarcode: state.settings.showBarcode,
+              showDescription: state.settings.showDescription,
+              showPurchasePrice: state.settings.showPurchasePrice,
+              purchaseDisplayMode: state.settings.purchaseDisplayMode,
+              showSalePrice: state.settings.showSalePrice,
+              saleDisplayMode: state.settings.saleDisplayMode,
+              showMinQuantity: state.settings.showMinQuantity,
+              minQuantityColor: state.minQuantityColor ?? Colors.black,
+              onGoodTapped: (item) => onPressedGood(good),
+              onGoodLongPressed: (item) => onLongPressedGood(good),
+              isSelection: state.isSelection,
+              isGridTile: columnCount > 1,
+              isCompact: columnCount >= 3,
+            );
+          },
         ),
+      ],
+    );
+  }
+
+  Widget _buildItemsLayout({
+    required int columnCount,
+    required int itemCount,
+    required double gridExtent,
+    required Widget Function(BuildContext context, int index) itemBuilder,
+  }) {
+    if (columnCount == 1) {
+      return ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: itemCount,
+        separatorBuilder: (context, index) => const SizedBox(height: 12),
+        itemBuilder: itemBuilder,
+      );
+    }
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: columnCount,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        mainAxisExtent: gridExtent,
+      ),
+      itemCount: itemCount,
+      itemBuilder: itemBuilder,
+    );
+  }
+
+  Widget _buildEmptyView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(UIConstants.goodIconData,
+              size: 64,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)),
+          const SizedBox(height: 16),
+          Text(context.tr("no_goods"),
+              style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withOpacity(0.4))),
+        ],
       ),
     );
   }
 
   Widget _buildSelectedGroupView(GoodsState state) => Visibility(
-    visible: state.selectedGroups.isNotEmpty && state.textSearch.isEmpty,
-    child: Container(
-      height: 44,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).dividerColor.withOpacity(0.1),
+        visible: state.selectedGroups.isNotEmpty && state.textSearch.isEmpty,
+        child: Container(
+          height: 44,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardTheme.color ??
+                Theme.of(context).colorScheme.surface,
+            border: Border(
+                bottom: BorderSide(
+                    color: Theme.of(context).dividerColor.withOpacity(0.1))),
           ),
-        ),
-      ),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: 12),
-        itemCount: state.selectedGroups.length + 1,
-        itemBuilder: (context, index) {
-          final isHome = index == 0;
-          final groupIndex = index - 1;
-          final isLast = index == state.selectedGroups.length;
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            itemCount: state.selectedGroups.length + 1,
+            itemBuilder: (context, index) {
+              final isHome = index == 0;
+              final groupIndex = index - 1;
+              final isLast = index == state.selectedGroups.length;
 
-          return Row(
-            mainAxisSize: MainAxisSize.min,
+              return Row(
             children: [
               if (!isHome)
-                Icon(
-                  Icons.chevron_right,
-                  size: 18,
-                  color: Theme.of(context).hintColor.withOpacity(0.5),
-                ),
+                Icon(Icons.chevron_right,
+                    size: 16,
+                    color: Theme
+                        .of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.2)),
               InkWell(
-                onTap: () => context
-                    .read<GoodsCubit>()
-                    .onSelectedGroupTapped(groupIndex),
-                borderRadius: BorderRadius.circular(8),
+                onTap: () =>
+                    context
+                        .read<GoodsCubit>()
+                        .onSelectedGroupTapped(groupIndex),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 6),
+                      horizontal: 8, vertical: 10),
                   child: isHome
-                      ? Icon(
-                    Icons.home_outlined,
-                    size: 20,
-                    color: Theme.of(context).colorScheme.primary,
-                  )
+                      ? Icon(Icons.home_outlined,
+                      size: 18,
+                      color: Theme
+                          .of(context)
+                          .colorScheme
+                          .primary)
                       : Text(
                     state.selectedGroups[groupIndex].name,
                     style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: isLast
-                          ? FontWeight.bold
-                          : FontWeight.normal,
+                      fontSize: 13,
+                      fontWeight:
+                      isLast ? FontWeight.w700 : FontWeight.w500,
                       color: isLast
-                          ? Theme.of(context).colorScheme.onSurface
-                          : Theme.of(context).colorScheme.primary,
+                          ? Theme
+                          .of(context)
+                          .colorScheme
+                          .onSurface
+                          : Theme
+                          .of(context)
+                          .primaryColor,
                     ),
                   ),
                 ),
@@ -181,141 +470,59 @@ class GoodsPageState extends State<GoodsPage> {
     ),
   );
 
-  Widget get emptyView => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            UIConstants.goodIconData,
-            size: 64,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          SizedBox(height: 16),
-          Text(
-            context.tr("no_goods"),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      );
-
-  Widget _buildListView(GoodsState state) {
-    return ListView.builder(
-      itemBuilder: (BuildContext context, index) {
-        if (index < state.groups.length) {
-          var group = state.groups[index];
-          return GroupItemRow(
-            group,
-            (item) => onPressedGroup(group),
-            (item) => onLongPressedGroup(group),
-          );
-        } else {
-          var good = state.goods[index - state.groups.length];
-          return GoodItemRow(
-            item: good,
-            quantity: good.quantity,
-            showBarcode: state.settings.showBarcode,
-            showDescription: state.settings.showDescription,
-            showMinQuantity: state.showMinQuantity,
-            minQuantityColor: state.minQuantityColor ?? Colors.black,
-            onGoodTapped: (item) => onPressedGood(good),
-            onGoodLongPressed: (item) => onLongPressedGood(good),
-            isSelection: state.isSelection,
-          );
-        }
-      },
-      itemCount: state.groups.length + state.goods.length,
-    );
-  }
-
-  Widget _buildSearchMenu(GoodsState state) {
-    return IconButton(
-      onPressed: () {
-        //searchTextController.text = "";
-        if (!state.showSearchBar) {
-          searchTextFocusNode.requestFocus();
-        }
-        context.read<GoodsCubit>().onShowSearchBarMenuClicked();
-      },
-      icon: Icon(
-        Icons.search,
-        color: state.showSearchBar
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).iconTheme.color,
-      ),
-    );
-  }
-
-  // Widget _buildSortMenu(GoodsState state) {
-  //   return IconButton(
-  //       onPressed: () {
-  //         context.read<GoodsCubit>().onSortMenuClicked();
-  //       },
-  //       icon: Icon(Icons.sort,
-  //           color: context.read<GoodsCubit>().hasSortOptions()
-  //               ? Theme.of(context).colorScheme.primary
-  //               : Theme.of(context).iconTheme.color));
-  // }
-  Widget _buildFilterMenu(GoodsState state) {
-    bool showWarning = (state.settings.sortByName != SortByText.no_sort ||
-        state.settings.sortByBarcode != SortByNumber.no_sort ||
-        state.settings.sortByQuantity != SortByNumber.no_sort);
-    return Stack(
-      children: [
-        IconButton(
-          onPressed: () {
-            showFilterBottomSheet(state);
-          },
-          icon: Icon(Icons.filter_alt),
-        ),
-        if (showWarning)
-          Positioned(
-            right: 4,
-            top: 4,
-            child: Icon(
-              Icons.error,
-              color: Colors.red,
-              size: 16,
-            ),
-          ),
-      ],
-    );
-  }
-
-  void showFilterBottomSheet(GoodsState state) {
+  void showSortBottomSheet(GoodsState state) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
-      builder: (BuildContext mContext) {
-        return DraggableScrollableSheet(
-          expand: false,
-          builder: (mContext, scrollController) {
-            return SingleChildScrollView(
-              controller: scrollController,
-              padding: EdgeInsets.all(16),
-              child: FilterGoodWidget(
-                onResetAllPressed: () {
-                  context.read<GoodsCubit>().resetAllFilter();
-                  Navigator.of(context).pop();
-                },
-                onApplyPressed: (setting) {
-                  context.read<GoodsCubit>().applyFilter(setting);
-                  Navigator.of(context).pop();
-                },
-                setting: state.settings,
-              ),
-            );
-          },
-        );
-      },
+      builder: (mContext) => DraggableScrollableSheet(
+        expand: false,
+        builder: (mContext, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          padding: const EdgeInsets.all(20),
+          child: SortGoodWidget(
+            onResetAllPressed: () {
+              context.read<GoodsCubit>().resetSortOptions();
+              Navigator.pop(context);
+            },
+            onApplyPressed: (setting) {
+              context.read<GoodsCubit>().applyFilter(setting);
+              Navigator.pop(context);
+            },
+            setting: state.settings,
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _buildLoading() {
-    return const Center(
-      child: CircularProgressIndicator(),
+  void showListSettingsBottomSheet(GoodsState state) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
+      builder: (mContext) => DraggableScrollableSheet(
+        expand: false,
+        builder: (mContext, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          padding: const EdgeInsets.all(20),
+          child: ListSettingsGoodWidget(
+            onResetAllPressed: () {
+              context.read<GoodsCubit>().resetListSettings();
+              Navigator.pop(context);
+            },
+            onApplyPressed: (setting) {
+              context.read<GoodsCubit>().applyFilter(setting);
+              Navigator.pop(context);
+            },
+            setting: state.settings,
+          ),
+        ),
+      ),
     );
   }
 
@@ -326,7 +533,6 @@ class GoodsPageState extends State<GoodsPage> {
       await Navigator.of(context)
           .pushNamed(Pages.save_good, arguments: {"item": item});
       context.read<GoodsCubit>().loadData();
-      //context.read<GoodsCubit>().loadItems();
     }
   }
 
@@ -353,17 +559,12 @@ class GoodsPageState extends State<GoodsPage> {
       context,
       items: items,
       onItemSelected: (index) async {
-        if (items[index] ==
-            context.tr("action_move_to_group")) {
+        if (items[index] == context.tr("action_move_to_group")) {
           openSelectGroupForGood(item);
-        } else if (items[index] ==
-            context.tr("item_history_title")) {
-          Navigator.of(context).pushNamed(
-            Pages.good_history,
-            arguments: {'goodId': item.id},
-          );
-        } else if (items[index] ==
-            context.tr("delete")) {
+        } else if (items[index] == context.tr("item_history_title")) {
+          Navigator.of(context)
+              .pushNamed(Pages.good_history, arguments: {'goodId': item.id});
+        } else if (items[index] == context.tr("delete")) {
           showDeleteGoodConfirmPopup(item);
         }
       },
@@ -382,27 +583,11 @@ class GoodsPageState extends State<GoodsPage> {
     }
   }
 
-  void openSelectGroupForGroup(Group item) async {
-    final result = await Navigator.of(context).pushNamed(
-      Pages.select_group,
-      arguments: {"groupId": item.groupId, "id": item.id},
-    );
-    if (result != null) {
-      Map<dynamic, dynamic> map = result as Map<dynamic, dynamic>;
-      int? selectedGroupId = map["groupId"];
-      if (item.groupId != selectedGroupId) {
-        context.read<GoodsCubit>().moveGroupToGroup(item, selectedGroupId);
-      }
-    }
-  }
-
   void showDeleteGoodConfirmPopup(Good item) async {
+    if (item.id == null) return;
     showCustomAlertDialog(
       context,
-      message: sprintf(
-        context.tr("message_confirm_delete"),
-        [item.name],
-      ),
+      message: sprintf(context.tr("message_confirm_delete"), [item.name]),
       onPositivePressed: () async {
         hideDialog(context);
         await context.read<GoodsCubit>().deleteGood(item.id!);
@@ -424,186 +609,41 @@ class GoodsPageState extends State<GoodsPage> {
       context,
       items: items,
       onItemSelected: (index) async {
-        if (items[index] ==
-            context.tr("action_move_to_group")) {
+        if (items[index] == context.tr("action_move_to_group")) {
           openSelectGroupForGroup(item);
-        } else if (items[index] ==
-            context.tr("action_edit_group")) {
-          final result = await Navigator.of(context)
+        } else if (items[index] == context.tr("action_edit_group")) {
+          await Navigator.of(context)
               .pushNamed(Pages.save_group, arguments: {"item": item});
-          if (result != null) {
-            context.read<GoodsCubit>().loadData();
-            //context.read<GoodsCubit>().loadItems();
-          }
-        } else if (items[index] ==
-            context.tr("delete")) {
+          context.read<GoodsCubit>().loadData();
+        } else if (items[index] == context.tr("delete")) {
           context.read<GoodsCubit>().deleteGroup(item.id!);
         }
       },
     );
   }
 
-  // void showSaveGroupBottomSheet(Group item){
-  //   showModalBottomSheet(context: context, isScrollControlled: true ,builder: (BuildContext mContext){
-  //     return SafeArea(child: BlocProvider(create: (_) => getIt<SaveGroupCubit>(),child: SaveGroupPage(item: item)));
-  //   });
-  // }
-  @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<GoodsCubit, GoodsState>(
-      listenWhen: (p1, p2) => p1.state != p2.state,
-      listener: (context, state) async {
-        // if (state.state is OpenSortDialogListState) {
-        //   GoodsSetting? settings = await showDialog(
-        //     context: context,
-        //     builder: (_) => SortGoodsDialog(state.settings),
-        //     barrierDismissible: true,
-        //   );
-        //   if (settings != null) {
-        //     context.read<GoodsCubit>().setSettings(settings);
-        //   }
-        // } else
-
-          if (state.state is OpenHelpPageState) {
-          Navigator.of(context).pushNamed(
-            Pages.help,
-            arguments: {
-              "title": context.tr("goods"),
-              "content": MDProviderFactory.get().getHelpText(HelpType.GOODS),
-            },
-          );
-        } else if (state.state is OpenSaveGoodPageState) {
-          final currentState = state.state as OpenSaveGoodPageState;
-          await Navigator.of(context).pushNamed(
-            Pages.save_good,
-            arguments: {"item": currentState.item},
-          );
-          context.read<GoodsCubit>().loadData();
-        } else if (state.state is AddGroupState) {
-          final currentState = state.state as AddGroupState;
-          final result = await Navigator.of(context).pushNamed(
-            Pages.save_group,
-            arguments: {"item": currentState.item},
-          );
-          if (result != null) {
-            context.read<GoodsCubit>().loadData();
-          }
-          //showSaveGroupBottomSheet(currentState.item);
-        } else if (state.state is InsertTransactionSuccessState) {
-          final currentState = state.state as InsertTransactionSuccessState;
-          ScaffoldMessenger.of(context).showSnackBar(
-            snackBarWhenSuccessWithText(
-              context.tr("insert_transaction_success"),
-            ),
-          );
-          context
-              .read<GoodsCubit>()
-              .updateQuantity(currentState.goodId, currentState.quantity);
-        } else if (state.state is InsertTransactionFailedState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            snackBarWhenFailureWithText(
-              context.tr("insert_transaction_fail"),
-            ),
-          );
-        } else if (state.state is OpenListSettingsDialogState) {
-          GoodsSetting? settings = await showDialog(
-            context: context,
-            builder: (_) => ListSettingsDialog(state.settings),
-            barrierDismissible: true,
-          );
-          if (settings != null) {
-            context.read<GoodsCubit>().setSettings(settings);
-          }
-        }
-      },
-      builder: (context, state) => Scaffold(
-        appBar: new AppBar(
-          title: new Text(
-            widget.isSelection
-                ? context.tr("select_good")
-                : context.tr("goods"),
-          ),
-          actions: [
-            _buildSearchMenu(state),
-            _buildFilterMenu(state),
-            //_buildSortMenu(state),
-            PopupMenuButton<OverflowMenuItem>(
-              onSelected: (OverflowMenuItem item) {
-                if (item == OverflowMenuItem.listSettings) {
-                  context.read<GoodsCubit>().onListSettingsMenuClicked();
-                } else if (item == OverflowMenuItem.help) {
-                  context.read<GoodsCubit>().onHelpMenuClicked();
-                }
-              },
-              icon: Icon(Icons.more_vert),
-              itemBuilder: (BuildContext context) =>
-                  <PopupMenuEntry<OverflowMenuItem>>[
-                PopupMenuItem<OverflowMenuItem>(
-                  value: OverflowMenuItem.listSettings,
-                  child: Text(
-                    context.tr("list_settings"),
-                  ),
-                ),
-                PopupMenuItem<OverflowMenuItem>(
-                  value: OverflowMenuItem.help,
-                  child: Text(
-                    context.tr("action_help"),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        body: _buildBody(context, state),
-        floatingActionButtonLocation: ExpandableFab.location,
-        floatingActionButton: ExpandableFab(
-          key: _key,
-          openButtonBuilder: RotateFloatingActionButtonBuilder(
-            child: const Icon(Icons.add),
-          ),
-          type: ExpandableFabType.up,
-          //childrenAnimation: ExpandableFabAnimation.none,
-          distance: 70,
-          overlayStyle: ExpandableFabOverlayStyle(
-            color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
-          ),
-          children: [
-            FloatingActionButton.extended(
-              icon: Icon(
-                UIConstants.goodIconData,
-                size: 24,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              label: Text(context.tr("action_add_good")),
-              heroTag: 'add_good_tab',
-              onPressed: () {
-                final state = _key.currentState;
-                if (state != null) {
-                  debugPrint('isOpen:${state.isOpen}');
-                  state.toggle();
-                }
-                context.read<GoodsCubit>().onAddGood();
-              },
-            ),
-            FloatingActionButton.extended(
-              icon: Icon(
-                UIConstants.groupIconData,
-                size: 24,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              label: Text(context.tr("action_add_group")),
-              onPressed: () {
-                final state = _key.currentState;
-                if (state != null) {
-                  debugPrint('isOpen:${state.isOpen}');
-                  state.toggle();
-                }
-                context.read<GoodsCubit>().onAddGroup();
-              },
-            ),
-          ],
-        ),
-      ),
+  void openSelectGroupForGroup(Group item) async {
+    final result = await Navigator.of(context).pushNamed(
+      Pages.select_group,
+      arguments: {"groupId": item.groupId, "id": item.id},
     );
+    if (result != null) {
+      Map<dynamic, dynamic> map = result as Map<dynamic, dynamic>;
+      int? selectedGroupId = map["groupId"];
+      if (item.groupId != selectedGroupId) {
+        context.read<GoodsCubit>().moveGroupToGroup(item, selectedGroupId);
+      }
+    }
+  }
+
+  void _onOverflowMenuSelected(GoodsOverflowMenu item, GoodsState state) {
+    switch (item) {
+      case GoodsOverflowMenu.listSettings:
+        context.read<GoodsCubit>().onListSettingsMenuClicked();
+        break;
+      case GoodsOverflowMenu.help:
+        context.read<GoodsCubit>().onHelpMenuClicked();
+        break;
+    }
   }
 }

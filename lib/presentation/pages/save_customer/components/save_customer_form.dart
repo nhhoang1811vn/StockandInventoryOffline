@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/save_customer/bloc/save_customer_cubit.dart';
+import 'package:good_manager/util/entity_image_picker.dart';
 
 import '../../../../domain/entity/entity.dart';
 import '../../../../presentation/widget/widget.dart';
+import '../../../../util/base64_utils.dart';
 import '../../../review_manager.dart';
 
 class SaveCustomerForm extends StatelessWidget {
@@ -31,6 +33,22 @@ class SaveCustomerForm extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          Center(
+            child: EntityPhotoAvatar(
+              imageBytes: tryDecodeBase64(state.file),
+              fallbackIcon: Icons.person_rounded,
+              canEdit: true,
+              onTap: () {
+                EntityImagePicker.showSourceSheet(
+                  context,
+                  onImagePicked: (bytes) async {
+                    context.read<SaveCustomerCubit>().onFileChanged(bytes);
+                  },
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 24),
           AppTextField(
             labelText: context.tr("label_customer_name"),
             hintText: context.tr("hint_name"),

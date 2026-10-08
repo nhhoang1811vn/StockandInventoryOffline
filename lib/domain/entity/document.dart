@@ -12,6 +12,7 @@ class Document extends BaseModel {
   int? storeId;
 
   String? personName;
+  String? personFile;
   double quantity = 0.0;
   double amount = 0.0;
   double paid = 0.0;
@@ -36,9 +37,11 @@ class Document extends BaseModel {
     if (type == DocumentType.incoming) {
       this.personId = obj["supplierId"];
       this.personName = obj["supplierName"];
+      this.personFile = obj["supplierFile"];
     } else {
       this.personId = obj["customerId"];
       this.personName = obj["customerName"];
+      this.personFile = obj["customerFile"];
     }
     this.storeId = obj["storeId"];
     this.quantity = obj["quantity"] ?? 0.0;

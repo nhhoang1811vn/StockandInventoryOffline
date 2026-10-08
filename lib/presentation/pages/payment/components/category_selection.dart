@@ -17,45 +17,74 @@ class CategorySelection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-    final bgColor = isDarkMode
-        ? Colors.grey[800] // Darker background for dark mode
-        : Colors.grey[300];
-
-    return InkWell(
-      onLongPress: onLongPressed,
-      onTap: () {
-        onPressed();
-      },
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        decoration: isSelected
-            ? BoxDecoration(
-                color: bgColor,
-                border: Border.all(
-                  color: Colors.blue.shade700,
-                  width: 2,
+    return Container(
+      decoration: BoxDecoration(
+        color: isSelected
+            ? theme.colorScheme.primary.withOpacity(0.1)
+            : (theme.cardTheme.color ?? theme.colorScheme.surface),
+        borderRadius: BorderRadius.circular(22),
+        border: isSelected
+            ? Border.all(color: theme.colorScheme.primary, width: 2)
+            : null,
+        boxShadow: isSelected
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(isDark ? 0.1 : 0.015),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
-                borderRadius: BorderRadius.circular(16),
-              )
-            : BoxDecoration(
-                color: bgColor,
-                borderRadius: BorderRadius.circular(16),
-              ), // No decoration if not selected
-
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(item.icon, style: TextStyle(fontSize: 28)),
-            SizedBox(height: 4),
-            Text(
-              item.name,
-              style: Theme.of(context).textTheme.bodyMedium,
+              ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onLongPress: onLongPressed,
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(22),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? theme.colorScheme.primary.withOpacity(0.1)
+                        : theme.colorScheme.primary.withOpacity(0.05),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      item.icon,
+                      style: const TextStyle(fontSize: 24),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  item.name,
+                  style: TextStyle(
+                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w700,
+                    fontSize: 13,
+                    color: isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurface,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

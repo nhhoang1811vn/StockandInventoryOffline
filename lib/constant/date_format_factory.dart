@@ -27,6 +27,11 @@ class DateFormatFactory {
     }
   }
 
+  static DateFormat getTimeFormat() {
+    final code = AppSettings.getLanguageCode();
+    return DateFormat("HH:mm", code);
+  }
+
   static DateFormat monthFormatEnglish = DateFormat.MMM("en");
   static DateFormat monthFormatVietNam = DateFormat.MMM("vi");
 

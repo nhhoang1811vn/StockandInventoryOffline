@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -31,6 +34,7 @@ class SaveSupplierCubit extends Cubit<SaveSupplierState> {
         phone: item.phone,
         taxID: item.taxID,
         bankDetails: item.bankDetail,
+        file: item.file,
       );
     }
     emit(initState);
@@ -70,6 +74,10 @@ class SaveSupplierCubit extends Cubit<SaveSupplierState> {
     emit(state.copyWith(bankDetails: value));
   }
 
+  void onFileChanged(Uint8List bytes) {
+    emit(state.copyWith(file: base64Encode(bytes)));
+  }
+
   void onSaveClicked() async {
     final validate = Formz.validate([state.name]);
     if (validate) {
@@ -83,6 +91,7 @@ class SaveSupplierCubit extends Cubit<SaveSupplierState> {
         item.phone = state.phone;
         item.taxID = state.taxID;
         item.bankDetail = state.bankDetails;
+        item.file = state.file;
         if (item.id == null) {
           await useCase.insert(item);
         } else {

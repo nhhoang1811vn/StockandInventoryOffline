@@ -45,19 +45,11 @@ class SaveWalletPageState extends State<SaveWalletPage> {
       },
       builder: (BuildContext context, SaveWalletState state) {
         return Scaffold(
-          appBar: _buildAppBar(context),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          appBar: SaveObjectAppBar(title: context.tr("save_wallet_title")),
           body: _buildBody(state),
         );
       },
-    );
-  }
-
-  PreferredSize _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(
-        title: Text(context.tr("save_wallet_title")),
-      ),
     );
   }
 
@@ -159,7 +151,6 @@ class SaveWalletPageState extends State<SaveWalletPage> {
         Container(
           width: double.infinity,
           padding: EdgeInsets.all(16),
-          color: Theme.of(context).colorScheme.surface,
           child: PrimaryButton(context.tr("action_save"), () {
             context.read<SaveWalletCubit>().onSaveClicked();
           }),

@@ -16,6 +16,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:sprintf/sprintf.dart';
 
 import '../../../app.dart';
 import '../../../constant/constant.dart';
@@ -29,7 +30,7 @@ import '../help_content.dart';
 import '../pages.dart';
 import 'components/document_transaction_item_row.dart';
 
-enum OverflowItemMenu { search, sort_by, export_csv, export_pdf, help }
+enum OverflowItemMenu { export_csv, export_pdf, help }
 
 class SaveDocumentPage extends StatefulWidget {
   final Document item;
@@ -48,8 +49,13 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
   final FocusNode searchTextFocusNode = FocusNode();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     context.read<SaveDocumentCubit>().init(widget.item);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     personNameController.text = widget.item.personName ?? '';
     dateController.text =
         DateFormatFactory.getDateAndTimeFormat().format(widget.item.date);
@@ -174,260 +180,234 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
         }
       },
       listenWhen: (state1, state2) => state1.state != state2.state,
-      builder: (context, state) => Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: _buildAppBar(context, state),
-        body: SafeArea(
-          child: Column(
-            children: [
-              SelectedStoreView(),
-              Expanded(
-                child: ListView(
-                  children: [
-                    // Container(
-                    //     padding: const EdgeInsets.symmetric(
-                    //         horizontal: 16, vertical: 8),
-                    //     //color: ColorUtils.getHeaderBgColor(context),
-                    //     child: Text(
-                    //         context.tr("
-                    //             .document_information,
-                    //         style: Theme.of(context)
-                    //             .textTheme
-                    //             .titleMedium
-                    //             ?.copyWith(fontWeight: FontWeight.bold))),
-                    Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          AppTextField(
-                            labelText:
-                                context.tr("document_no"),
-                            hintText: context.tr("hint_name"),
-                            initialValue: state.name.value,
-                            onChanged: (value) => context
-                                .read<SaveDocumentCubit>()
-                                .nameChanged(value),
-                            keyboardType: TextInputType.name,
-                            error: state.name.displayError?.text(context),
-                          ),
-                          SizedBox(
-                            height: 16.0,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: AppTextField(
-                                  controller: personNameController,
-                                  labelText:
-                                      state.item?.type == DocumentType.incoming
-                                          ? context.tr("label_supplier_name")
-                                          : context.tr("label_customer_name"),
-                                  hintText:
-                                      context.tr("hint_select"),
-                                  suffix: Icon(
-                                    Icons.keyboard_arrow_down,
-                                    size: 16,
-                                  ),
-                                  keyboardType: TextInputType.none,
-                                  readOnly: true,
-                                  onTapped: () => {
-                                    context
-                                        .read<SaveDocumentCubit>()
-                                        .onPersonClicked(),
-                                  },
-                                ),
-                              ),
-                              SizedBox(
-                                width: 16.0,
-                              ),
-                              Expanded(
-                                child: AppTextField(
-                                  controller: dateController,
-                                  labelText: context.tr("field_date_time"),
-                                  keyboardType: TextInputType.datetime,
-                                  readOnly: true,
-                                  onTapped: () => {
-                                    DatePicker.showDateTimePicker(
-                                      context,
-                                      locale: MyApp.getDatePickerLocaleType(
-                                        context,
-                                      ),
-                                      showTitleActions: true,
-                                      minTime: Config.minTime,
-                                      maxTime: Config.maxTime,
-                                      onChanged: (date) {},
-                                      onConfirm: (date) {
-                                        context
-                                            .read<SaveDocumentCubit>()
-                                            .dateChanged(date);
-                                        dateController.text = DateFormatFactory
-                                                .getDateAndTimeFormat()
-                                            .format(date);
-                                      },
-                                      currentTime: state.date,
-                                    ),
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 16),
-                          AppTextField(
-                            labelText:
-                                context.tr("label_description"),
-                            hintText:
-                                context.tr("hint_description"),
-                            maxLines: null,
-                            minLines: 2,
-                            initialValue: state.description,
-                            onChanged: (value) => context
-                                .read<SaveDocumentCubit>()
-                                .descriptionChanged(value),
-                            keyboardType: TextInputType.name,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      //color: ColorUtils.getHeaderBgColor(context),
-                      child: Text(
-                        context.tr("goods_information"),
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Visibility(
-                      visible: state.showSearchBar,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          left: 16.0,
-                          right: 16.0,
-                          bottom: 16,
-                        ),
-                        child: SearchBarWidget(
-                          onTextChanged: (newValue) {
-                            context
-                                .read<SaveDocumentCubit>()
-                                .onSearchTextChanged(newValue);
-                          },
-                          focusNode: searchTextFocusNode,
-                          showCamera: true,
-                        ),
-                      ),
-                    ),
-                    Stack(
-                      children: [
-                        Visibility(
-                          child: _buildEmptyTransaction(context),
-                          visible: state.transactions.isEmpty,
-                        ),
-                        Visibility(
-                          child: _buildTransactionsView(context, state),
-                          visible: state.transactions.isNotEmpty,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+      builder: (context, state) {
+        final theme = Theme.of(context);
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: theme.scaffoldBackgroundColor,
+          appBar: SaveObjectAppBar(
+            title: widget.item.type == DocumentType.incoming
+                ? context.tr("incoming")
+                : context.tr("outgoing"),
+            actions: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.check),
+                onPressed: () {
+                  context.read<SaveDocumentCubit>().onSaveMenuClicked();
+                },
               ),
-              _buildSummaryView(state),
-              // Align(
-              //     alignment: Alignment.bottomCenter,
-              //     child: Container(
-              //       height: 30,
-              //       color: Theme.of(context).colorScheme.primary,
-              //       child: IntrinsicHeight(
-              //           child: Row(
-              //         children: [
-              //           SizedBox(width: 16),
-              //           Text(state.transactions.length.toString(),
-              //               style: TextStyle(
-              //                   color: Colors.white,
-              //                   fontSize: TextSize.medium)),
-              //           SizedBox(width: 16),
-              //           VerticalDivider(width: 2, color: Colors.white),
-              //           SizedBox(width: 16),
-              //           Text(
-              //               Config.currencyFormat.format(state.totalQuantity),
-              //               style: TextStyle(
-              //                   color: Colors.white,
-              //                   fontSize: TextSize.medium)),
-              //           SizedBox(width: 16),
-              //           VerticalDivider(width: 2, color: Colors.white),
-              //           SizedBox(width: 16),
-              //           Text(
-              //               Config.currencyFormat.format(state.totalAmount),
-              //               style: TextStyle(
-              //                   color: Colors.white,
-              //                   fontSize: TextSize.medium)),
-              //         ],
-              //       )),
-              //     ))
+              PopupMenuButton<OverflowItemMenu>(
+                offset: const Offset(0, 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                itemBuilder: (context) => [
+                  PopupMenuItem<OverflowItemMenu>(
+                    value: OverflowItemMenu.export_csv,
+                    child: Text(context.tr("action_export_csv")),
+                  ),
+                  PopupMenuItem<OverflowItemMenu>(
+                    value: OverflowItemMenu.export_pdf,
+                    child: Text(context.tr("action_export_pdf")),
+                  ),
+                  PopupMenuItem<OverflowItemMenu>(
+                    value: OverflowItemMenu.help,
+                    child: Text(context.tr("action_help")),
+                  ),
+                ],
+                onSelected: (item) => handleClick(context, item, state),
+              ),
+              const SizedBox(width: 16),
             ],
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () => context.read<SaveDocumentCubit>().onAddGoodClicked(),
-        ),
-      ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    children: [
+                      Theme(
+                        data: Theme.of(context)
+                            .copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          initiallyExpanded: true,
+                          title: Text(
+                            context.tr("document_information"),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          childrenPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: AppTextField(
+                                    labelText: context.tr("document_no"),
+                                    hintText: context.tr("hint_name"),
+                                    initialValue: state.name.value,
+                                    onChanged: (value) => context
+                                        .read<SaveDocumentCubit>()
+                                        .nameChanged(value),
+                                    keyboardType: TextInputType.name,
+                                    error:
+                                        state.name.displayError?.text(context),
+                                  ),
+                                ),
+                                const SizedBox(width: 8.0),
+                                Expanded(
+                                  child: AppTextField(
+                                    controller: personNameController,
+                                    labelText: state.item?.type ==
+                                            DocumentType.incoming
+                                        ? context.tr("label_supplier_name")
+                                        : context.tr("label_customer_name"),
+                                    hintText: context.tr("hint_select"),
+                                    suffix: const Icon(
+                                      Icons.keyboard_arrow_down,
+                                      size: 16,
+                                    ),
+                                    keyboardType: TextInputType.none,
+                                    readOnly: true,
+                                    onTapped: () {
+                                      context
+                                          .read<SaveDocumentCubit>()
+                                          .onPersonClicked();
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16.0),
+                            AppTextField(
+                              controller: dateController,
+                              labelText: context.tr("field_date_time"),
+                              keyboardType: TextInputType.datetime,
+                              readOnly: true,
+                              onTapped: () {
+                                DatePicker.showDateTimePicker(
+                                  context,
+                                  locale: MyApp.getDatePickerLocaleType(
+                                    context,
+                                  ),
+                                  showTitleActions: true,
+                                  minTime: Config.minTime,
+                                  maxTime: Config.maxTime,
+                                  onConfirm: (date) {
+                                    context
+                                        .read<SaveDocumentCubit>()
+                                        .dateChanged(date);
+                                    dateController.text =
+                                        DateFormatFactory.getDateAndTimeFormat()
+                                            .format(date);
+                                  },
+                                  currentTime: state.date,
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            AppTextField(
+                              labelText: context.tr("label_description"),
+                              hintText: context.tr("hint_description"),
+                              maxLines: null,
+                              minLines: 1,
+                              initialValue: state.description,
+                              onChanged: (value) => context
+                                  .read<SaveDocumentCubit>()
+                                  .descriptionChanged(value),
+                              keyboardType: TextInputType.multiline,
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                        ),
+                      ),
+                      Theme(
+                        data: Theme.of(context)
+                            .copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          initiallyExpanded: true,
+                          title: Text(
+                            context.tr("goods_information"),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          children: [
+                            Row(
+                              children: [
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: SearchBarWidget(
+                                    onTextChanged: (newValue) {
+                                      context
+                                          .read<SaveDocumentCubit>()
+                                          .onSearchTextChanged(newValue);
+                                    },
+                                    focusNode: searchTextFocusNode,
+                                    showCamera: true,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                SSButton(
+                                  icon: Icons.tune,
+                                  onPressed: () {
+                                    showFilterBottomSheet(state);
+                                  },
+                                ),
+                                const SizedBox(width: 16),
+                              ],
+                            ),
+                            if (state.state is LoadingState)
+                              const Padding(
+                                padding: EdgeInsets.all(32),
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              )
+                            else ...[
+                              if (state.transactions.isEmpty)
+                                _buildEmptyTransaction(context)
+                              else
+                                _buildTransactionsView(context, state),
+                              SizedBox(
+                                height: state.transactions.isEmpty ? 32 : 12,
+                              ),
+                              _buildGoodActionButtons(context),
+                              const SizedBox(height: 16),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                _buildGoodsSummaryBar(state),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildSummaryView(SaveDocumentState state) {
-    var textStyle = Theme.of(context)
-        .textTheme
-        .bodySmall
-        ?.copyWith(color: Theme.of(context).colorScheme.onPrimary);
-    return Container(
-      width: double.infinity,
-      color: Theme.of(context).colorScheme.primary,
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildGoodActionButtons(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
         children: [
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Text(
-                  "${context.tr("title_good_count")}: ${state.transactions.length.toString()}",
-                  style: textStyle,
-                ),
-                SizedBox(
-                  width: 4,
-                ),
-                VerticalDivider(
-                  width: 2,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: 4,
-                ),
-                Text(
-                  "${context.tr("quantity")}: ${StringUtils.getQuantityText(state.totalQuantity)}",
-                  style: textStyle,
-                ),
-                SizedBox(
-                  width: 4,
-                ),
-                VerticalDivider(
-                  width: 2,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: 4,
-                ),
-                Text(
-                  "${context.tr("amount")}: ${CurrencyFormatter.format(context, state.totalAmount)}",
-                  style: textStyle,
-                ),
-              ],
+          Expanded(
+            child: PrimaryButton(
+              context.tr("action_add_good"),
+              () => context.read<SaveDocumentCubit>().onAddGoodClicked(),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: MyOutlineButton(
+              context.tr("action_batch_scan"),
+              () => context.read<SaveDocumentCubit>().onBatchScanMenuClicked(),
             ),
           ),
         ],
@@ -435,46 +415,74 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
     );
   }
 
-  PreferredSize _buildAppBar(BuildContext context, SaveDocumentState state) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(UIConstants.appBarHeight),
-      child: AppBar(
-        title: Text(
-          widget.item.type == DocumentType.incoming
-              ? context.tr("incoming")
-              : context.tr("outgoing"),
+  Widget _buildGoodsSummaryBar(SaveDocumentState state) {
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      decoration: BoxDecoration(
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
+        border: Border(
+          top: BorderSide(color: theme.dividerColor.withOpacity(0.1)),
         ),
-        actions: <Widget>[
-          _buildSaveMenu(context),
-          _buildBatchScanMenu(context),
-          PopupMenuButton<OverflowItemMenu>(
-            itemBuilder: (context) => [
-              PopupMenuItem<OverflowItemMenu>(
-                value: OverflowItemMenu.search,
-                child: Text(context.tr("action_search")),
-              ),
-              PopupMenuItem<OverflowItemMenu>(
-                value: OverflowItemMenu.sort_by,
-                child: Text(context.tr("action_sort_by")),
-              ),
-              PopupMenuItem<OverflowItemMenu>(
-                value: OverflowItemMenu.export_csv,
-                child: Text(
-                  context.tr("action_export_csv"),
-                ),
-              ),
-              PopupMenuItem<OverflowItemMenu>(
-                value: OverflowItemMenu.export_pdf,
-                child: Text(
-                  context.tr("action_export_pdf"),
-                ),
-              ),
-              PopupMenuItem<OverflowItemMenu>(
-                value: OverflowItemMenu.help,
-                child: Text(context.tr("action_help")),
-              ),
-            ],
-            onSelected: (item) => handleClick(context, item, state),
+      ),
+      child: Row(
+        children: [
+          _buildSummaryItem(
+            context.tr("title_good_count"),
+            state.transactions.length.toString(),
+            theme,
+          ),
+          _buildSummaryItem(
+            context.tr("quantity"),
+            StringUtils.getQuantityText(state.totalQuantity),
+            theme,
+          ),
+          _buildSummaryItem(
+            context.tr("amount"),
+            CurrencyFormatter.format(context, state.totalAmount),
+            theme,
+            valueColor: widget.item.type == DocumentType.incoming
+                ? Colors.green
+                : Colors.red,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryItem(
+    String label,
+    String value,
+    ThemeData theme, {
+    Color? valueColor,
+  }) {
+    return Expanded(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            value,
+            style: theme.textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+              fontSize: 12,
+              color: valueColor ?? theme.colorScheme.onSurface,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 9,
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurface.withOpacity(0.45),
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
@@ -487,18 +495,6 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
     SaveDocumentState state,
   ) {
     switch (item) {
-      case OverflowItemMenu.search:
-        if (!state.showSearchBar) {
-          searchTextFocusNode.requestFocus();
-        }
-        context.read<SaveDocumentCubit>().onSearchMenuClicked();
-        //search
-        break;
-      case OverflowItemMenu.sort_by:
-        showFilterBottomSheet(state);
-        //context.read<SaveDocumentCubit>().onSortByMenuClicked();
-        //sort by
-        break;
       case OverflowItemMenu.export_csv:
         onExportCSV(state);
         break;
@@ -508,7 +504,6 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       case OverflowItemMenu.help:
         context.read<SaveDocumentCubit>().onHelpMenuClicked();
         break;
-      //help
     }
   }
 
@@ -516,8 +511,8 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (BuildContext mContext) {
         return DraggableScrollableSheet(
@@ -525,7 +520,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
           builder: (mContext, scrollController) {
             return SingleChildScrollView(
               controller: scrollController,
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: FilterTransactionWidget(
                 onResetAllPressed: () {
                   context.read<SaveDocumentCubit>().resetAllFilter();
@@ -588,11 +583,14 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       await SharePlus.instance.share(params);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('PDF saved and shared successfully.')),
+        SnackBar(content: Text(context.tr("pdf_saved_and_shared"))),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
+        SnackBar(
+          content:
+              Text(sprintf(context.tr("error_with_details"), [e.toString()])),
+        ),
       );
     }
   }
@@ -809,98 +807,59 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       );
       await SharePlus.instance.share(params);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Save CSV Successful: ${file.path}'),
-        ),
+        SnackBar(content: Text(context.tr("csv_saved_and_shared"))),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Save CSV Failed: ${e.toString()}'),
+          content:
+              Text(sprintf(context.tr("error_with_details"), [e.toString()])),
         ),
       );
     }
   }
 
-  Widget _buildSaveMenu(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        context.read<SaveDocumentCubit>().onSaveMenuClicked();
-      },
-      icon: Icon(Icons.check),
-    );
-  }
-
-  Widget _buildBatchScanMenu(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        context.read<SaveDocumentCubit>().onBatchScanMenuClicked();
-      },
-      icon: Icon(Icons.barcode_reader),
-    );
-  }
-
   Widget _buildEmptyTransaction(BuildContext context) {
-    return Center(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 32, 16, 8),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-            height: 32,
-          ),
           Icon(
             UIConstants.goodIconData,
             size: 64,
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
           ),
-          SizedBox(
-            height: 16,
-          ),
+          const SizedBox(height: 20),
           Text(
             context.tr("no_goods"),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: 32,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+            ),
           ),
         ],
       ),
     );
   }
 
-  // Widget _buildTransactionsView(BuildContext context, SaveDocumentState state) {
-  //   return Column(
-  //     children: state.transactions.map((transaction) {
-  //       return DocumentTransactionItemRow(
-  //           transaction,
-  //           ColorUtils.getItemBgColor1(context),
-  //           (item) => context
-  //               .read<SaveDocumentCubit>()
-  //               .onPressedTransaction(transaction),
-  //           (item) => onLongPressedTransaction(context, transaction));
-  //     }).toList(),
-  //   );
-  // }
   Widget _buildTransactionsView(BuildContext context, SaveDocumentState state) {
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      // Prevents nested scrolling
-      itemCount: state.transactions.length,
-      itemBuilder: (context, index) {
-        final transaction = state.transactions[index];
-        return DocumentTransactionItemRow(
-          transaction,
-          ColorUtils.getItemBgColor1(context),
-          (item) => context
-              .read<SaveDocumentCubit>()
-              .onPressedTransaction(transaction),
-          (item) => onLongPressedTransaction(transaction),
-        );
-      },
-      separatorBuilder: (context, index) => buildDivider(indent: 80),
+    return Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: state.transactions.length,
+        itemBuilder: (context, index) {
+          final transaction = state.transactions[index];
+          return DocumentTransactionItemRow(
+            transaction,
+            Colors.transparent,
+            (item) => context
+                .read<SaveDocumentCubit>()
+                .onPressedTransaction(transaction),
+            (item) => onLongPressedTransaction(transaction),
+          );
+        },
+      ),
     );
   }
 

@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:good_manager/domain/entity/entity.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner/barcode_scanner_page.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner_settings/barcode_scanner_settings_page.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner_settings/bloc/barcode_scanner_settings_cubit.dart';
@@ -11,6 +13,7 @@ import 'package:good_manager/presentation/pages/documents_history/bloc/documents
 import 'package:good_manager/presentation/pages/documents_history/documents_history_page.dart';
 import 'package:good_manager/presentation/pages/forgotpassword/forgot_password_page.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
+import 'package:good_manager/presentation/pages/goods/goods_list_view_page.dart';
 import 'package:good_manager/presentation/pages/goods/goods_view.dart';
 import 'package:good_manager/presentation/pages/help/help_page_dart.dart';
 import 'package:good_manager/presentation/pages/help/helps_page_dart.dart';
@@ -52,6 +55,8 @@ import 'package:good_manager/presentation/pages/save_supplier/bloc/save_supplier
 import 'package:good_manager/presentation/pages/save_supplier/save_supplier_page.dart';
 import 'package:good_manager/presentation/pages/save_wallet/bloc/save_wallet_cubit.dart';
 import 'package:good_manager/presentation/pages/save_wallet/save_wallet_page.dart';
+import 'package:good_manager/presentation/pages/search/bloc/search_cubit.dart';
+import 'package:good_manager/presentation/pages/search/search_page.dart';
 import 'package:good_manager/presentation/pages/select_group/bloc/select_group_cubit.dart';
 import 'package:good_manager/presentation/pages/select_group/select_group_page.dart';
 import 'package:good_manager/presentation/pages/settings/data/bloc/settings_data_cubit.dart';
@@ -71,6 +76,8 @@ import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
 import 'package:good_manager/presentation/pages/stores/stores_page.dart';
 import 'package:good_manager/presentation/pages/suppliers/bloc/bloc.dart';
 import 'package:good_manager/presentation/pages/suppliers/suppliers_page.dart';
+import 'package:good_manager/presentation/pages/wallets/bloc/wallets_cubit.dart';
+import 'package:good_manager/presentation/pages/wallets/wallets_page.dart';
 
 import '../di/di.dart';
 
@@ -413,8 +420,37 @@ class AppRouter {
             ),
           ),
         );
+      case Pages.search:
+        return _buildRoute(
+          settings,
+          BlocProvider(
+            create: (context) => getIt<SearchCubit>(),
+            child: const SearchPage(),
+          ),
+        );
+      case Pages.wallet_list:
+        return _buildRoute(
+          settings,
+          BlocProvider(
+            create: (context) => getIt<WalletsCubit>(),
+            child: WalletsPage(),
+          ),
+        );
+      case Pages.good_list_view:
+        Map<dynamic, dynamic> args = settings.arguments as Map;
+        return _buildRoute(
+          settings,
+          GoodsListViewPage(
+            items: args['items'] as List<Good>,
+            title: args['title'] as String,
+            emptyIcon: args['emptyIcon'] as IconData?,
+          ),
+        );
       default:
-        return _buildRoute(settings, Text("Loading data...."));
+        return _buildRoute(
+          settings,
+          Text("loading_data".tr()),
+        );
     }
   }
 
