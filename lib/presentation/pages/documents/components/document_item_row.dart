@@ -16,6 +16,7 @@ class DocumentItemRow extends StatelessWidget {
   final Function(Document document) onDocumentTapped;
   final Function(Document document) onDocumentLongPressed;
   final bool showTimeOnly;
+  final EdgeInsets margin;
 
   DocumentItemRow({
     required this.item,
@@ -25,6 +26,7 @@ class DocumentItemRow extends StatelessWidget {
     required this.onDocumentTapped,
     required this.onDocumentLongPressed,
     this.showTimeOnly = false,
+    this.margin = const EdgeInsets.symmetric(vertical: 6),
   });
 
   @override
@@ -37,7 +39,7 @@ class DocumentItemRow extends StatelessWidget {
     final status = Utils.getStatus(item);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
+      margin: margin,
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ??
             Theme.of(context).colorScheme.surface,

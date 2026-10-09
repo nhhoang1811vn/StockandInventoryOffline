@@ -141,12 +141,7 @@ class _ScreenState extends State<MainView> {
         index: _currentIndex,
         children: _screens,
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.viewPaddingOf(context).bottom,
-        ),
-        child: _buildBottomBar(),
-      ),
+      bottomNavigationBar: _buildBottomBar(),
     );
   }
 
@@ -154,8 +149,9 @@ class _ScreenState extends State<MainView> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
+    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
     return Container(
-      height: 85,
+      padding: EdgeInsets.only(bottom: bottomInset),
       decoration: BoxDecoration(
         color: theme.cardTheme.color ?? (isDark ? Colors.black : Colors.white),
         borderRadius: const BorderRadius.vertical(
@@ -169,8 +165,10 @@ class _ScreenState extends State<MainView> {
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: SizedBox(
+        height: 85,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -200,6 +198,7 @@ class _ScreenState extends State<MainView> {
               context.tr("setting"),
             ),
           ],
+        ),
         ),
       ),
     );

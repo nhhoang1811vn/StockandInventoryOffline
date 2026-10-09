@@ -141,33 +141,16 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
-      builder: (BuildContext context) {
+      builder: (BuildContext sheetContext) {
         return DraggableScrollableSheet(
           expand: false,
           initialChildSize: 0.7,
           minChildSize: 0.4,
           maxChildSize: 0.95,
           builder: (context, scrollController) {
-            return SingleChildScrollView(
-              controller: scrollController,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SettingsBottomSheetTitle(
-                      title: context.tr("select_currency")),
-                  ...Currency.values.map(
-                    (type) => ListTile(
-                      title: Text(type.label),
-                      trailing: state.currency == type
-                          ? Icon(Icons.check_rounded,
-                              color: Theme.of(context).colorScheme.primary)
-                          : null,
-                      onTap: () => Navigator.pop(context, type),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                ],
-              ),
+            return _CurrencyPicker(
+              selected: state.currency,
+              scrollController: scrollController,
             );
           },
         );
@@ -203,5 +186,72 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
         },
       );
     }
+  }
+}
+
+class _CurrencyPicker extends StatefulWidget {
+  final Currency selected;
+  final ScrollController scrollController;
+
+  const _CurrencyPicker({
+    required this.selected,
+    required this.scrollController,
+  });
+
+  @override
+  State<_CurrencyPicker> createState() => _CurrencyPickerState();
+}
+
+class _CurrencyPickerState extends State<_CurrencyPicker> {
+  String _query = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final query = _query.trim().toLowerCase();
+    final items = Currency.values.where((currency) {
+      if (query.isEmpty) return true;
+      final info = currency.info;
+      return info.code.toLowerCase().contains(query) ||
+          info.name.toLowerCase().contains(query) ||
+          info.symbol.toLowerCase().contains(query);
+    }).toList()
+      ..sort((a, b) => a.info.code.compareTo(b.info.code));
+
+    return Column(
+      children: [
+        SettingsBottomSheetTitle(title: context.tr("select_currency")),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: context.tr("type_to_search"),
+              prefixIcon: const Icon(Icons.search),
+              isDense: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            onChanged: (value) => setState(() => _query = value),
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            controller: widget.scrollController,
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final type = items[index];
+              return ListTile(
+                title: Text(type.label),
+                trailing: widget.selected == type
+                    ? Icon(Icons.check_rounded,
+                        color: Theme.of(context).colorScheme.primary)
+                    : null,
+                onTap: () => Navigator.pop(context, type),
+              );
+            },
+          ),
+        ),
+      ],
+    );
   }
 }

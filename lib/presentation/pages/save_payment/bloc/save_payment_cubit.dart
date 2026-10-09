@@ -157,12 +157,21 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
   }
 
   void onAmountChanged(String value) {
-    if (value.isNotEmpty) {
-      num amountNum = Config.simpleCurrencyFormat.parse(value);
-      double amount = amountNum.toDouble();
-      emit(state.copyWith(amount: amount));
-    } else {
+    if (value.isEmpty) {
       emit(state.copyWith(amount: null));
+      return;
+    }
+    final parsed = _parseAmount(value);
+    if (parsed == null) return;
+    emit(state.copyWith(amount: parsed));
+  }
+
+  double? _parseAmount(String value) {
+    try {
+      return Config.simpleCurrencyFormat.parse(value).toDouble();
+    } catch (_) {
+      final normalized = value.replaceAll(RegExp(r'[^0-9.\-]'), '');
+      return double.tryParse(normalized);
     }
   }
 
@@ -171,24 +180,34 @@ class SavePaymentCubit extends Cubit<SavePaymentState> {
   }
 
   void onSaveClicked() async {
-    Payment item = state.item!;
-    item.description = state.description;
-    item.date = state.date!;
-    item.amount = state.amount;
-    item.documentId = state.documentId;
-    item.categoryId = state.selectedCategory?.id;
-    item.walletId = state.selectedWallet?.id;
-    item.supplierId = state.supplierId;
-    item.customerId = state.customerId;
-
-    if (item.id == null) {
-      await useCase.insert(item);
-    } else {
-      await useCase.update(item);
+    final item = state.item;
+    if (item == null) {
+      emit(state.copyWith(state: SaveItemError("missing payment")));
+      return;
     }
-    if (isClosed) return;
-    AppSettings.setSavePaymentLastSelectedWalletId(item.walletId);
-    emit(state.copyWith(state: SaveItemSuccessful()));
+    try {
+      item.description = state.description;
+      item.date = state.date ?? DateTime.now();
+      item.amount = state.amount;
+      item.documentId = state.documentId;
+      item.categoryId = state.selectedCategory?.id;
+      item.walletId = state.selectedWallet?.id;
+      item.supplierId = state.supplierId;
+      item.customerId = state.customerId;
+      item.storeId = AppSettings.getSelectedStoreId();
+
+      if (item.id == null) {
+        item.id = await useCase.insert(item);
+      } else {
+        await useCase.update(item);
+      }
+      if (isClosed) return;
+      AppSettings.setSavePaymentLastSelectedWalletId(item.walletId);
+      emit(state.copyWith(state: SaveItemSuccessful(), item: item));
+    } catch (e) {
+      if (isClosed) return;
+      emit(state.copyWith(state: SaveItemError(e.toString())));
+    }
   }
 
   void resetState() {

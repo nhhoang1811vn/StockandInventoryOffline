@@ -160,14 +160,7 @@ class GoodsPageState extends State<GoodsPage> {
               Expanded(
                 child: state.goods.isEmpty && state.groups.isEmpty
                     ? _buildEmptyView()
-                    : ListView(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 16),
-                        children: [
-                          _buildList(state),
-                          const SizedBox(height: 16),
-                        ],
-                      ),
+                    : _buildList(state),
               ),
               if (!state.isSelection)
                 Padding(
@@ -260,66 +253,43 @@ class GoodsPageState extends State<GoodsPage> {
 
   Widget _buildList(GoodsState state) {
     final columnCount = state.settings.gridColumnCount;
+    final groupCount = state.groups.length;
+    final itemCount = groupCount + state.goods.length;
+    const padding = EdgeInsets.fromLTRB(16, 16, 16, 16);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (state.groups.isNotEmpty) ...[
-          _buildItemsLayout(
-            columnCount: columnCount,
-            itemCount: state.groups.length,
-            gridExtent: 130,
-            itemBuilder: (context, index) {
-              final group = state.groups[index];
-              return GroupItemRow(
-                group,
-                (item) => onPressedGroup(group),
-                (item) => onLongPressedGroup(group),
-                isListTile: columnCount == 1,
-              );
-            },
-          ),
-          if (state.goods.isNotEmpty) const SizedBox(height: 12),
-        ],
-        _buildItemsLayout(
-          columnCount: columnCount,
-          itemCount: state.goods.length,
-          gridExtent: columnCount == 2 ? 200 : 180,
-          itemBuilder: (context, index) {
-            final good = state.goods[index];
-            return GoodItemRow(
-              item: good,
-              quantity: good.quantity,
-              showBarcode: state.settings.showBarcode,
-              showDescription: state.settings.showDescription,
-              showPurchasePrice: state.settings.showPurchasePrice,
-              purchaseDisplayMode: state.settings.purchaseDisplayMode,
-              showSalePrice: state.settings.showSalePrice,
-              saleDisplayMode: state.settings.saleDisplayMode,
-              showMinQuantity: state.settings.showMinQuantity,
-              minQuantityColor: state.minQuantityColor ?? Colors.black,
-              onGoodTapped: (item) => onPressedGood(good),
-              onGoodLongPressed: (item) => onLongPressedGood(good),
-              isSelection: state.isSelection,
-              isGridTile: columnCount > 1,
-              isCompact: columnCount >= 3,
-            );
-          },
-        ),
-      ],
-    );
-  }
+    Widget itemBuilder(BuildContext context, int index) {
+      if (index < groupCount) {
+        final group = state.groups[index];
+        return GroupItemRow(
+          group,
+          (item) => onPressedGroup(group),
+          (item) => onLongPressedGroup(group),
+          isListTile: columnCount == 1,
+        );
+      }
+      final good = state.goods[index - groupCount];
+      return GoodItemRow(
+        item: good,
+        quantity: good.quantity,
+        showBarcode: state.settings.showBarcode,
+        showDescription: state.settings.showDescription,
+        showPurchasePrice: state.settings.showPurchasePrice,
+        purchaseDisplayMode: state.settings.purchaseDisplayMode,
+        showSalePrice: state.settings.showSalePrice,
+        saleDisplayMode: state.settings.saleDisplayMode,
+        showMinQuantity: state.settings.showMinQuantity,
+        minQuantityColor: state.minQuantityColor ?? Colors.black,
+        onGoodTapped: (item) => onPressedGood(good),
+        onGoodLongPressed: (item) => onLongPressedGood(good),
+        isSelection: state.isSelection,
+        isGridTile: columnCount > 1,
+        isCompact: columnCount >= 3,
+      );
+    }
 
-  Widget _buildItemsLayout({
-    required int columnCount,
-    required int itemCount,
-    required double gridExtent,
-    required Widget Function(BuildContext context, int index) itemBuilder,
-  }) {
     if (columnCount == 1) {
       return ListView.separated(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
+        padding: padding,
         itemCount: itemCount,
         separatorBuilder: (context, index) => const SizedBox(height: 12),
         itemBuilder: itemBuilder,
@@ -327,13 +297,12 @@ class GoodsPageState extends State<GoodsPage> {
     }
 
     return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      padding: padding,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: columnCount,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
-        mainAxisExtent: gridExtent,
+        mainAxisExtent: columnCount == 2 ? 200 : 180,
       ),
       itemCount: itemCount,
       itemBuilder: itemBuilder,

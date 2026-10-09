@@ -452,17 +452,15 @@ class ReportDetailPageState extends State<ReportDetailPage> {
   }) {
     final cell = Container(
       alignment: Alignment.center,
-      width: 132,
-      constraints: const BoxConstraints(minHeight: 44),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      width: 120,
+      height: 20,
       color: backgroundColor,
       margin: const EdgeInsets.all(1),
       child: Text(
         value,
-        maxLines: 2,
+        maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 13, fontWeight: fontWeight),
+        style: TextStyle(fontSize: 12, fontWeight: fontWeight),
       ),
     );
     if (onPressed == null) return cell;

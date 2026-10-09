@@ -12,6 +12,7 @@ class PaymentItemRow extends StatelessWidget {
   final Function(Payment item) onPressed;
   final Function(Payment item) onLongPressed;
   final bool showDate;
+  final EdgeInsets margin;
 
   PaymentItemRow(
     this.item,
@@ -19,6 +20,7 @@ class PaymentItemRow extends StatelessWidget {
     this.onPressed,
     this.onLongPressed, {
     this.showDate = true,
+    this.margin = const EdgeInsets.symmetric(vertical: 8),
   });
 
   @override
@@ -37,7 +39,7 @@ class PaymentItemRow extends StatelessWidget {
     final color = isInbound ? Colors.green : Colors.red;
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: margin,
       decoration: BoxDecoration(
         color: theme.cardTheme.color ?? theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(22),

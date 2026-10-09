@@ -33,6 +33,13 @@ class SavePaymentPageState extends State<SavePaymentPage> {
   final TextEditingController dateController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    descriptionController.text = widget.item.description;
+    context.read<SavePaymentCubit>().init(widget.item);
+  }
+
   void _showSelectWalletBottomSheet(BuildContext context) {
     var items = context.read<SavePaymentCubit>().state.wallets;
     var selectedItem = context.read<SavePaymentCubit>().state.selectedWallet;
@@ -136,8 +143,6 @@ class SavePaymentPageState extends State<SavePaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    descriptionController.text = widget.item.description;
-    context.read<SavePaymentCubit>().init(widget.item);
     return BlocConsumer<SavePaymentCubit, SavePaymentState>(
       listenWhen: (state1, state2) => state1.state != state2.state,
       listener: (context, state) async {

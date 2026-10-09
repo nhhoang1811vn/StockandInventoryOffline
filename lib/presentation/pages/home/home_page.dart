@@ -42,6 +42,7 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  static const double _cardGap = 12;
   @override
   void initState() {
     super.initState();
@@ -96,19 +97,19 @@ class HomePageState extends State<HomePage> {
                 _buildHeader(state),
                 const SizedBox(height: 16),
                 _buildSearchRow(),
-                const SizedBox(height: 16),
+                const SizedBox(height: _cardGap),
                 _buildStatsRow(state),
-                const SizedBox(height: 16),
+                const SizedBox(height: _cardGap),
                 _buildDocumentsEntry(state),
-                const SizedBox(height: 16),
+                const SizedBox(height: _cardGap),
                 _buildAddDocumentOptions(state),
-                const SizedBox(height: 16),
+                const SizedBox(height: _cardGap),
                 _buildAddPaymentOptions(),
-                const SizedBox(height: 16),
+                const SizedBox(height: _cardGap),
                 if (state.isLoadingRecentDocuments ||
                     state.recentDocuments.isNotEmpty) ...[
                   _buildRecentDocumentsHeader(),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: _cardGap),
                   if (state.isLoadingRecentDocuments)
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 32),
@@ -116,10 +117,10 @@ class HomePageState extends State<HomePage> {
                     )
                   else
                     _buildRecentDocumentsList(state),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: _cardGap),
                 ],
                 _buildPartnersSection(state),
-                const SizedBox(height: 16),
+                const SizedBox(height: _cardGap),
                 HomeWalletsSection(
                   wallets: state.wallets,
                   selectedWalletId: state.selectedWalletId,
@@ -140,7 +141,7 @@ class HomePageState extends State<HomePage> {
                     );
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: _cardGap),
                 _buildAnnouncementCard(),
                 const SizedBox(height: 32),
               ],
@@ -259,7 +260,7 @@ class HomePageState extends State<HomePage> {
             },
           ),
         ),
-        const SizedBox(width: 4),
+        const SizedBox(width: _cardGap),
         Expanded(
           child: _buildStatCard(
             state.lowStockCount.toString(),
@@ -275,7 +276,7 @@ class HomePageState extends State<HomePage> {
             },
           ),
         ),
-        const SizedBox(width: 4),
+        const SizedBox(width: _cardGap),
         Expanded(
           child: _buildStatCard(
             state.countGoods.toString(),
@@ -343,7 +344,7 @@ class HomePageState extends State<HomePage> {
           context.tr("person_name"),
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: _cardGap),
         Row(
           children: [
             Expanded(
@@ -359,7 +360,7 @@ class HomePageState extends State<HomePage> {
                 value: state.countSupplier.toString(),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: _cardGap),
             Expanded(
               child: _buildQuickActionCard(
                 context.tr("customers"),
@@ -491,7 +492,7 @@ class HomePageState extends State<HomePage> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: state.recentDocuments.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 0),
+      separatorBuilder: (context, index) => const SizedBox(height: _cardGap),
       itemBuilder: (context, index) {
         final item = state.recentDocuments[index];
         return DocumentItemRow(
@@ -506,6 +507,7 @@ class HomePageState extends State<HomePage> {
             ).then((value) => context.read<HomeCubit>().initState());
           },
           onDocumentLongPressed: onLongPressedDocument,
+          margin: EdgeInsets.zero,
         );
       },
     );
@@ -583,7 +585,7 @@ class HomePageState extends State<HomePage> {
             onTap: () => _onAddDocumentWithType(DocumentType.incoming),
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: _cardGap),
         Expanded(
           child: _buildQuickActionCard(
             context.tr("outgoing"),
@@ -607,7 +609,7 @@ class HomePageState extends State<HomePage> {
             onTap: () => _onAddPaymentWithType(PaymentType.inbound),
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: _cardGap),
         Expanded(
           child: _buildQuickActionCard(
             context.tr("title_outbound_payment"),
@@ -635,6 +637,7 @@ class HomePageState extends State<HomePage> {
   void _onAddPaymentWithType(PaymentType type) {
     final item = Payment();
     item.type = type;
+    item.storeId = AppSettings.getSelectedStoreId();
     item.walletId = context.read<HomeCubit>().state.selectedWalletId ??
         AppSettings.getSavePaymentLastSelectedWalletId();
     Navigator.of(context).pushNamed(
