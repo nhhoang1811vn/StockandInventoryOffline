@@ -48,7 +48,7 @@ class RevenueCatService {
   static Future<void> purchase(Package package) async {
     try {
       //package.storeProduct.
-      await Purchases.purchasePackage(package);
+      await Purchases.purchase(PurchaseParams.package(package));
     } catch (e) {
       print("Purchase failed: $e");
     }

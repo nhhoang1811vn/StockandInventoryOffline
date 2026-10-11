@@ -144,14 +144,17 @@ class WalletsPageState extends State<WalletsPage> {
           Icon(
             noResults ? Icons.search_off : UIConstants.walletIconData,
             size: 64,
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+            color:
+                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
           ),
           const SizedBox(height: 16),
           Text(
             context.tr(noResults ? "no_results_found" : "title_wallet"),
             style: TextStyle(
-                color:
-                    Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface
+                    .withValues(alpha: 0.4)),
           ),
         ],
       ),

@@ -75,7 +75,7 @@ class EntityImagePicker {
           toolbarTitle: 'cropper'.tr(),
           toolbarColor: Colors.blue,
           toolbarWidgetColor: Colors.white,
-          statusBarColor: Colors.blue,
+          statusBarLight: false,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true,
           aspectRatioPresets: [

@@ -33,7 +33,7 @@ class DocumentTransactionItemRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.1 : 0.015),
+            color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.015),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -53,7 +53,7 @@ class DocumentTransactionItemRow extends StatelessWidget {
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withOpacity(0.08),
+                    color: theme.colorScheme.primary.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: ClipRRect(
@@ -82,13 +82,13 @@ class DocumentTransactionItemRow extends StatelessWidget {
                             Icon(Icons.qr_code,
                                 size: 14,
                                 color: theme.colorScheme.onSurface
-                                    .withOpacity(0.5)),
+                                    .withValues(alpha: 0.5)),
                             const SizedBox(width: 6),
                             Text(
                               good.barCode!,
                               style: TextStyle(
                                 color: theme.colorScheme.onSurface
-                                    .withOpacity(0.5),
+                                    .withValues(alpha: 0.5),
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -111,8 +111,8 @@ class DocumentTransactionItemRow extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color:
-                                  theme.colorScheme.secondary.withOpacity(0.1),
+                              color: theme.colorScheme.secondary
+                                  .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(

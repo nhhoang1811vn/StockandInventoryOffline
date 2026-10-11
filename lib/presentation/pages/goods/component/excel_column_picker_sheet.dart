@@ -65,29 +65,37 @@ class ExcelColumnPickerSheet extends StatelessWidget {
                     onPressed: () => Navigator.pop(context),
                     icon: Icon(
                       Icons.close,
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                 ],
               ),
             ),
             Expanded(
-              child: ListView(
-                children: [
-                  RadioListTile<int>(
-                    title: Text(context.tr("excel_column_unused")),
-                    value: -1,
-                    groupValue: selectedColumn ?? -1,
-                    onChanged: (_) {
-                      Navigator.pop(
-                        context,
-                        const ExcelColumnChoice.unused(),
-                      );
-                    },
-                  ),
-                  for (var i = 0; i < 26; i++)
-                    _buildColumnTile(context, theme, i),
-                ],
+              child: RadioGroup<int>(
+                groupValue: selectedColumn ?? -1,
+                onChanged: (int? value) {
+                  if (value == null) return;
+                  if (value == -1) {
+                    Navigator.pop(
+                      context,
+                      const ExcelColumnChoice.unused(),
+                    );
+                    return;
+                  }
+                  if (usedColumns.contains(value)) return;
+                  Navigator.pop(context, ExcelColumnChoice.column(value));
+                },
+                child: ListView(
+                  children: [
+                    RadioListTile<int>(
+                      title: Text(context.tr("excel_column_unused")),
+                      value: -1,
+                    ),
+                    for (var i = 0; i < 26; i++)
+                      _buildColumnTile(context, theme, i),
+                  ],
+                ),
               ),
             ),
           ],
@@ -108,12 +116,7 @@ class ExcelColumnPickerSheet extends StatelessWidget {
         ),
       ),
       value: index,
-      groupValue: selectedColumn ?? -1,
-      onChanged: isTaken
-          ? null
-          : (_) {
-              Navigator.pop(context, ExcelColumnChoice.column(index));
-            },
+      enabled: !isTaken,
     );
   }
 }

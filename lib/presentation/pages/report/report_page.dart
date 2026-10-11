@@ -79,7 +79,7 @@ class ReportPageState extends State<ReportPage> {
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w800,
-          color: theme.colorScheme.onSurface.withOpacity(0.4),
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
           letterSpacing: 1.2,
         ),
       ),
@@ -91,22 +91,26 @@ class ReportPageState extends State<ReportPage> {
     final isDark = theme.brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: theme.cardTheme.color ?? theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.1 : 0.02),
+            color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.02),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: Column(
-        children: List.generate(types.length, (index) {
-          final type = types[index];
-          final isLast = index == types.length - 1;
-          return _buildReportItem(type, isLast);
-        }),
+      child: Material(
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(22),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          children: List.generate(types.length, (index) {
+            final type = types[index];
+            final isLast = index == types.length - 1;
+            return _buildReportItem(type, isLast);
+          }),
+        ),
       ),
     );
   }
@@ -121,7 +125,7 @@ class ReportPageState extends State<ReportPage> {
           leading: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withOpacity(0.1),
+              color: theme.colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -140,7 +144,7 @@ class ReportPageState extends State<ReportPage> {
           ),
           trailing: Icon(
             Icons.chevron_right_rounded,
-            color: theme.colorScheme.onSurface.withOpacity(0.2),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
           ),
           onTap: () => onReportTypeTapped(type),
         ),
@@ -148,7 +152,7 @@ class ReportPageState extends State<ReportPage> {
           Divider(
             height: 0,
             indent: 60,
-            color: theme.dividerColor.withOpacity(0.05),
+            color: theme.dividerColor.withValues(alpha: 0.05),
           ),
       ],
     );
@@ -279,7 +283,8 @@ class ReportPageState extends State<ReportPage> {
                     IconButton(
                       onPressed: () => Navigator.pop(context),
                       icon: Icon(Icons.close,
-                          color: theme.colorScheme.onSurface.withOpacity(0.4)),
+                          color: theme.colorScheme.onSurface
+                              .withValues(alpha: 0.4)),
                     ),
                   ],
                 ),
@@ -296,7 +301,8 @@ class ReportPageState extends State<ReportPage> {
                   ),
                   onTap: () => Navigator.pop(context, type),
                   trailing: Icon(Icons.chevron_right_rounded,
-                      color: theme.colorScheme.onSurface.withOpacity(0.2)),
+                      color:
+                          theme.colorScheme.onSurface.withValues(alpha: 0.2)),
                 ),
               ),
             ],

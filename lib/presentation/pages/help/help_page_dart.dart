@@ -30,21 +30,21 @@ class HelpPageState extends State<HelpPage> {
         styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
           p: theme.textTheme.bodyMedium?.copyWith(
             height: 1.55,
-            color: theme.colorScheme.onSurface.withOpacity(0.85),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.85),
           ),
           h1: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
           h2: theme.textTheme.titleMedium
               ?.copyWith(fontWeight: FontWeight.w800),
           h3: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
           listBullet: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurface.withOpacity(0.85),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.85),
           ),
           blockquoteDecoration: BoxDecoration(
-            color: theme.colorScheme.primary.withOpacity(0.06),
+            color: theme.colorScheme.primary.withValues(alpha: 0.06),
             borderRadius: BorderRadius.circular(12),
             border: Border(
               left: BorderSide(
-                color: theme.colorScheme.primary.withOpacity(0.4),
+                color: theme.colorScheme.primary.withValues(alpha: 0.4),
                 width: 3,
               ),
             ),

@@ -30,7 +30,7 @@ class StoreItemRow extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: isSelected
-            ? theme.colorScheme.primary.withOpacity(0.05)
+            ? theme.colorScheme.primary.withValues(alpha: 0.05)
             : (theme.cardTheme.color ?? theme.colorScheme.surface),
         borderRadius: BorderRadius.circular(22),
         border: isSelected
@@ -38,7 +38,7 @@ class StoreItemRow extends StatelessWidget {
             : Border.all(color: Colors.transparent, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.1 : 0.015),
+            color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.015),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -61,7 +61,7 @@ class StoreItemRow extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: isSelected && logoBytes == null
                           ? theme.colorScheme.primary
-                          : theme.colorScheme.primary.withOpacity(0.08),
+                          : theme.colorScheme.primary.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(18),
                     ),
                     child: logoBytes != null
@@ -107,7 +107,8 @@ class StoreItemRow extends StatelessWidget {
                         Text(
                           item.description,
                           style: TextStyle(
-                            color: theme.colorScheme.onSurface.withOpacity(0.5),
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.5),
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                           ),
@@ -120,7 +121,8 @@ class StoreItemRow extends StatelessWidget {
                         Text(
                           item.networkId,
                           style: TextStyle(
-                            color: theme.colorScheme.onSurface.withOpacity(0.4),
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.4),
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),

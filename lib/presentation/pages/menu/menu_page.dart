@@ -121,8 +121,10 @@ class MenuPageState extends State<MenuPage> {
               child: Text(
                 "version".tr(args: [_packageInfo.version]),
                 style: TextStyle(
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: 0.3),
                   fontSize: 12,
                 ),
               ),
@@ -156,8 +158,8 @@ class MenuPageState extends State<MenuPage> {
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.black
-                .withOpacity(theme.brightness == Brightness.dark ? 0.1 : 0.02),
+            color: Colors.black.withValues(
+                alpha: theme.brightness == Brightness.dark ? 0.1 : 0.02),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -201,8 +203,8 @@ class MenuPageState extends State<MenuPage> {
                           Text(
                             email,
                             style: TextStyle(
-                              color:
-                                  theme.colorScheme.onSurface.withOpacity(0.4),
+                              color: theme.colorScheme.onSurface
+                                  .withValues(alpha: 0.4),
                               fontSize: 14,
                             ),
                           ),

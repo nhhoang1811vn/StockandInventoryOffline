@@ -130,7 +130,7 @@ class MyCompanyPageState extends State<MyCompanyPage> {
                   color: theme.scaffoldBackgroundColor,
                   border: Border(
                       top: BorderSide(
-                          color: theme.dividerColor.withOpacity(0.1))),
+                          color: theme.dividerColor.withValues(alpha: 0.1))),
                 ),
                 child: ElevatedButton(
                   onPressed: () {

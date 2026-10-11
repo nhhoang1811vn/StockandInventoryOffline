@@ -106,17 +106,17 @@ class SelectGroupPageState extends State<SelectGroupPage> {
         margin: const EdgeInsets.symmetric(vertical: 4),
         decoration: BoxDecoration(
           color: isSelected
-              ? theme.colorScheme.primary.withOpacity(0.08)
+              ? theme.colorScheme.primary.withValues(alpha: 0.08)
               : (theme.cardTheme.color ?? theme.colorScheme.surface),
           borderRadius: BorderRadius.circular(18),
           border: isSelected
               ? Border.all(color: theme.colorScheme.primary, width: 1.5)
               : Border.all(
-                  color: theme.colorScheme.onSurface.withOpacity(0.05)),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.05)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(
-                  theme.brightness == Brightness.dark ? 0.1 : 0.01),
+              color: Colors.black.withValues(
+                  alpha: theme.brightness == Brightness.dark ? 0.1 : 0.01),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -136,7 +136,7 @@ class SelectGroupPageState extends State<SelectGroupPage> {
                     size: 20,
                     color: isSelected
                         ? theme.colorScheme.primary
-                        : theme.colorScheme.onSurface.withOpacity(0.4),
+                        : theme.colorScheme.onSurface.withValues(alpha: 0.4),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -157,8 +157,8 @@ class SelectGroupPageState extends State<SelectGroupPage> {
                           Text(
                             item!.description,
                             style: TextStyle(
-                              color:
-                                  theme.colorScheme.onSurface.withOpacity(0.4),
+                              color: theme.colorScheme.onSurface
+                                  .withValues(alpha: 0.4),
                               fontSize: 12,
                             ),
                             maxLines: 1,

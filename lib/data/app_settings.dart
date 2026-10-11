@@ -174,7 +174,7 @@ class AppSettings {
       return MinimumQuantitySettings(
         showInList: true,
         showInItem: true,
-        color: Colors.red.value,
+        color: Colors.red.toARGB32(),
         showAlert: true,
       );
     final jsonMap = jsonDecode(jsonString);
@@ -261,12 +261,12 @@ class AppSettings {
       _storage.getInt(
             _incomingDocumentColorKey,
           ) ??
-          incomingDocumentColor.value,
+          incomingDocumentColor.toARGB32(),
     );
   }
 
   static void setIncomingDocumentColor(Color color) {
-    _storage.setInt(_incomingDocumentColorKey, color.value);
+    _storage.setInt(_incomingDocumentColorKey, color.toARGB32());
   }
 
   static Color getOutgoingDocumentColor() {
@@ -274,12 +274,12 @@ class AppSettings {
       _storage.getInt(
             _outgoingDocumentColorKey,
           ) ??
-          outgoingDocumentColor.value,
+          outgoingDocumentColor.toARGB32(),
     );
   }
 
   static void setOutgoingDocumentColor(Color color) {
-    _storage.setInt(_outgoingDocumentColorKey, color.value);
+    _storage.setInt(_outgoingDocumentColorKey, color.toARGB32());
   }
 
   static int? getSavePaymentLastSelectedWalletId() {

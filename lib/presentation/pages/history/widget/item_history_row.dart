@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../constant/constant.dart';
 import '../../../../domain/entity/entity.dart';
 import '../../../../util/currency_formatter.dart';
 import '../../../../util/util.dart';
@@ -44,7 +43,7 @@ class ItemHistoryRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.1 : 0.015),
+            color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.015),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -63,7 +62,7 @@ class ItemHistoryRow extends StatelessWidget {
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.08),
+                    color: color.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: Icon(
@@ -107,7 +106,7 @@ class ItemHistoryRow extends StatelessWidget {
                                 document.personName!,
                                 style: TextStyle(
                                   color: theme.colorScheme.onSurface
-                                      .withOpacity(0.5),
+                                      .withValues(alpha: 0.5),
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -121,7 +120,8 @@ class ItemHistoryRow extends StatelessWidget {
                       Text(
                         DateFormat("hh:mm a").format(document.date),
                         style: TextStyle(
-                          color: theme.colorScheme.onSurface.withOpacity(0.2),
+                          color: theme.colorScheme.onSurface
+                              .withValues(alpha: 0.2),
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),
@@ -146,7 +146,8 @@ class ItemHistoryRow extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 14,
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        color:
+                            theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                   ],

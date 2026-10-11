@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
@@ -316,14 +315,17 @@ class GoodsPageState extends State<GoodsPage> {
         children: [
           Icon(UIConstants.goodIconData,
               size: 64,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)),
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.1)),
           const SizedBox(height: 16),
           Text(context.tr("no_goods"),
               style: TextStyle(
                   color: Theme.of(context)
                       .colorScheme
                       .onSurface
-                      .withOpacity(0.4))),
+                      .withValues(alpha: 0.4))),
         ],
       ),
     );
@@ -339,7 +341,8 @@ class GoodsPageState extends State<GoodsPage> {
                 Theme.of(context).colorScheme.surface,
             border: Border(
                 bottom: BorderSide(
-                    color: Theme.of(context).dividerColor.withOpacity(0.1))),
+                    color:
+                        Theme.of(context).dividerColor.withValues(alpha: 0.1))),
           ),
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
@@ -359,8 +362,8 @@ class GoodsPageState extends State<GoodsPage> {
                         .of(context)
                         .colorScheme
                         .onSurface
-                        .withOpacity(0.2)),
-              InkWell(
+                            .withValues(alpha: 0.2)),
+                  InkWell(
                 onTap: () =>
                     context
                         .read<GoodsCubit>()
@@ -589,24 +592,14 @@ class GoodsPageState extends State<GoodsPage> {
 
     final messenger = ScaffoldMessenger.of(context);
     try {
-      final result = await FilePicker.platform.pickFiles(
+      final files = await FilePicker.pickFiles(
         type: FileType.custom,
         allowedExtensions: const ['xlsx', 'xls', 'csv'],
-        withData: true,
       );
-      if (result == null || result.files.isEmpty) return;
+      if (files.isEmpty) return;
 
-      final picked = result.files.first;
-      Uint8List? bytes = picked.bytes;
-      if (bytes == null && picked.path != null) {
-        bytes = await File(picked.path!).readAsBytes();
-      }
-      if (bytes == null) {
-        messenger.showSnackBar(
-          snackBarWhenFailureWithText(context.tr("excel_import_failed")),
-        );
-        return;
-      }
+      final picked = files.first;
+      final bytes = await picked.readAsBytes();
 
       showProgressIndicator(context);
       final count = await context.read<GoodsCubit>().importGoodsFromExcel(

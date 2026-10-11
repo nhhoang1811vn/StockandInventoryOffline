@@ -78,7 +78,8 @@ class ExcelColumnMappingSheetState extends State<ExcelColumnMappingSheet> {
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       side: BorderSide(
-                        color: theme.colorScheme.onSurface.withOpacity(0.1),
+                        color:
+                            theme.colorScheme.onSurface.withValues(alpha: 0.1),
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),

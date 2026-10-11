@@ -85,14 +85,13 @@ class DbServiceRealtime {
         final Map<int, double> docAmounts = {};
         
         for (var tx in documentTransactions) {
-          if (tx.goodId != null) {
-            double change = (tx.type == DocumentType.incoming) ? tx.quantity : -tx.quantity;
-            goodQuantities[tx.goodId!] = (goodQuantities[tx.goodId!] ?? 0) + change;
-          }
-          if (tx.documentId != null) {
-            docQuantities[tx.documentId!] = (docQuantities[tx.documentId!] ?? 0) + tx.quantity;
-            docAmounts[tx.documentId!] = (docAmounts[tx.documentId!] ?? 0) + (tx.quantity * (tx.price ?? 0));
-          }
+          double change = (tx.type == DocumentType.incoming) ? tx.quantity : -tx
+              .quantity;
+          goodQuantities[tx.goodId] = (goodQuantities[tx.goodId] ?? 0) + change;
+          docQuantities[tx.documentId] =
+              (docQuantities[tx.documentId] ?? 0) + tx.quantity;
+          docAmounts[tx.documentId] = (docAmounts[tx.documentId] ?? 0) +
+              (tx.quantity * (tx.price ?? 0));
         }
 
         final Map<int, double> docPaid = {};

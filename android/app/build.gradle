@@ -2,7 +2,6 @@ plugins {
     id "com.android.application"
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
-    id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
 
@@ -31,7 +30,8 @@ configurations.all {
 }
 android {
     namespace "com.ssteam.goodmanagerflutter"
-    compileSdk 36
+    compileSdk 37
+    ndkVersion = "28.2.13676358"
 
 //    compileOptions {
 //        sourceCompatibility JavaVersion.VERSION_1_8
@@ -54,6 +54,12 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging true
+        }
     }
 
     defaultConfig {

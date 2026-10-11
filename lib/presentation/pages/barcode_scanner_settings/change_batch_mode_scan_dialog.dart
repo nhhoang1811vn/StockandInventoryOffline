@@ -29,17 +29,26 @@ class ChangeBatchModeScanDialogWidgetState
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-            Column(
-              children: [
-                getRadioListTile(
-                  context.tr("after_each_scan_auto"),
-                  BatchModeScan.AUTO,
-                ),
-                getRadioListTile(
-                  context.tr("after_each_scan_manually"),
-                  BatchModeScan.MANUAL,
-                ),
-              ],
+            RadioGroup<BatchModeScan>(
+              groupValue: _mode,
+              onChanged: (BatchModeScan? value) {
+                if (value == null) return;
+                setState(() {
+                  _mode = value;
+                });
+              },
+              child: Column(
+                children: [
+                  getRadioListTile(
+                    context.tr("after_each_scan_auto"),
+                    BatchModeScan.AUTO,
+                  ),
+                  getRadioListTile(
+                    context.tr("after_each_scan_manually"),
+                    BatchModeScan.MANUAL,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -63,12 +72,6 @@ class ChangeBatchModeScanDialogWidgetState
     return RadioListTile<BatchModeScan>(
       title: Text(text),
       value: value,
-      groupValue: _mode,
-      onChanged: (BatchModeScan? value) {
-        setState(() {
-          _mode = value!;
-        });
-      },
     );
   }
 }

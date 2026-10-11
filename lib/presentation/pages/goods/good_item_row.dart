@@ -68,7 +68,7 @@ class GoodItemRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.1 : 0.015),
+            color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.015),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -88,7 +88,7 @@ class GoodItemRow extends StatelessWidget {
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withOpacity(0.08),
+                    color: theme.colorScheme.primary.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: ClipRRect(
@@ -117,14 +117,14 @@ class GoodItemRow extends StatelessWidget {
                             Icon(Icons.qr_code,
                                 size: 14,
                                 color: theme.colorScheme.onSurface
-                                    .withOpacity(0.5)),
+                                    .withValues(alpha: 0.5)),
                             const SizedBox(width: 6),
                             Expanded(
                               child: Text(
                                 item.barCode!,
                                 style: TextStyle(
                                   color: theme.colorScheme.onSurface
-                                      .withOpacity(0.5),
+                                      .withValues(alpha: 0.5),
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -140,7 +140,8 @@ class GoodItemRow extends StatelessWidget {
                         Text(
                           item.description,
                           style: TextStyle(
-                            color: theme.colorScheme.onSurface.withOpacity(0.5),
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.5),
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                           ),
@@ -180,7 +181,7 @@ class GoodItemRow extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.1),
+                          color: Colors.red.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
@@ -228,7 +229,7 @@ class GoodItemRow extends StatelessWidget {
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.1 : 0.015),
+              color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.015),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -248,7 +249,7 @@ class GoodItemRow extends StatelessWidget {
                     width: imageSize,
                     height: imageSize,
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.primary.withOpacity(0.08),
+                      color: theme.colorScheme.primary.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: ClipRRect(
@@ -306,7 +307,7 @@ class GoodItemRow extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(0.1),
+                        color: Colors.red.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
@@ -338,7 +339,7 @@ class GoodItemRow extends StatelessWidget {
     bool compact = false,
   }) {
     final segments = <Widget>[];
-    final dividerColor = theme.colorScheme.onSurface.withOpacity(0.3);
+    final dividerColor = theme.colorScheme.onSurface.withValues(alpha: 0.3);
     final fontSize = compact ? 11.0 : 13.0;
     final saleFontSize = compact ? 11.0 : 14.0;
 

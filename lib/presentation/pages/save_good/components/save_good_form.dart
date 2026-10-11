@@ -197,13 +197,13 @@ class SaveGoodForm extends StatelessWidget {
                     children: [
                       Expanded(child: _buildQuantity(context, state, true)),
                       CircleButton(
-                        FontAwesomeIcons.plus,
+                        FontAwesomeIcons.plus.data,
                         context
                             .read<SaveGoodCubit>()
                             .onPlusQuantityButtonPressed,
                       ),
                       CircleButton(
-                        FontAwesomeIcons.minus,
+                        FontAwesomeIcons.minus.data,
                         context
                             .read<SaveGoodCubit>()
                             .onMinusQuantityButtonPressed,
@@ -298,7 +298,7 @@ class SaveGoodForm extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: CircleButton(
-              FontAwesomeIcons.calculator,
+              FontAwesomeIcons.calculator.data,
               context.read<SaveGoodCubit>().onQuantityCalculatorPressed,
             ),
           ),
@@ -319,7 +319,7 @@ class SaveGoodForm extends StatelessWidget {
           ),
         ),
         CircleButton(
-          FontAwesomeIcons.calculator,
+          FontAwesomeIcons.calculator.data,
           context.read<SaveGoodCubit>().onPriceCalculatorPressed,
         ),
       ],
@@ -337,7 +337,7 @@ class SaveGoodForm extends StatelessWidget {
           ),
         ),
         CircleButton(
-          FontAwesomeIcons.calculator,
+          FontAwesomeIcons.calculator.data,
           context.read<SaveGoodCubit>().onPurchasePriceCalculatorPressed,
         ),
       ],
@@ -355,7 +355,7 @@ class SaveGoodForm extends StatelessWidget {
           ),
         ),
         CircleButton(
-          FontAwesomeIcons.calculator,
+          FontAwesomeIcons.calculator.data,
           context.read<SaveGoodCubit>().onSalePriceCalculatorPressed,
         ),
       ],

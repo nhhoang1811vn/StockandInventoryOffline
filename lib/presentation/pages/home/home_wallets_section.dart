@@ -184,7 +184,7 @@ class HomeWalletsSection extends StatelessWidget {
         titleStyle: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w500,
-          color: theme.colorScheme.onSurface.withOpacity(0.4),
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
         ),
       );
     }
@@ -265,7 +265,7 @@ class _WalletFaceCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.16),
+              color: Colors.black.withValues(alpha: 0.16),
               blurRadius: 12,
               offset: const Offset(0, 6),
             ),
@@ -286,7 +286,7 @@ class _WalletFaceCard extends StatelessWidget {
                         width: 32,
                         height: 32,
                         decoration: BoxDecoration(
-                          color: onColor.withOpacity(0.16),
+                          color: onColor.withValues(alpha: 0.16),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -343,7 +343,7 @@ class _WalletFaceCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          color: onColor.withOpacity(0.72),
+                          color: onColor.withValues(alpha: 0.72),
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
                         ),
@@ -385,7 +385,6 @@ class _HomeRowCard extends StatelessWidget {
   final String? subtitle;
   final Widget? trailing;
   final bool showChevron;
-  final Color? borderColor;
   final TextStyle? titleStyle;
 
   const _HomeRowCard({
@@ -397,7 +396,6 @@ class _HomeRowCard extends StatelessWidget {
     this.subtitle,
     this.trailing,
     this.showChevron = false,
-    this.borderColor,
     this.titleStyle,
   });
 
@@ -410,9 +408,6 @@ class _HomeRowCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: radius,
-        side: borderColor == null
-            ? BorderSide.none
-            : BorderSide(color: borderColor!, width: 1.5),
       ),
       child: InkWell(
         onTap: onTap,
@@ -423,7 +418,7 @@ class _HomeRowCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: iconColor.withOpacity(0.08),
+                  color: iconColor.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: badgeText != null
@@ -459,7 +454,8 @@ class _HomeRowCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
-                          color: theme.colorScheme.onSurface.withOpacity(0.4),
+                          color: theme.colorScheme.onSurface
+                              .withValues(alpha: 0.4),
                         ),
                       ),
                     ],
@@ -474,7 +470,7 @@ class _HomeRowCard extends StatelessWidget {
                 const SizedBox(width: 4),
                 Icon(
                   Icons.chevron_right_rounded,
-                  color: theme.colorScheme.onSurface.withOpacity(0.2),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
                 ),
               ],
             ],

@@ -262,11 +262,10 @@ class SettingsDataPageState extends State<SettingsDataPage> {
   }
 
   void onRestorePressed(BuildContext context) async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      restore(context, result.files.single.path!);
-    } else {
-      // User canceled the picker
+    final result = await FilePicker.pickFile();
+    final path = result?.path;
+    if (path != null) {
+      restore(context, path);
     }
   }
   // Future<Map<String, dynamic>> readJson(File file) async {

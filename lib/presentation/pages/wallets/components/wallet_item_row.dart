@@ -31,8 +31,8 @@ class WalletItemRow extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: isSelected
-                ? baseColor.withOpacity(0.25)
-                : Colors.black.withOpacity(isDark ? 0.1 : 0.02),
+                ? baseColor.withValues(alpha: 0.25)
+                : Colors.black.withValues(alpha: isDark ? 0.1 : 0.02),
             blurRadius: isSelected ? 14 : 10,
             offset: const Offset(0, 4),
           ),
@@ -44,7 +44,7 @@ class WalletItemRow extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: baseColor.withOpacity(0.1),
+              color: baseColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(18),
             ),
             child: Icon(
@@ -72,7 +72,7 @@ class WalletItemRow extends StatelessWidget {
                 Text(
                   context.tr("total_balance"),
                   style: TextStyle(
-                    color: theme.colorScheme.onSurface.withOpacity(0.4),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                   ),

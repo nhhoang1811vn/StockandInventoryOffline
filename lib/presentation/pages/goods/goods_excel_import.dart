@@ -62,8 +62,7 @@ class GoodsExcelImportParser {
     if (content.startsWith('\uFEFF')) {
       content = content.substring(1);
     }
-    final rows =
-        const CsvToListConverter(shouldParseNumbers: false).convert(content);
+    final rows = Csv().decode(content);
     return rows
         .map((row) => row.map((cell) => cell?.toString() ?? '').toList())
         .toList();

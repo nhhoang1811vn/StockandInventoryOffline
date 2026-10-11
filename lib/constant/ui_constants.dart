@@ -13,24 +13,24 @@ class UIConstants {
   static IconData sortMenuIconData = Icons.sort_by_alpha;
   static IconData helpMenuIconData = Icons.help;
   static IconData barcodeScannerMenuIconData = Icons.barcode_reader;
-  static IconData calculatorIconData = FontAwesomeIcons.calculator;
+  static IconData calculatorIconData = FontAwesomeIcons.calculator.data;
 
   static IconData cancelIconData = Icons.close;
-  static IconData barcodeIconData = FontAwesomeIcons.barcode;
+  static IconData barcodeIconData = FontAwesomeIcons.barcode.data;
 
-  static IconData supplierIconData = FontAwesomeIcons.userGroup;
-  static IconData customerIconData = FontAwesomeIcons.user;
-  static IconData expenseIconData = FontAwesomeIcons.handHoldingDollar;
-  static IconData reportIconData = FontAwesomeIcons.chartSimple;
+  static IconData supplierIconData = FontAwesomeIcons.userGroup.data;
+  static IconData customerIconData = FontAwesomeIcons.user.data;
+  static IconData expenseIconData = FontAwesomeIcons.handHoldingDollar.data;
+  static IconData reportIconData = FontAwesomeIcons.chartSimple.data;
   static IconData storeIconData = Icons.store;
   static IconData settingIconData = Icons.settings;
-  static IconData paymentIconData = FontAwesomeIcons.moneyBill;
-  static IconData walletIconData = FontAwesomeIcons.wallet;
+  static IconData paymentIconData = FontAwesomeIcons.moneyBill.data;
+  static IconData walletIconData = FontAwesomeIcons.wallet.data;
 
-  static IconData goodIconData = FontAwesomeIcons.box;
+  static IconData goodIconData = FontAwesomeIcons.box.data;
   static IconData groupIconData = Icons.folder;
 
-  static IconData documentIconData = FontAwesomeIcons.receipt;
+  static IconData documentIconData = FontAwesomeIcons.receipt.data;
 
   static const double screenSpace = 16.0;
 

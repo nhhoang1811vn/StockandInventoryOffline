@@ -26,9 +26,10 @@ class ColumnDisplayDialogState extends State<ColumnDisplayDialog> {
     return Container(
       margin: const EdgeInsets.only(left: 16, right: 16, bottom: 12, top: 4),
       decoration: BoxDecoration(
-        color: Theme.of(context).dividerColor.withOpacity(0.05),
+        color: Theme.of(context).dividerColor.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.1)),
+        border: Border.all(
+            color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

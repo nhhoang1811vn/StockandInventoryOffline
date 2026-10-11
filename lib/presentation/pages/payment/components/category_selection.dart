@@ -23,7 +23,7 @@ class CategorySelection extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: isSelected
-            ? theme.colorScheme.primary.withOpacity(0.1)
+            ? theme.colorScheme.primary.withValues(alpha: 0.1)
             : (theme.cardTheme.color ?? theme.colorScheme.surface),
         borderRadius: BorderRadius.circular(22),
         border: isSelected
@@ -33,7 +33,7 @@ class CategorySelection extends StatelessWidget {
             ? null
             : [
                 BoxShadow(
-                  color: Colors.black.withOpacity(isDark ? 0.1 : 0.015),
+                  color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.015),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -57,8 +57,8 @@ class CategorySelection extends StatelessWidget {
                   height: 48,
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? theme.colorScheme.primary.withOpacity(0.1)
-                        : theme.colorScheme.primary.withOpacity(0.05),
+                        ? theme.colorScheme.primary.withValues(alpha: 0.1)
+                        : theme.colorScheme.primary.withValues(alpha: 0.05),
                     shape: BoxShape.circle,
                   ),
                   child: Center(

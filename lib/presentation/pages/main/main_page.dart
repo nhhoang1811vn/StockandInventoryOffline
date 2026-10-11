@@ -159,7 +159,7 @@ class _ScreenState extends State<MainView> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
             blurRadius: 20,
             offset: const Offset(0, 4),
           ),
@@ -214,7 +214,7 @@ class _ScreenState extends State<MainView> {
     final isSelected = _currentIndex == index;
     final color = isSelected
         ? theme.colorScheme.primary
-        : theme.colorScheme.onSurface.withOpacity(0.5);
+        : theme.colorScheme.onSurface.withValues(alpha: 0.5);
 
     return Expanded(
       child: Semantics(

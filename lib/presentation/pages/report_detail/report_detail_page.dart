@@ -118,7 +118,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
         String fileName = '${getExportFileName(context, state)}.csv';
         saveAndExportCSV(context, state, fileName);
       },
-      icon: Icon(FontAwesomeIcons.fileCsv),
+      icon: FaIcon(FontAwesomeIcons.fileCsv),
     );
   }
 
@@ -128,7 +128,9 @@ class ReportDetailPageState extends State<ReportDetailPage> {
     String fileName,
   ) async {
     try {
-      String csv = const ListToCsvConverter().convert(state.data);
+      String csv = Csv().encode(
+        state.data.map((row) => List<dynamic>.from(row)).toList(),
+      );
 
       final dir = await getApplicationDocumentsDirectory();
       final path = '${dir.path}/$fileName';
@@ -227,7 +229,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
         pw.Text(periodInfoText, style: pw.TextStyle(font: font)),
       pw.SizedBox(height: 16.0),
       if (state.data.isNotEmpty)
-        pw.Table.fromTextArray(
+        pw.TableHelper.fromTextArray(
           border: pw.TableBorder.all(color: PdfColors.grey),
           headerStyle: pw.TextStyle(font: fontBold, color: PdfColors.white),
           headerDecoration: pw.BoxDecoration(color: PdfColors.blue),

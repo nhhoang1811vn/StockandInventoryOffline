@@ -164,7 +164,11 @@ class CustomersPageState extends State<CustomersPage> {
             Icon(
               UIConstants.customerIconData,
               size: 64,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+              color: Theme
+                  .of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.1),
             ),
             const SizedBox(height: 16),
             Text(
@@ -172,7 +176,11 @@ class CustomersPageState extends State<CustomersPage> {
               textAlign: TextAlign.center,
               style: TextStyle(
                   color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
+                  Theme
+                      .of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: 0.4)),
             ),
           ],
         ),

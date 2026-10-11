@@ -33,7 +33,7 @@ class SettingsViewCubit extends Cubit<SettingsViewState> {
   void onReorderColorChanged(Color color) {
     emit(state.copyWith(reorderColor: color));
     final settings = AppSettings.getMinimumQuantitySettings();
-    final newSettings = settings.copyWith(color: color.value);
+    final newSettings = settings.copyWith(color: color.toARGB32());
     AppSettings.setMinimumQuantitySettings(newSettings);
   }
 }

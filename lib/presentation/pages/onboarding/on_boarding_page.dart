@@ -57,7 +57,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
     final bodyStyle = theme.textTheme.bodyLarge?.copyWith(
       height: 1.5,
-      color: colors.onSurface.withOpacity(0.62),
+      color: colors.onSurface.withValues(alpha: 0.62),
     );
 
     final pageDecoration = PageDecoration(
@@ -159,7 +159,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               ),
               dotsDecorator: DotsDecorator(
                 size: const Size(8, 8),
-                color: colors.primary.withOpacity(0.18),
+                color: colors.primary.withValues(alpha: 0.18),
                 activeColor: colors.primary,
                 activeSize: const Size(22, 8),
                 spacing: const EdgeInsets.symmetric(horizontal: 4),
@@ -232,7 +232,7 @@ class _Illustration extends StatelessWidget {
       height: 188,
       padding: const EdgeInsets.all(40),
       decoration: BoxDecoration(
-        color: colors.primary.withOpacity(0.08),
+        color: colors.primary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(36),
       ),
       child: Image.asset(
@@ -273,7 +273,7 @@ class _StoreNameField extends StatelessWidget {
         fillColor: colors.surface,
         hintText: hintText,
         hintStyle: theme.textTheme.titleMedium?.copyWith(
-          color: colors.onSurface.withOpacity(0.35),
+          color: colors.onSurface.withValues(alpha: 0.35),
           fontWeight: FontWeight.w500,
         ),
         contentPadding: const EdgeInsets.symmetric(
@@ -287,7 +287,7 @@ class _StoreNameField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: colors.outline.withOpacity(0.12),
+            color: colors.outline.withValues(alpha: 0.12),
           ),
         ),
         focusedBorder: OutlineInputBorder(
@@ -320,7 +320,7 @@ class _CircleAction extends StatelessWidget {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.28),
+            color: color.withValues(alpha: 0.28),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -351,7 +351,7 @@ class _DoneAction extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.28),
+            color: color.withValues(alpha: 0.28),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),

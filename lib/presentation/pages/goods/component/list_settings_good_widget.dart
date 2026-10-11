@@ -155,33 +155,31 @@ class ListSettingsGoodWidgetState extends State<ListSettingsGoodWidget> {
     );
     return Padding(
       padding: const EdgeInsets.only(left: 8, bottom: 8),
-      child: Column(
-        children: [
-          RadioListTile<PriceDisplayMode>(
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-            title: Text(context.tr("good_setting_display_price"),
-                style: titleStyle),
-            value: PriceDisplayMode.price,
-            groupValue: value,
-            activeColor: theme.colorScheme.primary,
-            onChanged: (v) {
-              if (v != null) onChanged(v);
-            },
-          ),
-          RadioListTile<PriceDisplayMode>(
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-            title: Text(context.tr("good_setting_display_amount"),
-                style: titleStyle),
-            value: PriceDisplayMode.amount,
-            groupValue: value,
-            activeColor: theme.colorScheme.primary,
-            onChanged: (v) {
-              if (v != null) onChanged(v);
-            },
-          ),
-        ],
+      child: RadioGroup<PriceDisplayMode>(
+        groupValue: value,
+        onChanged: (PriceDisplayMode? selected) {
+          if (selected != null) onChanged(selected);
+        },
+        child: Column(
+          children: [
+            RadioListTile<PriceDisplayMode>(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text(context.tr("good_setting_display_price"),
+                  style: titleStyle),
+              value: PriceDisplayMode.price,
+              activeColor: theme.colorScheme.primary,
+            ),
+            RadioListTile<PriceDisplayMode>(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text(context.tr("good_setting_display_amount"),
+                  style: titleStyle),
+              value: PriceDisplayMode.amount,
+              activeColor: theme.colorScheme.primary,
+            ),
+          ],
+        ),
       ),
     );
   }

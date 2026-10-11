@@ -40,16 +40,12 @@ class ImagesPreviewCubit extends Cubit<ImagesPreviewData> {
   }
 
   void onAddPhotoPressed() async {
-    FilePickerResult? result = await FilePicker.platform
-        .pickFiles(allowMultiple: true, type: FileType.image);
-    if (result != null) {
+    final files = await FilePicker.pickFiles(type: FileType.image);
+    if (files.isNotEmpty) {
       List<Uint8List> items = [];
       items.addAll(state.items);
-      for (String? path in result.paths) {
-        if (path != null) {
-          final bytes = await File(path).readAsBytes();
-          items.add(bytes);
-        }
+      for (final file in files) {
+        items.add(await file.readAsBytes());
       }
       if (!isClosed) {
         emit(state.copyWith(state: DataChangedState(), items: items));

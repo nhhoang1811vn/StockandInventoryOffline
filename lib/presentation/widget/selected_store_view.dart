@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:good_manager/domain/entity/entity.dart';
 
 import '../../data/app_settings.dart';
 

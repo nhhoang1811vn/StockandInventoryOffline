@@ -54,7 +54,7 @@ class MinimumQuantityCubit extends Cubit<MinimumQuantityState> {
     final newSettings = state.settings!.copyWith(
       showInItem: state.showInItem,
       showInList: state.showInList,
-      color: state.color!.value,
+      color: state.color!.toARGB32(),
       showAlert: state.showAlert,
     );
     AppSettings.setMinimumQuantitySettings(newSettings);

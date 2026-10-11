@@ -316,15 +316,20 @@ class DocumentPageState extends State<DocumentsPage>
             Icon(
               UIConstants.documentIconData,
               size: 64,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.1),
             ),
             SizedBox(height: 16),
             Text(
               context.tr("no_documents"),
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: 0.4)),
             ),
           ],
         ),

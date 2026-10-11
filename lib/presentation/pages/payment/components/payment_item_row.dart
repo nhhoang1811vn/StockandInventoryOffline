@@ -45,7 +45,7 @@ class PaymentItemRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.1 : 0.015),
+            color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.015),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -65,7 +65,7 @@ class PaymentItemRow extends StatelessWidget {
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.08),
+                    color: color.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: Center(
@@ -120,7 +120,7 @@ class PaymentItemRow extends StatelessWidget {
                                     : personName,
                                 style: TextStyle(
                                   color: theme.colorScheme.onSurface
-                                      .withOpacity(0.5),
+                                      .withValues(alpha: 0.5),
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -135,7 +135,8 @@ class PaymentItemRow extends StatelessWidget {
                         Text(
                           DateFormatFactory.getDateFormat().format(item.date),
                           style: TextStyle(
-                            color: theme.colorScheme.onSurface.withOpacity(0.2),
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.2),
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),
@@ -146,7 +147,8 @@ class PaymentItemRow extends StatelessWidget {
                         Text(
                           item.description,
                           style: TextStyle(
-                            color: theme.colorScheme.onSurface.withOpacity(0.4),
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.4),
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                           ),

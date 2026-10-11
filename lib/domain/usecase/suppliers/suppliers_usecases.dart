@@ -10,17 +10,14 @@ class SuppliersUseCase extends ItemsUseCase<Supplier> {
 
   SuppliersUseCase({required this.repository});
 
-  @override
   Future<int> insert(Supplier item) {
     return repository.insert(item);
   }
 
-  @override
   Future<bool> delete(int id) {
     return repository.delete(id);
   }
 
-  @override
   Future<bool> update(Supplier item) {
     return repository.update(item);
   }
@@ -33,7 +30,6 @@ class SuppliersUseCase extends ItemsUseCase<Supplier> {
     return repository.getCount(storeId);
   }
 
-  @override
   Future<Supplier> get(int id) {
     return repository.get(id);
   }

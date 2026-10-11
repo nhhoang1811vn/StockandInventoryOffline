@@ -91,7 +91,7 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
                         color: Theme.of(context)
                             .colorScheme
                             .onSurface
-                            .withOpacity(0.1),
+                            .withValues(alpha: 0.1),
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -101,7 +101,7 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
                             color: Theme.of(context)
                                 .colorScheme
                                 .onSurface
-                                .withOpacity(0.4)),
+                                .withValues(alpha: 0.4)),
                       ),
                     ],
                   ),

@@ -29,7 +29,7 @@ class GoodsSheetHeader extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
           icon: Icon(
             Icons.close,
-            color: theme.colorScheme.onSurface.withOpacity(0.6),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
           ),
         ),
       ],
@@ -52,7 +52,7 @@ class GoodsSheetSectionHeader extends StatelessWidget {
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w800,
-          color: theme.colorScheme.onSurface.withOpacity(0.4),
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
           letterSpacing: 1.2,
         ),
       ),
@@ -88,12 +88,12 @@ class GoodsSheetChip extends StatelessWidget {
           border: Border.all(
             color: isSelected
                 ? theme.colorScheme.primary
-                : theme.colorScheme.onSurface.withOpacity(0.08),
+                : theme.colorScheme.onSurface.withValues(alpha: 0.08),
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: theme.colorScheme.primary.withOpacity(0.3),
+                    color: theme.colorScheme.primary.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   )
@@ -142,7 +142,7 @@ class GoodsSheetSwitch extends StatelessWidget {
       ),
       value: value,
       onChanged: onChanged,
-      activeColor: theme.colorScheme.primary,
+      activeThumbColor: theme.colorScheme.primary,
     );
   }
 }
@@ -168,7 +168,7 @@ class GoodsSheetActions extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
               side: BorderSide(
-                color: theme.colorScheme.onSurface.withOpacity(0.1),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),

@@ -737,7 +737,9 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       data.add([context.tr("goods")]);
       data.addAll(getTableData(state));
 
-      String csv = const ListToCsvConverter().convert(data);
+      String csv = Csv().encode(
+        data.map((row) => List<dynamic>.from(row)).toList(),
+      );
 
       final dir = await getApplicationDocumentsDirectory();
       final path = '${dir.path}/$fileName';
@@ -770,13 +772,17 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
           Icon(
             UIConstants.goodIconData,
             size: 64,
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+            color:
+                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
           ),
           const SizedBox(height: 20),
           Text(
             context.tr("no_goods"),
             style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.4),
             ),
           ),
         ],

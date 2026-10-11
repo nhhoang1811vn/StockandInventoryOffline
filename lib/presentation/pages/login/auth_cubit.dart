@@ -21,6 +21,7 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   final StoresUseCase useCase;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  static bool _googleSignInInitialized = false;
 
   AuthCubit({required this.useCase}) : super(AuthInitial());
 
@@ -294,16 +295,27 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  Future<void> _ensureGoogleSignIn() async {
+    if (_googleSignInInitialized) return;
+    await GoogleSignIn.instance.initialize();
+    _googleSignInInitialized = true;
+  }
+
   Future<OAuthCredential> getGoogleCredential() async {
-    await GoogleSignIn().signOut();
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    if (googleUser == null) {
-      throw Exception("google User is null");
+    await _ensureGoogleSignIn();
+    final googleSignIn = GoogleSignIn.instance;
+    await googleSignIn.signOut();
+    final GoogleSignInAccount googleUser;
+    try {
+      googleUser = await googleSignIn.authenticate();
+    } on GoogleSignInException catch (e) {
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        throw Exception("google User is null");
+      }
+      rethrow;
     }
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+    final googleAuth = googleUser.authentication;
     final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
     return credential;

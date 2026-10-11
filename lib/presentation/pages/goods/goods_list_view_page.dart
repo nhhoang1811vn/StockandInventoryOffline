@@ -43,13 +43,13 @@ class GoodsListViewPage extends StatelessWidget {
                   Icon(
                     emptyIcon ?? UIConstants.goodIconData,
                     size: 64,
-                    color: theme.colorScheme.onSurface.withOpacity(0.1),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     context.tr("no_goods"),
                     style: TextStyle(
-                      color: theme.colorScheme.onSurface.withOpacity(0.4),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
                     ),
                   ),
                 ],

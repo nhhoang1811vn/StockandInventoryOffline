@@ -176,15 +176,20 @@ class StoresPageState extends State<StoresPage> {
             Icon(
               UIConstants.storeIconData,
               size: 64,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.1),
             ),
             const SizedBox(height: 16),
             Text(
               context.tr("no_stores"),
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: 0.4)),
             ),
           ],
         ),

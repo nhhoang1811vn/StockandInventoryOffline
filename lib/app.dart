@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:good_manager/models/app_theme.dart';
@@ -85,16 +86,32 @@ class MyAppState extends State<MyApp> {
               final mediaQuery = MediaQuery.of(context);
               final padding = mediaQuery.padding;
               final viewPadding = mediaQuery.viewPadding;
-              return MediaQuery(
-                data: mediaQuery.copyWith(
-                  padding: padding.copyWith(
-                    top: padding.top > 0 ? padding.top : viewPadding.top,
-                    bottom: padding.bottom > 0
-                        ? padding.bottom
-                        : viewPadding.bottom,
-                  ),
+              final isDark = Theme
+                  .of(context)
+                  .brightness == Brightness.dark;
+              return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness:
+                  isDark ? Brightness.light : Brightness.dark,
+                  statusBarBrightness:
+                  isDark ? Brightness.dark : Brightness.light,
+                  systemNavigationBarColor: Colors.transparent,
+                  systemNavigationBarIconBrightness:
+                  isDark ? Brightness.light : Brightness.dark,
+                  systemNavigationBarContrastEnforced: false,
                 ),
-                child: child ?? const SizedBox.shrink(),
+                child: MediaQuery(
+                  data: mediaQuery.copyWith(
+                    padding: padding.copyWith(
+                      top: padding.top > 0 ? padding.top : viewPadding.top,
+                      bottom: padding.bottom > 0
+                          ? padding.bottom
+                          : viewPadding.bottom,
+                    ),
+                  ),
+                  child: child ?? const SizedBox.shrink(),
+                ),
               );
             },
             theme: ThemeData.light().copyWith(

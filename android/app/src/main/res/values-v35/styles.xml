@@ -9,6 +9,8 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
         <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+        <item name="android:statusBarColor">#F1F3F4</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="Ucrop.CropTheme" parent="Theme.AppCompat.Light.NoActionBar">

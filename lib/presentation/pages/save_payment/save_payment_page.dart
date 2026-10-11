@@ -108,39 +108,6 @@ class SavePaymentPageState extends State<SavePaymentPage> {
     );
   }
 
-  Widget _buildPrefixObject(SavePaymentState state) {
-    var result = "";
-    if (widget.item.type == PaymentType.inbound) {
-      if (state.documentId != null) {
-        result = context.tr("documents") +
-            " " +
-            state.document!.name;
-        if (state.customer?.name != null) {
-          result += " (${state.customer!.name})";
-        }
-      } else if (state.customerId != null) {
-        result = state.customer!.name;
-      } else {
-        result = context.tr("hint_select");
-      }
-    } else {
-      if (state.documentId != null) {
-        result = context.tr("documents") +
-            " " +
-            state.document!.name;
-        //result = state.document!.name;
-        if (state.supplier?.name != null) {
-          result += " (${state.supplier!.name})";
-        }
-      } else if (state.supplierId != null) {
-        result = state.supplier!.name;
-      } else {
-        result = context.tr("hint_select");
-      }
-    }
-    return Text(result);
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SavePaymentCubit, SavePaymentState>(

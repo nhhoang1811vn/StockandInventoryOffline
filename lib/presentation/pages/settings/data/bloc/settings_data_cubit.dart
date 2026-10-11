@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_manager/data/realtime/db_service_realtime.dart';
-import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/repo/repo.dart';
 import 'package:injectable/injectable.dart';
 
