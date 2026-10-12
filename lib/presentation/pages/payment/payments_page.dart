@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/payment/components/filter_payment_widget.dart';
+import 'package:good_manager/util/currency_formatter.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 import '../../../constant/constant.dart';
@@ -30,21 +31,30 @@ class PaymentsPageState extends State<PaymentsPage>
   late TabController _tabController;
   final FocusNode searchTextFocusNode = FocusNode();
   String _searchText = '';
+  late int _summaryTabIndex;
 
   @override
   void initState() {
     super.initState();
     context.read<PaymentsCubit>().init(widget.setting);
+    _summaryTabIndex = widget.initialIndex;
     _tabController = TabController(
       length: 3,
       vsync: this,
       initialIndex: widget.initialIndex,
     );
+    _tabController.addListener(_onTabChanged);
+  }
+
+  void _onTabChanged() {
+    if (!mounted || _tabController.index == _summaryTabIndex) return;
+    setState(() => _summaryTabIndex = _tabController.index);
   }
 
   @override
   void dispose() {
     searchTextFocusNode.dispose();
+    _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     super.dispose();
   }
@@ -141,8 +151,31 @@ class PaymentsPageState extends State<PaymentsPage>
             ],
           ),
         ),
+        _buildSummary(state),
       ],
     );
+  }
+
+  List<Payment> _paymentsForSummary(PaymentsState state) {
+    final source = switch (_summaryTabIndex) {
+      1 => state.inboundPayments,
+      2 => state.outboundPayments,
+      _ => state.payments,
+    };
+    return _filterPayments(source);
+  }
+
+  Widget _buildSummary(PaymentsState state) {
+    final items = _paymentsForSummary(state);
+    final amount =
+        items.fold<double>(0, (sum, item) => sum + (item.amount ?? 0));
+    return SummaryLine([
+      SummaryLine.item(context.tr("payments"), items.length.toString()),
+      SummaryLine.item(
+        context.tr("amount"),
+        CurrencyFormatter.format(context, amount),
+      ),
+    ]);
   }
 
   Widget _buildTabBar() {

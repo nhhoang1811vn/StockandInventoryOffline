@@ -152,6 +152,12 @@ class CustomersPageState extends State<CustomersPage> {
             ],
           ),
         ),
+        SummaryLine([
+          SummaryLine.item(
+            context.tr("customers"),
+            data.items.length.toString(),
+          ),
+        ]),
       ],
     );
   }

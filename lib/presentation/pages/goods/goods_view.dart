@@ -229,25 +229,28 @@ class GoodsPageState extends State<GoodsPage> {
   }
 
   Widget _buildSummaryInfo(GoodsState state) {
-    return SummaryLine([
-      SummaryLine.item(
-        context.tr("title_folder_count"),
-        state.groups.length.toString(),
-      ),
-      SummaryLine.item(context.tr("goods"), state.goods.length.toString()),
-      SummaryLine.item(
-        context.tr("title_total_quantity"),
-        StringUtils.getQuantityText(state.quantityTotal),
-      ),
-      SummaryLine.item(
-        context.tr("title_total_purchase"),
-        CurrencyFormatter.format(context, state.purchasePriceTotal),
-      ),
-      SummaryLine.item(
-        context.tr("title_total_sale"),
-        CurrencyFormatter.format(context, state.salePriceTotal),
-      ),
-    ]);
+    return SummaryLine(
+      [
+        SummaryLine.item(
+          context.tr("title_folder_count"),
+          state.groups.length.toString(),
+        ),
+        SummaryLine.item(context.tr("goods"), state.goods.length.toString()),
+        SummaryLine.item(
+          context.tr("title_total_quantity"),
+          StringUtils.getQuantityText(state.quantityTotal),
+        ),
+        SummaryLine.item(
+          context.tr("title_total_purchase"),
+          CurrencyFormatter.format(context, state.purchasePriceTotal),
+        ),
+        SummaryLine.item(
+          context.tr("title_total_sale"),
+          CurrencyFormatter.format(context, state.salePriceTotal),
+        ),
+      ],
+      filled: true,
+    );
   }
 
   Widget _buildList(GoodsState state) {

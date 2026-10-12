@@ -164,6 +164,9 @@ class StoresPageState extends State<StoresPage> {
             ],
           ),
         ),
+        SummaryLine([
+          SummaryLine.item(context.tr("stores"), data.items.length.toString()),
+        ]),
       ],
     );
   }

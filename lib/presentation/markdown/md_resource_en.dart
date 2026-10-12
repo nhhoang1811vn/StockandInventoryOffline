@@ -1,5 +1,12 @@
 class MarkdownResourceEN {
   static const String whatNews = """
+### Version 1.0.92 - 12 Oct 2026
+* Showed incoming and outgoing count and amount on the Home documents card.
+* Added a summary bar on Goods, History, Documents, Payments, Stores, Suppliers, and Customers.
+* Document and payment summaries follow the selected tab.
+* Supplier uses a truck icon. Customer uses a users icon.
+* Help and release notes are available in every app language.
+
 ### Version 1.0.91 - 08 Oct 2026
 * Added Excel import and export on the Inventory menu.
 * Added long-press actions for recent documents on Home.

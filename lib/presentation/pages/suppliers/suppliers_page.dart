@@ -152,6 +152,12 @@ class SuppliersPageState extends State<SuppliersPage> {
             ],
           ),
         ),
+        SummaryLine([
+          SummaryLine.item(
+            context.tr("suppliers"),
+            data.items.length.toString(),
+          ),
+        ]),
       ],
     );
   }

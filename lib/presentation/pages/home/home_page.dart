@@ -9,6 +9,7 @@ import 'package:good_manager/data/app_settings.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/pages/home/home_wallets_section.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
+import 'package:good_manager/util/currency_formatter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -294,6 +295,8 @@ class HomePageState extends State<HomePage> {
     final theme = Theme.of(context);
     final color = theme.colorScheme.primary;
     final radius = BorderRadius.circular(16);
+    final incomingColor = state.incomingColor ?? Colors.red;
+    final outgoingColor = state.outgoingColor ?? Colors.green;
     return Material(
       color: theme.cardTheme.color ?? theme.colorScheme.surface,
       borderRadius: radius,
@@ -302,37 +305,103 @@ class HomePageState extends State<HomePage> {
         borderRadius: radius,
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Row(
+          child: Column(
             children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child:
-                    Icon(UIConstants.documentIconData, color: color, size: 22),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      UIConstants.documentIconData,
+                      color: color,
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      context.tr("documents"),
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
+                  Text(
+                    state.countDocuments.toString(),
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
+                  ),
+                ],
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  context.tr("documents"),
-                  style: theme.textTheme.titleMedium,
-                ),
+              const SizedBox(height: _cardGap),
+              _buildDocumentSummaryRow(
+                icon: Icons.file_download_outlined,
+                color: incomingColor,
+                label: context.tr("incoming"),
+                count: state.countIncomingDocument,
+                amount: state.sumPriceIncomingDocument,
               ),
-              Text(
-                state.countDocuments.toString(),
-                style: theme.textTheme.titleMedium,
-              ),
-              const SizedBox(width: 4),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
+              const SizedBox(height: _cardGap),
+              _buildDocumentSummaryRow(
+                icon: Icons.file_upload_outlined,
+                color: outgoingColor,
+                label: context.tr("outgoing"),
+                count: state.countOutgoingDocument,
+                amount: state.sumPriceOutgoingDocument,
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildDocumentSummaryRow({
+    required IconData icon,
+    required Color color,
+    required String label,
+    required int count,
+    required double amount,
+  }) {
+    final theme = Theme.of(context);
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: color, size: 22),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          flex: 2,
+          child: Text(
+            "$label ($count)",
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleSmall,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          flex: 3,
+          child: Text(
+            CurrencyFormatter.format(context, amount),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.end,
+            style: theme.textTheme.titleMedium?.copyWith(color: color),
+          ),
+        ),
+      ],
     );
   }
 

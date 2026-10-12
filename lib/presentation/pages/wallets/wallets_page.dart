@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/wallets/components/wallet_item_row.dart';
+import 'package:good_manager/util/currency_formatter.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../constant/constant.dart';
@@ -106,8 +107,20 @@ class WalletsPageState extends State<WalletsPage> {
               ? _buildEmpty(noResults: _searchText.trim().isNotEmpty)
               : _buildListView(items),
         ),
+        _buildSummary(items),
       ],
     );
+  }
+
+  Widget _buildSummary(List<Wallet> items) {
+    final total = items.fold<double>(0, (sum, item) => sum + item.balance);
+    return SummaryLine([
+      SummaryLine.item(context.tr("title_wallet"), items.length.toString()),
+      SummaryLine.item(
+        context.tr("total_balance"),
+        CurrencyFormatter.format(context, total),
+      ),
+    ]);
   }
 
   List<Wallet> _filterWallets(List<Wallet> items) {

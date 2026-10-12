@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../constant/constant.dart';
 import '../../../../domain/entity/entity.dart';
 import '../../../widget/entity_avatar.dart';
 
@@ -53,6 +54,7 @@ class SupplierItemRow extends StatelessWidget {
                 EntityAvatar(
                   file: item.file,
                   name: item.name,
+                  fallbackIcon: UIConstants.supplierIconData,
                 ),
                 const SizedBox(width: 16),
                 Expanded(

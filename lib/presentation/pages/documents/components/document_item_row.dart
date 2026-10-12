@@ -101,6 +101,9 @@ class DocumentItemRow extends StatelessWidget {
                               file: item.personFile,
                               name: item.personName ?? '',
                               radius: 10,
+                              fallbackIcon: item.type == DocumentType.incoming
+                                  ? UIConstants.supplierIconData
+                                  : UIConstants.customerIconData,
                             ),
                             const SizedBox(width: 8),
                             Text(

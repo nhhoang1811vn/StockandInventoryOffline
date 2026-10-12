@@ -18,8 +18,8 @@ class UIConstants {
   static IconData cancelIconData = Icons.close;
   static IconData barcodeIconData = FontAwesomeIcons.barcode.data;
 
-  static IconData supplierIconData = FontAwesomeIcons.userGroup.data;
-  static IconData customerIconData = FontAwesomeIcons.user.data;
+  static IconData supplierIconData = Icons.local_shipping_rounded;
+  static IconData customerIconData = FontAwesomeIcons.userGroup.data;
   static IconData expenseIconData = FontAwesomeIcons.handHoldingDollar.data;
   static IconData reportIconData = FontAwesomeIcons.chartSimple.data;
   static IconData storeIconData = Icons.store;

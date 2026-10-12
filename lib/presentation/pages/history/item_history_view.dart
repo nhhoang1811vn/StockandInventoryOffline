@@ -169,6 +169,7 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
         ),
       ],
       caption: period,
+      filled: true,
     );
   }
 }

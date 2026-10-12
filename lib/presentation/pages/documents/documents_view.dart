@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/documents/components/filter_document_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
+import 'package:good_manager/util/currency_formatter.dart';
+import 'package:good_manager/util/string_utils.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
@@ -36,16 +38,24 @@ class DocumentPageState extends State<DocumentsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final FocusNode searchTextFocusNode = FocusNode();
+  int _summaryTabIndex = 0;
 
   @override
   void initState() {
     context.read<DocumentsCubit>().initState(setting: widget.setting);
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(_onTabChanged);
     super.initState();
+  }
+
+  void _onTabChanged() {
+    if (!mounted || _tabController.index == _summaryTabIndex) return;
+    setState(() => _summaryTabIndex = _tabController.index);
   }
 
   @override
   void dispose() {
+    _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     super.dispose();
   }
@@ -117,8 +127,42 @@ class DocumentPageState extends State<DocumentsPage>
           Expanded(child: _buildIncomingDocumentView(context, state))
         else
           Expanded(child: _buildOutgoingDocumentView(context, state)),
+        _buildSummary(state),
       ],
     );
+  }
+
+  List<Document> _documentsForSummary(DocumentsState state) {
+    if (widget.isSelection) {
+      return widget.documentType == DocumentType.incoming
+          ? state.incomingDocuments
+          : state.outgoingDocuments;
+    }
+    switch (_summaryTabIndex) {
+      case 1:
+        return state.incomingDocuments;
+      case 2:
+        return state.outgoingDocuments;
+      default:
+        return state.documents;
+    }
+  }
+
+  Widget _buildSummary(DocumentsState state) {
+    final items = _documentsForSummary(state);
+    final quantity = items.fold<double>(0, (sum, item) => sum + item.quantity);
+    final amount = items.fold<double>(0, (sum, item) => sum + item.amount);
+    return SummaryLine([
+      SummaryLine.item(context.tr("documents"), items.length.toString()),
+      SummaryLine.item(
+        context.tr("quantity"),
+        StringUtils.getQuantityText(quantity),
+      ),
+      SummaryLine.item(
+        context.tr("amount"),
+        CurrencyFormatter.format(context, amount),
+      ),
+    ]);
   }
 
   Widget _buildSearchRow(DocumentsState state) {

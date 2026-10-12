@@ -96,6 +96,13 @@ Dùng chức năng này để theo dõi chi tiêu theo từng cửa hàng.
 """;
 
   static const String whatNews = """
+### Phiên bản 1.0.92 - 12/10/2026
+* Hiện số lượng và tổng tiền nhập/xuất trên thẻ chứng từ ở Trang chủ.
+* Thêm thanh tóm tắt ở Hàng hóa, Lịch sử, Chứng từ, Thanh toán, Cửa hàng, Nhà cung cấp và Khách hàng.
+* Tóm tắt chứng từ và thanh toán theo tab đang chọn.
+* Nhà cung cấp dùng icon xe tải. Khách hàng dùng icon nhóm người.
+* Trợ giúp và ghi chú phiên bản có đủ ngôn ngữ của ứng dụng.
+
 ### Phiên bản 1.0.91 - 08/10/2026
 * Thêm nhập và xuất Excel trên menu Tồn kho.
 * Thêm thao tác nhấn giữ cho chứng từ gần đây trên Trang chủ.
