@@ -18,7 +18,8 @@ class DocumentItemRow extends StatelessWidget {
   final bool showTimeOnly;
   final EdgeInsets margin;
 
-  DocumentItemRow({
+  const DocumentItemRow({
+    super.key,
     required this.item,
     required this.bgColor,
     required this.incomingColor,
@@ -41,8 +42,7 @@ class DocumentItemRow extends StatelessWidget {
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        color: Theme.of(context).cardTheme.color ??
-            Theme.of(context).colorScheme.surface,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
@@ -61,6 +61,7 @@ class DocumentItemRow extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(14.0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   width: 64,
@@ -80,21 +81,27 @@ class DocumentItemRow extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              item.name,
-                              style: Theme.of(context).textTheme.titleMedium,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          _buildStatusBadge(context, status),
-                        ],
+                      Text(
+                        item.name,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
+                      if (item.description.isNotEmpty) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          item.description,
+                          style: TextStyle(
+                            color: Colors.black.withValues(alpha: 0.45),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                       const SizedBox(height: 6),
-                      if (item.personName != null)
+                      if (item.personName != null) ...[
                         Row(
                           children: [
                             EntityAvatar(
@@ -106,17 +113,22 @@ class DocumentItemRow extends StatelessWidget {
                                   : UIConstants.customerIconData,
                             ),
                             const SizedBox(width: 8),
-                            Text(
-                              item.personName!,
-                              style: const TextStyle(
-                                color: Color(0xFF8E9199),
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
+                            Expanded(
+                              child: Text(
+                                item.personName!,
+                                style: const TextStyle(
+                                  color: Color(0xFF8E9199),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
                         ),
-                      const SizedBox(height: 4),
+                        const SizedBox(height: 4),
+                      ],
                       Text(
                         showTimeOnly
                             ? DateFormatFactory.getTimeFormat()
@@ -124,10 +136,7 @@ class DocumentItemRow extends StatelessWidget {
                             : DateFormatFactory.getDateAndTimeFormat()
                                 .format(item.date),
                         style: TextStyle(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withValues(alpha: 0.4),
+                          color: Colors.black.withValues(alpha: 0.2),
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),
@@ -137,8 +146,11 @@ class DocumentItemRow extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    _buildStatusBadge(context, status),
+                    const SizedBox(height: 4),
                     Text(
                       StringUtils.getQuantityText(item.quantity),
                       style: TextStyle(
@@ -147,7 +159,7 @@ class DocumentItemRow extends StatelessWidget {
                         color: color,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 4),
                     Text(
                       CurrencyFormatter.format(context, item.amount),
                       style: TextStyle(
