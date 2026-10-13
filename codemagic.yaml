@@ -19,26 +19,6 @@ workflows:
           include: true
           source: true
     scripts:
-      - name: Point Gradle at Android SDK 37.0
-        script: |
-          set -euo pipefail
-          if [ -n "${ANDROID_SDK_ROOT:-}" ]; then
-            SDK_ROOT="$ANDROID_SDK_ROOT"
-          elif [ -n "${ANDROID_HOME:-}" ]; then
-            SDK_ROOT="$ANDROID_HOME"
-          elif [ -d "$HOME/programs/android-sdk" ]; then
-            SDK_ROOT="$HOME/programs/android-sdk"
-          elif [ -d "/usr/local/share/android-sdk" ]; then
-            SDK_ROOT="/usr/local/share/android-sdk"
-          else
-            SDK_ROOT="$HOME/Library/Android/sdk"
-          fi
-          yes | sdkmanager --sdk_root="$SDK_ROOT" --licenses >/dev/null || true
-          sdkmanager --sdk_root="$SDK_ROOT" "platforms;android-37.0" "ndk;28.2.13676358"
-          if [ -d "$SDK_ROOT/platforms/android-37.0" ] && [ ! -e "$SDK_ROOT/platforms/android-37" ]; then
-            ln -s android-37.0 "$SDK_ROOT/platforms/android-37"
-          fi
-          ls -ld "$SDK_ROOT/platforms"/android-37*
       - name: Install dependencies
         script: flutter pub get
       - name: Build Android App Bundle
@@ -50,3 +30,46 @@ workflows:
       google_play:
         credentials: $GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
+
+  ios-release:
+    name: iOS release
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    integrations:
+      # Team settings > Integrations > Developer Portal.
+      # The App Store Connect API key name must be exactly goodmanager.
+      app_store_connect: Codemagic
+    environment:
+      flutter: stable
+      xcode: latest
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.ssteam.goodmanagerflutter
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: release/*
+          include: true
+          source: true
+        - pattern: master
+          include: true
+          source: true
+    scripts:
+      - name: Set up code signing
+        script: xcode-project use-profiles
+      - name: Install dependencies
+        script: flutter pub get
+      - name: Install CocoaPods
+        script: find . -name "Podfile" -execdir pod install \;
+      - name: Build iOS IPA
+        script: |
+          flutter build ipa --release -t lib/main.dart \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
