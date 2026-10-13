@@ -5,7 +5,7 @@ workflows:
     instance_type: mac_mini_m2
     environment:
       java: 17
-      flutter: stable
+      flutter: 3.47.7
       groups:
         - google_credentials
     triggering:
@@ -38,9 +38,9 @@ workflows:
     integrations:
       # Team settings > Integrations > Developer Portal.
       # The App Store Connect API key name must be exactly goodmanager.
-      app_store_connect: Codemagic
+      app_store_connect: pro_offline
     environment:
-      flutter: stable
+      flutter: 3.47.7
       xcode: latest
       ios_signing:
         distribution_type: app_store
