@@ -38,7 +38,7 @@ workflows:
     integrations:
       # Team settings > Integrations > Developer Portal.
       # The App Store Connect API key name must be exactly goodmanager.
-      app_store_connect: pro_offline
+      app_store_connect: Codemagic
     environment:
       flutter: 3.47.7
       xcode: latest
