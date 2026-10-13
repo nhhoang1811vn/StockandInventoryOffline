@@ -304,7 +304,7 @@ class HomePageState extends State<HomePage> {
         onTap: widget.onOpenDocumentsPage,
         borderRadius: radius,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12.0),
           child: Column(
             children: [
               Row(
@@ -464,7 +464,7 @@ class HomePageState extends State<HomePage> {
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -515,7 +515,7 @@ class HomePageState extends State<HomePage> {
         onTap: onTap,
         borderRadius: radius,
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -727,7 +727,7 @@ class HomePageState extends State<HomePage> {
         onTap: () => _showVersionInfoDialog(),
         borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

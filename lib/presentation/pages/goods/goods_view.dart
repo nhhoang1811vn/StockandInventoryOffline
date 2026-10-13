@@ -257,7 +257,7 @@ class GoodsPageState extends State<GoodsPage> {
     final columnCount = state.settings.gridColumnCount;
     final groupCount = state.groups.length;
     final itemCount = groupCount + state.goods.length;
-    const padding = EdgeInsets.fromLTRB(16, 16, 16, 16);
+    const padding = EdgeInsets.fromLTRB(16, 12, 16, 16);
 
     Widget itemBuilder(BuildContext context, int index) {
       if (index < groupCount) {
@@ -302,8 +302,8 @@ class GoodsPageState extends State<GoodsPage> {
       padding: padding,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: columnCount,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
         mainAxisExtent: columnCount == 2 ? 200 : 180,
       ),
       itemCount: itemCount,

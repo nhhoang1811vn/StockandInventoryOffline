@@ -81,7 +81,7 @@ class GoodItemRow extends StatelessWidget {
           onLongPress: () => onGoodLongPressed(item),
           borderRadius: BorderRadius.circular(22),
           child: Padding(
-            padding: const EdgeInsets.all(14.0),
+            padding: const EdgeInsets.all(12.0),
             child: Row(
               children: [
                 Container(

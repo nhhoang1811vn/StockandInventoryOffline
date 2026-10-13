@@ -96,7 +96,7 @@ class GroupItemRow extends StatelessWidget {
     return _buildCardWrapper(
       context,
       Padding(
-        padding: const EdgeInsets.all(14.0),
+        padding: const EdgeInsets.all(12.0),
         child: Row(
           children: [
             _buildFolderIcon(context, size: 64, iconSize: 28),

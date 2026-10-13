@@ -23,7 +23,7 @@ class WalletItemRow extends StatelessWidget {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
         color: cardColor,
         borderRadius: BorderRadius.circular(22),

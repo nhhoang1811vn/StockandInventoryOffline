@@ -276,7 +276,7 @@ class _WalletFaceCard extends StatelessWidget {
             SizedBox(
               height: _peek,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 12, 0),
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -334,7 +334,7 @@ class _WalletFaceCard extends StatelessWidget {
             if (expanded)
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 18),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -412,7 +412,7 @@ class _HomeRowCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12.0),
           child: Row(
             children: [
               Container(

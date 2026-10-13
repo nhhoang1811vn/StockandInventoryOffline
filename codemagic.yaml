@@ -21,6 +21,8 @@ workflows:
     scripts:
       - name: Install dependencies
         script: flutter pub get
+      - name: Generate cubit
+        script: dart run build_runner build --delete-conflicting-outputs
       - name: Build Android App Bundle
         script: flutter build appbundle --release -t lib/main.dart
     artifacts:
@@ -60,6 +62,8 @@ workflows:
         script: xcode-project use-profiles
       - name: Install dependencies
         script: flutter pub get
+      - name: Generate cubit
+        script: dart run build_runner build --delete-conflicting-outputs
       - name: Install CocoaPods
         script: find . -name "Podfile" -execdir pod install \;
       - name: Build iOS IPA
