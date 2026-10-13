@@ -21,6 +21,8 @@ class DefaultFirebaseOptions {
         return android;
       case TargetPlatform.iOS:
         return ios;
+      case TargetPlatform.macOS:
+        return macos;
       case TargetPlatform.windows:
         return windows;
       default:
@@ -49,6 +51,20 @@ class DefaultFirebaseOptions {
     iosClientId:
         '617423800641-3hg9toe6rn1ho9pqbt7mami3vmda5l33.apps.googleusercontent.com',
     iosBundleId: 'com.ssteam.goodmanagerflutter',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyBFSW5s9KX8OHdKlmT-cK2gZ6a1H0AvC2U',
+    appId: '1:617423800641:ios:014ec070af3666975839c0',
+    messagingSenderId: '617423800641',
+    projectId: 'quanlykho-4818e',
+    storageBucket: 'quanlykho-4818e.appspot.com',
+    databaseURL: 'https://quanlykho-4818e-default-rtdb.firebaseio.com',
+    androidClientId:
+        '617423800641-9iuda92n0amrmk2ap2ejalgan1riqluh.apps.googleusercontent.com',
+    iosClientId:
+        '617423800641-ke0ocsplq7eivafuvodg91qokgqmt1se.apps.googleusercontent.com',
+    iosBundleId: 'com.ssteam.goodmanagerfluttermacos',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
