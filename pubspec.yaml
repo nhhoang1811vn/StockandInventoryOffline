@@ -137,6 +137,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  config:
+    # Firebase is already a CocoaPod. SPM would import firebase-ios-sdk again
+    # and fail the archive with "Redefinition of module 'Firebase'".
+    enable-swift-package-manager: false
   assets:
     - assets/images/
     - assets/svgs/

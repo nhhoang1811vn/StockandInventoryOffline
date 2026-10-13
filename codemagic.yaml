@@ -8,16 +8,6 @@ workflows:
       flutter: 3.47.7
       groups:
         - google_credentials
-    triggering:
-      events:
-        - push
-      branch_patterns:
-        - pattern: release/*
-          include: true
-          source: true
-        - pattern: master
-          include: true
-          source: true
     scripts:
       - name: Install dependencies
         script: flutter pub get
