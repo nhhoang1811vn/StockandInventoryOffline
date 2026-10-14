@@ -1,5 +1,5 @@
 PODS:
-x  - AppAuth (2.1.0):
+  - AppAuth (2.1.0):
     - AppAuth/Core (= 2.1.0)
     - AppAuth/ExternalUserAgent (= 2.1.0)
   - AppAuth/Core (2.1.0)
