@@ -98,10 +98,6 @@ workflows:
         script: flutter pub get
       - name: Generate cubit
         script: dart run build_runner build --delete-conflicting-outputs
-      - name: Update RevenueCat pods
-        script: |
-          cd ios
-          pod update PurchasesHybridCommon PurchasesHybridCommonUI RevenueCat RevenueCatUI --repo-update
       - name: Build iOS IPA
         script: |
           flutter build ipa --release -t lib/main.dart \
