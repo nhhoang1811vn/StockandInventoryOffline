@@ -1,71 +1,37 @@
 workflows:
-  # android-release:
-  #   name: Android release
-  #   max_build_duration: 60
-  #   instance_type: mac_mini_m2
-  #   environment:
-  #     java: 17
-  #     flutter: 3.47.7
-  #     groups:
-  #       - google_credentials
-  #   triggering:
-  #     events:
-  #       - push
-  #     branch_patterns:
-  #       - pattern: release/*
-  #         include: true
-  #         source: true
-  #       - pattern: master
-  #         include: true
-  #         source: true
-  #   scripts:
-  #     - name: Install dependencies
-  #       script: flutter pub get
-  #     - name: Generate cubit
-  #       script: dart run build_runner build --delete-conflicting-outputs
-  #     - name: Build Android App Bundle
-  #       script: flutter build appbundle --release -t lib/main.dart
-  #   artifacts:
-  #     - build/**/outputs/**/*.aab
-  #     - build/**/outputs/**/mapping.txt
-  #   publishing:
-  #     google_play:
-  #       credentials: $GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS
-  #       track: internal
-
-  # macos-release:
-  #   name: macOS release
-  #   max_build_duration: 120
-  #   instance_type: mac_mini_m2
-  #   environment:
-  #     flutter: 3.47.7
-  #     xcode: latest
-  #   triggering:
-  #     events:
-  #       - push
-  #     branch_patterns:
-  #       - pattern: release/*
-  #         include: true
-  #         source: true
-  #       - pattern: master
-  #         include: true
-  #         source: true
-  #   scripts:
-  #     - name: Install dependencies
-  #       script: flutter pub get
-  #     - name: Generate cubit
-  #       script: dart run build_runner build --delete-conflicting-outputs
-  #     - name: Install CocoaPods
-  #       script: find macos -name "Podfile" -execdir pod install \;
-  #     - name: Build macOS app
-  #       script: |
-  #         flutter build macos --release -t lib/main.dart
-  #         cd build/macos/Build/Products/Release
-  #         ditto -c -k --keepParent *.app goodmanagerflutter-macos.zip
-  #   artifacts:
-  #     - build/macos/Build/Products/Release/*.app
-  #     - build/macos/Build/Products/Release/*.zip
-  #     - /tmp/xcodebuild_logs/*.log
+  android-release:
+    name: Android release
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      java: 17
+      flutter: 3.47.7
+      groups:
+        - google_credentials
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: release/*
+          include: true
+          source: true
+        - pattern: master
+          include: true
+          source: true
+    scripts:
+      - name: Install dependencies
+        script: flutter pub get
+      - name: Generate cubit
+        script: dart run build_runner build --delete-conflicting-outputs
+      - name: Build Android App Bundle
+        script: flutter build appbundle --release -t lib/main.dart
+    artifacts:
+      - build/**/outputs/**/*.aab
+      - build/**/outputs/**/mapping.txt
+    publishing:
+      google_play:
+        credentials: $GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
 
   ios-release:
     name: iOS release
