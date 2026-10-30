@@ -65,7 +65,7 @@ class GoodItemRow extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: theme.cardTheme.color ?? theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(Dimens.cardRadius),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.015),
@@ -79,27 +79,27 @@ class GoodItemRow extends StatelessWidget {
         child: InkWell(
           onTap: () => onGoodTapped(item),
           onLongPress: () => onGoodLongPressed(item),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(Dimens.cardRadius),
           child: Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(Dimens.cardPadding),
             child: Row(
               children: [
                 Container(
-                  width: 64,
-                  height: 64,
+                  width: Dimens.tileSize,
+                  height: Dimens.tileSize,
                   decoration: BoxDecoration(
                     color: theme.colorScheme.primary.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(Dimens.tileRadius),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(Dimens.tileRadius),
                     child: item.files.isNotEmpty
                         ? Image.memory(item.files.first, fit: BoxFit.cover)
                         : Icon(UIConstants.goodIconData,
                             color: theme.colorScheme.primary, size: 28),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: Dimens.tileGap),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,11 +222,11 @@ class GoodItemRow extends StatelessWidget {
     final padding = isCompact ? 8.0 : 12.0;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(22),
+      borderRadius: BorderRadius.circular(Dimens.cardRadius),
       child: Container(
         decoration: BoxDecoration(
           color: theme.cardTheme.color ?? theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(Dimens.cardRadius),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.015),
@@ -240,7 +240,7 @@ class GoodItemRow extends StatelessWidget {
           child: InkWell(
             onTap: () => onGoodTapped(item),
             onLongPress: () => onGoodLongPressed(item),
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(Dimens.cardRadius),
             child: Padding(
               padding: EdgeInsets.all(padding),
               child: Column(

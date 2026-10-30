@@ -1,3 +1,4 @@
+import 'package:good_manager/util/dimen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/util/currency_formatter.dart';
@@ -7,7 +8,7 @@ import '../../../domain/entity/entity.dart';
 import '../pages.dart';
 
 class HomeWalletsSection extends StatelessWidget {
-  static const double _cardGap = 12;
+  static const double _cardGap = Dimens.cardGap;
   final List<Wallet> wallets;
   final int? selectedWalletId;
   final double totalBalance;
@@ -402,7 +403,7 @@ class _HomeRowCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final radius = BorderRadius.circular(16);
+    final radius = BorderRadius.circular(Dimens.cardRadius);
     return Material(
       color: theme.cardTheme.color ?? theme.colorScheme.surface,
       clipBehavior: Clip.antiAlias,

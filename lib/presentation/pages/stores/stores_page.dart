@@ -15,6 +15,7 @@ import '../help_content.dart';
 import '../pages.dart';
 import 'components/filter_store_widget.dart';
 import 'components/store_item_row.dart';
+import '../../../util/toast_utils.dart';
 
 class StoresPage extends StatefulWidget {
   final bool isSelection;
@@ -67,11 +68,7 @@ class StoresPageState extends State<StoresPage> {
             },
           );
         } else if (state.state is DeleteItemError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            snackBarWhenFailureWithText(
-              context.tr("delete_store_error"),
-            ),
-          );
+          ToastUtils.showErrorToast(context.tr("delete_store_error"));
         } else if (state.state is OpenBuySubscriptionDialogState) {
           showBuySubscriptionDialog(
             context,

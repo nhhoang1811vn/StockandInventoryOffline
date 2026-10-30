@@ -1,3 +1,4 @@
+import 'package:good_manager/util/dimen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -29,10 +30,10 @@ class SupplierItemRow extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: Dimens.screenPadding, vertical: 6),
       decoration: BoxDecoration(
         color: theme.cardTheme.color ?? theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(Dimens.cardRadius),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.015),
@@ -46,17 +47,18 @@ class SupplierItemRow extends StatelessWidget {
         child: InkWell(
           onTap: () => onPressed(item),
           onLongPress: () => onLongPressed(item),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(Dimens.cardRadius),
           child: Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(Dimens.cardPadding),
             child: Row(
               children: [
                 EntityAvatar(
                   file: item.file,
                   name: item.name,
+                  radius: Dimens.tileSize / 2,
                   fallbackIcon: UIConstants.supplierIconData,
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: Dimens.tileGap),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

@@ -15,7 +15,6 @@ export 'save_object_app_bar.dart';
 export 'search_bar_widget.dart';
 export 'selected_store_view.dart';
 export 'settings_ui.dart';
-export 'snackbar_widgets.dart';
 export 'summary_line.dart';
 export 'views.dart';
 export 'wallet_short_form_widget.dart';

@@ -7,6 +7,7 @@ import 'package:introduction_screen/introduction_screen.dart';
 import '../../../di/di.dart';
 import '../pages.dart';
 import 'bloc/on_boarding_cubit.dart';
+import '../../../util/toast_utils.dart';
 
 class OnBoardingPage extends StatefulWidget {
   OnBoardingPage({super.key});
@@ -78,9 +79,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           if (state.status.isSuccess) {
             Navigator.of(context).pushReplacementNamed(Pages.main);
           } else if (state.status.isFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(context.tr("store_create_failed"))),
-            );
+            ToastUtils.showErrorToast(context.tr("store_create_failed"));
           }
         },
         child: Scaffold(

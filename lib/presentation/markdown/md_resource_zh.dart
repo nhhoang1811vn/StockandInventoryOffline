@@ -3,6 +3,14 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceZH {
   static const bundle = MarkdownBundle(
     whatNews: """
+### 版本 1.0.93 - 2026年10月30日
+* 全新现代化通知，从顶部滑入。向上滑动或点击即可关闭。
+* 所有消息统一使用同一种通知样式，并以颜色区分成功、警告和错误。
+* 应用更名为 Stock & Inventory Manager。
+* 各页面的卡片和列表间距与尺寸更加统一。
+* 项目长按菜单更简洁。
+* 修复设置中的“评价应用”按钮，现在可打开商店页面。
+
 ### 版本 1.0.92 - 2026年10月12日
 * 首页单据卡片显示入库和出库的数量与金额。
 * 在商品、历史、单据、付款、门店、供应商和客户列表增加汇总条。

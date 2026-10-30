@@ -43,7 +43,7 @@ class DocumentItemRow extends StatelessWidget {
       margin: margin,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(Dimens.cardRadius),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.015),
@@ -57,26 +57,26 @@ class DocumentItemRow extends StatelessWidget {
         child: InkWell(
           onTap: () => onDocumentTapped(item),
           onLongPress: () => onDocumentLongPressed(item),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(Dimens.cardRadius),
           child: Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(Dimens.cardPadding),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 64,
-                  height: 64,
+                  width: Dimens.tileSize,
+                  height: Dimens.tileSize,
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(Dimens.tileRadius),
                   ),
                   child: Icon(
                     leadingIcon,
                     color: color,
-                    size: 28,
+                    size: Dimens.tileIconSize,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: Dimens.tileGap),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

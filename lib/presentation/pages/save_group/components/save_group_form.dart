@@ -11,6 +11,7 @@ import '../../../../util/base64_utils.dart';
 import '../../../review_manager.dart';
 import '../../../utils.dart';
 import '../../../widget/widget.dart';
+import '../../../../util/toast_utils.dart';
 
 class SaveGroupForm extends StatelessWidget {
   final Group item;
@@ -36,12 +37,10 @@ class SaveGroupForm extends StatelessWidget {
       },
       listener: (context, state) async {
         if (state.state is SaveItemError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenFailure(context));
+          ToastUtils.showErrorToast(context.tr("snackbar_try_again"));
         } else if (state.state is SaveItemSuccessful) {
           ReviewManager.maybeRequestReview();
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenSuccess(context));
+          ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
           Navigator.of(context).pop(state.item);
         } else if (state.state is OpenBarcodeScannerPageState) {
           var result = await Utils.scanBarcode(context);

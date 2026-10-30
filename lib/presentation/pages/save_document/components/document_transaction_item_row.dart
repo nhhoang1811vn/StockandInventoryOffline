@@ -27,10 +27,10 @@ class DocumentTransactionItemRow extends StatelessWidget {
     final good = item.good;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: Dimens.screenPadding, vertical: 6),
       decoration: BoxDecoration(
         color: theme.cardTheme.color ?? theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(Dimens.cardRadius),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.015),
@@ -44,27 +44,27 @@ class DocumentTransactionItemRow extends StatelessWidget {
         child: InkWell(
           onTap: () => onTransactionPressed(item),
           onLongPress: () => onTransactionLongPressed(item),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(Dimens.cardRadius),
           child: Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(Dimens.cardPadding),
             child: Row(
               children: [
                 Container(
-                  width: 64,
-                  height: 64,
+                  width: Dimens.tileSize,
+                  height: Dimens.tileSize,
                   decoration: BoxDecoration(
                     color: theme.colorScheme.primary.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(Dimens.tileRadius),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(Dimens.tileRadius),
                     child: good.files.isNotEmpty
                         ? Image.memory(good.files.first, fit: BoxFit.cover)
                         : Icon(UIConstants.goodIconData,
                             color: theme.colorScheme.primary, size: 28),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: Dimens.tileGap),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

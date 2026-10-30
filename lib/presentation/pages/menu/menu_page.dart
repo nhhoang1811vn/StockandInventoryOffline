@@ -365,14 +365,7 @@ class MenuPageState extends State<MenuPage> {
         SettingsMenuItem(
           icon: Icons.star_outline,
           title: context.tr("review_the_app_title"),
-          onTap: () async {
-            final InAppReview inAppReview = InAppReview.instance;
-            if (await inAppReview.isAvailable()) {
-              inAppReview.requestReview();
-            } else {
-              await inAppReview.openStoreListing();
-            }
-          },
+          onTap: _openStoreReview,
           isLast: true,
         ),
       ],
@@ -460,6 +453,21 @@ class MenuPageState extends State<MenuPage> {
 
   void onSettingsItemPressed(BuildContext context) {
     Navigator.of(context).pushNamed(Pages.settings);
+  }
+
+  /// Opens the store review page. The native in-app prompt is rate-limited by
+  /// the OS and silently does nothing when the quota is used, so an explicit
+  /// tap goes straight to the store listing.
+  Future<void> _openStoreReview() async {
+    try {
+      await InAppReview.instance.openStoreListing(
+        appStoreId: Config.iOSAppStoreId,
+      );
+    } catch (_) {
+      NavigatorUtils.openUrl(
+        Platform.isIOS ? Config.iOSStoreLink : Config.androidStoreLink,
+      );
+    }
   }
 
   void onInviteFriend(BuildContext context) {
@@ -579,11 +587,7 @@ class MenuPageState extends State<MenuPage> {
             }
             if (!mounted) return;
             if (!saved) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                snackBarWhenFailureWithText(
-                  context.tr("upload_failed_signout_cancelled"),
-                ),
-              );
+              ToastUtils.showErrorToast(context.tr("upload_failed_signout_cancelled"));
               return;
             }
             await _finishSignOut();

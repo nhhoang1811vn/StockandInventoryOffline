@@ -62,13 +62,10 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
     return BlocConsumer<SaveDocumentCubit, SaveDocumentState>(
       listener: (context, state) async {
         if (state.state is SaveDocumentFailedState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            snackBarWhenFailureWithText(state.exceptionError),
-          );
+          ToastUtils.showErrorToast(state.exceptionError);
         } else if (state.state is SaveDocumentSuccessfulState) {
           ReviewManager.maybeRequestReview();
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenSuccess(context));
+          ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
           Navigator.of(context).pop();
         } else if (state.state is OpenPersonListState) {
           if (state.item?.type == DocumentType.incoming) {
@@ -525,16 +522,9 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       );
       await SharePlus.instance.share(params);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.tr("pdf_saved_and_shared"))),
-      );
+      ToastUtils.showSuccessToast(context.tr("pdf_saved_and_shared"));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text(sprintf(context.tr("error_with_details"), [e.toString()])),
-        ),
-      );
+      ToastUtils.showErrorToast(sprintf(context.tr("error_with_details"), [e.toString()]));
     }
   }
 
@@ -751,16 +741,9 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
         files: [XFile('${file.path}')],
       );
       await SharePlus.instance.share(params);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.tr("csv_saved_and_shared"))),
-      );
+      ToastUtils.showSuccessToast(context.tr("csv_saved_and_shared"));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text(sprintf(context.tr("error_with_details"), [e.toString()])),
-        ),
-      );
+      ToastUtils.showErrorToast(sprintf(context.tr("error_with_details"), [e.toString()]));
     }
   }
 

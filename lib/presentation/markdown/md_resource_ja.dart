@@ -3,6 +3,14 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceJA {
   static const bundle = MarkdownBundle(
     whatNews: """
+### バージョン 1.0.93 - 2026年10月30日
+* 上からスライドして表示される、新しいモダンな通知。上にスワイプまたはタップで閉じます。
+* すべてのメッセージを同じ通知スタイルに統一し、成功・警告・エラーを色で区別。
+* アプリ名を Stock & Inventory Manager に変更。
+* 全画面でカードと一覧の余白とサイズをより統一。
+* 項目の長押しメニューをすっきりと改善。
+* 設定の「アプリを評価」がストアのページを開くように修正。
+
 ### バージョン 1.0.92 - 2026年10月12日
 * ホームの伝票カードに入庫と出庫の件数と金額を表示。
 * 商品、履歴、伝票、支払、店舗、仕入先、顧客の一覧に要約バーを追加。

@@ -9,6 +9,7 @@ class Config {
       //NumberFormat.currency(symbol: AppSettings.currency.symbol, decimalDigits: 0);
   static NumberFormat simpleCurrencyFormat = NumberFormat.decimalPattern("en_US");
 
+  static const String iOSAppStoreId = "6670546293";
   static String iOSStoreLink = "https://apps.apple.com/us/app/stock-and-inventory/id6670546293";
   static String androidStoreLink = "https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter";
 

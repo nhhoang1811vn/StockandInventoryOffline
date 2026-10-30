@@ -1,3 +1,4 @@
+import 'package:good_manager/util/dimen.dart';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -27,12 +28,12 @@ class StoreItemRow extends StatelessWidget {
     final Uint8List? logoBytes = tryDecodeBase64(item.file);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: Dimens.screenPadding, vertical: 6),
       decoration: BoxDecoration(
         color: isSelected
             ? theme.colorScheme.primary.withValues(alpha: 0.05)
             : (theme.cardTheme.color ?? theme.colorScheme.surface),
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(Dimens.cardRadius),
         border: isSelected
             ? Border.all(color: theme.colorScheme.primary, width: 1.5)
             : Border.all(color: Colors.transparent, width: 1.5),
@@ -49,28 +50,28 @@ class StoreItemRow extends StatelessWidget {
         child: InkWell(
           onTap: () => onPressed(item),
           onLongPress: () => onLongPressed(item),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(Dimens.cardRadius),
           child: Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(Dimens.cardPadding),
             child: Row(
               children: [
                 SizedBox(
-                  width: 64,
-                  height: 64,
+                  width: Dimens.tileSize,
+                  height: Dimens.tileSize,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       color: isSelected && logoBytes == null
                           ? theme.colorScheme.primary
                           : theme.colorScheme.primary.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(Dimens.tileRadius),
                     ),
                     child: logoBytes != null
                         ? ClipRRect(
-                            borderRadius: BorderRadius.circular(18),
+                            borderRadius: BorderRadius.circular(Dimens.tileRadius),
                             child: Image.memory(
                               logoBytes,
-                              width: 64,
-                              height: 64,
+                              width: Dimens.tileSize,
+                              height: Dimens.tileSize,
                               fit: BoxFit.cover,
                               alignment: Alignment.center,
                               gaplessPlayback: true,
@@ -81,11 +82,11 @@ class StoreItemRow extends StatelessWidget {
                             color: isSelected
                                 ? theme.colorScheme.onPrimary
                                 : theme.colorScheme.primary,
-                            size: 28,
+                            size: Dimens.tileIconSize,
                           ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: Dimens.tileGap),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

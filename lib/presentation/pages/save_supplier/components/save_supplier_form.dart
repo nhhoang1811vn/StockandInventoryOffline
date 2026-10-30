@@ -10,6 +10,7 @@ import '../../../../domain/entity/entity.dart';
 import '../../../../presentation/widget/widget.dart';
 import '../../../../util/base64_utils.dart';
 import '../../../review_manager.dart';
+import '../../../../util/toast_utils.dart';
 
 class SaveSupplierForm extends StatelessWidget {
   final Supplier? item;
@@ -21,12 +22,10 @@ class SaveSupplierForm extends StatelessWidget {
     return BlocConsumer<SaveSupplierCubit, SaveSupplierState>(
       listener: (context, state) {
         if (state.state is SaveItemError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenFailure(context));
+          ToastUtils.showErrorToast(context.tr("snackbar_try_again"));
         } else if (state.state is SaveItemSuccessful) {
           ReviewManager.maybeRequestReview();
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenSuccess(context));
+          ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
           Navigator.of(context).pop(state.item);
         }
       },

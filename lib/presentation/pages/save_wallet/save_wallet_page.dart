@@ -9,6 +9,7 @@ import '../../dialog/dialog.dart';
 import '../../review_manager.dart';
 import '../../widget/widget.dart';
 import '../base/base_state.dart';
+import '../../../util/toast_utils.dart';
 
 class SaveWalletPage extends StatefulWidget {
   final Wallet item;
@@ -34,12 +35,10 @@ class SaveWalletPageState extends State<SaveWalletPage> {
       listenWhen: (state1, state2) => state1.state != state2.state,
       listener: (context, state) async {
         if (state.state is SaveItemError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenFailure(context));
+          ToastUtils.showErrorToast(context.tr("snackbar_try_again"));
         } else if (state.state is SaveItemSuccessful) {
           ReviewManager.maybeRequestReview();
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenSuccess(context));
+          ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
           Navigator.of(context).pop(state.item);
         }
       },

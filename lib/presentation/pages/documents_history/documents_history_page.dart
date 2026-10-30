@@ -132,9 +132,7 @@ class DocumentsHistoryPageState extends State<DocumentsHistoryPage> {
             onDocumentLongPressed: (item) {},
           );
         } else if (item is PaymentListItem) {
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 1),
-            child: PaymentItemRow(
+          return PaymentItemRow(
               item.payment,
               ColorUtils.getItemBgColor2(context),
               (item) async {
@@ -143,8 +141,7 @@ class DocumentsHistoryPageState extends State<DocumentsHistoryPage> {
                 context.read<DocumentsHistoryCubit>().loadItems();
               },
               (item) {},
-            ),
-          );
+            );
         } else {
           return SizedBox();
         }

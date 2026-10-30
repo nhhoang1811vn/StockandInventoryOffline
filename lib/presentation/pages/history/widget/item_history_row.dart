@@ -37,10 +37,10 @@ class ItemHistoryRow extends StatelessWidget {
         : "-" + StringUtils.getQuantityText(item.quantity);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: Dimens.screenPadding, vertical: 6),
       decoration: BoxDecoration(
         color: theme.cardTheme.color ?? theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(Dimens.cardRadius),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.015),
@@ -53,25 +53,25 @@ class ItemHistoryRow extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () => onDocumentTapped(document),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(Dimens.cardRadius),
           child: Padding(
             padding: const EdgeInsets.all(14.0),
             child: Row(
               children: [
                 Container(
-                  width: 64,
-                  height: 64,
+                  width: Dimens.tileSize,
+                  height: Dimens.tileSize,
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(Dimens.tileRadius),
                   ),
                   child: Icon(
                     leadingIcon,
                     color: color,
-                    size: 28,
+                    size: Dimens.tileIconSize,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: Dimens.tileGap),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,3 +1,4 @@
+import 'package:good_manager/util/dimen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
@@ -20,7 +21,7 @@ class PaymentItemRow extends StatelessWidget {
     this.onPressed,
     this.onLongPressed, {
     this.showDate = true,
-    this.margin = const EdgeInsets.symmetric(vertical: 8),
+    this.margin = const EdgeInsets.symmetric(vertical: 6),
   });
 
   @override
@@ -42,7 +43,7 @@ class PaymentItemRow extends StatelessWidget {
       margin: margin,
       decoration: BoxDecoration(
         color: theme.cardTheme.color ?? theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(Dimens.cardRadius),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.015),
@@ -56,17 +57,17 @@ class PaymentItemRow extends StatelessWidget {
         child: InkWell(
           onTap: () => onPressed(item),
           onLongPress: () => onLongPressed(item),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(Dimens.cardRadius),
           child: Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(Dimens.cardPadding),
             child: Row(
               children: [
                 Container(
-                  width: 64,
-                  height: 64,
+                  width: Dimens.tileSize,
+                  height: Dimens.tileSize,
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(Dimens.tileRadius),
                   ),
                   child: Center(
                     child: Text(
@@ -75,7 +76,7 @@ class PaymentItemRow extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: Dimens.tileGap),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

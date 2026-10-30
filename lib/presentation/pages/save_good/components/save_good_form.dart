@@ -36,12 +36,10 @@ class SaveGoodForm extends StatelessWidget {
       },
       listener: (BuildContext context, SaveGoodState state) async {
         if (state.state is SaveItemError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenFailure(context));
+          ToastUtils.showErrorToast(context.tr("snackbar_try_again"));
         } else if (state.state is SaveItemSuccessful) {
           ReviewManager.maybeRequestReview();
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenSuccess(context));
+          ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
           Navigator.of(context)
               .pop({"item": state.item, "document": state.document});
         } else if (state.state is OpenCalculatorToInputQuantityState) {
@@ -401,7 +399,6 @@ class SaveGoodForm extends StatelessWidget {
       context.tr("action_document_created_withname"),
       [document.name],
     );
-    ScaffoldMessenger.of(context)
-        .showSnackBar(snackBarWhenSuccessWithText(text));
+    ToastUtils.showSuccessToast(text);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:good_manager/util/dimen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -118,12 +119,12 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(Dimens.screenPadding),
       children: [
         if (state.goods.isNotEmpty) ...[
           _buildSectionHeader(context, context.tr("goods")),
           ...state.goods.map((item) => Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
+                padding: const EdgeInsets.only(bottom: Dimens.cardGap),
                 child: GoodItemRow(
                   item: item,
                   quantity: item.quantity,
@@ -163,7 +164,7 @@ class _SearchPageState extends State<SearchPage> {
           const SizedBox(height: 16),
           _buildSectionHeader(context, context.tr("groups")),
           ...state.groups.map((item) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: Dimens.cardGap),
                 child: GroupItemRow(
                   item,
                   (group) {
@@ -180,7 +181,7 @@ class _SearchPageState extends State<SearchPage> {
           const SizedBox(height: 16),
           _buildSectionHeader(context, context.tr("wallets")),
           ...state.wallets.map((item) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: Dimens.cardGap),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(context).pushNamed(

@@ -16,6 +16,7 @@ import '../help_content.dart';
 import '../pages.dart';
 import 'bloc/save_payment_cubit.dart';
 import 'components/select_category_widget.dart';
+import '../../../util/toast_utils.dart';
 
 class SavePaymentPage extends StatefulWidget {
   final Payment item;
@@ -114,12 +115,10 @@ class SavePaymentPageState extends State<SavePaymentPage> {
       listenWhen: (state1, state2) => state1.state != state2.state,
       listener: (context, state) async {
         if (state.state is SaveItemError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenFailure(context));
+          ToastUtils.showErrorToast(context.tr("snackbar_try_again"));
         } else if (state.state is SaveItemSuccessful) {
           ReviewManager.maybeRequestReview();
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenSuccess(context));
+          ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
           Navigator.of(context).pop(state.item);
         } else if (state.state is OpenDocumentListState) {
           var documentType = (widget.item.type == PaymentType.inbound)

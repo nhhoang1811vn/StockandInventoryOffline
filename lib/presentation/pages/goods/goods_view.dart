@@ -1,3 +1,4 @@
+import 'package:good_manager/util/dimen.dart';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -26,6 +27,7 @@ import '../help_content.dart';
 import '../pages.dart';
 import 'good_item_row.dart';
 import 'group_item_row.dart';
+import '../../../util/toast_utils.dart';
 
 enum GoodsOverflowMenu { importExcel, exportExcel, listSettings, help }
 
@@ -81,20 +83,12 @@ class GoodsPageState extends State<GoodsPage> {
           }
         } else if (state.state is InsertTransactionSuccessState) {
           final currentState = state.state as InsertTransactionSuccessState;
-          ScaffoldMessenger.of(context).showSnackBar(
-            snackBarWhenSuccessWithText(
-              context.tr("insert_transaction_success"),
-            ),
-          );
+          ToastUtils.showSuccessToast(context.tr("insert_transaction_success"));
           context
               .read<GoodsCubit>()
               .updateQuantity(currentState.goodId, currentState.quantity);
         } else if (state.state is InsertTransactionFailedState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            snackBarWhenFailureWithText(
-              context.tr("insert_transaction_fail"),
-            ),
-          );
+          ToastUtils.showErrorToast(context.tr("insert_transaction_fail"));
         } else if (state.state is OpenListSettingsDialogState) {
           showListSettingsBottomSheet(state);
         }
@@ -257,7 +251,7 @@ class GoodsPageState extends State<GoodsPage> {
     final columnCount = state.settings.gridColumnCount;
     final groupCount = state.groups.length;
     final itemCount = groupCount + state.goods.length;
-    const padding = EdgeInsets.fromLTRB(16, 12, 16, 16);
+    const padding = EdgeInsets.fromLTRB(Dimens.screenPadding, Dimens.cardGap, Dimens.screenPadding, Dimens.screenPadding);
 
     Widget itemBuilder(BuildContext context, int index) {
       if (index < groupCount) {
@@ -302,8 +296,8 @@ class GoodsPageState extends State<GoodsPage> {
       padding: padding,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: columnCount,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
+        crossAxisSpacing: Dimens.cardGap,
+        mainAxisSpacing: Dimens.cardGap,
         mainAxisExtent: columnCount == 2 ? 200 : 180,
       ),
       itemCount: itemCount,
@@ -593,7 +587,6 @@ class GoodsPageState extends State<GoodsPage> {
     final mapping = await showExcelColumnMappingSheet(context);
     if (mapping == null || !mounted) return;
 
-    final messenger = ScaffoldMessenger.of(context);
     try {
       final files = await FilePicker.pickFiles(
         type: FileType.custom,
@@ -614,24 +607,14 @@ class GoodsPageState extends State<GoodsPage> {
       hideDialog(context);
 
       if (count == 0) {
-        messenger.showSnackBar(
-          snackBarWhenFailureWithText(context.tr("excel_import_no_items")),
-        );
+        ToastUtils.showErrorToast(context.tr("excel_import_no_items"));
         return;
       }
 
-      messenger.showSnackBar(
-        snackBarWhenSuccessWithText(
-          sprintf(context.tr("excel_import_success"), [count.toString()]),
-        ),
-      );
+      ToastUtils.showSuccessToast(sprintf(context.tr("excel_import_success"), [count.toString()]));
     } catch (e) {
       if (mounted) hideDialog(context);
-      messenger.showSnackBar(
-        snackBarWhenFailureWithText(
-          sprintf(context.tr("error_with_details"), [e.toString()]),
-        ),
-      );
+      ToastUtils.showErrorToast(sprintf(context.tr("error_with_details"), [e.toString()]));
     }
   }
 
@@ -642,7 +625,6 @@ class GoodsPageState extends State<GoodsPage> {
     );
     if (mapping == null || !mounted) return;
 
-    final messenger = ScaffoldMessenger.of(context);
     final cubit = context.read<GoodsCubit>();
     try {
       showProgressIndicator(context);
@@ -651,9 +633,7 @@ class GoodsPageState extends State<GoodsPage> {
       hideDialog(context);
 
       if (bytes == null) {
-        messenger.showSnackBar(
-          snackBarWhenFailureWithText(context.tr("excel_export_no_items")),
-        );
+        ToastUtils.showErrorToast(context.tr("excel_export_no_items"));
         return;
       }
 
@@ -676,16 +656,10 @@ class GoodsPageState extends State<GoodsPage> {
       );
       if (!mounted) return;
 
-      messenger.showSnackBar(
-        snackBarWhenSuccessWithText(context.tr("excel_saved_and_shared")),
-      );
+      ToastUtils.showSuccessToast(context.tr("excel_saved_and_shared"));
     } catch (e) {
       if (mounted) hideDialog(context);
-      messenger.showSnackBar(
-        snackBarWhenFailureWithText(
-          sprintf(context.tr("error_with_details"), [e.toString()]),
-        ),
-      );
+      ToastUtils.showErrorToast(sprintf(context.tr("error_with_details"), [e.toString()]));
     }
   }
 }

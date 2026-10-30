@@ -15,6 +15,16 @@ class Dimens {
 
   static const double bottomSpacing = 100.0;
 
+  // Cards & list items
+  static const double screenPadding = 16.0;
+  static const double cardRadius = 22.0;
+  static const double cardPadding = 12.0;
+  static const double cardGap = 12.0;
+  static const double tileSize = 64.0;
+  static const double tileRadius = 18.0;
+  static const double tileIconSize = 28.0;
+  static const double tileGap = 16.0;
+
   static const double textMini = 12.0;
   static const double textSmall = 14.0;
   static const double textNormal = 16.0;

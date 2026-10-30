@@ -7,6 +7,7 @@ import 'package:good_manager/presentation/pages/save_payment_category/components
 import '../../../domain/entity/entity.dart';
 import '../../widget/widget.dart';
 import '../base/base_state.dart';
+import '../../../util/toast_utils.dart';
 
 class SavePaymentCategoryPage extends StatefulWidget {
   final PaymentCategory item;
@@ -27,11 +28,9 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
       listenWhen: (state1, state2) => state1.state != state2.state,
       listener: (context, state) async {
         if (state.state is SaveItemError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenFailure(context));
+          ToastUtils.showErrorToast(context.tr("snackbar_try_again"));
         } else if (state.state is SaveItemSuccessful) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenSuccess(context));
+          ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
           Navigator.of(context).pop(state.item);
         }
       },

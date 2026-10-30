@@ -96,6 +96,14 @@ Dùng chức năng này để theo dõi chi tiêu theo từng cửa hàng.
 """;
 
   static const String whatNews = """
+### Phiên bản 1.0.93 - 30/10/2026
+* Thông báo mới hiện đại hơn, trượt xuống từ phía trên. Vuốt lên hoặc chạm để đóng.
+* Mọi thông báo dùng chung một kiểu, có màu riêng cho thành công, cảnh báo và lỗi.
+* Ứng dụng đổi tên thành Stock & Inventory Manager.
+* Khoảng cách và kích thước của thẻ và danh sách đồng nhất hơn giữa các màn hình.
+* Menu khi nhấn giữ item gọn gàng hơn.
+* Sửa nút Đánh giá ứng dụng trong Cài đặt để mở đúng trang cửa hàng.
+
 ### Phiên bản 1.0.92 - 12/10/2026
 * Hiện số lượng và tổng tiền nhập/xuất trên thẻ chứng từ ở Trang chủ.
 * Thêm thanh tóm tắt ở Hàng hóa, Lịch sử, Chứng từ, Thanh toán, Cửa hàng, Nhà cung cấp và Khách hàng.

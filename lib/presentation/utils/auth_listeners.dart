@@ -12,13 +12,13 @@ void authStateListener(BuildContext context, AuthState state) {
     showProgressIndicator(context);
   } else if (state is AuthError) {
     Navigator.of(context).pop();
-    ToastUtils.showInfoToast(state.message);
+    ToastUtils.showErrorToast(state.message);
   } else if (state is AuthStopped) {
     Navigator.of(context).pop();
   } else if (state is ResetPasswordSent) {
     Navigator.of(context).pop();
     Navigator.of(context).pop();
-    ToastUtils.showInfoToast("reset_password_successful_message".tr());
+    ToastUtils.showSuccessToast("reset_password_successful_message".tr());
   } else if (state is UserLinkSuccessful) {
     Navigator.of(context).pushNamedAndRemoveUntil(Pages.main, (route) => false);
   } else if (state is UserSignIn){

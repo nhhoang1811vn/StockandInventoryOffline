@@ -20,6 +20,7 @@ import 'package:sprintf/sprintf.dart';
 import '../../../../data/db_service.dart';
 import '../../../widget/widget.dart';
 import 'bloc/settings_data_cubit.dart';
+import '../../../../util/toast_utils.dart';
 
 class SettingsDataPage extends StatefulWidget {
   SettingsDataPage({Key? key}) : super(key: key);
@@ -157,21 +158,9 @@ class SettingsDataPageState extends State<SettingsDataPage> {
         }
       }
       await source.copy(filePath);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.tr("backup_successful") + " " + filePath,
-          ),
-        ),
-      );
+      ToastUtils.showSuccessToast(context.tr("backup_successful") + " " + filePath);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.tr("backup_error") + " " + e.toString(),
-          ),
-        ),
-      );
+      ToastUtils.showErrorToast(context.tr("backup_error") + " " + e.toString());
     }
   }*/
 
@@ -301,16 +290,14 @@ class SettingsDataPageState extends State<SettingsDataPage> {
         if (!mounted) {
           return;
         }
-        ScaffoldMessenger.of(context)
-            .showSnackBar(snackBarWhenSuccess(context));
+        ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
         loadCloudFileUpdatedTime();
       }
       catch (e) {
         if (!mounted) {
           return;
         }
-        ScaffoldMessenger.of(context)
-            .showSnackBar(snackBarWhenFailure(context));
+        ToastUtils.showErrorToast(context.tr("snackbar_try_again"));
       }
     }
   }
@@ -320,39 +307,23 @@ class SettingsDataPageState extends State<SettingsDataPage> {
     final error = await context.read<SettingsDataCubit>().syncToRealtimeDB();
     hideDialog(context);
     if (error == null) {
-      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
+      ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenFailureWithText(error));
+      ToastUtils.showErrorToast(error);
     }
   }
 
   void notifyBackupSuccess(String path){
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          context.tr("backup_successful") + " " + path,
-        ),
-      ),
-    );
+    ToastUtils.showSuccessToast(context.tr("backup_successful") + " " + path);
   }
   void notifyBackupError(String error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          context.tr("backup_error") + " " + error,
-        ),
-      ),
-    );
+    ToastUtils.showErrorToast(context.tr("backup_error") + " " + error);
   }
   void notifyRestoreSuccess(){
-    ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
+    ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
   }
   void notifyRestoreError(String error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(sprintf(context.tr("restore_error"), [error])),
-      ),
-    );
+    ToastUtils.showErrorToast(sprintf(context.tr("restore_error"), [error]));
   }
   void checkPermission() async{
     if (Platform.isAndroid) {

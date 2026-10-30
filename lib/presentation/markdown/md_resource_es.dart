@@ -3,6 +3,14 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceES {
   static const bundle = MarkdownBundle(
     whatNews: """
+### Versión 1.0.93 - 30 oct 2026
+* Nuevos avisos modernos que se deslizan desde arriba. Desliza hacia arriba o toca para cerrarlos.
+* Todos los mensajes usan ahora el mismo estilo, con colores para éxito, advertencia y error.
+* La app ahora se llama Stock & Inventory Manager.
+* Espaciado y tamaños más coherentes en tarjetas y listas de todas las pantallas.
+* Menú más limpio al mantener pulsado un elemento.
+* Corregido el botón Valorar la app en Ajustes para que abra la página de la tienda.
+
 ### Versión 1.0.92 - 12 oct 2026
 * Totales de entrada y salida en la tarjeta de documentos de Inicio.
 * Barra de resumen en Artículos, Historial, Documentos, Pagos, Tiendas, Proveedores y Clientes.

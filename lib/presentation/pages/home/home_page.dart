@@ -43,7 +43,7 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  static const double _cardGap = 12;
+  static const double _cardGap = Dimens.cardGap;
   @override
   void initState() {
     super.initState();
@@ -871,10 +871,9 @@ class HomePageState extends State<HomePage> {
     final error = await getIt<SettingsDataCubit>().syncToRealtimeDB();
     hideDialog(context);
     if (error == null) {
-      ScaffoldMessenger.of(context).showSnackBar(snackBarWhenSuccess(context));
+      ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(snackBarWhenFailureWithText(error));
+      ToastUtils.showErrorToast(error);
     }
   }
 

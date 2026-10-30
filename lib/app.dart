@@ -10,6 +10,7 @@ import 'package:good_manager/presentation/router.dart';
 
 import 'app_cubit.dart';
 import 'core/services/notification_service.dart';
+import 'util/toast_utils.dart';
 
 class MyApp extends StatefulWidget {
   MyApp({Key? key}) : super(key: key);
@@ -53,6 +54,7 @@ class MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     NotificationService.init(navigatorKey: _router.navigatorKey);
+    ToastUtils.init(_router.navigatorKey);
   }
   @override
   Widget build(BuildContext context) {

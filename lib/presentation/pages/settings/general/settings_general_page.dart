@@ -9,6 +9,7 @@ import '../../../../app_cubit.dart';
 import '../../../../models/currency.dart';
 import '../../../../util/util.dart';
 import '../../../widget/widget.dart';
+import '../../../../util/toast_utils.dart';
 
 class SettingsGeneralPage extends StatefulWidget {
   SettingsGeneralPage({Key? key}) : super(key: key);
@@ -78,7 +79,7 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
                       context
                           .read<SettingsGeneralCubit>()
                           .resetAutoDocumentNo();
-                      ToastUtils.showInfoToast(context.tr("success"));
+                      ToastUtils.showSuccessToast(context.tr("success"));
                     },
                     isLast: true,
                   ),

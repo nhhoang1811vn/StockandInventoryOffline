@@ -1,3 +1,4 @@
+import 'package:good_manager/util/dimen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -125,7 +126,7 @@ class PaymentHistoryPageState extends State<PaymentHistoryPage> {
       groupSeparatorBuilder: (Payment item) => DateItemRow(item.date),
       itemBuilder: (context, Payment item) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: Dimens.screenPadding),
           child: PaymentItemRow(
             item,
             Colors.transparent,

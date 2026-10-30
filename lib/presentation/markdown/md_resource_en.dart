@@ -1,5 +1,13 @@
 class MarkdownResourceEN {
   static const String whatNews = """
+### Version 1.0.93 - 30 Oct 2026
+* New modern notifications that slide in from the top. Swipe up or tap to dismiss.
+* All messages now use the same notification style, with colors for success, warning and error.
+* The app is now named Stock & Inventory Manager.
+* More consistent spacing and sizes for cards and lists across screens.
+* Cleaner long-press menu on items.
+* Fixed the Review the app button in Settings so it opens the store page.
+
 ### Version 1.0.92 - 12 Oct 2026
 * Showed incoming and outgoing count and amount on the Home documents card.
 * Added a summary bar on Goods, History, Documents, Payments, Stores, Suppliers, and Customers.

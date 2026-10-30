@@ -8,6 +8,7 @@ import 'package:good_manager/util/entity_image_picker.dart';
 import '../../../../domain/entity/entity.dart';
 import '../../../../presentation/widget/widget.dart';
 import '../../../../util/base64_utils.dart';
+import '../../../../util/toast_utils.dart';
 
 class SaveStoreForm extends StatelessWidget {
   final Store item;
@@ -19,11 +20,9 @@ class SaveStoreForm extends StatelessWidget {
     return BlocConsumer<SaveStoreCubit, SaveStoreState>(
       listener: (context, state) {
         if (state.state is SaveItemError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenFailure(context));
+          ToastUtils.showErrorToast(context.tr("snackbar_try_again"));
         } else if (state.state is SaveItemSuccessful) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBarWhenSuccess(context));
+          ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
           Navigator.of(context).pop(state.item);
         }
       },

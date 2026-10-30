@@ -1,3 +1,4 @@
+import 'package:good_manager/util/dimen.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constant/constant.dart';
@@ -32,7 +33,7 @@ class GroupItemRow extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: theme.cardTheme.color ?? theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(Dimens.cardRadius),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.015),
@@ -46,7 +47,7 @@ class GroupItemRow extends StatelessWidget {
         child: InkWell(
           onTap: () => onGroupTapped(item),
           onLongPress: () => onGroupLongPressed(item),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(Dimens.cardRadius),
           child: child,
         ),
       ),
@@ -63,10 +64,10 @@ class GroupItemRow extends StatelessWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(Dimens.tileRadius),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(Dimens.tileRadius),
           child: Image.memory(
             bytes,
             fit: BoxFit.cover,
@@ -80,7 +81,7 @@ class GroupItemRow extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         color: theme.colorScheme.primary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(Dimens.tileRadius),
       ),
       child: Icon(
         UIConstants.groupIconData,
@@ -96,11 +97,11 @@ class GroupItemRow extends StatelessWidget {
     return _buildCardWrapper(
       context,
       Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(Dimens.cardPadding),
         child: Row(
           children: [
             _buildFolderIcon(context, size: 64, iconSize: 28),
-            const SizedBox(width: 16),
+            const SizedBox(width: Dimens.tileGap),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +140,7 @@ class GroupItemRow extends StatelessWidget {
     return _buildCardWrapper(
       context,
       Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(Dimens.cardPadding),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

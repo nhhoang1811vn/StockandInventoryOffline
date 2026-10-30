@@ -1,3 +1,4 @@
+import 'package:good_manager/util/dimen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/util/currency_formatter.dart';
@@ -23,10 +24,10 @@ class WalletItemRow extends StatelessWidget {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(Dimens.cardPadding),
       decoration: BoxDecoration(
         color: cardColor,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(Dimens.cardRadius),
         border: isSelected ? Border.all(color: baseColor, width: 2.5) : null,
         boxShadow: [
           BoxShadow(
@@ -45,15 +46,15 @@ class WalletItemRow extends StatelessWidget {
             height: 56,
             decoration: BoxDecoration(
               color: baseColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(Dimens.tileRadius),
             ),
             child: Icon(
               Icons.account_balance_wallet_outlined,
               color: baseColor,
-              size: 26,
+              size: Dimens.tileIconSize,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: Dimens.tileGap),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

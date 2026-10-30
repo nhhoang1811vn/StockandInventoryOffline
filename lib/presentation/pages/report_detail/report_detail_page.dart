@@ -144,16 +144,9 @@ class ReportDetailPageState extends State<ReportDetailPage> {
       );
       await SharePlus.instance.share(params);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.tr("csv_saved_and_shared"))),
-      );
+      ToastUtils.showSuccessToast(context.tr("csv_saved_and_shared"));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text(sprintf(context.tr("error_with_details"), [e.toString()])),
-        ),
-      );
+      ToastUtils.showErrorToast(sprintf(context.tr("error_with_details"), [e.toString()]));
     }
   }
 
@@ -187,16 +180,9 @@ class ReportDetailPageState extends State<ReportDetailPage> {
       );
       await SharePlus.instance.share(params);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.tr("pdf_saved_and_shared"))),
-      );
+      ToastUtils.showSuccessToast(context.tr("pdf_saved_and_shared"));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text(sprintf(context.tr("error_with_details"), [e.toString()])),
-        ),
-      );
+      ToastUtils.showErrorToast(sprintf(context.tr("error_with_details"), [e.toString()]));
     }
   }
 
