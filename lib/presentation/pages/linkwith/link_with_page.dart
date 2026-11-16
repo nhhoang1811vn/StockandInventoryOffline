@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:good_manager/common/platform_support.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 
 import '../../utils/auth_listeners.dart';
@@ -67,11 +68,13 @@ class LinkWithPageState extends State<LinkWithPage> {
                   textAlign: TextAlign.center,
                 ).tr(),
                 SizedBox(height: 32),
-                _buildContinueWithGoogle(),
-                SizedBox(height: 16),
-                //if (Platform.isIOS)
-                _buildContinueWithApple(),
-                SizedBox(height: 16),
+                if (isMobilePlatform) ...[
+                  _buildContinueWithGoogle(),
+                  SizedBox(height: 16),
+                  //if (Platform.isIOS)
+                  _buildContinueWithApple(),
+                  SizedBox(height: 16),
+                ],
                 _buildContinueWithEmail(),
                 SizedBox(height: 64),
                 _buildAlreadyHaveAnAccount(),

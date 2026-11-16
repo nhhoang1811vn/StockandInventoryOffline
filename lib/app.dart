@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
+import 'package:good_manager/common/platform_support.dart';
 import 'package:good_manager/models/app_theme.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/router.dart';
@@ -74,9 +75,9 @@ class MyAppState extends State<MyApp> {
       titleMedium:
           baseDark.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
     );
-    FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-    FirebaseAnalyticsObserver analyticsObserver =
-        FirebaseAnalyticsObserver(analytics: analytics);
+    final NavigatorObserver? analyticsObserver = isMobilePlatform
+        ? FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
+        : null;
 
     return BlocProvider(
       create: (_) => AppCubit(),
@@ -154,8 +155,11 @@ class MyAppState extends State<MyApp> {
               themeMode: state.theme.mode,
               onGenerateRoute: _router.getRoute,
               navigatorKey: _router.navigatorKey,
-              navigatorObservers: [_router.routeObserver, analyticsObserver],
-              localizationsDelegates: context.localizationDelegates,
+            navigatorObservers: [
+              _router.routeObserver,
+              if (analyticsObserver != null) analyticsObserver,
+            ],
+            localizationsDelegates: context.localizationDelegates,
               supportedLocales: context.supportedLocales,
               locale: context.locale,
               initialRoute: Pages.loading_data,

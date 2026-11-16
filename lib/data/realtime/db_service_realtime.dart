@@ -1,11 +1,12 @@
 import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:good_manager/data/realtime/store_realtime_entity.dart';
 import 'package:good_manager/domain/entity/entity.dart';
 import 'package:good_manager/repo/repo.dart';
+import 'package:good_manager/util/app_analytics.dart';
 import 'package:nanoid/async.dart';
 
 class DbServiceRealtime {
@@ -148,7 +149,7 @@ class DbServiceRealtime {
             .timeout(const Duration(seconds: 30));
       }
 
-      unawaited(FirebaseAnalytics.instance.logEvent(
+      unawaited(AppAnalytics.logEvent(
         name: 'sync_migration_success',
         parameters: {
           'store_count': stores.length,
@@ -157,7 +158,7 @@ class DbServiceRealtime {
 
       return null;
     } on TimeoutException catch (e) {
-      unawaited(FirebaseAnalytics.instance.logEvent(
+      unawaited(AppAnalytics.logEvent(
         name: 'sync_migration_failed',
         parameters: {
           'reason': 'timeout',
@@ -166,7 +167,7 @@ class DbServiceRealtime {
       ));
       return "sync_timeout".tr();
     } catch (e) {
-      unawaited(FirebaseAnalytics.instance.logEvent(
+      unawaited(AppAnalytics.logEvent(
         name: 'sync_migration_failed',
         parameters: {
           'reason': 'exception',

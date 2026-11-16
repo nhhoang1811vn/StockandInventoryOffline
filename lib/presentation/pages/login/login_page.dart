@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:good_manager/common/platform_support.dart';
 import 'package:good_manager/presentation/widget/app_text_field.dart';
 import 'package:good_manager/presentation/widget/primary_button.dart';
 
@@ -153,10 +154,12 @@ class LoginPageState extends State<LoginPage> {
                     },
                   ),
                 ),
-                SizedBox(height: 32),
-                _buildLoginWithGoogle(),
-                SizedBox(height: 16),
-                _buildLoginWithApple(),
+                if (isMobilePlatform) ...[
+                  SizedBox(height: 32),
+                  _buildLoginWithGoogle(),
+                  SizedBox(height: 16),
+                  _buildLoginWithApple(),
+                ],
               ],
             ),
           ),

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:good_manager/common/platform_support.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 class RevenueCatService {
@@ -14,7 +15,9 @@ class RevenueCatService {
 
   RevenueCatService._internal();
 
+  // RevenueCat has no Windows/desktop SDK: purchases are unavailable there.
   static Future<void> init() async {
+    if (!isMobilePlatform) return;
     await Purchases.setLogLevel(LogLevel.debug);
     var apiKey = "";
     if (Platform.isAndroid) {
@@ -26,6 +29,7 @@ class RevenueCatService {
   }
 
   static Future<Offerings?> getOfferings() async {
+    if (!isMobilePlatform) return null;
     try {
       return await Purchases.getOfferings();
     } catch (e) {
@@ -35,6 +39,7 @@ class RevenueCatService {
   }
 
   static Future<bool> isPro() async {
+    if (!isMobilePlatform) return false;
     try {
       final customerInfo = await Purchases.getCustomerInfo();
       return customerInfo.entitlements.active
@@ -46,6 +51,7 @@ class RevenueCatService {
   }
 
   static Future<void> purchase(Package package) async {
+    if (!isMobilePlatform) return;
     try {
       //package.storeProduct.
       await Purchases.purchase(PurchaseParams.package(package));
@@ -55,6 +61,7 @@ class RevenueCatService {
   }
 
   static Future<void> updateUser(String userId) async {
+    if (!isMobilePlatform) return;
     try {
       await Purchases.logIn(userId);
       print("RevenueCat logged in: $userId");
@@ -64,6 +71,7 @@ class RevenueCatService {
   }
 
   static Future<void> logoutUser() async {
+    if (!isMobilePlatform) return;
     await Purchases.logOut();
     print("RevenueCat logged out");
   }

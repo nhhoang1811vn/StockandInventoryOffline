@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:good_manager/common/platform_support.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 
 import '../../domain/entity/entity.dart';
@@ -13,6 +14,7 @@ class NotificationService {
     required GlobalKey<NavigatorState> navigatorKey,
   }) async {
     _navigatorKey = navigatorKey;
+    if (!isMobilePlatform) return;
 
     const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -53,6 +55,7 @@ class NotificationService {
     required String body,
     String? payload,
   }) async {
+    if (!isMobilePlatform) return;
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
       'low_stock_alert_id',

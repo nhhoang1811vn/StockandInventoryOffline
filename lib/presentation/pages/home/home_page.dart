@@ -178,6 +178,8 @@ class HomePageState extends State<HomePage> {
     if (user?.providerData.isNotEmpty == true) {
       photoUrl = user!.providerData.first.photoURL;
     }
+    // Windows returns "" instead of null when there is no photo.
+    if (photoUrl != null && photoUrl.isEmpty) photoUrl = null;
 
     return Row(
       children: [

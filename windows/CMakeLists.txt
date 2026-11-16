@@ -4,7 +4,7 @@ project(goodmanagerflutter LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
-set(BINARY_NAME "goodmanagerflutter")
+set(BINARY_NAME "StockandInventory")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
@@ -31,6 +31,12 @@ set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_RELEASE}")
 
 # Use Unicode for all projects.
 add_definitions(-DUNICODE -D_UNICODE)
+
+# Newer MSVC toolsets (Visual Studio 2026) reject some third-party plugin code
+# under /WX: <experimental/coroutine> (audioplayers_windows,
+# permission_handler_windows) and C4238 (firebase_auth).
+add_definitions(-D_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS)
+add_compile_options(/wd4238)
 
 # Compilation settings that should be applied to most targets.
 #

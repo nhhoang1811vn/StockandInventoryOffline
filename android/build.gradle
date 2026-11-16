@@ -25,6 +25,13 @@ subprojects {
                 //buildToolsVersion "34.0.0"
             }
         }
+        // camera-core's API jar references CallbackToFutureAdapter, which the plugin's
+        // javac classpath lacks; without it compileDebugJavaWithJavac fails.
+        if (project.name == "camera_android_camerax") {
+            project.dependencies {
+                compileOnly "androidx.concurrent:concurrent-futures:1.2.0"
+            }
+        }
         if (project.hasProperty('android')) {
             project.android {
                 if (namespace == null) {

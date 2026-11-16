@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../common/platform_support.dart';
 import 'image_compress_utils.dart';
 
 class EntityImagePicker {
@@ -43,17 +44,18 @@ class EntityImagePicker {
                 }
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.camera_alt_rounded),
-              title: Text(context.tr("take_picture")),
-              onTap: () async {
-                Navigator.pop(context);
-                final bytes = await pickSquareImage(ImageSource.camera);
-                if (bytes != null) {
-                  await onImagePicked(bytes);
-                }
-              },
-            ),
+            if (isMobilePlatform)
+              ListTile(
+                leading: const Icon(Icons.camera_alt_rounded),
+                title: Text(context.tr("take_picture")),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final bytes = await pickSquareImage(ImageSource.camera);
+                  if (bytes != null) {
+                    await onImagePicked(bytes);
+                  }
+                },
+              ),
             const SizedBox(height: 12),
           ],
         ),
@@ -67,6 +69,11 @@ class EntityImagePicker {
       imageQuality: 75,
     );
     if (pickedFile == null) return null;
+
+    // image_cropper has no desktop implementation: use the picked image as is.
+    if (!isMobilePlatform) {
+      return compressImageBytes(await pickedFile.readAsBytes());
+    }
 
     final croppedFile = await ImageCropper().cropImage(
       sourcePath: pickedFile.path,

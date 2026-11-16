@@ -151,6 +151,8 @@ class MenuPageState extends State<MenuPage> {
       photoUrl = first.photoURL;
       displayName = first.displayName;
     }
+    // Windows returns "" instead of null when there is no photo.
+    if (photoUrl != null && photoUrl.isEmpty) photoUrl = null;
 
     return Container(
       decoration: BoxDecoration(

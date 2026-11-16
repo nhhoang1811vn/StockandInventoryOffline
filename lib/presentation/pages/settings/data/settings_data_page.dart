@@ -4,13 +4,13 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/data/data.dart';
 import 'package:good_manager/presentation/dialog/custom_dialog.dart';
+import 'package:good_manager/util/app_analytics.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,9 +18,9 @@ import 'package:share_plus/share_plus.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../../data/db_service.dart';
+import '../../../../util/toast_utils.dart';
 import '../../../widget/widget.dart';
 import 'bloc/settings_data_cubit.dart';
-import '../../../../util/toast_utils.dart';
 
 class SettingsDataPage extends StatefulWidget {
   SettingsDataPage({Key? key}) : super(key: key);
@@ -233,12 +233,11 @@ class SettingsDataPageState extends State<SettingsDataPage> {
       );
       await SharePlus.instance.share(params);
 
-      unawaited(FirebaseAnalytics.instance.logEvent(
-          name: 'backup_success'
+      unawaited(AppAnalytics.logEvent(name: 'backup_success'
       ));
       notifyBackupSuccess(backupFile.path);
     } catch (e) {
-      unawaited(FirebaseAnalytics.instance.logEvent(
+      unawaited(AppAnalytics.logEvent(
         name: 'backup_failed',
         parameters: {
           'error': e.toString(),
@@ -326,6 +325,7 @@ class SettingsDataPageState extends State<SettingsDataPage> {
     ToastUtils.showErrorToast(sprintf(context.tr("restore_error"), [error]));
   }
   void checkPermission() async{
+    if (!Platform.isAndroid && !Platform.isIOS) return;
     if (Platform.isAndroid) {
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;

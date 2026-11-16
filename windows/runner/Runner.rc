@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.ssteam" "\0"
-            VALUE "FileDescription", "goodmanagerflutter" "\0"
+VALUE "FileDescription", "Stock & Inventory Manager" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "goodmanagerflutter" "\0"
+VALUE "InternalName", "StockandInventory" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.ssteam. All rights reserved." "\0"
-            VALUE "OriginalFilename", "goodmanagerflutter.exe" "\0"
-            VALUE "ProductName", "goodmanagerflutter" "\0"
+VALUE "OriginalFilename", "StockandInventory.exe" "\0"
+VALUE "ProductName", "Stock & Inventory Manager" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
