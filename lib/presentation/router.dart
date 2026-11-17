@@ -338,6 +338,7 @@ class AppRouter {
             child: SelectGroupPage(
               args["id"],
               args["groupId"],
+              storeId: args["storeId"],
             ),
           ),
         );

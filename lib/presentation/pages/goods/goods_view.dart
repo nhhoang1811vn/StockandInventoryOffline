@@ -1,4 +1,3 @@
-import 'package:good_manager/util/dimen.dart';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -7,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
+import 'package:good_manager/presentation/pages/goods/component/copy_destination_dialog.dart';
 import 'package:good_manager/presentation/pages/goods/component/excel_column_mapping_sheet.dart';
 import 'package:good_manager/presentation/pages/goods/component/list_settings_good_widget.dart';
 import 'package:good_manager/presentation/pages/goods/component/sort_good_widget.dart';
 import 'package:good_manager/presentation/utils/share_utils.dart';
 import 'package:good_manager/util/currency_formatter.dart';
+import 'package:good_manager/util/dimen.dart';
 import 'package:good_manager/util/string_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -19,6 +20,7 @@ import 'package:sprintf/sprintf.dart';
 
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
+import '../../../util/toast_utils.dart';
 import '../../blocs/add_quantity_and_price/add_quantity_and_price_dialog.dart';
 import '../../dialog/dialog.dart';
 import '../../widget/widget.dart';
@@ -27,7 +29,6 @@ import '../help_content.dart';
 import '../pages.dart';
 import 'good_item_row.dart';
 import 'group_item_row.dart';
-import '../../../util/toast_utils.dart';
 
 enum GoodsOverflowMenu { importExcel, exportExcel, listSettings, help }
 
@@ -482,6 +483,7 @@ class GoodsPageState extends State<GoodsPage> {
   void onLongPressedGood(Good item) {
     var items = [
       context.tr("action_move_to_group"),
+      context.tr("action_copy"),
       context.tr("item_history_title"),
       context.tr("delete"),
     ];
@@ -491,6 +493,8 @@ class GoodsPageState extends State<GoodsPage> {
       onItemSelected: (index) async {
         if (items[index] == context.tr("action_move_to_group")) {
           openSelectGroupForGood(item);
+        } else if (items[index] == context.tr("action_copy")) {
+          _copyGood(item);
         } else if (items[index] == context.tr("item_history_title")) {
           Navigator.of(context)
               .pushNamed(Pages.good_history, arguments: {'goodId': item.id});
@@ -499,6 +503,42 @@ class GoodsPageState extends State<GoodsPage> {
         }
       },
     );
+  }
+
+  Future<void> _copyGood(Good item) async {
+    final cubit = context.read<GoodsCubit>();
+    final stores = await cubit.getStores();
+    final groupName = await cubit.getGroupName(item.groupId);
+    if (!mounted) return;
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (_) => CopyDestinationDialog(
+        stores: stores,
+        initialStoreId: item.storeId,
+        initialGroupId: item.groupId,
+        initialGroupName: groupName,
+      ),
+    );
+    if (result == null) return;
+    cubit.onCopyGood(item, result["storeId"], result["groupId"]);
+  }
+
+  Future<void> _copyGroup(Group item) async {
+    final cubit = context.read<GoodsCubit>();
+    final stores = await cubit.getStores();
+    final parentName = await cubit.getGroupName(item.groupId);
+    if (!mounted) return;
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (_) => CopyDestinationDialog(
+        stores: stores,
+        initialStoreId: item.storeId,
+        initialGroupId: item.groupId,
+        initialGroupName: parentName,
+      ),
+    );
+    if (result == null) return;
+    cubit.onCopyGroup(item, result["storeId"], result["groupId"]);
   }
 
   void openSelectGroupForGood(Good item) async {
@@ -533,6 +573,7 @@ class GoodsPageState extends State<GoodsPage> {
     var items = [
       context.tr("action_move_to_group"),
       context.tr("action_edit_group"),
+      context.tr("action_copy"),
       context.tr("delete"),
     ];
     showSelectOptionDialog(
@@ -541,6 +582,8 @@ class GoodsPageState extends State<GoodsPage> {
       onItemSelected: (index) async {
         if (items[index] == context.tr("action_move_to_group")) {
           openSelectGroupForGroup(item);
+        } else if (items[index] == context.tr("action_copy")) {
+          _copyGroup(item);
         } else if (items[index] == context.tr("action_edit_group")) {
           await Navigator.of(context)
               .pushNamed(Pages.save_group, arguments: {"item": item});

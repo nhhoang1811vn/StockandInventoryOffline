@@ -15,8 +15,10 @@ import '../../../../domain/entity/entity.dart';
 import '../../base/base_sort_items.dart';
 import '../../base/base_state.dart';
 import '../component/excel_column_mapping.dart';
+import '../good_copy.dart';
 import '../goods_excel_export.dart';
 import '../goods_excel_import.dart';
+import '../group_copy.dart';
 import '../sort/sort_by_barcode_groups.dart';
 import '../sort/sort_by_quantity_goods.dart';
 
@@ -29,11 +31,13 @@ class GoodsCubit extends Cubit<GoodsState> {
   final GoodsUseCases goodsUseCase;
   final GroupsUseCases groupsUseCase;
   final DocumentUseCases documentsUseCases;
+  final StoresUseCase storesUseCase;
 
   GoodsCubit({
     required this.goodsUseCase,
     required this.groupsUseCase,
     required this.documentsUseCases,
+    required this.storesUseCase,
   }) : super(
           GoodsState.initial(
             state: InitialState(),
@@ -97,6 +101,27 @@ class GoodsCubit extends Cubit<GoodsState> {
     item.storeId = AppSettings.getSelectedStoreId();
 
     emit(state.copyWith(state: OpenSaveGoodPageState(item)));
+  }
+
+  Future<List<Store>> getStores() {
+    return storesUseCase.getAll();
+  }
+
+  Future<String?> getGroupName(int? groupId) async {
+    if (groupId == null) return null;
+    final group = await groupsUseCase.getById(groupId);
+    return group.name;
+  }
+
+  void onCopyGood(Good source, int storeId, int? groupId) {
+    final copy = buildCopyOfGood(source, storeId: storeId, groupId: groupId);
+    emit(state.copyWith(state: OpenSaveGoodPageState(copy)));
+  }
+
+  void onCopyGroup(Group source, int storeId, int? parentGroupId) {
+    final copy =
+        buildCopyOfGroup(source, storeId: storeId, groupId: parentGroupId);
+    emit(state.copyWith(state: AddGroupState(copy)));
   }
 
   int? getSelectedGroupId() {

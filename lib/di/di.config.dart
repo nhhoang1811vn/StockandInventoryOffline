@@ -237,6 +237,12 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i978.CustomersCubit(useCase: gh<_i704.CustomersUseCase>()));
     gh.factory<_i124.SaveCustomerCubit>(
         () => _i124.SaveCustomerCubit(useCase: gh<_i704.CustomersUseCase>()));
+    gh.factory<_i346.GoodsCubit>(() => _i346.GoodsCubit(
+          goodsUseCase: gh<_i704.GoodsUseCases>(),
+          groupsUseCase: gh<_i704.GroupsUseCases>(),
+          documentsUseCases: gh<_i704.DocumentUseCases>(),
+          storesUseCase: gh<_i704.StoresUseCase>(),
+        ));
     gh.factory<_i179.PaymentsCubit>(() => _i179.PaymentsCubit(
           useCase: gh<_i704.PaymentUseCases>(),
           documentUseCases: gh<_i704.DocumentUseCases>(),
@@ -249,11 +255,6 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i1027.PaymentHistoryCubit>(() =>
         _i1027.PaymentHistoryCubit(useCases: gh<_i704.PaymentUseCases>()));
-    gh.factory<_i346.GoodsCubit>(() => _i346.GoodsCubit(
-          goodsUseCase: gh<_i704.GoodsUseCases>(),
-          groupsUseCase: gh<_i704.GroupsUseCases>(),
-          documentsUseCases: gh<_i704.DocumentUseCases>(),
-        ));
     gh.factory<_i654.SearchCubit>(() => _i654.SearchCubit(
           goodsUseCases: gh<_i704.GoodsUseCases>(),
           documentUseCases: gh<_i704.DocumentUseCases>(),

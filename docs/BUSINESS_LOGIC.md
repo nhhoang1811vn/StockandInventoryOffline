@@ -65,6 +65,17 @@ Schema: [DATABASE.md](DATABASE.md).
   remaining row is inserted as a new Good in the selected store and current group. No update or
   de-duplication. Column mapping is user-defined (`ExcelColumnMapping`).
 - Export: goods of the current group as `.xlsx` (`GoodsCubit.exportGoodsToExcel`).
+- Copy (long-press a Good → Copy): a dialog (`CopyDestinationDialog`) picks the Store and Group of
+  the
+  new Good (default: the source's; changing the Store resets the Group to "No group"). The save-good
+  page then opens with an unsaved copy (`buildCopyOfGood`): name + `" (copy)"`, description,
+  barcode (copied as is), purchase/sale price, min quantity and pictures. Quantity starts at 0 and
+  history is not copied. Nothing is written until Save is pressed.
+- Copy a Group (long-press a Group in the Goods list → Copy): same dialog, where the Group row picks
+  the **parent** group of the copy. The save-group page opens with an unsaved copy
+  (`buildCopyOfGroup`): name + `" (copy)"`, description, barcode, file and files. Only the group
+  itself is copied, not its goods or sub-groups. `SaveGroupCubit.init` prefills an unsaved group
+  that already has a name. The Search page's group menu has no Copy.
 
 ## Stores
 

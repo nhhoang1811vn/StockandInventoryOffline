@@ -22,7 +22,8 @@ class SaveGroupCubit extends Cubit<SaveGroupState> {
 
   void init(Group item) {
     SaveGroupState initState;
-    if (item.id == null) {
+    //an unsaved item with a name is a copy: prefill it like an existing group
+    if (item.id == null && item.name.isEmpty) {
       initState = state.copyWith(item: item);
     } else {
       initState = state.copyWith(

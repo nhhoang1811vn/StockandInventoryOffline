@@ -11,9 +11,12 @@ class SelectGroupPage extends StatefulWidget {
   final int? id;
   final int? groupId;
 
+  //null means the currently selected store
+  final int? storeId;
+
   //if id is not null, meaning moving group
   //if id is null, meaning moving good
-  SelectGroupPage(this.id, this.groupId) : super();
+  SelectGroupPage(this.id, this.groupId, {this.storeId}) : super();
 
   @override
   State<StatefulWidget> createState() {
@@ -28,7 +31,9 @@ class SelectGroupPageState extends State<SelectGroupPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    context.read<SelectGroupCubit>().init(widget.id, widget.groupId);
+    context
+        .read<SelectGroupCubit>()
+        .init(widget.id, widget.groupId, storeId: widget.storeId);
 
     return BlocConsumer<SelectGroupCubit, SelectGroupState>(
       builder: (context, state) => Scaffold(
@@ -47,7 +52,12 @@ class SelectGroupPageState extends State<SelectGroupPage> {
             IconButton(
               icon: const Icon(Icons.check_rounded),
               onPressed: () {
-                Navigator.of(context).pop({"groupId": state.selectedGroupId});
+                Navigator.of(context).pop({
+                  "groupId": state.selectedGroupId,
+                  "groupName": state.selectedGroupId == null
+                      ? null
+                      : state.selectedGroupName,
+                });
               },
             ),
           ],

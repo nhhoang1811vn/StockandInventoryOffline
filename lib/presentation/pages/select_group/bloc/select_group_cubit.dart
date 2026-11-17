@@ -23,9 +23,9 @@ class SelectGroupCubit extends Cubit<SelectGroupState> {
     );
   }
 
-  void init(int? id, int? groupId) async {
-    int storeId = AppSettings.getSelectedStoreId();
-    List<Group> groups = await groupsUseCase.getAllByStoreId(storeId);
+  void init(int? id, int? groupId, {int? storeId}) async {
+    int resolvedStoreId = storeId ?? AppSettings.getSelectedStoreId();
+    List<Group> groups = await groupsUseCase.getAllByStoreId(resolvedStoreId);
     if (isClosed) return;
 
     Map<int, Group> items = {};
