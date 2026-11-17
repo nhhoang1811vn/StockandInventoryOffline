@@ -118,3 +118,16 @@ payments, supplier payments, re-order, good info. Built by `ReportDataFactory`
 
 When enabled, `MainPage` shows a lock screen and compares the entered code with the stored one
 (`lib/presentation/pages/main/main_page.dart`, `_showLockScreen`).
+
+## Image settings
+
+General Setting (Android/iOS only) holds two values used by every image pick/capture
+(`EntityImagePicker`, `lib/util/entity_image_picker.dart`):
+
+- Image size: 256–2048 px, default 512, one value for width and height. It is applied only when the
+  image is compressed (`compressImageBytes`), so stored images are at most size × size.
+- Show crop window: default on. When off, the picked image is center-cropped to a square without
+  the cropper.
+
+Existing stored images are not resized. Design:
+`docs/superpowers/specs/2026-11-17-image-size-setting-design.md`.

@@ -6,11 +6,13 @@ import 'package:good_manager/models/app_language.dart';
 import 'package:good_manager/presentation/pages/settings/general/bloc/settings_general_cubit.dart';
 
 import '../../../../app_cubit.dart';
+import '../../../../common/platform_support.dart';
 import '../../../../models/currency.dart';
 import '../../../../util/toast_utils.dart';
 import '../../../../util/util.dart';
 import '../../../dialog/dialog.dart';
 import '../../../widget/widget.dart';
+import 'change_image_size_dialog.dart';
 
 class SettingsGeneralPage extends StatefulWidget {
   SettingsGeneralPage({Key? key}) : super(key: key);
@@ -64,6 +66,36 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
                       }
                     },
                   ),
+                  if (isMobilePlatform) ...[
+                    SettingsMenuItem(
+                      icon: Icons.photo_size_select_large_outlined,
+                      title: context.tr("image_size"),
+                      subtitle: context.tr("image_size_value", args: [
+                        state.imageSize.toString(),
+                        state.imageSize.toString(),
+                      ]),
+                      onTap: () async {
+                        final size = await showDialog<int>(
+                          context: context,
+                          builder: (_) =>
+                              ChangeImageSizeDialogWidget(state.imageSize),
+                        );
+                        if (size != null && context.mounted) {
+                          context
+                              .read<SettingsGeneralCubit>()
+                              .onImageSizeChanged(size);
+                        }
+                      },
+                    ),
+                    SettingsSwitchItem(
+                      icon: Icons.crop_rounded,
+                      title: context.tr("show_crop_window"),
+                      value: state.showCropWindow,
+                      onChanged: (value) => context
+                          .read<SettingsGeneralCubit>()
+                          .onShowCropWindowChanged(value),
+                    ),
+                  ],
                   SettingsSwitchItem(
                     icon: Icons.lock_outline_rounded,
                     title: context.tr("menu_item_passcode_title"),

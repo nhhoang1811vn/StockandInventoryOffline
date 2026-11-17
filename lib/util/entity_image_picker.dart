@@ -6,7 +6,9 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../common/platform_support.dart';
+import '../data/app_settings.dart';
 import 'image_compress_utils.dart';
+import 'image_square_utils.dart';
 
 class EntityImagePicker {
   static final _picker = ImagePicker();
@@ -70,9 +72,16 @@ class EntityImagePicker {
     );
     if (pickedFile == null) return null;
 
+    final size = AppSettings.getImageSize();
+
     // image_cropper has no desktop implementation: use the picked image as is.
     if (!isMobilePlatform) {
-      return compressImageBytes(await pickedFile.readAsBytes());
+      return compressImageBytes(await pickedFile.readAsBytes(), size: size);
+    }
+
+    if (!AppSettings.getShowCropWindow()) {
+      final squared = await centerCropSquare(await pickedFile.readAsBytes());
+      return compressImageBytes(squared, size: size);
     }
 
     final croppedFile = await ImageCropper().cropImage(
@@ -100,6 +109,6 @@ class EntityImagePicker {
 
     if (croppedFile == null) return null;
     final bytes = await croppedFile.readAsBytes();
-    return compressImageBytes(bytes);
+    return compressImageBytes(bytes, size: size);
   }
 }

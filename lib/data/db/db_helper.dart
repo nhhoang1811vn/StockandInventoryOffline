@@ -9,6 +9,7 @@ import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../domain/entity/entity.dart';
+import '../app_settings.dart';
 
 @LazySingleton()
 class DBHelper {
@@ -562,8 +563,8 @@ class DBHelper {
   Future<Uint8List> compress(Uint8List list) async {
     var result = await FlutterImageCompress.compressWithList(
       list,
-      minHeight: 500,
-      minWidth: 500,
+      minHeight: AppSettings.getImageSize(),
+      minWidth: AppSettings.getImageSize(),
       quality: 80,
     );
     return result;

@@ -15,9 +15,21 @@ class SettingsGeneralCubit extends Cubit<SettingsGeneralState> {
           SettingsGeneralState.initial(
             enablePasscode: AppSettings.getEnablePasscode(),
             passcode: AppSettings.getPasscode(),
-            currency: AppSettings.currency
+            currency: AppSettings.currency,
+            imageSize: AppSettings.getImageSize(),
+            showCropWindow: AppSettings.getShowCropWindow(),
           ),
         );
+
+  void onImageSizeChanged(int value) {
+    AppSettings.setImageSize(value);
+    emit(state.copyWith(imageSize: AppSettings.getImageSize()));
+  }
+
+  void onShowCropWindowChanged(bool value) {
+    AppSettings.setShowCropWindow(value);
+    emit(state.copyWith(showCropWindow: value));
+  }
 
   void onEnablePasscodeChanged(bool value, String passcode) {
     AppSettings.setEnablePasscode(value);

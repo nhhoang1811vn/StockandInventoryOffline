@@ -26,6 +26,9 @@ class AppSettings {
   static const String BarcodeScannerEnableVibrate =
       "BarcodeScannerEnableVibrate";
 
+  static const String _imageSizeKey = "ImageSize";
+  static const String _showCropWindowKey = "ShowCropWindow";
+
   static const String LanguageCode = "LanguageCode";
 
   static const String AutoDocumentName = "AutoDocumentName";
@@ -143,6 +146,39 @@ class AppSettings {
 
   static void setBatchScanDelayMs(int value) {
     _storage.setInt(BarcodeScannerBatchScanDelayMs, value);
+  }
+
+  static const int minImageSize = 256;
+  static const int maxImageSize = 2048;
+  static const int defaultImageSize = 512;
+
+  static int clampImageSize(int value) =>
+      value.clamp(minImageSize, maxImageSize);
+
+  /// Returns the size only when [input] is a whole number inside
+  /// [minImageSize]..[maxImageSize]; otherwise null.
+  static int? parseImageSize(String? input) {
+    final value = int.tryParse(input?.trim() ?? '');
+    if (value == null || value < minImageSize || value > maxImageSize) {
+      return null;
+    }
+    return value;
+  }
+
+  static int getImageSize() {
+    return clampImageSize(_storage.getInt(_imageSizeKey) ?? defaultImageSize);
+  }
+
+  static void setImageSize(int value) {
+    _storage.setInt(_imageSizeKey, clampImageSize(value));
+  }
+
+  static bool getShowCropWindow() {
+    return _storage.getBool(_showCropWindowKey) ?? true;
+  }
+
+  static void setShowCropWindow(bool value) {
+    _storage.setBool(_showCropWindowKey, value);
   }
 
   static void setEnablePasscode(bool value) {
