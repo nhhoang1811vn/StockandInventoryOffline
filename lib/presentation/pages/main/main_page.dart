@@ -4,7 +4,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_screen_lock/flutter_screen_lock.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/goods_view.dart';
 import 'package:good_manager/presentation/pages/menu/bloc/menu_cubit.dart';
@@ -13,6 +12,7 @@ import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/report_page.dart';
 import 'package:good_manager/presentation/utils.dart';
 
+import '../../../core/services/app_lock_service.dart';
 import '../../../core/services/low_stock_service.dart';
 import '../../../core/services/notification_service.dart';
 import '../../../data/app_settings.dart';
@@ -67,7 +67,9 @@ class _ScreenState extends State<MainView> {
     ]);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _showLockScreen();
+      final lock = getIt<AppLockService>();
+      lock.showLock();
+      lock.start();
     });
 
     var isShowLowStockAlert =
@@ -113,24 +115,6 @@ class _ScreenState extends State<MainView> {
         payload: "reorder",
       );
     }
-  }
-
-  void _showLockScreen() {
-    if (!AppSettings.getEnablePasscode()) return;
-
-    screenLock(
-      context: context,
-      onValidate: (enteredCode) async {
-        final storedCode = AppSettings.getPasscode();
-        return enteredCode == storedCode;
-      },
-      correctString: AppSettings.getPasscode(),
-      onUnlocked: () {
-        Navigator.of(context).pop();
-      },
-      canCancel: false,
-      title: Text(context.tr("enter_pin_to_unlock")),
-    );
   }
 
   @override

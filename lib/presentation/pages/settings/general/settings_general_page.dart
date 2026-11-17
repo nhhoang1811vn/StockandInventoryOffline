@@ -12,6 +12,7 @@ import '../../../../util/toast_utils.dart';
 import '../../../../util/util.dart';
 import '../../../dialog/dialog.dart';
 import '../../../widget/widget.dart';
+import 'change_auto_lock_dialog.dart';
 import 'change_image_size_dialog.dart';
 
 class SettingsGeneralPage extends StatefulWidget {
@@ -103,6 +104,35 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
                     value: state.enablePasscode,
                     onChanged: (value) =>
                         _handlePasscodeToggle(context, value, state.passcode),
+                  ),
+                  if (state.enablePasscode && state.canUseBiometrics)
+                    SettingsSwitchItem(
+                      icon: Icons.fingerprint,
+                      title: context.tr("menu_item_fingerprint_title"),
+                      value: state.enableFingerprint,
+                      onChanged: (value) => context
+                          .read<SettingsGeneralCubit>()
+                          .onEnableFingerprintChanged(
+                            value,
+                            context.tr("fingerprint_unlock_reason"),
+                          ),
+                    ),
+                  SettingsMenuItem(
+                    icon: Icons.timer_outlined,
+                    title: context.tr("auto_lock_title",
+                        args: [state.autoLockMinutes.toString()]),
+                    onTap: () async {
+                      final minutes = await showDialog<int>(
+                        context: context,
+                        builder: (_) =>
+                            ChangeAutoLockDialogWidget(state.autoLockMinutes),
+                      );
+                      if (minutes != null && context.mounted) {
+                        context
+                            .read<SettingsGeneralCubit>()
+                            .onAutoLockMinutesChanged(minutes);
+                      }
+                    },
                   ),
                   SettingsMenuItem(
                     icon: Icons.refresh_rounded,

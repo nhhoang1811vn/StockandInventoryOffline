@@ -42,6 +42,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>We require access to your camera to scan barcodes. This allows you to quickly find product information directly from your camera feed.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Use Face ID to unlock the app.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app needs access to the microphone to record audio.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

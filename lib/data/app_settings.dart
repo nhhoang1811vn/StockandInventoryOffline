@@ -34,6 +34,7 @@ class AppSettings {
   static const String AutoDocumentName = "AutoDocumentName";
   static const String EnablePasscodeKey = "EnablePasscode";
   static const String UserPasscodeKey = "UserPasscode";
+  static const String EnableFingerprintKey = "EnableFingerprint";
   static const _myCompanyKey = 'my_company';
   static const _minimumQuantitySettingsKey = 'minimumQuantitySettings';
   static const _suppliersSettingKey = "SuppliersSetting";
@@ -173,6 +174,36 @@ class AppSettings {
     _storage.setInt(_imageSizeKey, clampImageSize(value));
   }
 
+  static const String _autoLockMinutesKey = "AutoLockMinutes";
+  static const int minAutoLockMinutes = 1;
+  static const int maxAutoLockMinutes = 1440;
+  static const int defaultAutoLockMinutes = 30;
+
+  static int clampAutoLockMinutes(int value) =>
+      value.clamp(minAutoLockMinutes, maxAutoLockMinutes);
+
+  /// Returns the minutes only when [input] is a whole number inside
+  /// [minAutoLockMinutes]..[maxAutoLockMinutes]; otherwise null.
+  static int? parseAutoLockMinutes(String? input) {
+    final value = int.tryParse(input?.trim() ?? '');
+    if (value == null ||
+        value < minAutoLockMinutes ||
+        value > maxAutoLockMinutes) {
+      return null;
+    }
+    return value;
+  }
+
+  /// Only has an effect while the passcode lock is on.
+  static int getAutoLockMinutes() {
+    return clampAutoLockMinutes(
+        _storage.getInt(_autoLockMinutesKey) ?? defaultAutoLockMinutes);
+  }
+
+  static void setAutoLockMinutes(int value) {
+    _storage.setInt(_autoLockMinutesKey, clampAutoLockMinutes(value));
+  }
+
   static bool getShowCropWindow() {
     return _storage.getBool(_showCropWindowKey) ?? true;
   }
@@ -187,6 +218,14 @@ class AppSettings {
 
   static bool getEnablePasscode() {
     return _storage.getBool(EnablePasscodeKey) ?? false;
+  }
+
+  static void setEnableFingerprint(bool value) {
+    _storage.setBool(EnableFingerprintKey, value);
+  }
+
+  static bool getEnableFingerprint() {
+    return _storage.getBool(EnableFingerprintKey) ?? false;
   }
 
   static void setPasscode(String passcode) {

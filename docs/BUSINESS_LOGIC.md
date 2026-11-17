@@ -119,6 +119,20 @@ payments, supplier payments, re-order, good info. Built by `ReportDataFactory`
 When enabled, `MainPage` shows a lock screen and compares the entered code with the stored one
 (`lib/presentation/pages/main/main_page.dart`, `_showLockScreen`).
 
+"Unlock with fingerprint" (General Setting, `EnableFingerprint`) is shown only while the passcode is
+on and the device has an enrolled biometric (`BiometricAuthService.isAvailable`). Enabling it needs
+one successful scan. When on, `_showLockScreen` prompts for the fingerprint as soon as the lock
+screen opens (and from the keypad's fingerprint button); success unlocks, any failure or cancel
+leaves the passcode keypad usable. Turning the passcode off turns fingerprint off.
+
+"Lock after N minutes of inactivity" (General Setting row, always visible, no on/off switch;
+`AutoLockMinutes` default 30, range 1–1440) re-locks the app after N minutes without a touch. It has
+no effect when the passcode is off. `AppLockService` (`lib/core/services/app_lock_service.dart`)
+keeps the idle clock (updated by a `Listener` around the app in `lib/app.dart`), checks every 10
+seconds and on app resume (background time counts), and shows the same lock screen as the cold start
+over any open screen; it is active only after `MainPage` has started it. The rule is
+`shouldAutoLock` (`lib/core/services/app_lock_rules.dart`). Unlocking resets the clock.
+
 ## Image settings
 
 General Setting (Android/iOS only) holds two values used by every image pick/capture

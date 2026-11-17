@@ -52,18 +52,19 @@ _Avoid_: offline app (in user-facing copy unless contrasting with the Online ver
 
 ## Technology stack
 
-| Concern       | Package                                                                   |
-|---------------|---------------------------------------------------------------------------|
-| State         | `flutter_bloc` (Cubit), `freezed`, `formz`                                |
-| DI            | `get_it`, `injectable` (+ `injectable_generator`)                         |
-| Database      | `sqflite`                                                                 |
-| Key-value     | `shared_preferences` (via `lib/common/storage/`), `hive` (box `settings`) |
-| Backend       | `firebase_core/auth/storage/database/analytics/crashlytics`               |
-| Sign-in       | `google_sign_in`, `sign_in_with_apple`, email/password (`firebase_auth`)  |
-| Purchases     | `purchases_flutter`, `purchases_ui_flutter`                               |
-| i18n          | `easy_localization` — 11 locales, JSON in `assets/translations/`          |
-| Files/reports | `csv`, `archive`, `xml`, `pdf`, `printing`, `file_picker`, `share_plus`   |
-| Scanning      | `mobile_scanner`, `camera`                                                |
+| Concern       | Package                                                                            |
+|---------------|------------------------------------------------------------------------------------|
+| State         | `flutter_bloc` (Cubit), `freezed`, `formz`                                         |
+| DI            | `get_it`, `injectable` (+ `injectable_generator`)                                  |
+| Database      | `sqflite`                                                                          |
+| Key-value     | `shared_preferences` (via `lib/common/storage/`), `hive` (box `settings`)          |
+| Backend       | `firebase_core/auth/storage/database/analytics/crashlytics`                        |
+| Sign-in       | `google_sign_in`, `sign_in_with_apple`, email/password (`firebase_auth`)           |
+| Purchases     | `purchases_flutter`, `purchases_ui_flutter`                                        |
+| i18n          | `easy_localization` — 11 locales, JSON in `assets/translations/`                   |
+| Files/reports | `csv`, `archive`, `xml`, `pdf`, `printing`, `file_picker`, `share_plus`            |
+| Scanning      | `mobile_scanner`, `camera`                                                         |
+| Biometrics    | `local_auth` (fingerprint unlock, `lib/core/services/biometric_auth_service.dart`) |
 
 Declared in `pubspec.yaml` but not imported anywhere in `lib/`: `camera_windows`,
 `desktop_webview_auth`, `fluttertoast`, `open_file`. Do not build on them.

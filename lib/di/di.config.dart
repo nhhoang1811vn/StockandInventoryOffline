@@ -11,8 +11,11 @@
 
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:local_auth/local_auth.dart' as _i152;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
+import '../core/services/app_lock_service.dart' as _i451;
+import '../core/services/biometric_auth_service.dart' as _i1012;
 import '../core/services/low_stock_service.dart' as _i697;
 import '../data/data.dart' as _i433;
 import '../data/db/db_helper.dart' as _i542;
@@ -122,11 +125,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i434.QuickInsertDocumentCubit>(
         () => _i434.QuickInsertDocumentCubit());
     gh.factory<_i951.SettingsCubit>(() => _i951.SettingsCubit());
-    gh.factory<_i439.SettingsGeneralCubit>(() => _i439.SettingsGeneralCubit());
     gh.factory<_i178.MinimumQuantityCubit>(() => _i178.MinimumQuantityCubit());
     gh.factory<_i25.MyCompanyCubit>(() => _i25.MyCompanyCubit());
     gh.factory<_i279.SettingsViewCubit>(() => _i279.SettingsViewCubit());
     gh.lazySingleton<_i542.DBHelper>(() => _i542.DBHelper());
+    gh.lazySingleton<_i152.LocalAuthentication>(() => appModule.localAuth);
+    gh.lazySingleton<_i1012.BiometricAuthService>(
+        () => _i1012.BiometricAuthService(gh<_i152.LocalAuthentication>()));
+    gh.lazySingleton<_i451.AppLockService>(
+        () => _i451.AppLockService(gh<_i1012.BiometricAuthService>()));
+    gh.factory<_i439.SettingsGeneralCubit>(
+        () => _i439.SettingsGeneralCubit(gh<_i1012.BiometricAuthService>()));
     gh.lazySingleton<_i542.CustomersRepository>(
         () => _i542.CustomersRepository(db: gh<_i433.DBHelper>()));
     gh.lazySingleton<_i317.DocumentRepository>(

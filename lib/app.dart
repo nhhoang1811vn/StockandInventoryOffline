@@ -10,7 +10,9 @@ import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/router.dart';
 
 import 'app_cubit.dart';
+import 'core/services/app_lock_service.dart';
 import 'core/services/notification_service.dart';
+import 'di/di.dart';
 import 'util/toast_utils.dart';
 
 class MyApp extends StatefulWidget {
@@ -46,7 +48,7 @@ class MyApp extends StatefulWidget {
   }
 }
 
-class MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   final AppRouter _router;
   MyAppState() : _router = AppRouter() {
   }
@@ -56,7 +58,21 @@ class MyAppState extends State<MyApp> {
     super.initState();
     NotificationService.init(navigatorKey: _router.navigatorKey);
     ToastUtils.init(_router.navigatorKey);
+    getIt<AppLockService>().attach(_router.navigatorKey);
+    WidgetsBinding.instance.addObserver(this);
   }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    getIt<AppLockService>().onLifecycleChanged(state);
+  }
+
   @override
   Widget build(BuildContext context) {
     final baseLight = ThemeData.light();
@@ -95,7 +111,7 @@ class MyAppState extends State<MyApp> {
               final isDark = Theme
                   .of(context)
                   .brightness == Brightness.dark;
-              return AnnotatedRegion<SystemUiOverlayStyle>(
+              final content = AnnotatedRegion<SystemUiOverlayStyle>(
                 value: SystemUiOverlayStyle(
                   statusBarColor: Colors.transparent,
                   statusBarIconBrightness:
@@ -129,6 +145,15 @@ class MyAppState extends State<MyApp> {
                     ),
                   ),
                 ),
+              );
+              // Any touch anywhere (pushed routes and dialogs included) counts
+              // as activity for the auto-lock idle clock.
+              return Listener(
+                behavior: HitTestBehavior.translucent,
+                onPointerDown: (_) => getIt<AppLockService>().markActivity(),
+                onPointerMove: (_) => getIt<AppLockService>().markActivity(),
+                onPointerUp: (_) => getIt<AppLockService>().markActivity(),
+                child: content,
               );
             },
             theme: ThemeData.light().copyWith(
