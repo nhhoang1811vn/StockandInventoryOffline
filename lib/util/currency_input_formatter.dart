@@ -9,7 +9,6 @@ class CurrencyInputFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     if (newValue.selection.baseOffset == 0) {
-      print(true);
       return newValue;
     }
     double value = double.parse(newValue.text);

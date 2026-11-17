@@ -251,7 +251,6 @@ class DBHelper {
       Store store = Store.map(list[i]);
       stores.add(store);
     }
-    print(stores.length);
     return stores;
   }
 

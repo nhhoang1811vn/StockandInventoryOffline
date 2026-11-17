@@ -31,9 +31,8 @@ Observed deviations from strict layering:
   current state: `home_page.dart` calls `getIt<SettingsDataCubit>().syncToRealtimeDB()`,
   `settings_view_page.dart` reads `AppSettings.isPro()`, `save_good_form.dart` builds a `Document`.
 - Not every cubit follows the pattern below: `AuthCubit` and `WalletsCubit` have non-freezed states;
-  `AppCubit` and `ImagesPreviewCubit` are not `@injectable`; `SaleReportCubit` and the add-quantity
-  cubit
-  are created inside widgets (`sale_report_widget.dart`, `blocs/add_quantity_and_price/`).
+  `AppCubit` is not `@injectable`; the add-quantity cubit is created inside a widget
+  (`blocs/add_quantity_and_price/`).
 
 ## Startup
 
@@ -73,8 +72,7 @@ emits `StartupFailure` and the page shows a retry button.
 - `lib/di/di.config.dart` is generated and **tracked in git**.
 - `getIt` is used directly in `lib/presentation/router.dart`,
   `lib/presentation/pages/home/home_page.dart`, `lib/presentation/pages/main/main_page.dart`,
-  `lib/presentation/pages/onboarding/on_boarding_page.dart` and
-  `lib/presentation/widget/sale_report/sale_report_widget.dart`.
+  `lib/presentation/pages/onboarding/on_boarding_page.dart`.
 
 ## Navigation
 

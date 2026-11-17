@@ -96,8 +96,7 @@ Schema: [DATABASE.md](DATABASE.md).
 11 types (`lib/domain/entity/report_type.dart`): list of goods, list of documents, debts by
 supplier, debts by customer, inbound payments, outbound payments, list of wallets, customer
 payments, supplier payments, re-order, good info. Built by `ReportDataFactory`
-(`lib/data/report_data/report_data_factory.dart`); export to Excel or PDF
-(`lib/presentation/pages/report/export_type.dart`).
+(`lib/data/report_data/report_data_factory.dart`); export to Excel or PDF.
 
 ## Account, backup, sync
 

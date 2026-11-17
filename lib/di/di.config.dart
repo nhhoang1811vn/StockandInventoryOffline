@@ -84,7 +84,6 @@ import '../presentation/pages/settings/view/bloc/settings_view_cubit.dart'
 import '../presentation/pages/stores/bloc/stores_cubit.dart' as _i895;
 import '../presentation/pages/suppliers/bloc/suppliers_cubit.dart' as _i346;
 import '../presentation/pages/wallets/bloc/wallets_cubit.dart' as _i427;
-import '../presentation/widget/sale_report/sale_report_cubit.dart' as _i434;
 import '../repo/customers_repository.dart' as _i542;
 import '../repo/document_transactions_repository.dart' as _i394;
 import '../repo/documents_repository.dart' as _i317;
@@ -272,8 +271,6 @@ extension GetItInjectableX on _i174.GetIt {
           customersUseCase: gh<_i704.CustomersUseCase>(),
           suppliersUseCase: gh<_i704.SuppliersUseCase>(),
         ));
-    gh.factory<_i434.SaleReportCubit>(
-        () => _i434.SaleReportCubit(useCase: gh<_i704.PaymentUseCases>()));
     gh.factory<_i12.HomeCubit>(() => _i12.HomeCubit(
           goodsUseCases: gh<_i704.GoodsUseCases>(),
           documentsUseCases: gh<_i704.DocumentUseCases>(),

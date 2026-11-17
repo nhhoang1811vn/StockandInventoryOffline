@@ -132,7 +132,6 @@ class DbService {
       groups.add(Group.map(item));
     }
     for (final item in groups) {
-      print("insert Group ${item.toMap()}");
       await txn.insert(
         DBHelper.GROUPS_TABLE_NAME,
         item.toMap(),

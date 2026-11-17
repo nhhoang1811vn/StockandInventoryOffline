@@ -66,8 +66,7 @@ _Avoid_: offline app (in user-facing copy unless contrasting with the Online ver
 | Scanning      | `mobile_scanner`, `camera`                                                |
 
 Declared in `pubspec.yaml` but not imported anywhere in `lib/`: `camera_windows`,
-`desktop_webview_auth`,
-`sqflite_common_ffi`. Do not build on them.
+`desktop_webview_auth`, `fluttertoast`, `open_file`. Do not build on them.
 
 Dart and Flutter SDK versions: see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#prerequisites).
 
@@ -109,9 +108,8 @@ docs/adr/                               architecture decision records
 ## State management conventions
 
 Cubit + freezed state, created per route by `BlocProvider(create: (_) => getIt<XCubit>())`.
-Exceptions: `AuthCubit` and `WalletsCubit` use plain (non-freezed) state classes; `AppCubit` and
-`ImagesPreviewCubit` are not injected; `SaleReportCubit` and the add-quantity cubit are built inside
-widgets.
+Exceptions: `AuthCubit` and `WalletsCubit` use plain (non-freezed) state classes; `AppCubit` is not
+injected; the add-quantity cubit is built inside a widget.
 UI actions are signalled through a `BaseState` field inside the state
 (`lib/presentation/pages/base/base_state.dart`).
 Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).

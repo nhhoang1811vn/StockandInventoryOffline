@@ -104,14 +104,11 @@ dependencies:
   firebase_storage: ^13.6.0
   flutter_svg: ^2.0.10+1
   #flutter_offline: ^3.0.1
-  gap: ^3.0.1
   #googleapis_auth: ^1.6.0
   desktop_webview_auth: ^0.0.15
   sign_in_with_apple: ^7.0.1
   #//toastification: ^2.3.0
   flutter_datetime_picker_plus: ^2.2.0
-  flutter_expandable_fab: ^2.3.0
-  fl_chart: ^1.2.0
   in_app_review: ^2.0.6
   flutter_colorpicker: ^1.1.0
   #in_app_purchase: ^3.2.1

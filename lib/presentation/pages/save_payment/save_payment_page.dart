@@ -343,9 +343,6 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                                 showTitleActions: true,
                                 minTime: Config.minTime,
                                 maxTime: Config.maxTime,
-                                onChanged: (date) {
-                                  print('change $date');
-                                },
                                 onConfirm: (date) {
                                   context
                                       .read<SavePaymentCubit>()
