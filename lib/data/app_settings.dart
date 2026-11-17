@@ -20,6 +20,8 @@ class AppSettings {
   static const String InitSettings = "InitSettings3";
   static const String BarcodeScannerBatchScanMode =
       "BarcodeScannerBatchScanMode";
+  static const String BarcodeScannerBatchScanDelayMs =
+      "BarcodeScannerBatchScanDelayMs";
   static const String BarcodeScannerEnableBeep = "BarcodeScannerEnableBeep";
   static const String BarcodeScannerEnableVibrate =
       "BarcodeScannerEnableVibrate";
@@ -130,6 +132,17 @@ class AppSettings {
 
   static void setBatchModeScan(BatchModeScan mode) {
     _storage.setInt(BarcodeScannerBatchScanMode, mode.value);
+  }
+
+  static const int defaultBatchScanDelayMs = 2000;
+
+  static int getBatchScanDelayMs() {
+    return _storage.getInt(BarcodeScannerBatchScanDelayMs) ??
+        defaultBatchScanDelayMs;
+  }
+
+  static void setBatchScanDelayMs(int value) {
+    _storage.setInt(BarcodeScannerBatchScanDelayMs, value);
   }
 
   static void setEnablePasscode(bool value) {

@@ -119,8 +119,8 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
           emit(state.copyWith(state: SaveItemSuccessful()));
         }
       } catch (e) {
-          if (isClosed) return;
-          emit(state.copyWith(state: SaveItemError(e.toString())));
+        if (isClosed) return;
+        emit(state.copyWith(state: SaveItemError(e.toString())));
       }
     } else {
       emit(state.copyWith(name: NameInput.dirty(value: state.name.value)));
@@ -206,7 +206,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
         num numValue = Config.simpleCurrencyFormat.parse(value);
         double price = numValue.toDouble();
         emit(state.copyWith(purchasePrice: price));
-      }catch (e) {
+      } catch (e) {
         emit(state.copyWith(purchasePrice: null));
       }
     } else {
@@ -273,6 +273,7 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
     items.removeAt(key);
     emit(state.copyWith(files: items));
   }
+
   void onAddFile(Uint8List bytes) {
     List<Uint8List> items = [];
     items.addAll(state.files);
@@ -283,9 +284,9 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
   void onLogoChanged(Uint8List bytes) {
     List<Uint8List> items = [];
     items.addAll(state.files);
-    if (items.isEmpty){
+    if (items.isEmpty) {
       items.add(bytes);
-    }else{
+    } else {
       items[0] = bytes;
     }
     emit(state.copyWith(files: items));

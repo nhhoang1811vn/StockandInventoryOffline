@@ -7,9 +7,10 @@ import 'package:good_manager/presentation/pages/settings/general/bloc/settings_g
 
 import '../../../../app_cubit.dart';
 import '../../../../models/currency.dart';
-import '../../../../util/util.dart';
-import '../../../widget/widget.dart';
 import '../../../../util/toast_utils.dart';
+import '../../../../util/util.dart';
+import '../../../dialog/dialog.dart';
+import '../../../widget/widget.dart';
 
 class SettingsGeneralPage extends StatefulWidget {
   SettingsGeneralPage({Key? key}) : super(key: key);
@@ -76,10 +77,18 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
                     title: context
                         .tr("menu_item_reset_numeration_documents_title"),
                     onTap: () {
-                      context
-                          .read<SettingsGeneralCubit>()
-                          .resetAutoDocumentNo();
-                      ToastUtils.showSuccessToast(context.tr("success"));
+                      showCustomAlertDialog(
+                        context,
+                        message: context
+                            .tr("message_confirm_reset_numeration_documents"),
+                        onPositivePressed: () {
+                          hideDialog(context);
+                          context
+                              .read<SettingsGeneralCubit>()
+                              .resetAutoDocumentNo();
+                          ToastUtils.showSuccessToast(context.tr("success"));
+                        },
+                      );
                     },
                     isLast: true,
                   ),

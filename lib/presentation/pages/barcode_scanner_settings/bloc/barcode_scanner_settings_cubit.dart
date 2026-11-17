@@ -14,6 +14,7 @@ class BarcodeScannerSettingsCubit extends Cubit<BarcodeScannerSettingsState> {
       : super(
           BarcodeScannerSettingsState.initial(
             batchModeScan: AppSettings.getBatchModeScan(),
+            batchScanDelayMs: AppSettings.getBatchScanDelayMs(),
             enableBeep: AppSettings.getBarcodeScannerEnableBeep(),
             enableVibrate: AppSettings.getBarcodeScannerEnableVibrate(),
           ),
@@ -27,6 +28,11 @@ class BarcodeScannerSettingsCubit extends Cubit<BarcodeScannerSettingsState> {
   void onEnableVibrateChanged(bool value) {
     AppSettings.setBarcodeScannerEnableVibrate(value);
     emit(state.copyWith(enableVibrate: value));
+  }
+
+  void setBatchScanDelayMs(int value) {
+    AppSettings.setBatchScanDelayMs(value);
+    emit(state.copyWith(batchScanDelayMs: value));
   }
 
   void setBatchModeScan(BatchModeScan mode) {

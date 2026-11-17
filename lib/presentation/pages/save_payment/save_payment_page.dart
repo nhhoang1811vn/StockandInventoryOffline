@@ -7,6 +7,7 @@ import 'package:good_manager/presentation/pages/save_payment/components/select_w
 import '../../../app.dart';
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
+import '../../../util/toast_utils.dart';
 import '../../dialog/dialog.dart';
 import '../../markdown/md_provider_factory.dart';
 import '../../review_manager.dart';
@@ -16,7 +17,6 @@ import '../help_content.dart';
 import '../pages.dart';
 import 'bloc/save_payment_cubit.dart';
 import 'components/select_category_widget.dart';
-import '../../../util/toast_utils.dart';
 
 class SavePaymentPage extends StatefulWidget {
   final Payment item;
@@ -219,7 +219,8 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AppTextField(
-                            labelText: context.tr("label_select_payment_category"),
+                            labelText:
+                                context.tr("label_select_payment_category"),
                             keyboardType: TextInputType.none,
                             readOnly: true,
                             onTapped: () {
@@ -318,10 +319,8 @@ class SavePaymentPageState extends State<SavePaymentPage> {
                           //     )),
                           // SizedBox(height: 16),
                           AppTextField(
-                            labelText:
-                                context.tr("label_description"),
-                            hintText:
-                                context.tr("hint_description"),
+                            labelText: context.tr("label_description"),
+                            hintText: context.tr("hint_description"),
                             controller: descriptionController,
                             maxLines: null,
                             minLines: 2,
@@ -394,8 +393,7 @@ class SavePaymentPageState extends State<SavePaymentPage> {
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.all(16),
-                child: PrimaryButton(context.tr("action_save"),
-                    () {
+                child: PrimaryButton(context.tr("action_save"), () {
                   context.read<SavePaymentCubit>().onSaveClicked();
                 }),
               ),

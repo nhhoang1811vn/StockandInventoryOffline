@@ -304,7 +304,9 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
               ? good.purchasePrice
               : good.salePrice,
         );
-        await Future.delayed(Duration(seconds: 2));
+        await Future.delayed(
+          Duration(milliseconds: AppSettings.getBatchScanDelayMs()),
+        );
         if (isClosed) return;
         onBatchScanMenuClicked();
       }

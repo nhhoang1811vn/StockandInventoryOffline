@@ -4,6 +4,7 @@ part of 'barcode_scanner_settings_cubit.dart';
 class BarcodeScannerSettingsState with _$BarcodeScannerSettingsState {
   const factory BarcodeScannerSettingsState.initial({
     required BatchModeScan batchModeScan,
+    required int batchScanDelayMs,
     required bool enableBeep,
     required bool enableVibrate,
   }) = _Initial;

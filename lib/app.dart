@@ -89,6 +89,9 @@ class MyAppState extends State<MyApp> {
               final mediaQuery = MediaQuery.of(context);
               final padding = mediaQuery.padding;
               final viewPadding = mediaQuery.viewPadding;
+              final bottomInset = mediaQuery.viewInsets.bottom > 0
+                  ? 0.0
+                  : (padding.bottom > 0 ? padding.bottom : viewPadding.bottom);
               final isDark = Theme
                   .of(context)
                   .brightness == Brightness.dark;
@@ -104,16 +107,27 @@ class MyAppState extends State<MyApp> {
                   isDark ? Brightness.light : Brightness.dark,
                   systemNavigationBarContrastEnforced: false,
                 ),
-                child: MediaQuery(
-                  data: mediaQuery.copyWith(
-                    padding: padding.copyWith(
-                      top: padding.top > 0 ? padding.top : viewPadding.top,
-                      bottom: padding.bottom > 0
-                          ? padding.bottom
-                          : viewPadding.bottom,
+                // Root safe area: the system navigation bar is transparent
+                // (edge-to-edge), so reserve its height once here for every
+                // route, dialog and bottom sheet. The reserved inset is then
+                // removed from the MediaQuery padding so nested SafeAreas do
+                // not add it twice. While the keyboard is open the Scaffold
+                // already resizes for it, so no extra inset is reserved.
+                child: ColoredBox(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: bottomInset),
+                    child: MediaQuery(
+                      data: mediaQuery.copyWith(
+                        padding: padding.copyWith(
+                          top: padding.top > 0 ? padding.top : viewPadding.top,
+                          bottom: 0,
+                        ),
+                        viewPadding: viewPadding.copyWith(bottom: 0),
+                      ),
+                      child: child ?? const SizedBox.shrink(),
                     ),
                   ),
-                  child: child ?? const SizedBox.shrink(),
                 ),
               );
             },

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/barcode_scanner_settings/change_batch_mode_scan_dialog.dart';
+import 'package:good_manager/presentation/pages/barcode_scanner_settings/change_batch_scan_delay_dialog.dart';
 
 import '../../../domain/entity/entity.dart';
 import '../../widget/widget.dart';
@@ -38,8 +39,17 @@ class BarcodeScannerSettingsPageState
                       ? context.tr("after_each_scan_auto")
                       : context.tr("after_each_scan_manually"),
                   onTap: () => showAfterEachScanDialog(context, state),
-                  isLast: true,
+                  isLast: state.batchModeScan != BatchModeScan.AUTO,
                 ),
+                if (state.batchModeScan == BatchModeScan.AUTO)
+                  SettingsMenuItem(
+                    icon: Icons.timer_outlined,
+                    title: context.tr("batch_scan_delay"),
+                    subtitle: ChangeBatchScanDelayDialogWidget.format(
+                        context, state.batchScanDelayMs),
+                    onTap: () => showBatchScanDelayDialog(context, state),
+                    isLast: true,
+                  ),
               ],
             ),
             SettingsSectionHeader(context.tr("when_a_barcode_is_found")),
@@ -72,6 +82,19 @@ class BarcodeScannerSettingsPageState
         ),
       ),
     );
+  }
+
+  void showBatchScanDelayDialog(
+    BuildContext context,
+    BarcodeScannerSettingsState state,
+  ) async {
+    final newDelay = await showDialog<int>(
+      context: context,
+      builder: (_) => ChangeBatchScanDelayDialogWidget(state.batchScanDelayMs),
+    );
+    if (newDelay != null && context.mounted) {
+      context.read<BarcodeScannerSettingsCubit>().setBatchScanDelayMs(newDelay);
+    }
   }
 
   void showAfterEachScanDialog(

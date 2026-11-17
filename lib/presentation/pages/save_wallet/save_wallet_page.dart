@@ -5,11 +5,11 @@ import 'package:good_manager/presentation/pages/save_wallet/bloc/save_wallet_cub
 
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
+import '../../../util/toast_utils.dart';
 import '../../dialog/dialog.dart';
 import '../../review_manager.dart';
 import '../../widget/widget.dart';
 import '../base/base_state.dart';
-import '../../../util/toast_utils.dart';
 
 class SaveWalletPage extends StatefulWidget {
   final Wallet item;
@@ -29,6 +29,7 @@ class SaveWalletPageState extends State<SaveWalletPage> {
     context.read<SaveWalletCubit>().init(widget.item);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SaveWalletCubit, SaveWalletState>(
@@ -83,13 +84,9 @@ class SaveWalletPageState extends State<SaveWalletPage> {
                 SizedBox(
                   height: 8,
                 ),
-                Text(
-                  context.tr("change_color"),
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleSmall
-                      ?.copyWith(color: Theme.of(context).colorScheme.primary)
-                ),
+                Text(context.tr("change_color"),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.primary)),
                 SizedBox(
                   height: 32,
                 ),
@@ -121,8 +118,7 @@ class SaveWalletPageState extends State<SaveWalletPage> {
                         children: [
                           Expanded(
                             child: CurrencyAppTextField(
-                              labelText:
-                                  context.tr("amount"),
+                              labelText: context.tr("amount"),
                               controller: amountController,
                               onChanged: context
                                   .read<SaveWalletCubit>()
