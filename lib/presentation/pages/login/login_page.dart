@@ -157,8 +157,10 @@ class LoginPageState extends State<LoginPage> {
                 if (isMobilePlatform) ...[
                   SizedBox(height: 32),
                   _buildLoginWithGoogle(),
-                  SizedBox(height: 16),
-                  _buildLoginWithApple(),
+                  if (isAppleSignInSupported) ...[
+                    SizedBox(height: 16),
+                    _buildLoginWithApple(),
+                  ],
                 ],
               ],
             ),

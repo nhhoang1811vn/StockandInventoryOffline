@@ -149,9 +149,7 @@ class _ScreenState extends State<MainView> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
     return Container(
-      padding: EdgeInsets.only(bottom: bottomInset),
       decoration: BoxDecoration(
         color: theme.cardTheme.color ?? (isDark ? Colors.black : Colors.white),
         borderRadius: const BorderRadius.vertical(
@@ -165,11 +163,14 @@ class _ScreenState extends State<MainView> {
           ),
         ],
       ),
-      child: SizedBox(
-        height: 85,
+      // The bar height comes from its content (the 60px scan button plus
+      // padding); SafeArea adds the platform's bottom inset (home indicator /
+      // navigation bar) under it, so no fixed height is needed.
+      child: SafeArea(
+        top: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Row(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _buildNavItem(

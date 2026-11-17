@@ -71,9 +71,10 @@ class LinkWithPageState extends State<LinkWithPage> {
                 if (isMobilePlatform) ...[
                   _buildContinueWithGoogle(),
                   SizedBox(height: 16),
-                  //if (Platform.isIOS)
-                  _buildContinueWithApple(),
-                  SizedBox(height: 16),
+                  if (isAppleSignInSupported) ...[
+                    _buildContinueWithApple(),
+                    SizedBox(height: 16),
+                  ],
                 ],
                 _buildContinueWithEmail(),
                 SizedBox(height: 64),
