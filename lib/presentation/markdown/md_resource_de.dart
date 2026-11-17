@@ -3,6 +3,17 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceDE {
   static const bundle = MarkdownBundle(
     whatNews: """
+### Version 1.0.94 - 17. Nov. 2026
+* Die Windows-Version ist jetzt verfügbar. Das neue Banner auf der Startseite führt zum Download.
+* Waren und Gruppen lassen sich jetzt kopieren: lange drücken, Kopieren wählen, dann Geschäft und Gruppe auswählen.
+* Mit dem Fingerabdruck (Face ID beim iPhone) entsperren, wenn die Code-Sperre aktiv ist.
+* Die App sperrt sich nach einer Zeit ohne Aktivität automatisch (standardmäßig 30 Minuten, in den Einstellungen änderbar).
+* Neue Einstellung für die Bildgröße und Option, das Zuschneidefenster beim Hinzufügen von Bildern auszublenden.
+* Neue Einstellung für die Pause zwischen Scans beim Stapelscannen.
+* Das Zurücksetzen der Dokumentnummerierung fragt jetzt nach einer Bestätigung.
+* Abstürze behoben, wenn das Gerät offline ist, das Profilfoto nicht geladen werden kann oder ein ungültiger Preis bzw. Betrag eingegeben wird.
+* Abstürze in den Listen Dokumente, Zahlungen und Verlauf nach dem Löschen oder Filtern behoben sowie bei verweigerter Kamera- oder Benachrichtigungsberechtigung.
+
 ### Version 1.0.93 - 30. Okt. 2026
 * Neue, moderne Hinweise, die von oben einblenden. Nach oben wischen oder tippen zum Schließen.
 * Alle Meldungen nutzen jetzt denselben Stil mit Farben für Erfolg, Warnung und Fehler.

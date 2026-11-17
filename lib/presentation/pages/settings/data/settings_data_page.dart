@@ -108,6 +108,7 @@ class SettingsDataPageState extends State<SettingsDataPage> {
       try {
         final ref = storageRef.child("2026/$uid/data.json");
         final metadata = await ref.getMetadata();
+        if (!mounted) return;
         setState(() {
           if (metadata.updated != null) {
             cloudFileUpdatedTime =
@@ -117,10 +118,12 @@ class SettingsDataPageState extends State<SettingsDataPage> {
           }
         });
       } on FirebaseException {
+        if (!mounted) return;
         setState(() {
           cloudFileUpdatedTime = "";
         });
       } catch (e) {
+        if (!mounted) return;
         setState(() {
           cloudFileUpdatedTime = "";
         });
@@ -304,6 +307,7 @@ class SettingsDataPageState extends State<SettingsDataPage> {
   void onSaveDataToCloudVersion2() async {
     showProgressIndicator(context);
     final error = await context.read<SettingsDataCubit>().syncToRealtimeDB();
+    if (!mounted) return;
     hideDialog(context);
     if (error == null) {
       ToastUtils.showSuccessToast(context.tr("snackbar_saved"));

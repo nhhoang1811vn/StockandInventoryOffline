@@ -177,6 +177,9 @@ class MenuPageState extends State<MenuPage> {
                       ? CircleAvatar(
                           radius: 35,
                           backgroundImage: NetworkImage(photoUrl),
+                          // Offline / DNS failures are expected; do not
+                          // report them to Crashlytics as fatals.
+                          onBackgroundImageError: (_, __) {},
                         )
                       : CircleAvatar(
                           radius: 35,
@@ -400,7 +403,12 @@ class MenuPageState extends State<MenuPage> {
       message: context.tr("message_confirm_delete_account"),
       onPositivePressed: () async {
         Navigator.of(context).pop();
-        await context.read<MenuCubit>().deleteAccount();
+        final deleted = await context.read<MenuCubit>().deleteAccount();
+        if (!mounted) return;
+        if (!deleted) {
+          ToastUtils.showErrorToast(context.tr("error"));
+          return;
+        }
         Navigator.of(context).pushNamedAndRemoveUntil(
             Pages.loading_data, (Route<dynamic> route) => false);
       },

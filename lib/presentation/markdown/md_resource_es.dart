@@ -3,6 +3,17 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceES {
   static const bundle = MarkdownBundle(
     whatNews: """
+### Versión 1.0.94 - 17 nov 2026
+* Ya está disponible la versión para Windows. Usa el nuevo banner de Inicio para descargarla.
+* Ahora puedes copiar un producto o un grupo: mantén pulsado, elige Copiar y selecciona la tienda y el grupo.
+* Desbloquea con la huella (Face ID en iPhone) cuando el bloqueo con código está activado.
+* La app se bloquea automáticamente tras un tiempo de inactividad (30 minutos por defecto, ajustable en Ajustes).
+* Nuevo ajuste del tamaño de imagen y opción para ocultar la ventana de recorte al añadir imágenes.
+* Nuevo ajuste del retraso entre escaneos en el escaneo por lotes.
+* Restablecer la numeración de documentos ahora pide confirmación.
+* Se corrigieron cierres inesperados sin conexión, cuando no se carga la foto de perfil o al introducir un precio o importe no válido.
+* Se corrigieron cierres en las listas de Documentos, Pagos e Historial tras eliminar o filtrar elementos, y cuando se deniega el permiso de cámara o de notificaciones.
+
 ### Versión 1.0.93 - 30 oct 2026
 * Nuevos avisos modernos que se deslizan desde arriba. Desliza hacia arriba o toca para cerrarlos.
 * Todos los mensajes usan ahora el mismo estilo, con colores para éxito, advertencia y error.

@@ -33,8 +33,13 @@ class AddQuantityAndPriceCubit extends Cubit<AddQuantityAndPriceState> {
 
   void onPriceChanged(String value) {
     if (value.isNotEmpty) {
-      num priceNum = Config.simpleCurrencyFormat.parse(value);
-      double price = priceNum.toDouble();
+      double price;
+      try {
+        price = Config.simpleCurrencyFormat.parse(value).toDouble();
+      } on FormatException {
+        // Unparsable input (e.g. "." or "-"): keep the previous price.
+        return;
+      }
       if (state.quantity != null) {
         emit(state.copyWith(price: price, amount: state.quantity! * price));
       } else {

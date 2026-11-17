@@ -272,32 +272,36 @@ class PaymentsPageState extends State<PaymentsPage>
       );
 
   Widget _buildStickyListView(List<Payment> payments, PaymentsState state) {
-    return StickyGroupedListView<Payment, DateTime>(
-      stickyHeaderBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      elements: List.of(payments),
-      groupBy: (Payment payment) => DateTime(
-        payment.date.year,
-        payment.date.month,
-        payment.date.day,
-      ),
-      groupSeparatorBuilder: (Payment payment) => DateItemRow(payment.date),
-      itemBuilder: (context, Payment payment) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Dimens.screenPadding),
-          child: PaymentItemRow(
-            payment,
-            Colors.transparent,
-            (item) => onPressed(item),
-            (item) => onLongPressed(item),
-            showDate: false,
+    return ResetOnShrink(
+        itemCount: payments.length,
+        child: StickyGroupedListView<Payment, DateTime>(
+          stickyHeaderBackgroundColor:
+              Theme.of(context).scaffoldBackgroundColor,
+          elements: List.of(payments),
+          groupBy: (Payment payment) => DateTime(
+            payment.date.year,
+            payment.date.month,
+            payment.date.day,
           ),
-        );
-      },
-      itemComparator: (a, b) => a.date.compareTo(b.date),
-      order: state.setting!.sortByDateNewestFirst
-          ? StickyGroupedListOrder.DESC
-          : StickyGroupedListOrder.ASC,
-    );
+          groupSeparatorBuilder: (Payment payment) => DateItemRow(payment.date),
+          itemBuilder: (context, Payment payment) {
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: Dimens.screenPadding),
+              child: PaymentItemRow(
+                payment,
+                Colors.transparent,
+                (item) => onPressed(item),
+                (item) => onLongPressed(item),
+                showDate: false,
+              ),
+            );
+          },
+          itemComparator: (a, b) => a.date.compareTo(b.date),
+          order: state.setting!.sortByDateNewestFirst
+              ? StickyGroupedListOrder.DESC
+              : StickyGroupedListOrder.ASC,
+        ));
   }
 
   void onPressed(Payment item) async {

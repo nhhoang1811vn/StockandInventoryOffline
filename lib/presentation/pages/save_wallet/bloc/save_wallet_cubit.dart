@@ -51,8 +51,13 @@ class SaveWalletCubit extends Cubit<SaveWalletState> {
 
   void onAmountChanged(String value) {
     if (value.isNotEmpty) {
-      num amountNum = Config.simpleCurrencyFormat.parse(value);
-      double amount = amountNum.toDouble();
+      double amount;
+      try {
+        amount = Config.simpleCurrencyFormat.parse(value).toDouble();
+      } on FormatException {
+        // Unparsable input (e.g. "." or "-"): keep the previous amount.
+        return;
+      }
       emit(state.copyWith(amount: amount));
     } else {
       emit(state.copyWith(amount: null));

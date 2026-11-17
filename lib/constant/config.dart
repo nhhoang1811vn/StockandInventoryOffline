@@ -13,6 +13,11 @@ class Config {
   static String iOSStoreLink = "https://apps.apple.com/us/app/stock-and-inventory/id6670546293";
   static String androidStoreLink = "https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter";
 
+  static const String windowsReleaseUrl =
+      "https://github.com/nhhoang1811vn/StockandInventoryOffline/releases/tag/v1.0.93w";
+  static const String windowsGuideUrl =
+      "https://github.com/nhhoang1811vn/StockandInventoryOffline";
+
   static String termOfUseUrl = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/";
   static String privacyPolicyUrl = "https://www.freeprivacypolicy.com/live/441fa2be-af36-49e4-8dd2-880a7d5f19c0";
 }

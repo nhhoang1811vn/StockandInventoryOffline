@@ -3,6 +3,17 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourcePT {
   static const bundle = MarkdownBundle(
     whatNews: """
+### Versão 1.0.94 - 17 nov 2026
+* A versão para Windows já está disponível. Use o novo banner da tela inicial para baixá-la.
+* Agora você pode copiar um produto ou um grupo: pressione e segure, escolha Copiar e selecione a loja e o grupo.
+* Desbloqueie com a digital (Face ID no iPhone) quando o bloqueio por senha estiver ativado.
+* O app bloqueia automaticamente após um período de inatividade (30 minutos por padrão, ajustável em Configurações).
+* Nova configuração de tamanho da imagem e opção para ocultar a janela de recorte ao adicionar imagens.
+* Nova configuração de atraso entre leituras na leitura em lote.
+* Redefinir a numeração de documentos agora pede confirmação.
+* Corrigidos fechamentos inesperados offline, quando a foto de perfil não carrega ou ao digitar um preço ou valor inválido.
+* Corrigidos fechamentos nas listas de Documentos, Pagamentos e Histórico após excluir ou filtrar itens, e quando a permissão de câmera ou de notificações é negada.
+
 ### Versão 1.0.93 - 30 out 2026
 * Novos avisos modernos que deslizam do topo. Deslize para cima ou toque para fechar.
 * Todas as mensagens agora usam o mesmo estilo, com cores para sucesso, alerta e erro.

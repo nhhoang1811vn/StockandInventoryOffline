@@ -113,28 +113,31 @@ class ItemHistoryPageState extends State<ItemHistoryPage> {
   }
 
   Widget _buildStickyListView(ItemHistoryState state) {
-    return StickyGroupedListView<GoodHistory, DateTime>(
-      stickyHeaderBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      elements: List.of(state.goodHistories),
-      groupBy: (GoodHistory item) => DateTime(
-        item.document!.date.year,
-        item.document!.date.month,
-        item.document!.date.day,
-      ),
-      groupSeparatorBuilder: (GoodHistory item) =>
-          DateItemRow(item.document!.date),
-      itemBuilder: (context, GoodHistory item) {
-        return ItemHistoryRow(
-            item, Colors.transparent, state.incomingColor,
-            state.outgoingColor, (item) async {
-          await Navigator.of(context)
-              .pushNamed(Pages.save_document, arguments: {'item': item});
-          context.read<ItemHistoryCubit>().loadItems();
-        });
-      },
-      itemComparator: (a, b) => a.document!.date.compareTo(b.document!.date),
-      order: StickyGroupedListOrder.DESC,
-    );
+    return ResetOnShrink(
+        itemCount: state.goodHistories.length,
+        child: StickyGroupedListView<GoodHistory, DateTime>(
+          stickyHeaderBackgroundColor:
+              Theme.of(context).scaffoldBackgroundColor,
+          elements: List.of(state.goodHistories),
+          groupBy: (GoodHistory item) => DateTime(
+            item.document!.date.year,
+            item.document!.date.month,
+            item.document!.date.day,
+          ),
+          groupSeparatorBuilder: (GoodHistory item) =>
+              DateItemRow(item.document!.date),
+          itemBuilder: (context, GoodHistory item) {
+            return ItemHistoryRow(item, Colors.transparent, state.incomingColor,
+                state.outgoingColor, (item) async {
+              await Navigator.of(context)
+                  .pushNamed(Pages.save_document, arguments: {'item': item});
+              context.read<ItemHistoryCubit>().loadItems();
+            });
+          },
+          itemComparator: (a, b) =>
+              a.document!.date.compareTo(b.document!.date),
+          order: StickyGroupedListOrder.DESC,
+        ));
   }
 
   Widget _buildSummaryView(ItemHistoryState state) {

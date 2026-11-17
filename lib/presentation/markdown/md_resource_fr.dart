@@ -3,6 +3,17 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceFR {
   static const bundle = MarkdownBundle(
     whatNews: """
+### Version 1.0.94 - 17 nov. 2026
+* La version Windows est disponible. Le nouveau bandeau de l'accueil permet de la télécharger.
+* Vous pouvez désormais copier un article ou un groupe : appui long, choisissez Copier, puis sélectionnez le magasin et le groupe.
+* Déverrouillez avec votre empreinte (Face ID sur iPhone) lorsque le verrouillage par code est activé.
+* L'app se verrouille automatiquement après une période d'inactivité (30 minutes par défaut, réglable dans les Paramètres).
+* Nouveau réglage de la taille des images et option pour masquer la fenêtre de recadrage lors de l'ajout d'images.
+* Nouveau réglage du délai entre les scans pour le scan par lot.
+* La réinitialisation de la numérotation des documents demande désormais une confirmation.
+* Correction des plantages hors ligne, lorsque la photo de profil ne se charge pas ou lors de la saisie d'un prix ou montant invalide.
+* Correction des plantages dans les listes Documents, Paiements et Historique après suppression ou filtrage, et lorsque l'autorisation de l'appareil photo ou des notifications est refusée.
+
 ### Version 1.0.93 - 30 oct. 2026
 * Nouvelles notifications modernes qui glissent depuis le haut. Balayez vers le haut ou touchez pour fermer.
 * Tous les messages utilisent désormais le même style, avec des couleurs pour le succès, l'avertissement et l'erreur.

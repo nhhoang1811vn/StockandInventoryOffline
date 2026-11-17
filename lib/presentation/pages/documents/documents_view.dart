@@ -381,38 +381,43 @@ class DocumentPageState extends State<DocumentsPage>
       );
 
   Widget _buildStickyListView(List<Document> documents, DocumentsState state) {
-    return StickyGroupedListView<Document, DateTime>(
-      elements: List.of(documents),
-      groupBy: (Document payment) => DateTime(
-        payment.date.year,
-        payment.date.month,
-        payment.date.day,
-      ),
-      stickyHeaderBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      groupSeparatorBuilder: (Document document) => DateItemRow(document.date),
-      itemBuilder: (context, Document document) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Dimens.screenPadding),
-          child: DocumentItemRow(
-            item: document,
-            bgColor: Colors.transparent,
-            incomingColor: state.incomingColor ?? Colors.red,
-            outgoingColor: state.outgoingColor ?? Colors.green,
-            showTimeOnly: true,
-            onDocumentTapped: (item) {
-              onPressedDocument(item);
-            },
-            onDocumentLongPressed: (item) {
-              onLongPressedDocument(item);
-            },
+    return ResetOnShrink(
+        itemCount: documents.length,
+        child: StickyGroupedListView<Document, DateTime>(
+          elements: List.of(documents),
+          groupBy: (Document payment) => DateTime(
+            payment.date.year,
+            payment.date.month,
+            payment.date.day,
           ),
-        );
-      },
-      itemComparator: (a, b) => a.date.compareTo(b.date),
-      order: state.setting!.sortByDateNewestFirst
-          ? StickyGroupedListOrder.DESC
-          : StickyGroupedListOrder.ASC,
-    );
+          stickyHeaderBackgroundColor:
+              Theme.of(context).scaffoldBackgroundColor,
+          groupSeparatorBuilder: (Document document) =>
+              DateItemRow(document.date),
+          itemBuilder: (context, Document document) {
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: Dimens.screenPadding),
+              child: DocumentItemRow(
+                item: document,
+                bgColor: Colors.transparent,
+                incomingColor: state.incomingColor ?? Colors.red,
+                outgoingColor: state.outgoingColor ?? Colors.green,
+                showTimeOnly: true,
+                onDocumentTapped: (item) {
+                  onPressedDocument(item);
+                },
+                onDocumentLongPressed: (item) {
+                  onLongPressedDocument(item);
+                },
+              ),
+            );
+          },
+          itemComparator: (a, b) => a.date.compareTo(b.date),
+          order: state.setting!.sortByDateNewestFirst
+              ? StickyGroupedListOrder.DESC
+              : StickyGroupedListOrder.ASC,
+        ));
   }
 
   void showFilterBottomSheet(DocumentsState state) {

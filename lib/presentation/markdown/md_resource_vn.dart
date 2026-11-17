@@ -96,6 +96,17 @@ Dùng chức năng này để theo dõi chi tiêu theo từng cửa hàng.
 """;
 
   static const String whatNews = """
+### Phiên bản 1.0.94 - 17/11/2026
+* Đã có phiên bản Windows. Xem banner mới ở Trang chủ để tải về.
+* Có thể sao chép hàng hóa hoặc nhóm: nhấn giữ, chọn Sao chép, rồi chọn cửa hàng và nhóm.
+* Mở khóa bằng vân tay (Face ID trên iPhone) khi đã bật khóa mật mã.
+* Ứng dụng tự khóa sau một khoảng thời gian không hoạt động (mặc định 30 phút, có thể chỉnh trong Cài đặt).
+* Thêm cài đặt kích thước ảnh và tùy chọn ẩn cửa sổ cắt ảnh khi thêm hình.
+* Thêm cài đặt độ trễ giữa các lần quét khi quét hàng loạt.
+* Đặt lại đánh số chứng từ giờ có hỏi xác nhận.
+* Sửa lỗi thoát ứng dụng khi ngoại tuyến, khi không tải được ảnh đại diện hoặc khi nhập giá, số tiền không hợp lệ.
+* Sửa lỗi thoát ứng dụng ở danh sách Chứng từ, Thanh toán và Lịch sử sau khi xóa hoặc lọc mục, và khi từ chối quyền camera hoặc thông báo.
+
 ### Phiên bản 1.0.93 - 30/10/2026
 * Thông báo mới hiện đại hơn, trượt xuống từ phía trên. Vuốt lên hoặc chạm để đóng.
 * Mọi thông báo dùng chung một kiểu, có màu riêng cho thành công, cảnh báo và lỗi.

@@ -107,8 +107,8 @@ class _ScreenState extends State<MainView> {
     final lowStockService = getIt<LowStockService>();
     final hasLowStock = await lowStockService.hasLowStock();
 
-    if (hasLowStock && context.mounted) {
-      NotificationService.showNotification(
+    if (hasLowStock && mounted) {
+      await NotificationService.showNotification(
         id: 0,
         title: context.tr("notification_low_stock_alert_title"),
         body: context.tr("notification_low_stock_alert_message"),

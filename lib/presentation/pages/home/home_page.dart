@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/data/app_settings.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
+import 'package:good_manager/common/platform_support.dart';
 import 'package:good_manager/presentation/pages/home/home_wallets_section.dart';
+import 'package:good_manager/presentation/pages/home/home_windows_banner.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
 import 'package:good_manager/util/currency_formatter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -144,6 +146,20 @@ class HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: _cardGap),
                 _buildAnnouncementCard(),
+                // The Windows version only matters to Android/iOS users.
+                if (isMobilePlatform) ...[
+                  const SizedBox(height: _cardGap),
+                  HomeWindowsBanner(
+                    title: context.tr("windows_banner_title"),
+                    message: context.tr("windows_banner_message"),
+                    downloadLabel: context.tr("windows_banner_download"),
+                    guideLabel: context.tr("windows_banner_guide"),
+                    onDownload: () =>
+                        NavigatorUtils.openUrl(Config.windowsReleaseUrl),
+                    onGuide: () =>
+                        NavigatorUtils.openUrl(Config.windowsGuideUrl),
+                  ),
+                ],
                 const SizedBox(height: 32),
               ],
             ),
@@ -225,6 +241,9 @@ class HomePageState extends State<HomePage> {
             radius: 24,
             backgroundColor: theme.colorScheme.primaryContainer,
             backgroundImage: photoUrl != null ? NetworkImage(photoUrl) : null,
+            // Offline / DNS failures while loading the avatar are expected;
+            // handling them here keeps them out of Crashlytics as fatals.
+            onBackgroundImageError: photoUrl != null ? (_, __) {} : null,
             child: photoUrl == null
                 ? Icon(Icons.person, size: 24, color: theme.colorScheme.primary)
                 : null,

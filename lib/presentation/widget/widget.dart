@@ -13,6 +13,7 @@ export 'outline_button.dart';
 export 'primary_button.dart';
 export 'save_object_app_bar.dart';
 export 'search_bar_widget.dart';
+export 'reset_on_shrink.dart';
 export 'selected_store_view.dart';
 export 'settings_ui.dart';
 export 'summary_line.dart';

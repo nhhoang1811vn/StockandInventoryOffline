@@ -1,5 +1,16 @@
 class MarkdownResourceEN {
   static const String whatNews = """
+### Version 1.0.94 - 17 Nov 2026
+* The Windows version is now available. See the new banner on Home to download it.
+* You can now copy a good or a group: long-press it, choose Copy, then pick the store and group.
+* Unlock with your fingerprint (Face ID on iPhone) when the passcode lock is on.
+* The app now locks automatically after a period of inactivity (30 minutes by default, adjustable in Settings).
+* New image size setting, and an option to hide the crop window when adding pictures.
+* New delay between scans setting for batch scanning.
+* Resetting document numbering now asks for confirmation.
+* Fixed crashes when offline, when the profile photo cannot load, or when entering an invalid price or amount.
+* Fixed crashes in the Documents, Payments and History lists after deleting or filtering items, and when camera or notification permission is denied.
+
 ### Version 1.0.93 - 30 Oct 2026
 * New modern notifications that slide in from the top. Swipe up or tap to dismiss.
 * All messages now use the same notification style, with colors for success, warning and error.

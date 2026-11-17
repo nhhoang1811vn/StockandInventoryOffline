@@ -114,35 +114,39 @@ class PaymentHistoryPageState extends State<PaymentHistoryPage> {
   }
 
   Widget _buildStickyListView(PaymentHistoryState state) {
-    return StickyGroupedListView<Payment, DateTime>(
-      stickyHeaderBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      elements: List.of(state.items),
-      padding: const EdgeInsets.only(bottom: 16),
-      groupBy: (Payment item) => DateTime(
-        item.date.year,
-        item.date.month,
-        item.date.day,
-      ),
-      groupSeparatorBuilder: (Payment item) => DateItemRow(item.date),
-      itemBuilder: (context, Payment item) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Dimens.screenPadding),
-          child: PaymentItemRow(
-            item,
-            Colors.transparent,
-            (item) async {
-              await Navigator.of(context)
-                  .pushNamed(Pages.save_payment, arguments: {'item': item});
-              context.read<PaymentHistoryCubit>().loadItems();
-            },
-            (item) {},
-            showDate: false,
+    return ResetOnShrink(
+        itemCount: state.items.length,
+        child: StickyGroupedListView<Payment, DateTime>(
+          stickyHeaderBackgroundColor:
+              Theme.of(context).scaffoldBackgroundColor,
+          elements: List.of(state.items),
+          padding: const EdgeInsets.only(bottom: 16),
+          groupBy: (Payment item) => DateTime(
+            item.date.year,
+            item.date.month,
+            item.date.day,
           ),
-        );
-      },
-      itemComparator: (a, b) => b.date.compareTo(a.date),
-      order: StickyGroupedListOrder.DESC,
-    );
+          groupSeparatorBuilder: (Payment item) => DateItemRow(item.date),
+          itemBuilder: (context, Payment item) {
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: Dimens.screenPadding),
+              child: PaymentItemRow(
+                item,
+                Colors.transparent,
+                (item) async {
+                  await Navigator.of(context)
+                      .pushNamed(Pages.save_payment, arguments: {'item': item});
+                  context.read<PaymentHistoryCubit>().loadItems();
+                },
+                (item) {},
+                showDate: false,
+              ),
+            );
+          },
+          itemComparator: (a, b) => b.date.compareTo(a.date),
+          order: StickyGroupedListOrder.DESC,
+        ));
   }
 
   Widget _buildSummaryView(PaymentHistoryState state) {

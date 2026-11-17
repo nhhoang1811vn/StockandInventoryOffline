@@ -16,7 +16,14 @@ class MenuCubit extends Cubit<MenuState>{
   MenuCubit() : super(MenuState.initial());
 
   Future<bool> deleteAccount() async {
-    await FirebaseAuth.instance.currentUser?.delete();
+    try {
+      await FirebaseAuth.instance.currentUser?.delete();
+    } on FirebaseAuthException catch (e) {
+      // user-not-found: the account is already gone, continue the local reset.
+      // Anything else (e.g. requires-recent-login): the account was NOT
+      // deleted, so do not wipe local data; let the caller know.
+      if (e.code != 'user-not-found') return false;
+    }
     return signOut();
   }
   Future<bool> signOut() async{

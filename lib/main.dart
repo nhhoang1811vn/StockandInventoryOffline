@@ -69,16 +69,30 @@ void main() async {
 
         final db = FirebaseDatabase.instance;
 
-        await db.ref().update({
-          "users_by_email/$safeEmail": uid,
-          "users_by_id/$uid": safeEmail
-        });
+        try {
+          await db.ref().update({
+            "users_by_email/$safeEmail": uid,
+            "users_by_id/$uid": safeEmail
+          });
+        } catch (e, s) {
+          // Offline: the user mapping is best-effort, never fatal.
+          FirebaseCrashlytics.instance.recordError(e, s);
+        }
       }
-      await RevenueCatService.updateUser(user.uid);
+      try {
+        await RevenueCatService.updateUser(user.uid);
+      } catch (e, s) {
+        FirebaseCrashlytics.instance.recordError(e, s);
+      }
     }
   });
   if (auth.currentUser == null) {
-    await auth.signInAnonymously();
+    try {
+      await auth.signInAnonymously();
+    } on FirebaseAuthException catch (e, s) {
+      // Offline first launch: continue without a user, the app works offline.
+      FirebaseCrashlytics.instance.recordError(e, s);
+    }
   }else{
     //open app with valid user, sync the data
     //syncService.upload();

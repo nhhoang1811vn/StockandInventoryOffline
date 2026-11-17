@@ -40,7 +40,7 @@ _Avoid_: offline app (in user-facing copy unless contrasting with the Online ver
   wallets, payments, reports. (`lib/domain/entity/`)
 - SQLite is the source of truth. Firebase Anonymous Auth is signed in at startup (`lib/main.dart`).
   Cloud backup/restore and a one-way Realtime Database push are optional.
-- Version: `1.0.93+113` (`pubspec.yaml`).
+- Version: `1.0.94+114` (`pubspec.yaml`).
 - Platforms: Android and iOS (built in CI, `codemagic.yaml`) and Windows (debug build and launch
   verified with Visual Studio "Desktop development with C++"; not built in CI). macOS, Linux and web
   folders are

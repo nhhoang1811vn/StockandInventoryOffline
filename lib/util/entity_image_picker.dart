@@ -1,7 +1,6 @@
-import 'dart:typed_data';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -66,10 +65,20 @@ class EntityImagePicker {
   }
 
   static Future<Uint8List?> pickSquareImage(ImageSource source) async {
-    final pickedFile = await _picker.pickImage(
-      source: source,
-      imageQuality: 75,
-    );
+    final XFile? pickedFile;
+    try {
+      pickedFile = await _picker.pickImage(
+        source: source,
+        imageQuality: 75,
+      );
+    } on PlatformException catch (e) {
+      // User denied camera / photo access: expected, not a crash.
+      if (e.code == 'camera_access_denied' ||
+          e.code == 'photo_access_denied') {
+        return null;
+      }
+      rethrow;
+    }
     if (pickedFile == null) return null;
 
     final size = AppSettings.getImageSize();

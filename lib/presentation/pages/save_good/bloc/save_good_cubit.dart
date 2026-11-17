@@ -191,9 +191,13 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
   void onPriceChanged(String value) {
     DocumentTransaction current = state.transaction!;
     if (value.isNotEmpty) {
-      num numValue = Config.simpleCurrencyFormat.parse(value);
-      double price = numValue.toDouble();
-      current.price = price;
+      try {
+        num numValue = Config.simpleCurrencyFormat.parse(value);
+        current.price = numValue.toDouble();
+      } on FormatException {
+        // Unparsable input (e.g. "." or "-"): keep the previous price.
+        return;
+      }
     } else {
       current.price = null;
     }

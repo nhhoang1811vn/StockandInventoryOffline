@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:good_manager/common/platform_support.dart';
@@ -70,12 +71,18 @@ class NotificationService {
       iOS: DarwinNotificationDetails(),
     );
 
-    await _notificationsPlugin.show(
-      id: id,
-      title: title,
-      body: body,
-      notificationDetails: notificationDetails,
-      payload: payload,
-    );
+    try {
+      await _notificationsPlugin.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: notificationDetails,
+        payload: payload,
+      );
+    } on PlatformException catch (e) {
+      // iOS "Error 2003: Source is not authorized" = notifications denied
+      // by the user. Expected, not a crash.
+      if (e.code != 'Error 2003') rethrow;
+    }
   }
 }
