@@ -1,5 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -105,7 +107,14 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
               final mediaQuery = MediaQuery.of(context);
               final padding = mediaQuery.padding;
               final viewPadding = mediaQuery.viewPadding;
-              final bottomInset = mediaQuery.viewInsets.bottom > 0
+              // Only Android needs the reserved strip (transparent system
+              // navigation bar). On iOS the per-screen SafeAreas already
+              // handle the home indicator; reserving it here as well left a
+              // large blank gap under the bottom bar.
+              final reserveBottom =
+                  defaultTargetPlatform == TargetPlatform.android;
+              final bottomInset = !reserveBottom ||
+                      mediaQuery.viewInsets.bottom > 0
                   ? 0.0
                   : (padding.bottom > 0 ? padding.bottom : viewPadding.bottom);
               final isDark = Theme
@@ -137,9 +146,10 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
                       data: mediaQuery.copyWith(
                         padding: padding.copyWith(
                           top: padding.top > 0 ? padding.top : viewPadding.top,
-                          bottom: 0,
+                          bottom: reserveBottom ? 0 : padding.bottom,
                         ),
-                        viewPadding: viewPadding.copyWith(bottom: 0),
+                        viewPadding: viewPadding.copyWith(
+                            bottom: reserveBottom ? 0 : viewPadding.bottom),
                       ),
                       child: child ?? const SizedBox.shrink(),
                     ),
