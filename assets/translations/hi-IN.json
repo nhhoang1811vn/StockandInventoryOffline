@@ -465,5 +465,8 @@
   "report_type_sales_by_item": "वस्तु के अनुसार बिक्री",
   "good_name": "वस्तु का नाम",
   "report_type_sales_by_customer": "ग्राहक के अनुसार बिक्री",
-  "no_customer": "कोई ग्राहक नहीं"
+  "no_customer": "कोई ग्राहक नहीं",
+  "report_type_sales_by_month": "महीने के अनुसार बिक्री",
+  "select_year": "वर्ष चुनें",
+  "month": "माह"
 }

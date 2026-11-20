@@ -104,9 +104,9 @@ Schema: [DATABASE.md](DATABASE.md).
 
 ## Reports
 
-14 types (`lib/domain/entity/report_type.dart`): list of goods, list of documents, debts by
+15 types (`lib/domain/entity/report_type.dart`): list of goods, list of documents, debts by
 supplier, debts by customer, inbound payments, outbound payments, list of wallets, customer
-payments, supplier payments, re-order, good info, sales by date, sales by item, sales by customer. Built by `ReportDataFactory`
+payments, supplier payments, re-order, good info, sales by date, sales by item, sales by customer, sales by month. Built by `ReportDataFactory`
 (`lib/data/report_data/report_data_factory.dart`); export to Excel or PDF.
 
 Sales by date (group "Sales" on the Report screen): one row per calendar day in the chosen range,
@@ -128,6 +128,12 @@ Customer, so the Total equals Sales by date / Sales by item for the same range. 
 sheet has a Customer row (default All); choosing one Customer shows only that row (no "No
 customer" row). Same Amount/Cost/Profit rules as Sales by date. Logic:
 `lib/data/report_data/sales_by_customer_rows.dart`.
+
+Sales by month: a "Select year" sheet lists the 5 most recent years (this year and the 4 before it);
+the report then covers 1 Jan to 31 Dec of the chosen year (no "end today" cut). Always 12 rows,
+months 1–12, zeros for months without sales (including future months); a Document belongs to the
+month of its local `date`. Same Amount/Cost/Profit rules as Sales by date. Logic:
+`lib/data/report_data/sales_by_month_rows.dart`.
 
 ## Account, backup, sync
 

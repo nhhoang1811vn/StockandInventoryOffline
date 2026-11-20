@@ -465,5 +465,8 @@
   "report_type_sales_by_item": "商品別売上",
   "good_name": "商品名",
   "report_type_sales_by_customer": "顧客別売上",
-  "no_customer": "顧客なし"
+  "no_customer": "顧客なし",
+  "report_type_sales_by_month": "月別売上",
+  "select_year": "年を選択",
+  "month": "月"
 }

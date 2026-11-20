@@ -103,7 +103,7 @@ docs/adr/                               architecture decision records
 | DBHelper     | Schema, migrations, all SQL                                              | `lib/data/db/db_helper.dart`                     |
 | AppSettings  | Static facade for preferences (selected store, filters, theme, passcode) | `lib/data/app_settings.dart`                     |
 | Backup/sync  | JSON export/import; Realtime DB push                                     | `lib/data/db_service.dart`, `lib/data/realtime/` |
-| Reports      | 14 report types                                                          | `lib/data/report_data/`                          |
+| Reports      | 15 report types                                                          | `lib/data/report_data/`                          |
 | Pages        | One folder per feature with its cubit                                    | `lib/presentation/pages/`                        |
 
 ## State management conventions

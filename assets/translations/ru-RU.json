@@ -465,5 +465,8 @@
   "report_type_sales_by_item": "Продажи по товарам",
   "good_name": "Название товара",
   "report_type_sales_by_customer": "Продажи по клиентам",
-  "no_customer": "Без клиента"
+  "no_customer": "Без клиента",
+  "report_type_sales_by_month": "Продажи по месяцам",
+  "select_year": "Выберите год",
+  "month": "Месяц"
 }

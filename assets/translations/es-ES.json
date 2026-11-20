@@ -465,5 +465,8 @@
   "report_type_sales_by_item": "Ventas por artículo",
   "good_name": "Nombre del artículo",
   "report_type_sales_by_customer": "Ventas por cliente",
-  "no_customer": "Sin cliente"
+  "no_customer": "Sin cliente",
+  "report_type_sales_by_month": "Ventas por mes",
+  "select_year": "Seleccionar año",
+  "month": "Mes"
 }

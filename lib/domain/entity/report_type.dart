@@ -15,7 +15,8 @@ enum ReportType {
   GOOD_INFO,
   SALES_BY_DATE,
   SALES_BY_ITEM,
-  SALES_BY_CUSTOMER
+  SALES_BY_CUSTOMER,
+  SALES_BY_MONTH
 }
 
 extension ReportTypeExtension on ReportType {
@@ -49,6 +50,8 @@ extension ReportTypeExtension on ReportType {
         return context.tr("report_type_sales_by_item");
       case ReportType.SALES_BY_CUSTOMER:
         return context.tr("report_type_sales_by_customer");
+      case ReportType.SALES_BY_MONTH:
+        return context.tr("report_type_sales_by_month");
     }
   }
 }

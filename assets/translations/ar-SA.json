@@ -465,5 +465,8 @@
   "report_type_sales_by_item": "المبيعات حسب الصنف",
   "good_name": "اسم الصنف",
   "report_type_sales_by_customer": "المبيعات حسب العميل",
-  "no_customer": "بدون عميل"
+  "no_customer": "بدون عميل",
+  "report_type_sales_by_month": "المبيعات حسب الشهر",
+  "select_year": "اختر السنة",
+  "month": "الشهر"
 }

@@ -24,6 +24,7 @@ import 'list_of_goods_report_data.dart';
 import 'sales_by_customer_report_data.dart';
 import 'sales_by_date_report_data.dart';
 import 'sales_by_item_report_data.dart';
+import 'sales_by_month_report_data.dart';
 
 @LazySingleton()
 class ReportDataFactory {
@@ -117,6 +118,12 @@ class ReportDataFactory {
             start: start!,
             end: end!,
             groupId: groupId,
+            documentUseCases: documentUseCases,
+            goodsUseCases: goodsUseCases);
+      case ReportType.SALES_BY_MONTH:
+        return SalesByMonthReportData(
+            start: start!,
+            end: end!,
             documentUseCases: documentUseCases,
             goodsUseCases: goodsUseCases);
       case ReportType.SALES_BY_CUSTOMER:

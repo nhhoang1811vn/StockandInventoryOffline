@@ -465,5 +465,8 @@
   "report_type_sales_by_item": "按商品统计销售",
   "good_name": "商品名称",
   "report_type_sales_by_customer": "按客户统计销售",
-  "no_customer": "无客户"
+  "no_customer": "无客户",
+  "report_type_sales_by_month": "按月份统计销售",
+  "select_year": "选择年份",
+  "month": "月份"
 }

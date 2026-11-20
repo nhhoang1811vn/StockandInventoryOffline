@@ -465,5 +465,8 @@
   "report_type_sales_by_item": "Doanh số theo hàng hoá",
   "good_name": "Tên hàng hoá",
   "report_type_sales_by_customer": "Doanh số theo khách hàng",
-  "no_customer": "Không có khách hàng"
+  "no_customer": "Không có khách hàng",
+  "report_type_sales_by_month": "Doanh số theo tháng",
+  "select_year": "Chọn năm",
+  "month": "Tháng"
 }
