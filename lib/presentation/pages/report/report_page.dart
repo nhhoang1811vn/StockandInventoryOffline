@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/report_date_range_type.dart';
 import 'package:good_manager/presentation/pages/report/report_range_selection.dart';
+import 'package:good_manager/presentation/pages/report/report_years.dart';
 
 import '../../../domain/entity/entity.dart';
 import '../pages.dart';
@@ -51,6 +52,7 @@ class ReportPageState extends State<ReportPage> {
           ReportType.SALES_BY_DATE,
           ReportType.SALES_BY_ITEM,
           ReportType.SALES_BY_CUSTOMER,
+          ReportType.SALES_BY_MONTH,
         ]),
         _buildSectionHeader(context.tr("inventory")),
         _buildReportGroup([
@@ -219,12 +221,25 @@ class ReportPageState extends State<ReportPage> {
         return Icons.category_outlined;
       case ReportType.SALES_BY_CUSTOMER:
         return Icons.people_outline;
+      case ReportType.SALES_BY_MONTH:
+        return Icons.calendar_month_outlined;
     }
   }
 
   void onReportTypeTapped(ReportType reportType) async {
     if (reportType == ReportType.RE_ORDER) {
       onReportReorder(context);
+    } else if (reportType == ReportType.SALES_BY_MONTH) {
+      final year = await showSelectYear(context);
+      if (year == null) return;
+      Navigator.of(context).pushNamed(
+        Pages.report_detail,
+        arguments: {
+          'type': reportType,
+          'start': DateTime(year, 1, 1),
+          'end': DateTime(year, 12, 31),
+        },
+      );
     } else if (reportType == ReportType.GOOD_INFO) {
       Navigator.of(context).pushNamed(
         Pages.report_detail,
@@ -293,6 +308,66 @@ class ReportPageState extends State<ReportPage> {
       Pages.report_detail,
       arguments: {
         'type': ReportType.RE_ORDER,
+      },
+    );
+  }
+
+  Future<int?> showSelectYear(BuildContext context) async {
+    final theme = Theme.of(context);
+    return await showModalBottomSheet<int>(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.only(bottom: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      context.tr("select_year"),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(Icons.close,
+                          color: theme.colorScheme.onSurface
+                              .withValues(alpha: 0.4)),
+                    ),
+                  ],
+                ),
+              ),
+              ...recentYears(DateTime.now()).map(
+                (year) => ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  title: Text(
+                    '$year',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                  onTap: () => Navigator.pop(context, year),
+                  trailing: Icon(Icons.chevron_right_rounded,
+                      color:
+                          theme.colorScheme.onSurface.withValues(alpha: 0.2)),
+                ),
+              ),
+            ],
+          ),
+        );
       },
     );
   }
