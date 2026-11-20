@@ -461,5 +461,7 @@
   "profit": "Прибыль",
   "report_type_sales_by_date": "Продажи по датам",
   "sales_title": "Продажи",
-  "tag_new": "Новое"
+  "tag_new": "Новое",
+  "report_type_sales_by_item": "Продажи по товарам",
+  "good_name": "Название товара"
 }

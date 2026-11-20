@@ -25,8 +25,9 @@ class ReportDetailPage extends StatefulWidget {
   final ReportType type;
   final DateTime? start;
   final DateTime? end;
+  final int? groupId;
 
-  ReportDetailPage(this.type, this.start, this.end);
+  ReportDetailPage(this.type, this.start, this.end, {this.groupId});
 
   @override
   State<StatefulWidget> createState() {
@@ -47,6 +48,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
       widget.type,
       widget.start,
       widget.end,
+      groupId: widget.groupId,
     );
   }
 

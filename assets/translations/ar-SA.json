@@ -461,5 +461,7 @@
   "profit": "الربح",
   "report_type_sales_by_date": "المبيعات حسب التاريخ",
   "sales_title": "المبيعات",
-  "tag_new": "جديد"
+  "tag_new": "جديد",
+  "report_type_sales_by_item": "المبيعات حسب الصنف",
+  "good_name": "اسم الصنف"
 }

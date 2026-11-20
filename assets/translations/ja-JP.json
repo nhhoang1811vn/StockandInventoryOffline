@@ -461,5 +461,7 @@
   "profit": "利益",
   "report_type_sales_by_date": "日付別売上",
   "sales_title": "売上",
-  "tag_new": "新規"
+  "tag_new": "新規",
+  "report_type_sales_by_item": "商品別売上",
+  "good_name": "商品名"
 }

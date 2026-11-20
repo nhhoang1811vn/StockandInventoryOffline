@@ -461,5 +461,7 @@
   "profit": "Gewinn",
   "report_type_sales_by_date": "Verkäufe nach Datum",
   "sales_title": "Verkäufe",
-  "tag_new": "Neu"
+  "tag_new": "Neu",
+  "report_type_sales_by_item": "Verkäufe nach Artikel",
+  "good_name": "Artikelname"
 }

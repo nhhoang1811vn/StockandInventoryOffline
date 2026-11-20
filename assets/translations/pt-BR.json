@@ -461,5 +461,7 @@
   "profit": "Lucro",
   "report_type_sales_by_date": "Vendas por data",
   "sales_title": "Vendas",
-  "tag_new": "Novo"
+  "tag_new": "Novo",
+  "report_type_sales_by_item": "Vendas por item",
+  "good_name": "Nome do item"
 }

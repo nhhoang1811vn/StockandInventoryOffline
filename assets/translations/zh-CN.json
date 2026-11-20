@@ -461,5 +461,7 @@
   "profit": "利润",
   "report_type_sales_by_date": "按日期统计销售",
   "sales_title": "销售",
-  "tag_new": "新"
+  "tag_new": "新",
+  "report_type_sales_by_item": "按商品统计销售",
+  "good_name": "商品名称"
 }

@@ -22,6 +22,7 @@ import 'debt_of_supplier_report_data.dart';
 import 'good_info_report_data.dart';
 import 'list_of_goods_report_data.dart';
 import 'sales_by_date_report_data.dart';
+import 'sales_by_item_report_data.dart';
 
 @LazySingleton()
 class ReportDataFactory {
@@ -45,7 +46,12 @@ class ReportDataFactory {
     required this.walletUseCases,
   });
 
-  ReportData create(ReportType type, DateTime? start, DateTime? end) {
+  ReportData create(
+    ReportType type,
+    DateTime? start,
+    DateTime? end, {
+    int? groupId,
+  }) {
     switch (type) {
       case ReportType.LIST_OF_GOODS:
         return ListOfGoodsReportData(
@@ -102,6 +108,13 @@ class ReportDataFactory {
         return SalesByDateReportData(
             start: start!,
             end: end!,
+            documentUseCases: documentUseCases,
+            goodsUseCases: goodsUseCases);
+      case ReportType.SALES_BY_ITEM:
+        return SalesByItemReportData(
+            start: start!,
+            end: end!,
+            groupId: groupId,
             documentUseCases: documentUseCases,
             goodsUseCases: goodsUseCases);
     }

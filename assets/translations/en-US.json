@@ -461,5 +461,7 @@
   "profit": "Profit",
   "report_type_sales_by_date": "Sales by date",
   "sales_title": "Sales",
-  "tag_new": "New"
+  "tag_new": "New",
+  "report_type_sales_by_item": "Sales by item",
+  "good_name": "Good name"
 }

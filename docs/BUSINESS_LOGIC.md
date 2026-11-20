@@ -104,9 +104,9 @@ Schema: [DATABASE.md](DATABASE.md).
 
 ## Reports
 
-12 types (`lib/domain/entity/report_type.dart`): list of goods, list of documents, debts by
+13 types (`lib/domain/entity/report_type.dart`): list of goods, list of documents, debts by
 supplier, debts by customer, inbound payments, outbound payments, list of wallets, customer
-payments, supplier payments, re-order, good info, sales by date. Built by `ReportDataFactory`
+payments, supplier payments, re-order, good info, sales by date, sales by item. Built by `ReportDataFactory`
 (`lib/data/report_data/report_data_factory.dart`); export to Excel or PDF.
 
 Sales by date (group "Sales" on the Report screen): one row per calendar day in the chosen range,
@@ -115,6 +115,12 @@ Quantity = sum of Transaction quantity; Amount = quantity × `Transaction.price`
 quantity × the Good's **current** `purchasePrice` (null or deleted Good → 0); Profit = Amount −
 Cost. Because no purchase price is stored per Transaction, editing a Good's purchase price changes
 Cost and Profit of past days. Logic: `lib/data/report_data/sales_by_date_rows.dart`.
+
+Sales by item: one row per Good (name A→Z), Good name / Quantity / Amount / Cost / Profit, plus a
+Total row; Goods without sales show 0. The date-range sheet has a Group row (default All). All
+lists every Good of the store; a chosen Group lists only Goods whose `groupId` equals it (sub-Groups
+are not included, Goods without a Group appear only under All). Same Amount/Cost/Profit rules as
+Sales by date. Logic: `lib/data/report_data/sales_by_item_rows.dart`.
 
 ## Account, backup, sync
 

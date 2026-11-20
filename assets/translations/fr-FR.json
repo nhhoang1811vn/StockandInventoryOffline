@@ -461,5 +461,7 @@
   "profit": "Bénéfice",
   "report_type_sales_by_date": "Ventes par date",
   "sales_title": "Ventes",
-  "tag_new": "Nouveau"
+  "tag_new": "Nouveau",
+  "report_type_sales_by_item": "Ventes par article",
+  "good_name": "Nom de l'article"
 }

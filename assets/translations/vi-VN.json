@@ -461,5 +461,7 @@
   "profit": "Lợi nhuận",
   "report_type_sales_by_date": "Doanh số theo ngày",
   "sales_title": "Bán hàng",
-  "tag_new": "Mới"
+  "tag_new": "Mới",
+  "report_type_sales_by_item": "Doanh số theo hàng hoá",
+  "good_name": "Tên hàng hoá"
 }

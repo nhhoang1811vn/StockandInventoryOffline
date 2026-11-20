@@ -461,5 +461,7 @@
   "profit": "लाभ",
   "report_type_sales_by_date": "तारीख के अनुसार बिक्री",
   "sales_title": "बिक्री",
-  "tag_new": "नया"
+  "tag_new": "नया",
+  "report_type_sales_by_item": "वस्तु के अनुसार बिक्री",
+  "good_name": "वस्तु का नाम"
 }

@@ -279,6 +279,7 @@ class AppRouter {
               args["type"],
               args["start"],
               args["end"],
+              groupId: args["groupId"],
             ),
           ),
         );
