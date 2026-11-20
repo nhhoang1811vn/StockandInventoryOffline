@@ -54,6 +54,13 @@ class ReportPageState extends State<ReportPage> {
           ReportType.SALES_BY_CUSTOMER,
           ReportType.SALES_BY_MONTH,
         ]),
+        _buildSectionHeader(context.tr("purchase_title"), showNewTag: true),
+        _buildReportGroup([
+          ReportType.PURCHASE_BY_DATE,
+          ReportType.PURCHASE_BY_ITEM,
+          ReportType.PURCHASE_BY_SUPPLIER,
+          ReportType.PURCHASE_BY_MONTH,
+        ]),
         _buildSectionHeader(context.tr("inventory")),
         _buildReportGroup([
           ReportType.LIST_OF_GOODS,
@@ -223,13 +230,22 @@ class ReportPageState extends State<ReportPage> {
         return Icons.people_outline;
       case ReportType.SALES_BY_MONTH:
         return Icons.calendar_month_outlined;
+      case ReportType.PURCHASE_BY_DATE:
+        return Icons.shopping_cart_outlined;
+      case ReportType.PURCHASE_BY_ITEM:
+        return Icons.widgets_outlined;
+      case ReportType.PURCHASE_BY_SUPPLIER:
+        return Icons.local_shipping_outlined;
+      case ReportType.PURCHASE_BY_MONTH:
+        return Icons.event_note_outlined;
     }
   }
 
   void onReportTypeTapped(ReportType reportType) async {
     if (reportType == ReportType.RE_ORDER) {
       onReportReorder(context);
-    } else if (reportType == ReportType.SALES_BY_MONTH) {
+    } else if (reportType == ReportType.SALES_BY_MONTH ||
+        reportType == ReportType.PURCHASE_BY_MONTH) {
       final year = await showSelectYear(context);
       if (year == null) return;
       Navigator.of(context).pushNamed(
@@ -250,8 +266,10 @@ class ReportPageState extends State<ReportPage> {
     } else {
       ReportRangeSelection? selection = await showSelectDateRangeType(
         context,
-        showGroup: reportType == ReportType.SALES_BY_ITEM,
+        showGroup: reportType == ReportType.SALES_BY_ITEM ||
+            reportType == ReportType.PURCHASE_BY_ITEM,
         showCustomer: reportType == ReportType.SALES_BY_CUSTOMER,
+        showSupplier: reportType == ReportType.PURCHASE_BY_SUPPLIER,
       );
       if (selection != null) {
         ReportDateRangeType reportDateRangeType = selection.type;
@@ -296,6 +314,7 @@ class ReportPageState extends State<ReportPage> {
               'end': mEnd,
               'groupId': selection.groupId,
               'customerId': selection.customerId,
+              'supplierId': selection.supplierId,
             },
           );
         }
@@ -376,12 +395,15 @@ class ReportPageState extends State<ReportPage> {
     BuildContext context, {
     bool showGroup = false,
     bool showCustomer = false,
+    bool showSupplier = false,
   }) async {
     final theme = Theme.of(context);
     int? groupId;
     String? groupName;
     int? customerId;
     String? customerName;
+    int? supplierId;
+    String? supplierName;
     return await showModalBottomSheet<ReportRangeSelection>(
       context: context,
       isScrollControlled: true,
@@ -495,6 +517,43 @@ class ReportPageState extends State<ReportPage> {
                       });
                     },
                   ),
+                if (showSupplier)
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                    title: Text(
+                      context.tr("supplier"),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          supplierName ?? context.tr("all"),
+                          style: TextStyle(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Icon(Icons.chevron_right_rounded,
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.2)),
+                      ],
+                    ),
+                    onTap: () async {
+                      final result = await Navigator.of(context).pushNamed(
+                        Pages.supplier_list,
+                        arguments: {"isSelection": true},
+                      );
+                      if (result is! Supplier) return;
+                      setSheetState(() {
+                        supplierId = result.id;
+                        supplierName = result.name;
+                      });
+                    },
+                  ),
                 ...ReportDateRangeType.values.map(
                   (type) => ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 24),
@@ -508,7 +567,9 @@ class ReportPageState extends State<ReportPage> {
                     onTap: () => Navigator.pop(
                         context,
                         ReportRangeSelection(type,
-                            groupId: groupId, customerId: customerId)),
+                            groupId: groupId,
+                            customerId: customerId,
+                            supplierId: supplierId)),
                     trailing: Icon(Icons.chevron_right_rounded,
                         color:
                             theme.colorScheme.onSurface.withValues(alpha: 0.2)),

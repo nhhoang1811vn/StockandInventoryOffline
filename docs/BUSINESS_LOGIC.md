@@ -104,9 +104,10 @@ Schema: [DATABASE.md](DATABASE.md).
 
 ## Reports
 
-15 types (`lib/domain/entity/report_type.dart`): list of goods, list of documents, debts by
+19 types (`lib/domain/entity/report_type.dart`): list of goods, list of documents, debts by
 supplier, debts by customer, inbound payments, outbound payments, list of wallets, customer
-payments, supplier payments, re-order, good info, sales by date, sales by item, sales by customer, sales by month. Built by `ReportDataFactory`
+payments, supplier payments, re-order, good info, sales by date, sales by item, sales by customer, sales by month, purchase by date, purchase by item, purchase by
+supplier, purchase by month. Built by `ReportDataFactory`
 (`lib/data/report_data/report_data_factory.dart`); export to Excel or PDF.
 
 Sales by date (group "Sales" on the Report screen): one row per calendar day in the chosen range,
@@ -134,6 +135,13 @@ the report then covers 1 Jan to 31 Dec of the chosen year (no "end today" cut). 
 months 1–12, zeros for months without sales (including future months); a Document belongs to the
 month of its local `date`. Same Amount/Cost/Profit rules as Sales by date. Logic:
 `lib/data/report_data/sales_by_month_rows.dart`.
+
+Purchase reports (group "Purchase" on the Report screen: by date, by item, by supplier, by month)
+reuse the Sales report code with `DocumentType.incoming` and show only Quantity and Amount
+(Amount = quantity × `Transaction.price`; no Cost or Profit). Same row rules as the Sales
+counterparts: by date lists every day, by item lists every Good (All or one Group), by supplier lists
+every Supplier plus a last "No supplier" row (or one chosen Supplier), by month asks for one of the
+5 most recent years and lists months 1–12.
 
 ## Account, backup, sync
 
