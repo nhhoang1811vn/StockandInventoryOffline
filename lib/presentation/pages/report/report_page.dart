@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/report/bloc/report_cubit.dart';
 import 'package:good_manager/presentation/pages/report/report_date_range_type.dart';
+import 'package:good_manager/presentation/pages/report/report_range_selection.dart';
 
 import '../../../domain/entity/entity.dart';
 import '../pages.dart';
@@ -46,7 +47,10 @@ class ReportPageState extends State<ReportPage> {
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 100),
       children: [
         _buildSectionHeader(context.tr("sales_title"), showNewTag: true),
-        _buildReportGroup([ReportType.SALES_BY_DATE]),
+        _buildReportGroup([
+          ReportType.SALES_BY_DATE,
+          ReportType.SALES_BY_ITEM,
+        ]),
         _buildSectionHeader(context.tr("inventory")),
         _buildReportGroup([
           ReportType.LIST_OF_GOODS,
@@ -210,6 +214,8 @@ class ReportPageState extends State<ReportPage> {
         return Icons.info_outline;
       case ReportType.SALES_BY_DATE:
         return Icons.point_of_sale;
+      case ReportType.SALES_BY_ITEM:
+        return Icons.category_outlined;
     }
   }
 
@@ -224,9 +230,12 @@ class ReportPageState extends State<ReportPage> {
         },
       );
     } else {
-      ReportDateRangeType? reportDateRangeType =
-          await showSelectDateRangeType(context);
-      if (reportDateRangeType != null) {
+      ReportRangeSelection? selection = await showSelectDateRangeType(
+        context,
+        showGroup: reportType == ReportType.SALES_BY_ITEM,
+      );
+      if (selection != null) {
+        ReportDateRangeType reportDateRangeType = selection.type;
         DateTime? mStart;
         DateTime? mEnd;
         DateTime now = DateTime.now();
@@ -262,7 +271,12 @@ class ReportPageState extends State<ReportPage> {
         if (mStart != null && mEnd != null) {
           Navigator.of(context).pushNamed(
             Pages.report_detail,
-            arguments: {'type': reportType, 'start': mStart, 'end': mEnd},
+            arguments: {
+              'type': reportType,
+              'start': mStart,
+              'end': mEnd,
+              'groupId': selection.groupId,
+            },
           );
         }
       }
@@ -278,64 +292,110 @@ class ReportPageState extends State<ReportPage> {
     );
   }
 
-  Future<ReportDateRangeType?> showSelectDateRangeType(
-    BuildContext context,
-  ) async {
+  Future<ReportRangeSelection?> showSelectDateRangeType(
+    BuildContext context, {
+    bool showGroup = false,
+  }) async {
     final theme = Theme.of(context);
-    return await showModalBottomSheet<ReportDateRangeType>(
+    int? groupId;
+    String? groupName;
+    return await showModalBottomSheet<ReportRangeSelection>(
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.only(bottom: 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      context.tr("select_date_range"),
+        return StatefulBuilder(builder: (context, setSheetState) {
+          return Container(
+            padding: const EdgeInsets.only(bottom: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        context.tr("select_date_range"),
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: Icon(Icons.close,
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.4)),
+                      ),
+                    ],
+                  ),
+                ),
+                if (showGroup)
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                    title: Text(
+                      context.tr("group"),
                       style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                         color: theme.colorScheme.onSurface,
                       ),
                     ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(Icons.close,
-                          color: theme.colorScheme.onSurface
-                              .withValues(alpha: 0.4)),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          groupName ?? context.tr("all"),
+                          style: TextStyle(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Icon(Icons.chevron_right_rounded,
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.2)),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              ...ReportDateRangeType.values.map(
-                (type) => ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-                  title: Text(
-                    type.getText(context),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: theme.colorScheme.onSurface,
-                    ),
+                    onTap: () async {
+                      final result = await Navigator.of(context).pushNamed(
+                        Pages.select_group,
+                        arguments: {"groupId": groupId},
+                      );
+                      if (result == null) return;
+                      final map = result as Map<dynamic, dynamic>;
+                      setSheetState(() {
+                        groupId = map["groupId"] as int?;
+                        groupName = groupId == null
+                            ? null
+                            : map["groupName"] as String?;
+                      });
+                    },
                   ),
-                  onTap: () => Navigator.pop(context, type),
-                  trailing: Icon(Icons.chevron_right_rounded,
-                      color:
-                          theme.colorScheme.onSurface.withValues(alpha: 0.2)),
+                ...ReportDateRangeType.values.map(
+                  (type) => ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                    title: Text(
+                      type.getText(context),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    onTap: () => Navigator.pop(
+                        context, ReportRangeSelection(type, groupId)),
+                    trailing: Icon(Icons.chevron_right_rounded,
+                        color:
+                            theme.colorScheme.onSurface.withValues(alpha: 0.2)),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
+              ],
+            ),
+          );
+        });
       },
     );
   }
