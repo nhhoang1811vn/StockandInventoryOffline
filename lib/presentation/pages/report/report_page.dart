@@ -241,7 +241,7 @@ class ReportPageState extends State<ReportPage> {
           switch (reportDateRangeType) {
             case ReportDateRangeType.CURRENT_MONTH:
               mStart = DateTime(now.year, now.month, 1);
-              mEnd = DateTime(now.year, now.month + 1, 0);
+              mEnd = tmr.subtract(Duration(seconds: 1));
               break;
             case ReportDateRangeType.LAST_30_DAYS:
               mStart = DateTime(now.year, now.month, now.day - 30);
@@ -253,7 +253,7 @@ class ReportPageState extends State<ReportPage> {
               break;
             case ReportDateRangeType.CURRENT_YEAR:
               mStart = DateTime(now.year, 1, 1);
-              mEnd = DateTime(now.year, 12, 31);
+              mEnd = tmr.subtract(Duration(seconds: 1));
               break;
             default:
               ;
