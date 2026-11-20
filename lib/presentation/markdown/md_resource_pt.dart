@@ -3,6 +3,12 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourcePT {
   static const bundle = MarkdownBundle(
     whatNews: """
+### Versão 1.0.95 - 20 nov 2026
+* Novos relatórios de Vendas na tela de Relatórios: por data, por item, por cliente e por mês, com filtros de grupo, cliente e ano.
+* Novos relatórios de Compras: por data, por item, por fornecedor e por mês, com filtro de fornecedor.
+* Os relatórios do mês e do ano atuais agora terminam hoje.
+* Corrigida a tradução incorreta de "valor" em vários idiomas.
+
 ### Versão 1.0.94 - 17 nov 2026
 * A versão para Windows já está disponível. Use o novo banner da tela inicial para baixá-la.
 * Agora você pode copiar um produto ou um grupo: pressione e segure, escolha Copiar e selecione a loja e o grupo.

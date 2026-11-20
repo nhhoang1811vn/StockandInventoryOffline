@@ -3,6 +3,12 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceDE {
   static const bundle = MarkdownBundle(
     whatNews: """
+### Version 1.0.95 - 20. Nov. 2026
+* Neue Verkaufsberichte im Berichtsbildschirm: nach Datum, Artikel, Kunde und Monat, mit Filtern für Gruppe, Kunde und Jahr.
+* Neue Einkaufsberichte: nach Datum, Artikel, Lieferant und Monat, mit Lieferantenfilter.
+* Berichte für den aktuellen Monat und das aktuelle Jahr enden jetzt heute.
+* Falsche Übersetzung von „Betrag“ in mehreren Sprachen korrigiert.
+
 ### Version 1.0.94 - 17. Nov. 2026
 * Die Windows-Version ist jetzt verfügbar. Das neue Banner auf der Startseite führt zum Download.
 * Waren und Gruppen lassen sich jetzt kopieren: lange drücken, Kopieren wählen, dann Geschäft und Gruppe auswählen.

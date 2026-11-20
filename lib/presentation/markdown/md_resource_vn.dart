@@ -96,6 +96,12 @@ Dùng chức năng này để theo dõi chi tiêu theo từng cửa hàng.
 """;
 
   static const String whatNews = """
+### Phiên bản 1.0.95 - 20/11/2026
+* Báo cáo Bán hàng mới trên màn hình Báo cáo: theo ngày, theo hàng hoá, theo khách hàng và theo tháng, có bộ lọc nhóm, khách hàng và năm.
+* Báo cáo Mua hàng mới: theo ngày, theo hàng hoá, theo nhà cung cấp và theo tháng, có bộ lọc nhà cung cấp.
+* Báo cáo của tháng này và năm nay giờ kết thúc ở ngày hôm nay.
+* Sửa lỗi dịch sai từ "số tiền" ở một số ngôn ngữ.
+
 ### Phiên bản 1.0.94 - 17/11/2026
 * Đã có phiên bản Windows. Xem banner mới ở Trang chủ để tải về.
 * Có thể sao chép hàng hóa hoặc nhóm: nhấn giữ, chọn Sao chép, rồi chọn cửa hàng và nhóm.

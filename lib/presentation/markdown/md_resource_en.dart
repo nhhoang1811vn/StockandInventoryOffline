@@ -1,5 +1,11 @@
 class MarkdownResourceEN {
   static const String whatNews = """
+### Version 1.0.95 - 20 Nov 2026
+* New Sales reports on the Report screen: by date, by item, by customer and by month, with filters for group, customer and year.
+* New Purchase reports: by date, by item, by supplier and by month, with a supplier filter.
+* Reports for the current month and current year now end today.
+* Fixed the wrong translation of "amount" in several languages.
+
 ### Version 1.0.94 - 17 Nov 2026
 * The Windows version is now available. See the new banner on Home to download it.
 * You can now copy a good or a group: long-press it, choose Copy, then pick the store and group.

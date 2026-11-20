@@ -3,6 +3,12 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceFR {
   static const bundle = MarkdownBundle(
     whatNews: """
+### Version 1.0.95 - 20 nov. 2026
+* Nouveaux rapports de Ventes sur l'écran Rapports : par date, par article, par client et par mois, avec des filtres de groupe, de client et d'année.
+* Nouveaux rapports d'Achats : par date, par article, par fournisseur et par mois, avec un filtre fournisseur.
+* Les rapports du mois en cours et de l'année en cours se terminent désormais aujourd'hui.
+* Correction de la traduction erronée de « montant » dans plusieurs langues.
+
 ### Version 1.0.94 - 17 nov. 2026
 * La version Windows est disponible. Le nouveau bandeau de l'accueil permet de la télécharger.
 * Vous pouvez désormais copier un article ou un groupe : appui long, choisissez Copier, puis sélectionnez le magasin et le groupe.

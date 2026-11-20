@@ -3,6 +3,12 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceZH {
   static const bundle = MarkdownBundle(
     whatNews: """
+### 版本 1.0.95 - 2026年11月20日
+* 报表页面新增销售报表：按日期、按商品、按客户、按月份，支持分组、客户和年份筛选。
+* 新增采购报表：按日期、按商品、按供应商、按月份，支持供应商筛选。
+* 本月和本年报表现在截止到今天。
+* 修复了多种语言中“金额”翻译错误的问题。
+
 ### 版本 1.0.94 - 2026年11月17日
 * 现已推出 Windows 版本。可通过首页的新横幅下载。
 * 现在可以复制商品或分组：长按后选择“复制”，再选择门店和分组。
