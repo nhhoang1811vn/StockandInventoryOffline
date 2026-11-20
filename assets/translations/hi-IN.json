@@ -463,5 +463,7 @@
   "sales_title": "बिक्री",
   "tag_new": "नया",
   "report_type_sales_by_item": "वस्तु के अनुसार बिक्री",
-  "good_name": "वस्तु का नाम"
+  "good_name": "वस्तु का नाम",
+  "report_type_sales_by_customer": "ग्राहक के अनुसार बिक्री",
+  "no_customer": "कोई ग्राहक नहीं"
 }

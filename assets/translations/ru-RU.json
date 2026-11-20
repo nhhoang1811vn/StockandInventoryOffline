@@ -463,5 +463,7 @@
   "sales_title": "Продажи",
   "tag_new": "Новое",
   "report_type_sales_by_item": "Продажи по товарам",
-  "good_name": "Название товара"
+  "good_name": "Название товара",
+  "report_type_sales_by_customer": "Продажи по клиентам",
+  "no_customer": "Без клиента"
 }

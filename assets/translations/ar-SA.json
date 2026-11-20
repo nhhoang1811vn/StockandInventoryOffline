@@ -463,5 +463,7 @@
   "sales_title": "المبيعات",
   "tag_new": "جديد",
   "report_type_sales_by_item": "المبيعات حسب الصنف",
-  "good_name": "اسم الصنف"
+  "good_name": "اسم الصنف",
+  "report_type_sales_by_customer": "المبيعات حسب العميل",
+  "no_customer": "بدون عميل"
 }

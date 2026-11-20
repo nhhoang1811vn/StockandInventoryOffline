@@ -21,6 +21,7 @@ import 'debt_of_customer_report_data.dart';
 import 'debt_of_supplier_report_data.dart';
 import 'good_info_report_data.dart';
 import 'list_of_goods_report_data.dart';
+import 'sales_by_customer_report_data.dart';
 import 'sales_by_date_report_data.dart';
 import 'sales_by_item_report_data.dart';
 
@@ -51,6 +52,7 @@ class ReportDataFactory {
     DateTime? start,
     DateTime? end, {
     int? groupId,
+    int? customerId,
   }) {
     switch (type) {
       case ReportType.LIST_OF_GOODS:
@@ -116,6 +118,14 @@ class ReportDataFactory {
             end: end!,
             groupId: groupId,
             documentUseCases: documentUseCases,
+            goodsUseCases: goodsUseCases);
+      case ReportType.SALES_BY_CUSTOMER:
+        return SalesByCustomerReportData(
+            start: start!,
+            end: end!,
+            customerId: customerId,
+            documentUseCases: documentUseCases,
+            customersUseCase: customersUseCase,
             goodsUseCases: goodsUseCases);
     }
   }

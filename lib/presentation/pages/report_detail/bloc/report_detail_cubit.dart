@@ -68,6 +68,7 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     DateTime? start,
     DateTime? end, {
     int? groupId,
+    int? customerId,
   }) async {
     emit(
       state.copyWith(
@@ -77,7 +78,13 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
         end: end,
       ),
     );
-    var reportData = factory.create(type, start, end, groupId: groupId);
+    var reportData = factory.create(
+      type,
+      start,
+      end,
+      groupId: groupId,
+      customerId: customerId,
+    );
     var columnInfos = reportData.getColumnInfos();
     var data = await reportData.getData();
     if (isClosed) return;

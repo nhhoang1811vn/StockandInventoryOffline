@@ -463,5 +463,7 @@
   "sales_title": "Sales",
   "tag_new": "New",
   "report_type_sales_by_item": "Sales by item",
-  "good_name": "Good name"
+  "good_name": "Good name",
+  "report_type_sales_by_customer": "Sales by customer",
+  "no_customer": "No customer"
 }

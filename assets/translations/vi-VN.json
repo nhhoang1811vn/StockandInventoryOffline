@@ -463,5 +463,7 @@
   "sales_title": "Bán hàng",
   "tag_new": "Mới",
   "report_type_sales_by_item": "Doanh số theo hàng hoá",
-  "good_name": "Tên hàng hoá"
+  "good_name": "Tên hàng hoá",
+  "report_type_sales_by_customer": "Doanh số theo khách hàng",
+  "no_customer": "Không có khách hàng"
 }

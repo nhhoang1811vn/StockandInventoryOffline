@@ -463,5 +463,7 @@
   "sales_title": "売上",
   "tag_new": "新規",
   "report_type_sales_by_item": "商品別売上",
-  "good_name": "商品名"
+  "good_name": "商品名",
+  "report_type_sales_by_customer": "顧客別売上",
+  "no_customer": "顧客なし"
 }

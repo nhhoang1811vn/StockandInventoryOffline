@@ -280,6 +280,7 @@ class AppRouter {
               args["start"],
               args["end"],
               groupId: args["groupId"],
+              customerId: args["customerId"],
             ),
           ),
         );

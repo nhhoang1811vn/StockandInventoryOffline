@@ -463,5 +463,7 @@
   "sales_title": "Ventas",
   "tag_new": "Nuevo",
   "report_type_sales_by_item": "Ventas por artículo",
-  "good_name": "Nombre del artículo"
+  "good_name": "Nombre del artículo",
+  "report_type_sales_by_customer": "Ventas por cliente",
+  "no_customer": "Sin cliente"
 }
