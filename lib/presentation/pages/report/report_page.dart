@@ -45,6 +45,8 @@ class ReportPageState extends State<ReportPage> {
     return ListView(
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 100),
       children: [
+        _buildSectionHeader(context.tr("sales_title"), showNewTag: true),
+        _buildReportGroup([ReportType.SALES_BY_DATE]),
         _buildSectionHeader(context.tr("inventory")),
         _buildReportGroup([
           ReportType.LIST_OF_GOODS,
@@ -70,19 +72,43 @@ class ReportPageState extends State<ReportPage> {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(String title, {bool showNewTag = false}) {
     final theme = Theme.of(context);
+    final titleText = Text(
+      title.toUpperCase(),
+      style: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w800,
+        color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+        letterSpacing: 1.2,
+      ),
+    );
     return Padding(
       padding: const EdgeInsets.only(left: 8, bottom: 12, top: 24),
-      child: Text(
-        title.toUpperCase(),
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w800,
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
-          letterSpacing: 1.2,
-        ),
-      ),
+      child: showNewTag
+          ? Row(
+              children: [
+                titleText,
+                const SizedBox(width: 8),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    context.tr("tag_new"),
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : titleText,
     );
   }
 
@@ -182,6 +208,8 @@ class ReportPageState extends State<ReportPage> {
         return Icons.reorder_outlined;
       case ReportType.GOOD_INFO:
         return Icons.info_outline;
+      case ReportType.SALES_BY_DATE:
+        return Icons.point_of_sale;
     }
   }
 
