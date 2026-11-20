@@ -50,6 +50,7 @@ class ReportPageState extends State<ReportPage> {
         _buildReportGroup([
           ReportType.SALES_BY_DATE,
           ReportType.SALES_BY_ITEM,
+          ReportType.SALES_BY_CUSTOMER,
         ]),
         _buildSectionHeader(context.tr("inventory")),
         _buildReportGroup([
@@ -216,6 +217,8 @@ class ReportPageState extends State<ReportPage> {
         return Icons.point_of_sale;
       case ReportType.SALES_BY_ITEM:
         return Icons.category_outlined;
+      case ReportType.SALES_BY_CUSTOMER:
+        return Icons.people_outline;
     }
   }
 
@@ -233,6 +236,7 @@ class ReportPageState extends State<ReportPage> {
       ReportRangeSelection? selection = await showSelectDateRangeType(
         context,
         showGroup: reportType == ReportType.SALES_BY_ITEM,
+        showCustomer: reportType == ReportType.SALES_BY_CUSTOMER,
       );
       if (selection != null) {
         ReportDateRangeType reportDateRangeType = selection.type;
@@ -276,6 +280,7 @@ class ReportPageState extends State<ReportPage> {
               'start': mStart,
               'end': mEnd,
               'groupId': selection.groupId,
+              'customerId': selection.customerId,
             },
           );
         }
@@ -295,10 +300,13 @@ class ReportPageState extends State<ReportPage> {
   Future<ReportRangeSelection?> showSelectDateRangeType(
     BuildContext context, {
     bool showGroup = false,
+    bool showCustomer = false,
   }) async {
     final theme = Theme.of(context);
     int? groupId;
     String? groupName;
+    int? customerId;
+    String? customerName;
     return await showModalBottomSheet<ReportRangeSelection>(
       context: context,
       isScrollControlled: true,
@@ -375,6 +383,43 @@ class ReportPageState extends State<ReportPage> {
                       });
                     },
                   ),
+                if (showCustomer)
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                    title: Text(
+                      context.tr("customer"),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          customerName ?? context.tr("all"),
+                          style: TextStyle(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Icon(Icons.chevron_right_rounded,
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.2)),
+                      ],
+                    ),
+                    onTap: () async {
+                      final result = await Navigator.of(context).pushNamed(
+                        Pages.customer_list,
+                        arguments: {"isSelection": true},
+                      );
+                      if (result is! Customer) return;
+                      setSheetState(() {
+                        customerId = result.id;
+                        customerName = result.name;
+                      });
+                    },
+                  ),
                 ...ReportDateRangeType.values.map(
                   (type) => ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 24),
@@ -386,7 +431,9 @@ class ReportPageState extends State<ReportPage> {
                       ),
                     ),
                     onTap: () => Navigator.pop(
-                        context, ReportRangeSelection(type, groupId)),
+                        context,
+                        ReportRangeSelection(type,
+                            groupId: groupId, customerId: customerId)),
                     trailing: Icon(Icons.chevron_right_rounded,
                         color:
                             theme.colorScheme.onSurface.withValues(alpha: 0.2)),
