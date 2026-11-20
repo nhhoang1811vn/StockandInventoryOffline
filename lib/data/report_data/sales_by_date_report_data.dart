@@ -1,6 +1,7 @@
 import 'package:good_manager/data/report_data/report_data.dart';
 
 import '../../constant/date_format_factory.dart';
+import '../../domain/entity/document.dart';
 import '../../domain/entity/good.dart';
 import '../../domain/usecase/documents/document_usecases.dart';
 import '../../domain/usecase/goods/goods_usercases.dart';
@@ -13,12 +14,14 @@ class SalesByDateReportData extends ReportData {
   final DateTime start;
   final DateTime end;
   final DocumentUseCases documentUseCases;
+  final DocumentType type;
   final GoodsUseCases goodsUseCases;
 
   SalesByDateReportData({
     required this.start,
     required this.end,
     required this.documentUseCases,
+    this.type = DocumentType.outgoing,
     required this.goodsUseCases,
   });
 
@@ -28,8 +31,10 @@ class SalesByDateReportData extends ReportData {
       ColumnInfo("date"),
       ColumnInfo("quantity", showTotal: true),
       ColumnInfo("amount", showTotal: true),
-      ColumnInfo("cost", showTotal: true),
-      ColumnInfo("profit", showTotal: true),
+      if (type == DocumentType.outgoing) ...[
+        ColumnInfo("cost", showTotal: true),
+        ColumnInfo("profit", showTotal: true),
+      ],
     ];
   }
 
@@ -37,6 +42,7 @@ class SalesByDateReportData extends ReportData {
   Future<List<MapEntry<int, List<String>>>> getData() async {
     OutgoingSales sales = await loadOutgoingSales(
       documentUseCases: documentUseCases,
+      type: type,
       start: start,
       end: end,
     );
@@ -48,6 +54,7 @@ class SalesByDateReportData extends ReportData {
     };
     return salesByDateTableRows(
       buildSalesByDateRows(
+        type: type,
         start: start,
         end: end,
         documents: sales.documents,
@@ -55,6 +62,7 @@ class SalesByDateReportData extends ReportData {
         purchasePriceByGoodId: purchasePrices,
       ),
       (day) => DateFormatFactory.getDateFormat().format(day),
+      withCost: type == DocumentType.outgoing,
     );
   }
 }

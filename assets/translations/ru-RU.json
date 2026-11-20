@@ -468,5 +468,11 @@
   "no_customer": "Без клиента",
   "report_type_sales_by_month": "Продажи по месяцам",
   "select_year": "Выберите год",
-  "month": "Месяц"
+  "month": "Месяц",
+  "purchase_title": "Закупки",
+  "report_type_purchase_by_date": "Закупки по датам",
+  "report_type_purchase_by_item": "Закупки по товарам",
+  "report_type_purchase_by_supplier": "Закупки по поставщикам",
+  "report_type_purchase_by_month": "Закупки по месяцам",
+  "no_supplier": "Без поставщика"
 }

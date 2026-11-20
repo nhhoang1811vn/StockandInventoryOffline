@@ -16,7 +16,11 @@ enum ReportType {
   SALES_BY_DATE,
   SALES_BY_ITEM,
   SALES_BY_CUSTOMER,
-  SALES_BY_MONTH
+  SALES_BY_MONTH,
+  PURCHASE_BY_DATE,
+  PURCHASE_BY_ITEM,
+  PURCHASE_BY_SUPPLIER,
+  PURCHASE_BY_MONTH
 }
 
 extension ReportTypeExtension on ReportType {
@@ -52,6 +56,14 @@ extension ReportTypeExtension on ReportType {
         return context.tr("report_type_sales_by_customer");
       case ReportType.SALES_BY_MONTH:
         return context.tr("report_type_sales_by_month");
+      case ReportType.PURCHASE_BY_DATE:
+        return context.tr("report_type_purchase_by_date");
+      case ReportType.PURCHASE_BY_ITEM:
+        return context.tr("report_type_purchase_by_item");
+      case ReportType.PURCHASE_BY_SUPPLIER:
+        return context.tr("report_type_purchase_by_supplier");
+      case ReportType.PURCHASE_BY_MONTH:
+        return context.tr("report_type_purchase_by_month");
     }
   }
 }

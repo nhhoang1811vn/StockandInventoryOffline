@@ -1,4 +1,4 @@
-import '../../domain/entity/customer.dart';
+import '../../domain/entity/base_model.dart';
 import '../../domain/entity/document.dart';
 import '../../domain/entity/transaction.dart';
 import 'utils.dart';
@@ -30,13 +30,15 @@ class _Acc {
 
 /// All customers (sorted by name) plus a last "No customer" row, or, when
 /// [onlyCustomerId] is set, just that customer (empty if not in [customers]).
-/// Only outgoing documents count; their customer is `Document.personId`.
+/// Only documents of [type] (default outgoing) count; the person (customer or
+/// supplier) is `Document.personId`. [customers] may hold Customers or Suppliers.
 List<SalesByCustomerRow> buildSalesByCustomerRows({
-  required List<Customer> customers,
+  required List<BaseModel> customers,
   required List<Document> documents,
   required Map<int, List<DocumentTransaction>> transactionsByDocumentId,
   required Map<int, double?> purchasePriceByGoodId,
   int? onlyCustomerId,
+  DocumentType type = DocumentType.outgoing,
 }) {
   final listed = [
     for (final c in customers)
@@ -46,7 +48,7 @@ List<SalesByCustomerRow> buildSalesByCustomerRows({
   final noCustomer = _Acc();
 
   for (final document in documents) {
-    if (document.type != DocumentType.outgoing || document.id == null) continue;
+    if (document.type != type || document.id == null) continue;
     _Acc? acc = accs[document.personId];
     if (acc == null) {
       if (onlyCustomerId != null) continue;
@@ -83,15 +85,18 @@ List<SalesByCustomerRow> buildSalesByCustomerRows({
 
 List<MapEntry<int, List<String>>> salesByCustomerTableRows(
   List<SalesByCustomerRow> rows,
-  String noCustomerLabel,
-) {
+  String noCustomerLabel, {
+  bool withCost = true,
+}) {
   return rows
       .map((r) => MapEntry(r.customerId ?? -1, [
             r.name ?? noCustomerLabel,
             getDoubleText(r.quantity),
             getDoubleText(r.amount),
-            getDoubleText(r.cost),
-            getDoubleText(r.profit),
+            if (withCost) ...[
+              getDoubleText(r.cost),
+              getDoubleText(r.profit),
+            ],
           ]))
       .toList();
 }

@@ -26,12 +26,13 @@ class _Acc {
 }
 
 /// One row per Good in [goods] (zeros when nothing sold), sorted by name.
-/// Only outgoing documents count; lines of goods not in [goods] are ignored.
+/// Only documents of [type] (default outgoing) count; lines of goods not in [goods] are ignored.
 /// Cost uses each good's current purchase price (null → 0).
 List<SalesByItemRow> buildSalesByItemRows({
   required List<Good> goods,
   required List<Document> documents,
   required Map<int, List<DocumentTransaction>> transactionsByDocumentId,
+  DocumentType type = DocumentType.outgoing,
 }) {
   final accs = <int, _Acc>{
     for (final good in goods)
@@ -43,7 +44,7 @@ List<SalesByItemRow> buildSalesByItemRows({
   };
 
   for (final document in documents) {
-    if (document.type != DocumentType.outgoing || document.id == null) continue;
+    if (document.type != type || document.id == null) continue;
     for (final t in transactionsByDocumentId[document.id!] ?? const []) {
       final acc = accs[t.goodId];
       if (acc == null) continue;
@@ -69,15 +70,18 @@ List<SalesByItemRow> buildSalesByItemRows({
 }
 
 List<MapEntry<int, List<String>>> salesByItemTableRows(
-  List<SalesByItemRow> rows,
-) {
+  List<SalesByItemRow> rows, {
+  bool withCost = true,
+}) {
   return rows
       .map((r) => MapEntry(r.good.id!, [
             r.good.name,
             getDoubleText(r.quantity),
             getDoubleText(r.amount),
-            getDoubleText(r.cost),
-            getDoubleText(r.profit),
+            if (withCost) ...[
+              getDoubleText(r.cost),
+              getDoubleText(r.profit),
+            ],
           ]))
       .toList();
 }

@@ -468,5 +468,11 @@
   "no_customer": "Không có khách hàng",
   "report_type_sales_by_month": "Doanh số theo tháng",
   "select_year": "Chọn năm",
-  "month": "Tháng"
+  "month": "Tháng",
+  "purchase_title": "Mua hàng",
+  "report_type_purchase_by_date": "Mua hàng theo ngày",
+  "report_type_purchase_by_item": "Mua hàng theo hàng hoá",
+  "report_type_purchase_by_supplier": "Mua hàng theo nhà cung cấp",
+  "report_type_purchase_by_month": "Mua hàng theo tháng",
+  "no_supplier": "Không có nhà cung cấp"
 }

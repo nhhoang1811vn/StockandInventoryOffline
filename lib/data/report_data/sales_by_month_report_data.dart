@@ -1,5 +1,6 @@
 import 'package:good_manager/data/report_data/report_data.dart';
 
+import '../../domain/entity/document.dart';
 import '../../domain/entity/good.dart';
 import '../../domain/usecase/documents/document_usecases.dart';
 import '../../domain/usecase/goods/goods_usercases.dart';
@@ -13,12 +14,14 @@ class SalesByMonthReportData extends ReportData {
   final DateTime start;
   final DateTime end;
   final DocumentUseCases documentUseCases;
+  final DocumentType type;
   final GoodsUseCases goodsUseCases;
 
   SalesByMonthReportData({
     required this.start,
     required this.end,
     required this.documentUseCases,
+    this.type = DocumentType.outgoing,
     required this.goodsUseCases,
   });
 
@@ -28,8 +31,10 @@ class SalesByMonthReportData extends ReportData {
       ColumnInfo("month"),
       ColumnInfo("quantity", showTotal: true),
       ColumnInfo("amount", showTotal: true),
-      ColumnInfo("cost", showTotal: true),
-      ColumnInfo("profit", showTotal: true),
+      if (type == DocumentType.outgoing) ...[
+        ColumnInfo("cost", showTotal: true),
+        ColumnInfo("profit", showTotal: true),
+      ],
     ];
   }
 
@@ -43,16 +48,19 @@ class SalesByMonthReportData extends ReportData {
     };
     final sales = await loadOutgoingSales(
       documentUseCases: documentUseCases,
+      type: type,
       start: start,
       end: end,
     );
     return salesByMonthTableRows(
       buildSalesByMonthRows(
+        type: type,
         year: start.year,
         documents: sales.documents,
         transactionsByDocumentId: sales.transactionsByDocumentId,
         purchasePriceByGoodId: purchasePrices,
       ),
+      withCost: type == DocumentType.outgoing,
     );
   }
 }

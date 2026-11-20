@@ -32,11 +32,12 @@ List<SalesByMonthRow> buildSalesByMonthRows({
   required List<Document> documents,
   required Map<int, List<DocumentTransaction>> transactionsByDocumentId,
   required Map<int, double?> purchasePriceByGoodId,
+  DocumentType type = DocumentType.outgoing,
 }) {
   final accs = List.generate(12, (_) => _Acc());
 
   for (final document in documents) {
-    if (document.type != DocumentType.outgoing ||
+    if (document.type != type ||
         document.id == null ||
         document.date.year != year) {
       continue;
@@ -61,15 +62,18 @@ List<SalesByMonthRow> buildSalesByMonthRows({
 }
 
 List<MapEntry<int, List<String>>> salesByMonthTableRows(
-  List<SalesByMonthRow> rows,
-) {
+  List<SalesByMonthRow> rows, {
+  bool withCost = true,
+}) {
   return rows
       .map((r) => MapEntry(r.month, [
             '${r.month}',
             getDoubleText(r.quantity),
             getDoubleText(r.amount),
-            getDoubleText(r.cost),
-            getDoubleText(r.profit),
+            if (withCost) ...[
+              getDoubleText(r.cost),
+              getDoubleText(r.profit),
+            ],
           ]))
       .toList();
 }

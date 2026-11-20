@@ -468,5 +468,11 @@
   "no_customer": "Sem cliente",
   "report_type_sales_by_month": "Vendas por mês",
   "select_year": "Selecionar ano",
-  "month": "Mês"
+  "month": "Mês",
+  "purchase_title": "Compras",
+  "report_type_purchase_by_date": "Compras por data",
+  "report_type_purchase_by_item": "Compras por item",
+  "report_type_purchase_by_supplier": "Compras por fornecedor",
+  "report_type_purchase_by_month": "Compras por mês",
+  "no_supplier": "Sem fornecedor"
 }

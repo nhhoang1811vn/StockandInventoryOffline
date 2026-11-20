@@ -54,6 +54,7 @@ class ReportDataFactory {
     DateTime? end, {
     int? groupId,
     int? customerId,
+    int? supplierId,
   }) {
     switch (type) {
       case ReportType.LIST_OF_GOODS:
@@ -108,32 +109,56 @@ class ReportDataFactory {
       case ReportType.GOOD_INFO:
         return GoodInfoReportData(goodsUseCases: goodsUseCases, groupsUseCases: groupsUseCases);
       case ReportType.SALES_BY_DATE:
+      case ReportType.PURCHASE_BY_DATE:
         return SalesByDateReportData(
             start: start!,
             end: end!,
+            type: _documentTypeOf(type),
             documentUseCases: documentUseCases,
             goodsUseCases: goodsUseCases);
       case ReportType.SALES_BY_ITEM:
+      case ReportType.PURCHASE_BY_ITEM:
         return SalesByItemReportData(
             start: start!,
             end: end!,
             groupId: groupId,
+            type: _documentTypeOf(type),
             documentUseCases: documentUseCases,
             goodsUseCases: goodsUseCases);
       case ReportType.SALES_BY_MONTH:
+      case ReportType.PURCHASE_BY_MONTH:
         return SalesByMonthReportData(
             start: start!,
             end: end!,
+            type: _documentTypeOf(type),
             documentUseCases: documentUseCases,
             goodsUseCases: goodsUseCases);
       case ReportType.SALES_BY_CUSTOMER:
+      case ReportType.PURCHASE_BY_SUPPLIER:
         return SalesByCustomerReportData(
             start: start!,
             end: end!,
-            customerId: customerId,
+            personId: type == ReportType.SALES_BY_CUSTOMER
+                ? customerId
+                : supplierId,
+            type: _documentTypeOf(type),
             documentUseCases: documentUseCases,
             customersUseCase: customersUseCase,
+            suppliersUseCase: suppliersUseCase,
             goodsUseCases: goodsUseCases);
+    }
+  }
+
+  /// Sales reports read outgoing Documents, Purchase reports incoming ones.
+  DocumentType _documentTypeOf(ReportType type) {
+    switch (type) {
+      case ReportType.PURCHASE_BY_DATE:
+      case ReportType.PURCHASE_BY_ITEM:
+      case ReportType.PURCHASE_BY_SUPPLIER:
+      case ReportType.PURCHASE_BY_MONTH:
+        return DocumentType.incoming;
+      default:
+        return DocumentType.outgoing;
     }
   }
 }

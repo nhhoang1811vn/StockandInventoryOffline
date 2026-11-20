@@ -468,5 +468,11 @@
   "no_customer": "कोई ग्राहक नहीं",
   "report_type_sales_by_month": "महीने के अनुसार बिक्री",
   "select_year": "वर्ष चुनें",
-  "month": "माह"
+  "month": "माह",
+  "purchase_title": "खरीद",
+  "report_type_purchase_by_date": "तारीख के अनुसार खरीद",
+  "report_type_purchase_by_item": "वस्तु के अनुसार खरीद",
+  "report_type_purchase_by_supplier": "आपूर्तिकर्ता के अनुसार खरीद",
+  "report_type_purchase_by_month": "महीने के अनुसार खरीद",
+  "no_supplier": "कोई आपूर्तिकर्ता नहीं"
 }

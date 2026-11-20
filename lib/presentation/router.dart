@@ -281,6 +281,7 @@ class AppRouter {
               args["end"],
               groupId: args["groupId"],
               customerId: args["customerId"],
+              supplierId: args["supplierId"],
             ),
           ),
         );

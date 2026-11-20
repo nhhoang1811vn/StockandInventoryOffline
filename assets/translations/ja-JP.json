@@ -468,5 +468,11 @@
   "no_customer": "顧客なし",
   "report_type_sales_by_month": "月別売上",
   "select_year": "年を選択",
-  "month": "月"
+  "month": "月",
+  "purchase_title": "仕入",
+  "report_type_purchase_by_date": "日付別仕入",
+  "report_type_purchase_by_item": "商品別仕入",
+  "report_type_purchase_by_supplier": "仕入先別仕入",
+  "report_type_purchase_by_month": "月別仕入",
+  "no_supplier": "仕入先なし"
 }

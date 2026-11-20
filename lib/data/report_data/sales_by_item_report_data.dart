@@ -1,5 +1,6 @@
 import 'package:good_manager/data/report_data/report_data.dart';
 
+import '../../domain/entity/document.dart';
 import '../../domain/entity/good.dart';
 import '../../domain/usecase/documents/document_usecases.dart';
 import '../../domain/usecase/goods/goods_usercases.dart';
@@ -15,6 +16,7 @@ class SalesByItemReportData extends ReportData {
   /// null means all groups.
   final int? groupId;
   final DocumentUseCases documentUseCases;
+  final DocumentType type;
   final GoodsUseCases goodsUseCases;
 
   SalesByItemReportData({
@@ -22,6 +24,7 @@ class SalesByItemReportData extends ReportData {
     required this.end,
     required this.groupId,
     required this.documentUseCases,
+    this.type = DocumentType.outgoing,
     required this.goodsUseCases,
   });
 
@@ -31,8 +34,10 @@ class SalesByItemReportData extends ReportData {
       ColumnInfo("good_name"),
       ColumnInfo("quantity", showTotal: true),
       ColumnInfo("amount", showTotal: true),
-      ColumnInfo("cost", showTotal: true),
-      ColumnInfo("profit", showTotal: true),
+      if (type == DocumentType.outgoing) ...[
+        ColumnInfo("cost", showTotal: true),
+        ColumnInfo("profit", showTotal: true),
+      ],
     ];
   }
 
@@ -43,15 +48,18 @@ class SalesByItemReportData extends ReportData {
         : await goodsUseCases.getGoodsByGroupId(groupId);
     OutgoingSales sales = await loadOutgoingSales(
       documentUseCases: documentUseCases,
+      type: type,
       start: start,
       end: end,
     );
     return salesByItemTableRows(
       buildSalesByItemRows(
+        type: type,
         goods: goods,
         documents: sales.documents,
         transactionsByDocumentId: sales.transactionsByDocumentId,
       ),
+      withCost: type == DocumentType.outgoing,
     );
   }
 }

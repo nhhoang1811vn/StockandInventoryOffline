@@ -15,11 +15,12 @@ class OutgoingSales {
 }
 
 /// Documents in [start]..[end] (whole days) of the selected store, plus the
-/// Transactions of every outgoing one.
+/// Transactions of every document of [type] (default outgoing).
 Future<OutgoingSales> loadOutgoingSales({
   required DocumentUseCases documentUseCases,
   required DateTime start,
   required DateTime end,
+  DocumentType type = DocumentType.outgoing,
 }) async {
   final documents = await documentUseCases.getInRange(
     start.startOfDay(),
@@ -27,7 +28,7 @@ Future<OutgoingSales> loadOutgoingSales({
   );
   final transactionsByDocumentId = <int, List<DocumentTransaction>>{};
   for (final document in documents) {
-    if (document.type != DocumentType.outgoing || document.id == null) {
+    if (document.type != type || document.id == null) {
       continue;
     }
     transactionsByDocumentId[document.id!] =

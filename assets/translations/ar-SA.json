@@ -468,5 +468,11 @@
   "no_customer": "بدون عميل",
   "report_type_sales_by_month": "المبيعات حسب الشهر",
   "select_year": "اختر السنة",
-  "month": "الشهر"
+  "month": "الشهر",
+  "purchase_title": "المشتريات",
+  "report_type_purchase_by_date": "المشتريات حسب التاريخ",
+  "report_type_purchase_by_item": "المشتريات حسب الصنف",
+  "report_type_purchase_by_supplier": "المشتريات حسب المورد",
+  "report_type_purchase_by_month": "المشتريات حسب الشهر",
+  "no_supplier": "بدون مورد"
 }

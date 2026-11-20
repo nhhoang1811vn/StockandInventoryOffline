@@ -25,7 +25,7 @@ class _Acc {
 }
 
 /// One row per calendar day from [start] to [end] inclusive, newest first.
-/// Only outgoing documents count. Amount uses the transaction price, Cost the
+/// Only documents of [type] (default outgoing) count. Amount uses the transaction price, Cost the
 /// good's current purchase price (unknown or null → 0).
 List<SalesByDateRow> buildSalesByDateRows({
   required DateTime start,
@@ -33,6 +33,7 @@ List<SalesByDateRow> buildSalesByDateRows({
   required List<Document> documents,
   required Map<int, List<DocumentTransaction>> transactionsByDocumentId,
   required Map<int, double?> purchasePriceByGoodId,
+  DocumentType type = DocumentType.outgoing,
 }) {
   final days = <DateTime>[];
   var d = DateTime(start.year, start.month, start.day);
@@ -45,7 +46,7 @@ List<SalesByDateRow> buildSalesByDateRows({
   final accs = {for (final day in days) day: _Acc()};
 
   for (final document in documents) {
-    if (document.type != DocumentType.outgoing || document.id == null) continue;
+    if (document.type != type || document.id == null) continue;
     final acc = accs[DateTime(
       document.date.year,
       document.date.month,
@@ -71,15 +72,18 @@ List<SalesByDateRow> buildSalesByDateRows({
 
 List<MapEntry<int, List<String>>> salesByDateTableRows(
   List<SalesByDateRow> rows,
-  String Function(DateTime) formatDate,
-) {
+  String Function(DateTime) formatDate, {
+  bool withCost = true,
+}) {
   return rows
       .map((r) => MapEntry(r.day.millisecondsSinceEpoch, [
             formatDate(r.day),
             getDoubleText(r.quantity),
             getDoubleText(r.amount),
-            getDoubleText(r.cost),
-            getDoubleText(r.profit),
+            if (withCost) ...[
+              getDoubleText(r.cost),
+              getDoubleText(r.profit),
+            ],
           ]))
       .toList();
 }
