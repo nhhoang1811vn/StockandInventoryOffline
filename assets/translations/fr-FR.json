@@ -456,5 +456,10 @@
   "auth_user_not_found": "E-mail ou mot de passe incorrect.",
   "auth_weak_password": "Le mot de passe doit contenir au moins 6 caractères.",
   "auth_too_many_requests": "Trop de tentatives. Patientez puis réessayez.",
-  "auth_network_error": "Pas de connexion réseau. Vérifiez Internet et réessayez."
+  "auth_network_error": "Pas de connexion réseau. Vérifiez Internet et réessayez.",
+  "cost": "Coût",
+  "profit": "Bénéfice",
+  "report_type_sales_by_date": "Ventes par date",
+  "sales_title": "Ventes",
+  "tag_new": "Nouveau"
 }

@@ -21,6 +21,7 @@ import 'debt_of_customer_report_data.dart';
 import 'debt_of_supplier_report_data.dart';
 import 'good_info_report_data.dart';
 import 'list_of_goods_report_data.dart';
+import 'sales_by_date_report_data.dart';
 
 @LazySingleton()
 class ReportDataFactory {
@@ -97,6 +98,12 @@ class ReportDataFactory {
         return ReorderReportData(goodsUseCase: goodsUseCases);
       case ReportType.GOOD_INFO:
         return GoodInfoReportData(goodsUseCases: goodsUseCases, groupsUseCases: groupsUseCases);
+      case ReportType.SALES_BY_DATE:
+        return SalesByDateReportData(
+            start: start!,
+            end: end!,
+            documentUseCases: documentUseCases,
+            goodsUseCases: goodsUseCases);
     }
   }
 }

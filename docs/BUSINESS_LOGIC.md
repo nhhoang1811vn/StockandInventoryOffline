@@ -104,10 +104,17 @@ Schema: [DATABASE.md](DATABASE.md).
 
 ## Reports
 
-11 types (`lib/domain/entity/report_type.dart`): list of goods, list of documents, debts by
+12 types (`lib/domain/entity/report_type.dart`): list of goods, list of documents, debts by
 supplier, debts by customer, inbound payments, outbound payments, list of wallets, customer
-payments, supplier payments, re-order, good info. Built by `ReportDataFactory`
+payments, supplier payments, re-order, good info, sales by date. Built by `ReportDataFactory`
 (`lib/data/report_data/report_data_factory.dart`); export to Excel or PDF.
+
+Sales by date (group "Sales" on the Report screen): one row per calendar day in the chosen range,
+including days without sales, newest first, plus a Total row. Only outgoing Documents count.
+Quantity = sum of Transaction quantity; Amount = quantity × `Transaction.price`; Cost =
+quantity × the Good's **current** `purchasePrice` (null or deleted Good → 0); Profit = Amount −
+Cost. Because no purchase price is stored per Transaction, editing a Good's purchase price changes
+Cost and Profit of past days. Logic: `lib/data/report_data/sales_by_date_rows.dart`.
 
 ## Account, backup, sync
 

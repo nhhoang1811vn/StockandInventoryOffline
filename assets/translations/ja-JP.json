@@ -456,5 +456,10 @@
   "auth_user_not_found": "メールアドレスまたはパスワードが正しくありません。",
   "auth_weak_password": "パスワードは6文字以上にしてください。",
   "auth_too_many_requests": "試行回数が多すぎます。しばらくしてから再試行してください。",
-  "auth_network_error": "ネットワークに接続されていません。インターネットを確認して再試行してください。"
+  "auth_network_error": "ネットワークに接続されていません。インターネットを確認して再試行してください。",
+  "cost": "原価",
+  "profit": "利益",
+  "report_type_sales_by_date": "日付別売上",
+  "sales_title": "売上",
+  "tag_new": "新規"
 }

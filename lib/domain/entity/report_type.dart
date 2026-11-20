@@ -12,7 +12,8 @@ enum ReportType {
   LIST_OF_CUSTOMER_PAYMENTS,
   LIST_OF_SUPPLIER_PAYMENTS,
   RE_ORDER,
-  GOOD_INFO
+  GOOD_INFO,
+  SALES_BY_DATE
 }
 
 extension ReportTypeExtension on ReportType {
@@ -40,6 +41,8 @@ extension ReportTypeExtension on ReportType {
         return context.tr("report_type_reorder");
       case ReportType.GOOD_INFO:
         return context.tr("report_type_good_info");
+      case ReportType.SALES_BY_DATE:
+        return context.tr("report_type_sales_by_date");
     }
   }
 }

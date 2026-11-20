@@ -456,5 +456,10 @@
   "auth_user_not_found": "Email or password is incorrect.",
   "auth_weak_password": "Password must be at least 6 characters.",
   "auth_too_many_requests": "Too many attempts. Wait a moment and try again.",
-  "auth_network_error": "No network connection. Check your internet and try again."
+  "auth_network_error": "No network connection. Check your internet and try again.",
+  "cost": "Cost",
+  "profit": "Profit",
+  "report_type_sales_by_date": "Sales by date",
+  "sales_title": "Sales",
+  "tag_new": "New"
 }

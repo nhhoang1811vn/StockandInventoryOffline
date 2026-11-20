@@ -456,5 +456,10 @@
   "auth_user_not_found": "邮箱或密码不正确。",
   "auth_weak_password": "密码至少需要 6 个字符。",
   "auth_too_many_requests": "尝试次数过多。请稍后再试。",
-  "auth_network_error": "没有网络连接。请检查网络后重试。"
+  "auth_network_error": "没有网络连接。请检查网络后重试。",
+  "cost": "成本",
+  "profit": "利润",
+  "report_type_sales_by_date": "按日期统计销售",
+  "sales_title": "销售",
+  "tag_new": "新"
 }

@@ -456,5 +456,10 @@
   "auth_user_not_found": "Email hoặc mật khẩu không đúng.",
   "auth_weak_password": "Mật khẩu phải có ít nhất 6 ký tự.",
   "auth_too_many_requests": "Thử quá nhiều lần. Đợi một lát rồi thử lại.",
-  "auth_network_error": "Không có kết nối mạng. Kiểm tra internet rồi thử lại."
+  "auth_network_error": "Không có kết nối mạng. Kiểm tra internet rồi thử lại.",
+  "cost": "Giá vốn",
+  "profit": "Lợi nhuận",
+  "report_type_sales_by_date": "Doanh số theo ngày",
+  "sales_title": "Bán hàng",
+  "tag_new": "Mới"
 }

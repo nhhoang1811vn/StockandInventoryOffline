@@ -456,5 +456,10 @@
   "auth_user_not_found": "E-mail ou senha incorretos.",
   "auth_weak_password": "A senha deve ter pelo menos 6 caracteres.",
   "auth_too_many_requests": "Muitas tentativas. Espere um pouco e tente de novo.",
-  "auth_network_error": "Sem conexão de rede. Verifique a internet e tente de novo."
+  "auth_network_error": "Sem conexão de rede. Verifique a internet e tente de novo.",
+  "cost": "Custo",
+  "profit": "Lucro",
+  "report_type_sales_by_date": "Vendas por data",
+  "sales_title": "Vendas",
+  "tag_new": "Novo"
 }

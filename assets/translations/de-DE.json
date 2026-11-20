@@ -456,5 +456,10 @@
   "auth_user_not_found": "E-Mail oder Passwort ist falsch.",
   "auth_weak_password": "Das Passwort muss mindestens 6 Zeichen haben.",
   "auth_too_many_requests": "Zu viele Versuche. Warten Sie kurz und versuchen Sie es erneut.",
-  "auth_network_error": "Keine Netzwerkverbindung. Prüfen Sie das Internet und versuchen Sie es erneut."
+  "auth_network_error": "Keine Netzwerkverbindung. Prüfen Sie das Internet und versuchen Sie es erneut.",
+  "cost": "Kosten",
+  "profit": "Gewinn",
+  "report_type_sales_by_date": "Verkäufe nach Datum",
+  "sales_title": "Verkäufe",
+  "tag_new": "Neu"
 }
