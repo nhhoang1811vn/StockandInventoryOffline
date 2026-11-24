@@ -4,7 +4,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:good_manager/data/app_settings.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
+import 'package:good_manager/presentation/pages/base/insufficient_stock_message.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/component/copy_destination_dialog.dart';
 import 'package:good_manager/presentation/pages/goods/component/excel_column_mapping_sheet.dart';
@@ -88,6 +90,12 @@ class GoodsPageState extends State<GoodsPage> {
           context
               .read<GoodsCubit>()
               .updateQuantity(currentState.goodId, currentState.quantity);
+        } else if (state.state is InsufficientStockError) {
+          ToastUtils.showErrorToast(insufficientStockMessage(
+            (state.state as InsufficientStockError).error,
+            AppSettings.getQuantityDecimals(),
+            context.tr,
+          ));
         } else if (state.state is InsertTransactionFailedState) {
           ToastUtils.showErrorToast(context.tr("insert_transaction_fail"));
         } else if (state.state is OpenListSettingsDialogState) {

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
+import 'package:good_manager/presentation/pages/base/insufficient_stock_message.dart';
 import 'package:good_manager/presentation/pages/save_document/bloc/save_document_cubit.dart';
 import 'package:good_manager/presentation/pages/save_document/components/filter_transaction_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
@@ -63,7 +64,13 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
         DateFormatFactory.getDateAndTimeFormat().format(widget.item.date);
     return BlocConsumer<SaveDocumentCubit, SaveDocumentState>(
       listener: (context, state) async {
-        if (state.state is SaveDocumentFailedState) {
+        if (state.state is InsufficientStockError) {
+          ToastUtils.showErrorToast(insufficientStockMessage(
+            (state.state as InsufficientStockError).error,
+            AppSettings.getQuantityDecimals(),
+            context.tr,
+          ));
+        } else if (state.state is SaveDocumentFailedState) {
           ToastUtils.showErrorToast(state.exceptionError);
         } else if (state.state is SaveDocumentSuccessfulState) {
           ReviewManager.maybeRequestReview();
@@ -104,7 +111,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
         } else if (state.state is OpenSaveGoodState) {
           final finalState = state.state as OpenSaveGoodState;
           final transaction = finalState.item;
-          final result = await Navigator.of(context).pushNamed(
+          await Navigator.of(context).pushNamed(
             Pages.save_good,
             arguments: {
               "item": transaction.good,
@@ -112,9 +119,10 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
               "transaction": transaction,
             },
           );
-          if (result != null) {
-            context.read<SaveDocumentCubit>().loadTransactions();
-          }
+          // Reload also when the edit was rejected or cancelled: the edit
+          // screen changes the line object in place, which would otherwise
+          // keep showing a quantity that was never saved.
+          context.read<SaveDocumentCubit>().loadTransactions();
         } else if (state.state is OpenBarcodeScannerPageState) {
           var result = await Utils.scanBarcode(context);
           if (result != null) {

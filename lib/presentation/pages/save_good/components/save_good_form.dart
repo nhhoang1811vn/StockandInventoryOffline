@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:good_manager/data/app_settings.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
+import 'package:good_manager/presentation/pages/base/insufficient_stock_message.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.dart';
 import 'package:good_manager/presentation/pages/save_good/components/quick_insert_document_widget.dart';
@@ -38,7 +39,13 @@ class SaveGoodForm extends StatelessWidget {
         return state1.state != state2.state;
       },
       listener: (BuildContext context, SaveGoodState state) async {
-        if (state.state is SaveItemSameBarcodeError) {
+        if (state.state is InsufficientStockError) {
+          ToastUtils.showErrorToast(insufficientStockMessage(
+            (state.state as InsufficientStockError).error,
+            AppSettings.getQuantityDecimals(),
+            context.tr,
+          ));
+        } else if (state.state is SaveItemSameBarcodeError) {
           ToastUtils.showErrorToast(context.tr("error_duplicate_barcode"));
         } else if (state.state is SaveItemError) {
           ToastUtils.showErrorToast(context.tr("snackbar_try_again"));
@@ -392,6 +399,12 @@ class SaveGoodForm extends StatelessWidget {
   ) async {
     int storeId = context.read<SaveGoodCubit>().getSelectedStoreId();
 
+    // Check the stock first: a rejected issue must not create a Document.
+    final allowed = await context
+        .read<SaveGoodCubit>()
+        .canQuickInsert(type, result["quantity"] ?? 0.0);
+    if (!allowed) return;
+
     Document document = Document();
     document.storeId = storeId;
     document.type = type;
@@ -412,7 +425,9 @@ class SaveGoodForm extends StatelessWidget {
     transaction.quantity = result["quantity"] ?? 0.0;
     transaction.price = result["price"] ?? 0.0;
 
-    context.read<SaveGoodCubit>().insertTransaction(transaction);
+    final inserted =
+        await context.read<SaveGoodCubit>().insertTransaction(transaction);
+    if (!inserted) return;
     if (type == DocumentType.incoming) {
       context.read<SaveGoodCubit>().updateQuantity(transaction.quantity);
     } else {

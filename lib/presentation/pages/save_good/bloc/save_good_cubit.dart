@@ -10,6 +10,7 @@ import '../../../../constant/constant.dart';
 import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
 import '../../../../domain/exception/duplicate_exceptions.dart';
+import '../../../../domain/exception/insufficient_stock_exception.dart';
 import '../../base/base_state.dart';
 
 part 'save_good_cubit.freezed.dart';
@@ -95,8 +96,35 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
     return documentId;
   }
 
-  void insertTransaction(DocumentTransaction item) async {
-    documentsUseCases.insertTransaction(item);
+  /// Inserts the line; returns false (after emitting the error) when the stock
+  /// rule rejects it, so the caller can skip its follow-up work.
+  Future<bool> insertTransaction(DocumentTransaction item) async {
+    try {
+      await documentsUseCases.insertTransaction(item);
+      return true;
+    } on InsufficientStockException catch (e) {
+      if (!isClosed) emit(state.copyWith(state: InsufficientStockError(e)));
+      return false;
+    }
+  }
+
+  /// Checks a quick insert (the +/- popups) before anything is written, so a
+  /// rejected one does not leave an empty Document behind. Emits the error and
+  /// returns false when "Allow negative quantity in stock" is off and the
+  /// issue would make the stock negative.
+  Future<bool> canQuickInsert(DocumentType type, double quantity) async {
+    final transaction = DocumentTransaction()
+      ..goodId = state.item!.id!
+      ..quantity = quantity
+      ..type = type
+      ..storeId = AppSettings.getSelectedStoreId();
+    try {
+      await documentsUseCases.ensureTransactionAllowed(transaction);
+      return true;
+    } on InsufficientStockException catch (e) {
+      if (!isClosed) emit(state.copyWith(state: InsufficientStockError(e)));
+      return false;
+    }
   }
 
   void updateQuantity(double quantity) {
@@ -109,6 +137,14 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
     final validate = Formz.validate([state.name]);
     if (validate) {
       try {
+        // Check the stock before anything is saved (Good, Document, line).
+        if (state.document != null && state.transaction != null) {
+          await documentsUseCases.ensureTransactionAllowed(
+            state.transaction!,
+            goodId: state.item?.id,
+            isNewGood: state.item?.id == null,
+          );
+        }
         var goodId = await insertOrUpdateGood();
         //insert document and insert transaction
         if (state.document != null) {
@@ -136,6 +172,9 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
           if (isClosed) return;
           emit(state.copyWith(state: SaveItemSuccessful()));
         }
+      } on InsufficientStockException catch (e) {
+        if (isClosed) return;
+        emit(state.copyWith(state: InsufficientStockError(e)));
       } on DuplicateBarcodeException {
         if (isClosed) return;
         emit(state.copyWith(state: SaveItemSameBarcodeError()));

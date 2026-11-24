@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
+import '../../../../domain/exception/insufficient_stock_exception.dart';
 import '../../../../domain/free_limits.dart';
 import '../../base/base_state.dart';
 
@@ -263,7 +264,13 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> deleteDocument(int id) async {
-    await documentsUseCases.delete(id);
+    try {
+      await documentsUseCases.delete(id);
+    } on InsufficientStockException catch (e) {
+      if (isClosed) return;
+      emit(state.copyWith(state: InsufficientStockError(e)));
+      return;
+    }
     initState();
   }
 

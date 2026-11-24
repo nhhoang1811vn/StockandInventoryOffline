@@ -101,6 +101,13 @@ class _GoodPropertiesPageState extends State<GoodPropertiesPage> {
               SettingsSectionHeader(context.tr("quantity_field")),
               SettingsMenuCard(
                 children: [
+                  SettingsSwitchItem(
+                    icon: Icons.inventory_2_outlined,
+                    title: context.tr("allow_negative_stock"),
+                    subtitle: context.tr("allow_negative_stock_hint"),
+                    value: state.allowNegativeStock,
+                    onChanged: cubit.onAllowNegativeStockChanged,
+                  ),
                   SettingsMenuItem(
                     icon: Icons.pin_outlined,
                     title: context.tr("decimal_digits"),

@@ -9,6 +9,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
+import '../../../../domain/exception/insufficient_stock_exception.dart';
 import '../../../../util/quantity_format.dart';
 import '../sort/sort_by_created_date_document_transaction.dart';
 import '../sort/sort_by_name_document_transaction.dart';
@@ -174,7 +175,14 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
   }
 
   void deleteTransaction(DocumentTransaction item) async {
-    bool result = await useCase.deleteTransaction(item.id!);
+    bool result;
+    try {
+      result = await useCase.deleteTransaction(item);
+    } on InsufficientStockException catch (e) {
+      if (isClosed) return;
+      emit(state.copyWith(state: InsufficientStockError(e)));
+      return;
+    }
     if (isClosed) return;
     if (result) {
       loadTransactions();
@@ -299,7 +307,7 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
       if (AppSettings.getBatchModeScan() == BatchModeScan.MANUAL) {
         emit(state.copyWith(state: OpenInputQuantityDialogState(good)));
       } else {
-        saveThenAddTransaction(
+        await saveThenAddTransaction(
           good,
           1,
           AppSettings.getGoodPropertiesSettings()
@@ -317,18 +325,34 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
     }
   }
 
-  void saveThenAddTransaction(Good good, double quantity, double? price) async {
+  Future<void> saveThenAddTransaction(
+      Good good, double quantity, double? price) async {
+    DocumentTransaction transaction = DocumentTransaction();
+    transaction.goodId = good.id!;
+    transaction.quantity = quantity;
+    transaction.price = price;
+    transaction.type = state.item!.type;
+    transaction.storeId = AppSettings.getSelectedStoreId();
+    // Check the stock before saving the Document, so a rejected line does not
+    // leave a new empty Document behind.
+    try {
+      await useCase.ensureTransactionAllowed(transaction);
+    } on InsufficientStockException catch (e) {
+      if (isClosed) return;
+      emit(state.copyWith(state: InsufficientStockError(e)));
+      return;
+    }
     bool result = await save();
     if (isClosed) return;
     if (result) {
-      DocumentTransaction transaction = DocumentTransaction();
       transaction.documentId = state.item!.id!;
-      transaction.goodId = good.id!;
-      transaction.quantity = quantity;
-      transaction.price = price;
-      transaction.type = state.item!.type;
-      transaction.storeId = AppSettings.getSelectedStoreId();
-      await useCase.insertTransaction(transaction);
+      try {
+        await useCase.insertTransaction(transaction);
+      } on InsufficientStockException catch (e) {
+        if (isClosed) return;
+        emit(state.copyWith(state: InsufficientStockError(e)));
+        return;
+      }
       if (isClosed) return;
       loadTransactions();
     }

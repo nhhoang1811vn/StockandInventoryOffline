@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/common/platform_support.dart';
 import 'package:good_manager/data/app_settings.dart';
+import 'package:good_manager/presentation/pages/base/insufficient_stock_message.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/pages/home/home_wallets_section.dart';
 import 'package:good_manager/presentation/pages/home/home_windows_banner.dart';
@@ -72,7 +73,13 @@ class HomePageState extends State<HomePage> {
     return BlocConsumer<HomeCubit, HomeState>(
       listenWhen: (p1, p2) => p1.state != p2.state,
       listener: (context, state) async {
-        if (state.state is OpenSaveWalletPageState) {
+        if (state.state is InsufficientStockError) {
+          ToastUtils.showErrorToast(insufficientStockMessage(
+            (state.state as InsufficientStockError).error,
+            AppSettings.getQuantityDecimals(),
+            context.tr,
+          ));
+        } else if (state.state is OpenSaveWalletPageState) {
           final currentState = state.state as OpenSaveWalletPageState;
           Navigator.of(context).pushNamed(
             Pages.save_wallet,

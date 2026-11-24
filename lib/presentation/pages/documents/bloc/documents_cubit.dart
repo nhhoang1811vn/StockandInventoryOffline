@@ -11,6 +11,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../constant/constant.dart';
 import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
+import '../../../../domain/exception/insufficient_stock_exception.dart';
 import '../../../criteria/and_criteria.dart';
 import '../../../criteria/criteria.dart';
 import '../../../criteria/or_criteria.dart';
@@ -98,7 +99,13 @@ class DocumentsCubit extends Cubit<DocumentsState> {
   }
 
   void delete(int id) async {
-    await useCase.delete(id);
+    try {
+      await useCase.delete(id);
+    } on InsufficientStockException catch (e) {
+      if (isClosed) return;
+      emit(state.copyWith(state: InsufficientStockError(e)));
+      return;
+    }
     loadItems();
   }
 

@@ -22,6 +22,8 @@ class GoodPropertiesSettings with _$GoodPropertiesSettings {
     @Default(false) bool uniqueGroupName,
     // Digits after the decimal point shown for every quantity (0..6).
     @Default(2) int quantityDecimals,
+    // When off, a change that would make a Good's stock negative is rejected.
+    @Default(true) bool allowNegativeStock,
   }) = _GoodPropertiesSettings;
 
   factory GoodPropertiesSettings.fromJson(Map<String, Object?> json) =>

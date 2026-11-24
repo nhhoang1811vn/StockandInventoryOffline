@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
+import '../../../../domain/exception/insufficient_stock_exception.dart';
 import '../../base/base_state.dart';
 
 part 'search_cubit.freezed.dart';
@@ -133,7 +134,13 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   Future<void> deleteDocument(int id) async {
-    await documentUseCases.delete(id);
+    try {
+      await documentUseCases.delete(id);
+    } on InsufficientStockException catch (e) {
+      if (isClosed) return;
+      emit(state.copyWith(state: InsufficientStockError(e)));
+      return;
+    }
     await init();
   }
 

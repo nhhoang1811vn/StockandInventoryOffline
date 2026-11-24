@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:good_manager/presentation/pages/base/base_state.dart';
+import 'package:good_manager/presentation/pages/base/insufficient_stock_message.dart';
 import 'package:good_manager/presentation/pages/documents/components/document_item_row.dart';
 import 'package:good_manager/presentation/pages/goods/good_item_row.dart';
 import 'package:good_manager/presentation/pages/goods/group_item_row.dart';
@@ -9,6 +11,7 @@ import 'package:good_manager/presentation/pages/wallets/components/wallet_item_r
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widget/search_bar_widget.dart';
 import 'package:good_manager/util/dimen.dart';
+import 'package:good_manager/util/toast_utils.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../data/app_settings.dart';
@@ -44,7 +47,17 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchCubit, SearchState>(
+    return BlocConsumer<SearchCubit, SearchState>(
+      listenWhen: (s1, s2) => s1.state != s2.state,
+      listener: (context, state) {
+        if (state.state is InsufficientStockError) {
+          ToastUtils.showErrorToast(insufficientStockMessage(
+            (state.state as InsufficientStockError).error,
+            AppSettings.getQuantityDecimals(),
+            context.tr,
+          ));
+        }
+      },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -330,7 +343,10 @@ class _SearchPageState extends State<SearchPage> {
           }
         } else if (items[index] == context.tr("delete")) {
           showDeleteConfirm(
-            sprintf(context.tr("message_confirm_delete"), [item.name]),
+            sprintf(context.tr("message_confirm_delete"), [
+              AppSettings.getDocumentPropertiesSettings()
+                  .displayName(item, context.tr)
+            ]),
             () => context.read<SearchCubit>().deleteDocument(item.id!),
           );
         }

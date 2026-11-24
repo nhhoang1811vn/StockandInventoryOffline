@@ -19,9 +19,19 @@ Schema: [DATABASE.md](DATABASE.md).
 
 - Quantity per good = sum of `incoming` transaction quantities − sum of `outgoing`
   (`DBHelper.getGoods`, `getGoodByBarcode`). It is not stored and not updated on write.
-- Negative stock is allowed (owner-confirmed). No check exists when adding an outgoing
-  transaction (`lib/presentation/pages/save_document/bloc/save_document_cubit.dart`,
-  `saveThenAddTransaction`). Do not add one unless requested.
+- Negative stock is allowed by default (owner-confirmed). Each Store can turn it off with "Allow
+  negative quantity in stock" (`GoodPropertiesSettings.allowNegativeStock`, Quantity field section).
+  When off, `DocumentUseCases` (`insertTransaction`, `updateTransaction`, `deleteTransaction`,
+  `delete`, and `ensureTransactionAllowed` for flows that write several things) rejects, before
+  any write, a change that lowers a Good's stock and leaves it below zero
+  (`InsufficientStockException`, toast "Not enough stock. In stock: N"). Covered: adding an outgoing
+  line, raising an outgoing or lowering an incoming quantity, deleting an incoming line, deleting an
+  incoming Document (judged per Good over all its lines). A change that does not lower stock is
+  always allowed, so a Good that is already negative can be restocked. Stock = incoming sum −
+  outgoing sum with a `1e-9` tolerance. Quick insert and the Save Good transaction edit check first,
+  so a rejected change leaves no Document or half-saved Good. Each check and the write after it run
+  one at a time, so two quick scans of the last unit cannot both pass. Backup restore and cloud sync
+  are not checked.
 - Low stock: a good is low when `minQuantity != null && quantity < minQuantity`
   (`lib/core/services/low_stock_service.dart`). `MainPage` shows a notification when any good is
   low and `MinimumQuantitySettings.showAlert` is enabled

@@ -26,6 +26,7 @@ class GoodPropertiesCubit extends Cubit<GoodPropertiesState> {
         uniqueGroupName: settings.uniqueGroupName,
         quantityDecimals:
             AppSettings.clampQuantityDecimals(settings.quantityDecimals),
+        allowNegativeStock: settings.allowNegativeStock,
       ),
     );
   }
@@ -70,6 +71,11 @@ class GoodPropertiesCubit extends Cubit<GoodPropertiesState> {
     _save();
   }
 
+  void onAllowNegativeStockChanged(bool value) {
+    emit(state.copyWith(allowNegativeStock: value));
+    _save();
+  }
+
   void onQuantityDecimalsChanged(int value) {
     emit(state.copyWith(
         quantityDecimals: AppSettings.clampQuantityDecimals(value)));
@@ -88,6 +94,7 @@ class GoodPropertiesCubit extends Cubit<GoodPropertiesState> {
         uniqueBarcode: state.uniqueBarcode,
         uniqueGroupName: state.uniqueGroupName,
         quantityDecimals: state.quantityDecimals,
+        allowNegativeStock: state.allowNegativeStock,
       ),
     );
   }

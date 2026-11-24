@@ -12,5 +12,6 @@ class GoodPropertiesState with _$GoodPropertiesState {
     @Default(false) bool uniqueBarcode,
     @Default(false) bool uniqueGroupName,
     @Default(2) int quantityDecimals,
+    @Default(true) bool allowNegativeStock,
   }) = _Initial;
 }

@@ -1,4 +1,5 @@
 import '../../../domain/entity/entity.dart';
+import '../../../domain/exception/insufficient_stock_exception.dart';
 
 abstract class BaseState {}
 
@@ -141,6 +142,14 @@ class SaveItemSameBarcodeError extends BaseState {}
 class SaveItemSameGroupNameError extends BaseState {}
 
 class DeleteItemError extends BaseState {}
+
+/// A transaction change was rejected because it would make a Good's stock
+/// negative while "Allow negative quantity in stock" is off.
+class InsufficientStockError extends BaseState {
+  final InsufficientStockException error;
+
+  InsufficientStockError(this.error);
+}
 
 class OpenSaveGoodPageWithBarcodeState extends BaseState {
   late String barcode;

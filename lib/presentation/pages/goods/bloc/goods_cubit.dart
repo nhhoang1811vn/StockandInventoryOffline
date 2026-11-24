@@ -13,6 +13,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
 import '../../../../domain/exception/duplicate_exceptions.dart';
+import '../../../../domain/exception/insufficient_stock_exception.dart';
 import '../../base/base_sort_items.dart';
 import '../../base/base_state.dart';
 import '../component/excel_column_mapping.dart';
@@ -49,10 +50,21 @@ class GoodsCubit extends Cubit<GoodsState> {
     AppSettings.goodPropertiesRevision.addListener(_onPropertiesChanged);
   }
 
+  bool _watchesStock = false;
+
   @override
   Future<void> close() {
     AppSettings.goodPropertiesRevision.removeListener(_onPropertiesChanged);
+    DocumentUseCases.stockRevision.removeListener(_onStockChanged);
     return super.close();
+  }
+
+  /// The Inventory tab stays alive behind the other tabs, so it reloads its
+  /// goods when a Document change moves stock. The Select Good screen updates
+  /// its own quantities and does not watch.
+  void _onStockChanged() {
+    if (isClosed) return;
+    loadData();
   }
 
   void _onPropertiesChanged() {
@@ -68,6 +80,10 @@ class GoodsCubit extends Cubit<GoodsState> {
       : SortByNumber.no_sort;
 
   void initState(bool isSelection, Document? document) async {
+    if (!isSelection && !_watchesStock) {
+      _watchesStock = true;
+      DocumentUseCases.stockRevision.addListener(_onStockChanged);
+    }
     var minQuantitySettings = await AppSettings.getMinimumQuantitySettings();
     if (isClosed) return;
 
@@ -640,7 +656,14 @@ class GoodsCubit extends Cubit<GoodsState> {
     transaction.price = price;
     transaction.type = state.document!.type;
     transaction.storeId = AppSettings.getSelectedStoreId();
-    int transactionId = await documentsUseCases.insertTransaction(transaction);
+    int transactionId;
+    try {
+      transactionId = await documentsUseCases.insertTransaction(transaction);
+    } on InsufficientStockException catch (e) {
+      if (isClosed) return;
+      emit(state.copyWith(state: InsufficientStockError(e)));
+      return;
+    }
     if (isClosed) return;
     if (transactionId > 0) {
       if (transaction.type == DocumentType.incoming) {

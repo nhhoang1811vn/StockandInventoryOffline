@@ -2,11 +2,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
+import 'package:good_manager/presentation/pages/base/insufficient_stock_message.dart';
 import 'package:good_manager/presentation/pages/documents/components/filter_document_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/util/currency_formatter.dart';
 import 'package:good_manager/util/dimen.dart';
 import 'package:good_manager/util/string_utils.dart';
+import 'package:good_manager/util/toast_utils.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
@@ -230,7 +232,13 @@ class DocumentPageState extends State<DocumentsPage>
       ),
       listenWhen: (state1, state2) => state1.state != state2.state,
       listener: (context, state) async {
-        if (state.state is OpenHelpPageState) {
+        if (state.state is InsufficientStockError) {
+          ToastUtils.showErrorToast(insufficientStockMessage(
+            (state.state as InsufficientStockError).error,
+            AppSettings.getQuantityDecimals(),
+            context.tr,
+          ));
+        } else if (state.state is OpenHelpPageState) {
           Navigator.of(context).pushNamed(
             Pages.help,
             arguments: {

@@ -108,6 +108,12 @@ emits `StartupFailure` and the page shows a retry button.
   is not initialised) feeds `StringUtils.getQuantityText`, the report helpers in
   `lib/data/report_data/utils.dart` and the input helpers in `lib/util/quantity_input.dart`.
   Rules: [BUSINESS_LOGIC.md](BUSINESS_LOGIC.md#quantity-field).
+- The negative stock rule lives in `DocumentUseCases` (it throws `InsufficientStockException`); the
+  cubits that write transactions or delete Documents catch it and emit `InsufficientStockError`,
+  which the views show with `insufficientStockMessage`.
+- Every successful transaction or Document write bumps `DocumentUseCases.stockRevision`; the
+  Inventory tab's `GoodsCubit` (not the Select Good screen) listens and reloads its goods, because
+  that tab stays alive in `MainPage`'s `IndexedStack`.
 - The passcode is stored in preferences and compared as a plain string
   (`lib/presentation/pages/main/main_page.dart`, `_showLockScreen`).
 
