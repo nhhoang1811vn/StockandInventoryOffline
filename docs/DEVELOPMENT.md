@@ -41,8 +41,8 @@ Environment separation is therefore **UNKNOWN / none**.
 `codemagic.yaml`, two workflows, both triggered on push to `release/*` and `master`:
 
 - `android-release`: `flutter pub get` → build_runner → `flutter build appbundle`; publishes to the
-  Google Play internal track.
-- `ios-release`: code signing → build_runner → `flutter build ipa`; publishes to TestFlight.
+  Google Play **production** track.
+- `ios-release`: code signing → build_runner → `flutter build ipa`; publishes to TestFlight and submits the build to App Store review (`submit_to_app_store`).
 
 Neither workflow runs `flutter analyze` or tests. There is no `.github/` directory.
 
