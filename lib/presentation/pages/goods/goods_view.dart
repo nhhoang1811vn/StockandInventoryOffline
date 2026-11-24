@@ -264,6 +264,8 @@ class GoodsPageState extends State<GoodsPage> {
           (item) => onPressedGroup(group),
           (item) => onLongPressedGroup(group),
           isListTile: columnCount == 1,
+          showBarcode:
+              state.settings.showBarcode && state.properties.showBarcode,
         );
       }
       final good = state.goods[index - groupCount];

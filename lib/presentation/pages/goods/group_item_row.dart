@@ -1,5 +1,5 @@
-import 'package:good_manager/util/dimen.dart';
 import 'package:flutter/material.dart';
+import 'package:good_manager/util/dimen.dart';
 
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
@@ -11,12 +11,43 @@ class GroupItemRow extends StatelessWidget {
   final Function(Group) onGroupLongPressed;
   final bool isListTile;
 
+  /// Whether the Barcode property is shown (Store's Good properties and the
+  /// list display setting); the barcode is also skipped when the Group has none.
+  final bool showBarcode;
+
   GroupItemRow(
     this.item,
     this.onGroupTapped,
     this.onGroupLongPressed, {
     this.isListTile = true,
+    this.showBarcode = true,
   });
+
+  bool get _hasBarcode =>
+      showBarcode && item.barCode != null && item.barCode!.trim().isNotEmpty;
+
+  Widget _buildBarcode(ThemeData theme) {
+    final color = theme.colorScheme.onSurface.withValues(alpha: 0.5);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.qr_code, size: 14, color: color),
+        const SizedBox(width: 6),
+        Flexible(
+          child: Text(
+            item.barCode!.trim(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: color,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +143,10 @@ class GroupItemRow extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  if (_hasBarcode) ...[
+                    const SizedBox(height: 4),
+                    _buildBarcode(theme),
+                  ],
                   if (item.description.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     Text(
@@ -157,20 +192,8 @@ class GroupItemRow extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            if (item.description.isNotEmpty) ...[
-              const SizedBox(height: 2),
-              Text(
-                item.description,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+            // Like a Good tile, the 2 and 3 column grid shows only the image and
+            // the name: no barcode and no description.
           ],
         ),
       ),

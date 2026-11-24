@@ -1,4 +1,3 @@
-import 'package:good_manager/util/dimen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +8,7 @@ import 'package:good_manager/presentation/pages/payment/components/payment_item_
 import 'package:good_manager/presentation/pages/wallets/components/wallet_item_row.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widget/search_bar_widget.dart';
+import 'package:good_manager/util/dimen.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../data/app_settings.dart';
@@ -180,6 +180,7 @@ class _SearchPageState extends State<SearchPage> {
                     );
                   },
                   onLongPressedGroup,
+                  showBarcode: goodProperties.showBarcode,
                 ),
               )),
         ],
