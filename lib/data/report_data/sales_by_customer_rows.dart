@@ -91,7 +91,7 @@ List<MapEntry<int, List<String>>> salesByCustomerTableRows(
   return rows
       .map((r) => MapEntry(r.customerId ?? -1, [
             r.name ?? noCustomerLabel,
-            getDoubleText(r.quantity),
+            getQuantityTextForReport(r.quantity),
             getDoubleText(r.amount),
             if (withCost) ...[
               getDoubleText(r.cost),

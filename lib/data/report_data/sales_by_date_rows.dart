@@ -78,7 +78,7 @@ List<MapEntry<int, List<String>>> salesByDateTableRows(
   return rows
       .map((r) => MapEntry(r.day.millisecondsSinceEpoch, [
             formatDate(r.day),
-            getDoubleText(r.quantity),
+            getQuantityTextForReport(r.quantity),
             getDoubleText(r.amount),
             if (withCost) ...[
               getDoubleText(r.cost),

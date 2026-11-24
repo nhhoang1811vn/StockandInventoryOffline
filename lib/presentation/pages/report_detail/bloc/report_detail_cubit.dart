@@ -20,9 +20,12 @@ sealed class ColumnReport {
   final String title;
   bool isVisible = true;
   bool showTotal = false;
+  final bool isQuantity;
 
-  ColumnReport(
-      {required this.title, this.isVisible = true, this.showTotal = false});
+  ColumnReport({required this.title,
+    this.isVisible = true,
+    this.showTotal = false,
+    this.isQuantity = false});
 }
 
 class SimpleColumn extends ColumnReport {
@@ -30,6 +33,7 @@ class SimpleColumn extends ColumnReport {
     required super.title,
     super.isVisible,
     super.showTotal,
+    super.isQuantity,
   });
 }
 
@@ -41,6 +45,7 @@ class PickableColumn extends ColumnReport {
     required super.title,
     super.isVisible,
     super.showTotal,
+    super.isQuantity,
     this.values = const {},
     this.selectedValues = const {},
   });
@@ -118,13 +123,15 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
             title: columnInfo.name,
             isVisible: true,
             showTotal: columnInfo.showTotal,
+            isQuantity: columnInfo.isQuantity,
             values: Set.of(valueSets[i]),
             selectedValues: Set.of(valueSets[i]));
       } else {
         columnReport = SimpleColumn(
             title: columnInfo.name,
             isVisible: true,
-            showTotal: columnInfo.showTotal);
+            showTotal: columnInfo.showTotal,
+            isQuantity: columnInfo.isQuantity);
       }
       columnReports.add(columnReport);
     }
@@ -184,7 +191,8 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
           for (int j = 0; j < validRows.length; j++) {
             sumAmount += getDoubleFromFormattedText(validRows[j][i]);
           }
-          totalRow.add(getDoubleText(sumAmount));
+          totalRow.add(formatColumnTotal(sumAmount,
+              isQuantity: state.columnReports[i].isQuantity));
         } else {
           totalRow.add("");
         }

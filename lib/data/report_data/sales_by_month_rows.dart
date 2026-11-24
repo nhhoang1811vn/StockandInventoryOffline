@@ -68,7 +68,7 @@ List<MapEntry<int, List<String>>> salesByMonthTableRows(
   return rows
       .map((r) => MapEntry(r.month, [
             '${r.month}',
-            getDoubleText(r.quantity),
+            getQuantityTextForReport(r.quantity),
             getDoubleText(r.amount),
             if (withCost) ...[
               getDoubleText(r.cost),

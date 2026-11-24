@@ -1,11 +1,22 @@
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../domain/entity/payment.dart';
+import '../../util/quantity_format.dart';
+import '../app_settings.dart';
 
 String getDoubleText(double input) {
   final formatter = NumberFormat('#,###');
   return formatter.format(input);
 }
+
+/// A quantity cell of a report: the Store's decimals, thousands separators.
+String getQuantityTextForReport(double value) =>
+    formatQuantity(value, AppSettings.getQuantityDecimals(), grouping: true);
+
+/// The total of a report column: quantity columns keep the Store's decimals,
+/// every other column (money) keeps being shown as a whole number.
+String formatColumnTotal(double sum, {required bool isQuantity}) =>
+    isQuantity ? getQuantityTextForReport(sum) : getDoubleText(sum);
 double getRevenue(List<Payment> payments) {
   double inAmount = payments
       .where((payment) => payment.type == PaymentType.inbound)

@@ -1,3 +1,6 @@
+import '../data/app_settings.dart';
+import 'quantity_format.dart';
+
 class StringUtils {
   StringUtils._(); // coverage:ignore-line
 
@@ -29,8 +32,7 @@ class StringUtils {
     }
   }
 
-  static String getQuantityText(double num) {
-    RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
-    return num.toString().replaceAll(regex, '');
-  }
+  /// A quantity with the Store's number of decimals (see Quantity field).
+  static String getQuantityText(double num) =>
+      formatQuantity(num, AppSettings.getQuantityDecimals());
 }

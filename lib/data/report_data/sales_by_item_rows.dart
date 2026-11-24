@@ -76,7 +76,7 @@ List<MapEntry<int, List<String>>> salesByItemTableRows(
   return rows
       .map((r) => MapEntry(r.good.id!, [
             r.good.name,
-            getDoubleText(r.quantity),
+            getQuantityTextForReport(r.quantity),
             getDoubleText(r.amount),
             if (withCost) ...[
               getDoubleText(r.cost),

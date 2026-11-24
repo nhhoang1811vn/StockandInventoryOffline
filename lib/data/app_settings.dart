@@ -334,6 +334,37 @@ class AppSettings {
   static bool isMinQuantityEnabled() =>
       getGoodPropertiesSettings().showMinQuantity;
 
+  static const int minQuantityDecimals = 0;
+  static const int maxQuantityDecimals = 6;
+  static const int defaultQuantityDecimals = 2;
+
+  static int clampQuantityDecimals(int value) =>
+      value.clamp(minQuantityDecimals, maxQuantityDecimals);
+
+  /// Returns the digit count only when [input] is a whole number inside
+  /// [minQuantityDecimals]..[maxQuantityDecimals]; otherwise null.
+  static int? parseQuantityDecimals(String? input) {
+    final value = int.tryParse(input?.trim() ?? '');
+    if (value == null ||
+        value < minQuantityDecimals ||
+        value > maxQuantityDecimals) {
+      return null;
+    }
+    return value;
+  }
+
+  /// Digits after the decimal point for quantities in the selected Store.
+  /// Falls back to the default when anything goes wrong (for example storage
+  /// that is not initialised yet).
+  static int getQuantityDecimals() {
+    try {
+      return clampQuantityDecimals(
+          getGoodPropertiesSettings().quantityDecimals);
+    } catch (_) {
+      return defaultQuantityDecimals;
+    }
+  }
+
   static const String _documentPropertiesSettingsKey =
       "DocumentPropertiesSettings_";
 

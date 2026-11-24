@@ -104,6 +104,10 @@ emits `StartupFailure` and the page shows a retry button.
   `AppSettings.getDocumentPropertiesSettings`, `AppSettings.documentPropertiesRevision`,
   `lib/presentation/pages/settings/document_properties/`); `HomeCubit` listens to both
   revisions. Rules: [BUSINESS_LOGIC.md](BUSINESS_LOGIC.md#document-properties).
+- Quantity formatting is central: `AppSettings.getQuantityDecimals()` (falls back to 2 when storage
+  is not initialised) feeds `StringUtils.getQuantityText`, the report helpers in
+  `lib/data/report_data/utils.dart` and the input helpers in `lib/util/quantity_input.dart`.
+  Rules: [BUSINESS_LOGIC.md](BUSINESS_LOGIC.md#quantity-field).
 - The passcode is stored in preferences and compared as a plain string
   (`lib/presentation/pages/main/main_page.dart`, `_showLockScreen`).
 

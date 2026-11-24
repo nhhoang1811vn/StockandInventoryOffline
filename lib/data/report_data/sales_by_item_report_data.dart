@@ -32,7 +32,7 @@ class SalesByItemReportData extends ReportData {
   List<ColumnInfo> getColumnInfos() {
     return [
       ColumnInfo("good_name"),
-      ColumnInfo("quantity", showTotal: true),
+      ColumnInfo("quantity", showTotal: true, isQuantity: true),
       ColumnInfo("amount",
           showTotal: true, visibleWhen: ColumnGate.forDocumentType(type)),
       if (type == DocumentType.outgoing) ...[

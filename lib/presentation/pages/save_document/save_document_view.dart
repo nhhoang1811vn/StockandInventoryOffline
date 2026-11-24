@@ -669,6 +669,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       type: widget.item.type,
       properties: AppSettings.getGoodPropertiesSettings(),
       tr: context.tr,
+      quantityDecimals: AppSettings.getQuantityDecimals(),
     );
   }
 

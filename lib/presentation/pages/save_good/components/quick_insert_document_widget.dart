@@ -11,6 +11,8 @@ import '../../../../app.dart';
 import '../../../../constant/constant.dart';
 import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
+import '../../../../util/quantity_format.dart';
+import '../../../../util/quantity_input.dart';
 import '../../../../util/util.dart';
 import '../../../dialog/dialog.dart';
 
@@ -66,8 +68,10 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
       listener: (context, state) async {
         if (state.state is OpenCalculatorToInputQuantityState) {
           showCalculatorPopup(context, state.quantity, (p0) {
-            cubit.onQuantityChanged(p0.toString());
-            quantityTextController.text = p0.toString();
+            final text =
+                calculatorQuantityText(p0, AppSettings.getQuantityDecimals());
+            cubit.onQuantityChanged(text);
+            quantityTextController.text = text;
           });
         } else if (state.state is OpenCalculatorToInputPriceState) {
           showCalculatorPopup(context, state.price, (p0) {
@@ -178,8 +182,8 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
           child: AppTextField(
             controller: quantityTextController,
             labelText: context.tr("quantity"),
-            keyboardType: TextInputType.number,
-            //inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+            keyboardType: quantityKeyboardType(),
+            inputFormatter: quantityInputFormatters(),
             onChanged:
                 context.read<QuickInsertDocumentCubit>().onQuantityChanged,
           ),

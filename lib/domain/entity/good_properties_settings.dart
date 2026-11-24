@@ -20,6 +20,8 @@ class GoodPropertiesSettings with _$GoodPropertiesSettings {
     // barcode / no two Groups of a Store with the same name.
     @Default(false) bool uniqueBarcode,
     @Default(false) bool uniqueGroupName,
+    // Digits after the decimal point shown for every quantity (0..6).
+    @Default(2) int quantityDecimals,
   }) = _GoodPropertiesSettings;
 
   factory GoodPropertiesSettings.fromJson(Map<String, Object?> json) =>

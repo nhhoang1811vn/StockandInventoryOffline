@@ -9,6 +9,8 @@ import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.d
 import 'package:good_manager/presentation/pages/save_good/components/quick_insert_document_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/util/entity_image_picker.dart';
+import 'package:good_manager/util/quantity_format.dart';
+import 'package:good_manager/util/quantity_input.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../../constant/constant.dart';
@@ -48,10 +50,10 @@ class SaveGoodForm extends StatelessWidget {
         } else if (state.state is OpenCalculatorToInputQuantityState) {
           showCalculatorPopup(context, state.transaction!.quantity.toDouble(),
               (p0) {
-            context
-                .read<SaveGoodCubit>()
-                .quantityChanged(p0.toInt().toString());
-            quantityTextController.text = p0.toInt().toString();
+            final text =
+                calculatorQuantityText(p0, AppSettings.getQuantityDecimals());
+            context.read<SaveGoodCubit>().quantityChanged(text);
+            quantityTextController.text = text;
           });
         } else if (state.state is OpenCalculatorToInputPriceState) {
           showCalculatorPopup(context, state.transaction!.price, (p0) {
@@ -129,11 +131,14 @@ class SaveGoodForm extends StatelessWidget {
         } else {
           salePriceTextController.text = "";
         }
-        if (state.minQuantity != null) {
-          minQuantityTextController.text =
-              Config.simpleCurrencyFormat.format(state.minQuantity);
-        } else {
-          minQuantityTextController.text = "";
+        // Rewrite the field only when it no longer stands for the value, so a
+        // half-typed "2." keeps its dot.
+        if (!quantityTextMatches(
+            minQuantityTextController.text, state.minQuantity)) {
+          minQuantityTextController.text = state.minQuantity == null
+              ? ""
+              : formatQuantity(
+                  state.minQuantity!, AppSettings.getQuantityDecimals());
         }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -245,7 +250,8 @@ class SaveGoodForm extends StatelessWidget {
                 controller: minQuantityTextController,
                 onChanged: (value) =>
                     context.read<SaveGoodCubit>().onMinQuantityChanged(value),
-                keyboardType: TextInputType.number,
+                keyboardType: quantityKeyboardType(),
+                inputFormatter: quantityInputFormatters(),
               ),
             SizedBox(
               height: 16,
@@ -303,7 +309,8 @@ class SaveGoodForm extends StatelessWidget {
           child: AppTextField(
             readOnly: readonly,
             labelText: context.tr("quantity"),
-            keyboardType: TextInputType.number,
+            keyboardType: quantityKeyboardType(),
+            inputFormatter: quantityInputFormatters(),
             onChanged: (value) =>
                 context.read<SaveGoodCubit>().quantityChanged(value),
             controller: quantityTextController,

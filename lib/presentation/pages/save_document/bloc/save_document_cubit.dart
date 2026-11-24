@@ -9,6 +9,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
+import '../../../../util/quantity_format.dart';
 import '../sort/sort_by_created_date_document_transaction.dart';
 import '../sort/sort_by_name_document_transaction.dart';
 import '../sort/sort_transaction.dart';
@@ -158,7 +159,8 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
         totalQuantity += element.quantity;
         totalAmount += (element.quantity * (element.price ?? 0.0));
       });
-      totalQuantity = double.parse(totalQuantity.toStringAsFixed(2));
+      totalQuantity =
+          roundQuantity(totalQuantity, AppSettings.getQuantityDecimals());
       emit(
         state.copyWith(
           allTransactions: transactions,

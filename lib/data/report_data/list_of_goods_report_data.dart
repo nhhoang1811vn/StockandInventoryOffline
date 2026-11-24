@@ -40,15 +40,18 @@ class ListOfGoodsReportData extends ReportData {
       ColumnInfo(
         "field_start_period",
         showTotal: true,
+        isQuantity: true,
       ),
-      ColumnInfo("field_in", showTotal: true),
+      ColumnInfo("field_in", showTotal: true, isQuantity: true),
       ColumnInfo(
         "field_out",
         showTotal: true,
+        isQuantity: true,
       ),
       ColumnInfo(
         "field_end_period",
         showTotal: true,
+        isQuantity: true,
       )
     ];
   }
@@ -95,10 +98,10 @@ class ListOfGoodsReportData extends ReportData {
         good.name,
         groupName,
         good.barCode ?? "",
-        getDoubleText(startPeriodStock),
-        getDoubleText(incoming),
-        getDoubleText(outgoing),
-        getDoubleText(endPeriodStock),
+        getQuantityTextForReport(startPeriodStock),
+        getQuantityTextForReport(incoming),
+        getQuantityTextForReport(outgoing),
+        getQuantityTextForReport(endPeriodStock),
       ];
       results.add(MapEntry(good.id!, row));
     }

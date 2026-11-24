@@ -25,7 +25,7 @@ class ListOfDocumentsReportData extends ReportData {
       ColumnInfo("name", documentVisibleWhen: DocumentColumnGate.documentNo),
       ColumnInfo("type", isPickValues: true),
       ColumnInfo("person_name", isPickValues: true),
-      ColumnInfo("quantity", showTotal: true),
+      ColumnInfo("quantity", showTotal: true, isQuantity: true),
       ColumnInfo("amount",
           showTotal: true, visibleWhen: ColumnGate.documentAmount),
     ];
@@ -46,7 +46,7 @@ class ListOfDocumentsReportData extends ReportData {
       }
       //row.add(item.type.getTitle(localizations));
       row.add(item.personName ?? '');
-      row.add(getDoubleText(item.quantity));
+      row.add(getQuantityTextForReport(item.quantity));
       row.add(getDoubleText(item.amount));
       results.add(MapEntry(item.id!, row));
     }

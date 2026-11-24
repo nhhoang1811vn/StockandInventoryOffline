@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../constant/constant.dart';
 import '../../../widget/widget.dart';
 import 'bloc/good_properties_cubit.dart';
+import 'change_quantity_decimals_dialog.dart';
 
 class GoodPropertiesPage extends StatefulWidget {
   const GoodPropertiesPage({Key? key}) : super(key: key);
@@ -93,6 +94,27 @@ class _GoodPropertiesPageState extends State<GoodPropertiesPage> {
                     subtitle: context.tr("unique_group_hint"),
                     value: state.uniqueGroupName,
                     onChanged: cubit.onUniqueGroupNameChanged,
+                    isLast: true,
+                  ),
+                ],
+              ),
+              SettingsSectionHeader(context.tr("quantity_field")),
+              SettingsMenuCard(
+                children: [
+                  SettingsMenuItem(
+                    icon: Icons.pin_outlined,
+                    title: context.tr("decimal_digits"),
+                    subtitle: state.quantityDecimals.toString(),
+                    onTap: () async {
+                      final value = await showDialog<int>(
+                        context: context,
+                        builder: (_) => ChangeQuantityDecimalsDialogWidget(
+                            state.quantityDecimals),
+                      );
+                      if (value != null) {
+                        cubit.onQuantityDecimalsChanged(value);
+                      }
+                    },
                     isLast: true,
                   ),
                 ],

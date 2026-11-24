@@ -64,6 +64,24 @@ Schema: [DATABASE.md](DATABASE.md).
   low-stock indicator and the Reorder report entry are all disabled. `MinimumQuantitySettings` is
   not modified.
 
+## Quantity field
+
+- Each Store sets "Number of digits after decimal point" (`GoodPropertiesSettings.quantityDecimals`,
+  0..6, default 2) in the "Quantity field" section of Good properties.
+- Display: every quantity (Good and Document rows and totals, history, dialogs including the "In
+  stock" line, minimum quantity, reports and their totals, the Document CSV/PDF table) is rounded to
+  that many digits and shown without trailing zeros (2 digits: 5.12, 5, 5.2). Reports keep thousands
+  separators, and their money columns are unchanged. Stored values are never rounded.
+- Input: the quantity fields (Save Good transaction quantity and minimum quantity, add-quantity and
+  quick-insert dialogs) accept at most that many decimals (digits only at 0) and calculator results
+  are rounded to it (a decimal comma is typed as a dot). Excel import and barcode-scan flows are
+  not rounded.
+- Stock status (out of stock, low stock, reorder) and report totals use the stored values, not the
+  rounded text, so a quantity of 0.3 shown as "0" at 0 digits is still in stock.
+- Code: `lib/util/quantity_format.dart` (`formatQuantity`, `roundQuantity`,
+  `QuantityInputFormatter`), `lib/util/quantity_input.dart`, `StringUtils.getQuantityText`,
+  `getQuantityTextForReport` / `formatColumnTotal` (`ColumnInfo.isQuantity`).
+
 ## Uniqueness rules
 
 Two per-Store switches in the "Uniqueness" section of Good properties

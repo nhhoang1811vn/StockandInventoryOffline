@@ -12,6 +12,9 @@ class ColumnInfo{
   bool isPickValues = false;
   bool showTotal = false;
 
+  /// A quantity column: its cells and total follow the Store's decimals.
+  final bool isQuantity;
+
   /// When set and it returns false, the column (and its cells) is dropped
   /// from the report. `null` means always shown.
   final ColumnVisibility? visibleWhen;
@@ -22,6 +25,7 @@ class ColumnInfo{
   ColumnInfo(this.name, {
     this.isPickValues = false,
     this.showTotal = false,
+    this.isQuantity = false,
     this.visibleWhen,
     this.documentVisibleWhen,
   });

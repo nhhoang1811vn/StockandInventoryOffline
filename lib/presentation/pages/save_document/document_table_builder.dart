@@ -1,4 +1,5 @@
 import '../../../domain/entity/entity.dart';
+import '../../../util/quantity_format.dart';
 
 /// Builds the goods table shared by the Document CSV and PDF exports.
 /// Columns of Good properties the Store turned off are left out; price and
@@ -8,6 +9,7 @@ List<List<String>> buildDocumentTable({
   required DocumentType type,
   required GoodPropertiesSettings properties,
   required String Function(String key) tr,
+  int quantityDecimals = 2,
 }) {
   final showDescription = properties.showDescription;
   final showBarcode = properties.showBarcode;
@@ -34,7 +36,7 @@ List<List<String>> buildDocumentTable({
       if (showDescription) item.good.description,
       if (showBarcode) item.good.barCode ?? "",
       if (showPrice) item.price.toString(),
-      item.quantity.toString(),
+      formatQuantity(item.quantity, quantityDecimals),
       if (showPrice) amount.toString(),
     ]);
   }
@@ -43,7 +45,7 @@ List<List<String>> buildDocumentTable({
     if (showDescription) "",
     if (showBarcode) "",
     if (showPrice) "",
-    totalQuantity.toString(),
+    formatQuantity(totalQuantity, quantityDecimals),
     if (showPrice) totalAmount.toString(),
   ]);
   return data;

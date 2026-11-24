@@ -20,9 +20,9 @@ class ReorderReportData extends ReportData{
     return [
       ColumnInfo("name"),
       ColumnInfo("barcode", visibleWhen: ColumnGate.barcode),
-      ColumnInfo("quantity", showTotal: true),
-      ColumnInfo("min_quantity"),
-      ColumnInfo("field_reorder", showTotal: true),
+      ColumnInfo("quantity", showTotal: true, isQuantity: true),
+      ColumnInfo("min_quantity", isQuantity: true),
+      ColumnInfo("field_reorder", showTotal: true, isQuantity: true),
       ColumnInfo("purchase_price", visibleWhen: ColumnGate.purchasePrice),
       ColumnInfo("amount",
           showTotal: true, visibleWhen: ColumnGate.purchasePrice),
@@ -57,9 +57,9 @@ class ReorderReportData extends ReportData{
       List<String> row = [
         item.name,
         item.barCode ?? "",
-        getDoubleText(item.quantity),
-        getDoubleText(minQuan),
-        getDoubleText(reorder),
+        getQuantityTextForReport(item.quantity),
+        getQuantityTextForReport(minQuan),
+        getQuantityTextForReport(reorder),
         getDoubleText(item.purchasePrice ?? 0),
         getDoubleText(amount),
       ];

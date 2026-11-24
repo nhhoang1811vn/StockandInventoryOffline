@@ -46,7 +46,7 @@ class SalesByCustomerReportData extends ReportData {
   List<ColumnInfo> getColumnInfos() {
     return [
       ColumnInfo(_isSales ? "customer" : "supplier"),
-      ColumnInfo("quantity", showTotal: true),
+      ColumnInfo("quantity", showTotal: true, isQuantity: true),
       ColumnInfo("amount",
           showTotal: true, visibleWhen: ColumnGate.forDocumentType(type)),
       if (_isSales) ...[

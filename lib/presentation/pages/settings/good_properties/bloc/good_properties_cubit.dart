@@ -24,6 +24,8 @@ class GoodPropertiesCubit extends Cubit<GoodPropertiesState> {
         showSalePrice: settings.showSalePrice,
         uniqueBarcode: settings.uniqueBarcode,
         uniqueGroupName: settings.uniqueGroupName,
+        quantityDecimals:
+            AppSettings.clampQuantityDecimals(settings.quantityDecimals),
       ),
     );
   }
@@ -68,6 +70,12 @@ class GoodPropertiesCubit extends Cubit<GoodPropertiesState> {
     _save();
   }
 
+  void onQuantityDecimalsChanged(int value) {
+    emit(state.copyWith(
+        quantityDecimals: AppSettings.clampQuantityDecimals(value)));
+    _save();
+  }
+
   void _save() {
     AppSettings.setGoodPropertiesSettings(
       GoodPropertiesSettings(
@@ -79,6 +87,7 @@ class GoodPropertiesCubit extends Cubit<GoodPropertiesState> {
         showSalePrice: state.showSalePrice,
         uniqueBarcode: state.uniqueBarcode,
         uniqueGroupName: state.uniqueGroupName,
+        quantityDecimals: state.quantityDecimals,
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/data/app_settings.dart';
+import 'package:good_manager/util/quantity_format.dart';
 
 import '../../../../domain/entity/entity.dart';
 import '../../../../util/currency_formatter.dart';
@@ -33,9 +34,11 @@ class ItemHistoryRow extends StatelessWidget {
         : (outgoingColor ?? Colors.red);
     final leadingIcon =
         isIncoming ? Icons.file_download_outlined : Icons.file_upload_outlined;
-    final quantityText = isIncoming
-        ? "+" + StringUtils.getQuantityText(item.quantity)
-        : "-" + StringUtils.getQuantityText(item.quantity);
+    final quantityText = signedQuantityText(
+      item.quantity,
+      AppSettings.getQuantityDecimals(),
+      incoming: isIncoming,
+    );
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: Dimens.screenPadding, vertical: 6),
