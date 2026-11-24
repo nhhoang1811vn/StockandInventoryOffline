@@ -1,5 +1,10 @@
 class MarkdownResourceEN {
   static const String whatNews = """
+### Version 1.0.96 - 24 Nov 2026
+* New Good properties setting: hide Image, Barcode, Description or Minimum quantity for a store. Hidden values are kept. Open it from Settings or the Menu.
+* New Quantity field setting: choose how many digits (0 to 6) appear after the decimal point. It applies to lists, inputs, reports and exports.
+* New option to turn off negative quantity in stock: transactions that would take a good below zero are rejected.
+
 ### Version 1.0.95 - 20 Nov 2026
 * New Sales reports on the Report screen: by date, by item, by customer and by month, with filters for group, customer and year.
 * New Purchase reports: by date, by item, by supplier and by month, with a supplier filter.

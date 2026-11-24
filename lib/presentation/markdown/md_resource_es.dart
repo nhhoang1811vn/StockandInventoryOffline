@@ -3,6 +3,11 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceES {
   static const bundle = MarkdownBundle(
     whatNews: """
+### Versión 1.0.96 - 24 nov 2026
+* Nuevo ajuste Propiedades del artículo: oculta Imagen, Código de barras, Descripción o Cantidad mínima en cada tienda. Los valores se conservan. Disponible en Ajustes o en el Menú.
+* Nuevo ajuste Campo de cantidad: elige cuántos decimales (0 a 6) se muestran. Se aplica a listas, campos, informes y exportaciones.
+* Nueva opción para desactivar el stock negativo: se rechazan las transacciones que dejen un artículo por debajo de cero.
+
 ### Versión 1.0.95 - 20 nov 2026
 * Nuevos informes de Ventas en la pantalla de Informes: por fecha, por artículo, por cliente y por mes, con filtros de grupo, cliente y año.
 * Nuevos informes de Compras: por fecha, por artículo, por proveedor y por mes, con filtro de proveedor.

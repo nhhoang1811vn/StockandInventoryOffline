@@ -96,6 +96,11 @@ Dùng chức năng này để theo dõi chi tiêu theo từng cửa hàng.
 """;
 
   static const String whatNews = """
+### Phiên bản 1.0.96 - 24/11/2026
+* Cài đặt mới Thuộc tính hàng hoá: ẩn Hình ảnh, Mã vạch, Mô tả hoặc Số lượng tối thiểu cho từng cửa hàng. Giá trị đã nhập vẫn được giữ lại. Mở từ Cài đặt hoặc Menu.
+* Cài đặt mới Trường số lượng: chọn số chữ số sau dấu thập phân (0 đến 6). Áp dụng cho danh sách, ô nhập, báo cáo và xuất file.
+* Tuỳ chọn tắt tồn kho âm: các giao dịch làm hàng hoá xuống dưới 0 sẽ bị từ chối.
+
 ### Phiên bản 1.0.95 - 20/11/2026
 * Báo cáo Bán hàng mới trên màn hình Báo cáo: theo ngày, theo hàng hoá, theo khách hàng và theo tháng, có bộ lọc nhóm, khách hàng và năm.
 * Báo cáo Mua hàng mới: theo ngày, theo hàng hoá, theo nhà cung cấp và theo tháng, có bộ lọc nhà cung cấp.

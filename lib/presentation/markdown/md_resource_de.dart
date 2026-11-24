@@ -3,6 +3,11 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceDE {
   static const bundle = MarkdownBundle(
     whatNews: """
+### Version 1.0.96 - 24. Nov. 2026
+* Neue Einstellung Artikeleigenschaften: Bild, Barcode, Beschreibung oder Mindestmenge pro Geschäft ausblenden. Die Werte bleiben erhalten. Zu finden in Einstellungen oder Menü.
+* Neue Einstellung Mengenfeld: Anzahl der Nachkommastellen (0 bis 6) festlegen. Gilt für Listen, Eingaben, Berichte und Exporte.
+* Neue Option, negative Bestände zu verbieten: Buchungen, die einen Artikel unter null bringen, werden abgelehnt.
+
 ### Version 1.0.95 - 20. Nov. 2026
 * Neue Verkaufsberichte im Berichtsbildschirm: nach Datum, Artikel, Kunde und Monat, mit Filtern für Gruppe, Kunde und Jahr.
 * Neue Einkaufsberichte: nach Datum, Artikel, Lieferant und Monat, mit Lieferantenfilter.

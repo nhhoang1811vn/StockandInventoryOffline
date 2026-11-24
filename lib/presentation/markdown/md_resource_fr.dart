@@ -3,6 +3,11 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceFR {
   static const bundle = MarkdownBundle(
     whatNews: """
+### Version 1.0.96 - 24 nov. 2026
+* Nouveau réglage Propriétés des articles : masquez Image, Code-barres, Description ou Quantité minimale pour chaque magasin. Les valeurs sont conservées. Accessible depuis Réglages ou Menu.
+* Nouveau réglage Champ quantité : choisissez le nombre de décimales (0 à 6). Il s'applique aux listes, saisies, rapports et exports.
+* Nouvelle option pour interdire le stock négatif : les transactions qui feraient passer un article sous zéro sont refusées.
+
 ### Version 1.0.95 - 20 nov. 2026
 * Nouveaux rapports de Ventes sur l'écran Rapports : par date, par article, par client et par mois, avec des filtres de groupe, de client et d'année.
 * Nouveaux rapports d'Achats : par date, par article, par fournisseur et par mois, avec un filtre fournisseur.
