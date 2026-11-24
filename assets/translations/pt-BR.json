@@ -103,6 +103,7 @@
   "good_properties_image": "Imagem",
   "good_properties_min_quantity_disabled_note": "Desativado em Propriedades dos produtos",
   "good_properties_toggle_hint": "Desative se você não precisar deste campo",
+  "document_properties": "Propriedades dos documentos",
   "menu_item_show_min_quantity_items_page_title": "Mostrar quantidade mínima na página do item",
   "menu_item_show_min_quantity_list_page_title": "Mostrar quantidade mínima na página de lista",
   "menu_item_min_quantity_color_title": "Cor para produtos que precisam ser reordenados",

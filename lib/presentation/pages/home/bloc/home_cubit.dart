@@ -39,11 +39,13 @@ class HomeCubit extends Cubit<HomeState> {
           ),
         ) {
     AppSettings.goodPropertiesRevision.addListener(_onPropertiesChanged);
+    AppSettings.documentPropertiesRevision.addListener(_onPropertiesChanged);
   }
 
   @override
   Future<void> close() {
     AppSettings.goodPropertiesRevision.removeListener(_onPropertiesChanged);
+    AppSettings.documentPropertiesRevision.removeListener(_onPropertiesChanged);
     return super.close();
   }
 
@@ -61,7 +63,8 @@ class HomeCubit extends Cubit<HomeState> {
       showLowStock: enabled,
       lowStockGoods: low,
       lowStockCount: low.length,
-      propertiesRevision: AppSettings.goodPropertiesRevision.value,
+      propertiesRevision: AppSettings.goodPropertiesRevision.value +
+          AppSettings.documentPropertiesRevision.value,
     ));
   }
 

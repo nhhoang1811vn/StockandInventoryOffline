@@ -64,6 +64,26 @@ Schema: [DATABASE.md](DATABASE.md).
   low-stock indicator and the Reorder report entry are all disabled. `MinimumQuantitySettings` is
   not modified.
 
+## Document properties
+
+- Each Store can hide Image (the leading incoming/outgoing icon tile of `DocumentItemRow`, so on
+  every list that uses it), Document no, Date & Time and Description (`DocumentPropertiesSettings`,
+  key `DocumentPropertiesSettings_<storeId>`, default all shown; page
+  `Pages.settings_document_properties`, linked next to Good properties). Hidden means not
+  displayed: the Document still gets its auto number and its date, and keeps them if the property
+  is turned back on.
+- Document no hidden: the save-document field, the PDF/CSV line and the report column are hidden,
+  search no longer matches the number, and every place that titled a Document with its number (rows,
+  delete confirmation, history, payment rows, save payment) shows the type label (
+  "Incoming"/"Outgoing") instead (`DocumentPropertiesSettings.displayName`).
+- Date & Time hidden: the save-document and quick-insert fields, the date on the row, the date
+  group headers in the Documents list, the PDF/CSV line, the report "date" column and the date
+  sort (newest first is used, the saved sort is untouched).
+- Description hidden: the save-document and quick-insert fields, the row text, the PDF/CSV line,
+  and search no longer matches it.
+- Not affected: payment dates and descriptions, the Good-related Document price rules above,
+  Sales-by-date report (its "date" column is a grouping, not the Document's date).
+
 ## Documents and payments
 
 - Document amount = sum (`quantity * price`) over its transactions; document quantity = sum of

@@ -1,8 +1,9 @@
-import 'package:good_manager/util/dimen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:good_manager/data/app_settings.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
 import 'package:good_manager/util/currency_formatter.dart';
+import 'package:good_manager/util/dimen.dart';
 
 import '../../../../constant/constant.dart';
 import '../../../../domain/entity/entity.dart';
@@ -117,7 +118,7 @@ class PaymentItemRow extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 item.document != null
-                                    ? "${item.document!.name}${personName.isNotEmpty ? " ($personName)" : ""}"
+                                    ? "${AppSettings.getDocumentPropertiesSettings().displayName(item.document!, context.tr)}${personName.isNotEmpty ? " ($personName)" : ""}"
                                     : personName,
                                 style: TextStyle(
                                   color: theme.colorScheme.onSurface

@@ -5,9 +5,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:good_manager/common/platform_support.dart';
 import 'package:good_manager/data/app_settings.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
-import 'package:good_manager/common/platform_support.dart';
 import 'package:good_manager/presentation/pages/home/home_wallets_section.dart';
 import 'package:good_manager/presentation/pages/home/home_windows_banner.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
@@ -665,7 +665,10 @@ class HomePageState extends State<HomePage> {
       context,
       message: sprintf(
         context.tr("message_confirm_delete"),
-        [document.name],
+        [
+          AppSettings.getDocumentPropertiesSettings()
+              .displayName(document, context.tr)
+        ],
       ),
       onPositivePressed: () async {
         hideDialog(context);

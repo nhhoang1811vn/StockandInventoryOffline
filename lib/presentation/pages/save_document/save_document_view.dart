@@ -21,7 +21,6 @@ import 'package:sprintf/sprintf.dart';
 import '../../../app.dart';
 import '../../../constant/constant.dart';
 import '../../../data/app_settings.dart';
-import 'document_table_builder.dart';
 import '../../../domain/entity/entity.dart';
 import '../../../util/util.dart';
 import '../../blocs/add_quantity_and_price/add_quantity_and_price_dialog.dart';
@@ -31,6 +30,7 @@ import '../base/base_state.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'components/document_transaction_item_row.dart';
+import 'document_table_builder.dart';
 
 enum OverflowItemMenu { export_csv, export_pdf, help }
 
@@ -181,6 +181,7 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       listenWhen: (state1, state2) => state1.state != state2.state,
       builder: (context, state) {
         final theme = Theme.of(context);
+        final documentProperties = AppSettings.getDocumentPropertiesSettings();
         return Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: theme.scaffoldBackgroundColor,
@@ -242,20 +243,22 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                           children: [
                             Row(
                               children: [
-                                Expanded(
-                                  child: AppTextField(
-                                    labelText: context.tr("document_no"),
-                                    hintText: context.tr("hint_name"),
-                                    initialValue: state.name.value,
-                                    onChanged: (value) => context
-                                        .read<SaveDocumentCubit>()
-                                        .nameChanged(value),
-                                    keyboardType: TextInputType.name,
-                                    error:
-                                        state.name.displayError?.text(context),
+                                if (documentProperties.showDocumentNo) ...[
+                                  Expanded(
+                                    child: AppTextField(
+                                      labelText: context.tr("document_no"),
+                                      hintText: context.tr("hint_name"),
+                                      initialValue: state.name.value,
+                                      onChanged: (value) => context
+                                          .read<SaveDocumentCubit>()
+                                          .nameChanged(value),
+                                      keyboardType: TextInputType.name,
+                                      error: state.name.displayError
+                                          ?.text(context),
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 8.0),
+                                  const SizedBox(width: 8.0),
+                                ],
                                 Expanded(
                                   child: AppTextField(
                                     controller: personNameController,
@@ -279,45 +282,49 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 16.0),
-                            AppTextField(
-                              controller: dateController,
-                              labelText: context.tr("field_date_time"),
-                              keyboardType: TextInputType.datetime,
-                              readOnly: true,
-                              onTapped: () {
-                                DatePicker.showDateTimePicker(
-                                  context,
-                                  locale: MyApp.getDatePickerLocaleType(
+                            if (documentProperties.showDateTime) ...[
+                              const SizedBox(height: 16.0),
+                              AppTextField(
+                                controller: dateController,
+                                labelText: context.tr("field_date_time"),
+                                keyboardType: TextInputType.datetime,
+                                readOnly: true,
+                                onTapped: () {
+                                  DatePicker.showDateTimePicker(
                                     context,
-                                  ),
-                                  showTitleActions: true,
-                                  minTime: Config.minTime,
-                                  maxTime: Config.maxTime,
-                                  onConfirm: (date) {
-                                    context
-                                        .read<SaveDocumentCubit>()
-                                        .dateChanged(date);
-                                    dateController.text =
-                                        DateFormatFactory.getDateAndTimeFormat()
-                                            .format(date);
-                                  },
-                                  currentTime: state.date,
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            AppTextField(
-                              labelText: context.tr("label_description"),
-                              hintText: context.tr("hint_description"),
-                              maxLines: null,
-                              minLines: 1,
-                              initialValue: state.description,
-                              onChanged: (value) => context
-                                  .read<SaveDocumentCubit>()
-                                  .descriptionChanged(value),
-                              keyboardType: TextInputType.multiline,
-                            ),
+                                    locale: MyApp.getDatePickerLocaleType(
+                                      context,
+                                    ),
+                                    showTitleActions: true,
+                                    minTime: Config.minTime,
+                                    maxTime: Config.maxTime,
+                                    onConfirm: (date) {
+                                      context
+                                          .read<SaveDocumentCubit>()
+                                          .dateChanged(date);
+                                      dateController.text = DateFormatFactory
+                                              .getDateAndTimeFormat()
+                                          .format(date);
+                                    },
+                                    currentTime: state.date,
+                                  );
+                                },
+                              ),
+                            ],
+                            if (documentProperties.showDescription) ...[
+                              const SizedBox(height: 16),
+                              AppTextField(
+                                labelText: context.tr("label_description"),
+                                hintText: context.tr("hint_description"),
+                                maxLines: null,
+                                minLines: 1,
+                                initialValue: state.description,
+                                onChanged: (value) => context
+                                    .read<SaveDocumentCubit>()
+                                    .descriptionChanged(value),
+                                keyboardType: TextInputType.multiline,
+                              ),
+                            ],
                             const SizedBox(height: 8),
                           ],
                         ),
@@ -586,32 +593,23 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
           context.tr("document_information"),
           style: pw.TextStyle(font: font, fontWeight: pw.FontWeight.bold),
         ),
-        pw.Row(
-          children: [
-            pw.Text(
-              "${context.tr("document_name_no")}: ${state.name.value.toString()}",
-              style: pw.TextStyle(font: font),
-            ),
-            pw.Spacer(),
-            pw.Text(
-              "${context.tr("field_date_time")}: ${DateFormatFactory.getDateAndTimeFormat().format(state.date!)}",
-              style: pw.TextStyle(font: font),
-            ),
-          ],
-        ),
-        pw.Row(
-          children: [
-            pw.Text(
-              "${context.tr("person_name")}: ${state.personName ?? ""}",
-              style: pw.TextStyle(font: font),
-            ),
-            pw.Spacer(),
-            pw.Text(
-              "${context.tr("label_description")}: ${state.description}",
-              style: pw.TextStyle(font: font),
-            ),
-          ],
-        ),
+        // Two "label: value" items per row, only the visible ones.
+        for (final pair in _pairs(_documentInfoLines(state)))
+          pw.Row(
+            children: [
+              pw.Text(
+                "${pair.first.key}: ${pair.first.value}",
+                style: pw.TextStyle(font: font),
+              ),
+              if (pair.length > 1) ...[
+                pw.Spacer(),
+                pw.Text(
+                  "${pair.last.key}: ${pair.last.value}",
+                  style: pw.TextStyle(font: font),
+                ),
+              ],
+            ],
+          ),
         pw.SizedBox(height: 16),
         pw.Text(
           context.tr("goods"),
@@ -642,6 +640,27 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
         ),
       ],
     );
+  }
+
+  List<MapEntry<String, String>> _documentInfoLines(SaveDocumentState state) {
+    return buildDocumentInfo(
+      name: state.name.value.toString(),
+      date: state.date,
+      personName: state.personName,
+      description: state.description,
+      properties: AppSettings.getDocumentPropertiesSettings(),
+      tr: context.tr,
+      formatDate: (date) =>
+          DateFormatFactory.getDateAndTimeFormat().format(date),
+    );
+  }
+
+  List<List<MapEntry<String, String>>> _pairs(
+      List<MapEntry<String, String>> lines) {
+    return [
+      for (var i = 0; i < lines.length; i += 2)
+        lines.sublist(i, i + 2 > lines.length ? lines.length : i + 2),
+    ];
   }
 
   List<List<String>> getTableData(SaveDocumentState state) {
@@ -686,22 +705,9 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
         myCompany?.bankDetails ?? "",
       ]);
       data.add([context.tr("document_information")]);
-      data.add([
-        context.tr("document_name_no"),
-        state.name.value.toString(),
-      ]);
-      data.add([
-        context.tr("field_date_time"),
-        DateFormatFactory.getDateAndTimeFormat().format(state.date!),
-      ]);
-      data.add([
-        context.tr("person_name"),
-        state.personName ?? "",
-      ]);
-      data.add([
-        context.tr("label_description"),
-        state.description,
-      ]);
+      for (final line in _documentInfoLines(state)) {
+        data.add([line.key, line.value]);
+      }
       data.add([context.tr("goods")]);
       data.addAll(getTableData(state));
 

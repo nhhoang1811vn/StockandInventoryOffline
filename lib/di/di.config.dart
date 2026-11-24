@@ -76,6 +76,8 @@ import '../presentation/pages/select_group/bloc/select_group_cubit.dart'
 import '../presentation/pages/settings/bloc/settings_cubit.dart' as _i951;
 import '../presentation/pages/settings/data/bloc/settings_data_cubit.dart'
     as _i673;
+import '../presentation/pages/settings/document_properties/bloc/document_properties_cubit.dart'
+    as _i448;
 import '../presentation/pages/settings/general/bloc/settings_general_cubit.dart'
     as _i439;
 import '../presentation/pages/settings/good_properties/bloc/good_properties_cubit.dart'
@@ -131,6 +133,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i25.MyCompanyCubit>(() => _i25.MyCompanyCubit());
     gh.factory<_i279.SettingsViewCubit>(() => _i279.SettingsViewCubit());
     gh.factory<_i583.GoodPropertiesCubit>(() => _i583.GoodPropertiesCubit());
+    gh.factory<_i448.DocumentPropertiesCubit>(
+        () => _i448.DocumentPropertiesCubit());
     gh.lazySingleton<_i542.DBHelper>(() => _i542.DBHelper());
     gh.lazySingleton<_i152.LocalAuthentication>(() => appModule.localAuth);
     gh.lazySingleton<_i1012.BiometricAuthService>(

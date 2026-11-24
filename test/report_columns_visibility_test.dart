@@ -30,6 +30,40 @@ void main() {
     expect(r.rows[1].value, ["b", "3"]);
   });
 
+  group('document columns', () {
+    final docColumns = [
+      ColumnInfo("date", documentVisibleWhen: DocumentColumnGate.dateTime),
+      ColumnInfo("name", documentVisibleWhen: DocumentColumnGate.documentNo),
+      ColumnInfo("quantity"),
+    ];
+    final docRows = [
+      MapEntry(1, ["2026-01-01", "No 1", "3"]),
+    ];
+
+    test('keeps every column when all document properties are shown', () {
+      final r = applyColumnVisibility(
+          docColumns, docRows, GoodPropertiesSettings(),
+          documentProperties: DocumentPropertiesSettings());
+      expect(r.columns.map((c) => c.name), ["date", "name", "quantity"]);
+    });
+
+    test('drops the date and number columns when hidden', () {
+      final r = applyColumnVisibility(
+          docColumns, docRows, GoodPropertiesSettings(),
+          documentProperties: DocumentPropertiesSettings(
+              showDateTime: false, showDocumentNo: false));
+      expect(r.columns.map((c) => c.name), ["quantity"]);
+      expect(r.rows[0].value, ["3"]);
+    });
+
+    test('document gates are ignored when no document properties are given',
+        () {
+      final r =
+          applyColumnVisibility(docColumns, docRows, GoodPropertiesSettings());
+      expect(r.columns.length, 3);
+    });
+  });
+
   group('gates', () {
     test('profit needs both prices', () {
       expect(ColumnGate.bothPrices(GoodPropertiesSettings()), isTrue);

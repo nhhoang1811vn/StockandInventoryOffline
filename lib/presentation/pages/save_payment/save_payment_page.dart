@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
+import 'package:good_manager/data/app_settings.dart';
 import 'package:good_manager/presentation/pages/save_payment/components/select_wallet_widget.dart';
 
 import '../../../app.dart';
@@ -418,7 +419,8 @@ class SavePaymentPageState extends State<SavePaymentPage> {
 
   Widget _buildDocumentPrefix(SavePaymentState state) {
     if (state.document != null) {
-      var text = state.document!.name;
+      var text = AppSettings.getDocumentPropertiesSettings()
+          .displayName(state.document!, context.tr);
       if (widget.item.type == PaymentType.inbound) {
         if (state.customer != null && state.customer!.name.isNotEmpty) {
           text += " (${state.customer!.name})";

@@ -100,6 +100,10 @@ emits `StartupFailure` and the page shows a retry button.
   `ReportPage` listen to it because those tabs stay alive in `MainPage`'s `IndexedStack`. Like all
   other preferences these are not part of backup/restore. Rules:
   [BUSINESS_LOGIC.md](BUSINESS_LOGIC.md#good-properties).
+- Per-Store Document properties follow the same pattern (`DocumentPropertiesSettings`,
+  `AppSettings.getDocumentPropertiesSettings`, `AppSettings.documentPropertiesRevision`,
+  `lib/presentation/pages/settings/document_properties/`); `HomeCubit` listens to both
+  revisions. Rules: [BUSINESS_LOGIC.md](BUSINESS_LOGIC.md#document-properties).
 - The passcode is stored in preferences and compared as a plain string
   (`lib/presentation/pages/main/main_page.dart`, `_showLockScreen`).
 

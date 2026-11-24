@@ -1,4 +1,3 @@
-import 'package:good_manager/util/dimen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +5,7 @@ import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/documents/components/filter_document_widget.dart';
 import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/util/currency_formatter.dart';
+import 'package:good_manager/util/dimen.dart';
 import 'package:good_manager/util/string_utils.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
@@ -172,7 +172,7 @@ class DocumentPageState extends State<DocumentsPage>
 
   Widget _buildSearchRow(DocumentsState state) {
     final bool showWarning = state.setting!.selectedStatus.isNotEmpty ||
-        !state.setting!.sortByDateNewestFirst;
+        !_sortByDateNewestFirst(state);
     return Row(
       children: [
         Expanded(
@@ -384,7 +384,14 @@ class DocumentPageState extends State<DocumentsPage>
         ),
       );
 
+  /// The date sort is ignored (newest first) while Date & Time is hidden; the
+  /// saved sort setting itself is left untouched.
+  bool _sortByDateNewestFirst(DocumentsState state) =>
+      !AppSettings.getDocumentPropertiesSettings().showDateTime ||
+      state.setting!.sortByDateNewestFirst;
+
   Widget _buildStickyListView(List<Document> documents, DocumentsState state) {
+    final showDate = AppSettings.getDocumentPropertiesSettings().showDateTime;
     return ResetOnShrink(
         itemCount: documents.length,
         child: StickyGroupedListView<Document, DateTime>(
@@ -397,7 +404,7 @@ class DocumentPageState extends State<DocumentsPage>
           stickyHeaderBackgroundColor:
               Theme.of(context).scaffoldBackgroundColor,
           groupSeparatorBuilder: (Document document) =>
-              DateItemRow(document.date),
+              showDate ? DateItemRow(document.date) : const SizedBox.shrink(),
           itemBuilder: (context, Document document) {
             return Padding(
               padding:
@@ -418,7 +425,7 @@ class DocumentPageState extends State<DocumentsPage>
             );
           },
           itemComparator: (a, b) => a.date.compareTo(b.date),
-          order: state.setting!.sortByDateNewestFirst
+          order: _sortByDateNewestFirst(state)
               ? StickyGroupedListOrder.DESC
               : StickyGroupedListOrder.ASC,
         ));
@@ -504,7 +511,10 @@ class DocumentPageState extends State<DocumentsPage>
       context,
       message: sprintf(
         context.tr("message_confirm_delete"),
-        [document.name],
+        [
+          AppSettings.getDocumentPropertiesSettings()
+              .displayName(document, context.tr)
+        ],
       ),
       onPositivePressed: () async {
         hideDialog(context);

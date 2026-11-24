@@ -3,6 +3,10 @@ import '../../domain/entity/entity.dart';
 /// Decides from the Store's Good properties whether a report column is shown.
 typedef ColumnVisibility = bool Function(GoodPropertiesSettings properties);
 
+/// Same, driven by the Store's Document properties.
+typedef DocumentColumnVisibility = bool Function(
+    DocumentPropertiesSettings properties);
+
 class ColumnInfo{
   final String name;
   bool isPickValues = false;
@@ -12,10 +16,14 @@ class ColumnInfo{
   /// from the report. `null` means always shown.
   final ColumnVisibility? visibleWhen;
 
+  /// Like [visibleWhen] but for Document properties (Document no, date).
+  final DocumentColumnVisibility? documentVisibleWhen;
+
   ColumnInfo(this.name, {
     this.isPickValues = false,
     this.showTotal = false,
     this.visibleWhen,
+    this.documentVisibleWhen,
   });
 }
 
@@ -42,17 +50,39 @@ class ColumnGate {
       (p) => p.showPriceFor(type);
 }
 
-/// Removes the columns hidden by [properties] from the column list and from
-/// every row, keeping the row keys.
+/// Visibility rules for report columns driven by Document properties.
+class DocumentColumnGate {
+  DocumentColumnGate._();
+
+  static bool documentNo(DocumentPropertiesSettings p) => p.showDocumentNo;
+
+  static bool dateTime(DocumentPropertiesSettings p) => p.showDateTime;
+
+  static bool description(DocumentPropertiesSettings p) => p.showDescription;
+}
+
+/// Removes the columns hidden by [properties] (and, when given,
+/// [documentProperties]) from the column list and from every row, keeping the
+/// row keys.
 ({List<ColumnInfo> columns, List<MapEntry<int, List<String>>> rows})
     applyColumnVisibility(
   List<ColumnInfo> columns,
   List<MapEntry<int, List<String>>> rows,
-  GoodPropertiesSettings properties,
-) {
+  GoodPropertiesSettings properties, {
+  DocumentPropertiesSettings? documentProperties,
+}) {
+  bool visible(ColumnInfo column) {
+    if (!(column.visibleWhen?.call(properties) ?? true)) return false;
+    if (documentProperties != null &&
+        !(column.documentVisibleWhen?.call(documentProperties) ?? true)) {
+      return false;
+    }
+    return true;
+  }
+
   final keep = <int>[
     for (var i = 0; i < columns.length; i++)
-      if (columns[i].visibleWhen?.call(properties) ?? true) i,
+      if (visible(columns[i])) i,
   ];
   return (
     columns: [for (final i in keep) columns[i]],

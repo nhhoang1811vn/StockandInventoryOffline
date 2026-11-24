@@ -334,6 +334,35 @@ class AppSettings {
   static bool isMinQuantityEnabled() =>
       getGoodPropertiesSettings().showMinQuantity;
 
+  static const String _documentPropertiesSettingsKey =
+      "DocumentPropertiesSettings_";
+
+  /// Bumped whenever document properties change so built tabs can refresh.
+  static final ValueNotifier<int> documentPropertiesRevision = ValueNotifier(0);
+
+  static DocumentPropertiesSettings getDocumentPropertiesSettings(
+      {int? storeId}) {
+    final key = _documentPropertiesSettingsKey +
+        (storeId ?? getSelectedStoreId()).toString();
+    try {
+      final jsonString = _storage.getString(key);
+      if (jsonString == null || jsonString.isEmpty) {
+        return DocumentPropertiesSettings();
+      }
+      return DocumentPropertiesSettings.fromJson(jsonDecode(jsonString));
+    } catch (_) {
+      return DocumentPropertiesSettings();
+    }
+  }
+
+  static void setDocumentPropertiesSettings(DocumentPropertiesSettings value,
+      {int? storeId}) {
+    final key = _documentPropertiesSettingsKey +
+        (storeId ?? getSelectedStoreId()).toString();
+    _storage.setString(key, jsonEncode(value.toJson()));
+    documentPropertiesRevision.value++;
+  }
+
   static DocumentsSetting getDocumentsSetting() {
     final jsonString = _storage.getString(_documentsSettingKey);
     if (jsonString == null) return DocumentsSetting.getDefault();

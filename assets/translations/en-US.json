@@ -103,6 +103,7 @@
   "good_properties_image": "Image",
   "good_properties_min_quantity_disabled_note": "Turned off in Good properties",
   "good_properties_toggle_hint": "Disable if you do not need this field",
+  "document_properties": "Document properties",
   "menu_item_show_min_quantity_items_page_title": "Show minimum quantity on the item page",
   "menu_item_show_min_quantity_list_page_title": "Show minimum quantity on the list page",
   "menu_item_min_quantity_color_title": "Color for goods that need reorder",

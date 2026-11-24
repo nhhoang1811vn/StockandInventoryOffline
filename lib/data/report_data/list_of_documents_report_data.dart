@@ -21,8 +21,8 @@ class ListOfDocumentsReportData extends ReportData {
   @override
   List<ColumnInfo> getColumnInfos() {
     return [
-      ColumnInfo("date"),
-      ColumnInfo("name"),
+      ColumnInfo("date", documentVisibleWhen: DocumentColumnGate.dateTime),
+      ColumnInfo("name", documentVisibleWhen: DocumentColumnGate.documentNo),
       ColumnInfo("type", isPickValues: true),
       ColumnInfo("person_name", isPickValues: true),
       ColumnInfo("quantity", showTotal: true),

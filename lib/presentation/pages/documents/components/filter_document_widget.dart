@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/presentation/pages/goods/component/goods_sheet_common.dart';
 
+import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
 
 class FilterDocumentWidget extends StatefulWidget {
@@ -42,24 +43,26 @@ class FilterDocumentWidgetState extends State<FilterDocumentWidget> {
         children: [
           GoodsSheetHeader(title: context.tr("title_filter")),
           const SizedBox(height: 16),
-          GoodsSheetSectionHeader(context.tr("sort_by_date")),
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: [
-              GoodsSheetChip(
-                label: context.tr("newest_to_oldest"),
-                isSelected: _sortByDateNewestFirst,
-                onTap: () => setState(() => _sortByDateNewestFirst = true),
-              ),
-              GoodsSheetChip(
-                label: context.tr("oldest_to_newest"),
-                isSelected: !_sortByDateNewestFirst,
-                onTap: () => setState(() => _sortByDateNewestFirst = false),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
+          if (AppSettings.getDocumentPropertiesSettings().showDateTime) ...[
+            GoodsSheetSectionHeader(context.tr("sort_by_date")),
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                GoodsSheetChip(
+                  label: context.tr("newest_to_oldest"),
+                  isSelected: _sortByDateNewestFirst,
+                  onTap: () => setState(() => _sortByDateNewestFirst = true),
+                ),
+                GoodsSheetChip(
+                  label: context.tr("oldest_to_newest"),
+                  isSelected: !_sortByDateNewestFirst,
+                  onTap: () => setState(() => _sortByDateNewestFirst = false),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+          ],
           GoodsSheetSectionHeader(context.tr("by_status")),
           Wrap(
             spacing: 10,

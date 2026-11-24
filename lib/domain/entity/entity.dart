@@ -6,6 +6,7 @@ export 'customer.dart';
 export 'customers_setting.dart';
 export 'document.dart';
 export 'document_paid_status.dart';
+export 'document_properties_settings.dart';
 export 'documents_setting.dart';
 export 'expense.dart';
 export 'general_infomation.dart';

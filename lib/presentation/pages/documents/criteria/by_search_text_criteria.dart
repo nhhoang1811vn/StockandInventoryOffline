@@ -5,7 +5,13 @@ import '../../../../domain/entity/entity.dart';
 class BySearchTextCriteria extends Criteria<Document> {
   final String textSearch;
 
-  BySearchTextCriteria(this.textSearch);
+  /// Fields the Store hides are not matched, so a result never matches for a
+  /// reason the user cannot see. Everything is searched when `null`.
+  final DocumentPropertiesSettings properties;
+
+  BySearchTextCriteria(this.textSearch,
+      {DocumentPropertiesSettings? properties})
+      : properties = properties ?? DocumentPropertiesSettings();
 
   @override
   List<Document> meetCriteria(List<Document> input) {
@@ -16,8 +22,10 @@ class BySearchTextCriteria extends Criteria<Document> {
 
   bool filterDocument(Document document, String textSearch) {
     final query = textSearch.toLowerCase();
-    return (document.name.toLowerCase().contains(query) ||
-        document.description.toLowerCase().contains(query) ||
+    return ((properties.showDocumentNo &&
+            document.name.toLowerCase().contains(query)) ||
+        (properties.showDescription &&
+            document.description.toLowerCase().contains(query)) ||
         (document.personName != null &&
             document.personName!.toLowerCase().contains(query)));
   }

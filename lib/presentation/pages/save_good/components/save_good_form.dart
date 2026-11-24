@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:good_manager/data/app_settings.dart';
 import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/pages/save_good/bloc/save_good_cubit.dart';
@@ -411,7 +412,10 @@ class SaveGoodForm extends StatelessWidget {
 
     var text = sprintf(
       context.tr("action_document_created_withname"),
-      [document.name],
+      [
+        AppSettings.getDocumentPropertiesSettings()
+            .displayName(document, context.tr)
+      ],
     );
     ToastUtils.showSuccessToast(text);
   }

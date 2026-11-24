@@ -92,7 +92,11 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     if (isClosed) return;
     // Hide the columns of Good properties the Store turned off.
     final visible = applyColumnVisibility(
-        columnInfos, data, AppSettings.getGoodPropertiesSettings());
+      columnInfos,
+      data,
+      AppSettings.getGoodPropertiesSettings(),
+      documentProperties: AppSettings.getDocumentPropertiesSettings(),
+    );
     columnInfos = visible.columns;
     data = visible.rows;
     var columnReports = getColumnReports(columnInfos, data);

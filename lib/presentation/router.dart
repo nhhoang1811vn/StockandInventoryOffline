@@ -61,6 +61,8 @@ import 'package:good_manager/presentation/pages/select_group/bloc/select_group_c
 import 'package:good_manager/presentation/pages/select_group/select_group_page.dart';
 import 'package:good_manager/presentation/pages/settings/data/bloc/settings_data_cubit.dart';
 import 'package:good_manager/presentation/pages/settings/data/settings_data_page.dart';
+import 'package:good_manager/presentation/pages/settings/document_properties/bloc/document_properties_cubit.dart';
+import 'package:good_manager/presentation/pages/settings/document_properties/document_properties_page.dart';
 import 'package:good_manager/presentation/pages/settings/general/bloc/settings_general_cubit.dart';
 import 'package:good_manager/presentation/pages/settings/general/settings_general_page.dart';
 import 'package:good_manager/presentation/pages/settings/good_properties/bloc/good_properties_cubit.dart';
@@ -305,6 +307,13 @@ class AppRouter {
           builder: (_) => BlocProvider(
             create: (context) => getIt<SettingsViewCubit>(),
             child: SettingsViewPage(),
+          ),
+        );
+      case Pages.settings_document_properties:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<DocumentPropertiesCubit>(),
+            child: DocumentPropertiesPage(),
           ),
         );
       case Pages.settings_good_properties:

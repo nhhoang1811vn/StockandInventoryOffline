@@ -39,6 +39,7 @@ class DocumentItemRow extends StatelessWidget {
         ? Icons.file_download_outlined
         : Icons.file_upload_outlined;
     final status = Utils.getStatus(item);
+    final documentProperties = AppSettings.getDocumentPropertiesSettings();
 
     return Container(
       margin: margin,
@@ -64,31 +65,34 @@ class DocumentItemRow extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  width: Dimens.tileSize,
-                  height: Dimens.tileSize,
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(Dimens.tileRadius),
+                if (documentProperties.showImage) ...[
+                  Container(
+                    width: Dimens.tileSize,
+                    height: Dimens.tileSize,
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(Dimens.tileRadius),
+                    ),
+                    child: Icon(
+                      leadingIcon,
+                      color: color,
+                      size: Dimens.tileIconSize,
+                    ),
                   ),
-                  child: Icon(
-                    leadingIcon,
-                    color: color,
-                    size: Dimens.tileIconSize,
-                  ),
-                ),
-                const SizedBox(width: Dimens.tileGap),
+                  const SizedBox(width: Dimens.tileGap),
+                ],
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        item.name,
+                        documentProperties.displayName(item, context.tr),
                         style: Theme.of(context).textTheme.titleMedium,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (item.description.isNotEmpty) ...[
+                      if (documentProperties.showDescription &&
+                          item.description.isNotEmpty) ...[
                         const SizedBox(height: 4),
                         Text(
                           item.description,
@@ -130,18 +134,19 @@ class DocumentItemRow extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                       ],
-                      Text(
-                        showTimeOnly
-                            ? DateFormatFactory.getTimeFormat()
-                                .format(item.date)
-                            : DateFormatFactory.getDateAndTimeFormat()
-                                .format(item.date),
-                        style: TextStyle(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
+                      if (documentProperties.showDateTime)
+                        Text(
+                          showTimeOnly
+                              ? DateFormatFactory.getTimeFormat()
+                                  .format(item.date)
+                              : DateFormatFactory.getDateAndTimeFormat()
+                                  .format(item.date),
+                          style: TextStyle(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),

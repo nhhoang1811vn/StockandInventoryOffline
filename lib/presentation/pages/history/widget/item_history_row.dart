@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:good_manager/data/app_settings.dart';
 
 import '../../../../domain/entity/entity.dart';
 import '../../../../util/currency_formatter.dart';
@@ -77,7 +78,8 @@ class ItemHistoryRow extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        document.name,
+                        AppSettings.getDocumentPropertiesSettings()
+                            .displayName(document, context.tr),
                         style: Theme.of(context).textTheme.titleMedium,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

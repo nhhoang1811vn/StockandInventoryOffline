@@ -34,6 +34,9 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
 
   QuickInsertDocumentCubit cubit = QuickInsertDocumentCubit();
 
+  DocumentPropertiesSettings get _documentProperties =>
+      AppSettings.getDocumentPropertiesSettings();
+
   /// Price and amount are only asked for when the matching Good property
   /// (Purchase price for incoming, Sale price for outgoing) is enabled.
   bool get _showPrice =>
@@ -129,12 +132,16 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
                     SizedBox(height: 16),
                     _buildAmount(context, state),
                   ],
-                  SizedBox(height: 16),
-                  _buildDate(context, state),
+                  if (_documentProperties.showDateTime) ...[
+                    SizedBox(height: 16),
+                    _buildDate(context, state),
+                  ],
                   SizedBox(height: 16),
                   _buildPerson(context, state, widget.type),
-                  SizedBox(height: 16),
-                  _buildDescription(context, state),
+                  if (_documentProperties.showDescription) ...[
+                    SizedBox(height: 16),
+                    _buildDescription(context, state),
+                  ],
                 ],
               ),
             ],

@@ -48,3 +48,25 @@ List<List<String>> buildDocumentTable({
   ]);
   return data;
 }
+
+/// The "document information" lines shared by the PDF and CSV exports as
+/// (label, value) pairs. Document no, date and description follow the
+/// Store's Document properties; the person is always listed.
+List<MapEntry<String, String>> buildDocumentInfo({
+  required String name,
+  required DateTime? date,
+  required String? personName,
+  required String description,
+  required DocumentPropertiesSettings properties,
+  required String Function(String key) tr,
+  required String Function(DateTime date) formatDate,
+}) {
+  return [
+    if (properties.showDocumentNo) MapEntry(tr("document_name_no"), name),
+    if (properties.showDateTime && date != null)
+      MapEntry(tr("field_date_time"), formatDate(date)),
+    MapEntry(tr("person_name"), personName ?? ""),
+    if (properties.showDescription)
+      MapEntry(tr("label_description"), description),
+  ];
+}

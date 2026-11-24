@@ -103,6 +103,7 @@
   "good_properties_image": "Bild",
   "good_properties_min_quantity_disabled_note": "In den Warenmerkmalen ausgeschaltet",
   "good_properties_toggle_hint": "Deaktivieren, wenn Sie dieses Feld nicht benötigen",
+  "document_properties": "Belegeigenschaften",
   "menu_item_show_min_quantity_items_page_title": "Mindestmenge auf der Artikelseite anzeigen",
   "menu_item_show_min_quantity_list_page_title": "Mindestmenge auf der Listenseite anzeigen",
   "menu_item_min_quantity_color_title": "Farbe für nachzubestellende Ware",

@@ -136,7 +136,10 @@ class DocumentsCubit extends Cubit<DocumentsState> {
     }
 
     if (state.textSearch.isNotEmpty) {
-      commonCriteria.add(BySearchTextCriteria(state.textSearch));
+      commonCriteria.add(BySearchTextCriteria(
+        state.textSearch,
+        properties: AppSettings.getDocumentPropertiesSettings(),
+      ));
     }
     List<Criteria<Document>> incomingCriteria = List.from(commonCriteria);
     incomingCriteria.add(ByTypeCriteria(DocumentType.incoming));
