@@ -283,22 +283,25 @@ class HomePageState extends State<HomePage> {
           ),
         ),
         const SizedBox(width: _cardGap),
-        Expanded(
-          child: _buildStatCard(
-            state.lowStockCount.toString(),
-            context.tr("low_stock"),
-            Icons.show_chart,
-            Theme.of(context).colorScheme.primary,
-            onTap: () {
-              Navigator.of(context).pushNamed(Pages.good_list_view, arguments: {
-                'items': state.lowStockGoods,
-                'title': context.tr("low_stock"),
-                'emptyIcon': Icons.show_chart,
-              });
-            },
+        if (state.showLowStock) ...[
+          Expanded(
+            child: _buildStatCard(
+              state.lowStockCount.toString(),
+              context.tr("low_stock"),
+              Icons.show_chart,
+              Theme.of(context).colorScheme.primary,
+              onTap: () {
+                Navigator.of(context)
+                    .pushNamed(Pages.good_list_view, arguments: {
+                  'items': state.lowStockGoods,
+                  'title': context.tr("low_stock"),
+                  'emptyIcon': Icons.show_chart,
+                });
+              },
+            ),
           ),
-        ),
-        const SizedBox(width: _cardGap),
+          const SizedBox(width: _cardGap),
+        ],
         Expanded(
           child: _buildStatCard(
             state.countGoods.toString(),
@@ -367,6 +370,8 @@ class HomePageState extends State<HomePage> {
                 label: context.tr("incoming"),
                 count: state.countIncomingDocument,
                 amount: state.sumPriceIncomingDocument,
+                showAmount: AppSettings.getGoodPropertiesSettings()
+                    .showPriceFor(DocumentType.incoming),
               ),
               const SizedBox(height: _cardGap),
               _buildDocumentSummaryRow(
@@ -375,6 +380,8 @@ class HomePageState extends State<HomePage> {
                 label: context.tr("outgoing"),
                 count: state.countOutgoingDocument,
                 amount: state.sumPriceOutgoingDocument,
+                showAmount: AppSettings.getGoodPropertiesSettings()
+                    .showPriceFor(DocumentType.outgoing),
               ),
             ],
           ),
@@ -389,6 +396,7 @@ class HomePageState extends State<HomePage> {
     required String label,
     required int count,
     required double amount,
+    bool showAmount = true,
   }) {
     final theme = Theme.of(context);
     return Row(
@@ -411,17 +419,19 @@ class HomePageState extends State<HomePage> {
             style: theme.textTheme.titleSmall,
           ),
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          flex: 3,
-          child: Text(
-            CurrencyFormatter.format(context, amount),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.end,
-            style: theme.textTheme.titleMedium?.copyWith(color: color),
+        if (showAmount) ...[
+          const SizedBox(width: 12),
+          Expanded(
+            flex: 3,
+            child: Text(
+              CurrencyFormatter.format(context, amount),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.end,
+              style: theme.textTheme.titleMedium?.copyWith(color: color),
+            ),
           ),
-        ),
+        ],
       ],
     );
   }

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
 import 'goods_sheet_common.dart';
 
@@ -30,10 +31,12 @@ class ListSettingsGoodWidgetState extends State<ListSettingsGoodWidget> {
   late PriceDisplayMode _saleDisplayMode;
   late bool _showMinQuantity;
   late int _gridColumnCount;
+  late final GoodPropertiesSettings _properties;
 
   @override
   void initState() {
     super.initState();
+    _properties = AppSettings.getGoodPropertiesSettings();
     _hideZeroEntries = widget.setting.hideZeroEntries;
     _showBarcode = widget.setting.showBarcode;
     _showDescription = widget.setting.showDescription;
@@ -67,41 +70,48 @@ class ListSettingsGoodWidgetState extends State<ListSettingsGoodWidget> {
             value: _hideZeroEntries,
             onChanged: (v) => setState(() => _hideZeroEntries = v),
           ),
-          GoodsSheetSwitch(
-            label: context.tr("good_setting_show_bar_code"),
-            value: _showBarcode,
-            onChanged: (v) => setState(() => _showBarcode = v),
-          ),
-          GoodsSheetSwitch(
-            label: context.tr("good_setting_show_description"),
-            value: _showDescription,
-            onChanged: (v) => setState(() => _showDescription = v),
-          ),
-          GoodsSheetSwitch(
-            label: context.tr("good_setting_show_purchase"),
-            value: _showPurchasePrice,
-            onChanged: (v) => setState(() => _showPurchasePrice = v),
-          ),
-          if (_showPurchasePrice)
-            _buildDisplayModeRadios(
-              value: _purchaseDisplayMode,
-              onChanged: (v) => setState(() => _purchaseDisplayMode = v),
+          if (_properties.showBarcode)
+            GoodsSheetSwitch(
+              label: context.tr("good_setting_show_bar_code"),
+              value: _showBarcode,
+              onChanged: (v) => setState(() => _showBarcode = v),
             ),
-          GoodsSheetSwitch(
-            label: context.tr("good_setting_show_price"),
-            value: _showSalePrice,
-            onChanged: (v) => setState(() => _showSalePrice = v),
-          ),
-          if (_showSalePrice)
-            _buildDisplayModeRadios(
-              value: _saleDisplayMode,
-              onChanged: (v) => setState(() => _saleDisplayMode = v),
+          if (_properties.showDescription)
+            GoodsSheetSwitch(
+              label: context.tr("good_setting_show_description"),
+              value: _showDescription,
+              onChanged: (v) => setState(() => _showDescription = v),
             ),
-          GoodsSheetSwitch(
-            label: context.tr("good_setting_show_min_quantity"),
-            value: _showMinQuantity,
-            onChanged: (v) => setState(() => _showMinQuantity = v),
-          ),
+          if (_properties.showPurchasePrice) ...[
+            GoodsSheetSwitch(
+              label: context.tr("good_setting_show_purchase"),
+              value: _showPurchasePrice,
+              onChanged: (v) => setState(() => _showPurchasePrice = v),
+            ),
+            if (_showPurchasePrice)
+              _buildDisplayModeRadios(
+                value: _purchaseDisplayMode,
+                onChanged: (v) => setState(() => _purchaseDisplayMode = v),
+              ),
+          ],
+          if (_properties.showSalePrice) ...[
+            GoodsSheetSwitch(
+              label: context.tr("good_setting_show_price"),
+              value: _showSalePrice,
+              onChanged: (v) => setState(() => _showSalePrice = v),
+            ),
+            if (_showSalePrice)
+              _buildDisplayModeRadios(
+                value: _saleDisplayMode,
+                onChanged: (v) => setState(() => _saleDisplayMode = v),
+              ),
+          ],
+          if (_properties.showMinQuantity)
+            GoodsSheetSwitch(
+              label: context.tr("good_setting_show_min_quantity"),
+              value: _showMinQuantity,
+              onChanged: (v) => setState(() => _showMinQuantity = v),
+            ),
           const SizedBox(height: 24),
           GoodsSheetSectionHeader(context.tr("good_setting_layout")),
           Wrap(

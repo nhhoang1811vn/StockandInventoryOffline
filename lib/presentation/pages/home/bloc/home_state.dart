@@ -29,6 +29,9 @@ class HomeState with _$HomeState {
     @Default([]) List<Good> allGoods,
     @Default([]) List<Good> outOfStockGoods,
     @Default([]) List<Good> lowStockGoods,
+    @Default(true) bool showLowStock,
+    // Bumped when Good properties change so the page rebuilds.
+    @Default(0) int propertiesRevision,
     Store? selectedStore,
   }) = _Initial;
 }

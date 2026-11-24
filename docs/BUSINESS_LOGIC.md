@@ -29,6 +29,41 @@ Schema: [DATABASE.md](DATABASE.md).
   Display options live in `MinimumQuantitySettings` (`showInItem`, `showInList`, `color`,
   `showAlert`).
 
+## Good properties
+
+- Each Store can hide Image, Barcode, Description, Purchase price, Sale price and Minimum quantity
+  (`GoodPropertiesSettings`, default all shown). Purchase/Sale price means the Good's own default
+  prices: they are hidden in the save-good form, goods rows, the goods summary totals, the
+  list-settings sheet and Excel. Document transaction prices and amounts, and reports, are not
+  affected, except when a Document line is created: for an incoming Document the Purchase price
+  decides and for an outgoing one the Sale price decides (`GoodPropertiesSettings.showPriceFor`).
+  If it is hidden, the add-quantity dialog, the quick-insert dialog and the transaction edit form
+  show only the quantity, and a new line gets price `null` (stored as no price) instead of the
+  Good's hidden default price (`defaultPriceFor`); batch barcode scan follows the same rule.
+  The Good rows on the Save Document page follow the toggles too: image (Image), barcode (Barcode)
+  and price + line amount (Purchase/Sale price by Document type). Stored prices are not changed.
+  The Document amount follows the same rule by Document type: the Save Document summary bar and
+  every `DocumentItemRow` (list, history, Home, search) hide it, and the Documents list summary
+  hides "Amount" when any Document type in the list has its price hidden
+  (`GoodPropertiesSettings.showPriceForAll`). The Home incoming/outgoing totals hide the amount
+  the same way. The Document CSV/PDF table (`buildDocumentTable`) drops the Description, Barcode,
+  price and amount columns of hidden properties. Report columns are dropped centrally in
+  `ReportDetailCubit` through `ColumnInfo.visibleWhen` / `applyColumnVisibility`:
+  Barcode (good info, list of goods, reorder), Purchase price (good info, reorder price and
+  amount, cost, supplier debt amount, purchase reports' amount), Sale price (good info, customer
+  debt amount, sales reports' amount), profit needs both prices, and the list-of-documents amount
+  needs both. Payment columns, `paid`/`remaining` in debt reports, wallets and the payment status
+  badge are not affected. Hidden means not displayed: stored values are kept and reappear when
+  turned
+  back on.
+- Hidden properties disappear from the save-good form, goods list/grid rows, search results, the
+  list-settings and sort sheets (barcode sort is ignored while Barcode is hidden), and the Excel
+  column mapping, import and export.
+- Minimum quantity is also a master switch: when off, the effective visibility is off regardless of
+  `MinimumQuantitySettings`, and the low-stock notification, the Home low-stock tile, the row
+  low-stock indicator and the Reorder report entry are all disabled. `MinimumQuantitySettings` is
+  not modified.
+
 ## Documents and payments
 
 - Document amount = sum (`quantity * price`) over its transactions; document quantity = sum of

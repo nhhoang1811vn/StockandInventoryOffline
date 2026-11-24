@@ -11,6 +11,7 @@ import 'package:sprintf/sprintf.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 import '../../../constant/constant.dart';
+import '../../../data/app_settings.dart';
 import '../../../domain/entity/entity.dart';
 import '../../dialog/dialog.dart';
 import '../../widget/widget.dart';
@@ -153,16 +154,19 @@ class DocumentPageState extends State<DocumentsPage>
     final items = _documentsForSummary(state);
     final quantity = items.fold<double>(0, (sum, item) => sum + item.quantity);
     final amount = items.fold<double>(0, (sum, item) => sum + item.amount);
+    final showAmount = AppSettings.getGoodPropertiesSettings()
+        .showPriceForAll(items.map((item) => item.type));
     return SummaryLine([
       SummaryLine.item(context.tr("documents"), items.length.toString()),
       SummaryLine.item(
         context.tr("quantity"),
         StringUtils.getQuantityText(quantity),
       ),
-      SummaryLine.item(
-        context.tr("amount"),
-        CurrencyFormatter.format(context, amount),
-      ),
+      if (showAmount)
+        SummaryLine.item(
+          context.tr("amount"),
+          CurrencyFormatter.format(context, amount),
+        ),
     ]);
   }
 

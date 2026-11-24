@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../data/app_settings.dart';
+import '../../../../domain/entity/entity.dart';
 import 'excel_column_mapping.dart';
 import 'excel_column_picker_sheet.dart';
 
@@ -34,7 +36,12 @@ class ExcelColumnMappingSheet extends StatefulWidget {
 }
 
 class ExcelColumnMappingSheetState extends State<ExcelColumnMappingSheet> {
-  final ExcelColumnMapping _mapping = ExcelColumnMapping.defaults();
+  late final GoodPropertiesSettings _properties =
+      AppSettings.getGoodPropertiesSettings();
+  late final ExcelColumnMapping _mapping = ExcelColumnMapping.defaults(
+    properties: _properties,
+    compact: !widget.allowAdjustColumns,
+  );
 
   Future<void> _pickColumn(ExcelImportField field) async {
     if (!widget.allowAdjustColumns) return;
@@ -67,7 +74,7 @@ class ExcelColumnMappingSheetState extends State<ExcelColumnMappingSheet> {
               ),
             ),
             const SizedBox(height: 12),
-            for (final field in ExcelImportField.values)
+            for (final field in ExcelColumnMapping.visibleFields(_properties))
               _buildFieldRow(theme, field),
             const SizedBox(height: 24),
             Row(

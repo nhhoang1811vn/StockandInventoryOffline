@@ -63,6 +63,8 @@ import 'package:good_manager/presentation/pages/settings/data/bloc/settings_data
 import 'package:good_manager/presentation/pages/settings/data/settings_data_page.dart';
 import 'package:good_manager/presentation/pages/settings/general/bloc/settings_general_cubit.dart';
 import 'package:good_manager/presentation/pages/settings/general/settings_general_page.dart';
+import 'package:good_manager/presentation/pages/settings/good_properties/bloc/good_properties_cubit.dart';
+import 'package:good_manager/presentation/pages/settings/good_properties/good_properties_page.dart';
 import 'package:good_manager/presentation/pages/settings/minimum_quantity/bloc/minimum_quantity_cubit.dart';
 import 'package:good_manager/presentation/pages/settings/minimum_quantity/minimum_quantity_page.dart';
 import 'package:good_manager/presentation/pages/settings/my_company/bloc/my_company_cubit.dart';
@@ -303,6 +305,13 @@ class AppRouter {
           builder: (_) => BlocProvider(
             create: (context) => getIt<SettingsViewCubit>(),
             child: SettingsViewPage(),
+          ),
+        );
+      case Pages.settings_good_properties:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<GoodPropertiesCubit>(),
+            child: GoodPropertiesPage(),
           ),
         );
       case Pages.settings_minimum_quantity:

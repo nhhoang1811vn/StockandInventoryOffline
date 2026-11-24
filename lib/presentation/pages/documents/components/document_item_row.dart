@@ -5,6 +5,7 @@ import 'package:good_manager/presentation/widget/entity_avatar.dart';
 import 'package:good_manager/util/currency_formatter.dart';
 
 import '../../../../constant/constant.dart';
+import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
 import '../../../../util/util.dart';
 
@@ -159,15 +160,18 @@ class DocumentItemRow extends StatelessWidget {
                         color: color,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      CurrencyFormatter.format(context, item.amount),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 15,
-                        color: color,
+                    if (AppSettings.getGoodPropertiesSettings()
+                        .showPriceFor(item.type)) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        CurrencyFormatter.format(context, item.amount),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 15,
+                          color: color,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ],

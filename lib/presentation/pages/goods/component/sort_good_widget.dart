@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
 import 'goods_sheet_common.dart';
 
@@ -24,10 +25,12 @@ class SortGoodWidgetState extends State<SortGoodWidget> {
   late SortByText _sortByName;
   late SortByNumber _sortByBarCode;
   late SortByNumber _sortByQuantity;
+  late final GoodPropertiesSettings _properties;
 
   @override
   void initState() {
     super.initState();
+    _properties = AppSettings.getGoodPropertiesSettings();
     _sortByName = widget.setting.sortByName;
     _sortByBarCode = widget.setting.sortByBarcode;
     _sortByQuantity = widget.setting.sortByQuantity;
@@ -60,17 +63,19 @@ class SortGoodWidgetState extends State<SortGoodWidget> {
             ),
           ),
           const SizedBox(height: 24),
-          GoodsSheetSectionHeader(context.tr("sort_by_barcode")),
-          _buildOptions(
-            SortByNumber.values.map(
-              (item) => GoodsSheetChip(
-                label: item.getText(context),
-                isSelected: _sortByBarCode == item,
-                onTap: () => setState(() => _sortByBarCode = item),
+          if (_properties.showBarcode) ...[
+            GoodsSheetSectionHeader(context.tr("sort_by_barcode")),
+            _buildOptions(
+              SortByNumber.values.map(
+                (item) => GoodsSheetChip(
+                  label: item.getText(context),
+                  isSelected: _sortByBarCode == item,
+                  onTap: () => setState(() => _sortByBarCode = item),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 24),
+            const SizedBox(height: 24),
+          ],
           GoodsSheetSectionHeader(context.tr("sort_by_quantity")),
           _buildOptions(
             SortByNumber.values.map(

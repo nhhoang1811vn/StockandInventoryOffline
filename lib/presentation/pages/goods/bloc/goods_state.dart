@@ -11,6 +11,7 @@ class GoodsState with _$GoodsState {
     @Default('') String textSearch,
     @Default([]) List<Group> selectedGroups,
     required GoodsSetting settings,
+    required GoodPropertiesSettings properties,
     @Default(false) bool showSearchBar,
     @Default(false) bool isSelection,
     Document? document,

@@ -235,14 +235,16 @@ class GoodsPageState extends State<GoodsPage> {
           context.tr("title_total_quantity"),
           StringUtils.getQuantityText(state.quantityTotal),
         ),
-        SummaryLine.item(
-          context.tr("title_total_purchase"),
-          CurrencyFormatter.format(context, state.purchasePriceTotal),
-        ),
-        SummaryLine.item(
-          context.tr("title_total_sale"),
-          CurrencyFormatter.format(context, state.salePriceTotal),
-        ),
+        if (state.properties.showPurchasePrice)
+          SummaryLine.item(
+            context.tr("title_total_purchase"),
+            CurrencyFormatter.format(context, state.purchasePriceTotal),
+          ),
+        if (state.properties.showSalePrice)
+          SummaryLine.item(
+            context.tr("title_total_sale"),
+            CurrencyFormatter.format(context, state.salePriceTotal),
+          ),
       ],
       filled: true,
     );
@@ -268,13 +270,21 @@ class GoodsPageState extends State<GoodsPage> {
       return GoodItemRow(
         item: good,
         quantity: good.quantity,
-        showBarcode: state.settings.showBarcode,
-        showDescription: state.settings.showDescription,
-        showPurchasePrice: state.settings.showPurchasePrice,
+        showBarcode: state.settings.showBarcode && state.properties.showBarcode,
+        showDescription:
+            state.settings.showDescription && state.properties.showDescription,
+        showPurchasePrice: state.settings.showPurchasePrice &&
+            state.properties.showPurchasePrice,
         purchaseDisplayMode: state.settings.purchaseDisplayMode,
-        showSalePrice: state.settings.showSalePrice,
+        showSalePrice:
+            state.settings.showSalePrice && state.properties.showSalePrice,
         saleDisplayMode: state.settings.saleDisplayMode,
-        showMinQuantity: state.settings.showMinQuantity,
+        showMinQuantity: GoodItemRow.showMinQuantityText(
+          listSetting: state.settings.showMinQuantity,
+          property: state.properties.showMinQuantity,
+        ),
+        showImage: state.properties.showImage,
+        showLowStockIndicator: state.properties.showMinQuantity,
         minQuantityColor: state.minQuantityColor ?? Colors.black,
         onGoodTapped: (item) => onPressedGood(good),
         onGoodLongPressed: (item) => onLongPressedGood(good),

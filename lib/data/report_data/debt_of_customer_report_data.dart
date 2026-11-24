@@ -25,7 +25,7 @@ class DebtOfCustomerReportData extends ReportData {
   List<ColumnInfo> getColumnInfos() {
     return [
       ColumnInfo("customer", isPickValues: true),
-      ColumnInfo("amount", showTotal: true,),
+      ColumnInfo("amount", showTotal: true, visibleWhen: ColumnGate.salePrice),
       ColumnInfo("paid", showTotal: true,),
       ColumnInfo("remaining", showTotal: true,),
     ];

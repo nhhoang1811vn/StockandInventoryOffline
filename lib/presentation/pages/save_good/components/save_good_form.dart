@@ -136,22 +136,24 @@ class SaveGoodForm extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Center(
-              child: EntityPhotoAvatar(
-                imageBytes: state.files.firstOrNull,
-                fallbackIcon: Icons.inventory_2_rounded,
-                canEdit: true,
-                onTap: () {
-                  EntityImagePicker.showSourceSheet(
-                    context,
-                    onImagePicked: (bytes) async {
-                      context.read<SaveGoodCubit>().onLogoChanged(bytes);
-                    },
-                  );
-                },
+            if (state.showImage) ...[
+              Center(
+                child: EntityPhotoAvatar(
+                  imageBytes: state.files.firstOrNull,
+                  fallbackIcon: Icons.inventory_2_rounded,
+                  canEdit: true,
+                  onTap: () {
+                    EntityImagePicker.showSourceSheet(
+                      context,
+                      onImagePicked: (bytes) async {
+                        context.read<SaveGoodCubit>().onLogoChanged(bytes);
+                      },
+                    );
+                  },
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
+            ],
             AppTextField(
               labelText: context.tr("label_good_name"),
               hintText: context.tr("hint_name"),
@@ -164,33 +166,41 @@ class SaveGoodForm extends StatelessWidget {
             SizedBox(
               height: 16,
             ),
-            AppTextField(
-              labelText: context.tr("label_description"),
-              hintText: context.tr("hint_description"),
-              maxLines: null,
-              minLines: 2,
-              initialValue: state.description,
-              onChanged: (value) =>
-                  context.read<SaveGoodCubit>().descriptionChanged(value),
-              keyboardType: TextInputType.name,
-            ),
-            SizedBox(
-              height: 16,
-            ),
-            _buildBarCode(context, state),
-            SizedBox(height: 16),
+            if (state.showDescription) ...[
+              AppTextField(
+                labelText: context.tr("label_description"),
+                hintText: context.tr("hint_description"),
+                maxLines: null,
+                minLines: 2,
+                initialValue: state.description,
+                onChanged: (value) =>
+                    context.read<SaveGoodCubit>().descriptionChanged(value),
+                keyboardType: TextInputType.name,
+              ),
+              SizedBox(
+                height: 16,
+              ),
+            ],
+            if (state.showBarcode) ...[
+              _buildBarCode(context, state),
+              SizedBox(height: 16),
+            ],
             if (state.transaction == null)
               Column(
                 children: [
-                  Row(
-                    children: [
-                      Expanded(child: _buildPurchasePrice(context, state)),
-                      Expanded(child: _buildSalePrice(context, state)),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
+                  if (state.showPurchasePrice || state.showSalePrice) ...[
+                    Row(
+                      children: [
+                        if (state.showPurchasePrice)
+                          Expanded(child: _buildPurchasePrice(context, state)),
+                        if (state.showSalePrice)
+                          Expanded(child: _buildSalePrice(context, state)),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                  ],
                   Row(
                     children: [
                       Expanded(child: _buildQuantity(context, state, true)),
@@ -216,7 +226,10 @@ class SaveGoodForm extends StatelessWidget {
                   Expanded(
                     child: _buildQuantity(context, state, false),
                   ),
-                  Expanded(child: _buildPrice(context, state)),
+                  if (state.transaction!.type == DocumentType.incoming
+                      ? state.showPurchasePrice
+                      : state.showSalePrice)
+                    Expanded(child: _buildPrice(context, state)),
                 ],
               ),
             SizedBox(
@@ -234,14 +247,15 @@ class SaveGoodForm extends StatelessWidget {
             SizedBox(
               height: 16,
             ),
-            ImagesInformationSection(
-              files: state.files,
-              canEdit: true,
-              onAddFile: (bytes) =>
-                  context.read<SaveGoodCubit>().onAddFile(bytes),
-              onDeleteFile: (index) =>
-                  context.read<SaveGoodCubit>().onDeleteFile(index),
-            ),
+            if (state.showImage)
+              ImagesInformationSection(
+                files: state.files,
+                canEdit: true,
+                onAddFile: (bytes) =>
+                    context.read<SaveGoodCubit>().onAddFile(bytes),
+                onDeleteFile: (index) =>
+                    context.read<SaveGoodCubit>().onDeleteFile(index),
+              ),
           ],
         );
       },

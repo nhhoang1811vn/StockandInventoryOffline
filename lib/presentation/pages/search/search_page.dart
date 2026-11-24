@@ -11,6 +11,7 @@ import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widget/search_bar_widget.dart';
 import 'package:sprintf/sprintf.dart';
 
+import '../../../data/app_settings.dart';
 import '../../../domain/entity/entity.dart';
 import '../../dialog/dialog.dart';
 import '../pages.dart';
@@ -118,6 +119,7 @@ class _SearchPageState extends State<SearchPage> {
       );
     }
 
+    final goodProperties = AppSettings.getGoodPropertiesSettings();
     return ListView(
       padding: const EdgeInsets.all(Dimens.screenPadding),
       children: [
@@ -128,9 +130,13 @@ class _SearchPageState extends State<SearchPage> {
                 child: GoodItemRow(
                   item: item,
                   quantity: item.quantity,
-                  showBarcode: true,
-                  showDescription: true,
-                  showMinQuantity: true,
+                  showBarcode: goodProperties.showBarcode,
+                  showDescription: goodProperties.showDescription,
+                  showMinQuantity: goodProperties.showMinQuantity,
+                  showPurchasePrice: goodProperties.showPurchasePrice,
+                  showSalePrice: goodProperties.showSalePrice,
+                  showImage: goodProperties.showImage,
+                  showLowStockIndicator: goodProperties.showMinQuantity,
                   minQuantityColor: Colors.red,
                   onGoodTapped: (good) {
                     Navigator.of(context).pushNamed(

@@ -22,6 +22,17 @@ class GoodItemRow extends StatelessWidget {
   final bool isSelection;
   final bool isGridTile;
   final bool isCompact;
+  final bool showImage;
+  final bool showLowStockIndicator;
+
+  /// The min-quantity text needs both the list-settings switch and the Good
+  /// property to be on.
+  static bool showMinQuantityText(
+          {required bool listSetting, required bool property}) =>
+      listSetting && property;
+
+  static bool isLowStockFor(Good item, {required bool enabled}) =>
+      enabled && item.minQuantity != null && item.quantity < item.minQuantity!;
 
   GoodItemRow({
     required this.item,
@@ -39,6 +50,8 @@ class GoodItemRow extends StatelessWidget {
     required this.isSelection,
     this.isGridTile = false,
     this.isCompact = false,
+    this.showImage = true,
+    this.showLowStockIndicator = true,
   });
 
   @override
@@ -52,8 +65,7 @@ class GoodItemRow extends StatelessWidget {
   Widget _buildListTile(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final bool isLowStock =
-        item.minQuantity != null && item.quantity < item.minQuantity!;
+    final bool isLowStock = isLowStockFor(item, enabled: showLowStockIndicator);
     final bool isOutOfStock = item.quantity <= 0;
 
     final bool showBarcodeRow = showBarcode && item.barCode != null;
@@ -84,22 +96,24 @@ class GoodItemRow extends StatelessWidget {
             padding: const EdgeInsets.all(Dimens.cardPadding),
             child: Row(
               children: [
-                Container(
-                  width: Dimens.tileSize,
-                  height: Dimens.tileSize,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(Dimens.tileRadius),
+                if (showImage) ...[
+                  Container(
+                    width: Dimens.tileSize,
+                    height: Dimens.tileSize,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(Dimens.tileRadius),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(Dimens.tileRadius),
+                      child: item.files.isNotEmpty
+                          ? Image.memory(item.files.first, fit: BoxFit.cover)
+                          : Icon(UIConstants.goodIconData,
+                              color: theme.colorScheme.primary, size: 28),
+                    ),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(Dimens.tileRadius),
-                    child: item.files.isNotEmpty
-                        ? Image.memory(item.files.first, fit: BoxFit.cover)
-                        : Icon(UIConstants.goodIconData,
-                            color: theme.colorScheme.primary, size: 28),
-                  ),
-                ),
-                const SizedBox(width: Dimens.tileGap),
+                  const SizedBox(width: Dimens.tileGap),
+                ],
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,8 +222,7 @@ class GoodItemRow extends StatelessWidget {
   Widget _buildGridTile(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final bool isLowStock =
-        item.minQuantity != null && item.quantity < item.minQuantity!;
+    final bool isLowStock = isLowStockFor(item, enabled: showLowStockIndicator);
     final bool isOutOfStock = item.quantity <= 0;
     final priceRowSegments = _buildPriceRowSegments(
       context,
@@ -245,25 +258,28 @@ class GoodItemRow extends StatelessWidget {
               padding: EdgeInsets.all(padding),
               child: Column(
                 children: [
-                  Container(
-                    width: imageSize,
-                    height: imageSize,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(16),
+                  if (showImage) ...[
+                    Container(
+                      width: imageSize,
+                      height: imageSize,
+                      decoration: BoxDecoration(
+                        color:
+                            theme.colorScheme.primary.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: item.files.isNotEmpty
+                            ? Image.memory(item.files.first, fit: BoxFit.cover)
+                            : Icon(
+                                UIConstants.goodIconData,
+                                color: theme.colorScheme.primary,
+                                size: iconSize,
+                              ),
+                      ),
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: item.files.isNotEmpty
-                          ? Image.memory(item.files.first, fit: BoxFit.cover)
-                          : Icon(
-                              UIConstants.goodIconData,
-                              color: theme.colorScheme.primary,
-                              size: iconSize,
-                            ),
-                    ),
-                  ),
-                  SizedBox(height: isCompact ? 6 : 8),
+                    SizedBox(height: isCompact ? 6 : 8),
+                  ],
                   Text(
                     item.name,
                     style: TextStyle(

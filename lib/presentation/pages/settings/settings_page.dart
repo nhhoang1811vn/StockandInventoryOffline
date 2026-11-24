@@ -43,6 +43,12 @@ class SettingsPageState extends State<SettingsPage> {
                     .pushNamed(Pages.barcode_scanner_settings),
               ),
               SettingsMenuItem(
+                icon: Icons.checklist_rounded,
+                title: context.tr("good_properties"),
+                onTap: () => Navigator.of(context)
+                    .pushNamed(Pages.settings_good_properties),
+              ),
+              SettingsMenuItem(
                 icon: Icons.warning_amber_rounded,
                 title: context.tr("menu_item_minimum_quantity"),
                 onTap: () => Navigator.of(context)

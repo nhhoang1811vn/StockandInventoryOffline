@@ -24,9 +24,9 @@ class GoodInfoReportData extends ReportData {
     return [
       ColumnInfo("name"),
       ColumnInfo("folder", isPickValues: true),
-      ColumnInfo("barcode"),
-      ColumnInfo("purchase_price"),
-      ColumnInfo("sale_price"),
+      ColumnInfo("barcode", visibleWhen: ColumnGate.barcode),
+      ColumnInfo("purchase_price", visibleWhen: ColumnGate.purchasePrice),
+      ColumnInfo("sale_price", visibleWhen: ColumnGate.salePrice),
     ];
   }
 

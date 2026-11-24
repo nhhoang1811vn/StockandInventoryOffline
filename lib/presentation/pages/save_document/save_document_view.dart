@@ -20,6 +20,8 @@ import 'package:sprintf/sprintf.dart';
 
 import '../../../app.dart';
 import '../../../constant/constant.dart';
+import '../../../data/app_settings.dart';
+import 'document_table_builder.dart';
 import '../../../domain/entity/entity.dart';
 import '../../../util/util.dart';
 import '../../blocs/add_quantity_and_price/add_quantity_and_price_dialog.dart';
@@ -413,6 +415,8 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
   }
 
   Widget _buildGoodsSummaryBar(SaveDocumentState state) {
+    final showAmount =
+        AppSettings.getGoodPropertiesSettings().showPriceFor(widget.item.type);
     return SummaryLine([
       SummaryLine.item(
         context.tr("goods"),
@@ -422,10 +426,11 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
         context.tr("quantity"),
         StringUtils.getQuantityText(state.totalQuantity),
       ),
-      SummaryLine.item(
-        context.tr("amount"),
-        CurrencyFormatter.format(context, state.totalAmount),
-      ),
+      if (showAmount)
+        SummaryLine.item(
+          context.tr("amount"),
+          CurrencyFormatter.format(context, state.totalAmount),
+        ),
     ]);
   }
 
@@ -640,39 +645,12 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
   }
 
   List<List<String>> getTableData(SaveDocumentState state) {
-    List<List<String>> data = [];
-    data.add([
-      context.tr("name"),
-      context.tr("label_description"),
-      context.tr("barcode"),
-      context.tr("price"),
-      context.tr("quantity"),
-      context.tr("amount"),
-    ]);
-    var totalQuantity = 0.0;
-    var totalAmount = 0.0;
-    state.allTransactions.forEach((item) {
-      totalQuantity += item.quantity;
-      var amount = item.quantity * (item.price ?? 0.0);
-      totalAmount += amount;
-      data.add([
-        item.good.name,
-        item.good.description,
-        item.good.barCode ?? "",
-        item.price.toString(),
-        item.quantity.toString(),
-        amount.toString(),
-      ]);
-    });
-    data.add([
-      context.tr("total"),
-      "",
-      "",
-      "",
-      totalQuantity.toString(),
-      totalAmount.toString(),
-    ]);
-    return data;
+    return buildDocumentTable(
+      transactions: state.allTransactions,
+      type: widget.item.type,
+      properties: AppSettings.getGoodPropertiesSettings(),
+      tr: context.tr,
+    );
   }
 
   Future<void> saveCSVFile(
@@ -789,6 +767,8 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
                 .read<SaveDocumentCubit>()
                 .onPressedTransaction(transaction),
             (item) => onLongPressedTransaction(transaction),
+            false,
+            AppSettings.getGoodPropertiesSettings(),
           );
         },
       ),

@@ -300,9 +300,8 @@ class SaveDocumentCubit extends Cubit<SaveDocumentState> {
         saveThenAddTransaction(
           good,
           1,
-          state.item!.type == DocumentType.incoming
-              ? good.purchasePrice
-              : good.salePrice,
+          AppSettings.getGoodPropertiesSettings()
+              .defaultPriceFor(good, state.item!.type),
         );
         await Future.delayed(
           Duration(milliseconds: AppSettings.getBatchScanDelayMs()),

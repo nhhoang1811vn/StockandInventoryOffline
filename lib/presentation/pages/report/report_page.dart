@@ -6,6 +6,7 @@ import 'package:good_manager/presentation/pages/report/report_date_range_type.da
 import 'package:good_manager/presentation/pages/report/report_range_selection.dart';
 import 'package:good_manager/presentation/pages/report/report_years.dart';
 
+import '../../../data/app_settings.dart';
 import '../../../domain/entity/entity.dart';
 import '../pages.dart';
 
@@ -36,7 +37,10 @@ class ReportPageState extends State<ReportPage> {
           ),
           iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
         ),
-        body: _buildBody(),
+        body: ValueListenableBuilder<int>(
+          valueListenable: AppSettings.goodPropertiesRevision,
+          builder: (context, _, __) => _buildBody(),
+        ),
       ),
       listenWhen: (p1, p2) => p1.state != p2.state,
       listener: (context, state) async {},
@@ -64,7 +68,7 @@ class ReportPageState extends State<ReportPage> {
         _buildSectionHeader(context.tr("inventory")),
         _buildReportGroup([
           ReportType.LIST_OF_GOODS,
-          ReportType.RE_ORDER,
+          if (AppSettings.isMinQuantityEnabled()) ReportType.RE_ORDER,
           ReportType.GOOD_INFO,
           ReportType.LIST_OF_DOCUMENT,
         ]),

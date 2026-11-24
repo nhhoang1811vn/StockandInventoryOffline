@@ -317,6 +317,12 @@ class MenuPageState extends State<MenuPage> {
           onTap: () => onSettingsItemPressed(context),
         ),
         SettingsMenuItem(
+          icon: Icons.checklist_rounded,
+          title: context.tr("good_properties"),
+          onTap: () =>
+              Navigator.of(context).pushNamed(Pages.settings_good_properties),
+        ),
+        SettingsMenuItem(
           icon: Icons.workspace_premium_outlined,
           title: context.tr("subscriptions_title"),
           onTap: () async => await RevenueCatUI.presentPaywall(),

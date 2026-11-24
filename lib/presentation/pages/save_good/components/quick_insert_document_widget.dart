@@ -9,6 +9,7 @@ import 'package:good_manager/presentation/widget/widget.dart';
 
 import '../../../../app.dart';
 import '../../../../constant/constant.dart';
+import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
 import '../../../../util/util.dart';
 import '../../../dialog/dialog.dart';
@@ -33,11 +34,15 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
 
   QuickInsertDocumentCubit cubit = QuickInsertDocumentCubit();
 
+  /// Price and amount are only asked for when the matching Good property
+  /// (Purchase price for incoming, Sale price for outgoing) is enabled.
+  bool get _showPrice =>
+      AppSettings.getGoodPropertiesSettings().showPriceFor(widget.type);
+
   @override
   Widget build(BuildContext context) {
-    double? price = (widget.type == DocumentType.incoming
-        ? widget.good.purchasePrice
-        : widget.good.salePrice);
+    double? price = AppSettings.getGoodPropertiesSettings()
+        .defaultPriceFor(widget.good, widget.type);
     double quantity = 1.0;
     cubit.initState(quantity, price);
     quantityTextController.text =
@@ -118,10 +123,12 @@ class QuickInsertDocumentWidgetState extends State<QuickInsertDocumentWidget> {
                     ),
                   SizedBox(height: 16),
                   _buildQuantity(context, state),
-                  SizedBox(height: 16),
-                  _buildPrice(context, state),
-                  SizedBox(height: 16),
-                  _buildAmount(context, state),
+                  if (_showPrice) ...[
+                    SizedBox(height: 16),
+                    _buildPrice(context, state),
+                    SizedBox(height: 16),
+                    _buildAmount(context, state),
+                  ],
                   SizedBox(height: 16),
                   _buildDate(context, state),
                   SizedBox(height: 16),

@@ -11,6 +11,7 @@ export 'expense.dart';
 export 'general_infomation.dart';
 export 'good.dart';
 export 'good_history.dart';
+export 'good_properties_settings.dart';
 export 'goods_setting.dart';
 export 'group.dart';
 export 'minimum_quantity_settings.dart';

@@ -1,10 +1,64 @@
+import '../../domain/entity/entity.dart';
+
+/// Decides from the Store's Good properties whether a report column is shown.
+typedef ColumnVisibility = bool Function(GoodPropertiesSettings properties);
 
 class ColumnInfo{
   final String name;
   bool isPickValues = false;
   bool showTotal = false;
+
+  /// When set and it returns false, the column (and its cells) is dropped
+  /// from the report. `null` means always shown.
+  final ColumnVisibility? visibleWhen;
+
   ColumnInfo(this.name, {
     this.isPickValues = false,
-    this.showTotal = false
+    this.showTotal = false,
+    this.visibleWhen,
   });
+}
+
+/// Ready-made visibility rules for report columns.
+class ColumnGate {
+  ColumnGate._();
+
+  static bool barcode(GoodPropertiesSettings p) => p.showBarcode;
+
+  static bool purchasePrice(GoodPropertiesSettings p) => p.showPurchasePrice;
+
+  static bool salePrice(GoodPropertiesSettings p) => p.showSalePrice;
+
+  /// Columns derived from both prices (e.g. profit).
+  static bool bothPrices(GoodPropertiesSettings p) =>
+      p.showPurchasePrice && p.showSalePrice;
+
+  /// A figure that mixes incoming and outgoing Documents.
+  static bool documentAmount(GoodPropertiesSettings p) =>
+      p.showPriceForAll(DocumentType.values);
+
+  /// The price of one Document type (incoming = Purchase, outgoing = Sale).
+  static ColumnVisibility forDocumentType(DocumentType type) =>
+      (p) => p.showPriceFor(type);
+}
+
+/// Removes the columns hidden by [properties] from the column list and from
+/// every row, keeping the row keys.
+({List<ColumnInfo> columns, List<MapEntry<int, List<String>>> rows})
+    applyColumnVisibility(
+  List<ColumnInfo> columns,
+  List<MapEntry<int, List<String>>> rows,
+  GoodPropertiesSettings properties,
+) {
+  final keep = <int>[
+    for (var i = 0; i < columns.length; i++)
+      if (columns[i].visibleWhen?.call(properties) ?? true) i,
+  ];
+  return (
+    columns: [for (final i in keep) columns[i]],
+    rows: [
+      for (final row in rows)
+        MapEntry(row.key, [for (final i in keep) row.value[i]]),
+    ],
+  );
 }

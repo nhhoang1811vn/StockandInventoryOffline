@@ -304,6 +304,36 @@ class AppSettings {
     _storage.setString(_goodsSettingKey, jsonEncode(obj.toJson()));
   }
 
+  static const String _goodPropertiesSettingsKey = "GoodPropertiesSettings_";
+
+  /// Bumped whenever good properties change so already-built tabs can refresh.
+  static final ValueNotifier<int> goodPropertiesRevision = ValueNotifier(0);
+
+  static GoodPropertiesSettings getGoodPropertiesSettings({int? storeId}) {
+    final key = _goodPropertiesSettingsKey +
+        (storeId ?? getSelectedStoreId()).toString();
+    try {
+      final jsonString = _storage.getString(key);
+      if (jsonString == null || jsonString.isEmpty) {
+        return GoodPropertiesSettings();
+      }
+      return GoodPropertiesSettings.fromJson(jsonDecode(jsonString));
+    } catch (_) {
+      return GoodPropertiesSettings();
+    }
+  }
+
+  static void setGoodPropertiesSettings(GoodPropertiesSettings value,
+      {int? storeId}) {
+    final key = _goodPropertiesSettingsKey +
+        (storeId ?? getSelectedStoreId()).toString();
+    _storage.setString(key, jsonEncode(value.toJson()));
+    goodPropertiesRevision.value++;
+  }
+
+  static bool isMinQuantityEnabled() =>
+      getGoodPropertiesSettings().showMinQuantity;
+
   static DocumentsSetting getDocumentsSetting() {
     final jsonString = _storage.getString(_documentsSettingKey);
     if (jsonString == null) return DocumentsSetting.getDefault();

@@ -32,7 +32,38 @@ class HomeCubit extends Cubit<HomeState> {
     required this.walletUseCases,
     required this.paymentUseCases,
     required this.storesUseCase,
-  }) : super(HomeState.initial(state: InitialState()));
+  }) : super(
+          HomeState.initial(
+            state: InitialState(),
+            showLowStock: AppSettings.isMinQuantityEnabled(),
+          ),
+        ) {
+    AppSettings.goodPropertiesRevision.addListener(_onPropertiesChanged);
+  }
+
+  @override
+  Future<void> close() {
+    AppSettings.goodPropertiesRevision.removeListener(_onPropertiesChanged);
+    return super.close();
+  }
+
+  static List<Good> _lowStockGoods(List<Good> goods, bool enabled) => enabled
+      ? goods
+          .where((g) => g.minQuantity != null && g.quantity < g.minQuantity!)
+          .toList()
+      : <Good>[];
+
+  void _onPropertiesChanged() {
+    if (isClosed) return;
+    final enabled = AppSettings.isMinQuantityEnabled();
+    final low = _lowStockGoods(state.allGoods, enabled);
+    emit(state.copyWith(
+      showLowStock: enabled,
+      lowStockGoods: low,
+      lowStockCount: low.length,
+      propertiesRevision: AppSettings.goodPropertiesRevision.value,
+    ));
+  }
 
   void initState() async {
     int storeId = AppSettings.getSelectedStoreId();
@@ -58,16 +89,14 @@ class HomeCubit extends Cubit<HomeState> {
     }
     double quantityTotal = 0;
     List<Good> outOfStockGoods = [];
-    List<Good> lowStockGoods = [];
+    final minQuantityEnabled = AppSettings.isMinQuantityEnabled();
     for (Good good in goods) {
       quantityTotal += good.quantity;
       if (good.quantity <= 0) {
         outOfStockGoods.add(good);
       }
-      if (good.minQuantity != null && good.quantity < good.minQuantity!) {
-        lowStockGoods.add(good);
-      }
     }
+    final List<Good> lowStockGoods = _lowStockGoods(goods, minQuantityEnabled);
 
     List<Document> recent = List.from(documents);
     recent.sort((a, b) => b.date.compareTo(a.date));
@@ -128,6 +157,7 @@ class HomeCubit extends Cubit<HomeState> {
         lowStockCount: lowStockGoods.length,
         outOfStockGoods: outOfStockGoods,
         lowStockGoods: lowStockGoods,
+        showLowStock: minQuantityEnabled,
         selectedStore: selectedStore,
       ),
     );

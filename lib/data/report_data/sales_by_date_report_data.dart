@@ -30,10 +30,13 @@ class SalesByDateReportData extends ReportData {
     return [
       ColumnInfo("date"),
       ColumnInfo("quantity", showTotal: true),
-      ColumnInfo("amount", showTotal: true),
+      ColumnInfo("amount",
+          showTotal: true, visibleWhen: ColumnGate.forDocumentType(type)),
       if (type == DocumentType.outgoing) ...[
-        ColumnInfo("cost", showTotal: true),
-        ColumnInfo("profit", showTotal: true),
+        ColumnInfo("cost",
+            showTotal: true, visibleWhen: ColumnGate.purchasePrice),
+        ColumnInfo("profit",
+            showTotal: true, visibleWhen: ColumnGate.bothPrices),
       ],
     ];
   }

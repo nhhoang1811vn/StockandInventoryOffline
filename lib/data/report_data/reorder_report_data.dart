@@ -19,12 +19,13 @@ class ReorderReportData extends ReportData{
   List<ColumnInfo> getColumnInfos() {
     return [
       ColumnInfo("name"),
-      ColumnInfo("barcode"),
+      ColumnInfo("barcode", visibleWhen: ColumnGate.barcode),
       ColumnInfo("quantity", showTotal: true),
       ColumnInfo("min_quantity"),
       ColumnInfo("field_reorder", showTotal: true),
-      ColumnInfo("purchase_price"),
-      ColumnInfo("amount", showTotal: true),
+      ColumnInfo("purchase_price", visibleWhen: ColumnGate.purchasePrice),
+      ColumnInfo("amount",
+          showTotal: true, visibleWhen: ColumnGate.purchasePrice),
     ];
   }
 

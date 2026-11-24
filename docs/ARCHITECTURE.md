@@ -92,6 +92,14 @@ emits `StartupFailure` and the page shows a retry button.
 - `PrefStorage` over `SharedPreferences` (`lib/common/storage/`): selected store id and name,
   per-store auto document number, list filter/sort settings, passcode, scanner options.
 - Hive box `settings`: theme, language, currency (adapters registered in `AppSettings.initialize`).
+- Per-Store Good properties (`GoodPropertiesSettings`, key `GoodPropertiesSettings_<storeId>`, JSON
+  in preferences): `AppSettings.getGoodPropertiesSettings({storeId})` /
+  `setGoodPropertiesSettings`. Edited at `Pages.settings_good_properties`
+  (`lib/presentation/pages/settings/good_properties/`), linked from the Settings page and the menu
+  tab. Every save increments `AppSettings.goodPropertiesRevision`; `GoodsCubit`, `HomeCubit` and
+  `ReportPage` listen to it because those tabs stay alive in `MainPage`'s `IndexedStack`. Like all
+  other preferences these are not part of backup/restore. Rules:
+  [BUSINESS_LOGIC.md](BUSINESS_LOGIC.md#good-properties).
 - The passcode is stored in preferences and compared as a plain string
   (`lib/presentation/pages/main/main_page.dart`, `_showLockScreen`).
 

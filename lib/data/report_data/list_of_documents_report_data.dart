@@ -26,7 +26,8 @@ class ListOfDocumentsReportData extends ReportData {
       ColumnInfo("type", isPickValues: true),
       ColumnInfo("person_name", isPickValues: true),
       ColumnInfo("quantity", showTotal: true),
-      ColumnInfo("amount", showTotal: true),
+      ColumnInfo("amount",
+          showTotal: true, visibleWhen: ColumnGate.documentAmount),
     ];
   }
   @override

@@ -42,8 +42,29 @@ class GoodsCubit extends Cubit<GoodsState> {
           GoodsState.initial(
             state: InitialState(),
             settings: AppSettings.getGoodsSetting(),
+            properties: AppSettings.getGoodPropertiesSettings(),
           ),
-        );
+        ) {
+    AppSettings.goodPropertiesRevision.addListener(_onPropertiesChanged);
+  }
+
+  @override
+  Future<void> close() {
+    AppSettings.goodPropertiesRevision.removeListener(_onPropertiesChanged);
+    return super.close();
+  }
+
+  void _onPropertiesChanged() {
+    if (isClosed) return;
+    emit(state.copyWith(properties: AppSettings.getGoodPropertiesSettings()));
+    refresh();
+  }
+
+  /// Barcode sorting is ignored while the Barcode property is hidden; the
+  /// saved sort setting itself is left untouched.
+  SortByNumber get _effectiveSortByBarcode => state.properties.showBarcode
+      ? state.settings.sortByBarcode
+      : SortByNumber.no_sort;
 
   void initState(bool isSelection, Document? document) async {
     var minQuantitySettings = await AppSettings.getMinimumQuantitySettings();
@@ -51,6 +72,7 @@ class GoodsCubit extends Cubit<GoodsState> {
 
     emit(
       state.copyWith(
+        properties: AppSettings.getGoodPropertiesSettings(),
         isSelection: isSelection,
         showSearchBar: isSelection,
         document: document,
@@ -323,7 +345,7 @@ class GoodsCubit extends Cubit<GoodsState> {
       default:
         {}
     }
-    switch (state.settings.sortByBarcode) {
+    switch (_effectiveSortByBarcode) {
       case SortByNumber.ascending:
         {
           options.add(SortByBarCodeAscendingGroup());
@@ -359,7 +381,7 @@ class GoodsCubit extends Cubit<GoodsState> {
       default:
         {}
     }
-    switch (state.settings.sortByBarcode) {
+    switch (_effectiveSortByBarcode) {
       case SortByNumber.ascending:
         {
           options.add(SortByBarCodeAscendingGood());
@@ -436,7 +458,7 @@ class GoodsCubit extends Cubit<GoodsState> {
       default:
         {}
     }
-    switch (state.settings.sortByBarcode) {
+    switch (_effectiveSortByBarcode) {
       case SortByNumber.ascending:
         {
           options.add(SortByBarCodeAscendingGroup());
@@ -481,7 +503,7 @@ class GoodsCubit extends Cubit<GoodsState> {
       default:
         {}
     }
-    switch (state.settings.sortByBarcode) {
+    switch (_effectiveSortByBarcode) {
       case SortByNumber.ascending:
         {
           options.add(SortByBarCodeAscendingGood());

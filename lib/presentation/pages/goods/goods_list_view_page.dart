@@ -5,6 +5,7 @@ import 'package:good_manager/domain/entity/entity.dart';
 import 'package:good_manager/presentation/pages/goods/good_item_row.dart';
 
 import '../../../constant/constant.dart';
+import '../../../data/app_settings.dart';
 import '../pages.dart';
 
 class GoodsListViewPage extends StatelessWidget {
@@ -22,6 +23,7 @@ class GoodsListViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final goodProperties = AppSettings.getGoodPropertiesSettings();
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
@@ -65,9 +67,13 @@ class GoodsListViewPage extends StatelessWidget {
                 return GoodItemRow(
                   item: good,
                   quantity: good.quantity,
-                  showBarcode: true,
-                  showDescription: true,
-                  showMinQuantity: true,
+                  showBarcode: goodProperties.showBarcode,
+                  showDescription: goodProperties.showDescription,
+                  showMinQuantity: goodProperties.showMinQuantity,
+                  showPurchasePrice: goodProperties.showPurchasePrice,
+                  showSalePrice: goodProperties.showSalePrice,
+                  showImage: goodProperties.showImage,
+                  showLowStockIndicator: goodProperties.showMinQuantity,
                   minQuantityColor: Colors.red,
                   onGoodTapped: (item) {
                     Navigator.of(context).pushNamed(

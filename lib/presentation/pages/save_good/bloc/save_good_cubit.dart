@@ -24,10 +24,27 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
     required this.documentsUseCases,
   }) : super(SaveGoodState.initial(state: InitialState()));
 
+  static bool effectiveShowMinQuantity(
+    GoodPropertiesSettings properties,
+    MinimumQuantitySettings minQuantity,
+  ) =>
+      properties.showMinQuantity && minQuantity.showInItem;
+
   void initState() async {
     var minQuantitySettings = await AppSettings.getMinimumQuantitySettings();
+    final properties = AppSettings.getGoodPropertiesSettings();
     if (isClosed) return;
-    emit(state.copyWith(showMinQuantity: minQuantitySettings.showInItem));
+    emit(
+      state.copyWith(
+        showMinQuantity:
+            effectiveShowMinQuantity(properties, minQuantitySettings),
+        showImage: properties.showImage,
+        showBarcode: properties.showBarcode,
+        showDescription: properties.showDescription,
+        showPurchasePrice: properties.showPurchasePrice,
+        showSalePrice: properties.showSalePrice,
+      ),
+    );
   }
 
   void init(Good item, Document? document, DocumentTransaction? transaction) {

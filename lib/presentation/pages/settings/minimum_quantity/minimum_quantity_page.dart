@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/settings/minimum_quantity/bloc/minimum_quantity_cubit.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../../data/app_settings.dart';
 import '../../../dialog/dialog.dart';
 import '../../../markdown/md_provider_factory.dart';
 import '../../../widget/widget.dart';
@@ -54,6 +55,26 @@ class MinimumQuantityPageState extends State<MinimumQuantityPage> {
           body: ListView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
             children: [
+              if (!AppSettings.isMinQuantityEnabled())
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline_rounded,
+                        size: 18,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          context
+                              .tr("good_properties_min_quantity_disabled_note"),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               SettingsSectionHeader(context.tr("display"), isFirst: true),
               SettingsMenuCard(
                 children: [

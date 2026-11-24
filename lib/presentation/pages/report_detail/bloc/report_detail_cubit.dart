@@ -90,6 +90,11 @@ class ReportDetailCubit extends Cubit<ReportDetailState> {
     var columnInfos = reportData.getColumnInfos();
     var data = await reportData.getData();
     if (isClosed) return;
+    // Hide the columns of Good properties the Store turned off.
+    final visible = applyColumnVisibility(
+        columnInfos, data, AppSettings.getGoodPropertiesSettings());
+    columnInfos = visible.columns;
+    data = visible.rows;
     var columnReports = getColumnReports(columnInfos, data);
     emit(state.copyWith(columnReports: columnReports, rows: data));
     updateTableData(context);

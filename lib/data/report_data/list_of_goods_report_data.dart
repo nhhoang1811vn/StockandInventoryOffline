@@ -36,7 +36,7 @@ class ListOfGoodsReportData extends ReportData {
         "folder",
         isPickValues: true,
       ),
-      ColumnInfo("barcode"),
+      ColumnInfo("barcode", visibleWhen: ColumnGate.barcode),
       ColumnInfo(
         "field_start_period",
         showTotal: true,

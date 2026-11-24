@@ -4,6 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:good_manager/common/platform_support.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 
+import '../../data/app_settings.dart';
 import '../../domain/entity/entity.dart';
 
 class NotificationService {
@@ -42,7 +43,7 @@ class NotificationService {
 
   static void _handleNotificationTap(String? payload) {
     if (payload == null) return;
-    if (payload == "reorder") {
+    if (payload == "reorder" && AppSettings.isMinQuantityEnabled()) {
       _navigatorKey.currentState?.pushNamed(
         Pages.report_detail,
         arguments: {"type": ReportType.RE_ORDER},

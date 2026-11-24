@@ -73,7 +73,8 @@ class _ScreenState extends State<MainView> {
     });
 
     var isShowLowStockAlert =
-        AppSettings.getMinimumQuantitySettings().showAlert;
+        AppSettings.getMinimumQuantitySettings().showAlert &&
+            AppSettings.isMinQuantityEnabled();
     if (isShowLowStockAlert) {
       _requestPermissions();
       Future.delayed(const Duration(seconds: 3), () {
