@@ -9,6 +9,7 @@ import 'package:good_manager/presentation/pages/base/base_state.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../domain/entity/entity.dart';
+import '../../../../domain/exception/duplicate_exceptions.dart';
 
 part 'save_group_cubit.freezed.dart';
 part 'save_group_state.dart';
@@ -59,6 +60,12 @@ class SaveGroupCubit extends Cubit<SaveGroupState> {
         }
         if (isClosed) return;
         emit(state.copyWith(state: SaveItemSuccessful()));
+      } on DuplicateGroupNameException {
+        if (isClosed) return;
+        emit(state.copyWith(state: SaveItemSameGroupNameError()));
+      } on DuplicateBarcodeException {
+        if (isClosed) return;
+        emit(state.copyWith(state: SaveItemSameBarcodeError()));
       } catch (e) {
         if (isClosed) return;
         emit(state.copyWith(state: SaveItemError(e.toString())));

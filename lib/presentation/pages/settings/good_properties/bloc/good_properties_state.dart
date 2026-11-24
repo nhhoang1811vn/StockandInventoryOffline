@@ -9,5 +9,7 @@ class GoodPropertiesState with _$GoodPropertiesState {
     @Default(true) bool showMinQuantity,
     @Default(true) bool showPurchasePrice,
     @Default(true) bool showSalePrice,
+    @Default(false) bool uniqueBarcode,
+    @Default(false) bool uniqueGroupName,
   }) = _Initial;
 }

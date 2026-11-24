@@ -4,7 +4,6 @@ import 'document.dart';
 import 'good.dart';
 
 part 'good_properties_settings.freezed.dart';
-
 part 'good_properties_settings.g.dart';
 
 /// Per-Store visibility of optional Good properties. All visible by default.
@@ -17,6 +16,10 @@ class GoodPropertiesSettings with _$GoodPropertiesSettings {
     @Default(true) bool showMinQuantity,
     @Default(true) bool showPurchasePrice,
     @Default(true) bool showSalePrice,
+    // Validation rules (off by default): no two Goods of a Store with the same
+    // barcode / no two Groups of a Store with the same name.
+    @Default(false) bool uniqueBarcode,
+    @Default(false) bool uniqueGroupName,
   }) = _GoodPropertiesSettings;
 
   factory GoodPropertiesSettings.fromJson(Map<String, Object?> json) =>

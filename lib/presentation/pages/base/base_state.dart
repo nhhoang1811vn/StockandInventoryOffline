@@ -136,7 +136,9 @@ class SaveItemError extends BaseState {
   SaveItemError(this.error);
 }
 
-//class SaveItemSameBarcodeError extends BaseState {}
+class SaveItemSameBarcodeError extends BaseState {}
+
+class SaveItemSameGroupNameError extends BaseState {}
 
 class DeleteItemError extends BaseState {}
 

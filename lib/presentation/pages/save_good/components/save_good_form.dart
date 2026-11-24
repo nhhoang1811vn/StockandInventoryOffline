@@ -36,7 +36,9 @@ class SaveGoodForm extends StatelessWidget {
         return state1.state != state2.state;
       },
       listener: (BuildContext context, SaveGoodState state) async {
-        if (state.state is SaveItemError) {
+        if (state.state is SaveItemSameBarcodeError) {
+          ToastUtils.showErrorToast(context.tr("error_duplicate_barcode"));
+        } else if (state.state is SaveItemError) {
           ToastUtils.showErrorToast(context.tr("snackbar_try_again"));
         } else if (state.state is SaveItemSuccessful) {
           ReviewManager.maybeRequestReview();

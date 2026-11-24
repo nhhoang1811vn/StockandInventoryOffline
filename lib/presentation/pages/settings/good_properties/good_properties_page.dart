@@ -77,6 +77,26 @@ class _GoodPropertiesPageState extends State<GoodPropertiesPage> {
                   ),
                 ],
               ),
+              SettingsSectionHeader(context.tr("uniqueness")),
+              SettingsMenuCard(
+                children: [
+                  SettingsSwitchItem(
+                    icon: UIConstants.barcodeIconData,
+                    title: context.tr("unique_barcode"),
+                    subtitle: context.tr("unique_barcode_hint"),
+                    value: state.uniqueBarcode,
+                    onChanged: cubit.onUniqueBarcodeChanged,
+                  ),
+                  SettingsSwitchItem(
+                    icon: Icons.folder_outlined,
+                    title: context.tr("unique_group"),
+                    subtitle: context.tr("unique_group_hint"),
+                    value: state.uniqueGroupName,
+                    onChanged: cubit.onUniqueGroupNameChanged,
+                    isLast: true,
+                  ),
+                ],
+              ),
             ],
           ),
         );

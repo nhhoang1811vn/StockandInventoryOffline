@@ -12,6 +12,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
+import '../../../../domain/exception/duplicate_exceptions.dart';
 import '../../base/base_sort_items.dart';
 import '../../base/base_state.dart';
 import '../component/excel_column_mapping.dart';
@@ -737,8 +738,14 @@ class GoodsCubit extends Cubit<GoodsState> {
         ..minQuantity = row.minQuantity
         ..groupId = groupId
         ..storeId = storeId;
-      final id = await goodsUseCase.insert(item);
-      if (id > 0) importedCount++;
+      try {
+        final id = await goodsUseCase.insert(item);
+        if (id > 0) importedCount++;
+      } on DuplicateBarcodeException {
+        // "Unique barcode" is on: skip rows whose barcode is already used
+        // (by an existing Good or by an earlier row of this file).
+        continue;
+      }
     }
 
     if (importedCount > 0) {

@@ -6,7 +6,6 @@ import '../../../../../data/app_settings.dart';
 import '../../../../../domain/entity/entity.dart';
 
 part 'good_properties_cubit.freezed.dart';
-
 part 'good_properties_state.dart';
 
 @injectable
@@ -23,6 +22,8 @@ class GoodPropertiesCubit extends Cubit<GoodPropertiesState> {
         showMinQuantity: settings.showMinQuantity,
         showPurchasePrice: settings.showPurchasePrice,
         showSalePrice: settings.showSalePrice,
+        uniqueBarcode: settings.uniqueBarcode,
+        uniqueGroupName: settings.uniqueGroupName,
       ),
     );
   }
@@ -57,6 +58,16 @@ class GoodPropertiesCubit extends Cubit<GoodPropertiesState> {
     _save();
   }
 
+  void onUniqueBarcodeChanged(bool value) {
+    emit(state.copyWith(uniqueBarcode: value));
+    _save();
+  }
+
+  void onUniqueGroupNameChanged(bool value) {
+    emit(state.copyWith(uniqueGroupName: value));
+    _save();
+  }
+
   void _save() {
     AppSettings.setGoodPropertiesSettings(
       GoodPropertiesSettings(
@@ -66,6 +77,8 @@ class GoodPropertiesCubit extends Cubit<GoodPropertiesState> {
         showMinQuantity: state.showMinQuantity,
         showPurchasePrice: state.showPurchasePrice,
         showSalePrice: state.showSalePrice,
+        uniqueBarcode: state.uniqueBarcode,
+        uniqueGroupName: state.uniqueGroupName,
       ),
     );
   }

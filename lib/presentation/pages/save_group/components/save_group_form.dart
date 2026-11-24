@@ -8,10 +8,10 @@ import 'package:good_manager/util/entity_image_picker.dart';
 import '../../../../constant/constant.dart';
 import '../../../../domain/entity/entity.dart';
 import '../../../../util/base64_utils.dart';
+import '../../../../util/toast_utils.dart';
 import '../../../review_manager.dart';
 import '../../../utils.dart';
 import '../../../widget/widget.dart';
-import '../../../../util/toast_utils.dart';
 
 class SaveGroupForm extends StatelessWidget {
   final Group item;
@@ -36,7 +36,11 @@ class SaveGroupForm extends StatelessWidget {
         return state1.state != state2.state;
       },
       listener: (context, state) async {
-        if (state.state is SaveItemError) {
+        if (state.state is SaveItemSameGroupNameError) {
+          ToastUtils.showErrorToast(context.tr("error_duplicate_group_name"));
+        } else if (state.state is SaveItemSameBarcodeError) {
+          ToastUtils.showErrorToast(context.tr("error_duplicate_barcode"));
+        } else if (state.state is SaveItemError) {
           ToastUtils.showErrorToast(context.tr("snackbar_try_again"));
         } else if (state.state is SaveItemSuccessful) {
           ReviewManager.maybeRequestReview();

@@ -7,6 +7,8 @@ import 'package:good_manager/repo/repo.dart';
 
 class _FakeGroupsRepository extends Fake implements GroupsRepository {}
 
+class _FakeGoodsRepository extends Fake implements GoodsRepository {}
+
 Group _source() {
   return Group()
     ..id = 5
@@ -54,7 +56,9 @@ void main() {
 
   group('SaveGroupCubit.init', () {
     SaveGroupCubit cubit() => SaveGroupCubit(
-        useCase: GroupsUseCases(repository: _FakeGroupsRepository()));
+        useCase: GroupsUseCases(
+            repository: _FakeGroupsRepository(),
+            goodsRepository: _FakeGoodsRepository()));
 
     test('prefills the form from an unsaved copy', () {
       final c = cubit();

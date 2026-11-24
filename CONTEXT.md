@@ -151,7 +151,9 @@ Summary; full list in [docs/BUSINESS_LOGIC.md](docs/BUSINESS_LOGIC.md).
 - Stock quantity is derived: sum (incoming) − sum (outgoing) per good. It is never stored.
 - Free limits: 5 customers, 5 suppliers, 2 stores, 2 wallets (`lib/domain/free_limits.dart`).
 - The last remaining store cannot be deleted.
-- Barcodes are not unique.
+- Barcodes are not unique, unless the Store turns on "Unique barcode" in Good properties (Goods and
+  Groups)
+  (see [docs/BUSINESS_LOGIC.md](docs/BUSINESS_LOGIC.md#uniqueness-rules)).
 
 ## Technical constraints
 

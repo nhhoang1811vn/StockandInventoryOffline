@@ -9,6 +9,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../constant/constant.dart';
 import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
+import '../../../../domain/exception/duplicate_exceptions.dart';
 import '../../base/base_state.dart';
 
 part 'save_good_cubit.freezed.dart';
@@ -135,6 +136,9 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
           if (isClosed) return;
           emit(state.copyWith(state: SaveItemSuccessful()));
         }
+      } on DuplicateBarcodeException {
+        if (isClosed) return;
+        emit(state.copyWith(state: SaveItemSameBarcodeError()));
       } catch (e) {
         if (isClosed) return;
         emit(state.copyWith(state: SaveItemError(e.toString())));
@@ -151,6 +155,9 @@ class SaveGoodCubit extends Cubit<SaveGoodState> {
         await insertOrUpdateGood();
         if (isClosed) return;
         emit(state.copyWith(state: OpenHistoryPageState()));
+      } on DuplicateBarcodeException {
+        if (isClosed) return;
+        emit(state.copyWith(state: SaveItemSameBarcodeError()));
       } catch (e) {
         if (isClosed) return;
         emit(state.copyWith(state: SaveItemError(e.toString())));

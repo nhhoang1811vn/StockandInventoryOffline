@@ -175,14 +175,19 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i1038.WalletRepository>(),
           gh<_i1038.PaymentRepository>(),
         ));
+    gh.lazySingleton<_i345.DocumentUseCases>(() => _i345.DocumentUseCases(
+          repository: gh<_i1038.DocumentRepository>(),
+          transactionRepository: gh<_i1038.DocumentTransactionRepository>(),
+        ));
+    gh.lazySingleton<_i506.GroupsUseCases>(() => _i506.GroupsUseCases(
+          repository: gh<_i1038.GroupsRepository>(),
+          goodsRepository: gh<_i1038.GoodsRepository>(),
+        ));
     gh.lazySingleton<_i162.GoodsUseCases>(() => _i162.GoodsUseCases(
           repository: gh<_i1038.GoodsRepository>(),
           documentTransactionRepository:
               gh<_i1038.DocumentTransactionRepository>(),
-        ));
-    gh.lazySingleton<_i345.DocumentUseCases>(() => _i345.DocumentUseCases(
-          repository: gh<_i1038.DocumentRepository>(),
-          transactionRepository: gh<_i1038.DocumentTransactionRepository>(),
+          groupsRepository: gh<_i1038.GroupsRepository>(),
         ));
     gh.lazySingleton<_i599.GoodHistoryUseCases>(() => _i599.GoodHistoryUseCases(
           documentRepository: gh<_i1038.DocumentRepository>(),
@@ -213,8 +218,8 @@ extension GetItInjectableX on _i174.GetIt {
           useCase: gh<_i704.GoodsUseCases>(),
           documentsUseCases: gh<_i704.DocumentUseCases>(),
         ));
-    gh.lazySingleton<_i506.GroupsUseCases>(
-        () => _i506.GroupsUseCases(repository: gh<_i1038.GroupsRepository>()));
+    gh.factory<_i738.SaveGroupCubit>(
+        () => _i738.SaveGroupCubit(useCase: gh<_i704.GroupsUseCases>()));
     gh.lazySingleton<_i517.PaymentCategoryUseCases>(() =>
         _i517.PaymentCategoryUseCases(
             repository: gh<_i1038.PaymentCategoryRepository>()));
@@ -308,8 +313,6 @@ extension GetItInjectableX on _i174.GetIt {
           customersUseCase: gh<_i75.CustomersUseCase>(),
           walletUseCases: gh<_i604.WalletUseCases>(),
         ));
-    gh.factory<_i738.SaveGroupCubit>(
-        () => _i738.SaveGroupCubit(useCase: gh<_i704.GroupsUseCases>()));
     gh.factory<_i588.ReportDetailCubit>(() => _i588.ReportDetailCubit(
           factory: gh<_i266.ReportDataFactory>(),
           goodsUseCase: gh<_i704.GoodsUseCases>(),

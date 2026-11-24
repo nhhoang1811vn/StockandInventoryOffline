@@ -64,6 +64,28 @@ Schema: [DATABASE.md](DATABASE.md).
   low-stock indicator and the Reorder report entry are all disabled. `MinimumQuantitySettings` is
   not modified.
 
+## Uniqueness rules
+
+Two per-Store switches in the "Uniqueness" section of Good properties
+(`GoodPropertiesSettings.uniqueBarcode`, `uniqueGroupName`), both off by default, so existing
+behaviour (duplicates allowed) is unchanged.
+
+- **Unique barcode**: a trimmed barcode may be used by only one Good or Group of a Store. A Good
+  cannot take the barcode of another Good or of a Group, and a Group cannot take the barcode of a
+  Good or of another Group (`ensureBarcodeUnique`, called from `GoodsUseCases` and
+  `GroupsUseCases` insert/update, throws `DuplicateBarcodeException`). An empty barcode never
+  conflicts. Save Good and Save Group show "Another Good or Group already uses this barcode".
+  Excel import skips the conflicting rows (existing Goods or Groups, or earlier rows of the same
+  file).
+- **Unique group**: `GroupsUseCases.insert/update` reject a Group whose trimmed name equals,
+  ignoring case, the name of another Group of the same Store at any folder level
+  (`DuplicateGroupNameException`). The Save Group screen shows "Another Group already has this
+  name". Copying a Group goes through Save Group, so the default "(copy)" name is accepted.
+- Editing is only blocked when the barcode / name actually changes: a Good or Group that was a
+  duplicate before the switch was turned on can still be edited and moved. Turning a switch on does
+  not touch existing duplicates. Each Store's own switch applies to its own Goods and Groups. Data
+  restored from a backup or cloud sync is not checked.
+
 ## Document properties
 
 - Each Store can hide Image (the leading incoming/outgoing icon tile of `DocumentItemRow`, so on
