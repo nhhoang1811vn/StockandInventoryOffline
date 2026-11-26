@@ -204,7 +204,7 @@ behaviour (duplicates allowed) is unchanged.
   returns `false`: locked theme options in
   `lib/presentation/pages/settings/view/settings_view_page.dart` stay locked even for Pro users.
 - There are no other Pro-gated features (owner-confirmed): only the four limits above and the
-  locked themes. `menu_page.dart` only shows a premium badge for Pro users (cosmetic).
+  locked themes. `home_store_header.dart` only shows a PREMIUM tag under the store name for Pro users (cosmetic).
 
 ## Reports
 
