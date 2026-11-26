@@ -30,8 +30,7 @@ Schema: [DATABASE.md](DATABASE.md).
   always allowed, so a Good that is already negative can be restocked. Stock = incoming sum −
   outgoing sum with a `1e-9` tolerance. Quick insert and the Save Good transaction edit check first,
   so a rejected change leaves no Document or half-saved Good. Each check and the write after it run
-  one at a time, so two quick scans of the last unit cannot both pass. Backup restore
-  are not checked.
+  one at a time, so two quick scans of the last unit cannot both pass. Backup restore is not checked.
 - Low stock: a good is low when `minQuantity != null && quantity < minQuantity`
   (`lib/core/services/low_stock_service.dart`). `MainPage` shows a notification when any good is
   low and `MinimumQuantitySettings.showAlert` is enabled
