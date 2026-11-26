@@ -102,26 +102,6 @@ class MenuPageState extends State<MenuPage> {
     return SettingsMenuCard(
       children: [
         SettingsMenuItem(
-          icon: UIConstants.documentIconData,
-          title: context.tr("documents"),
-          onTap: openDocuments,
-        ),
-        SettingsMenuItem(
-          icon: UIConstants.walletIconData,
-          title: context.tr("title_wallet"),
-          onTap: () => Navigator.of(context).pushNamed(Pages.wallet_list),
-        ),
-        SettingsMenuItem(
-          icon: UIConstants.supplierIconData,
-          title: context.tr("suppliers"),
-          onTap: openSuppliers,
-        ),
-        SettingsMenuItem(
-          icon: UIConstants.customerIconData,
-          title: context.tr("customers"),
-          onTap: openCustomers,
-        ),
-        SettingsMenuItem(
           icon: UIConstants.storeIconData,
           title: context.tr("stores"),
           onTap: () => onStoresItemPressed(context),
@@ -234,22 +214,6 @@ class MenuPageState extends State<MenuPage> {
   void onStoresItemPressed(BuildContext context) {
     Navigator.of(context)
         .pushNamed(Pages.store_list, arguments: {"isSelection": false});
-  }
-
-  void openSuppliers() {
-    Navigator.of(context).pushNamed(Pages.supplier_list);
-  }
-
-  void openCustomers() {
-    Navigator.of(context).pushNamed(Pages.customer_list);
-  }
-
-  void openDocuments() {
-    Navigator.of(context).pushNamed(Pages.document_list, arguments: {
-      "documentType": null,
-      "isSelection": false,
-      "setting": null,
-    });
   }
 
   void openPaymentCategories() {
