@@ -56,3 +56,6 @@ android/key.properties
 # freeze
 *.freezed.dart
 *.g.dart
+
+# Windows deploy output (zip)
+/dist/
