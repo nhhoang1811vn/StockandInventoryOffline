@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:good_manager/common/platform_support.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
+enum RestoreResult { proActive, nothingToRestore, failed }
+
 class RevenueCatService {
   static const _iOSApiKey = "appl_KGWoCLtajwNthduUxJssMgKdToD";
   static const _androidApiKey = "goog_CilBoRCyEYZGNZrIUNrscUJnJIJ";
@@ -57,6 +59,22 @@ class RevenueCatService {
       await Purchases.purchase(PurchaseParams.package(package));
     } catch (e) {
       print("Purchase failed: $e");
+    }
+  }
+
+  /// Asks the store for the user's past purchases and moves the entitlement to
+  /// the current RevenueCat app user id.
+  static Future<RestoreResult> restorePurchases() async {
+    if (!isMobilePlatform) return RestoreResult.failed;
+    try {
+      final customerInfo = await Purchases.restorePurchases();
+      return customerInfo.entitlements.active
+              .containsKey(entitlementIdenditifer)
+          ? RestoreResult.proActive
+          : RestoreResult.nothingToRestore;
+    } catch (e) {
+      print("Restore purchases failed: $e");
+      return RestoreResult.failed;
     }
   }
 

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/main/main_page.dart';
@@ -11,6 +10,7 @@ import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../constant/constant.dart';
+import '../../../common/platform_support.dart';
 import '../../../data/app_settings.dart';
 import '../../../domain/entity/entity.dart';
 import '../../../util/util.dart';
@@ -82,8 +82,6 @@ class MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isAnonymous = FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
-
     return BlocConsumer<MenuCubit, MenuState>(
       listener: (context, state) async {},
       builder: (context, state) => Scaffold(
@@ -103,7 +101,7 @@ class MenuPageState extends State<MenuPage> {
         body: ListView(
           padding: const EdgeInsets.only(left: 16, right: 16, bottom: 100),
           children: [
-            _buildProfileCard(isAnonymous),
+            if (_isPro) ...[Align(alignment: AlignmentDirectional.centerStart, child: _buildStockPremiumBadge()), const SizedBox(height: 8)],
             SettingsSectionHeader(context.tr("inventory")),
             _buildManagementCard(),
             SettingsSectionHeader(context.tr("settings")),
@@ -112,10 +110,6 @@ class MenuPageState extends State<MenuPage> {
             _buildSupportCard(),
             SettingsSectionHeader(context.tr("social")),
             _buildSocialCard(),
-            if (!isAnonymous) ...[
-              SettingsSectionHeader(context.tr("account")),
-              _buildAccountActionsCard(),
-            ],
             const SizedBox(height: 32),
             Center(
               child: Text(
@@ -133,130 +127,6 @@ class MenuPageState extends State<MenuPage> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildProfileCard(bool isAnonymous) {
-    final user = FirebaseAuth.instance.currentUser;
-    final theme = Theme.of(context);
-    String? photoUrl;
-    String? displayName;
-    String? email = user?.email;
-    photoUrl = user?.photoURL;
-    displayName = user?.displayName;
-
-    if (user?.providerData.isNotEmpty == true) {
-      var first = user!.providerData.first;
-      email = first.email;
-      photoUrl = first.photoURL;
-      displayName = first.displayName;
-    }
-    // Windows returns "" instead of null when there is no photo.
-    if (photoUrl != null && photoUrl.isEmpty) photoUrl = null;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.cardTheme.color ?? theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(
-                alpha: theme.brightness == Brightness.dark ? 0.1 : 0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: isAnonymous
-            ? _buildAnonymousInfo()
-            : Row(
-                children: [
-                  photoUrl != null
-                      ? CircleAvatar(
-                          radius: 35,
-                          backgroundImage: NetworkImage(photoUrl),
-                          // Offline / DNS failures are expected; do not
-                          // report them to Crashlytics as fatals.
-                          onBackgroundImageError: (_, __) {},
-                        )
-                      : CircleAvatar(
-                          radius: 35,
-                          backgroundColor: theme.colorScheme.primaryContainer,
-                          child: Icon(
-                            Icons.person,
-                            size: 40,
-                            color: theme.colorScheme.primary,
-                          ),
-                        ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          displayName ?? context.tr("user"),
-                          style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 20,
-                            color: theme.colorScheme.onSurface,
-                          ),
-                        ),
-                        if (email != null) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            email,
-                            style: TextStyle(
-                              color: theme.colorScheme.onSurface
-                                  .withValues(alpha: 0.4),
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                        if (_isPro) ...[
-                          const SizedBox(height: 8),
-                          _buildStockPremiumBadge(),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-      ),
-    );
-  }
-
-  Widget _buildAnonymousInfo() {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 35,
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          child: Icon(
-            Icons.person,
-            size: 40,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          "you_are_currently_on_guess_mode".tr(),
-          style: Theme.of(context).textTheme.bodyMedium,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 16),
-        FilledButton.icon(
-          onPressed: () => Navigator.of(context).pushNamed(Pages.link_with),
-          icon: const Icon(Icons.login, size: 18),
-          label: Text("sign_up_or_login".tr()),
-          style: FilledButton.styleFrom(
-            minimumSize: const Size(200, 45),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        ),
-      ],
     );
   }
 
@@ -332,8 +202,15 @@ class MenuPageState extends State<MenuPage> {
           icon: Icons.workspace_premium_outlined,
           title: context.tr("subscriptions_title"),
           onTap: () async => await RevenueCatUI.presentPaywall(),
-          isLast: true,
+          isLast: !isMobilePlatform,
         ),
+        if (isMobilePlatform)
+          SettingsMenuItem(
+            icon: Icons.restore,
+            title: context.tr("restore_purchases"),
+            onTap: _onRestorePurchasesPressed,
+            isLast: true,
+          ),
       ],
     );
   }
@@ -386,44 +263,6 @@ class MenuPageState extends State<MenuPage> {
           isLast: true,
         ),
       ],
-    );
-  }
-
-  Widget _buildAccountActionsCard() {
-    return SettingsMenuCard(
-      children: [
-        SettingsMenuItem(
-          icon: Icons.logout,
-          title: context.tr("sign_out"),
-          iconColor: Colors.redAccent,
-          onTap: () => onLogoutItemPressed(),
-        ),
-        SettingsMenuItem(
-          icon: Icons.delete_forever_outlined,
-          title: context.tr("delete_account"),
-          iconColor: Colors.red,
-          onTap: () => onDeleteAccountItemPressed(),
-          isLast: true,
-        ),
-      ],
-    );
-  }
-
-  void onDeleteAccountItemPressed() {
-    showCustomAlertDialog(
-      context,
-      message: context.tr("message_confirm_delete_account"),
-      onPositivePressed: () async {
-        Navigator.of(context).pop();
-        final deleted = await context.read<MenuCubit>().deleteAccount();
-        if (!mounted) return;
-        if (!deleted) {
-          ToastUtils.showErrorToast(context.tr("error"));
-          return;
-        }
-        Navigator.of(context).pushNamedAndRemoveUntil(
-            Pages.loading_data, (Route<dynamic> route) => false);
-      },
     );
   }
 
@@ -561,6 +400,20 @@ class MenuPageState extends State<MenuPage> {
         .join('&');
   }
 
+  Future<void> _onRestorePurchasesPressed() async {
+    final result = await RevenueCatService.restorePurchases();
+    if (!mounted) return;
+    switch (result) {
+      case RestoreResult.proActive:
+        ToastUtils.showSuccessToast(context.tr("restore_purchases_success"));
+      case RestoreResult.nothingToRestore:
+        ToastUtils.showErrorToast(context.tr("restore_purchases_not_found"));
+      case RestoreResult.failed:
+        ToastUtils.showErrorToast(context.tr("restore_purchases_failed"));
+    }
+    _loadIsPro();
+  }
+
   void onWhatsNew(BuildContext context) async {
     Navigator.of(context).pushNamed(
       Pages.help,
@@ -576,60 +429,4 @@ class MenuPageState extends State<MenuPage> {
 
   void onHelp(BuildContext context) =>
       Navigator.of(context).pushNamed(Pages.helps, arguments: {});
-
-  Future<void> _finishSignOut() async {
-    await context.read<MenuCubit>().signOut();
-    if (!mounted) return;
-    Navigator.of(context).pushNamedAndRemoveUntil(
-      Pages.loading_data,
-      (route) => false,
-    );
-  }
-
-  void onLogoutItemPressed() {
-    showCustomAlertDialog(
-      context,
-      message: context.tr("signout_message"),
-      onPositivePressed: () async {
-        Navigator.of(context).pop();
-        if (!mounted) return;
-        showCustomAlertDialog(
-          context,
-          message: context.tr("question_push_data"),
-          positiveText: context.tr("action_save"),
-          negativeText: context.tr("signout_without_save"),
-          onPositivePressed: () async {
-            Navigator.of(context).pop();
-            if (!mounted) return;
-            var saved = false;
-            try {
-              saved = await context.read<MenuCubit>().upload();
-            } catch (_) {
-              saved = false;
-            }
-            if (!mounted) return;
-            if (!saved) {
-              ToastUtils.showErrorToast(context.tr("upload_failed_signout_cancelled"));
-              return;
-            }
-            await _finishSignOut();
-          },
-          onNegativePressed: () async {
-            Navigator.of(context).pop();
-            if (!mounted) return;
-            showCustomAlertDialog(
-              context,
-              message: context.tr("signout_discard_warning"),
-              positiveText: context.tr("delete"),
-              onPositivePressed: () async {
-                Navigator.of(context).pop();
-                if (!mounted) return;
-                await _finishSignOut();
-              },
-            );
-          },
-        );
-      },
-    );
-  }
 }
