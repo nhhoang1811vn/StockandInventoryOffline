@@ -88,6 +88,7 @@ import '../presentation/pages/settings/my_company/bloc/my_company_cubit.dart'
     as _i25;
 import '../presentation/pages/settings/view/bloc/settings_view_cubit.dart'
     as _i279;
+import '../presentation/pages/startup/bloc/startup_cubit.dart' as _i918;
 import '../presentation/pages/stores/bloc/stores_cubit.dart' as _i895;
 import '../presentation/pages/suppliers/bloc/suppliers_cubit.dart' as _i346;
 import '../presentation/pages/wallets/bloc/wallets_cubit.dart' as _i427;
@@ -200,6 +201,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i697.LowStockService(gh<_i1038.GoodsRepository>()));
     gh.lazySingleton<_i273.SuppliersUseCase>(() =>
         _i273.SuppliersUseCase(repository: gh<_i1038.SuppliersRepository>()));
+    gh.factory<_i918.StartupCubit>(
+        () => _i918.StartupCubit(gh<_i261.StoresUseCase>()));
     gh.lazySingleton<_i785.PaymentUseCases>(() =>
         _i785.PaymentUseCases(repository: gh<_i1038.PaymentRepository>()));
     gh.lazySingleton<_i75.CustomersUseCase>(() =>

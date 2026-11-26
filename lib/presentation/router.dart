@@ -21,7 +21,8 @@ import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.
 import 'package:good_manager/presentation/pages/history/item_history_view.dart';
 import 'package:good_manager/presentation/pages/linkwith/link_with_page.dart';
 import 'package:good_manager/presentation/pages/login/auth_cubit.dart';
-import 'package:good_manager/presentation/pages/login/loading_data.dart';
+import 'package:good_manager/presentation/pages/startup/bloc/startup_cubit.dart';
+import 'package:good_manager/presentation/pages/startup/startup_page.dart';
 import 'package:good_manager/presentation/pages/login/login_page.dart';
 import 'package:good_manager/presentation/pages/main/main_page.dart';
 import 'package:good_manager/presentation/pages/onboarding/bloc/on_boarding_cubit.dart';
@@ -124,8 +125,8 @@ class AppRouter {
       case Pages.loading_data:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (context) => getIt<AuthCubit>(),
-            child: LoadingData(),
+            create: (context) => getIt<StartupCubit>(),
+            child: const StartupPage(),
           ),
         );
       case Pages.main:
