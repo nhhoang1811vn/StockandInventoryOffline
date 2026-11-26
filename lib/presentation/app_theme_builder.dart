@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:good_manager/constant/app_tokens.dart';
+import 'package:good_manager/util/dimen.dart';
 
 SystemUiOverlayStyle appStatusBarStyle(bool isDark) {
   return SystemUiOverlayStyle(
@@ -109,7 +110,7 @@ ThemeData buildAppTheme(Color seed, Brightness brightness) {
       backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
       surfaceTintColor: Colors.transparent,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(Dimens.cardRadius)),
       ),
     ),
     chipTheme: base.chipTheme.copyWith(
