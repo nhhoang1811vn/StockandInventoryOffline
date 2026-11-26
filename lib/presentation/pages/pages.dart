@@ -50,10 +50,5 @@ class Pages {
   static const String barcode_scanner_settings = "/barcode_scanner_settings";
   static const String report = "/report";
   static const String report_detail = "/report_detail";
-
-  static const String signup = "/signup";
-  static const String signIn = "/signIn";
-  static const String forgotPassword = "/forgotPassword";
-  static const String link_with = "/link_with";
   static const String payments = "/payments";
 }

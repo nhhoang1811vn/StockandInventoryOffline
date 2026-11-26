@@ -77,20 +77,4 @@ class RevenueCatService {
       return RestoreResult.failed;
     }
   }
-
-  static Future<void> updateUser(String userId) async {
-    if (!isMobilePlatform) return;
-    try {
-      await Purchases.logIn(userId);
-      print("RevenueCat logged in: $userId");
-    } catch (e) {
-      print("RevenueCat logIn error: $e");
-    }
-  }
-
-  static Future<void> logoutUser() async {
-    if (!isMobilePlatform) return;
-    await Purchases.logOut();
-    print("RevenueCat logged out");
-  }
 }

@@ -3,10 +3,8 @@ import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/util/revenuecat_purchase_manager.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -20,7 +18,6 @@ import 'di/di.dart';
 import 'firebase_options.dart';
 
 List<CameraDescription> cameras = [];
-bool justLogin = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,47 +52,6 @@ void main() async {
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       return true;
     };
-  }
-  final auth = FirebaseAuth.instance;
-  auth.authStateChanges().listen((user) async {
-    if (user != null) {
-      if (user.email != null &&
-          user.email!.isNotEmpty &&
-          user.uid.isNotEmpty) {
-
-        final email = user.email!.trim().toLowerCase();
-        String safeEmail = email.replaceAll('.', ',');
-        final uid = user.uid;
-
-        final db = FirebaseDatabase.instance;
-
-        try {
-          await db.ref().update({
-            "users_by_email/$safeEmail": uid,
-            "users_by_id/$uid": safeEmail
-          });
-        } catch (e, s) {
-          // Offline: the user mapping is best-effort, never fatal.
-          FirebaseCrashlytics.instance.recordError(e, s);
-        }
-      }
-      try {
-        await RevenueCatService.updateUser(user.uid);
-      } catch (e, s) {
-        FirebaseCrashlytics.instance.recordError(e, s);
-      }
-    }
-  });
-  if (auth.currentUser == null) {
-    try {
-      await auth.signInAnonymously();
-    } on FirebaseAuthException catch (e, s) {
-      // Offline first launch: continue without a user, the app works offline.
-      FirebaseCrashlytics.instance.recordError(e, s);
-    }
-  }else{
-    //open app with valid user, sync the data
-    //syncService.upload();
   }
   runApp(
     EasyLocalization(

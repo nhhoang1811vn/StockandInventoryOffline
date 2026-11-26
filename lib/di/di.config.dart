@@ -43,7 +43,6 @@ import '../presentation/pages/documents_history/bloc/documents_history_cubit.dar
 import '../presentation/pages/goods/bloc/goods_cubit.dart' as _i346;
 import '../presentation/pages/history/bloc/item_history_cubit.dart' as _i653;
 import '../presentation/pages/home/bloc/home_cubit.dart' as _i12;
-import '../presentation/pages/login/auth_cubit.dart' as _i995;
 import '../presentation/pages/menu/bloc/menu_cubit.dart' as _i207;
 import '../presentation/pages/onboarding/bloc/on_boarding_cubit.dart' as _i573;
 import '../presentation/pages/payment/bloc/payments_cubit.dart' as _i179;
@@ -222,8 +221,6 @@ extension GetItInjectableX on _i174.GetIt {
             useCase: gh<_i704.PaymentCategoryUseCases>()));
     gh.factory<_i921.SelectGroupCubit>(() =>
         _i921.SelectGroupCubit(groupsUseCase: gh<_i704.GroupsUseCases>()));
-    gh.factory<_i995.AuthCubit>(
-        () => _i995.AuthCubit(useCase: gh<_i704.StoresUseCase>()));
     gh.factory<_i573.OnBoardingCubit>(
         () => _i573.OnBoardingCubit(useCase: gh<_i704.StoresUseCase>()));
     gh.factory<_i923.SaveStoreCubit>(

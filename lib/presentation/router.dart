@@ -11,7 +11,6 @@ import 'package:good_manager/presentation/pages/documents/bloc/documents_cubit.d
 import 'package:good_manager/presentation/pages/documents/documents_view.dart';
 import 'package:good_manager/presentation/pages/documents_history/bloc/documents_history_cubit.dart';
 import 'package:good_manager/presentation/pages/documents_history/documents_history_page.dart';
-import 'package:good_manager/presentation/pages/forgotpassword/forgot_password_page.dart';
 import 'package:good_manager/presentation/pages/goods/bloc/goods_cubit.dart';
 import 'package:good_manager/presentation/pages/goods/goods_list_view_page.dart';
 import 'package:good_manager/presentation/pages/goods/goods_view.dart';
@@ -19,11 +18,8 @@ import 'package:good_manager/presentation/pages/help/help_page_dart.dart';
 import 'package:good_manager/presentation/pages/help/helps_page_dart.dart';
 import 'package:good_manager/presentation/pages/history/bloc/item_history_cubit.dart';
 import 'package:good_manager/presentation/pages/history/item_history_view.dart';
-import 'package:good_manager/presentation/pages/linkwith/link_with_page.dart';
-import 'package:good_manager/presentation/pages/login/auth_cubit.dart';
 import 'package:good_manager/presentation/pages/startup/bloc/startup_cubit.dart';
 import 'package:good_manager/presentation/pages/startup/startup_page.dart';
-import 'package:good_manager/presentation/pages/login/login_page.dart';
 import 'package:good_manager/presentation/pages/main/main_page.dart';
 import 'package:good_manager/presentation/pages/onboarding/bloc/on_boarding_cubit.dart';
 import 'package:good_manager/presentation/pages/onboarding/on_boarding_page.dart';
@@ -75,7 +71,6 @@ import 'package:good_manager/presentation/pages/settings/my_company/my_company_p
 import 'package:good_manager/presentation/pages/settings/settings_page.dart';
 import 'package:good_manager/presentation/pages/settings/view/bloc/settings_view_cubit.dart';
 import 'package:good_manager/presentation/pages/settings/view/settings_view_page.dart';
-import 'package:good_manager/presentation/pages/signup/signup_page.dart';
 import 'package:good_manager/presentation/pages/splash_page.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
 import 'package:good_manager/presentation/pages/stores/stores_page.dart';
@@ -372,47 +367,6 @@ class AppRouter {
           BlocProvider(
             create: (context) => getIt<BarcodeScannerSettingsCubit>(),
             child: BarcodeScannerSettingsPage(),
-          ),
-        );
-      case Pages.signup:
-        return _buildRoute(
-          settings,
-          BlocProvider(
-            create: (context) => getIt<AuthCubit>(),
-            child: SignUpPage(),
-          ),
-        );
-      case Pages.signIn:
-        return _buildRoute(
-          settings,
-          BlocProvider(
-            create: (context) => getIt<AuthCubit>(),
-            child: LoginPage(),
-          ),
-        );
-      // case Pages.upgrade_account:
-      //   return _buildRoute(
-      //     settings,
-      //     BlocProvider(
-      //       create: (context) => getIt<AuthCubit>(),
-      //       child: LoginScreen(),
-      //     ),
-      //   );
-      case Pages.link_with:
-        return _buildRoute(
-          settings,
-          BlocProvider(
-            create: (context) => getIt<AuthCubit>(),
-            child: LinkWithPage(),
-          ),
-        );
-
-      case Pages.forgotPassword:
-        return _buildRoute(
-          settings,
-          BlocProvider(
-            create: (context) => getIt<AuthCubit>(),
-            child: ForgotPasswordPage(),
           ),
         );
       case Pages.onboarding:
