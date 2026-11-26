@@ -28,4 +28,38 @@ void main() {
 
     expect([downloads, guides], [1, 1]);
   });
+
+  testWidgets('banner uses the same card surface as the other cards',
+      (tester) async {
+    for (final brightness in [Brightness.light, Brightness.dark]) {
+      final theme = ThemeData(
+        colorSchemeSeed: Colors.teal,
+        brightness: brightness,
+        cardTheme: CardThemeData(
+          color: brightness == Brightness.dark
+              ? const Color(0xFF1E1E1E)
+              : Colors.white,
+        ),
+      );
+      await tester.pumpWidget(MaterialApp(
+        theme: theme,
+        home: Scaffold(
+          body: HomeWindowsBanner(
+            title: 'Now on Windows',
+            message: 'Download it',
+            downloadLabel: 'Download',
+            guideLabel: 'Guide',
+            onDownload: () {},
+            onGuide: () {},
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle(); // let the theme change finish animating
+
+      final card =
+          tester.widget<Material>(find.byKey(const Key('windows_banner_card')));
+      expect(card.color, theme.cardTheme.color, reason: '$brightness');
+      expect(card.borderRadius, BorderRadius.circular(22));
+    }
+  });
 }
