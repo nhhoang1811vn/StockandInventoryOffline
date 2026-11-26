@@ -24,7 +24,7 @@ void main() {
       final map = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
       for (final key in ['v2_announcement_title', 'whats_new_v2_title']) {
         final value = map[key] as String;
-        expect(value, contains('Stock Inventory Online'), reason: '$locale $key');
+        expect(value, contains('Stock & Inventory: Cloud Sync'), reason: '$locale $key');
         expect(value, isNot(contains('2.0.0')), reason: '$locale $key');
       }
     });
