@@ -8,7 +8,7 @@ Current implementation only. Entry summary: [../CONTEXT.md](../CONTEXT.md).
 Presentation  lib/presentation/   pages, widgets, Cubits (bloc/ folders), router
 Domain        lib/domain/         entities, use cases, FreeLimits
 Repository    lib/repo/           one class per aggregate
-Data          lib/data/           DBHelper (SQL), DbService (backup), realtime/, report_data/, AppSettings
+Data          lib/data/           DBHelper (SQL), DbService (backup), report_data/, AppSettings
 ```
 
 Dependency flow: Cubit → UseCase → Repository → `DBHelper` (`lib/data/db/db_helper.dart`).
@@ -20,17 +20,12 @@ Observed deviations from strict layering:
   (`lib/repo/goods_repository.dart`, `lib/repo/documents_repository.dart`).
 - `DocumentUseCases.insert` increments the auto document number through `AppSettings`
   (`lib/domain/usecase/documents/document_usecases.dart`).
-- `SettingsDataCubit` constructs `DbServiceRealtime` itself from injected repositories
-  (`lib/presentation/pages/settings/data/bloc/settings_data_cubit.dart`).
-- `AuthCubit` and `MenuCubit` call `DBHelper` / `DbService` / `FirebaseStorage` directly
-  (`lib/presentation/pages/login/auth_cubit.dart`,
-  `lib/presentation/pages/menu/bloc/menu_cubit.dart`).
-- `DbService` (backup) and `DbServiceRealtime` are not registered in DI.
+- `DbService` (backup) is not registered in DI; the backup page creates it from `DBHelper`
+  (`lib/presentation/pages/settings/data/settings_data_page.dart`).
 - Widgets contain logic in places, so "no business logic in widgets" (AGENTS.md) is a target, not
   the
-  current state: `home_page.dart` calls `getIt<SettingsDataCubit>().syncToRealtimeDB()`,
-  `settings_view_page.dart` reads `AppSettings.isPro()`, `save_good_form.dart` builds a `Document`.
-- Not every cubit follows the pattern below: `AuthCubit` and `WalletsCubit` have non-freezed states;
+  current state: `settings_view_page.dart` reads `AppSettings.isPro()`, `save_good_form.dart` builds a `Document`.
+- Not every cubit follows the pattern below: `StartupCubit` and `WalletsCubit` have non-freezed states;
   `AppCubit` is not `@injectable`; the add-quantity cubit is created inside a widget
   (`blocs/add_quantity_and_price/`).
 
@@ -38,17 +33,15 @@ Observed deviations from strict layering:
 
 `lib/main.dart`, in order: `EasyLocalization.ensureInitialized` → `configureDependencies` →
 `Hive.initFlutter` → `PrefStorage.init` + `AppSettings.initialize` → `RevenueCatService.init` →
-`availableCameras` → `Firebase.initializeApp` → Crashlytics hooks → `authStateChanges` listener (for
-a user with a non-empty email: writes `users_by_email` / `users_by_id` to Realtime DB; then
-`RevenueCatService.updateUser`) →
-`signInAnonymously` if no user → `runApp(EasyLocalization(MyApp))`.
+`availableCameras` → `Firebase.initializeApp` → Crashlytics hooks → `runApp(EasyLocalization(MyApp))`.
+There is no sign-in step.
 
 `MyApp` (`lib/app.dart`) provides `AppCubit` (theme, language, selected tab) and starts at route
-`Pages.loading_data`. `LoadingData` runs `AuthCubit.checkStore()` (or `downloadUserData()` when the
-global `justLogin` in `main.dart` is true) and then replaces the stack with `Pages.main` (a store
-exists) or `Pages.onboarding` (no store) (`lib/presentation/pages/login/loading_data.dart`). On
-failure `AuthCubit`
-emits `StartupFailure` and the page shows a retry button.
+`Pages.loading_data`. `StartupPage` runs `StartupCubit.load()` and then replaces the stack with
+`Pages.main` (a store exists) or `Pages.onboarding` (no store); if the saved selected store no
+longer exists, the first store is selected
+(`lib/presentation/pages/startup/`). On failure `StartupCubit` emits `StartupFailure` and the page
+shows a retry button.
 
 ## State management
 

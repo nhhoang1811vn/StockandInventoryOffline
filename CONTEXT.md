@@ -38,14 +38,15 @@ _Avoid_: offline app (in user-facing copy unless contrasting with the Online ver
 
 - Stock/inventory manager: stores, goods, groups, suppliers, customers, stock documents,
   wallets, payments, reports. (`lib/domain/entity/`)
-- SQLite is the source of truth. Firebase Anonymous Auth is signed in at startup (`lib/main.dart`).
-  Cloud backup/restore and a one-way Realtime Database push are optional.
-- Version: `1.0.95+116` (`pubspec.yaml`).
+- SQLite is the source of truth. There are no accounts and no cloud sync: the app is local-only
+  (`docs/adr/0004-remove-accounts-and-cloud.md`). Firebase is initialised only for Crashlytics and
+  Analytics (`lib/main.dart`). Backup is a JSON file (`lib/data/db_service.dart`).
+- Version: `1.0.97+118` (`pubspec.yaml`).
 - Platforms: Android and iOS (built in CI, `codemagic.yaml`) and Windows (debug build and launch
   verified with Visual Studio "Desktop development with C++"; not built in CI). macOS, Linux and web
   folders are
   unsupported scaffolding. On Windows `sqflite` runs through `sqflite_common_ffi` (`lib/main.dart`);
-  RevenueCat (Pro is always off), Crashlytics, Analytics, notifications, Google/Apple sign-in, image
+  RevenueCat (Pro is always off), Crashlytics, Analytics, notifications, image
   crop/compress and camera capture are disabled via `isMobilePlatform`
   (`lib/common/platform_support.dart`).
   The barcode scanner (`mobile_scanner`) is not supported on Windows.
@@ -58,8 +59,7 @@ _Avoid_: offline app (in user-facing copy unless contrasting with the Online ver
 | DI            | `get_it`, `injectable` (+ `injectable_generator`)                                  |
 | Database      | `sqflite`                                                                          |
 | Key-value     | `shared_preferences` (via `lib/common/storage/`), `hive` (box `settings`)          |
-| Backend       | `firebase_core/auth/storage/database/analytics/crashlytics`                        |
-| Sign-in       | `google_sign_in`, `sign_in_with_apple`, email/password (`firebase_auth`)           |
+| Backend       | `firebase_core/analytics/crashlytics`                                              |
 | Purchases     | `purchases_flutter`, `purchases_ui_flutter`                                        |
 | i18n          | `easy_localization` — 11 locales, JSON in `assets/translations/`                   |
 | Files/reports | `csv`, `archive`, `xml`, `pdf`, `printing`, `file_picker`, `share_plus`            |
@@ -67,7 +67,7 @@ _Avoid_: offline app (in user-facing copy unless contrasting with the Online ver
 | Biometrics    | `local_auth` (fingerprint unlock, `lib/core/services/biometric_auth_service.dart`) |
 
 Declared in `pubspec.yaml` but not imported anywhere in `lib/`: `camera_windows`,
-`desktop_webview_auth`, `fluttertoast`, `open_file`. Do not build on them.
+`fluttertoast`, `open_file`. Do not build on them.
 
 Dart and Flutter SDK versions: see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#prerequisites).
 
@@ -83,7 +83,7 @@ lib/
   main.dart, app.dart, app_cubit.dart   startup, MaterialApp, theme/language cubit
   common/ constant/ util/ models/       paths, storage wrapper, constants, helpers, Hive models
   core/services/                        notification_service, low_stock_service
-  data/                                 db/db_helper.dart, db_service.dart, realtime/, report_data/, app_settings.dart
+  data/                                 db/db_helper.dart, db_service.dart, report_data/, app_settings.dart
   di/                                   di.dart, app_module.dart, di.config.dart (generated, tracked)
   domain/                               entity/, usecase/, free_limits.dart, exception/
   repo/                                 one repository per aggregate
@@ -102,14 +102,14 @@ docs/adr/                               architecture decision records
 | Repositories | Pass-through to `DBHelper`; set timestamps; read selected store          | `lib/repo/`                                      |
 | DBHelper     | Schema, migrations, all SQL                                              | `lib/data/db/db_helper.dart`                     |
 | AppSettings  | Static facade for preferences (selected store, filters, theme, passcode) | `lib/data/app_settings.dart`                     |
-| Backup/sync  | JSON export/import; Realtime DB push                                     | `lib/data/db_service.dart`, `lib/data/realtime/` |
+| Backup       | JSON export/import                                                       | `lib/data/db_service.dart`                       |
 | Reports      | 19 report types                                                          | `lib/data/report_data/`                          |
 | Pages        | One folder per feature with its cubit                                    | `lib/presentation/pages/`                        |
 
 ## State management conventions
 
 Cubit + freezed state, created per route by `BlocProvider(create: (_) => getIt<XCubit>())`.
-Exceptions: `AuthCubit` and `WalletsCubit` use plain (non-freezed) state classes; `AppCubit` is not
+Exceptions: `StartupCubit` and `WalletsCubit` use plain (non-freezed) state classes; `AppCubit` is not
 injected; the add-quantity cubit is built inside a widget.
 UI actions are signalled through a `BaseState` field inside the state
 (`lib/presentation/pages/base/base_state.dart`).
@@ -134,15 +134,9 @@ SQLite file `main.db`, schema version 8, 12 tables. See [docs/DATABASE.md](docs/
 
 ## Backend integrations
 
-- Firebase Auth: anonymous at startup; can be linked to email, Google or Apple, or the user can sign
-  in /
-  sign up directly, after which cloud data is downloaded
-  (`lib/presentation/pages/login/auth_cubit.dart`).
-- Firebase Storage: backup file `2026/<uid>/data.json`.
-- Firebase Realtime Database: user lookup index and one-way store sync (`lib/main.dart`,
-  `lib/data/realtime/db_service_realtime.dart`).
-- Analytics (route observer, a few events) and Crashlytics (`lib/main.dart`, `lib/app.dart`).
-- RevenueCat: entitlement check (`lib/util/revenuecat_purchase_manager.dart`).
+- Firebase: `firebase_core` initialises Analytics (route observer, a few events) and Crashlytics
+  (`lib/main.dart`, `lib/app.dart`). There is no Auth, Storage or Realtime Database.
+- RevenueCat: entitlement check and "Restore purchases" (`lib/util/revenuecat_purchase_manager.dart`).
 
 ## Important business rules
 

@@ -3,6 +3,12 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceZH {
   static const bundle = MarkdownBundle(
     whatNews: """
+### 版本 1.0.97 - 2026年11月26日
+* 已移除账户功能：不再有注册、登录和云备份。应用完全在设备上运行，您的数据保持不变。
+* 您的 Pro 订阅仍然有效。重新安装或更换手机后，请在 菜单 > 恢复购买 中找回。
+* 已移除首页的 Online 应用横幅。
+* 如需保留数据副本，请在备份与恢复中保存为文件。
+
 ### 版本 1.0.96 - 2026年11月24日
 * 新增商品属性设置：可为每个店铺隐藏图片、条码、描述或最低库存。已填写的值会保留。可在设置或菜单中打开。
 * 新增数量字段设置：选择小数位数（0 到 6）。适用于列表、输入框、报表和导出。

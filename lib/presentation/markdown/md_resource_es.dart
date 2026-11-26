@@ -3,6 +3,12 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceES {
   static const bundle = MarkdownBundle(
     whatNews: """
+### Versión 1.0.97 - 26 nov 2026
+* Se eliminaron las cuentas: ya no hay registro, inicio de sesión ni copia en la nube. La app funciona por completo en tu dispositivo y tus datos no cambian.
+* Tu suscripción Pro sigue activa. Tras reinstalar o cambiar de teléfono, usa Menú > Restaurar compras para recuperarla.
+* Se quitó el banner de la app Online en Inicio.
+* Para conservar una copia de tus datos, guarda un archivo en Copia de seguridad y restauración.
+
 ### Versión 1.0.96 - 24 nov 2026
 * Nuevo ajuste Propiedades del artículo: oculta Imagen, Código de barras, Descripción o Cantidad mínima en cada tienda. Los valores se conservan. Disponible en Ajustes o en el Menú.
 * Nuevo ajuste Campo de cantidad: elige cuántos decimales (0 a 6) se muestran. Se aplica a listas, campos, informes y exportaciones.

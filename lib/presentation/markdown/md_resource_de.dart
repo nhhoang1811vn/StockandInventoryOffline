@@ -3,6 +3,12 @@ import 'package:good_manager/presentation/markdown/md_bundle.dart';
 class MarkdownResourceDE {
   static const bundle = MarkdownBundle(
     whatNews: """
+### Version 1.0.97 - 26. Nov. 2026
+* Konten entfallen: keine Registrierung, Anmeldung oder Cloud-Sicherung mehr. Die App arbeitet komplett auf dem Gerät, Ihre Daten bleiben unverändert.
+* Ihr Pro-Abo bleibt aktiv. Nach einer Neuinstallation oder einem Gerätewechsel stellen Sie es über Menü > Käufe wiederherstellen wieder her.
+* Das Banner zur Online-App auf der Startseite wurde entfernt.
+* Um eine Kopie Ihrer Daten zu behalten, speichern Sie über Sicherung und Wiederherstellung eine Datei.
+
 ### Version 1.0.96 - 24. Nov. 2026
 * Neue Einstellung Artikeleigenschaften: Bild, Barcode, Beschreibung oder Mindestmenge pro Geschäft ausblenden. Die Werte bleiben erhalten. Zu finden in Einstellungen oder Menü.
 * Neue Einstellung Mengenfeld: Anzahl der Nachkommastellen (0 bis 6) festlegen. Gilt für Listen, Eingaben, Berichte und Exporte.

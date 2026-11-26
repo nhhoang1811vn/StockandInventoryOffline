@@ -30,7 +30,7 @@ Schema: [DATABASE.md](DATABASE.md).
   always allowed, so a Good that is already negative can be restocked. Stock = incoming sum −
   outgoing sum with a `1e-9` tolerance. Quick insert and the Save Good transaction edit check first,
   so a rejected change leaves no Document or half-saved Good. Each check and the write after it run
-  one at a time, so two quick scans of the last unit cannot both pass. Backup restore and cloud sync
+  one at a time, so two quick scans of the last unit cannot both pass. Backup restore
   are not checked.
 - Low stock: a good is low when `minQuantity != null && quantity < minQuantity`
   (`lib/core/services/low_stock_service.dart`). `MainPage` shows a notification when any good is
@@ -112,7 +112,7 @@ behaviour (duplicates allowed) is unchanged.
 - Editing is only blocked when the barcode / name actually changes: a Good or Group that was a
   duplicate before the switch was turned on can still be edited and moved. Turning a switch on does
   not touch existing duplicates. Each Store's own switch applies to its own Goods and Groups. Data
-  restored from a backup or cloud sync is not checked.
+  restored from a backup is not checked.
 
 ## Document properties
 
@@ -248,21 +248,16 @@ counterparts: by date lists every day, by item lists every Good (All or one Grou
 every Supplier plus a last "No supplier" row (or one chosen Supplier), by month asks for one of the
 5 most recent years and lists months 1–12.
 
-## Account, backup, sync
+## Backup and Pro
 
-- A Firebase anonymous user is created at startup. Linking to email/Google/Apple uses
-  `linkWithCredential`; direct email/Google/Apple sign-in and email sign-up also exist
-  (`lib/presentation/pages/login/auth_cubit.dart`). `downloadUserData` fetches the cloud file and
-  replaces
-  local data.
-- Upload: DB → JSON → `2026/<uid>/data.json`. Download replaces local data through
-  `DbService.importFromFile`.
-- Sign-out signs in anonymously again and **deletes the local database**
-  (`lib/presentation/pages/menu/bloc/menu_cubit.dart`).
-- Realtime DB push (`DbServiceRealtime.syncLocalToNetwork`): assigns a 6-char `networkId` to stores
-  without one, computes goods/document quantities in memory, writes membership entries for the
-  current uid as `"admin"`. Purpose (owner-confirmed): push local data to the
-  Online app's Realtime Database. Context: `docs/adr/0003-keep-home-migration-banner.md`.
+- There are no accounts. Backup is a JSON file exported and imported through `DbService`
+  (Settings > Backup and restore). Import replaces local data.
+- Pro is a RevenueCat entitlement tied to the store account. The app never calls `Purchases.logIn`;
+  RevenueCat keeps the app user id cached on the device. After a reinstall or a new phone the user
+  restores Pro from Menu > Restore purchases (`RevenueCatService.restorePurchases`). The RevenueCat
+  project setting "Transfer to new App User ID" makes the entitlement follow the restoring user.
+- Removed in 1.0.97: sign-up/sign-in, cloud backup (`2026/<uid>/data.json`), the Realtime DB push and
+  the Home banner for the Online app (`docs/adr/0004-remove-accounts-and-cloud.md`).
 
 ## Passcode
 

@@ -73,8 +73,8 @@ upgraded from < v6 therefore differ from fresh installs in that constraint.
 4. `getGoodByBarcode` has no `storeId` filter.
 5. Stock quantities and counts are computed with per-row queries (`getGoods`, `getSuppliers`,
    `getDocuments`).
-6. `DBHelper.reset()` deletes the database file (used by sign-out,
-   `lib/presentation/pages/menu/bloc/menu_cubit.dart`).
+6. `DBHelper.reset()` deletes the database file. Nothing in the app calls it any more (sign-out was
+   removed in 1.0.97).
 
 ## Backup and restore (`lib/data/db_service.dart`)
 
@@ -87,18 +87,13 @@ upgraded from < v6 therefore differ from fresh installs in that constraint.
   PaymentCategory, Wallets, Payments, Medias and Stores, then inserts with
   `ConflictAlgorithm.replace`. `Documents` is not in the explicit delete list. `meta.version` is
   not checked.
-- Cloud copy: `2026/<uid>/data.json` in Firebase Storage
-  (`lib/presentation/pages/login/auth_cubit.dart`,
-  `lib/presentation/pages/menu/bloc/menu_cubit.dart`,
-  `lib/presentation/pages/settings/data/settings_data_page.dart`).
-- Realtime DB push: `lib/data/realtime/db_service_realtime.dart` (one-way, local → network).
-  Database rules: UNKNOWN (no rules file in the repo).
+- No cloud copy or Realtime DB push exists since 1.0.97
+  (`docs/adr/0004-remove-accounts-and-cloud.md`).
 
 ## Checklist for a schema change
 
 1. Bump `version` in `initDb` and add `migrationScripts[N]`. Never edit older entries.
 2. Update `_onCreate` to the new shape.
 3. Update the entity `map`/`toMap` and the queries in `DBHelper`.
-4. Update export/import in `lib/data/db_service.dart` and the realtime entity mapping if the table
-   is synced.
+4. Update export/import in `lib/data/db_service.dart` if the table is part of backup.
 5. Update this file and test an upgrade from the previous version.

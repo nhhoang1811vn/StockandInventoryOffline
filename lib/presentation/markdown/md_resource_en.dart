@@ -1,5 +1,11 @@
 class MarkdownResourceEN {
   static const String whatNews = """
+### Version 1.0.97 - 26 Nov 2026
+* Accounts are gone: no more sign up, sign in or cloud backup. The app now works fully on your device, and your data is unchanged.
+* Your Pro subscription stays active. After reinstalling or changing phone, use Menu > Restore purchases to get it back.
+* The Online app banner on Home was removed.
+* To keep a copy of your data, use Backup and restore to save a file.
+
 ### Version 1.0.96 - 24 Nov 2026
 * New Good properties setting: hide Image, Barcode, Description or Minimum quantity for a store. Hidden values are kept. Open it from Settings or the Menu.
 * New Quantity field setting: choose how many digits (0 to 6) appear after the decimal point. It applies to lists, inputs, reports and exports.
