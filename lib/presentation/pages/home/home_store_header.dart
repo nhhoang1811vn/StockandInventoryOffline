@@ -74,7 +74,7 @@ class HomeStoreHeader extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Icon(
-                            Icons.unfold_more_rounded,
+                            Icons.keyboard_arrow_down_rounded,
                             key: const Key('home_store_switch_icon'),
                             size: 22,
                             color: theme.colorScheme.primary,

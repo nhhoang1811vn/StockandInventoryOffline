@@ -23,7 +23,7 @@ void main() {
 
     expect(find.text('My Shop'), findsOneWidget);
     expect(find.byKey(const Key('home_store_switch_icon')), findsOneWidget);
-    expect(find.byIcon(Icons.unfold_more_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.keyboard_arrow_down_rounded), findsOneWidget);
     expect(find.byIcon(Icons.person), findsNothing);
   });
 
