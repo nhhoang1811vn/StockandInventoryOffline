@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/common/platform_support.dart';
@@ -13,12 +11,10 @@ import 'package:good_manager/presentation/pages/home/home_wallets_section.dart';
 import 'package:good_manager/presentation/pages/home/home_windows_banner.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
 import 'package:good_manager/util/currency_formatter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../constant/app_tokens.dart';
 import '../../../constant/constant.dart';
-import '../../../di/di.dart';
 import '../../../domain/entity/entity.dart';
 import '../../../domain/free_limits.dart';
 import '../../../util/base64_utils.dart';
@@ -29,7 +25,6 @@ import '../base/base_state.dart';
 import '../documents/components/document_item_row.dart';
 import '../main/main_page.dart';
 import '../pages.dart';
-import '../settings/data/bloc/settings_data_cubit.dart';
 
 class HomePage extends StatefulWidget {
   final VoidCallback onOpenGoodsPage;
@@ -52,21 +47,6 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     context.read<HomeCubit>().initState();
-    _checkShowVersionInfo();
-  }
-
-  void _checkShowVersionInfo() async {
-    final prefs = await SharedPreferences.getInstance();
-    bool isSkipped = prefs.getBool('version_2_0_0_skipped') ?? false;
-    if (isSkipped) return;
-
-    int showCount = prefs.getInt('version_2_0_0_show_count') ?? 0;
-    if (showCount < 3) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _showVersionInfoDialog();
-      });
-      await prefs.setInt('version_2_0_0_show_count', showCount + 1);
-    }
   }
 
   @override
@@ -152,8 +132,6 @@ class HomePageState extends State<HomePage> {
                     );
                   },
                 ),
-                const SizedBox(height: _cardGap),
-                _buildAnnouncementCard(),
                 // The Windows version only matters to Android/iOS users.
                 if (isMobilePlatform) ...[
                   const SizedBox(height: _cardGap),
@@ -196,14 +174,6 @@ class HomePageState extends State<HomePage> {
     final store = state.selectedStore;
     final storeName = store?.name ?? AppSettings.getSelectedStoreName();
     final Uint8List? storeLogoBytes = tryDecodeBase64(store?.file);
-
-    final user = FirebaseAuth.instance.currentUser;
-    String? photoUrl = user?.photoURL;
-    if (user?.providerData.isNotEmpty == true) {
-      photoUrl = user!.providerData.first.photoURL;
-    }
-    // Windows returns "" instead of null when there is no photo.
-    if (photoUrl != null && photoUrl.isEmpty) photoUrl = null;
 
     return Row(
       children: [
@@ -248,13 +218,7 @@ class HomePageState extends State<HomePage> {
           child: CircleAvatar(
             radius: 24,
             backgroundColor: theme.colorScheme.primaryContainer,
-            backgroundImage: photoUrl != null ? NetworkImage(photoUrl) : null,
-            // Offline / DNS failures while loading the avatar are expected;
-            // handling them here keeps them out of Crashlytics as fatals.
-            onBackgroundImageError: photoUrl != null ? (_, __) {} : null,
-            child: photoUrl == null
-                ? Icon(Icons.person, size: 24, color: theme.colorScheme.primary)
-                : null,
+            child: Icon(Icons.person, size: 24, color: theme.colorScheme.primary),
           ),
         ),
       ],
@@ -755,236 +719,5 @@ class HomePageState extends State<HomePage> {
       Pages.save_payment,
       arguments: {'item': item},
     ).then((value) => context.read<HomeCubit>().initState());
-  }
-
-  Widget _buildAnnouncementCard() {
-    final user = FirebaseAuth.instance.currentUser;
-    final isGuest = user == null || user.isAnonymous;
-    final theme = Theme.of(context);
-
-    return Material(
-      color: theme.colorScheme.primaryContainer,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        onTap: () => _showVersionInfoDialog(),
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.rocket_launch, color: theme.colorScheme.primary),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      context.tr("v2_announcement_title"),
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                context.tr("v2_announcement_subtitle"),
-                style: theme.textTheme.bodySmall,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                context.tr("v2_migration_guide"),
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              if (isGuest) ...[
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border:
-                        Border.all(color: Colors.orange.withValues(alpha: 0.5)),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.warning_amber_rounded,
-                          color: Colors.orange, size: 16),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          context.tr("guest_mode_sync_warning"),
-                          style: theme.textTheme.labelSmall
-                              ?.copyWith(color: Colors.orange[900]),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pushNamed(Pages.link_with);
-                        },
-                        child: Text(context.tr("login")),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          context.tr("step_1_sync_your_data"),
-                          style: theme.textTheme.bodySmall,
-                        ),
-                        const SizedBox(height: 8),
-                        ElevatedButton(
-                          onPressed: isGuest ? null : () => onSyncDataPressed(),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                          child: Text(context.tr("sync_data")),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          context.tr("step_2_download_new_app"),
-                          style: theme.textTheme.bodySmall,
-                        ),
-                        const SizedBox(height: 8),
-                        ElevatedButton(
-                          onPressed: () async {
-                            if (Platform.isAndroid) {
-                              NavigatorUtils.openUrl(
-                                "https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutteronline",
-                              );
-                            } else {
-                              NavigatorUtils.openUrl(
-                                "https://apps.apple.com/us/app/stock-inventory-online/id6761761103",
-                              );
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: theme.colorScheme.primary,
-                            foregroundColor: theme.colorScheme.onPrimary,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                          child: Text(context.tr("download_now")),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Text(
-                context.tr("tap_to_learn_new_features"),
-                style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void onSyncDataPressed() async {
-    showProgressIndicator(context);
-    final error = await getIt<SettingsDataCubit>().syncToRealtimeDB();
-    hideDialog(context);
-    if (error == null) {
-      ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
-    } else {
-      ToastUtils.showErrorToast(error);
-    }
-  }
-
-  void _showVersionInfoDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: Text(context.tr("whats_new_v2_title")),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(context.tr("whats_new_v2_heading"),
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 12),
-              _buildFeatureRow(
-                  Icons.cloud, context.tr("v2_feature_online_mode")),
-              _buildFeatureRow(Icons.sync, context.tr("v2_feature_realtime")),
-              _buildFeatureRow(Icons.share, context.tr("v2_feature_sharing")),
-              _buildFeatureRow(
-                  Icons.manage_accounts, context.tr("v2_feature_roles")),
-              _buildFeatureRow(
-                  Icons.people, context.tr("v2_feature_multiuser")),
-              _buildFeatureRow(
-                  Icons.flash_on, context.tr("v2_feature_performance")),
-              const Divider(height: 24),
-              Text(context.tr("v2_migration_heading"),
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 12),
-              _buildFeatureRow(
-                  Icons.looks_one, context.tr("v2_migration_step_1")),
-              _buildFeatureRow(
-                  Icons.looks_two, context.tr("v2_migration_step_2")),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              final prefs = await SharedPreferences.getInstance();
-              await prefs.setBool('version_2_0_0_skipped', true);
-              Navigator.pop(context);
-            },
-            child: Text(context.tr("skip"),
-                style: const TextStyle(color: Colors.grey)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(context.tr("ok")),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeatureRow(IconData icon, String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(width: 8),
-          Expanded(
-              child: Text(text, style: Theme.of(context).textTheme.bodySmall)),
-        ],
-      ),
-    );
   }
 }
