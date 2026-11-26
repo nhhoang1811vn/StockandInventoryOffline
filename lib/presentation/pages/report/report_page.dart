@@ -94,26 +94,7 @@ class ReportPageState extends State<ReportPage> {
   Widget _buildSectionHeader(String title, {bool showNewTag = false}) {
     return SettingsSectionHeader(
       title,
-      tag: showNewTag ? _buildNewTag() : null,
-    );
-  }
-
-  Widget _buildNewTag() {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        context.tr("tag_new"),
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w800,
-          color: theme.colorScheme.primary,
-        ),
-      ),
+      tag: showNewTag ? SettingsNewTag(label: context.tr("tag_new")) : null,
     );
   }
 

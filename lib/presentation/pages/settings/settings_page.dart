@@ -45,12 +45,14 @@ class SettingsPageState extends State<SettingsPage> {
               SettingsMenuItem(
                 icon: Icons.checklist_rounded,
                 title: context.tr("good_properties"),
+                tag: SettingsNewTag(label: context.tr("tag_new")),
                 onTap: () => Navigator.of(context)
                     .pushNamed(Pages.settings_good_properties),
               ),
               SettingsMenuItem(
                 icon: Icons.description_outlined,
                 title: context.tr("document_properties"),
+                tag: SettingsNewTag(label: context.tr("tag_new")),
                 onTap: () => Navigator.of(context)
                     .pushNamed(Pages.settings_document_properties),
               ),

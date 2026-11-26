@@ -137,6 +137,9 @@ class SettingsMenuItem extends StatelessWidget {
   final Color? iconColor;
   final bool isLast;
 
+  /// Optional tag shown after the title (for example [SettingsNewTag]).
+  final Widget? tag;
+
   const SettingsMenuItem({
     super.key,
     required this.icon,
@@ -146,12 +149,21 @@ class SettingsMenuItem extends StatelessWidget {
     this.trailing,
     this.iconColor,
     this.isLast = false,
+    this.tag,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final itemColor = iconColor ?? theme.colorScheme.primary;
+    final titleText = Text(
+      title,
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 15,
+        color: theme.colorScheme.onSurface,
+      ),
+    );
 
     return Column(
       children: [
@@ -166,14 +178,13 @@ class SettingsMenuItem extends StatelessWidget {
             ),
             child: Icon(icon, color: itemColor, size: 22),
           ),
-          title: Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 15,
-              color: theme.colorScheme.onSurface,
-            ),
-          ),
+          title: tag == null
+              ? titleText
+              : Row(children: [
+                  Flexible(child: titleText),
+                  const SizedBox(width: 8),
+                  tag!,
+                ]),
           subtitle: subtitle == null
               ? null
               : Text(
@@ -326,6 +337,33 @@ class SettingsBottomSheetTitle extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Small "New" pill used after a section title or a menu row title.
+class SettingsNewTag extends StatelessWidget {
+  final String label;
+
+  const SettingsNewTag({super.key, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w800,
+          color: theme.colorScheme.primary,
+        ),
       ),
     );
   }
