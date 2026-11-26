@@ -130,6 +130,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i434.QuickInsertDocumentCubit>(
         () => _i434.QuickInsertDocumentCubit());
     gh.factory<_i951.SettingsCubit>(() => _i951.SettingsCubit());
+    gh.factory<_i673.SettingsDataCubit>(() => _i673.SettingsDataCubit());
     gh.factory<_i178.MinimumQuantityCubit>(() => _i178.MinimumQuantityCubit());
     gh.factory<_i25.MyCompanyCubit>(() => _i25.MyCompanyCubit());
     gh.factory<_i279.SettingsViewCubit>(() => _i279.SettingsViewCubit());
@@ -164,18 +165,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i772.SuppliersRepository(db: gh<_i433.DBHelper>()));
     gh.lazySingleton<_i699.WalletRepository>(
         () => _i699.WalletRepository(db: gh<_i433.DBHelper>()));
-    gh.factory<_i673.SettingsDataCubit>(() => _i673.SettingsDataCubit(
-          gh<_i1038.StoresRepository>(),
-          gh<_i1038.SuppliersRepository>(),
-          gh<_i1038.CustomersRepository>(),
-          gh<_i1038.GroupsRepository>(),
-          gh<_i1038.GoodsRepository>(),
-          gh<_i1038.DocumentRepository>(),
-          gh<_i1038.DocumentTransactionRepository>(),
-          gh<_i1038.PaymentCategoryRepository>(),
-          gh<_i1038.WalletRepository>(),
-          gh<_i1038.PaymentRepository>(),
-        ));
     gh.lazySingleton<_i345.DocumentUseCases>(() => _i345.DocumentUseCases(
           repository: gh<_i1038.DocumentRepository>(),
           transactionRepository: gh<_i1038.DocumentTransactionRepository>(),

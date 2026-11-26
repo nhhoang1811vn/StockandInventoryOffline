@@ -4,8 +4,6 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/data/data.dart';
@@ -32,14 +30,6 @@ class SettingsDataPage extends StatefulWidget {
 }
 
 class SettingsDataPageState extends State<SettingsDataPage> {
-  var cloudFileUpdatedTime = "";
-  final user = FirebaseAuth.instance.currentUser;
-
-  @override
-  void initState() {
-    super.initState();
-    loadCloudFileUpdatedTime();
-  }
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SettingsDataCubit, SettingsDataState>(
@@ -75,64 +65,8 @@ class SettingsDataPageState extends State<SettingsDataPage> {
             ),
           ],
         ),
-        if (user != null && user?.isAnonymous == false) ...[
-          SettingsSectionHeader(context.tr("cloud")),
-          SettingsMenuCard(
-            children: [
-              SettingsMenuItem(
-                icon: Icons.cloud_outlined,
-                title: context.tr("menu_push_data_to_cloud"),
-                subtitle: cloudFileUpdatedTime.isEmpty
-                    ? context.tr("cloud_file_no_updated")
-                    : cloudFileUpdatedTime,
-                onTap: () => onCloudPressed(),
-              ),
-              SettingsMenuItem(
-                icon: Icons.cloud_sync_outlined,
-                title: context.tr("menu_push_data_to_cloud_v2"),
-                subtitle: context.tr("menu_push_data_to_cloud_v2_desc"),
-                onTap: onSaveDataToCloudVersion2,
-                isLast: true,
-              ),
-            ],
-          ),
-        ],
       ],
     );
-  }
-
-  void loadCloudFileUpdatedTime() async {
-    final storageRef = FirebaseStorage.instance.ref();
-    String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null) {
-      try {
-        final ref = storageRef.child("2026/$uid/data.json");
-        final metadata = await ref.getMetadata();
-        if (!mounted) return;
-        setState(() {
-          if (metadata.updated != null) {
-            cloudFileUpdatedTime =
-                DateFormat('dd-MM-yyyy HH:mm').format(metadata.updated!);
-          } else {
-            cloudFileUpdatedTime = "";
-          }
-        });
-      } on FirebaseException {
-        if (!mounted) return;
-        setState(() {
-          cloudFileUpdatedTime = "";
-        });
-      } catch (e) {
-        if (!mounted) return;
-        setState(() {
-          cloudFileUpdatedTime = "";
-        });
-      }
-    } else {
-      setState(() {
-        cloudFileUpdatedTime = "";
-      });
-    }
   }
 
   /*Future<void> backup(BuildContext context, String filePath) async {
@@ -278,43 +212,6 @@ class SettingsDataPageState extends State<SettingsDataPage> {
     }
   }
 
-  void onCloudPressed() async {
-    //save data to Firebase Storage
-    final db = await DBHelper().db;
-    final service = DbService(db);
-    final file = await service.exportToJson();
-    final storageRef = FirebaseStorage.instance.ref();
-    String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null) {
-      final ref = storageRef.child("2026/$uid/data.json");
-      try {
-        await ref.putFile(file);
-        if (!mounted) {
-          return;
-        }
-        ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
-        loadCloudFileUpdatedTime();
-      }
-      catch (e) {
-        if (!mounted) {
-          return;
-        }
-        ToastUtils.showErrorToast(context.tr("snackbar_try_again"));
-      }
-    }
-  }
-
-  void onSaveDataToCloudVersion2() async {
-    showProgressIndicator(context);
-    final error = await context.read<SettingsDataCubit>().syncToRealtimeDB();
-    if (!mounted) return;
-    hideDialog(context);
-    if (error == null) {
-      ToastUtils.showSuccessToast(context.tr("snackbar_saved"));
-    } else {
-      ToastUtils.showErrorToast(error);
-    }
-  }
 
   void notifyBackupSuccess(String path){
     ToastUtils.showSuccessToast(context.tr("backup_successful") + " " + path);
