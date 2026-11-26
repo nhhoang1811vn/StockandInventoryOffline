@@ -37,6 +37,7 @@ class MenuPageState extends State<MenuPage> {
     installerStore: 'Unknown',
   );
   bool _isPro = false;
+  bool _restoring = false;
 
   @override
   void initState() {
@@ -47,6 +48,7 @@ class MenuPageState extends State<MenuPage> {
 
   void _loadIsPro() async {
     bool isPro = await RevenueCatService.isPro();
+    if (!mounted) return;
     setState(() {
       _isPro = isPro;
     });
@@ -401,8 +403,17 @@ class MenuPageState extends State<MenuPage> {
   }
 
   Future<void> _onRestorePurchasesPressed() async {
-    final result = await RevenueCatService.restorePurchases();
+    if (_restoring) return;
+    _restoring = true;
+    showProgressIndicator(context);
+    final RestoreResult result;
+    try {
+      result = await RevenueCatService.restorePurchases();
+    } finally {
+      _restoring = false;
+    }
     if (!mounted) return;
+    hideDialog(context);
     switch (result) {
       case RestoreResult.proActive:
         ToastUtils.showSuccessToast(context.tr("restore_purchases_success"));
