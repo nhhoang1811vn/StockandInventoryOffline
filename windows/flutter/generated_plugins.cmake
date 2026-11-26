@@ -5,12 +5,8 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   camera_windows
-  desktop_webview_auth
   file_selector_windows
-  firebase_auth
   firebase_core
-  firebase_database
-  firebase_storage
   local_auth_windows
   permission_handler_windows
   printing
