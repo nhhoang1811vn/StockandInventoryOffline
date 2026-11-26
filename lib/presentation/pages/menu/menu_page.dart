@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:good_manager/presentation/pages/main/main_page.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
@@ -11,8 +10,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../constant/constant.dart';
 import '../../../common/platform_support.dart';
-import '../../../data/app_settings.dart';
-import '../../../domain/entity/entity.dart';
 import '../../../util/util.dart';
 import '../../dialog/dialog.dart';
 import '../../markdown/md_provider_factory.dart';
@@ -36,22 +33,12 @@ class MenuPageState extends State<MenuPage> {
     buildSignature: 'Unknown',
     installerStore: 'Unknown',
   );
-  bool _isPro = false;
   bool _restoring = false;
 
   @override
   void initState() {
     super.initState();
     _initPackageInfo();
-    _loadIsPro();
-  }
-
-  void _loadIsPro() async {
-    bool isPro = await RevenueCatService.isPro();
-    if (!mounted) return;
-    setState(() {
-      _isPro = isPro;
-    });
   }
 
   Future<void> _initPackageInfo() async {
@@ -59,26 +46,6 @@ class MenuPageState extends State<MenuPage> {
     setState(() {
       _packageInfo = info;
     });
-  }
-
-  Widget _buildStockPremiumBadge() {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [theme.colorScheme.primary, theme.colorScheme.secondary],
-        ),
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Text(
-        context.tr("premium"),
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: theme.colorScheme.onPrimary,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
   }
 
   @override
@@ -103,7 +70,6 @@ class MenuPageState extends State<MenuPage> {
         body: ListView(
           padding: const EdgeInsets.only(left: 16, right: 16, bottom: 100),
           children: [
-            if (_isPro) ...[Align(alignment: AlignmentDirectional.centerStart, child: _buildStockPremiumBadge()), const SizedBox(height: 8)],
             SettingsSectionHeader(context.tr("inventory")),
             _buildManagementCard(),
             SettingsSectionHeader(context.tr("settings")),
@@ -135,11 +101,6 @@ class MenuPageState extends State<MenuPage> {
   Widget _buildManagementCard() {
     return SettingsMenuCard(
       children: [
-        SettingsMenuItem(
-          icon: Icons.sync_alt_rounded,
-          title: context.tr("change_tracking_store"),
-          onTap: onChangeStorePressed,
-        ),
         SettingsMenuItem(
           icon: UIConstants.documentIconData,
           title: context.tr("documents"),
@@ -271,20 +232,6 @@ class MenuPageState extends State<MenuPage> {
   void onStoresItemPressed(BuildContext context) {
     Navigator.of(context)
         .pushNamed(Pages.store_list, arguments: {"isSelection": false});
-  }
-
-  Future<void> onChangeStorePressed() async {
-    final result = await Navigator.of(context)
-        .pushNamed(Pages.store_list, arguments: {"isSelection": true});
-    if (result != null && context.mounted) {
-      Store store = result as Store;
-      AppSettings.setSelectedStoreId(store.id!);
-      AppSettings.setSelectedStoreName(store.name);
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => MainPage()),
-        (Route<dynamic> route) => false,
-      );
-    }
   }
 
   void openSuppliers() {
@@ -422,7 +369,8 @@ class MenuPageState extends State<MenuPage> {
       case RestoreResult.failed:
         ToastUtils.showErrorToast(context.tr("restore_purchases_failed"));
     }
-    _loadIsPro();
+    // Refreshes the Pro tag shown on Home.
+    await RevenueCatService.isPro();
   }
 
   void onWhatsNew(BuildContext context) async {

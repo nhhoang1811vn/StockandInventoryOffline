@@ -7,13 +7,13 @@ import 'package:good_manager/common/platform_support.dart';
 import 'package:good_manager/data/app_settings.dart';
 import 'package:good_manager/presentation/pages/base/insufficient_stock_message.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
+import 'package:good_manager/presentation/pages/home/home_store_header.dart';
 import 'package:good_manager/presentation/pages/home/home_wallets_section.dart';
 import 'package:good_manager/presentation/pages/home/home_windows_banner.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
 import 'package:good_manager/util/currency_formatter.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../../../constant/app_tokens.dart';
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
 import '../../../domain/free_limits.dart';
@@ -29,12 +29,10 @@ import '../pages.dart';
 class HomePage extends StatefulWidget {
   final VoidCallback onOpenGoodsPage;
   final VoidCallback onOpenDocumentsPage;
-  final VoidCallback onOpenMenuPage;
 
   HomePage({
     required this.onOpenGoodsPage,
     required this.onOpenDocumentsPage,
-    required this.onOpenMenuPage,
   }) : super();
 
   @override
@@ -47,6 +45,7 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     context.read<HomeCubit>().initState();
+    RevenueCatService.isPro();
   }
 
   @override
@@ -170,58 +169,19 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget _buildHeader(HomeState state) {
-    final theme = Theme.of(context);
     final store = state.selectedStore;
     final storeName = store?.name ?? AppSettings.getSelectedStoreName();
     final Uint8List? storeLogoBytes = tryDecodeBase64(store?.file);
 
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: _onChangeStore,
-          child: CircleAvatar(
-            radius: 26,
-            backgroundColor: theme.colorScheme.primary,
-            child: CircleAvatar(
-              radius: 24,
-              backgroundColor: context.appCardColor,
-              backgroundImage:
-                  storeLogoBytes != null ? MemoryImage(storeLogoBytes) : null,
-              child: storeLogoBytes == null
-                  ? Icon(
-                      Icons.store_rounded,
-                      color: theme.colorScheme.primary,
-                    )
-                  : null,
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: GestureDetector(
-            onTap: _onChangeStore,
-            child: Text(
-              storeName,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.w800,
-                fontSize: 16,
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        GestureDetector(
-          onTap: widget.onOpenMenuPage,
-          child: CircleAvatar(
-            radius: 24,
-            backgroundColor: theme.colorScheme.primaryContainer,
-            child: Icon(Icons.person, size: 24, color: theme.colorScheme.primary),
-          ),
-        ),
-      ],
+    return ValueListenableBuilder<bool>(
+      valueListenable: RevenueCatService.proNotifier,
+      builder: (context, isPro, _) => HomeStoreHeader(
+        storeName: storeName,
+        logoBytes: storeLogoBytes,
+        isPro: isPro,
+        premiumLabel: context.tr("premium"),
+        onTap: _onChangeStore,
+      ),
     );
   }
 

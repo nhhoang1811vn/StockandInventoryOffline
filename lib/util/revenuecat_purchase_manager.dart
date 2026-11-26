@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:good_manager/common/platform_support.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
@@ -10,6 +11,9 @@ class RevenueCatService {
   static const _androidApiKey = "goog_CilBoRCyEYZGNZrIUNrscUJnJIJ";
 
   static const entitlementIdenditifer = "stockandinventory_pro";
+
+  /// Last known Pro state, so screens can show it without asking again.
+  static final ValueNotifier<bool> proNotifier = ValueNotifier<bool>(false);
 
   static final RevenueCatService _instance = RevenueCatService._internal();
 
@@ -44,8 +48,10 @@ class RevenueCatService {
     if (!isMobilePlatform) return false;
     try {
       final customerInfo = await Purchases.getCustomerInfo();
-      return customerInfo.entitlements.active
+      final isPro = customerInfo.entitlements.active
           .containsKey(entitlementIdenditifer);
+      proNotifier.value = isPro;
+      return isPro;
     } catch (e) {
       print("Error checking entitlements: $e");
       return false;

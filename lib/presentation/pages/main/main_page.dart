@@ -59,7 +59,6 @@ class _ScreenState extends State<MainView> {
             "setting": null,
           });
         },
-        onOpenMenuPage: () => setState(() => _currentIndex = 3),
       ),
       GoodsPage(isSelection: false),
       ReportPage(),
