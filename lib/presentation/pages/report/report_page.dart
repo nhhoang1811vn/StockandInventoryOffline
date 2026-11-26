@@ -8,6 +8,7 @@ import 'package:good_manager/presentation/pages/report/report_years.dart';
 
 import '../../../data/app_settings.dart';
 import '../../../domain/entity/entity.dart';
+import '../../widget/settings_ui.dart';
 import '../pages.dart';
 
 class ReportPage extends StatefulWidget {
@@ -91,112 +92,40 @@ class ReportPageState extends State<ReportPage> {
   }
 
   Widget _buildSectionHeader(String title, {bool showNewTag = false}) {
-    final theme = Theme.of(context);
-    final titleText = Text(
-      title.toUpperCase(),
-      style: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w800,
-        color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
-        letterSpacing: 1.2,
-      ),
+    return SettingsSectionHeader(
+      title,
+      tag: showNewTag ? _buildNewTag() : null,
     );
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(start: 8, bottom: 12, top: 24),
-      child: showNewTag
-          ? Row(
-              children: [
-                titleText,
-                const SizedBox(width: 8),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    context.tr("tag_new"),
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : titleText,
+  }
+
+  Widget _buildNewTag() {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        context.tr("tag_new"),
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w800,
+          color: theme.colorScheme.primary,
+        ),
+      ),
     );
   }
 
   Widget _buildReportGroup(List<ReportType> types) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Material(
-        color: theme.cardTheme.color ?? theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(22),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          children: List.generate(types.length, (index) {
-            final type = types[index];
-            final isLast = index == types.length - 1;
-            return _buildReportItem(type, isLast);
-          }),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildReportItem(ReportType type, bool isLast) {
-    final theme = Theme.of(context);
-    return Column(
+    return SettingsMenuCard(
       children: [
-        ListTile(
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          leading: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              _getIconForReportType(type),
-              color: theme.colorScheme.primary,
-              size: 22,
-            ),
-          ),
-          title: Text(
-            type.getTitle(context),
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 15,
-              color: theme.colorScheme.onSurface,
-            ),
-          ),
-          trailing: Icon(
-            Icons.chevron_right_rounded,
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
-          ),
-          onTap: () => onReportTypeTapped(type),
-        ),
-        if (!isLast)
-          Divider(
-            height: 0,
-            indent: 60,
-            color: theme.dividerColor.withValues(alpha: 0.05),
+        for (var i = 0; i < types.length; i++)
+          SettingsMenuItem(
+            icon: _getIconForReportType(types[i]),
+            title: types[i].getTitle(context),
+            onTap: () => onReportTypeTapped(types[i]),
+            isLast: i == types.length - 1,
           ),
       ],
     );

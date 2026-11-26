@@ -40,22 +40,29 @@ class SettingsSectionHeader extends StatelessWidget {
   final String title;
   final bool isFirst;
 
-  const SettingsSectionHeader(this.title, {super.key, this.isFirst = false});
+  /// Optional small tag shown after the title (for example "New").
+  final Widget? tag;
+
+  const SettingsSectionHeader(this.title,
+      {super.key, this.isFirst = false, this.tag});
 
   @override
   Widget build(BuildContext context) {
+    final titleText = Text(
+      title.toUpperCase(),
+      style: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w800,
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+        letterSpacing: 1.2,
+      ),
+    );
     return Padding(
       padding: EdgeInsetsDirectional.only(
           start: 8, bottom: 8, top: isFirst ? 8 : 24),
-      child: Text(
-        title.toUpperCase(),
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w800,
-          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
-          letterSpacing: 1.2,
-        ),
-      ),
+      child: tag == null
+          ? titleText
+          : Row(children: [titleText, const SizedBox(width: 8), tag!]),
     );
   }
 }
