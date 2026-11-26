@@ -5,6 +5,7 @@ import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
 import 'excel_column_mapping.dart';
 import 'excel_column_picker_sheet.dart';
+import '../../../widget/settings_ui.dart';
 
 Future<ExcelColumnMapping?> showExcelColumnMappingSheet(
   BuildContext context, {
@@ -67,11 +68,7 @@ class ExcelColumnMappingSheetState extends State<ExcelColumnMappingSheet> {
           children: [
             Text(
               context.tr("excel_file_column"),
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: theme.colorScheme.onSurface,
-              ),
+              style: bottomSheetTitleStyle(context),
             ),
             const SizedBox(height: 12),
             for (final field in ExcelColumnMapping.visibleFields(_properties))

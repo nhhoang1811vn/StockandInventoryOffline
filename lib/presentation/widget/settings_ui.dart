@@ -276,21 +276,56 @@ class SettingsColorItem extends StatelessWidget {
   }
 }
 
+/// Horizontal padding of list rows inside bottom sheets. Matches the title's
+/// 20px so row text lines up with the heading.
+const EdgeInsets kBottomSheetTilePadding =
+    EdgeInsets.symmetric(horizontal: 20);
+
+/// Heading style shared by every bottom sheet.
+TextStyle? bottomSheetTitleStyle(BuildContext context) => Theme.of(context)
+    .textTheme
+    .titleMedium
+    ?.copyWith(fontWeight: FontWeight.w800);
+
+/// Heading of a bottom sheet, with an optional close button.
 class SettingsBottomSheetTitle extends StatelessWidget {
   final String title;
+  final VoidCallback? onClose;
+  final String? closeTooltip;
 
-  const SettingsBottomSheetTitle({super.key, required this.title});
+  const SettingsBottomSheetTitle({
+    super.key,
+    required this.title,
+    this.onClose,
+    this.closeTooltip,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final titleText = Text(title, style: bottomSheetTitleStyle(context));
+    if (onClose == null) {
+      return Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 16, 20, 8),
+        child: titleText,
+      );
+    }
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(20, 16, 20, 8),
-      child: Text(
-        title,
-        style: Theme.of(context)
-            .textTheme
-            .titleMedium
-            ?.copyWith(fontWeight: FontWeight.w800),
+      padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 8, 0),
+      child: Row(
+        children: [
+          Expanded(child: titleText),
+          IconButton(
+            tooltip: closeTooltip,
+            onPressed: onClose,
+            icon: Icon(
+              Icons.close,
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.4),
+            ),
+          ),
+        ],
       ),
     );
   }

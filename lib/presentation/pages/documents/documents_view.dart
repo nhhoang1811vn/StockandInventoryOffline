@@ -304,20 +304,16 @@ class DocumentPageState extends State<DocumentsPage>
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                context.tr("select_document_type"),
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
+            SettingsBottomSheetTitle(title: context.tr("select_document_type")),
             ListTile(
+              contentPadding: kBottomSheetTilePadding,
               leading: const Icon(Icons.file_download_outlined),
               title: Text(context.tr("incoming")),
               subtitle: Text(context.tr("incoming_description")),
               onTap: () => Navigator.pop(context, DocumentType.incoming),
             ),
             ListTile(
+              contentPadding: kBottomSheetTilePadding,
               leading: const Icon(Icons.file_upload_outlined),
               title: Text(context.tr("outgoing")),
               subtitle: Text(context.tr("outgoing_description")),

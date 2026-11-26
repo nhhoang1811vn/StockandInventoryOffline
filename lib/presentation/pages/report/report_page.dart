@@ -279,31 +279,13 @@ class ReportPageState extends State<ReportPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      context.tr("select_year"),
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(Icons.close,
-                          color: theme.colorScheme.onSurface
-                              .withValues(alpha: 0.4)),
-                    ),
-                  ],
-                ),
+              SettingsBottomSheetTitle(
+                title: context.tr("select_year"),
+                onClose: () => Navigator.pop(context),
               ),
               ...recentYears(DateTime.now()).map(
                 (year) => ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  contentPadding: kBottomSheetTilePadding,
                   title: Text(
                     '$year',
                     style: TextStyle(
@@ -351,31 +333,13 @@ class ReportPageState extends State<ReportPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        context.tr("select_date_range"),
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: Icon(Icons.close,
-                            color: theme.colorScheme.onSurface
-                                .withValues(alpha: 0.4)),
-                      ),
-                    ],
-                  ),
+                SettingsBottomSheetTitle(
+                  title: context.tr("select_date_range"),
+                  onClose: () => Navigator.pop(context),
                 ),
                 if (showGroup)
                   ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                    contentPadding: kBottomSheetTilePadding,
                     title: Text(
                       context.tr("group"),
                       style: TextStyle(
@@ -415,7 +379,7 @@ class ReportPageState extends State<ReportPage> {
                   ),
                 if (showCustomer)
                   ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                    contentPadding: kBottomSheetTilePadding,
                     title: Text(
                       context.tr("customer"),
                       style: TextStyle(
@@ -452,7 +416,7 @@ class ReportPageState extends State<ReportPage> {
                   ),
                 if (showSupplier)
                   ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                    contentPadding: kBottomSheetTilePadding,
                     title: Text(
                       context.tr("supplier"),
                       style: TextStyle(
@@ -489,7 +453,7 @@ class ReportPageState extends State<ReportPage> {
                   ),
                 ...ReportDateRangeType.values.map(
                   (type) => ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                    contentPadding: kBottomSheetTilePadding,
                     title: Text(
                       type.getText(context),
                       style: TextStyle(

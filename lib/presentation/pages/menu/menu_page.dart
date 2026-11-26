@@ -317,7 +317,7 @@ class MenuPageState extends State<MenuPage> {
                   title: context.tr("select_message_type")),
               ...MessageType.values.map(
                 (type) => ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  contentPadding: kBottomSheetTilePadding,
                   title: Text(type.getText(context)),
                   onTap: () => Navigator.pop(context, type),
                 ),

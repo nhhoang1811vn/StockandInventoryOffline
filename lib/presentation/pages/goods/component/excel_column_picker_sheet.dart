@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../widget/settings_ui.dart';
 import 'excel_column_mapping.dart';
 
 Future<ExcelColumnChoice?> showExcelColumnPickerSheet({
@@ -47,30 +48,10 @@ class ExcelColumnPickerSheet extends StatelessWidget {
         height: height,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(20, 16, 8, 8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      field.label(context),
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: context.tr('a11y_close'),
-                    onPressed: () => Navigator.pop(context),
-                    icon: Icon(
-                      Icons.close,
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ],
-              ),
+            SettingsBottomSheetTitle(
+              title: field.label(context),
+              onClose: () => Navigator.pop(context),
+              closeTooltip: context.tr('a11y_close'),
             ),
             Expanded(
               child: RadioGroup<int>(

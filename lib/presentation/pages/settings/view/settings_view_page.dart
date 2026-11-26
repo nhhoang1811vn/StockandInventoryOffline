@@ -143,6 +143,7 @@ class SettingsViewPageState extends State<SettingsViewPage> {
                   SettingsBottomSheetTitle(title: context.tr("select_theme")),
                   ...AppTheme.values.map(
                     (type) => ListTile(
+                      contentPadding: kBottomSheetTilePadding,
                       title: Text(type.label),
                       trailing: state.theme == type
                           ? Icon(Icons.check_rounded,

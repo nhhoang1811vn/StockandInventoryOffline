@@ -86,4 +86,26 @@ void main() {
 
     expect(find.text('New'), findsNWidgets(2));
   });
+
+  testWidgets('report bottom sheets use the shared title and tile padding',
+      (tester) async {
+    await pumpReport(tester);
+
+    // The first Sales report asks for a date range in a bottom sheet.
+    await tester.tap(find.byType(SettingsMenuItem).first);
+    await tester.pumpAndSettle();
+
+    final title = find.byType(SettingsBottomSheetTitle);
+    expect(title, findsOneWidget);
+    final text = tester.widget<Text>(find.text('select_date_range'));
+    final base = Theme.of(tester.element(title)).textTheme.titleMedium!;
+    expect(text.style?.fontSize, base.fontSize);
+
+    final sheetTiles = find.descendant(
+        of: find.byType(BottomSheet), matching: find.byType(ListTile));
+    expect(sheetTiles, findsWidgets);
+    for (final tile in tester.widgetList<ListTile>(sheetTiles)) {
+      expect(tile.contentPadding, kBottomSheetTilePadding);
+    }
+  });
 }

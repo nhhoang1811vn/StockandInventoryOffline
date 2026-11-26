@@ -397,26 +397,19 @@ class PaymentsPageState extends State<PaymentsPage>
     return await showModalBottomSheet<PaymentType>(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
       builder: (BuildContext context) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                context.tr("select_payment_type"),
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
+            SettingsBottomSheetTitle(title: context.tr("select_payment_type")),
             ListTile(
+              contentPadding: kBottomSheetTilePadding,
               title: Text(context.tr("title_inbound_payment")),
               onTap: () => Navigator.pop(context, PaymentType.inbound),
             ),
             ListTile(
+              contentPadding: kBottomSheetTilePadding,
               title: Text(context.tr("title_outbound_payment")),
               onTap: () => Navigator.pop(context, PaymentType.outbound),
             ),

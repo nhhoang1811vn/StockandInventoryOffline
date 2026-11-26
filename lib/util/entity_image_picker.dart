@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../common/platform_support.dart';
 import '../data/app_settings.dart';
+import '../presentation/widget/settings_ui.dart';
 import 'image_compress_utils.dart';
 import 'image_square_utils.dart';
 
@@ -24,17 +25,9 @@ class EntityImagePicker {
       builder: (_) => SafeArea(
         child: Wrap(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                context.tr("choose_gallery"),
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-            ),
+            SettingsBottomSheetTitle(title: context.tr("choose_gallery")),
             ListTile(
+              contentPadding: kBottomSheetTilePadding,
               leading: const Icon(Icons.photo_library_rounded),
               title: Text(context.tr("choose_gallery")),
               onTap: () async {
@@ -47,6 +40,7 @@ class EntityImagePicker {
             ),
             if (isMobilePlatform)
               ListTile(
+                contentPadding: kBottomSheetTilePadding,
                 leading: const Icon(Icons.camera_alt_rounded),
                 title: Text(context.tr("take_picture")),
                 onTap: () async {

@@ -187,6 +187,7 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
                       title: context.tr("select_language")),
                   ...AppLanguage.values.map(
                     (type) => ListTile(
+                      contentPadding: kBottomSheetTilePadding,
                       title: Text(type.label),
                       trailing: state.language == type
                           ? Icon(Icons.check_rounded,
@@ -313,6 +314,7 @@ class _CurrencyPickerState extends State<_CurrencyPicker> {
             itemBuilder: (context, index) {
               final type = items[index];
               return ListTile(
+                contentPadding: kBottomSheetTilePadding,
                 title: Text(type.label),
                 trailing: widget.selected == type
                     ? Icon(Icons.check_rounded,
