@@ -47,7 +47,7 @@ class _State extends BaseDialogState<SelectOptionDialog> {
               children: [
                 if (hasTitle)
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(
+                    padding: const EdgeInsetsDirectional.fromSTEB(
                       Dimens.spacingMedium,
                       Dimens.spacingSmall,
                       Dimens.spacingMedium,

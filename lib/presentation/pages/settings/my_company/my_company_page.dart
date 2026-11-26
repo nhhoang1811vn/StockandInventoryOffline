@@ -125,7 +125,7 @@ class MyCompanyPageState extends State<MyCompanyPage> {
               ),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 24),
                 decoration: BoxDecoration(
                   color: theme.scaffoldBackgroundColor,
                   border: Border(

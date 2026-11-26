@@ -63,7 +63,7 @@ class _SearchPageState extends State<SearchPage> {
           appBar: AppBar(
             titleSpacing: 0,
             title: Padding(
-              padding: const EdgeInsets.only(right: 16.0),
+              padding: const EdgeInsetsDirectional.only(end: 16.0),
               child: SearchBarWidget(
                 focusNode: _focusNode,
                 onTextChanged: (text) {

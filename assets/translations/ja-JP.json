@@ -492,5 +492,20 @@
   "report_type_purchase_by_item": "商品別仕入",
   "report_type_purchase_by_supplier": "仕入先別仕入",
   "report_type_purchase_by_month": "月別仕入",
-  "no_supplier": "サプライヤーなし"
+  "no_supplier": "サプライヤーなし",
+  "a11y_add": "追加",
+  "a11y_filter": "フィルター",
+  "a11y_close": "閉じる",
+  "a11y_notifications": "通知",
+  "a11y_show_password": "パスワードを表示",
+  "a11y_hide_password": "パスワードを非表示",
+  "a11y_scan_barcode": "バーコードをスキャン",
+  "a11y_remove": "削除",
+  "a11y_history": "履歴",
+  "a11y_add_member": "メンバーを追加",
+  "a11y_categories": "カテゴリ",
+  "a11y_confirm": "確認",
+  "unsaved_changes_message": "保存されていない変更があります。破棄して退出しますか？",
+  "action_discard": "破棄",
+  "action_keep_editing": "編集を続ける"
 }

@@ -23,7 +23,8 @@ class SaveSupplierPageState extends State<SaveSupplierPage> {
   @override
   Widget build(BuildContext context) {
     context.read<SaveSupplierCubit>().init(widget.item);
-    return Scaffold(
+    return UnsavedChangesGuard(
+        child: Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: SaveObjectAppBar(title: context.tr("save_supplier")),
       body: SafeArea(
@@ -47,6 +48,6 @@ class SaveSupplierPageState extends State<SaveSupplierPage> {
         ],
         ),
       ),
-    );
+    ));
   }
 }

@@ -27,7 +27,7 @@ class SettingsViewPageState extends State<SettingsViewPage> {
         return SettingsScaffold(
           title: context.tr("display"),
           body: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 32),
             children: [
               SettingsSectionHeader(context.tr("theme"), isFirst: true),
               SettingsMenuCard(
@@ -119,6 +119,9 @@ class SettingsViewPageState extends State<SettingsViewPage> {
     BuildContext context,
     AppState state,
   ) async {
+    // AppSettings.isPro() is only a cache; refresh it before reading.
+    await AppSettings.refreshPro();
+    if (!context.mounted) return null;
     return showModalBottomSheet<AppTheme>(
       context: context,
       isScrollControlled: true,

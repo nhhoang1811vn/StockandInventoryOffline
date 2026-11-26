@@ -45,7 +45,8 @@ class SettingsSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 8, bottom: 8, top: isFirst ? 8 : 24),
+      padding: EdgeInsetsDirectional.only(
+          start: 8, bottom: 8, top: isFirst ? 8 : 24),
       child: Text(
         title.toUpperCase(),
         style: TextStyle(
@@ -276,7 +277,7 @@ class SettingsBottomSheetTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+      padding: const EdgeInsetsDirectional.fromSTEB(20, 16, 20, 8),
       child: Text(
         title,
         style: Theme.of(context)

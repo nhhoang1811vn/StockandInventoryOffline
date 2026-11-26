@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:good_manager/presentation/widget/broken_image.dart';
 
 class FullImagePage extends StatelessWidget {
   final String base64Image;
@@ -21,7 +22,9 @@ class FullImagePage extends StatelessWidget {
         body: Center(
           child: Hero(
             tag: heroTag,
-            child: InteractiveViewer(child: Image.memory(base64Decode(base64Image))),
+            child: InteractiveViewer(
+                child: Image.memory(base64Decode(base64Image),
+                    errorBuilder: brokenImageBuilder)),
           ),
         ),
       ),

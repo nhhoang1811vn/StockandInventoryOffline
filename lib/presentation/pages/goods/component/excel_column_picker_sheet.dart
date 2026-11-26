@@ -48,7 +48,7 @@ class ExcelColumnPickerSheet extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 8, 8),
+              padding: const EdgeInsetsDirectional.fromSTEB(20, 16, 8, 8),
               child: Row(
                 children: [
                   Expanded(
@@ -62,6 +62,7 @@ class ExcelColumnPickerSheet extends StatelessWidget {
                     ),
                   ),
                   IconButton(
+                    tooltip: context.tr('a11y_close'),
                     onPressed: () => Navigator.pop(context),
                     icon: Icon(
                       Icons.close,

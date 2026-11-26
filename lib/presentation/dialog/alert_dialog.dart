@@ -10,6 +10,7 @@ class CustomAlertDialog extends BaseDialog {
   final String negativeText;
   final Function()? onNegativePressed;
   final Function()? onPositivePressed;
+  final bool destructive;
 
   CustomAlertDialog({
     Key? key,
@@ -19,6 +20,7 @@ class CustomAlertDialog extends BaseDialog {
     required this.negativeText,
     required this.onNegativePressed,
     required this.onPositivePressed,
+    this.destructive = false,
   });
 
   @override
@@ -59,6 +61,10 @@ class _State extends BaseDialogState<CustomAlertDialog> {
                   onPressed: widget.onNegativePressed,
                 ),
                 TextButton(
+                  style: widget.destructive
+                      ? TextButton.styleFrom(
+                          foregroundColor: Theme.of(context).colorScheme.error)
+                      : null,
                   child: Text(widget.positiveText),
                   onPressed: widget.onPositivePressed,
                 ),

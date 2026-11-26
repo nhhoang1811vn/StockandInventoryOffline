@@ -16,6 +16,7 @@ import 'package:good_manager/util/currency_formatter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprintf/sprintf.dart';
 
+import '../../../constant/app_tokens.dart';
 import '../../../constant/constant.dart';
 import '../../../di/di.dart';
 import '../../../domain/entity/entity.dart';
@@ -213,7 +214,7 @@ class HomePageState extends State<HomePage> {
             backgroundColor: theme.colorScheme.primary,
             child: CircleAvatar(
               radius: 24,
-              backgroundColor: Colors.white,
+              backgroundColor: context.appCardColor,
               backgroundImage:
                   storeLogoBytes != null ? MemoryImage(storeLogoBytes) : null,
               child: storeLogoBytes == null

@@ -23,7 +23,8 @@ class SaveStorePageState extends State<SaveStorePage> {
   @override
   Widget build(BuildContext context) {
     context.read<SaveStoreCubit>().init(widget.item);
-    return Scaffold(
+    return UnsavedChangesGuard(
+        child: Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: SaveObjectAppBar(title: context.tr("save_store")),
       body: Column(
@@ -45,6 +46,6 @@ class SaveStorePageState extends State<SaveStorePage> {
           ),
         ],
       ), //SaveStoreForm(item: widget.item)
-    );
+    ));
   }
 }

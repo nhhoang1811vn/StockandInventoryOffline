@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:good_manager/presentation/widget/broken_image.dart';
 
 import '../../util/base64_utils.dart';
 
@@ -78,9 +79,11 @@ class EntityPhotoAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Stack(
+    return Semantics(
+        button: true,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Stack(
         children: [
           Container(
             width: 120,
@@ -102,10 +105,9 @@ class EntityPhotoAvatar extends StatelessWidget {
                     )
                   : Image.memory(
                       imageBytes!,
-                      fit: BoxFit.cover,
-                    ),
-            ),
-          ),
+                          fit: BoxFit.cover, errorBuilder: brokenImageBuilder),
+                ),
+              ),
           if (canEdit)
             Positioned(
               bottom: 0,
@@ -132,6 +134,6 @@ class EntityPhotoAvatar extends StatelessWidget {
             ),
         ],
       ),
-    );
+        ));
   }
 }

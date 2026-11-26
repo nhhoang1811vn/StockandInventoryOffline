@@ -156,7 +156,7 @@ class GoodsPageState extends State<GoodsPage> {
             children: [
               _buildSelectedGroupView(state),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
                 child: _buildSearchRow(state),
               ),
               Expanded(
@@ -224,6 +224,7 @@ class GoodsPageState extends State<GoodsPage> {
         ),
         const SizedBox(width: 12),
         IconButton(
+          tooltip: context.tr('a11y_filter'),
           icon: const Icon(Icons.tune),
           onPressed: () => showSortBottomSheet(state),
         ),

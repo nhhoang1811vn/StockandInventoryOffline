@@ -492,5 +492,20 @@
   "report_type_purchase_by_item": "المشتريات حسب الصنف",
   "report_type_purchase_by_supplier": "المشتريات حسب المورد",
   "report_type_purchase_by_month": "المشتريات حسب الشهر",
-  "no_supplier": "بدون مورد"
+  "no_supplier": "بدون مورد",
+  "a11y_add": "إضافة",
+  "a11y_filter": "تصفية",
+  "a11y_close": "إغلاق",
+  "a11y_notifications": "الإشعارات",
+  "a11y_show_password": "إظهار كلمة المرور",
+  "a11y_hide_password": "إخفاء كلمة المرور",
+  "a11y_scan_barcode": "مسح الباركود",
+  "a11y_remove": "إزالة",
+  "a11y_history": "السجل",
+  "a11y_add_member": "إضافة عضو",
+  "a11y_categories": "الفئات",
+  "a11y_confirm": "تأكيد",
+  "unsaved_changes_message": "لديك تغييرات غير محفوظة. هل تريد تجاهلها والمغادرة؟",
+  "action_discard": "تجاهل",
+  "action_keep_editing": "متابعة التحرير"
 }

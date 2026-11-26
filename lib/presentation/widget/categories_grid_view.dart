@@ -27,7 +27,7 @@ class CategoriesGridView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 4.0, bottom: 12.0),
+          padding: const EdgeInsetsDirectional.only(start: 4.0, bottom: 12.0),
           child: Text(
             header,
             style: TextStyle(

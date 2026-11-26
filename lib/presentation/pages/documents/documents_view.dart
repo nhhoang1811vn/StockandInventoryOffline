@@ -189,6 +189,7 @@ class DocumentPageState extends State<DocumentsPage>
         Badge(
           isLabelVisible: showWarning,
           child: IconButton(
+            tooltip: context.tr('a11y_filter'),
             icon: const Icon(Icons.tune),
             onPressed: () => showFilterBottomSheet(state),
           ),

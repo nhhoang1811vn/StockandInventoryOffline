@@ -7,7 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:good_manager/common/platform_support.dart';
+import 'package:good_manager/constant/app_tokens.dart';
 import 'package:good_manager/models/app_theme.dart';
+import 'package:good_manager/presentation/app_theme_builder.dart';
 import 'package:good_manager/presentation/pages/pages.dart';
 import 'package:good_manager/presentation/router.dart';
 
@@ -50,6 +52,29 @@ class MyApp extends StatefulWidget {
   }
 }
 
+/// Phone-first UI: on wide screens (tablets, desktop windows, landscape)
+/// content is centered and capped to [AppBreakpoints.contentMaxWidth].
+Widget _capContentWidth(BuildContext context, Widget body) {
+  final media = MediaQuery.of(context);
+  if (media.size.width <= AppBreakpoints.contentMaxWidth) return body;
+  return ColoredBox(
+    color: Theme.of(context).scaffoldBackgroundColor,
+    child: Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints:
+            const BoxConstraints(maxWidth: AppBreakpoints.contentMaxWidth),
+        child: MediaQuery(
+          data: media.copyWith(
+            size: Size(AppBreakpoints.contentMaxWidth, media.size.height),
+          ),
+          child: body,
+        ),
+      ),
+    ),
+  );
+}
+
 class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   final AppRouter _router;
   MyAppState() : _router = AppRouter() {
@@ -77,22 +102,6 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final baseLight = ThemeData.light();
-    final baseDark = ThemeData.dark();
-
-    final boldTextTheme = baseLight.textTheme.copyWith(
-      titleSmall:
-          baseLight.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-      titleMedium: baseLight.textTheme.titleMedium
-          ?.copyWith(fontWeight: FontWeight.w600),
-    );
-
-    final boldDarkTextTheme = baseDark.textTheme.copyWith(
-      titleSmall:
-          baseDark.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-      titleMedium:
-          baseDark.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-    );
     final NavigatorObserver? analyticsObserver = isMobilePlatform
         ? FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
         : null;
@@ -151,7 +160,10 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
                         viewPadding: viewPadding.copyWith(
                             bottom: reserveBottom ? 0 : viewPadding.bottom),
                       ),
-                      child: child ?? const SizedBox.shrink(),
+                      child: _capContentWidth(
+                        context,
+                        child ?? const SizedBox.shrink(),
+                      ),
                     ),
                   ),
                 ),
@@ -166,42 +178,9 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 child: content,
               );
             },
-            theme: ThemeData.light().copyWith(
-                appBarTheme: AppBarTheme(
-                    titleTextStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                color: baseLight.colorScheme.onSurface,
-              )),
-              scaffoldBackgroundColor: Color.fromARGB(255, 241, 243, 244),
-              cardTheme: CardThemeData(
-                    color: Colors.white,
-                  ),
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: state.theme.color,
-                  brightness: Brightness.light,
-                ),
-                textTheme: boldTextTheme,
-              ),
-              darkTheme: ThemeData.dark().copyWith(
-              appBarTheme: AppBarTheme(
-                titleTextStyle: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: baseDark.colorScheme.onSurface,
-                ),
-              ),
-              scaffoldBackgroundColor: const Color.fromARGB(255, 18, 18, 18),
-                  cardTheme: const CardThemeData(
-                    color: Colors.black, // Black cards
-                  ),
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: state.theme.color,
-                  brightness: Brightness.dark,
-                ),
-                textTheme: boldDarkTextTheme,
-              ),
-              themeMode: state.theme.mode,
+            theme: buildAppTheme(state.theme.color, Brightness.light),
+            darkTheme: buildAppTheme(state.theme.color, Brightness.dark),
+            themeMode: state.theme.mode,
               onGenerateRoute: _router.getRoute,
               navigatorKey: _router.navigatorKey,
             navigatorObservers: [

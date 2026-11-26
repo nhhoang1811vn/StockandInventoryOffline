@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class UIConstants {
   //dimension
@@ -9,28 +8,28 @@ class UIConstants {
 
   //icons
   static IconData moreIconData = Icons.more_horiz;
-  static IconData searchMenuIconData = Icons.search;
+  static IconData searchMenuIconData = Icons.search_rounded;
   static IconData sortMenuIconData = Icons.sort_by_alpha;
-  static IconData helpMenuIconData = Icons.help;
+  static IconData helpMenuIconData = Icons.help_outline_rounded;
   static IconData barcodeScannerMenuIconData = Icons.barcode_reader;
-  static IconData calculatorIconData = FontAwesomeIcons.calculator.data;
+  static IconData calculatorIconData = Icons.calculate_rounded;
 
   static IconData cancelIconData = Icons.close;
-  static IconData barcodeIconData = FontAwesomeIcons.barcode.data;
+  static IconData barcodeIconData = Icons.barcode_reader;
 
   static IconData supplierIconData = Icons.local_shipping_rounded;
-  static IconData customerIconData = FontAwesomeIcons.userGroup.data;
-  static IconData expenseIconData = FontAwesomeIcons.handHoldingDollar.data;
-  static IconData reportIconData = FontAwesomeIcons.chartSimple.data;
-  static IconData storeIconData = Icons.store;
-  static IconData settingIconData = Icons.settings;
-  static IconData paymentIconData = FontAwesomeIcons.moneyBill.data;
-  static IconData walletIconData = FontAwesomeIcons.wallet.data;
+  static IconData customerIconData = Icons.groups_rounded;
+  static IconData expenseIconData = Icons.request_quote_rounded;
+  static IconData reportIconData = Icons.bar_chart_rounded;
+  static IconData storeIconData = Icons.store_rounded;
+  static IconData settingIconData = Icons.settings_rounded;
+  static IconData paymentIconData = Icons.payments_rounded;
+  static IconData walletIconData = Icons.account_balance_wallet_rounded;
 
-  static IconData goodIconData = FontAwesomeIcons.box.data;
-  static IconData groupIconData = Icons.folder;
+  static IconData goodIconData = Icons.inventory_2_rounded;
+  static IconData groupIconData = Icons.folder_rounded;
 
-  static IconData documentIconData = FontAwesomeIcons.receipt.data;
+  static IconData documentIconData = Icons.receipt_long_rounded;
 
   static const double screenSpace = 16.0;
 

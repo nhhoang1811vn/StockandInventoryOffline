@@ -131,6 +131,7 @@ class SuppliersPageState extends State<SuppliersPage> {
               Badge(
                 isLabelVisible: showWarning,
                 child: IconButton(
+                  tooltip: context.tr('a11y_filter'),
                   icon: const Icon(Icons.tune),
                   onPressed: () => showFilterBottomSheet(data),
                 ),

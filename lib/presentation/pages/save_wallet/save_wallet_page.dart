@@ -44,11 +44,12 @@ class SaveWalletPageState extends State<SaveWalletPage> {
         }
       },
       builder: (BuildContext context, SaveWalletState state) {
-        return Scaffold(
+        return UnsavedChangesGuard(
+            child: Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: SaveObjectAppBar(title: context.tr("save_wallet_title")),
           body: _buildBody(state),
-        );
+        ));
       },
     );
   }

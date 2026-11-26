@@ -15,7 +15,8 @@ class FilterPaymentWidget extends StatefulWidget {
   final Function(PaymentsSetting setting) onApplyPressed;
   final PaymentsSetting setting;
 
-  FilterPaymentWidget({
+  const FilterPaymentWidget({
+    super.key,
     required this.onResetAllPressed,
     required this.categories,
     required this.wallets,
@@ -58,75 +59,30 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(
-            child: Text(
-              context.tr("title_filter"),
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ),
-          SizedBox(height: 16),
-          Text(
-            context.tr("sort_by_date"),
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          SizedBox(height: 8),
+          const FilterSheetHeader(),
+          FilterSectionTitle(context.tr("sort_by_date")),
           buildSortByDateOptions(),
-          SizedBox(height: 16),
-          Text(
-            context.tr("by_category"),
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          SizedBox(height: 8),
+          FilterSectionTitle(context.tr("by_category")),
           buildCategoriesOptions(widget.categories),
-          SizedBox(height: 16),
-          Text(
-            context.tr("by_wallet"),
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          SizedBox(height: 8),
+          FilterSectionTitle(context.tr("by_wallet")),
           buildWalletsOptions(widget.wallets),
-          SizedBox(height: 16),
-          Text(
-            context.tr("by_customer"),
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          SizedBox(height: 8),
+          FilterSectionTitle(context.tr("by_customer")),
           buildCustomersOptions(widget.customers),
-          SizedBox(height: 16),
-          Text(
-            context.tr("by_supplier"),
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          SizedBox(height: 8),
+          FilterSectionTitle(context.tr("by_supplier")),
           buildSuppliersOptions(widget.suppliers),
-          SizedBox(height: 16),
-          Text(
-            context.tr("by_date"),
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          SizedBox(height: 8),
+          FilterSectionTitle(context.tr("by_date")),
           buildDatesWidget(),
-          SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: MyOutlineButton(
-                    context.tr("action_reset_all"), () {
-                  widget.onResetAllPressed();
-                }),
-              ),
-              SizedBox(width: 16),
-              Expanded(
-                child: PrimaryButton(context.tr("action_apply"),
-                    () {
-                  widget.onApplyPressed(
-                    widget.setting.copyWith(
-                      sortByDateNewestFirst: _sortByDateNewestFirst,
+          FilterSheetActions(
+            onReset: widget.onResetAllPressed,
+            onApply: () {
+              widget.onApplyPressed(
+                widget.setting.copyWith(
+                  sortByDateNewestFirst: _sortByDateNewestFirst,
                       selectedCategoryIds: _selectedCategoryIds,
                       selectedWalletIds: _selectedWalletIds,
                       selectedCustomerIds: _selectedCustomerIds,
@@ -135,9 +91,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
                       endDate: _endDate,
                     ),
                   );
-                }),
-              ),
-            ],
+            },
           ),
         ],
       ),
@@ -168,7 +122,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
         },
       ),
     );
-    return Wrap(spacing: 8, runSpacing: 8, children: items);
+    return FilterChipWrap(children: items);
   }
 
   Widget buildCategoriesOptions(List<PaymentCategory?> categories) {
@@ -206,7 +160,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
         ),
       );
     }
-    return Wrap(spacing: 8, runSpacing: 8, children: items);
+    return FilterChipWrap(children: items);
   }
 
   Widget buildWalletsOptions(List<Wallet> wallets) {
@@ -244,7 +198,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
         ),
       );
     }
-    return Wrap(spacing: 8, runSpacing: 8, children: items);
+    return FilterChipWrap(children: items);
   }
 
   Widget buildCustomersOptions(List<Customer> customer) {
@@ -277,7 +231,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
         ),
       );
     }
-    return Wrap(spacing: 8, runSpacing: 8, children: items);
+    return FilterChipWrap(children: items);
   }
 
   Widget buildSuppliersOptions(List<Supplier> suppliers) {
@@ -310,7 +264,7 @@ class FilterPaymentWidgetState extends State<FilterPaymentWidget> {
         ),
       );
     }
-    return Wrap(spacing: 8, runSpacing: 8, children: items);
+    return FilterChipWrap(children: items);
   }
 
   Widget buildDatesWidget() {

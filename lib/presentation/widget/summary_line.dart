@@ -25,7 +25,7 @@ class SummaryLine extends StatelessWidget {
     final content = Padding(
       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       child: Align(
-        alignment: Alignment.centerLeft,
+        alignment: AlignmentDirectional.centerStart,
         child: Text(
           text,
           style: theme.textTheme.bodyMedium?.copyWith(

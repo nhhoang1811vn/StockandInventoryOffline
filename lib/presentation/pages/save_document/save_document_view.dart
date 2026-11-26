@@ -190,7 +190,8 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
       builder: (context, state) {
         final theme = Theme.of(context);
         final documentProperties = AppSettings.getDocumentPropertiesSettings();
-        return Scaffold(
+        return UnsavedChangesGuard(
+            child: Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: theme.scaffoldBackgroundColor,
           appBar: SaveObjectAppBar(
@@ -401,27 +402,30 @@ class SaveDocumentPageState extends State<SaveDocumentPage> {
               ],
             ),
           ),
-        );
+        ));
       },
     );
   }
 
   Widget _buildGoodActionButtons(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 8),
       child: Row(
+        // Secondary (batch scan) first, primary (add good) at the end side.
         children: [
-          Expanded(
-            child: PrimaryButton(
-              context.tr("action_add_good"),
-              () => context.read<SaveDocumentCubit>().onAddGoodClicked(),
-            ),
-          ),
-          const SizedBox(width: 12),
           Expanded(
             child: MyOutlineButton(
               context.tr("action_batch_scan"),
               () => context.read<SaveDocumentCubit>().onBatchScanMenuClicked(),
+              icon: Icons.qr_code_scanner_rounded,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: PrimaryButton(
+              context.tr("action_add_good"),
+              () => context.read<SaveDocumentCubit>().onAddGoodClicked(),
+              icon: Icons.add_rounded,
             ),
           ),
         ],

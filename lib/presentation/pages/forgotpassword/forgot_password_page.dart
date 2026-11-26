@@ -106,7 +106,8 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
           top: MediaQuery.of(context).padding.top + 8,
           left: 8,
           child: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_sharp, color: Colors.grey),
+            tooltip: context.tr('action_back'),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),

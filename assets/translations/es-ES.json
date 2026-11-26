@@ -492,5 +492,20 @@
   "report_type_purchase_by_item": "Compras por artículo",
   "report_type_purchase_by_supplier": "Compras por proveedor",
   "report_type_purchase_by_month": "Compras por mes",
-  "no_supplier": "Sin proveedor"
+  "no_supplier": "Sin proveedor",
+  "a11y_add": "Añadir",
+  "a11y_filter": "Filtrar",
+  "a11y_close": "Cerrar",
+  "a11y_notifications": "Notificaciones",
+  "a11y_show_password": "Mostrar contraseña",
+  "a11y_hide_password": "Ocultar contraseña",
+  "a11y_scan_barcode": "Escanear código de barras",
+  "a11y_remove": "Quitar",
+  "a11y_history": "Historial",
+  "a11y_add_member": "Añadir miembro",
+  "a11y_categories": "Categorías",
+  "a11y_confirm": "Confirmar",
+  "unsaved_changes_message": "Tienes cambios sin guardar. ¿Descartarlos y salir?",
+  "action_discard": "Descartar",
+  "action_keep_editing": "Seguir editando"
 }

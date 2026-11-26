@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:good_manager/presentation/widget/broken_image.dart';
 
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
@@ -204,7 +205,7 @@ class GoodItemRow extends StatelessWidget {
                               : context.tr("low_stock"),
                           style: const TextStyle(
                               color: Colors.red,
-                              fontSize: 10,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -270,7 +271,9 @@ class GoodItemRow extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
                         child: item.files.isNotEmpty
-                            ? Image.memory(item.files.first, fit: BoxFit.cover)
+                            ? Image.memory(item.files.first,
+                                fit: BoxFit.cover,
+                                errorBuilder: brokenImageBuilder)
                             : Icon(
                                 UIConstants.goodIconData,
                                 color: theme.colorScheme.primary,

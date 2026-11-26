@@ -33,7 +33,7 @@ class SettingsGeneralPageState extends State<SettingsGeneralPage> {
         return SettingsScaffold(
           title: context.tr("general"),
           body: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 32),
             children: [
               SettingsSectionHeader(context.tr("general"), isFirst: true),
               SettingsMenuCard(
@@ -293,7 +293,7 @@ class _CurrencyPickerState extends State<_CurrencyPicker> {
       children: [
         SettingsBottomSheetTitle(title: context.tr("select_currency")),
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 8),
           child: TextField(
             decoration: InputDecoration(
               hintText: context.tr("type_to_search"),

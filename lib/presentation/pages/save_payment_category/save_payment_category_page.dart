@@ -5,9 +5,9 @@ import 'package:good_manager/presentation/pages/save_payment_category/bloc/save_
 import 'package:good_manager/presentation/pages/save_payment_category/components/select_symbols_widget.dart';
 
 import '../../../domain/entity/entity.dart';
+import '../../../util/toast_utils.dart';
 import '../../widget/widget.dart';
 import '../base/base_state.dart';
-import '../../../util/toast_utils.dart';
 
 class SavePaymentCategoryPage extends StatefulWidget {
   final PaymentCategory item;
@@ -35,11 +35,12 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
         }
       },
       builder: (BuildContext context, SavePaymentCategoryState state) {
-        return Scaffold(
+        return UnsavedChangesGuard(
+            child: Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: SaveObjectAppBar(title: context.tr("title_save_category")),
           body: _buildBody(state),
-        );
+        ));
       },
     );
   }
@@ -74,7 +75,8 @@ class SavePaymentCategoryPageState extends State<SavePaymentCategoryPage> {
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: Colors.grey[100],
+                      color:
+                          Theme.of(context).colorScheme.surfaceContainerHighest,
                       shape: BoxShape.circle,
                     ),
                     child: Center(

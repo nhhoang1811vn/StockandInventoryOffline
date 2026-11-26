@@ -8,6 +8,7 @@ import '../domain/entity/entity.dart';
 import '../models/app_language.dart';
 import '../models/app_theme.dart';
 import '../models/currency.dart';
+import '../util/revenuecat_purchase_manager.dart';
 
 class AppSettings {
   static const Color incomingDocumentColor = Colors.red;
@@ -527,6 +528,12 @@ class AppSettings {
   static set appLanguage(AppLanguage value) => _box.put(_keyAppLanguage, value);
 
   static bool isPro() => _isPro;
+
+  /// Re-reads the Pro entitlement from RevenueCat into the cached flag.
+  static Future<bool> refreshPro() async {
+    _isPro = await RevenueCatService.isPro();
+    return _isPro;
+  }
 
   static Currency get currency =>
       _box.get(_keyCurrency, defaultValue: Currency.usd);

@@ -492,5 +492,20 @@
   "report_type_purchase_by_item": "按商品统计采购",
   "report_type_purchase_by_supplier": "按供应商统计采购",
   "report_type_purchase_by_month": "按月份统计采购",
-  "no_supplier": "无供应商"
+  "no_supplier": "无供应商",
+  "a11y_add": "添加",
+  "a11y_filter": "筛选",
+  "a11y_close": "关闭",
+  "a11y_notifications": "通知",
+  "a11y_show_password": "显示密码",
+  "a11y_hide_password": "隐藏密码",
+  "a11y_scan_barcode": "扫描条形码",
+  "a11y_remove": "移除",
+  "a11y_history": "历史记录",
+  "a11y_add_member": "添加成员",
+  "a11y_categories": "类别",
+  "a11y_confirm": "确认",
+  "unsaved_changes_message": "有未保存的更改。放弃更改并离开吗？",
+  "action_discard": "放弃",
+  "action_keep_editing": "继续编辑"
 }

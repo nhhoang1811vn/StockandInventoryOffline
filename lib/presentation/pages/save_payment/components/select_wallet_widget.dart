@@ -38,7 +38,7 @@ class SelectWalletWidgetState extends State<SelectWalletWidget> {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.grey.shade700,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(16),

@@ -492,5 +492,20 @@
   "report_type_purchase_by_item": "Закупки по товарам",
   "report_type_purchase_by_supplier": "Закупки по поставщикам",
   "report_type_purchase_by_month": "Закупки по месяцам",
-  "no_supplier": "Без поставщика"
+  "no_supplier": "Без поставщика",
+  "a11y_add": "Добавить",
+  "a11y_filter": "Фильтр",
+  "a11y_close": "Закрыть",
+  "a11y_notifications": "Уведомления",
+  "a11y_show_password": "Показать пароль",
+  "a11y_hide_password": "Скрыть пароль",
+  "a11y_scan_barcode": "Сканировать штрихкод",
+  "a11y_remove": "Удалить",
+  "a11y_history": "История",
+  "a11y_add_member": "Добавить участника",
+  "a11y_categories": "Категории",
+  "a11y_confirm": "Подтвердить",
+  "unsaved_changes_message": "Есть несохранённые изменения. Отменить их и выйти?",
+  "action_discard": "Отменить изменения",
+  "action_keep_editing": "Продолжить редактирование"
 }

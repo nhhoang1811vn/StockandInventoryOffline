@@ -23,7 +23,8 @@ class SaveCustomerPageState extends State<SaveCustomerPage> {
   @override
   Widget build(BuildContext context) {
     context.read<SaveCustomerCubit>().init(widget.item);
-    return Scaffold(
+    return UnsavedChangesGuard(
+        child: Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: SaveObjectAppBar(title: context.tr("save_customer")),
       body: SafeArea(
@@ -47,6 +48,6 @@ class SaveCustomerPageState extends State<SaveCustomerPage> {
         ],
         ),
       ),
-    );
+    ));
   }
 }

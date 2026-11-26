@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:good_manager/presentation/widget/broken_image.dart';
 import 'package:good_manager/util/entity_image_picker.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -84,7 +85,8 @@ class ImagesInformationSection extends StatelessWidget {
           padding: const EdgeInsets.all(4),
           width: double.infinity,
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey, width: 1),
+            border: Border.all(
+                color: Theme.of(context).colorScheme.outline, width: 1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: files.isEmpty
@@ -104,11 +106,14 @@ class ImagesInformationSection extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.add_a_photo, color: Colors.grey, size: 40),
+            Icon(Icons.add_a_photo,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                size: 40),
             const SizedBox(height: 8),
             Text(
               context.tr("tap_to_add_file"),
-              style: TextStyle(color: Colors.grey[600]),
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ],
         ),
@@ -142,8 +147,8 @@ class ImagesInformationSection extends StatelessWidget {
                   entry.value,
                   width: 100,
                   height: 100,
-                  fit: BoxFit.cover,
-                ),
+                    fit: BoxFit.cover,
+                    errorBuilder: brokenImageBuilder),
               ),
             ),
             if (canEdit)

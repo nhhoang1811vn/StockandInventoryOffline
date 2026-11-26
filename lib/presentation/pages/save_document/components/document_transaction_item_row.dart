@@ -135,7 +135,7 @@ class DocumentTransactionItemRow extends StatelessWidget {
                                 CurrencyFormatter.format(context, total),
                                 style: TextStyle(
                                   color: theme.colorScheme.secondary,
-                                  fontSize: 10,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

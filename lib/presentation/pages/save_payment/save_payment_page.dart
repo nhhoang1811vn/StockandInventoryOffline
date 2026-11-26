@@ -200,7 +200,8 @@ class SavePaymentPageState extends State<SavePaymentPage> {
           }
         }
 
-        return Scaffold(
+        return UnsavedChangesGuard(
+            child: Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: SaveObjectAppBar(
             title: widget.item.type == PaymentType.inbound
@@ -397,13 +398,14 @@ class SavePaymentPageState extends State<SavePaymentPage> {
               ),
             ],
           ),
-        );
+        ));
       },
     );
   }
 
   Widget _buildHelpMenu() {
     return IconButton(
+      tooltip: context.tr('action_help'),
       onPressed: () {
         Navigator.of(context).pushNamed(
           Pages.help,

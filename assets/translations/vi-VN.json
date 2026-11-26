@@ -492,5 +492,20 @@
   "report_type_purchase_by_item": "Mua hàng theo hàng hóa",
   "report_type_purchase_by_supplier": "Mua hàng theo nhà cung cấp",
   "report_type_purchase_by_month": "Mua hàng theo tháng",
-  "no_supplier": "Không có nhà cung cấp"
+  "no_supplier": "Không có nhà cung cấp",
+  "a11y_add": "Thêm",
+  "a11y_filter": "Bộ lọc",
+  "a11y_close": "Đóng",
+  "a11y_notifications": "Thông báo",
+  "a11y_show_password": "Hiện mật khẩu",
+  "a11y_hide_password": "Ẩn mật khẩu",
+  "a11y_scan_barcode": "Quét mã vạch",
+  "a11y_remove": "Xóa",
+  "a11y_history": "Lịch sử",
+  "a11y_add_member": "Thêm thành viên",
+  "a11y_categories": "Danh mục",
+  "a11y_confirm": "Xác nhận",
+  "unsaved_changes_message": "Bạn có thay đổi chưa lưu. Bỏ thay đổi và thoát?",
+  "action_discard": "Bỏ thay đổi",
+  "action_keep_editing": "Tiếp tục chỉnh sửa"
 }

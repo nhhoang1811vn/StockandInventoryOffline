@@ -492,5 +492,20 @@
   "report_type_purchase_by_item": "Purchase by item",
   "report_type_purchase_by_supplier": "Purchase by supplier",
   "report_type_purchase_by_month": "Purchase by month",
-  "no_supplier": "No supplier"
+  "no_supplier": "No supplier",
+  "a11y_add": "Add",
+  "a11y_filter": "Filter",
+  "a11y_close": "Close",
+  "a11y_notifications": "Notifications",
+  "a11y_show_password": "Show password",
+  "a11y_hide_password": "Hide password",
+  "a11y_scan_barcode": "Scan barcode",
+  "a11y_remove": "Remove",
+  "a11y_history": "History",
+  "a11y_add_member": "Add member",
+  "a11y_categories": "Categories",
+  "a11y_confirm": "Confirm",
+  "unsaved_changes_message": "You have unsaved changes. Discard them and leave?",
+  "action_discard": "Discard",
+  "action_keep_editing": "Keep editing"
 }

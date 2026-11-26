@@ -492,5 +492,20 @@
   "report_type_purchase_by_item": "Einkäufe nach Artikel",
   "report_type_purchase_by_supplier": "Einkäufe nach Lieferant",
   "report_type_purchase_by_month": "Einkäufe nach Monat",
-  "no_supplier": "Kein Lieferant"
+  "no_supplier": "Kein Lieferant",
+  "a11y_add": "Hinzufügen",
+  "a11y_filter": "Filter",
+  "a11y_close": "Schließen",
+  "a11y_notifications": "Benachrichtigungen",
+  "a11y_show_password": "Passwort anzeigen",
+  "a11y_hide_password": "Passwort verbergen",
+  "a11y_scan_barcode": "Barcode scannen",
+  "a11y_remove": "Entfernen",
+  "a11y_history": "Verlauf",
+  "a11y_add_member": "Mitglied hinzufügen",
+  "a11y_categories": "Kategorien",
+  "a11y_confirm": "Bestätigen",
+  "unsaved_changes_message": "Sie haben ungespeicherte Änderungen. Verwerfen und verlassen?",
+  "action_discard": "Verwerfen",
+  "action_keep_editing": "Weiter bearbeiten"
 }

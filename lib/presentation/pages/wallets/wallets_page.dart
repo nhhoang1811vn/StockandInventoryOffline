@@ -1,9 +1,9 @@
-import 'package:good_manager/util/dimen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/wallets/components/wallet_item_row.dart';
 import 'package:good_manager/util/currency_formatter.dart';
+import 'package:good_manager/util/dimen.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../constant/constant.dart';
@@ -141,11 +141,13 @@ class WalletsPageState extends State<WalletsPage> {
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final wallet = items[index];
-        return GestureDetector(
-          onTap: () => _handleOnPressed(wallet),
-          onLongPress: () => _handleOnLongPressed(wallet),
+        return Semantics(
+            button: true,
+            child: GestureDetector(
+              onTap: () => _handleOnPressed(wallet),
+              onLongPress: () => _handleOnLongPressed(wallet),
           child: WalletItemRow(wallet),
-        );
+            ));
       },
     );
   }

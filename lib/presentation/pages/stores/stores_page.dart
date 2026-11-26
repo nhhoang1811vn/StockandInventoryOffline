@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/markdown/md_provider_factory.dart';
 import 'package:good_manager/presentation/pages/stores/bloc/stores_cubit.dart';
+import 'package:good_manager/util/toast_utils.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../constant/constant.dart';
@@ -15,7 +16,6 @@ import '../help_content.dart';
 import '../pages.dart';
 import 'components/filter_store_widget.dart';
 import 'components/store_item_row.dart';
-import '../../../util/toast_utils.dart';
 
 class StoresPage extends StatefulWidget {
   final bool isSelection;
@@ -100,10 +100,12 @@ class StoresPageState extends State<StoresPage> {
       iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
       actions: [
         IconButton(
+          tooltip: context.tr('a11y_add'),
           icon: const Icon(Icons.add),
           onPressed: () => context.read<StoresCubit>().onAddButtonClicked(),
         ),
         IconButton(
+          tooltip: context.tr('action_help'),
           icon: const Icon(Icons.help_outline_rounded),
           onPressed: () => context.read<StoresCubit>().onHelpMenuClick(),
         ),
@@ -140,6 +142,7 @@ class StoresPageState extends State<StoresPage> {
               Badge(
                 isLabelVisible: showWarning,
                 child: IconButton(
+                  tooltip: context.tr('a11y_filter'),
                   icon: const Icon(Icons.tune),
                   onPressed: () => showFilterBottomSheet(data),
                 ),
@@ -265,15 +268,15 @@ class StoresPageState extends State<StoresPage> {
               controller: scrollController,
               padding: const EdgeInsets.all(20),
               child: FilterStoreWidget(
-                onResetAllPressed: () {
+                onReset: () {
                   context.read<StoresCubit>().resetAllFilter();
                   Navigator.of(context).pop();
                 },
-                onApplyPressed: (setting) {
+                onApply: (setting) {
                   context.read<StoresCubit>().applyFilter(setting);
                   Navigator.of(context).pop();
                 },
-                setting: state.settings,
+                settings: state.settings,
               ),
             );
           },

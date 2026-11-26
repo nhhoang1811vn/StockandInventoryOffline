@@ -23,7 +23,8 @@ class SaveGroupPageState extends State<SaveGroupPage> {
   @override
   Widget build(BuildContext context) {
     context.read<SaveGroupCubit>().init(widget.item);
-    return Scaffold(
+    return UnsavedChangesGuard(
+        child: Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: SaveObjectAppBar(title: context.tr("save_group")),
       body: Column(
@@ -47,6 +48,6 @@ class SaveGroupPageState extends State<SaveGroupPage> {
           ),
         ],
       ),
-    );
+    ));
   }
 }

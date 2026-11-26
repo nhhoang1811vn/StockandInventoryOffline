@@ -325,7 +325,7 @@ class SaveGoodForm extends StatelessWidget {
         ),
         if (!readonly)
           Align(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
             child: CircleButton(
               FontAwesomeIcons.calculator.data,
               context.read<SaveGoodCubit>().onQuantityCalculatorPressed,

@@ -27,7 +27,7 @@ class BarcodeScannerSettingsPageState
       builder: (context, state) => SettingsScaffold(
         title: context.tr("menu_item_barcode_scanner"),
         body: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+          padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 32),
           children: [
             SettingsSectionHeader(context.tr("batch_mode_scan"), isFirst: true),
             SettingsMenuCard(

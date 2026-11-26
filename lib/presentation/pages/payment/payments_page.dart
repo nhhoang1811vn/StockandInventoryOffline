@@ -1,9 +1,9 @@
-import 'package:good_manager/util/dimen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:good_manager/presentation/pages/payment/components/filter_payment_widget.dart';
 import 'package:good_manager/util/currency_formatter.dart';
+import 'package:good_manager/util/dimen.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 import '../../../constant/constant.dart';
@@ -137,6 +137,7 @@ class PaymentsPageState extends State<PaymentsPage>
               Badge(
                 isLabelVisible: showWarning,
                 child: IconButton(
+                  tooltip: context.tr('a11y_filter'),
                   icon: const Icon(Icons.tune),
                   onPressed: () => showFilterBottomSheet(state),
                 ),
@@ -363,9 +364,6 @@ class PaymentsPageState extends State<PaymentsPage>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-      ),
       builder: (mContext) {
         return DraggableScrollableSheet(
           expand: false,

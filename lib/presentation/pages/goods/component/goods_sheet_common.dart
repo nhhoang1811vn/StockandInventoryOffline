@@ -26,6 +26,7 @@ class GoodsSheetHeader extends StatelessWidget {
           ),
         ),
         IconButton(
+          tooltip: context.tr('a11y_close'),
           onPressed: () => Navigator.pop(context),
           icon: Icon(
             Icons.close,

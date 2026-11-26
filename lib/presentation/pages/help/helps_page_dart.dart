@@ -19,7 +19,7 @@ class HelpsPageState extends State<HelpsPage> {
     return SettingsScaffold(
       title: context.tr("help_title"),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 32),
         children: [
           SettingsSectionHeader(context.tr("help_title"), isFirst: true),
           SettingsMenuCard(

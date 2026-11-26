@@ -1,7 +1,7 @@
-import 'package:good_manager/util/dimen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:good_manager/util/currency_formatter.dart';
+import 'package:good_manager/util/dimen.dart';
 
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
@@ -320,7 +320,7 @@ class _WalletFaceCard extends StatelessWidget {
                         balance,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.right,
+                        textAlign: TextAlign.end,
                         style: TextStyle(
                           color: onColor,
                           fontWeight: FontWeight.w700,

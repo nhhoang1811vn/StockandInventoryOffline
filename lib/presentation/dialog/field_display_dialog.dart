@@ -79,8 +79,8 @@ class ColumnDisplayDialogState extends State<ColumnDisplayDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(context.tr("settings")),
-      titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-      contentPadding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+      titlePadding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 0),
+      contentPadding: const EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
       content: SizedBox(
         width: double.maxFinite,
         child: SingleChildScrollView(

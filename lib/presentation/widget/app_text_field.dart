@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class AppTextField extends StatelessWidget {
+class AppTextField extends StatefulWidget {
   final String labelText;
   final String hintText;
   final String? initialValue;
   final ValueChanged<String>? onChanged;
   final GestureTapCallback? onTapped;
   final bool? readOnly;
+  final bool obscureText;
+  final Widget? suffixIcon;
 
   final TextInputType keyboardType;
   final String? error;
   final TextEditingController? controller;
   final List<TextInputFormatter>? inputFormatter;
 
-  //Color color;
   final String? suffixText;
   final Widget? prefix;
   final Widget? suffix;
@@ -22,11 +23,9 @@ class AppTextField extends StatelessWidget {
   final int minLines;
   final int? maxLines;
   final TextInputAction textInputAction;
-  final bool obscureText;
-  final Widget? suffixIcon;
 
-  AppTextField({
-    Key? key,
+  const AppTextField({
+    super.key,
     required this.labelText,
     required this.keyboardType,
     this.hintText = "",
@@ -40,56 +39,65 @@ class AppTextField extends StatelessWidget {
     this.suffixText,
     this.prefix,
     this.suffix,
+    this.obscureText = false,
+    this.suffixIcon,
     this.minLines = 1,
     this.maxLines = 1,
     this.textInputAction = TextInputAction.next,
-    this.obscureText = false,
-    this.suffixIcon,
-  }) : super(key: key);
+  });
 
-  OutlineInputBorder border(Color color) {
-    return OutlineInputBorder(
-      borderSide: BorderSide(color: color, width: 1.0),
-      borderRadius: BorderRadius.circular(8),
-    );
+  @override
+  State<AppTextField> createState() => _AppTextFieldState();
+}
+
+class _AppTextFieldState extends State<AppTextField> {
+  /// Several fields can gain an error in the same frame (submit with an
+  /// invalid form). Only the first one, in tree order, scrolls into view.
+  static bool _scrollScheduled = false;
+
+  @override
+  void didUpdateWidget(AppTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.error == null && widget.error != null && !_scrollScheduled) {
+      _scrollScheduled = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollScheduled = false;
+        if (!mounted) return;
+        Scrollable.ensureVisible(
+          context,
+          alignment: 0.2,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+        );
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final borderColor = isDark ? Colors.white70 : Colors.black;
     return TextFormField(
-      onTap: onTapped,
-      controller: controller,
-      initialValue: controller == null ? initialValue : null,
-      keyboardType: keyboardType,
-      minLines: obscureText ? 1 : minLines,
-      maxLines: obscureText ? 1 : maxLines,
-      obscureText: obscureText,
+      onTap: widget.onTapped,
+      controller: widget.controller,
+      initialValue: widget.controller == null ? widget.initialValue : null,
+      keyboardType: widget.keyboardType,
+      minLines: widget.obscureText ? 1 : widget.minLines,
+      maxLines: widget.obscureText ? 1 : widget.maxLines,
+      obscureText: widget.obscureText,
+      // Borders, focus and error colors come from inputDecorationTheme.
       decoration: InputDecoration(
-        border: border(borderColor),
-        prefix: prefix,
-        suffix: suffix,
-        suffixIcon: suffixIcon,
-        suffixText: suffixText,
-        disabledBorder: border(borderColor),
-        enabledBorder: border(borderColor),
-        errorBorder: border(Colors.red),
-        focusedBorder: border(theme.colorScheme.primary),
-        focusedErrorBorder: border(Colors.red),
-        labelText: labelText,
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        errorText: error,
-        hintText: hintText,
+        prefix: widget.prefix,
+        suffix: widget.suffix,
+        suffixIcon: widget.suffixIcon,
+        suffixText: widget.suffixText,
+        labelText: widget.labelText,
+        errorText: widget.error,
+        hintText: widget.hintText,
       ),
       autocorrect: false,
-      textInputAction: textInputAction,
-
-      onChanged: onChanged,
-      readOnly: readOnly!,
-      inputFormatters: inputFormatter,
-      //style: TextStyle(fontSize: 17, color: Colors.black),
+      textInputAction: widget.textInputAction,
+      onChanged: widget.onChanged,
+      readOnly: widget.readOnly!,
+      inputFormatters: widget.inputFormatter,
     );
   }
 }

@@ -107,7 +107,7 @@ class PaymentItemRow extends StatelessWidget {
                                 child: Text(
                                   personName[0].toUpperCase(),
                                   style: TextStyle(
-                                    fontSize: 11,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     color: theme.colorScheme.onPrimaryContainer,
                                   ),

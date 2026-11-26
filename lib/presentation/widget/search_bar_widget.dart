@@ -67,6 +67,7 @@ class SearchBarWidgetState extends State<SearchBarWidget> {
             children: [
               if (controller.text.isNotEmpty)
                 IconButton(
+                  tooltip: context.tr('a11y_close'),
                   icon: const Icon(Icons.close),
                   onPressed: () {
                     controller.clear();
@@ -75,6 +76,7 @@ class SearchBarWidgetState extends State<SearchBarWidget> {
                 ),
               if (widget.showCamera)
                 IconButton(
+                  tooltip: context.tr('a11y_scan_barcode'),
                   onPressed: () async {
                     var result = await Utils.scanBarcode(context);
                     if (result != null) {

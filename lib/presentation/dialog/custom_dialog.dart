@@ -90,11 +90,13 @@ Future<void> showCustomAlertDialog(
   Function()? onNegativePressed,
   Function()? onPositivePressed,
   Color? barrierColor = Colors.black54,
+  bool destructive = false,
 }) {
   return showDialogWithAnimation<void>(
     barrierColor: barrierColor,
     context: context,
     child: CustomAlertDialog(
+      destructive: destructive,
       title: title ?? context.tr("notification"),
       message: message,
       positiveText: positiveText ?? context.tr("ok"),
@@ -180,17 +182,24 @@ Future<T?> showDialogWithAnimation<T>({
     barrierDismissible: dismissible,
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
     barrierColor: barrierColor ?? Colors.black54,
-    transitionDuration: const Duration(milliseconds: 100),
+    transitionDuration: MediaQuery.maybeDisableAnimationsOf(context) == true
+        ? Duration.zero
+        : const Duration(milliseconds: 200),
     transitionBuilder: (
       BuildContext context,
       Animation<double> animation,
       Animation<double> secondaryAnimation,
       Widget child,
     ) {
-      return Transform.scale(
-        scale: animation.value,
-        child: Opacity(
-          opacity: animation.value,
+      final curved = CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOutCubic,
+        reverseCurve: Curves.easeIn,
+      );
+      return FadeTransition(
+        opacity: curved,
+        child: ScaleTransition(
+          scale: Tween<double>(begin: 0.92, end: 1).animate(curved),
           child: child,
         ),
       );

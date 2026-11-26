@@ -20,7 +20,7 @@ class SettingsPageState extends State<SettingsPage> {
     return SettingsScaffold(
       title: context.tr("settings"),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 32),
         children: [
           SettingsMenuCard(
             children: [

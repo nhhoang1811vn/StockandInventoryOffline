@@ -121,6 +121,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
     ReportDetailState state,
   ) {
     return IconButton(
+      tooltip: context.tr('action_export_csv'),
       onPressed: () async {
         String fileName = '${getExportFileName(context, state)}.csv';
         saveAndExportCSV(context, state, fileName);
@@ -506,6 +507,7 @@ class ReportDetailPageState extends State<ReportDetailPage> {
                   ),
                 ),
                 IconButton(
+                  tooltip: context.tr('settings'),
                   onPressed: () async {
                     final updatedColumns = await showDialog(
                       context: context,

@@ -4,6 +4,7 @@ import 'package:good_manager/presentation/utils.dart';
 import 'package:good_manager/presentation/widget/entity_avatar.dart';
 import 'package:good_manager/util/currency_formatter.dart';
 
+import '../../../../constant/app_tokens.dart';
 import '../../../../constant/constant.dart';
 import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
@@ -44,7 +45,7 @@ class DocumentItemRow extends StatelessWidget {
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appCardColor,
         borderRadius: BorderRadius.circular(Dimens.cardRadius),
         boxShadow: [
           BoxShadow(
@@ -97,7 +98,7 @@ class DocumentItemRow extends StatelessWidget {
                         Text(
                           item.description,
                           style: TextStyle(
-                            color: Colors.black.withValues(alpha: 0.45),
+                            color: context.appOnSurface.withValues(alpha: 0.55),
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                           ),
@@ -121,8 +122,10 @@ class DocumentItemRow extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 item.personName!,
-                                style: const TextStyle(
-                                  color: Color(0xFF8E9199),
+                                style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -142,7 +145,7 @@ class DocumentItemRow extends StatelessWidget {
                               : DateFormatFactory.getDateAndTimeFormat()
                                   .format(item.date),
                           style: TextStyle(
-                            color: Colors.black.withValues(alpha: 0.2),
+                            color: context.appOnSurface.withValues(alpha: 0.55),
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),
@@ -216,7 +219,7 @@ class DocumentItemRow extends StatelessWidget {
         text,
         style: TextStyle(
           color: color,
-          fontSize: 10,
+          fontSize: 12,
           fontWeight: FontWeight.bold,
         ),
       ),

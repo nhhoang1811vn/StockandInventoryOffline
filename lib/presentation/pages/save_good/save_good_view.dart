@@ -49,12 +49,14 @@ class SaveGoodPageState extends State<SaveGoodPage> {
   @override
   Widget build(BuildContext context) {
     context.read<SaveGoodCubit>().init(item, document, transaction);
-    return Scaffold(
+    return UnsavedChangesGuard(
+        child: Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: SaveObjectAppBar(
         title: context.tr("save_good"),
         actions: <Widget>[
           IconButton(
+            tooltip: context.tr('a11y_history'),
             onPressed: () {
               context.read<SaveGoodCubit>().onHistoryClicked();
             },
@@ -100,6 +102,6 @@ class SaveGoodPageState extends State<SaveGoodPage> {
           ),
         ],
       ),
-    );
+    ));
   }
 }

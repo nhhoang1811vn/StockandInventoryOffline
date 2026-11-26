@@ -24,7 +24,8 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
         title: Text(context.tr("scan_bar_code_title")),
         centerTitle: false,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
+          tooltip: context.tr('action_back'),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
       ),

@@ -492,5 +492,20 @@
   "report_type_purchase_by_item": "वस्तु के अनुसार खरीद",
   "report_type_purchase_by_supplier": "आपूर्तिकर्ता के अनुसार खरीद",
   "report_type_purchase_by_month": "महीने के अनुसार खरीद",
-  "no_supplier": "कोई आपूर्तिकर्ता नहीं"
+  "no_supplier": "कोई आपूर्तिकर्ता नहीं",
+  "a11y_add": "जोड़ें",
+  "a11y_filter": "फ़िल्टर",
+  "a11y_close": "बंद करें",
+  "a11y_notifications": "सूचनाएं",
+  "a11y_show_password": "पासवर्ड दिखाएं",
+  "a11y_hide_password": "पासवर्ड छिपाएं",
+  "a11y_scan_barcode": "बारकोड स्कैन करें",
+  "a11y_remove": "हटाएं",
+  "a11y_history": "इतिहास",
+  "a11y_add_member": "सदस्य जोड़ें",
+  "a11y_categories": "श्रेणियां",
+  "a11y_confirm": "पुष्टि करें",
+  "unsaved_changes_message": "आपके बदलाव सहेजे नहीं गए हैं। उन्हें छोड़कर बाहर निकलें?",
+  "action_discard": "छोड़ें",
+  "action_keep_editing": "संपादन जारी रखें"
 }

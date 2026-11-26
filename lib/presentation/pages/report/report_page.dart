@@ -102,7 +102,7 @@ class ReportPageState extends State<ReportPage> {
       ),
     );
     return Padding(
-      padding: const EdgeInsets.only(left: 8, bottom: 12, top: 24),
+      padding: const EdgeInsetsDirectional.only(start: 8, bottom: 12, top: 24),
       child: showNewTag
           ? Row(
               children: [
@@ -118,7 +118,7 @@ class ReportPageState extends State<ReportPage> {
                   child: Text(
                     context.tr("tag_new"),
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 12,
                       fontWeight: FontWeight.w800,
                       color: theme.colorScheme.primary,
                     ),
@@ -599,7 +599,7 @@ class ReportPageState extends State<ReportPage> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: Theme.of(context).colorScheme.copyWith(
-                  onPrimary: Colors.white,
+                  onPrimary: Theme.of(context).colorScheme.onPrimary,
                 ),
           ),
           child: child!,
