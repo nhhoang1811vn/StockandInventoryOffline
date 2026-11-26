@@ -99,7 +99,7 @@ Dùng chức năng này để theo dõi chi tiêu theo từng cửa hàng.
 ### Phiên bản 1.0.97 - 26/11/2026
 * Đã bỏ tài khoản: không còn đăng ký, đăng nhập hay sao lưu đám mây. Ứng dụng hoạt động hoàn toàn trên thiết bị và dữ liệu của bạn được giữ nguyên.
 * Gói Pro vẫn hoạt động. Sau khi cài lại hoặc đổi điện thoại, vào Menu > Khôi phục giao dịch để lấy lại.
-* Đã bỏ banner ứng dụng Online trên Trang chủ.
+* Thẻ ứng dụng Online trên Trang chủ giờ chỉ còn nút tải ứng dụng. Bước đồng bộ dữ liệu đã bị bỏ.
 * Để giữ bản sao dữ liệu, hãy dùng Sao lưu và khôi phục để lưu ra tệp.
 
 ### Phiên bản 1.0.96 - 24/11/2026

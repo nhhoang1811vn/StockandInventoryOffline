@@ -6,7 +6,7 @@ class MarkdownResourcePT {
 ### Versão 1.0.97 - 26 nov 2026
 * As contas foram removidas: não há mais cadastro, login nem backup na nuvem. O app funciona totalmente no seu dispositivo e seus dados continuam iguais.
 * Sua assinatura Pro continua ativa. Depois de reinstalar ou trocar de celular, use Menu > Restaurar compras para recuperá-la.
-* O banner do app Online foi removido do Início.
+* O cartão do app Online no Início agora só oferece baixar o app. A etapa de sincronização de dados foi removida.
 * Para guardar uma cópia dos seus dados, salve um arquivo em Backup e restauração.
 
 ### Versão 1.0.96 - 24 nov 2026

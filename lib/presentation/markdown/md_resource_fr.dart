@@ -6,7 +6,7 @@ class MarkdownResourceFR {
 ### Version 1.0.97 - 26 nov. 2026
 * Les comptes sont supprimés : plus d'inscription, de connexion ni de sauvegarde cloud. L'application fonctionne entièrement sur votre appareil et vos données restent inchangées.
 * Votre abonnement Pro reste actif. Après une réinstallation ou un changement de téléphone, utilisez Menu > Restaurer les achats pour le retrouver.
-* La bannière de l'application Online a été retirée de l'accueil.
+* La carte de l'application Online sur l'accueil propose désormais seulement de la télécharger. L'étape de synchronisation des données a disparu.
 * Pour garder une copie de vos données, enregistrez un fichier depuis Sauvegarde et restauration.
 
 ### Version 1.0.96 - 24 nov. 2026

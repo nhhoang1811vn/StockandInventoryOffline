@@ -3,7 +3,7 @@ class MarkdownResourceEN {
 ### Version 1.0.97 - 26 Nov 2026
 * Accounts are gone: no more sign up, sign in or cloud backup. The app now works fully on your device, and your data is unchanged.
 * Your Pro subscription stays active. After reinstalling or changing phone, use Menu > Restore purchases to get it back.
-* The Online app banner on Home was removed.
+* The Online app card on Home now only offers to download the app. The data sync step is gone.
 * To keep a copy of your data, use Backup and restore to save a file.
 
 ### Version 1.0.96 - 24 Nov 2026

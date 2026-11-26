@@ -1,8 +1,9 @@
 # Remove accounts and cloud features
 
 Release 1.0.97 removes sign-up, sign-in, account linking, sign-out, delete account, cloud backup
-(Firebase Storage), the one-way Realtime Database push and the Home banner for the Online app.
-The app is purely local. Supersedes [0003](0003-keep-home-migration-banner.md).
+(Firebase Storage) and the one-way Realtime Database push. The app is purely local.
+The Home card for the Online app is kept, but it no longer syncs data: it only offers to download
+the app, and its popup returns under new prefs keys. Amends [0003](0003-keep-home-migration-banner.md).
 
 ## Consequences
 

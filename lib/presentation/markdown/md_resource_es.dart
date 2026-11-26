@@ -6,7 +6,7 @@ class MarkdownResourceES {
 ### Versión 1.0.97 - 26 nov 2026
 * Se eliminaron las cuentas: ya no hay registro, inicio de sesión ni copia en la nube. La app funciona por completo en tu dispositivo y tus datos no cambian.
 * Tu suscripción Pro sigue activa. Tras reinstalar o cambiar de teléfono, usa Menú > Restaurar compras para recuperarla.
-* Se quitó el banner de la app Online en Inicio.
+* La tarjeta de la app Online en Inicio ahora solo ofrece descargar la app. Ya no hay paso de sincronización de datos.
 * Para conservar una copia de tus datos, guarda un archivo en Copia de seguridad y restauración.
 
 ### Versión 1.0.96 - 24 nov 2026

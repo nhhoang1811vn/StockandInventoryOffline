@@ -13,6 +13,10 @@ class Config {
   static String iOSStoreLink = "https://apps.apple.com/us/app/stock-and-inventory/id6670546293";
   static String androidStoreLink = "https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutter";
 
+  static const String onlineAppAndroidUrl =
+      "https://play.google.com/store/apps/details?id=com.steam.goodmanagerflutteronline";
+  static const String onlineAppIosUrl =
+      "https://apps.apple.com/us/app/stock-inventory-online/id6761761103";
   static const String windowsReleaseUrl =
       "https://github.com/nhhoang1811vn/StockandInventoryOffline/releases/tag/v1.0.93w";
   static const String windowsGuideUrl =

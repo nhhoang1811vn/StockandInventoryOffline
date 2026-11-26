@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -7,11 +8,13 @@ import 'package:good_manager/common/platform_support.dart';
 import 'package:good_manager/data/app_settings.dart';
 import 'package:good_manager/presentation/pages/base/insufficient_stock_message.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
+import 'package:good_manager/presentation/pages/home/home_online_app_promo.dart';
 import 'package:good_manager/presentation/pages/home/home_store_header.dart';
 import 'package:good_manager/presentation/pages/home/home_wallets_section.dart';
 import 'package:good_manager/presentation/pages/home/home_windows_banner.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
 import 'package:good_manager/util/currency_formatter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../constant/constant.dart';
@@ -46,7 +49,21 @@ class HomePageState extends State<HomePage> {
     super.initState();
     context.read<HomeCubit>().initState();
     RevenueCatService.isPro();
+    _maybeShowOnlineAppPopup();
   }
+
+  Future<void> _maybeShowOnlineAppPopup() async {
+    if (!isMobilePlatform) return;
+    final prefs = await SharedPreferences.getInstance();
+    if (!await OnlineAppPromo.shouldShowPopup(prefs)) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) showOnlineAppDialog(context);
+    });
+  }
+
+  void _openOnlineAppStore() => NavigatorUtils.openUrl(
+        Platform.isAndroid ? Config.onlineAppAndroidUrl : Config.onlineAppIosUrl,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -131,8 +148,18 @@ class HomePageState extends State<HomePage> {
                     );
                   },
                 ),
-                // The Windows version only matters to Android/iOS users.
+                // The Online app and the Windows version only matter to
+                // Android/iOS users (store links).
                 if (isMobilePlatform) ...[
+                  const SizedBox(height: _cardGap),
+                  HomeOnlineAppCard(
+                    title: context.tr("v2_announcement_title"),
+                    subtitle: context.tr("v2_announcement_subtitle"),
+                    downloadLabel: context.tr("download_now"),
+                    hint: context.tr("tap_to_learn_new_features"),
+                    onTap: () => showOnlineAppDialog(context),
+                    onDownload: _openOnlineAppStore,
+                  ),
                   const SizedBox(height: _cardGap),
                   HomeWindowsBanner(
                     title: context.tr("windows_banner_title"),

@@ -255,8 +255,10 @@ every Supplier plus a last "No supplier" row (or one chosen Supplier), by month 
   RevenueCat keeps the app user id cached on the device. After a reinstall or a new phone the user
   restores Pro from Menu > Restore purchases (`RevenueCatService.restorePurchases`). The RevenueCat
   project setting "Transfer to new App User ID" makes the entitlement follow the restoring user.
-- Removed in 1.0.97: sign-up/sign-in, cloud backup (`2026/<uid>/data.json`), the Realtime DB push and
-  the Home banner for the Online app (`docs/adr/0004-remove-accounts-and-cloud.md`).
+- Removed in 1.0.97: sign-up/sign-in, cloud backup (`2026/<uid>/data.json`) and the Realtime DB push
+  (`docs/adr/0004-remove-accounts-and-cloud.md`). The Home card for the Online app stays but only
+  offers to download it (`lib/presentation/pages/home/home_online_app_promo.dart`); its popup uses
+  new prefs keys (`online_app_promo_*`) and shows up to 3 times unless skipped.
 
 ## Passcode
 
