@@ -179,6 +179,7 @@
   "action_export_pdf": "PDF निर्यात करें",
   "action_batch_scan": "बैच स्कैन",
   "action_help": "सहायता",
+  "action_import_from_contacts": "संपर्कों से आयात करें",
   "action_import_from_excel": "Excel से आयात करें",
   "action_export_to_excel": "Excel में निर्यात करें",
   "excel_file_column": "Excel फ़ाइल कॉलम",

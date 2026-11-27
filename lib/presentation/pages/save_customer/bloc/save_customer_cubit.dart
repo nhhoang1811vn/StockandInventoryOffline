@@ -22,7 +22,9 @@ class SaveCustomerCubit extends Cubit<SaveCustomerState> {
 
   void init(Customer item) {
     SaveCustomerState initState;
-    if (item.id == null) {
+    // A new customer prefilled by "Import from contacts" has no id but a name:
+    // its values must reach the state, or Save would reject/clear them.
+    if (item.id == null && item.name.isEmpty) {
       initState = state.copyWith(item: item);
     } else {
       initState = state.copyWith(

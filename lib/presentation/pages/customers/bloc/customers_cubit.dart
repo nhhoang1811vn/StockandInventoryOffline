@@ -9,6 +9,7 @@ import '../../../../data/app_settings.dart';
 import '../../../../domain/entity/entity.dart';
 import '../../../../util/revenuecat_purchase_manager.dart';
 import '../../base/base_sort_items.dart';
+import '../../contact_import/contact_import_service.dart';
 
 part 'customers_cubit.freezed.dart';
 part 'customers_state.dart';
@@ -67,6 +68,24 @@ class CustomersCubit extends Cubit<CustomersState> {
     } else {
       emit(state.copyWith(state: OpenBuySubscriptionDialogState()));
     }
+  }
+
+  Future<void> onImportFromContactsClicked() async {
+    if (!await isValidToAddMoreCustomer()) {
+      if (isClosed) return;
+      emit(state.copyWith(state: OpenBuySubscriptionDialogState()));
+      return;
+    }
+    final fields = await ContactImportService.pickContact();
+    if (isClosed || fields == null) return;
+    final item = Customer()
+      ..storeId = AppSettings.getSelectedStoreId()
+      ..name = fields.name
+      ..phone = fields.phone
+      ..email = fields.email
+      ..address = fields.address
+      ..description = fields.description;
+    onAddItem(item);
   }
 
   Future<bool> isValidToAddMoreCustomer() async {

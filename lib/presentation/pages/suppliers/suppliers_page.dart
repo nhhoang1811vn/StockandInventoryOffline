@@ -12,6 +12,8 @@ import '../../../util/util.dart';
 import '../../dialog/dialog.dart';
 import '../../widget/widget.dart';
 import '../base/base_state.dart';
+import '../contact_import/contact_import_service.dart';
+import '../contact_import/person_list_overflow_button.dart';
 import '../help_content.dart';
 import '../pages.dart';
 import 'bloc/bloc.dart';
@@ -95,9 +97,13 @@ class SuppliersPageState extends State<SuppliersPage> {
           icon: const Icon(Icons.add),
           onPressed: () => context.read<SuppliersCubit>().onAddButtonClicked(),
         ),
-        IconButton(
-          icon: const Icon(Icons.help_outline_rounded),
-          onPressed: () => context.read<SuppliersCubit>().onHelpMenuClick(),
+        PersonListOverflowButton(
+          importLabel: context.tr("action_import_from_contacts"),
+          helpLabel: context.tr("action_help"),
+          showImport: ContactImportService.isSupported,
+          onImportFromContacts: () =>
+              context.read<SuppliersCubit>().onImportFromContactsClicked(),
+          onHelp: () => context.read<SuppliersCubit>().onHelpMenuClick(),
         ),
         const SizedBox(width: 16),
       ],

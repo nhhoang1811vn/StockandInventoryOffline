@@ -179,6 +179,7 @@
   "action_export_pdf": "导出 PDF",
   "action_batch_scan": "批量扫描",
   "action_help": "帮助",
+  "action_import_from_contacts": "从通讯录导入",
   "action_import_from_excel": "从 Excel 导入",
   "action_export_to_excel": "导出到 Excel",
   "excel_file_column": "Excel 文件列",

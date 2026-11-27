@@ -179,6 +179,7 @@
   "action_export_pdf": "Экспорт PDF",
   "action_batch_scan": "Пакетное сканирование",
   "action_help": "Справка",
+  "action_import_from_contacts": "Импорт из контактов",
   "action_import_from_excel": "Импорт из Excel",
   "action_export_to_excel": "Экспорт в Excel",
   "excel_file_column": "Столбец файла Excel",

@@ -179,6 +179,7 @@
   "action_export_pdf": "Export PDF",
   "action_batch_scan": "Batch scan",
   "action_help": "Help",
+  "action_import_from_contacts": "Import from contacts",
   "action_import_from_excel": "Import from Excel",
   "action_export_to_excel": "Export to Excel",
   "excel_file_column": "Excel file column",

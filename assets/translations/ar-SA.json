@@ -179,6 +179,7 @@
   "action_export_pdf": "تصدير ملف PDF",
   "action_batch_scan": "مسح دفعي",
   "action_help": "مساعدة",
+  "action_import_from_contacts": "استيراد من جهات الاتصال",
   "action_import_from_excel": "استيراد من Excel",
   "action_export_to_excel": "تصدير إلى Excel",
   "excel_file_column": "عمود ملف Excel",

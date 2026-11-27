@@ -22,7 +22,9 @@ class SaveSupplierCubit extends Cubit<SaveSupplierState> {
 
   void init(Supplier item) {
     SaveSupplierState initState;
-    if (item.id == null) {
+    // A new supplier prefilled by "Import from contacts" has no id but a name:
+    // its values must reach the state, or Save would reject/clear them.
+    if (item.id == null && item.name.isEmpty) {
       initState = state.copyWith(item: item);
     } else {
       initState = state.copyWith(
