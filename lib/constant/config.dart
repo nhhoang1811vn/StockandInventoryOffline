@@ -18,7 +18,7 @@ class Config {
   static const String onlineAppIosUrl =
       "https://apps.apple.com/us/app/stock-inventory-online/id6761761103";
   static const String windowsReleaseUrl =
-      "https://github.com/nhhoang1811vn/StockandInventoryOffline/releases/tag/v1.0.93w";
+      "https://github.com/nhhoang1811vn/StockandInventoryOffline/releases/tag/v1.0.97w";
   static const String windowsGuideUrl =
       "https://github.com/nhhoang1811vn/StockandInventoryOffline";
 

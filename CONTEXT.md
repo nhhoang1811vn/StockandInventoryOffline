@@ -167,3 +167,6 @@ Known risks are listed in full in [docs/DATABASE.md](docs/DATABASE.md) and
 - [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
 - [docs/adr/](docs/adr/) — decisions on the Online app as visual source, navigation shell, migration
   banner
+- Dual-app workspace for porting UI changes to/from the Online app:
+  `D:\WorkSpace\StockandInventoryWorkspace`
+  (skill `/port-ui`; design in `docs/superpowers/specs/2026-11-27-dual-app-workspace-design.md`)

@@ -274,6 +274,11 @@ class HomeCubit extends Cubit<HomeState> {
     initState();
   }
 
+  Future<void> deletePayment(int id) async {
+    await paymentUseCases.delete(id);
+    initState();
+  }
+
   Future<Payment> createPaymentDraft(Document item) async {
     final payment = Payment();
     payment.type = item.type == DocumentType.incoming

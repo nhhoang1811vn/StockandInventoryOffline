@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -111,8 +112,6 @@ class HomePageState extends State<HomePage> {
                 const SizedBox(height: _cardGap),
                 _buildAddDocumentOptions(state),
                 const SizedBox(height: _cardGap),
-                _buildAddPaymentOptions(),
-                const SizedBox(height: _cardGap),
                 if (state.isLoadingRecentDocuments ||
                     state.recentDocuments.isNotEmpty) ...[
                   _buildRecentDocumentsHeader(),
@@ -141,6 +140,7 @@ class HomePageState extends State<HomePage> {
                   onOpenWalletsPage: () {
                     Navigator.of(context).pushNamed(Pages.wallet_list);
                   },
+                  onPaymentLongPressed: onLongPressedPayment,
                   onOpenPaymentsPage: () {
                     Navigator.of(context).pushNamed(
                       Pages.payments,
@@ -148,6 +148,8 @@ class HomePageState extends State<HomePage> {
                     );
                   },
                 ),
+                const SizedBox(height: _cardGap),
+                _buildAddPaymentOptions(),
                 // The Online app and the Windows version only matter to
                 // Android/iOS users (store links).
                 if (isMobilePlatform) ...[
@@ -540,9 +542,27 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget _buildRecentDocumentsHeader() {
-    return Text(
-      context.tr("recent_documents"),
-      style: Theme.of(context).textTheme.titleMedium,
+    final theme = Theme.of(context);
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            context.tr("recent_documents"),
+            style: theme.textTheme.titleMedium,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        GestureDetector(
+          onTap: widget.onOpenDocumentsPage,
+          child: Text(
+            context.tr("view_all"),
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: theme.colorScheme.primary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -550,7 +570,7 @@ class HomePageState extends State<HomePage> {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: state.recentDocuments.length,
+      itemCount: math.min(state.recentDocuments.length, 3),
       separatorBuilder: (context, index) => const SizedBox(height: _cardGap),
       itemBuilder: (context, index) {
         final item = state.recentDocuments[index];
@@ -632,6 +652,32 @@ class HomePageState extends State<HomePage> {
       onPositivePressed: () async {
         hideDialog(context);
         context.read<HomeCubit>().deleteDocument(document.id!);
+      },
+    );
+  }
+
+  void onLongPressedPayment(Payment item) {
+    final items = [
+      context.tr("delete"),
+    ];
+    showSelectOptionDialog(
+      context,
+      items: items,
+      onItemSelected: (index) async {
+        if (items[index] == context.tr("delete")) {
+          showDeletePaymentConfirm(item);
+        }
+      },
+    );
+  }
+
+  void showDeletePaymentConfirm(Payment item) {
+    showCustomAlertDialog(
+      context,
+      message: context.tr("message_confirm_delete_no_args"),
+      onPositivePressed: () async {
+        hideDialog(context);
+        await context.read<HomeCubit>().deletePayment(item.id!);
       },
     );
   }

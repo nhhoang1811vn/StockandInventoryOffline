@@ -379,6 +379,7 @@
   "low_stock": "库存偏低",
   "total_items": "商品总数",
   "recent_documents": "最近单据",
+  "recent_payments": "最近付款",
   "view_all": "查看全部",
   "inventory": "库存",
   "reports": "报表",

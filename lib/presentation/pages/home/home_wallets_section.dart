@@ -18,6 +18,7 @@ class HomeWalletsSection extends StatelessWidget {
   final VoidCallback onAddWallet;
   final VoidCallback onOpenWalletsPage;
   final VoidCallback onOpenPaymentsPage;
+  final ValueChanged<Payment>? onPaymentLongPressed;
 
   const HomeWalletsSection({
     super.key,
@@ -30,6 +31,7 @@ class HomeWalletsSection extends StatelessWidget {
     required this.onAddWallet,
     required this.onOpenWalletsPage,
     required this.onOpenPaymentsPage,
+    this.onPaymentLongPressed,
   });
 
   Wallet? get _selectedWallet {
@@ -66,8 +68,8 @@ class HomeWalletsSection extends StatelessWidget {
             _buildSectionTitle(
               context,
               title: _selectedWallet != null
-                  ? "${context.tr("payments")} · ${_selectedWallet!.name}"
-                  : context.tr("payments"),
+                  ? "${context.tr("recent_payments")} - ${_selectedWallet!.name}"
+                  : context.tr("recent_payments"),
               onViewAll: onOpenPaymentsPage,
             ),
             const SizedBox(height: _cardGap),
@@ -190,7 +192,7 @@ class HomeWalletsSection extends StatelessWidget {
       );
     }
 
-    final recent = payments.take(5).toList();
+    final recent = payments.take(3).toList();
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -205,6 +207,9 @@ class HomeWalletsSection extends StatelessWidget {
             Pages.save_payment,
             arguments: {'item': payment},
           ),
+          onLongPress: onPaymentLongPressed == null
+              ? null
+              : () => onPaymentLongPressed!(payment),
           badgeText: payment.category?.icon ?? "💰",
           iconColor: color,
           title: payment.category != null
@@ -379,6 +384,7 @@ class _WalletFaceCard extends StatelessWidget {
 
 class _HomeRowCard extends StatelessWidget {
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
   final IconData? icon;
   final String? badgeText;
   final Color iconColor;
@@ -390,6 +396,7 @@ class _HomeRowCard extends StatelessWidget {
 
   const _HomeRowCard({
     this.onTap,
+    this.onLongPress,
     this.icon,
     this.badgeText,
     required this.iconColor,
@@ -412,6 +419,7 @@ class _HomeRowCard extends StatelessWidget {
       ),
       child: InkWell(
         onTap: onTap,
+        onLongPress: onLongPress,
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Row(

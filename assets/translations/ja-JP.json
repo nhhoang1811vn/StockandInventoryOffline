@@ -379,6 +379,7 @@
   "low_stock": "在庫少",
   "total_items": "合計点数",
   "recent_documents": "最近の伝票",
+  "recent_payments": "最近の支払い",
   "view_all": "すべて見る",
   "inventory": "在庫",
   "reports": "レポート",
