@@ -7,7 +7,6 @@
   "suppliers": "Suppliers",
   "customers": "Customers",
   "menu": "Menu",
-  "more": "More",
   "good": "Good",
   "group": "Group",
   "select_good": "Select Good",
@@ -514,5 +513,8 @@
   "a11y_confirm": "Confirm",
   "unsaved_changes_message": "You have unsaved changes. Discard them and leave?",
   "action_discard": "Discard",
-  "action_keep_editing": "Keep editing"
+  "action_keep_editing": "Keep editing",
+  "home_store_guide_title": "Switch Store here",
+  "home_store_guide_body": "Tap here to change the Store you are working in.",
+  "got_it": "Got it"
 }

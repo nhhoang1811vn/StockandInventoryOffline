@@ -4,6 +4,8 @@ class MarkdownResourceDE {
   static const bundle = MarkdownBundle(
     whatNews: """
 ### Version 1.0.97 - 26. Nov. 2026
+* Neuer Erstnutzungs-Hinweis auf der Startseite zeigt, wie man den Shop wechselt.
+* Die Startseite zeigt beim Laden jetzt Platzhalter statt Nullen.
 * Konten entfallen: keine Registrierung, Anmeldung oder Cloud-Sicherung mehr. Die App arbeitet komplett auf dem Gerät, Ihre Daten bleiben unverändert.
 * Ihr Pro-Abo bleibt aktiv. Nach einer Neuinstallation oder einem Gerätewechsel stellen Sie es über Menü > Käufe wiederherstellen wieder her.
 * Die Online-App-Karte auf der Startseite bietet jetzt nur noch den Download der App an. Der Datenabgleich entfällt.

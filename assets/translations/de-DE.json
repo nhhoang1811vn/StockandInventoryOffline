@@ -7,7 +7,6 @@
   "suppliers": "Lieferanten",
   "customers": "Kunden",
   "menu": "Menü",
-  "more": "Mehr",
   "good": "Artikel",
   "group": "Gruppe",
   "select_good": "Artikel wählen",
@@ -514,5 +513,8 @@
   "a11y_confirm": "Bestätigen",
   "unsaved_changes_message": "Sie haben ungespeicherte Änderungen. Verwerfen und verlassen?",
   "action_discard": "Verwerfen",
-  "action_keep_editing": "Weiter bearbeiten"
+  "action_keep_editing": "Weiter bearbeiten",
+  "home_store_guide_title": "Geschäft hier wechseln",
+  "home_store_guide_body": "Tippen Sie hier, um das Geschäft zu wechseln, in dem Sie arbeiten.",
+  "got_it": "Verstanden"
 }

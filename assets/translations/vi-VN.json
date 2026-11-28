@@ -7,7 +7,6 @@
   "suppliers": "Nhà cung cấp",
   "customers": "Khách hàng",
   "menu": "Menu",
-  "more": "Thêm",
   "good": "Hàng hóa",
   "group": "Nhóm",
   "select_good": "Chọn hàng hóa",
@@ -514,5 +513,8 @@
   "a11y_confirm": "Xác nhận",
   "unsaved_changes_message": "Bạn có thay đổi chưa lưu. Bỏ thay đổi và thoát?",
   "action_discard": "Bỏ thay đổi",
-  "action_keep_editing": "Tiếp tục chỉnh sửa"
+  "action_keep_editing": "Tiếp tục chỉnh sửa",
+  "home_store_guide_title": "Đổi cửa hàng tại đây",
+  "home_store_guide_body": "Chạm vào đây để đổi Store đang chọn.",
+  "got_it": "Đã hiểu"
 }

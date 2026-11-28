@@ -6,6 +6,7 @@ import 'package:good_manager/util/dimen.dart';
 import '../../../constant/constant.dart';
 import '../../../domain/entity/entity.dart';
 import '../pages.dart';
+import 'home_skeleton.dart';
 
 class HomeWalletsSection extends StatelessWidget {
   static const double _cardGap = Dimens.cardGap;
@@ -53,10 +54,7 @@ class HomeWalletsSection extends StatelessWidget {
         ),
         const SizedBox(height: _cardGap),
         if (isLoading)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 32),
-            child: Center(child: CircularProgressIndicator()),
-          )
+          const HomeWalletsSkeleton()
         else ...[
           _buildTotalBalance(context),
           const SizedBox(height: _cardGap),

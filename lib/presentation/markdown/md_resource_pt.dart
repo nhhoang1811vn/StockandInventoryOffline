@@ -4,6 +4,8 @@ class MarkdownResourcePT {
   static const bundle = MarkdownBundle(
     whatNews: """
 ### Versão 1.0.97 - 26 nov 2026
+* Nova dica de primeiro uso na Início mostra como trocar de loja.
+* A Início agora mostra marcadores de carregamento em vez de zeros enquanto os dados carregam.
 * As contas foram removidas: não há mais cadastro, login nem backup na nuvem. O app funciona totalmente no seu dispositivo e seus dados continuam iguais.
 * Sua assinatura Pro continua ativa. Depois de reinstalar ou trocar de celular, use Menu > Restaurar compras para recuperá-la.
 * O cartão do app Online no Início agora só oferece baixar o app. A etapa de sincronização de dados foi removida.

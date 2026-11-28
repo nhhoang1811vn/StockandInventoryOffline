@@ -7,7 +7,6 @@
   "suppliers": "Proveedores",
   "customers": "Clientes",
   "menu": "Menú",
-  "more": "Más",
   "good": "Artículo",
   "group": "Grupo",
   "select_good": "Seleccionar artículo",
@@ -514,5 +513,8 @@
   "a11y_confirm": "Confirmar",
   "unsaved_changes_message": "Tienes cambios sin guardar. ¿Descartarlos y salir?",
   "action_discard": "Descartar",
-  "action_keep_editing": "Seguir editando"
+  "action_keep_editing": "Seguir editando",
+  "home_store_guide_title": "Cambia de tienda aquí",
+  "home_store_guide_body": "Toca aquí para cambiar la tienda en la que trabajas.",
+  "got_it": "Entendido"
 }

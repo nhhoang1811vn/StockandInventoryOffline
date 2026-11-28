@@ -68,4 +68,42 @@ void main() {
     await tester.tap(find.text('My Shop'));
     expect(taps, 1);
   });
+
+  testWidgets('targetKey is attached to the tappable area', (tester) async {
+    final key = GlobalKey();
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: HomeStoreHeader(
+          targetKey: key,
+          storeName: 'Shop A',
+          logoBytes: null,
+          isPro: false,
+          premiumLabel: 'PREMIUM',
+          onTap: () {},
+        ),
+      ),
+    ));
+
+    expect(key.currentContext, isNotNull);
+  });
+
+  testWidgets('tapping the target calls onTap once', (tester) async {
+    final key = GlobalKey();
+    var taps = 0;
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: HomeStoreHeader(
+          targetKey: key,
+          storeName: 'Shop A',
+          logoBytes: null,
+          isPro: false,
+          premiumLabel: 'PREMIUM',
+          onTap: () => taps++,
+        ),
+      ),
+    ));
+
+    await tester.tap(find.byKey(key));
+    expect(taps, 1);
+  });
 }

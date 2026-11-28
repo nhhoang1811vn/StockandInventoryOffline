@@ -1,6 +1,8 @@
 class MarkdownResourceEN {
   static const String whatNews = """
 ### Version 1.0.97 - 26 Nov 2026
+* New first-time tip on Home shows how to switch Store.
+* Home now shows loading placeholders instead of zeros while data loads.
 * Accounts are gone: no more sign up, sign in or cloud backup. The app now works fully on your device, and your data is unchanged.
 * Your Pro subscription stays active. After reinstalling or changing phone, use Menu > Restore purchases to get it back.
 * The Online app card on Home now only offers to download the app. The data sync step is gone.

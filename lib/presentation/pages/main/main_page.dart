@@ -174,9 +174,9 @@ class _ScreenState extends State<MainView> {
             ),
             _buildNavItem(
               3,
-              Icons.more_horiz_rounded,
-              Icons.more_horiz_rounded,
-              context.tr("more"),
+              Icons.menu_rounded,
+              Icons.menu_rounded,
+              context.tr("menu"),
             ),
           ],
         ),

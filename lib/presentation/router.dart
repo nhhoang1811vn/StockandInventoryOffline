@@ -81,11 +81,12 @@ import 'package:good_manager/presentation/pages/wallets/wallets_page.dart';
 
 import '../di/di.dart';
 
-class AppRouter {
-  final RouteObserver<PageRoute> routeObserver;
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final RouteObserver<PageRoute<dynamic>> appRouteObserver =
+    RouteObserver<PageRoute<dynamic>>();
 
-  AppRouter() : routeObserver = RouteObserver<PageRoute>();
+class AppRouter {
+  final RouteObserver<PageRoute<dynamic>> routeObserver = appRouteObserver;
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {

@@ -7,7 +7,6 @@
   "suppliers": "الموردون",
   "customers": "العملاء",
   "menu": "القائمة",
-  "more": "المزيد",
   "good": "صنف",
   "group": "مجموعة",
   "select_good": "اختيار صنف",
@@ -514,5 +513,8 @@
   "a11y_confirm": "تأكيد",
   "unsaved_changes_message": "لديك تغييرات غير محفوظة. هل تريد تجاهلها والمغادرة؟",
   "action_discard": "تجاهل",
-  "action_keep_editing": "متابعة التحرير"
+  "action_keep_editing": "متابعة التحرير",
+  "home_store_guide_title": "بدّل المتجر من هنا",
+  "home_store_guide_body": "اضغط هنا لتغيير المتجر الذي تعمل فيه.",
+  "got_it": "فهمت"
 }

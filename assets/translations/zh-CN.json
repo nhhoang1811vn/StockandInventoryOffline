@@ -7,7 +7,6 @@
   "suppliers": "供应商",
   "customers": "客户",
   "menu": "菜单",
-  "more": "更多",
   "good": "商品",
   "group": "分组",
   "select_good": "选择商品",
@@ -514,5 +513,8 @@
   "a11y_confirm": "确认",
   "unsaved_changes_message": "有未保存的更改。放弃更改并离开吗？",
   "action_discard": "放弃",
-  "action_keep_editing": "继续编辑"
+  "action_keep_editing": "继续编辑",
+  "home_store_guide_title": "在此切换店铺",
+  "home_store_guide_body": "点击此处可切换当前使用的店铺。",
+  "got_it": "知道了"
 }

@@ -10,9 +10,12 @@ import 'package:good_manager/data/app_settings.dart';
 import 'package:good_manager/presentation/pages/base/insufficient_stock_message.dart';
 import 'package:good_manager/presentation/pages/home/bloc/home_cubit.dart';
 import 'package:good_manager/presentation/pages/home/home_online_app_promo.dart';
+import 'package:good_manager/presentation/pages/home/home_skeleton.dart';
+import 'package:good_manager/presentation/pages/home/home_store_guide.dart';
 import 'package:good_manager/presentation/pages/home/home_store_header.dart';
 import 'package:good_manager/presentation/pages/home/home_wallets_section.dart';
 import 'package:good_manager/presentation/pages/home/home_windows_banner.dart';
+import 'package:good_manager/presentation/router.dart';
 import 'package:good_manager/presentation/widget/widget.dart';
 import 'package:good_manager/util/currency_formatter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,13 +46,106 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> with RouteAware {
   static const double _cardGap = Dimens.cardGap;
+  final GlobalKey _storeKey = GlobalKey();
+  PageRoute<dynamic>? _pageRoute;
+  // True once the Store guide was shown on this page, or is no longer needed.
+  bool _guideHandled = false;
+  bool _introsBusy = false;
+  // The Online app popup bumps a persisted counter: run it at most once per page.
+  bool _promoRan = false;
+  // Set when the guide ended by tapping the Store selector: that already opens
+  // the Store list, so the Online app popup is skipped this session.
+  bool _guideTargetTapped = false;
+
   @override
   void initState() {
     super.initState();
     context.read<HomeCubit>().initState();
     RevenueCatService.isPro();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _runHomeIntros());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute<dynamic> && route != _pageRoute) {
+      if (_pageRoute != null) {
+        appRouteObserver.unsubscribe(this);
+      }
+      _pageRoute = route;
+      appRouteObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_pageRoute != null) {
+      appRouteObserver.unsubscribe(this);
+    }
+    super.dispose();
+  }
+
+  // Home is the current route again (e.g. the lock screen was dismissed):
+  // retry the guide if it could not be shown earlier.
+  @override
+  void didPopNext() => _runHomeIntros();
+
+  Future<void> _runHomeIntros() async {
+    if (!mounted || _guideHandled || _introsBusy) return;
+    _introsBusy = true;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (!mounted) return;
+      if (!await HomeStoreGuide.shouldShow(prefs)) {
+        _guideHandled = true;
+        _maybeShowOnlineAppPopupOnce();
+        return;
+      }
+      if (!mounted) return;
+      // The coach mark measures its target once: wait for the push transition.
+      final route = ModalRoute.of(context);
+      await HomeStoreGuide.waitForRouteTransition(route);
+      if (!mounted) return;
+      if ((route?.isCurrent ?? true) && _storeKey.currentContext != null) {
+        _guideHandled = true;
+        _showStoreGuide(prefs);
+      } else {
+        // Something (e.g. the lock screen) is on top. Keep the promo as before;
+        // the guide is retried from didPopNext.
+        _maybeShowOnlineAppPopupOnce();
+      }
+    } finally {
+      _introsBusy = false;
+    }
+  }
+
+  void _showStoreGuide(SharedPreferences prefs) {
+    HomeStoreGuide.build(
+      target: _storeKey,
+      title: context.tr('home_store_guide_title'),
+      body: context.tr('home_store_guide_body'),
+      buttonLabel: context.tr('got_it'),
+      onTapTarget: () {
+        _guideTargetTapped = true;
+        HomeStoreGuide.markSeen(prefs);
+        // Never open the Store list above another route (e.g. the lock screen).
+        if (mounted && (ModalRoute.of(context)?.isCurrent ?? true)) {
+          _onChangeStore();
+        }
+      },
+      onClose: () {
+        HomeStoreGuide.markSeen(prefs);
+        if (mounted && !_guideTargetTapped) _maybeShowOnlineAppPopupOnce();
+      },
+    ).show(context: context);
+  }
+
+  void _maybeShowOnlineAppPopupOnce() {
+    if (_promoRan) return;
+    _promoRan = true;
     _maybeShowOnlineAppPopup();
   }
 
@@ -63,7 +159,9 @@ class HomePageState extends State<HomePage> {
   }
 
   void _openOnlineAppStore() => NavigatorUtils.openUrl(
-        Platform.isAndroid ? Config.onlineAppAndroidUrl : Config.onlineAppIosUrl,
+        Platform.isAndroid
+            ? Config.onlineAppAndroidUrl
+            : Config.onlineAppIosUrl,
       );
 
   @override
@@ -117,10 +215,7 @@ class HomePageState extends State<HomePage> {
                   _buildRecentDocumentsHeader(),
                   const SizedBox(height: _cardGap),
                   if (state.isLoadingRecentDocuments)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 32),
-                      child: Center(child: CircularProgressIndicator()),
-                    )
+                    const HomeRowCardsSkeleton()
                   else
                     _buildRecentDocumentsList(state),
                   const SizedBox(height: _cardGap),
@@ -210,6 +305,7 @@ class HomePageState extends State<HomePage> {
         isPro: isPro,
         premiumLabel: context.tr("premium"),
         onTap: _onChangeStore,
+        targetKey: _storeKey,
       ),
     );
   }
@@ -226,6 +322,7 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget _buildStatsRow(HomeState state) {
+    if (state.isLoadingRecentDocuments) return const HomeStatsRowSkeleton();
     return Row(
       children: [
         Expanded(
@@ -277,6 +374,9 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget _buildDocumentsEntry(HomeState state) {
+    if (state.isLoadingRecentDocuments) {
+      return const HomeDocumentsCardSkeleton();
+    }
     final theme = Theme.of(context);
     final color = theme.colorScheme.primary;
     final radius = BorderRadius.circular(16);
@@ -406,37 +506,40 @@ class HomePageState extends State<HomePage> {
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: _cardGap),
-        Row(
-          children: [
-            Expanded(
-              child: _buildQuickActionCard(
-                context.tr("suppliers"),
-                UIConstants.supplierIconData,
-                Theme.of(context).colorScheme.primary,
-                onTap: () {
-                  Navigator.of(context)
-                      .pushNamed(Pages.supplier_list)
-                      .then((value) => context.read<HomeCubit>().initState());
-                },
-                value: state.countSupplier.toString(),
+        if (state.isLoadingRecentDocuments)
+          const HomePartnersCardsSkeleton()
+        else
+          Row(
+            children: [
+              Expanded(
+                child: _buildQuickActionCard(
+                  context.tr("suppliers"),
+                  UIConstants.supplierIconData,
+                  Theme.of(context).colorScheme.primary,
+                  onTap: () {
+                    Navigator.of(context)
+                        .pushNamed(Pages.supplier_list)
+                        .then((value) => context.read<HomeCubit>().initState());
+                  },
+                  value: state.countSupplier.toString(),
+                ),
               ),
-            ),
-            const SizedBox(width: _cardGap),
-            Expanded(
-              child: _buildQuickActionCard(
-                context.tr("customers"),
-                UIConstants.customerIconData,
-                Theme.of(context).colorScheme.primary,
-                onTap: () {
-                  Navigator.of(context)
-                      .pushNamed(Pages.customer_list)
-                      .then((value) => context.read<HomeCubit>().initState());
-                },
-                value: state.countCustomer.toString(),
+              const SizedBox(width: _cardGap),
+              Expanded(
+                child: _buildQuickActionCard(
+                  context.tr("customers"),
+                  UIConstants.customerIconData,
+                  Theme.of(context).colorScheme.primary,
+                  onTap: () {
+                    Navigator.of(context)
+                        .pushNamed(Pages.customer_list)
+                        .then((value) => context.read<HomeCubit>().initState());
+                  },
+                  value: state.countCustomer.toString(),
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
       ],
     );
   }

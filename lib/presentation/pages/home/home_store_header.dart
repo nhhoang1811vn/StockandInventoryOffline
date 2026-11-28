@@ -13,8 +13,12 @@ class HomeStoreHeader extends StatelessWidget {
   final String premiumLabel;
   final VoidCallback onTap;
 
+  /// Attached to the tappable logo + name area (used by the first-time guide).
+  final GlobalKey? targetKey;
+
   const HomeStoreHeader({
     super.key,
+    this.targetKey,
     required this.storeName,
     required this.logoBytes,
     required this.isPro,
@@ -30,6 +34,7 @@ class HomeStoreHeader extends StatelessWidget {
       children: [
         Flexible(
           child: GestureDetector(
+            key: targetKey,
             behavior: HitTestBehavior.opaque,
             onTap: onTap,
             child: Row(

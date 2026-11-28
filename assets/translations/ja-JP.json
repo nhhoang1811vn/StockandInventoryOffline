@@ -7,7 +7,6 @@
   "suppliers": "サプライヤー",
   "customers": "顧客",
   "menu": "メニュー",
-  "more": "その他",
   "good": "商品",
   "group": "グループ",
   "select_good": "商品を選択",
@@ -514,5 +513,8 @@
   "a11y_confirm": "確認",
   "unsaved_changes_message": "保存されていない変更があります。破棄して退出しますか？",
   "action_discard": "破棄",
-  "action_keep_editing": "編集を続ける"
+  "action_keep_editing": "編集を続ける",
+  "home_store_guide_title": "ここで店舗を切り替え",
+  "home_store_guide_body": "ここをタップすると、作業中の店舗を変更できます。",
+  "got_it": "わかりました"
 }

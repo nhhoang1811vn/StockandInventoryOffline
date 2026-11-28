@@ -97,6 +97,8 @@ Dùng chức năng này để theo dõi chi tiêu theo từng cửa hàng.
 
   static const String whatNews = """
 ### Phiên bản 1.0.97 - 26/11/2026
+* Hướng dẫn lần đầu ở Trang chủ chỉ cách đổi Store.
+* Trang chủ giờ hiện khung chờ thay vì số 0 trong lúc tải dữ liệu.
 * Đã bỏ tài khoản: không còn đăng ký, đăng nhập hay sao lưu đám mây. Ứng dụng hoạt động hoàn toàn trên thiết bị và dữ liệu của bạn được giữ nguyên.
 * Gói Pro vẫn hoạt động. Sau khi cài lại hoặc đổi điện thoại, vào Menu > Khôi phục giao dịch để lấy lại.
 * Thẻ ứng dụng Online trên Trang chủ giờ chỉ còn nút tải ứng dụng. Bước đồng bộ dữ liệu đã bị bỏ.

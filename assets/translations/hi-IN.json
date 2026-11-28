@@ -7,7 +7,6 @@
   "suppliers": "आपूर्तिकर्ता",
   "customers": "ग्राहक",
   "menu": "मेनू",
-  "more": "अधिक",
   "good": "वस्तु",
   "group": "समूह",
   "select_good": "वस्तु चुनें",
@@ -514,5 +513,8 @@
   "a11y_confirm": "पुष्टि करें",
   "unsaved_changes_message": "आपके बदलाव सहेजे नहीं गए हैं। उन्हें छोड़कर बाहर निकलें?",
   "action_discard": "छोड़ें",
-  "action_keep_editing": "संपादन जारी रखें"
+  "action_keep_editing": "संपादन जारी रखें",
+  "home_store_guide_title": "स्टोर यहाँ बदलें",
+  "home_store_guide_body": "जिस स्टोर में आप काम कर रहे हैं उसे बदलने के लिए यहाँ टैप करें।",
+  "got_it": "समझ गया"
 }

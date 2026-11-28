@@ -4,6 +4,8 @@ class MarkdownResourceFR {
   static const bundle = MarkdownBundle(
     whatNews: """
 ### Version 1.0.97 - 26 nov. 2026
+* Nouveau conseil à la première ouverture sur l'accueil : comment changer de magasin.
+* L'accueil affiche désormais des espaces réservés au lieu de zéros pendant le chargement.
 * Les comptes sont supprimés : plus d'inscription, de connexion ni de sauvegarde cloud. L'application fonctionne entièrement sur votre appareil et vos données restent inchangées.
 * Votre abonnement Pro reste actif. Après une réinstallation ou un changement de téléphone, utilisez Menu > Restaurer les achats pour le retrouver.
 * La carte de l'application Online sur l'accueil propose désormais seulement de la télécharger. L'étape de synchronisation des données a disparu.
